@@ -1,0 +1,27 @@
+﻿<Window x:Class="Amoeba.Windows.UploadWindow"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prop="clr-namespace:Amoeba.Properties"     
+        xmlns:local="clr-namespace:Amoeba.Windows" 
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Title="{Binding Path=UploadWindow_Title, Source={StaticResource ResourcesInstance}}"
+        Top="{Binding Path=UploadWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Left="{Binding Path=UploadWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Height="{Binding Path=UploadWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Width="{Binding Path=UploadWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" >
+
+    <Grid>
+        <Label Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" />
+        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" />
+        <Label Height="28" HorizontalAlignment="Left" Margin="12,46,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" />
+        <ComboBox Height="24" Margin="138,46,12,0" Name="_keywordsComboBox" VerticalAlignment="Top" IsEditable="True" LostFocus="_keywordsComboBox_LostFocus" />
+        <Label HorizontalAlignment="Left" Margin="12,80,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="28" VerticalAlignment="Top" />
+        <ComboBox Height="24" Margin="138,80,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
+        <Label Height="28" HorizontalAlignment="Left" Margin="12,114,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Comment, Source={StaticResource ResourcesInstance}}" />
+        <TextBox Margin="138,114,12,41" Name="_commentTextBox" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" />
+        <Button Name="_cancelButton" Grid.Row="2" Height="23" Margin="0,0,12,12"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Content="{Binding Path=UploadWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" />
+        <Button Name="_okButton" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" VerticalAlignment="Bottom" Width="75" Grid.Row="2" Content="{Binding Path=UploadWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" />
+    </Grid>
+</Window>

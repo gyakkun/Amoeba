@@ -1,0 +1,72 @@
+﻿<Window x:Class="Amoeba.Windows.MainWindow"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prop="clr-namespace:Amoeba.Properties"     
+        xmlns:local="clr-namespace:Amoeba.Windows" 
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Top="{Binding Path=MainWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Left="{Binding Path=MainWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Height="{Binding Path=MainWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Width="{Binding Path=MainWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        WindowState="{Binding Path=MainWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        StateChanged="Window_StateChanged"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="438*" />
+            <RowDefinition Height="23" />
+        </Grid.RowDefinitions>
+        <TabControl Margin="0,28,0,0" Name="_tabControl">
+            <TabItem Header="{Binding Path=MainWindow_Connection, Source={StaticResource ResourcesInstance}}" Name="_connectionTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Search, Source={StaticResource ResourcesInstance}}" Name="_searchTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Download, Source={StaticResource ResourcesInstance}}" Name="_downloadTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource ResourcesInstance}}" Name="_uploadTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Library, Source={StaticResource ResourcesInstance}}" Name="_libraryTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem" >
+                <RichTextBox Name="_logRichTextBox" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True" >
+                    <RichTextBox.Document>
+                        <FlowDocument>
+                            <FlowDocument.Blocks>
+                                <Paragraph Name="_logParagraph" />
+                            </FlowDocument.Blocks>
+                        </FlowDocument>
+                    </RichTextBox.Document>
+                </RichTextBox>
+            </TabItem>
+        </TabControl>
+        <Menu Name="_menu" Height="24" VerticalAlignment="Top">
+            <MenuItem Header="{Binding Path=MainWindow_Connections, Source={StaticResource ResourcesInstance}}">
+                <MenuItem Name="_menuItemStart" Header="{Binding Path=MainWindow_Start, Source={StaticResource ResourcesInstance}}" Click="_menuItemStart_Click" />
+                <MenuItem Name="_menuItemStop" Header="{Binding Path=MainWindow_Stop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_menuItemStop_Click" />
+            </MenuItem>
+            <MenuItem Header="{Binding Path=MainWindow_Settings, Source={StaticResource ResourcesInstance}}">
+                <MenuItem Name="_menuItemSignatureSetting" Header="{Binding Path=MainWindow_SignatureSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemSignatureSetting_Click" />
+                <MenuItem Name="_menuItemConnectionsSetting" Header="{Binding Path=MainWindow_ConnectionsSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemConnectionsSetting_Click" />
+                <MenuItem Name="_menuItemCheckingBlocks" Header="{Binding Path=MainWindow_CheckingBlocks, Source={StaticResource ResourcesInstance}}" Click="_menuItemCheckingBlocks_Click" />
+            </MenuItem>
+            <MenuItem Name="_menuItemLanguages" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />
+            <MenuItem Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}">
+                <MenuItem Name="_menuItemVersionInformation" Header="{Binding Path=MainWindow_VersionInformation, Source={StaticResource ResourcesInstance}}" Click="_menuItemVersionInformation_Click" />
+            </MenuItem>
+        </Menu>
+        <StatusBar Grid.Row="1">
+            <StatusBarItem>
+                <Grid>
+                    <TextBlock Name="_stateTextBlock" Margin="9,0,0,0" />
+                </Grid>
+            </StatusBarItem>
+            <StatusBarItem HorizontalContentAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Path=MainWindow_SendSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,9,0" />
+                    <TextBlock Name="_sendSpeedTextBlock" Margin="0,0,9,0" MinWidth="80" />
+                    <TextBlock Text="{Binding Path=MainWindow_ReceiveSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,9,0" />
+                    <TextBlock Name="_receiveSpeedTextBlock"  Margin="0,0,9,0" MinWidth="80" />
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

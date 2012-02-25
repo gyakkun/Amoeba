@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Configuration>
+
+  <Translate Key="MainWindow_Connection" Value="Connection" />
+  <Translate Key="MainWindow_Search" Value="Search" />
+  <Translate Key="MainWindow_Download" Value="Download" />
+  <Translate Key="MainWindow_Upload" Value="Upload" />
+  <Translate Key="MainWindow_Share" Value="Share" />
+  <Translate Key="MainWindow_Cache" Value="Cache" />
+  <Translate Key="MainWindow_Library" Value="Library" />
+  <Translate Key="MainWindow_Log" Value="Log" />
+  <Translate Key="MainWindow_Connections" Value="_Connections" />
+  <Translate Key="MainWindow_Start" Value="St_art" />
+  <Translate Key="MainWindow_Stop" Value="St_op" />
+  <Translate Key="MainWindow_Settings" Value="_Settings" />
+  <Translate Key="MainWindow_SignatureSetting" Value="_Signature Setting" />
+  <Translate Key="MainWindow_ConnectionsSetting" Value="_Connections Setting" />
+  <Translate Key="MainWindow_CheckingBlocks" Value="_Checking Blocks" />
+  <Translate Key="MainWindow_Help" Value="_Help" />
+  <Translate Key="MainWindow_VersionInformation" Value="_Version Information" />
+  <Translate Key="MainWindow_Languages" Value="_Languages" />
+  <Translate Key="MainWindow_SendSpeed" Value="Send:" />
+  <Translate Key="MainWindow_ReceiveSpeed" Value="Receive:" />
+  <Translate Key="MainWindow_SpaceNotFound" Value="Space Not Found" />
+  <Translate Key="MainWindow_CheckingBlocks_Message" Value="Checking Blocks" />
+  <Translate Key="MainWindow_CheckingBlocks_State" Value="Checked:{1} Bad:{0} Count:{2} " />
+
+  <Translate Key="SeedEditWindow_Title" Value="Seed Edit" />
+
+  <Translate Key="BoxEditWindow_Title" Value="Box Edit" />
+
+  <Translate Key="SearchState_Searching" Value="Searching" />
+  <Translate Key="SearchState_Downloading" Value="Downloading" />
+  <Translate Key="SearchState_Uploading" Value="Uploading" />
+  <Translate Key="SearchState_Downloaded" Value="Downloaded" />
+  <Translate Key="SearchState_Uploaded" Value="Uploaded" />
+
+  <Translate Key="DownloadState_Downloading" Value="Downloading" />
+  <Translate Key="DownloadState_Decoding" Value="Decoding" />
+  <Translate Key="DownloadState_Completed" Value="Completed" />
+  <Translate Key="DownloadState_Error" Value="Error" />
+
+  <Translate Key="UploadState_ComputeHash" Value="Compute Hash" />
+  <Translate Key="UploadState_Encoding" Value="Encoding" />
+  <Translate Key="UploadState_ComputeCorrection" Value="Compute Correction" />
+  <Translate Key="UploadState_Uploading" Value="Uploading" />
+  <Translate Key="UploadState_Completed" Value="Completed" />
+  <Translate Key="UploadState_Error" Value="Error" />
+
+  <Translate Key="ConnectionType_None" Value="None" />
+  <Translate Key="ConnectionType_Tcp" Value="Tcp" />
+  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4Proxy" />
+  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4aProxy" />
+  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5Proxy" />
+  <Translate Key="ConnectionType_HttpProxy" Value="HttpProxy" />
+
+  <Translate Key="SearchControl_Name" Value="Name" />
+  <Translate Key="SearchControl_Signature" Value="Signature" />
+  <Translate Key="SearchControl_State" Value="State" />
+  <Translate Key="SearchControl_Keywords" Value="Keywords" />
+  <Translate Key="SearchControl_CreationTime" Value="Creation Time" />
+  <Translate Key="SearchControl_Length" Value="Length" />
+  <Translate Key="SearchControl_Comment" Value="Comment" />
+  <Translate Key="SearchControl_Hash" Value="Hash" />
+  <Translate Key="SearchControl_Add" Value="_Add" />
+  <Translate Key="SearchControl_Edit" Value="_Edit" />
+  <Translate Key="SearchControl_Delete" Value="_Delete" />
+  <Translate Key="SearchControl_Download" Value="_Download" />
+  <Translate Key="SearchControl_Copy" Value="_Copy" />
+  <Translate Key="SearchControl_CopyInfo" Value="_Copy Info" />
+  <Translate Key="SearchControl_Cut" Value="_Cut" />
+  <Translate Key="SearchControl_Paste" Value="_Paste" />
+  <Translate Key="SearchControl_DownloadHistoryDelete" Value="Download History Delete" />
+  <Translate Key="SearchControl_UploadHistoryDelete" Value="Upload History Delete" />
+  <Translate Key="SearchControl_FilterName" Value="_Filter Name" />
+  <Translate Key="SearchControl_FilterSignature" Value="_Filter Signature" />
+  <Translate Key="SearchControl_FilterSeed" Value="_Filter Seed" />
+
+  <Translate Key="DownloadControl_Name" Value="Name" />
+  <Translate Key="DownloadControl_State" Value="State" />
+  <Translate Key="DownloadControl_Length" Value="Length" />
+  <Translate Key="DownloadControl_Priority" Value="Priority" />
+  <Translate Key="DownloadControl_Rank" Value="Rank" />
+  <Translate Key="DownloadControl_Rate" Value="Rate" />
+  <Translate Key="DownloadControl_Seed" Value="Seed" />
+  <Translate Key="DownloadControl_Path" Value="Path" />
+  <Translate Key="DownloadControl_Delete" Value="_Delete" />
+  <Translate Key="DownloadControl_Copy" Value="_Copy" />
+  <Translate Key="DownloadControl_CopyInfo" Value="_Copy Info" />
+  <Translate Key="DownloadControl_Paste" Value="_Paste" />
+  <Translate Key="DownloadControl_Priority0" Value="_0 (Low)" />
+  <Translate Key="DownloadControl_Priority1" Value="_1" />
+  <Translate Key="DownloadControl_Priority2" Value="_2" />
+  <Translate Key="DownloadControl_Priority3" Value="_3" />
+  <Translate Key="DownloadControl_Priority4" Value="_4" />
+  <Translate Key="DownloadControl_Priority5" Value="_5" />
+  <Translate Key="DownloadControl_Priority6" Value="_6 (High)" />
+
+  <Translate Key="UploadControl_Name" Value="Name" />
+  <Translate Key="UploadControl_State" Value="State" />
+  <Translate Key="UploadControl_Length" Value="Length" />
+  <Translate Key="UploadControl_Priority" Value="Priority" />
+  <Translate Key="UploadControl_Rank" Value="Rank" />
+  <Translate Key="UploadControl_Rate" Value="Rate" />
+  <Translate Key="UploadControl_Seed" Value="Seed" />
+  <Translate Key="UploadControl_Add" Value="_Add" />
+  <Translate Key="UploadControl_Delete" Value="_Delete" />
+  <Translate Key="UploadControl_Copy" Value="_Copy" />
+  <Translate Key="UploadControl_CopyInfo" Value="_Copy Info" />
+  <Translate Key="UploadControl_Priority0" Value="_0 (Low)" />
+  <Translate Key="UploadControl_Priority1" Value="_1" />
+  <Translate Key="UploadControl_Priority2" Value="_2" />
+  <Translate Key="UploadControl_Priority3" Value="_3" />
+  <Translate Key="UploadControl_Priority4" Value="_4" />
+  <Translate Key="UploadControl_Priority5" Value="_5" />
+  <Translate Key="UploadControl_Priority6" Value="_6 (High)" />
+
+  <Translate Key="ShareControl_Add" Value="_Add" />
+  <Translate Key="ShareControl_Delete" Value="_Delete" />
+  <Translate Key="ShareControl_Path" Value="Path" />
+  <Translate Key="ShareControl_Length" Value="Length" />
+  <Translate Key="ShareControl_BlockCount" Value="Block Count" />
+
+  <Translate Key="SearchItemEditWindow_Title" Value="Search Item Edit" />
+  <Translate Key="SearchItemEditWindow_Ok" Value="_Ok" />
+  <Translate Key="SearchItemEditWindow_Cancel" Value="_Cancel" />
+  <Translate Key="SearchItemEditWindow_Name" Value="Name" />
+  <Translate Key="SearchItemEditWindow_NameRegex" Value="Name Regex" />
+  <Translate Key="SearchItemEditWindow_Signature" Value="Signature" />
+  <Translate Key="SearchItemEditWindow_State" Value="State" />
+  <Translate Key="SearchItemEditWindow_Keyword" Value="Keyword" />
+  <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="Creation Time Range" />
+  <Translate Key="SearchItemEditWindow_LengthRange" Value="Length Range" />
+  <Translate Key="SearchItemEditWindow_Seed" Value="Seed" />
+  <Translate Key="SearchItemEditWindow_Contains" Value="Contains" />
+  <Translate Key="SearchItemEditWindow_NotContains" Value="Not Contains" />
+  <Translate Key="SearchItemEditWindow_Condition" Value="Condition" />
+  <Translate Key="SearchItemEditWindow_SearchCondition_And" Value="And" />
+  <Translate Key="SearchItemEditWindow_SearchCondition_Or" Value="Or" />
+  <Translate Key="SearchItemEditWindow_Add" Value="_Add" />
+  <Translate Key="SearchItemEditWindow_Edit" Value="_Edit" />
+  <Translate Key="SearchItemEditWindow_Delete" Value="_Delete" />
+  <Translate Key="SearchItemEditWindow_Value" Value="Value" />
+  <Translate Key="SearchItemEditWindow_Max" Value="Max" />
+  <Translate Key="SearchItemEditWindow_Min" Value="Min" />
+
+  <Translate Key="UploadWindow_Title" Value="Upload" />
+  <Translate Key="UploadWindow_Name" Value="Name" />
+  <Translate Key="UploadWindow_Keywords" Value="Keywords" />
+  <Translate Key="UploadWindow_Signature" Value="Signature" />
+  <Translate Key="UploadWindow_Comment" Value="Comment" />
+  <Translate Key="UploadWindow_Details" Value="Details" />
+  <Translate Key="UploadWindow_CompressionAlgorithm" Value="Compress Algorithm" />
+  <Translate Key="UploadWindow_CryptoAlgorithm" Value="Crypto Algorithm" />
+  <Translate Key="UploadWindow_CorrectionAlgorithm" Value="Correction Algorithm" />
+  <Translate Key="UploadWindow_HashAlgorithm" Value="Hash Algorithm" />
+  <Translate Key="UploadWindow_DigitalSignatureAlgorithm" Value="Digital Signature Algorithm" />
+  <Translate Key="UploadWindow_Cancel" Value="_Cancel" />
+  <Translate Key="UploadWindow_Ok" Value="_Ok" />
+
+  <Translate Key="VersionInformationWindow_Title" Value="Version Information" />
+  <Translate Key="VersionInformationWindow_License" Value="_License" />
+  <Translate Key="VersionInformationWindow_Close" Value="_Close" />
+  <Translate Key="VersionInformationWindow_FileName" Value="File Name" />
+  <Translate Key="VersionInformationWindow_Version" Value="Version" />
+
+  <Translate Key="SignatureWindow_Title" Value="Signature Setting" />
+  <Translate Key="SignatureWindow_Value" Value="Value" />
+  <Translate Key="SignatureWindow_Add" Value="_Add" />
+  <Translate Key="SignatureWindow_Edit" Value="_Edit" />
+  <Translate Key="SignatureWindow_Delete" Value="_Delete" />
+  <Translate Key="SignatureWindow_Ok" Value="_Ok" />
+  <Translate Key="SignatureWindow_Cancel" Value="_Cancel" />
+  <Translate Key="SignatureWindow_Import" Value="_Import" />
+  <Translate Key="SignatureWindow_Export" Value="_Export" />
+
+  <Translate Key="ConnectionsWindow_Title" Value="Connections Setting" />
+  <Translate Key="ConnectionsWindow_MyNode" Value="MyNode" />
+  <Translate Key="ConnectionsWindow_Node" Value="Node" />
+  <Translate Key="ConnectionsWindow_Uris" Value="Uris" />
+  <Translate Key="ConnectionsWindow_Add" Value="_Add" />
+  <Translate Key="ConnectionsWindow_Edit" Value="_Edit" />
+  <Translate Key="ConnectionsWindow_Delete" Value="_Delete" />
+  <Translate Key="ConnectionsWindow_OtherNodes" Value="Other Nodes" />
+  <Translate Key="ConnectionsWindow_Nodes" Value="Nodes" />
+  <Translate Key="ConnectionsWindow_Client" Value="Client" />
+  <Translate Key="ConnectionsWindow_Filters" Value="Filters" />
+  <Translate Key="ConnectionsWindow_ConnectionType" Value="Connection Type" />
+  <Translate Key="ConnectionsWindow_ProxyUri" Value="Proxy Uri" />
+  <Translate Key="ConnectionsWindow_UriCondition" Value="Uri Condition" />
+  <Translate Key="ConnectionsWindow_Condition" Value="Condition" />
+  <Translate Key="ConnectionsWindow_Type" Value="Type" />
+  <Translate Key="ConnectionsWindow_Host" Value="Host" />
+  <Translate Key="ConnectionsWindow_Server" Value="Server" />
+  <Translate Key="ConnectionsWindow_ListenUris" Value="Listen Uris" />
+  <Translate Key="ConnectionsWindow_Ok" Value="_Ok" />
+  <Translate Key="ConnectionsWindow_Cancel" Value="_Cancel" />
+  <Translate Key="ConnectionsWindow_Uri" Value="Uri" />
+  <Translate Key="ConnectionsWindow_Keyword" Value="Keyword" />
+  <Translate Key="ConnectionsWindow_Keywords" Value="Keywords" />
+  <Translate Key="ConnectionsWindow_Miscellaneous" Value="Miscellaneous" />
+  <Translate Key="ConnectionsWindow_DownloadDirectory" Value="Download Directory" />
+  <Translate Key="ConnectionsWindow_ConnectionCount" Value="Connection Count" />
+  <Translate Key="ConnectionsWindow_DownloadingConnectionCount" Value="Downloading Connection Count" />
+  <Translate Key="ConnectionsWindow_UploadingConnectionCount" Value="Uploading Connection Count" />
+  <Translate Key="ConnectionsWindow_CacheSize" Value="Cache Size" />
+  <Translate Key="ConnectionsWindow_AutoUpdate" Value="Auto Update" />
+  <Translate Key="ConnectionsWindow_UPnP" Value="UPnP" />
+  <Translate Key="ConnectionsWindow_Tor" Value="Tor" />
+  <Translate Key="ConnectionsWindow_Ipv4" Value="Ipv4" />
+  <Translate Key="ConnectionsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="ConnectionsWindow_Extends" Value="Extends" />
+  <Translate Key="ConnectionsWindow_AutoSetting" Value="Auto Setting" />
+  <Translate Key="ConnectionsWindow_Copy" Value="Copy" />
+  <Translate Key="ConnectionsWindow_Paste" Value="Paste" />
+
+  <Translate Key="ProgressWindow_Title" Value="Progress Window" />
+  <Translate Key="ProgressWindow_Cancel" Value="_Cancel" />
+  <Translate Key="ProgressWindow_Ok" Value="_Ok" />
+
+  <Translate Key="LibraryControl_Name" Value="Name" />
+  <Translate Key="LibraryControl_Signature" Value="Signature" />
+  <Translate Key="LibraryControl_Keywords" Value="Keywords" />
+  <Translate Key="LibraryControl_CreationTime" Value="Creation Time" />
+  <Translate Key="LibraryControl_Length" Value="Length" />
+  <Translate Key="LibraryControl_Comment" Value="Comment" />
+  <Translate Key="LibraryControl_Add" Value="_Add" />
+  <Translate Key="LibraryControl_Edit" Value="_Edit" />
+  <Translate Key="LibraryControl_NewBox" Value="_New Box" />
+  <Translate Key="LibraryControl_Delete" Value="_Delete" />
+  <Translate Key="LibraryControl_Upload" Value="_Upload" />
+  <Translate Key="LibraryControl_Download" Value="_Download" />
+  <Translate Key="LibraryControl_KeyUpload" Value="_KeyUpload" />
+  <Translate Key="LibraryControl_Copy" Value="_Copy" />
+  <Translate Key="LibraryControl_CopyInfo" Value="_Copy Info" />
+  <Translate Key="LibraryControl_Cut" Value="_Cut" />
+  <Translate Key="LibraryControl_Paste" Value="_Paste" />
+  <Translate Key="LibraryControl_Import" Value="_Import" />
+  <Translate Key="LibraryControl_Export" Value="_Export" />
+  <Translate Key="LibraryControl_Seed" Value="Seed" />
+  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="The signature is annulled. Is it good?" />
+  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="Digital Signature Error" />
+  <Translate Key="LibraryControl_KeyUpload_Message" Value="Key Upload" />
+
+  <Translate Key="CacheControl_NewBox" Value="_New Box" />
+  <Translate Key="CacheControl_Name" Value="Name" />
+  <Translate Key="CacheControl_Signature" Value="Signature" />
+  <Translate Key="CacheControl_Keywords" Value="Keywords" />
+  <Translate Key="CacheControl_CreationTime" Value="Creation Time" />
+  <Translate Key="CacheControl_Length" Value="Length" />
+  <Translate Key="CacheControl_Comment" Value="Comment" />
+  <Translate Key="CacheControl_Add" Value="_Add" />
+  <Translate Key="CacheControl_Edit" Value="_Edit" />
+  <Translate Key="CacheControl_Delete" Value="_Delete" />
+  <Translate Key="CacheControl_Download" Value="_Download" />
+  <Translate Key="CacheControl_Update" Value="_Update" />
+  <Translate Key="CacheControl_Copy" Value="_Copy" />
+  <Translate Key="CacheControl_CopyInfo" Value="_Copy Info" />
+  <Translate Key="CacheControl_Cut" Value="_Cut" />
+  <Translate Key="CacheControl_Paste" Value="_Paste" />
+  <Translate Key="CacheControl_Import" Value="_Import" />
+  <Translate Key="CacheControl_Export" Value="_Export" />
+  <Translate Key="CacheControl_Seed" Value="Seed" />
+
+  <Translate Key="ConnectionControl_Uri" Value="Uri" />
+  <Translate Key="ConnectionControl_Copy" Value="_Copy" />
+  <Translate Key="ConnectionControl_Priority" Value="Priority" />
+  <Translate Key="ConnectionControl_ReceivedByteCount" Value="Received Byte Count" />
+  <Translate Key="ConnectionControl_SentByteCount" Value="Sent Byte Count" />
+  <Translate Key="ConnectionControl_Name" Value="Name" />
+  <Translate Key="ConnectionControl_Value" Value="Value" />
+  <Translate Key="ConnectionControl_PullNodesRequestCount" Value="PullNodesRequest Count" />
+  <Translate Key="ConnectionControl_PullNodesCount" Value="PullNodes Count" />
+  <Translate Key="ConnectionControl_PullSeedsLinkCount" Value="PullSeedsLink Count" />
+  <Translate Key="ConnectionControl_PullSeedsRequestCount" Value="PullSeedsRequest Count" />
+  <Translate Key="ConnectionControl_PullSeedsCount" Value="PullSeeds Count" />
+  <Translate Key="ConnectionControl_PullBlocksLinkCount" Value="PullBlocksLink Count" />
+  <Translate Key="ConnectionControl_PullBlocksRequestCount" Value="PullBlocksRequest Count" />
+  <Translate Key="ConnectionControl_PullBlockCount" Value="PullBlock Count" />
+  <Translate Key="ConnectionControl_PushNodesRequestCount" Value="PushNodesRequest Count" />
+  <Translate Key="ConnectionControl_PushNodesCount" Value="PushNodes Count" />
+  <Translate Key="ConnectionControl_PushSeedsLinkCount" Value="PushSeedsLink Count" />
+  <Translate Key="ConnectionControl_PushSeedsRequestCount" Value="PushSeedsRequest Count" />
+  <Translate Key="ConnectionControl_PushSeedsCount" Value="PushSeeds Count" />
+  <Translate Key="ConnectionControl_PushBlocksLinkCount" Value="PushBlocksLink Count" />
+  <Translate Key="ConnectionControl_PushBlocksRequestCount" Value="PushBlocksRequest Count" />
+  <Translate Key="ConnectionControl_PushBlockCount" Value="PushBlock Count" />
+  <Translate Key="ConnectionControl_RelayBlockCount" Value="Relay Block Count" />
+  <Translate Key="ConnectionControl_NodeCount" Value="Node Count" />
+  <Translate Key="ConnectionControl_SeedCount" Value="Seed Count" />
+  <Translate Key="ConnectionControl_CreateConnectionCount" Value="Create Connection Count" />
+  <Translate Key="ConnectionControl_AcceptConnectionCount" Value="Accept Connection Count" />
+  <Translate Key="ConnectionControl_DownloadCount" Value="Download Count" />
+  <Translate Key="ConnectionControl_UploadCount" Value="Upload Count" />
+  <Translate Key="ConnectionControl_BlockCount" Value="Block Count" />
+
+</Configuration>

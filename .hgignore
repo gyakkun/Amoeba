@@ -1,0 +1,5 @@
+glob:obj/*
+glob:bin/*
+glob:*.suo
+glob:*.csproj.user
+glob:*.StyleCop
