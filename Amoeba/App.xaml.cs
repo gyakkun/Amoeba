@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Threading;
 using Library;
 using Library.Net.Amoeba;
+using System.Text.RegularExpressions;
+using Ionic.Zip;
 
 namespace Amoeba
 {
@@ -19,23 +21,18 @@ namespace Amoeba
     /// </summary>
     public partial class App : Application
     {
-        public static string[] Args { get; private set; }
         public static Version AmoebaVersion { get; private set; }
         public static Dictionary<string, string> DirectoryPaths { get; private set; }
         public static string[] UpdateSignature { get; private set; }
         public static Node[] Nodes { get; private set; }
 
-        private void Application_Startup(object sender, StartupEventArgs e)
+        public App()
         {
-            //Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
-
-            App.Args = e.Args;
-
             App.AmoebaVersion = new Version(0, 1, 0);
 
             App.DirectoryPaths = new Dictionary<string, string>();
             App.DirectoryPaths["Base"] = @"..\";
-            App.DirectoryPaths["Core"] = Directory.GetCurrentDirectory();
+            App.DirectoryPaths["Core"] = @".\";
             App.DirectoryPaths["Configuration"] = Path.Combine(App.DirectoryPaths["Base"], "Configuration");
             App.DirectoryPaths["Update"] = Path.Combine(App.DirectoryPaths["Base"], "Update");
             App.DirectoryPaths["Log"] = Path.Combine(App.DirectoryPaths["Base"], "Log");
@@ -58,7 +55,7 @@ namespace Amoeba
             {
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt"), false, new UTF8Encoding(false)))
                 {
-                    writer.WriteLine("root@Vf/Y+9l4IznTwEVpjVzo0j+rnJlSLExpHPf5w7Q402F19rP0Kiy+o62I4zUgvEqdIp+j9v6U4IdTffc1PBwyeA==");
+                    writer.WriteLine("0cfQjFzmkLaXEhjXVHzWtdHT+4VBbUKChW3OnUvpAtPOJOqxTLd3m22cIQwWc4VftWZYu7DNynFhvARqlBLHtg==");
                 }
             }
 
@@ -118,6 +115,8 @@ namespace Amoeba
             }
 
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(App_UnhandledException);
+
+            this.AmoebaUpdate();
         }
 
         void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -132,6 +131,67 @@ namespace Amoeba
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             Log.Error(e.Exception);
+        }
+
+        private void AmoebaUpdate()
+        {
+            if (Directory.Exists(App.DirectoryPaths["Update"]))
+            {
+                Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
+                Version version = App.AmoebaVersion;
+                string updatePath = null;
+
+                foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
+                {
+                    string name = Path.GetFileName(path);
+
+                    if (name.StartsWith("Amoeba"))
+                    {
+                        var match = regex.Match(name);
+
+                        if (match.Success)
+                        {
+                            var tempVersion = new Version(match.Groups[1].Value);
+                            version = (version < tempVersion) ? tempVersion : version;
+                            updatePath = path;
+                        }
+                    }
+                }
+
+                if (updatePath != null)
+                {
+                    var tempPath = Path.Combine(Path.GetTempPath(), "Amoeba_Update");
+                    var tempUpdateExePath = Path.Combine(Path.GetTempPath(), "Library.Update.exe");
+
+                    if (Directory.Exists(tempPath))
+                        Directory.Delete(tempPath, true);
+
+                    using (ZipFile zipfile = new ZipFile(updatePath))
+                    {
+                        zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
+                        zipfile.UseUnicodeAsNecessary = true;
+                        zipfile.ExtractAll(tempPath);
+                    }
+
+                    if (File.Exists(tempUpdateExePath))
+                        File.Delete(tempUpdateExePath);
+
+                    File.Copy("Library.Update.exe", tempUpdateExePath);
+
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = tempUpdateExePath;
+                    startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"",
+                        Process.GetCurrentProcess().Id,
+                        Path.Combine(tempPath, "Core"),
+                        Directory.GetCurrentDirectory(),
+                        Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"));
+                    startInfo.WorkingDirectory = Path.GetDirectoryName(startInfo.FileName);
+
+                    Process.Start(startInfo);
+
+                    this.Shutdown();
+                }
+            }
         }
     }
 }

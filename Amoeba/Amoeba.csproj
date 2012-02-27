@@ -353,6 +353,10 @@
       <Project>{D314C626-A6FC-4FD5-BE3C-9D36C2738418}</Project>
       <Name>Library.Security</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Library\Library.Update\Library.Update.csproj">
+      <Project>{5D842D8A-5BFE-4D68-956B-E1E690EDB48A}</Project>
+      <Name>Library.Update</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Library\Library\Library.csproj">
       <Project>{63EADC1F-9A8A-4945-A562-DA666D0BCB7B}</Project>
       <Name>Library</Name>

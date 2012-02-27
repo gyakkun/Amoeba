@@ -22,7 +22,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using Amoeba.Properties;
-using Ionic.Zip;
 using Library;
 using Library.Io;
 using Library.Net.Amoeba;
@@ -67,7 +66,6 @@ namespace Amoeba.Windows
             _bufferManager = new BufferManager();
 
             this.Setting_Log();
-            this.AmoebaUpdate();
 
             _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
             _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
@@ -99,91 +97,6 @@ namespace Amoeba.Windows
             base.OnClosed(e);
 
             this.Dispose();
-        }
-
-        private void AmoebaUpdate()
-        {
-            if (App.Args.Length == 2 && App.Args[0] == "update")
-            {
-                string path = App.Args[1];
-
-                for (; ; )
-                {
-                    Thread.Sleep(1000);
-
-                    try
-                    {
-                        Directory.Move(path, MainWindow.GetUniqueDirectoryPath(path));
-                        break;
-                    }
-                    catch (IOException)
-                    {
-
-                    }
-                }
-
-                try
-                {
-                    this.Dispose();
-
-                    MainWindow.CopyDirectory(App.DirectoryPaths["Core"], path);
-                    Process.Start(Path.Combine(path, "Amoeba.exe"));
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
-            }
-            else
-            {
-                if (Directory.Exists(App.DirectoryPaths["Update"]) && Settings.Instance.Global_AutoUpdate_IsEnabled)
-                {
-                    Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
-                    Version version = App.AmoebaVersion;
-                    string updatePath = null;
-
-                    foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
-                    {
-                        string name = Path.GetFileName(path);
-
-                        if (name.StartsWith("Amoeba"))
-                        {
-                            var match = regex.Match(name);
-
-                            if (match.Success)
-                            {
-                                var tempVersion = new Version(match.Groups[1].Value);
-                                version = (version < tempVersion) ? tempVersion : version;
-                                updatePath = path;
-                            }
-                        }
-                    }
-
-                    if (updatePath != null)
-                    {
-                        var tempPath = Path.Combine(Path.GetTempPath(), "Amoeba Update");
-
-                        if (Directory.Exists(tempPath))
-                            Directory.Delete(tempPath, true);
-
-                        using (ZipFile zipfile = new ZipFile(updatePath))
-                        {
-                            zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                            zipfile.UseUnicodeAsNecessary = true;
-                            zipfile.ExtractAll(tempPath);
-                        }
-
-                        this.Dispose();
-
-                        ProcessStartInfo startInfo = new ProcessStartInfo();
-                        startInfo.FileName = Path.Combine(tempPath, "Core/Amoeba.exe");
-                        startInfo.Arguments = string.Format("update \"{0}\"", Path.Combine(Directory.GetCurrentDirectory(), App.DirectoryPaths["Core"]));
-                        startInfo.WorkingDirectory = Path.GetDirectoryName(startInfo.FileName);
-                    
-                        Process.Start(startInfo);
-                    }
-                }
-            }
         }
 
         public static void CopyDirectory(string sourceDirName, string destDirName)
@@ -676,29 +589,19 @@ namespace Amoeba.Windows
                                     if (match.Success)
                                     {
                                         var tempVersion = new Version(match.Groups[1].Value);
-                                        version = (version < tempVersion) ? tempVersion : version;
-                                    }
-                                }
-                            }
 
-                            foreach (var key in _amoebaManager.Seeds)
-                            {
-                                if (key.Name.StartsWith("Amoeba") && App.UpdateSignature.Contains(MessageConverter.ToSignatureString(key.Certificate)))
-                                {
-                                    var match = regex.Match(key.Name);
-
-                                    if (match.Success)
-                                    {
-                                        var tempVersion = new Version(match.Groups[1].Value);
-                                        version = (version < tempVersion) ? tempVersion : version;
-                                        updateKey = key;
+                                        if (version < tempVersion)
+                                        {
+                                            version = tempVersion;
+                                            updateKey = key;
+                                        }
                                     }
                                 }
                             }
 
                             if (updateKey != null)
                             {
-                                _amoebaManager.Download(updateKey);
+                                _amoebaManager.Download(updateKey, App.DirectoryPaths["Update"]);
                             }
                         }
                         catch (Exception)
