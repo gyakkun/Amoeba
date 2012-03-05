@@ -16,7 +16,18 @@
         <Label Content="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />
         <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" />
         <Label Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="12,46,0,0" VerticalAlignment="Top" Width="120" />
-        <ComboBox Height="24" Margin="138,46,12,0" Name="_keywordsComboBox" VerticalAlignment="Top" IsEditable="True" LostFocus="_keywordsComboBox_LostFocus" />
+        <Grid Height="24" Margin="138,46,12,0" Name="grid1" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ComboBox Name="_keywordsComboBox1" VerticalAlignment="Top" IsEditable="True" />
+            <ComboBox IsEditable="True" Name="_keywordsComboBox2" VerticalAlignment="Top" Grid.Column="2" />
+            <ComboBox IsEditable="True" Name="_keywordsComboBox3" VerticalAlignment="Top" Grid.Column="4" />
+        </Grid>
         <Label Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="12,80,0,0" VerticalAlignment="Top" Width="120" />
         <ComboBox Height="24" Margin="138,80,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
         <Label Content="{Binding Path=UploadWindow_Comment, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="12,114,0,0" VerticalAlignment="Top" Width="120" />

@@ -288,7 +288,7 @@ namespace Amoeba.Windows
 
                 var selectSeed = selectSeedListViewItem.Value;
 
-                SeedEditWindow window = new SeedEditWindow(ref selectSeed);
+                SeedEditWindow window = new SeedEditWindow(ref selectSeed, _amoebaManager);
                 window.ShowDialog();
 
                 selectSeedTreeViewItem.Update();

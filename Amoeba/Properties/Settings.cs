@@ -20,7 +20,7 @@ namespace Amoeba.Properties
             : base(new List<Library.Configuration.ISettingsContext>()
             {
                 new Library.Configuration.SettingsContext<List<DigitalSignature>>() { Name = "Global_DigitalSignatureCollection", Value = new List<DigitalSignature>() },
-                new Library.Configuration.SettingsContext<List<string>>() { Name = "Global_KeywordsCollection", Value = new List<string>() },
+                new Library.Configuration.SettingsContext<List<string>>() { Name = "Global_UploadKeywords", Value = new List<string>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_UseLanguage", Value = "English" },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_Upnp_IsEnabled", Value = true },
@@ -226,13 +226,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public List<string> Global_KeywordsCollection
+        public List<string> Global_UploadKeywords
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (List<string>)this["Global_KeywordsCollection"];
+                   return (List<string>)this["Global_UploadKeywords"];
                 }
             }
 
@@ -240,7 +240,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["Global_KeywordsCollection"] = value;
+                    this["Global_UploadKeywords"] = value;
                 }
             }
         }

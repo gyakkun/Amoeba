@@ -47,26 +47,30 @@ namespace Amoeba.Windows
             }
 
             _nameTextBox.Text = System.IO.Path.GetFileName(_filePath);
-            _keywordsComboBox.ItemsSource = Settings.Instance.Global_KeywordsCollection;
-            _keywordsComboBox.SelectedIndex = 0;
+          
+            if (Settings.Instance.Global_UploadKeywords.Count >= 1) _keywordsComboBox1.Text = Settings.Instance.Global_UploadKeywords[0];
+            if (Settings.Instance.Global_UploadKeywords.Count >= 2) _keywordsComboBox2.Text = Settings.Instance.Global_UploadKeywords[1];
+            if (Settings.Instance.Global_UploadKeywords.Count >= 3) _keywordsComboBox3.Text = Settings.Instance.Global_UploadKeywords[2];
+
+            _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = "" });
+            _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = "" });
+            _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = "" });
+
+            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = item.Value });
+            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item.Value });
+            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item.Value });
+
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
-        }
-
-        private void _keywordsComboBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var keywords = new KeywordCollection(_keywordsComboBox.Text.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(n => new Keyword() { HashAlgorithm = HashAlgorithm.Sha512, Value = n })
-                .Where(n => n.Value != null));
-
-            _keywordsComboBox.Text = MessageConverter.ToKeywordsString(keywords);
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
             string name = _nameTextBox.Text;
-            var keywords = new KeywordCollection(_keywordsComboBox.Text.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(n => new Keyword() { HashAlgorithm = HashAlgorithm.Sha512, Value = n })
-                .Where(n => n.Value != null));
+            var keywords = new KeywordCollection();
+            if (_keywordsComboBox1.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox1.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
+            if (_keywordsComboBox2.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox2.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
+            if (_keywordsComboBox3.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox3.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
+            keywords = new KeywordCollection(new HashSet<Keyword>(keywords));
             string comment = _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
@@ -88,13 +92,8 @@ namespace Amoeba.Windows
                     digitalSignature);
             }
 
-            var keywordString = MessageConverter.ToKeywordsString(keywords);
-
-            if (keywordString != null)
-            {
-                Settings.Instance.Global_KeywordsCollection.Remove(keywordString);
-                Settings.Instance.Global_KeywordsCollection.Insert(0, keywordString);
-            }
+            Settings.Instance.Global_UploadKeywords.Clear();
+            Settings.Instance.Global_UploadKeywords.AddRange(keywords.Select(n => n.Value));
 
             this.DialogResult = true;
         }

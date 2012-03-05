@@ -191,7 +191,7 @@ namespace Amoeba.Windows
                 _amoebaManager.DownloadingConnectionCountLowerLimit = 6;
                 _amoebaManager.UploadingConnectionCountLowerLimit = 12;
 
-                Settings.Instance.Global_KeywordsCollection.Add("global");
+                Settings.Instance.Global_UploadKeywords.Add("global");
 
                 SearchItem imageSearchItem = new SearchItem()
                 {
