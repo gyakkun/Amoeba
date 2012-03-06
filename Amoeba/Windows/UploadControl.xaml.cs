@@ -106,16 +106,22 @@ namespace Amoeba.Windows
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            foreach (string uploadFilePath in ((string[])e.Data.GetData(DataFormats.FileDrop)).Where(item => File.Exists(item)))
+            var uploadFilePaths = ((string[])e.Data.GetData(DataFormats.FileDrop)).Where(item => File.Exists(item)).ToList();
+
+            if (uploadFilePaths.Count == 1)
             {
-                UploadWindow window = new UploadWindow(uploadFilePath, false, _amoebaManager);
+                UploadWindow window = new UploadWindow(uploadFilePaths[0], false, _amoebaManager);
+                window.ShowDialog();
+            }
+            else if(uploadFilePaths.Count > 1)
+            {
+                UploadListWindow window = new UploadListWindow(uploadFilePaths, false, _amoebaManager);
                 window.ShowDialog();
             }
         }
 
         private void _uploadListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if (_uploadListViewAddMenuItem != null) _uploadListViewAddMenuItem.IsEnabled = (_uploadListView.SelectedItems.Count > 0);
             if (_uploadListViewDeleteMenuItem != null) _uploadListViewDeleteMenuItem.IsEnabled = (_uploadListView.SelectedItems.Count > 0);
             if (_uploadListViewCopyMenuItem != null) _uploadListViewCopyMenuItem.IsEnabled = (_uploadListView.SelectedItems.Count > 0);
             if (_uploadListViewCopyInfoMenuItem != null) _uploadListViewCopyInfoMenuItem.IsEnabled = (_uploadListView.SelectedItems.Count > 0);
@@ -124,7 +130,22 @@ namespace Amoeba.Windows
 
         private void _uploadListViewAddMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+            dialog.Multiselect = true;
+            dialog.ShowDialog();
 
+            var uploadFilePaths = dialog.FileNames.ToList();
+
+            if (uploadFilePaths.Count == 1)
+            {
+                UploadWindow window = new UploadWindow(uploadFilePaths[0], false, _amoebaManager);
+                window.ShowDialog();
+            }
+            else if (uploadFilePaths.Count > 1)
+            {
+                UploadListWindow window = new UploadListWindow(uploadFilePaths, false, _amoebaManager);
+                window.ShowDialog();
+            }
         }
         
         private void _uploadListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)

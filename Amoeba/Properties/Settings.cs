@@ -34,12 +34,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Normal },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "SeedEditWindow_WindowState", Value = WindowState.Normal },
-
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Height", Value = 500 },
@@ -74,9 +68,10 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rate_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Key_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Name_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Uri_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Priority_Width", Value = 120 },
@@ -141,6 +136,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Height", Value = 500 },
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "UploadWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Path_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
@@ -451,102 +448,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["MainWindow_WindowState"] = value;
-                }
-            }
-        }
-
-
-        public double SeedEditWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SeedEditWindow_Top"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SeedEditWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double SeedEditWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SeedEditWindow_Left"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SeedEditWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double SeedEditWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SeedEditWindow_Height"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SeedEditWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double SeedEditWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SeedEditWindow_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SeedEditWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState SeedEditWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["SeedEditWindow_WindowState"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SeedEditWindow_WindowState"] = value;
                 }
             }
         }
@@ -1126,13 +1027,13 @@ namespace Amoeba.Properties
         }
 
 
-        public double ShareControl_GridViewColumn_Path_Width
+        public double ShareControl_GridViewColumn_Name_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ShareControl_GridViewColumn_Path_Width"];
+                   return (double)this["ShareControl_GridViewColumn_Name_Width"];
                 }
             }
 
@@ -1140,7 +1041,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ShareControl_GridViewColumn_Path_Width"] = value;
+                    this["ShareControl_GridViewColumn_Name_Width"] = value;
                 }
             }
         }
@@ -1179,6 +1080,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ShareControl_GridViewColumn_Length_Width"] = value;
+                }
+            }
+        }
+
+        public double ShareControl_GridViewColumn_Path_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ShareControl_GridViewColumn_Path_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ShareControl_GridViewColumn_Path_Width"] = value;
                 }
             }
         }
@@ -2305,6 +2225,44 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["UploadWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double UploadWindow_GridViewColumn_Name_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UploadWindow_GridViewColumn_Name_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_GridViewColumn_Name_Width"] = value;
+                }
+            }
+        }
+
+        public double UploadWindow_GridViewColumn_Path_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UploadWindow_GridViewColumn_Path_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_GridViewColumn_Path_Width"] = value;
                 }
             }
         }

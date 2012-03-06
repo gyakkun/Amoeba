@@ -1320,6 +1320,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string ShareControl_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_Name");
+                }
+            }
+        }
+
         public string ShareControl_Path
         {
             get
@@ -1648,6 +1659,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("UploadWindow_Comment");
+                }
+            }
+        }
+
+        public string UploadWindow_List
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UploadWindow_List");
+                }
+            }
+        }
+
+        public string UploadWindow_Path
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UploadWindow_Path");
                 }
             }
         }

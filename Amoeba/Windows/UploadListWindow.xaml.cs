@@ -16,23 +16,32 @@ using Amoeba.Properties;
 using Library.Net.Amoeba;
 using Library.Net;
 using Library.Security;
+using System.Collections.ObjectModel;
 
 namespace Amoeba.Windows
 {
     /// <summary>
     /// UploadWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class UploadWindow : Window
+    partial class UploadListWindow : Window
     {
         private AmoebaManager _amoebaManager;
 
-        private string _filePath;
+        private ObservableCollection<UploadListViewItem> _filePaths = new ObservableCollection<UploadListViewItem>();
         private bool _isShare = false;
 
-        public UploadWindow(string filePath, bool isShare, AmoebaManager amoebaManager)
+        public UploadListWindow(IEnumerable<string> filePaths, bool isShare, AmoebaManager amoebaManager)
         {
             _amoebaManager = amoebaManager;
-            _filePath = filePath;
+
+            var list = filePaths.ToList();
+            list.Sort();
+
+            foreach (var item in list)
+            {
+                _filePaths.Add(new UploadListViewItem() { Path = item });
+            }
+
             _isShare = isShare;
 
             var digitalSignatureCollection = new List<object>();
@@ -46,8 +55,6 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            _nameTextBox.Text = System.IO.Path.GetFileName(_filePath);
-          
             if (Settings.Instance.Global_UploadKeywords.Count >= 1) _keywordsComboBox1.Text = Settings.Instance.Global_UploadKeywords[0];
             if (Settings.Instance.Global_UploadKeywords.Count >= 2) _keywordsComboBox2.Text = Settings.Instance.Global_UploadKeywords[1];
             if (Settings.Instance.Global_UploadKeywords.Count >= 3) _keywordsComboBox3.Text = Settings.Instance.Global_UploadKeywords[2];
@@ -60,36 +67,53 @@ namespace Amoeba.Windows
             foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item.Value });
             foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item.Value });
 
+            _uploadListView.ItemsSource = _filePaths;
+
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
+        }
+
+        private void _uploadListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var uploadItems = _uploadListView.SelectedItems;
+            if (uploadItems == null) return;
+
+            foreach (var item in uploadItems.Cast<UploadListViewItem>().ToArray())
+            {
+                _filePaths.Remove(item);
+            }
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
-            string name = _nameTextBox.Text;
             var keywords = new KeywordCollection();
             if (_keywordsComboBox1.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox1.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
             if (_keywordsComboBox2.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox2.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
             if (_keywordsComboBox3.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox3.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
             keywords = new KeywordCollection(new HashSet<Keyword>(keywords));
-            string comment = _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
             if (!_isShare)
             {
-                _amoebaManager.Upload(_filePath,
-                        name,
-                        keywords,
-                        comment,
-                        digitalSignature);
+                foreach (var item in _filePaths)
+                {
+                    _amoebaManager.Upload(item.Path,
+                            item.Name,
+                            keywords,
+                            null,
+                            digitalSignature);
+                }
             }
             else
             {
-                _amoebaManager.Share(_filePath,
-                        name,
-                        keywords,
-                        comment,
-                        digitalSignature);
+                foreach (var item in _filePaths)
+                {
+                    _amoebaManager.Share(item.Path,
+                            item.Name,
+                            keywords,
+                            null,
+                            digitalSignature);
+                }
             }
 
             Settings.Instance.Global_UploadKeywords.Clear();
@@ -133,6 +157,37 @@ namespace Amoeba.Windows
                     _value = value;
 
                     this.Update();
+                }
+            }
+        }
+
+        private class UploadListViewItem
+        {
+            private string _path = null;
+            private string _name = null;
+
+            public UploadListViewItem()
+            {
+            }
+
+            public string Path
+            {
+                get
+                {
+                    return _path;
+                }
+                set
+                {
+                    _path = value;
+                    _name = System.IO.Path.GetFileName(_path);
+                }
+            }
+
+            public string Name
+            {
+                get
+                {
+                    return _name;
                 }
             }
         }

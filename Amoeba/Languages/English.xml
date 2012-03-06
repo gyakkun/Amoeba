@@ -117,6 +117,7 @@
 
   <Translate Key="ShareControl_Add" Value="_Add" />
   <Translate Key="ShareControl_Delete" Value="_Delete" />
+  <Translate Key="ShareControl_Name" Value="Name" />
   <Translate Key="ShareControl_Path" Value="Path" />
   <Translate Key="ShareControl_Length" Value="Length" />
   <Translate Key="ShareControl_BlockCount" Value="Block Count" />
@@ -149,6 +150,8 @@
   <Translate Key="UploadWindow_Keywords" Value="Keywords" />
   <Translate Key="UploadWindow_Signature" Value="Signature" />
   <Translate Key="UploadWindow_Comment" Value="Comment" />
+  <Translate Key="UploadWindow_List" Value="List" />
+  <Translate Key="UploadWindow_Path" Value="Path" />
   <Translate Key="UploadWindow_Details" Value="Details" />
   <Translate Key="UploadWindow_CompressionAlgorithm" Value="Compress Algorithm" />
   <Translate Key="UploadWindow_CryptoAlgorithm" Value="Crypto Algorithm" />

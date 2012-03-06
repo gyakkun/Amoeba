@@ -106,22 +106,43 @@ namespace Amoeba.Windows
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            foreach (string shareFilePath in ((string[])e.Data.GetData(DataFormats.FileDrop)).Where(item => File.Exists(item)))
+            var uploadFilePaths = ((string[])e.Data.GetData(DataFormats.FileDrop)).Where(item => File.Exists(item)).ToList();
+
+            if (uploadFilePaths.Count == 1)
             {
-                UploadWindow window = new UploadWindow(shareFilePath, true, _amoebaManager);
+                UploadWindow window = new UploadWindow(uploadFilePaths[0], true, _amoebaManager);
+                window.ShowDialog();
+            }
+            else if (uploadFilePaths.Count > 1)
+            {
+                UploadListWindow window = new UploadListWindow(uploadFilePaths, true, _amoebaManager);
                 window.ShowDialog();
             }
         }
 
         private void _shareListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if (_shareListViewAddMenuItem != null) _shareListViewAddMenuItem.IsEnabled = (_shareListView.SelectedItems.Count > 0);
             if (_shareListViewDeleteMenuItem != null) _shareListViewDeleteMenuItem.IsEnabled = (_shareListView.SelectedItems.Count > 0);
         }
 
         private void _shareListViewAddMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+            dialog.Multiselect = true;
+            dialog.ShowDialog();
 
+            var uploadFilePaths = dialog.FileNames.ToList();
+
+            if (uploadFilePaths.Count == 1)
+            {
+                UploadWindow window = new UploadWindow(uploadFilePaths[0], true, _amoebaManager);
+                window.ShowDialog();
+            }
+            else if (uploadFilePaths.Count > 1)
+            {
+                UploadListWindow window = new UploadListWindow(uploadFilePaths, true, _amoebaManager);
+                window.ShowDialog();
+            }
         }
         
         private void _shareListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -193,7 +214,11 @@ namespace Amoeba.Windows
         {
             string propertyName = null;
 
-            if (sortBy == LanguagesManager.Instance.ShareControl_Path)
+            if (sortBy == LanguagesManager.Instance.ShareControl_Name)
+            {
+                propertyName = "Name";
+            }
+            else if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
                 propertyName = "Path";
             }
@@ -227,6 +252,7 @@ namespace Amoeba.Windows
             }
 
             private Information _information;
+            private string _name = null;
             private string _path = null;
             private int _blockCount = 0;
             private long _length = 0;
@@ -246,6 +272,9 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
+                    if (_information.Contains("Path")) this.Name = System.IO.Path.GetFileName((string)_information["Path"]);
+                    else this.Name = null;
+
                     if (_information.Contains("Path")) this.Path = (string)_information["Path"];
                     else this.Path = null;
 
@@ -259,6 +288,23 @@ namespace Amoeba.Windows
                     catch (Exception)
                     {
 
+                    }
+                }
+            }
+
+            public string Name
+            {
+                get
+                {
+                    return _name;
+                }
+                set
+                {
+                    if (value != _name)
+                    {
+                        _name = value;
+
+                        this.NotifyPropertyChanged("Name");
                     }
                 }
             }
