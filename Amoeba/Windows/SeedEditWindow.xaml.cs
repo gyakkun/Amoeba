@@ -97,37 +97,38 @@ namespace Amoeba.Windows
             this.DialogResult = false;
         }
 
-        private class DigitalSignatureComboBoxItem : ComboBoxItem
+    }
+
+    class DigitalSignatureComboBoxItem : ComboBoxItem
+    {
+        private DigitalSignature _value;
+
+        public DigitalSignatureComboBoxItem()
         {
-            private DigitalSignature _value;
 
-            public DigitalSignatureComboBoxItem()
+        }
+
+        public DigitalSignatureComboBoxItem(DigitalSignature digitalSignature)
+        {
+            this.Value = digitalSignature;
+        }
+
+        public void Update()
+        {
+            this.Content = MessageConverter.ToSignatureString(this.Value);
+        }
+
+        public DigitalSignature Value
+        {
+            get
             {
-
+                return _value;
             }
-
-            public DigitalSignatureComboBoxItem(DigitalSignature digitalSignature)
+            set
             {
-                this.Value = digitalSignature;
-            }
+                _value = value;
 
-            public void Update()
-            {
-                base.Content = new Label() { Content = MessageConverter.ToSignatureString(this.Value) };
-            }
-
-            public DigitalSignature Value
-            {
-                get
-                {
-                    return _value;
-                }
-                set
-                {
-                    _value = value;
-
-                    this.Update();
-                }
+                this.Update();
             }
         }
     }

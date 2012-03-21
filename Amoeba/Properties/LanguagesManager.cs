@@ -2460,13 +2460,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LibraryControl_Add
+        public string LibraryControl_AddBox
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Add");
+                    return this.Translate("LibraryControl_AddBox");
                 }
             }
         }

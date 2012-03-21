@@ -235,7 +235,7 @@ namespace Amoeba.Windows
             if (_listViewDownloadMenuItem != null) _listViewDownloadMenuItem.IsEnabled = (_listView.SelectedItems.Count > 0);
         }
 
-        private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewAddBoxMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
@@ -626,7 +626,7 @@ namespace Amoeba.Windows
             if (_boxTreeViewDeleteContextMenuItem != null) _boxTreeViewDeleteContextMenuItem.IsEnabled = (selectBoxTreeViewItem != _boxTreeViewItem);
         }
 
-        private void _boxTreeViewAddContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _boxTreeViewAddBoxContextMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;

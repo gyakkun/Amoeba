@@ -983,7 +983,7 @@ namespace Amoeba.Windows
         }
     }
 
-    public class SearchTreeViewItem : TreeViewItem
+    class SearchTreeViewItem : TreeViewItem
     {
         private int _hit;
         private SearchTreeItem _value;
@@ -1071,7 +1071,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchTreeItem", Namespace = "http://Amoeba/Windows")]
-    public class SearchTreeItem : IDeepCloneable<SearchTreeItem>
+    class SearchTreeItem : IDeepCloneable<SearchTreeItem>
     {
         private SearchItem _searchItem;
         private List<SearchTreeItem> _items;
@@ -1127,7 +1127,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchItem", Namespace = "http://Amoeba/Windows")]
-    public class SearchItem : IDeepCloneable<SearchItem>
+    class SearchItem : IDeepCloneable<SearchItem>
     {
         private string _name;
         private List<SearchContains<string>> _searchNameCollection;
@@ -1272,7 +1272,7 @@ namespace Amoeba.Windows
 
     [Flags]
     [DataContract(Name = "SearchState", Namespace = "http://Amoeba/Windows")]
-    public enum SearchState
+    enum SearchState
     {
         [EnumMember(Value = "Searching")]
         Searching = 0x1,
@@ -1291,7 +1291,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]
-    public class SearchContains<T> : IDeepCloneable<SearchContains<T>>
+    class SearchContains<T> : IDeepCloneable<SearchContains<T>>
     {
         [DataMember(Name = "Contains")]
         public bool Contains { get; set; }
@@ -1325,7 +1325,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchRange", Namespace = "http://Amoeba/Windows")]
-    public class SearchRange<T> : IDeepCloneable<SearchRange<T>>
+    class SearchRange<T> : IDeepCloneable<SearchRange<T>>
         where T : IComparable
     {
         T _max;

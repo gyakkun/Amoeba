@@ -22,7 +22,7 @@
             <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_State">
-            <TextBlock Text="{Binding Path=State, Mode=OneWay}" />
+            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Keywords">
             <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringsToStringConverter}}"/>

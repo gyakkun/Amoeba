@@ -102,39 +102,5 @@ namespace Amoeba.Windows
         {
             this.DialogResult = false;
         }
-
-        private class DigitalSignatureComboBoxItem : ComboBoxItem
-        {
-            private DigitalSignature _value;
-
-            public DigitalSignatureComboBoxItem()
-            {
-
-            }
-
-            public DigitalSignatureComboBoxItem(DigitalSignature digitalSignature)
-            {
-                this.Value = digitalSignature;
-            }
-
-            public void Update()
-            {
-                base.Content = MessageConverter.ToSignatureString(this.Value);
-            }
-
-            public DigitalSignature Value
-            {
-                get
-                {
-                    return _value;
-                }
-                set
-                {
-                    _value = value;
-
-                    this.Update();
-                }
-            }
-        }
     }
 }

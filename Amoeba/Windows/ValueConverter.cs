@@ -246,8 +246,8 @@ namespace Amoeba.Windows
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var item = value as SearchState?;
-            if (item == null) return null;
+            if (!(value is SearchState)) return null;
+            var item = (SearchState)value;
 
             string text = "";
 
@@ -263,11 +263,11 @@ namespace Amoeba.Windows
             {
                 text += LanguagesManager.Instance.SearchState_Downloading + ", ";
             }
-            if ((item & SearchState.Uploading) == SearchState.Uploaded)
+            if ((item & SearchState.Uploaded) == SearchState.Uploaded)
             {
                 text += LanguagesManager.Instance.SearchState_Uploaded + ", ";
             }
-            if ((item & SearchState.Downloading) == SearchState.Downloaded)
+            if ((item & SearchState.Downloaded) == SearchState.Downloaded)
             {
                 text += LanguagesManager.Instance.SearchState_Downloaded + ", ";
             }

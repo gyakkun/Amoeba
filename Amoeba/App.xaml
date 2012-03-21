@@ -12,10 +12,13 @@
                 <ResourceDictionary Source="Themes/ExpressionDark.xaml" />
             </ResourceDictionary.MergedDictionaries>
       
-           <ObjectDataProvider x:Key="ResourcesInstance" ObjectType="{x:Type prop:LanguagesManager}" MethodName="GetInstance"/>
+            <ObjectDataProvider x:Key="ResourcesInstance" ObjectType="{x:Type prop:LanguagesManager}" MethodName="GetInstance"/>
 
             <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}" />
             <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}" />
+
+            <Style TargetType="{x:Type local:DigitalSignatureComboBoxItem}" BasedOn="{StaticResource ComboBoxItemStyle}" />
+            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource ComboBoxItemStyle}" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

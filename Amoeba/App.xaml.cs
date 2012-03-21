@@ -152,8 +152,12 @@ namespace Amoeba
                         if (match.Success)
                         {
                             var tempVersion = new Version(match.Groups[1].Value);
-                            version = (version < tempVersion) ? tempVersion : version;
-                            updatePath = path;
+
+                            if (version < tempVersion)
+                            {
+                                version = tempVersion;
+                                updatePath = path;
+                            }
                         }
                     }
                 }
@@ -161,17 +165,26 @@ namespace Amoeba
                 if (updatePath != null)
                 {
                     var tempPath = Path.Combine(Path.GetTempPath(), "Amoeba_Update");
-                    var tempUpdateExePath = Path.Combine(Path.GetTempPath(), "Library.Update.exe");
 
                     if (Directory.Exists(tempPath))
                         Directory.Delete(tempPath, true);
 
-                    using (ZipFile zipfile = new ZipFile(updatePath))
+                    try
                     {
-                        zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                        zipfile.UseUnicodeAsNecessary = true;
-                        zipfile.ExtractAll(tempPath);
+                        using (ZipFile zipfile = new ZipFile(updatePath))
+                        {
+                            zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
+                            zipfile.UseUnicodeAsNecessary = true;
+                            zipfile.ExtractAll(tempPath);
+                        }
                     }
+                    finally
+                    {
+                        if (File.Exists(updatePath))
+                            File.Delete(updatePath);
+                    }
+
+                    var tempUpdateExePath = Path.Combine(Path.GetTempPath(), "Library.Update.exe");
 
                     if (File.Exists(tempUpdateExePath))
                         File.Delete(tempUpdateExePath);

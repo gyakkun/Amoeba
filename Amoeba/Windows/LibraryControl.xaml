@@ -48,7 +48,7 @@
         <ListView Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" SelectionChanged="_listView_SelectionChanged" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" >
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
-                    <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=LibraryControl_Add, Source={StaticResource ResourcesInstance}}" Click="_listViewAddMenuItem_Click" />
+                    <MenuItem Name="_listViewAddBoxMenuItem" Header="{Binding Path=LibraryControl_AddBox, Source={StaticResource ResourcesInstance}}" Click="_listViewAddBoxMenuItem_Click" />
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
@@ -82,7 +82,7 @@
             <local:BoxTreeViewItem x:Name="_boxTreeViewItem" IsSelected="True" IsExpanded="True" >
                 <local:BoxTreeViewItem.ContextMenu>
                     <ContextMenu Name="_boxTreeViewContextMenu" >
-                        <MenuItem Name="_boxTreeViewAddContextMenuItem" Header="{Binding Path=LibraryControl_Add, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewAddContextMenuItem_Click" />
+                        <MenuItem Name="_boxTreeViewAddBoxContextMenuItem" Header="{Binding Path=LibraryControl_AddBox, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewAddBoxContextMenuItem_Click" />
                         <MenuItem Name="_boxTreeViewEditContextMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewEditContextMenuItem_Click" />
                         <MenuItem Name="_boxTreeViewDeleteContextMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewDeleteContextMenuItem_Click" />
                         <Separator />

@@ -29,11 +29,11 @@
 
   <Translate Key="BoxEditWindow_Title" Value="Box Edit" />
 
-  <Translate Key="SearchState_Searching" Value="Searching" />
-  <Translate Key="SearchState_Downloading" Value="Downloading" />
-  <Translate Key="SearchState_Uploading" Value="Uploading" />
-  <Translate Key="SearchState_Downloaded" Value="Downloaded" />
-  <Translate Key="SearchState_Uploaded" Value="Uploaded" />
+  <Translate Key="SearchState_Searching" Value="S" />
+  <Translate Key="SearchState_Downloading" Value="D" />
+  <Translate Key="SearchState_Uploading" Value="U" />
+  <Translate Key="SearchState_Downloaded" Value="HD" />
+  <Translate Key="SearchState_Uploaded" Value="HU" />
 
   <Translate Key="DownloadState_Downloading" Value="Downloading" />
   <Translate Key="DownloadState_Decoding" Value="Decoding" />
@@ -227,7 +227,7 @@
   <Translate Key="LibraryControl_CreationTime" Value="Creation Time" />
   <Translate Key="LibraryControl_Length" Value="Length" />
   <Translate Key="LibraryControl_Comment" Value="Comment" />
-  <Translate Key="LibraryControl_Add" Value="_Add" />
+  <Translate Key="LibraryControl_AddBox" Value="_Add Box" />
   <Translate Key="LibraryControl_Edit" Value="_Edit" />
   <Translate Key="LibraryControl_NewBox" Value="_New Box" />
   <Translate Key="LibraryControl_Delete" Value="_Delete" />
