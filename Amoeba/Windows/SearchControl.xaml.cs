@@ -113,7 +113,7 @@ namespace Amoeba.Windows
                     {
                         seedsDictionary[SearchState.Downloaded].Add(information);
                     }
-                
+
                     foreach (var information in _amoebaManager.UploadingInformation)
                     {
                         if (information.Contains("Seed"))
@@ -126,7 +126,7 @@ namespace Amoeba.Windows
                     {
                         seedsDictionary[SearchState.Uploaded].Add(information);
                     }
-                
+
                     foreach (var seed in _amoebaManager.Seeds)
                     {
                         seedsDictionary[SearchState.Searching].Add(seed);
@@ -938,10 +938,10 @@ namespace Amoeba.Windows
                     || x.CryptoAlgorithm != y.CryptoAlgorithm
                     || ((x.CryptoKey == null) != (y.CryptoKey == null)))
 
-                    //|| x.Signature != y.Signature
-                    //|| x.DigitalSignatureAlgorithm != y.DigitalSignatureAlgorithm
-                    //|| ((x.PublicKey == null) != (y.PublicKey == null))
-                    //|| ((x.DigitalSignature == null) != (y.DigitalSignature == null)))
+                //|| x.Signature != y.Signature
+                //|| x.DigitalSignatureAlgorithm != y.DigitalSignatureAlgorithm
+                //|| ((x.PublicKey == null) != (y.PublicKey == null))
+                //|| ((x.DigitalSignature == null) != (y.DigitalSignature == null)))
                 {
                     return false;
                 }
@@ -1127,7 +1127,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchItem", Namespace = "http://Amoeba/Windows")]
-    class SearchItem : IDeepCloneable<SearchItem>
+    class SearchItem : IEquatable<SearchItem>, IDeepCloneable<SearchItem>
     {
         private string _name;
         private List<SearchContains<string>> _searchNameCollection;
@@ -1141,6 +1141,67 @@ namespace Amoeba.Windows
         public SearchItem()
         {
 
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((object)obj == null || !(obj is SearchItem)) return false;
+
+            return this.Equals((SearchItem)obj);
+        }
+
+        public bool Equals(SearchItem other)
+        {
+            if ((object)other == null) return false;
+            if (object.ReferenceEquals(this, other)) return true;
+            if (this.GetHashCode() != other.GetHashCode()) return false;
+
+            if (this.Name != other.Name)
+            {
+                return false;
+            }
+
+            if (this.SearchNameCollection != null && other.SearchNameCollection != null)
+            {
+                if (!Collection.Equals(this.SearchNameCollection, other.SearchNameCollection)) return false;
+            }
+
+            if (this.SearchNameRegexCollection != null && other.SearchNameRegexCollection != null)
+            {
+                if (!Collection.Equals(this.SearchNameRegexCollection, other.SearchNameRegexCollection)) return false;
+            }
+
+            if (this.SearchSignatureCollection != null && other.SearchSignatureCollection != null)
+            {
+                if (!Collection.Equals(this.SearchSignatureCollection, other.SearchSignatureCollection)) return false;
+            }
+
+            if (this.SearchKeywordCollection != null && other.SearchKeywordCollection != null)
+            {
+                if (!Collection.Equals(this.SearchKeywordCollection, other.SearchKeywordCollection)) return false;
+            }
+
+            if (this.SearchCreationTimeRangeCollection != null && other.SearchCreationTimeRangeCollection != null)
+            {
+                if (!Collection.Equals(this.SearchCreationTimeRangeCollection, other.SearchCreationTimeRangeCollection)) return false;
+            }
+
+            if (this.SearchLengthRangeCollection != null && other.SearchLengthRangeCollection != null)
+            {
+                if (!Collection.Equals(this.SearchLengthRangeCollection, other.SearchLengthRangeCollection)) return false;
+            }
+
+            if (this.SearchSeedCollection != null && other.SearchSeedCollection != null)
+            {
+                if (!Collection.Equals(this.SearchSeedCollection, other.SearchSeedCollection)) return false;
+            }
+
+            return true;
         }
 
         [DataMember(Name = "Name")]
@@ -1291,13 +1352,40 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]
-    class SearchContains<T> : IDeepCloneable<SearchContains<T>>
+    class SearchContains<T> : IEquatable<SearchContains<T>>, IDeepCloneable<SearchContains<T>>
     {
         [DataMember(Name = "Contains")]
         public bool Contains { get; set; }
 
         [DataMember(Name = "Value")]
         public T Value { get; set; }
+
+        public override int GetHashCode()
+        {
+            return this.Value.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((object)obj == null || !(obj is SearchContains<T>)) return false;
+
+            return this.Equals((SearchContains<T>)obj);
+        }
+
+        public bool Equals(SearchContains<T> other)
+        {
+            if ((object)other == null) return false;
+            if (object.ReferenceEquals(this, other)) return true;
+            if (this.GetHashCode() != other.GetHashCode()) return false;
+
+            if ((this.Contains != other.Contains)
+                || (!this.Value.Equals(other.Value)))
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         #region IDeepClone<SearchContains<T>> メンバ
 
@@ -1325,7 +1413,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchRange", Namespace = "http://Amoeba/Windows")]
-    class SearchRange<T> : IDeepCloneable<SearchRange<T>>
+    class SearchRange<T> : IEquatable<SearchRange<T>>, IDeepCloneable<SearchRange<T>>
         where T : IComparable
     {
         T _max;
@@ -1369,6 +1457,33 @@ namespace Amoeba.Windows
             {
                 return true;
             }
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Min.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((object)obj == null || !(obj is SearchRange<T>)) return false;
+
+            return this.Equals((SearchRange<T>)obj);
+        }
+
+        public bool Equals(SearchRange<T> other)
+        {
+            if ((object)other == null) return false;
+            if (object.ReferenceEquals(this, other)) return true;
+            if (this.GetHashCode() != other.GetHashCode()) return false;
+
+            if ((!this.Min.Equals(other.Min))
+                || (!this.Max.Equals(other.Max)))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public override string ToString()

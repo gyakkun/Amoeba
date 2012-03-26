@@ -138,6 +138,8 @@
   <Translate Key="SearchItemEditWindow_Condition" Value="Condition" />
   <Translate Key="SearchItemEditWindow_SearchCondition_And" Value="And" />
   <Translate Key="SearchItemEditWindow_SearchCondition_Or" Value="Or" />
+  <Translate Key="SearchItemEditWindow_Up" Value="_Up" />
+  <Translate Key="SearchItemEditWindow_Down" Value="_Down" />
   <Translate Key="SearchItemEditWindow_Add" Value="_Add" />
   <Translate Key="SearchItemEditWindow_Edit" Value="_Edit" />
   <Translate Key="SearchItemEditWindow_Delete" Value="_Delete" />
@@ -169,6 +171,8 @@
 
   <Translate Key="SignatureWindow_Title" Value="Signature Setting" />
   <Translate Key="SignatureWindow_Value" Value="Value" />
+  <Translate Key="SignatureWindow_Up" Value="_Up" />
+  <Translate Key="SignatureWindow_Down" Value="_Down" />
   <Translate Key="SignatureWindow_Add" Value="_Add" />
   <Translate Key="SignatureWindow_Edit" Value="_Edit" />
   <Translate Key="SignatureWindow_Delete" Value="_Delete" />
@@ -178,9 +182,11 @@
   <Translate Key="SignatureWindow_Export" Value="_Export" />
 
   <Translate Key="ConnectionsWindow_Title" Value="Connections Setting" />
-  <Translate Key="ConnectionsWindow_MyNode" Value="MyNode" />
+  <Translate Key="ConnectionsWindow_BaseNode" Value="BaseNode" />
   <Translate Key="ConnectionsWindow_Node" Value="Node" />
   <Translate Key="ConnectionsWindow_Uris" Value="Uris" />
+  <Translate Key="ConnectionsWindow_Up" Value="_Up" />
+  <Translate Key="ConnectionsWindow_Down" Value="_Down" />
   <Translate Key="ConnectionsWindow_Add" Value="_Add" />
   <Translate Key="ConnectionsWindow_Edit" Value="_Edit" />
   <Translate Key="ConnectionsWindow_Delete" Value="_Delete" />
@@ -204,10 +210,11 @@
   <Translate Key="ConnectionsWindow_Miscellaneous" Value="Miscellaneous" />
   <Translate Key="ConnectionsWindow_DownloadDirectory" Value="Download Directory" />
   <Translate Key="ConnectionsWindow_ConnectionCount" Value="Connection Count" />
-  <Translate Key="ConnectionsWindow_DownloadingConnectionCount" Value="Downloading Connection Count" />
-  <Translate Key="ConnectionsWindow_UploadingConnectionCount" Value="Uploading Connection Count" />
+  <Translate Key="ConnectionsWindow_DownloadingLowerLimit" Value="Download Lower Limit" />
+  <Translate Key="ConnectionsWindow_UploadingLowerLimit" Value="Upload Lower Limit" />
   <Translate Key="ConnectionsWindow_CacheSize" Value="Cache Size" />
   <Translate Key="ConnectionsWindow_AutoUpdate" Value="Auto Update" />
+  <Translate Key="ConnectionsWindow_AutoBaseNodeSetting" Value="Auto BaseNode Setting" />
   <Translate Key="ConnectionsWindow_UPnP" Value="UPnP" />
   <Translate Key="ConnectionsWindow_Tor" Value="Tor" />
   <Translate Key="ConnectionsWindow_Ipv4" Value="Ipv4" />

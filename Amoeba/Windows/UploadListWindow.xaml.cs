@@ -98,10 +98,10 @@ namespace Amoeba.Windows
                 foreach (var item in _filePaths)
                 {
                     _amoebaManager.Upload(item.Path,
-                            item.Name,
-                            keywords,
-                            null,
-                            digitalSignature);
+                        item.Name,
+                        keywords,
+                        null,
+                        digitalSignature);
                 }
             }
             else
@@ -109,10 +109,10 @@ namespace Amoeba.Windows
                 foreach (var item in _filePaths)
                 {
                     _amoebaManager.Share(item.Path,
-                            item.Name,
-                            keywords,
-                            null,
-                            digitalSignature);
+                        item.Name,
+                        keywords,
+                        null,
+                        digitalSignature);
                 }
             }
 

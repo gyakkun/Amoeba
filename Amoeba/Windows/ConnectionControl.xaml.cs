@@ -191,11 +191,6 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                if (information.Contains("Priority") && 0 == (int)information["Priority"])
-                                {
-                                    _amoebaManager.SetDownloadPriority((int)information["Id"], 3);
-                                }
-
                                 _connectionListViewItemCollection.Add(new ConnectionListViewItem(information));
 
                                 this.Sort();

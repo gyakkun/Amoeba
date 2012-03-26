@@ -39,9 +39,7 @@ namespace Amoeba.Windows
     {
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
-        private UpnpManager _upnpManager;
-        private Ipv4Manager _ipv4Manager;
-        private Ipv6Manager _ipv6Manager;
+        private AutoBaseNodeSettingManager _autoBaseNodeSettingManager;
 
         System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
         private WindowState _windowState;
@@ -68,6 +66,7 @@ namespace Amoeba.Windows
             this.Setting_Log();
 
             _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
+            _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
             _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
 
             Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
@@ -137,10 +136,10 @@ namespace Amoeba.Windows
                 byte[] buffer = new byte[64];
                 (new RNGCryptoServiceProvider()).GetBytes(buffer);
 
-                var myNode = new Node();
-                myNode.Id = buffer;
+                var baseNode = new Node();
+                baseNode.Id = buffer;
 
-                _amoebaManager.BaseNode = myNode;
+                _amoebaManager.BaseNode = baseNode;
             }
 
             _amoebaManager.SetOtherNodes(App.Nodes);
@@ -278,6 +277,52 @@ namespace Amoeba.Windows
                 {
                     SearchItem = ExecutableSearchItem
                 });
+
+                Random random = new Random();
+                _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), random.Next(1024, 65536)));
+                _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), random.Next(1024, 65536)));
+
+                var ipv4ConnectionFilter = new ConnectionFilter()
+                {
+                    ConnectionType = ConnectionType.Tcp,
+                    UriCondition = new UriCondition()
+                    {
+                        Value = @"tcp:([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}).*",
+                    },
+                };
+
+                var ipv6ConnectionFilter = new ConnectionFilter()
+                {
+                    ConnectionType = ConnectionType.Tcp,
+                    UriCondition = new UriCondition()
+                    {
+                        Value = @"tcp:\[(\d|:)*\].*",
+                    },
+                };
+
+                var tcpConnectionFilter = new ConnectionFilter()
+                {
+                    ConnectionType = ConnectionType.Tcp,
+                    UriCondition = new UriCondition()
+                    {
+                        Value = @"tcp:.*",
+                    },
+                };
+
+                var torConnectionFilter = new ConnectionFilter()
+                {
+                    ConnectionType = ConnectionType.None,
+                    ProxyUri = "tcp:127.0.0.1:9050",
+                    UriCondition = new UriCondition()
+                    {
+                        Value = @"tor:.*",
+                    },
+                };
+
+                _amoebaManager.Filters.Add(ipv4ConnectionFilter);
+                _amoebaManager.Filters.Add(ipv6ConnectionFilter);
+                _amoebaManager.Filters.Add(tcpConnectionFilter);
+                _amoebaManager.Filters.Add(torConnectionFilter);
             }
             else
             {
@@ -299,7 +344,7 @@ namespace Amoeba.Windows
             {
                 using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Debug_NodeId.txt"), new UTF8Encoding(false)))
                 {
-                    var myNode = new Node();
+                    var baseNode = new Node();
                     byte[] buffer = new byte[64];
 
                     byte b = byte.Parse(reader.ReadLine());
@@ -309,17 +354,16 @@ namespace Amoeba.Windows
                         buffer[i] = b;
                     }
 
-                    myNode.Id = buffer;
-                    myNode.Uris.AddRange(_amoebaManager.BaseNode.Uris);
+                    baseNode.Id = buffer;
+                    baseNode.Uris.AddRange(_amoebaManager.BaseNode.Uris);
 
-                    _amoebaManager.BaseNode = myNode;
+                    _amoebaManager.BaseNode = baseNode;
                 }
             }
 #endif
 
-            _upnpManager = new UpnpManager(_amoebaManager);
-            _ipv4Manager = new Ipv4Manager(_amoebaManager);
-            _ipv6Manager = new Ipv6Manager(_amoebaManager);
+            _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
+            _autoBaseNodeSettingManager.Load(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
 
             SearchControl _searchControl = new SearchControl(_amoebaManager, _bufferManager);
             _searchControl.Height = Double.NaN;
@@ -393,12 +437,8 @@ namespace Amoeba.Windows
 
             _notifyIcon.Visible = false;
 
-            _upnpManager.Stop();
-            _upnpManager.Dispose();
-            _ipv4Manager.Stop();
-            _ipv4Manager.Dispose();
-            _ipv6Manager.Stop();
-            _ipv6Manager.Dispose();
+            _autoBaseNodeSettingManager.Stop();
+            _autoBaseNodeSettingManager.Dispose();
 
             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
             Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
@@ -830,12 +870,13 @@ namespace Amoeba.Windows
 
         private void _menuItemStart_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Instance.Global_Upnp_IsEnabled)
-                _upnpManager.Start();
-            if (Settings.Instance.Global_Ipv4_IsEnabled)
-                _ipv4Manager.Start();
-            if (Settings.Instance.Global_Ipv6_IsEnabled)
-                _ipv6Manager.Start();
+            if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+                {
+                    _autoBaseNodeSettingManager.Start();
+                }));
+            }
 
             _amoebaManager.Start();
 
@@ -848,9 +889,7 @@ namespace Amoeba.Windows
 
         private void _menuItemStop_Click(object sender, RoutedEventArgs e)
         {
-            _upnpManager.Stop();
-            _ipv4Manager.Stop();
-            _ipv6Manager.Stop();
+            _autoBaseNodeSettingManager.Stop();
 
             _amoebaManager.Stop();
 
@@ -869,7 +908,7 @@ namespace Amoeba.Windows
 
         private void _menuItemConnectionsSetting_Click(object sender, RoutedEventArgs e)
         {
-            ConnectionsWindow window = new ConnectionsWindow(_amoebaManager, _upnpManager, _ipv4Manager, _ipv6Manager, _bufferManager);
+            ConnectionsWindow window = new ConnectionsWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
             window.ShowDialog();
         }
 

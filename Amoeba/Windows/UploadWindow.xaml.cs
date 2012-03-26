@@ -78,18 +78,18 @@ namespace Amoeba.Windows
             if (!_isShare)
             {
                 _amoebaManager.Upload(_filePath,
-                        name,
-                        keywords,
-                        comment,
-                        digitalSignature);
+                    name,
+                    keywords,
+                    comment,
+                    digitalSignature);
             }
             else
             {
                 _amoebaManager.Share(_filePath,
-                        name,
-                        keywords,
-                        comment,
-                        digitalSignature);
+                    name,
+                    keywords,
+                    comment,
+                    digitalSignature);
             }
 
             Settings.Instance.Global_UploadKeywords.Clear();

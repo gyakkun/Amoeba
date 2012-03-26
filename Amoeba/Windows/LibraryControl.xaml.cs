@@ -724,45 +724,47 @@ namespace Amoeba.Windows
 
             if (!this.DigitalSignatureRelease(_boxTreeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
-            dialog.Multiselect = true;
-            dialog.DefaultExt = ".box";
-            dialog.Filter = "Box (*.box)|*.box";
-            dialog.ShowDialog();
-
-            foreach (var filePath in dialog.FileNames)
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
             {
-                using (FileStream stream = new FileStream(filePath, FileMode.Open))
-                {
-                    try
-                    {
-                        var directory = AmoebaConverter.FromBoxStream(stream);
+                dialog.Multiselect = true;
+                dialog.DefaultExt = ".box";
+                dialog.Filter = "Box (*.box)|*.box";
+                dialog.ShowDialog();
 
-                        if (!LibraryControl.BoxDigitalSignatureCheck(ref directory))
+                foreach (var filePath in dialog.FileNames)
+                {
+                    using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                    {
+                        try
                         {
-                            if (MessageBox.Show(
-                                    LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
-                                    "Digital Signature",
-                                    MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                            var directory = AmoebaConverter.FromBoxStream(stream);
+
+                            if (!LibraryControl.BoxDigitalSignatureCheck(ref directory))
+                            {
+                                if (MessageBox.Show(
+                                        LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
+                                        "Digital Signature",
+                                        MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                {
+                                    selectBoxTreeViewItem.Value.Boxes.Add(directory);
+                                    selectBoxTreeViewItem.Update();
+                                }
+                            }
+                            else
                             {
                                 selectBoxTreeViewItem.Value.Boxes.Add(directory);
                                 selectBoxTreeViewItem.Update();
                             }
                         }
-                        else
+                        catch (Exception)
                         {
-                            selectBoxTreeViewItem.Value.Boxes.Add(directory);
-                            selectBoxTreeViewItem.Update();
+
                         }
                     }
-                    catch (Exception)
-                    {
-
-                    }
                 }
-            }
 
-            this.Update();
+                this.Update();
+            }
         }
 
         private void _boxTreeViewExportContextMenuItem_Click(object sender, RoutedEventArgs e)
@@ -770,29 +772,31 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog();
-            dialog.FileName = selectBoxTreeViewItem.Value.Name;
-            dialog.DefaultExt = ".box";
-            dialog.Filter = "Box (*.box)|*.box";
-            dialog.ShowDialog();
-
-            var fileName = dialog.FileName;
-
-            using (FileStream stream = new FileStream(fileName, FileMode.Create))
-            using (Stream directoryStream = AmoebaConverter.ToBoxStream(selectBoxTreeViewItem.Value))
+            using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
-                int i = -1;
-                byte[] buffer = _bufferManager.TakeBuffer(1024);
+                dialog.FileName = selectBoxTreeViewItem.Value.Name;
+                dialog.DefaultExt = ".box";
+                dialog.Filter = "Box (*.box)|*.box";
+                dialog.ShowDialog();
 
-                while ((i = directoryStream.Read(buffer, 0, buffer.Length)) > 0)
+                var fileName = dialog.FileName;
+
+                using (FileStream stream = new FileStream(fileName, FileMode.Create))
+                using (Stream directoryStream = AmoebaConverter.ToBoxStream(selectBoxTreeViewItem.Value))
                 {
-                    stream.Write(buffer, 0, i);
+                    int i = -1;
+                    byte[] buffer = _bufferManager.TakeBuffer(1024);
+
+                    while ((i = directoryStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        stream.Write(buffer, 0, i);
+                    }
+
+                    _bufferManager.ReturnBuffer(buffer);
                 }
 
-                _bufferManager.ReturnBuffer(buffer);
+                this.Update();
             }
-
-            this.Update();
         }
 
         #endregion

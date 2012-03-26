@@ -103,7 +103,6 @@
     </ApplicationDefinition>
     <Compile Include="Extensions.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="Ipv6Manager.cs" />
     <Page Include="Windows\ConnectionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -202,7 +201,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Ipv4Manager.cs" />
     <Compile Include="Windows\UploadListWindow.xaml.cs">
       <DependentUpon>UploadListWindow.xaml</DependentUpon>
     </Compile>
@@ -258,7 +256,7 @@
     <Compile Include="Windows\UploadWindow.xaml.cs">
       <DependentUpon>UploadWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UpnpManager.cs" />
+    <Compile Include="AutoBaseNodeSettingManager.cs" />
     <Compile Include="Windows\ValueConverter.cs" />
     <Compile Include="Windows\VersionInformationWindow.xaml.cs">
       <DependentUpon>VersionInformationWindow.xaml</DependentUpon>

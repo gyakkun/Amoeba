@@ -46,38 +46,81 @@ namespace Amoeba.Windows
             _signatureListView.ItemsSource = _signatureListViewItemCollection;
         }
 
+        private void _signatureListViewUpdate()
+        {
+            _signatureListView_SelectionChanged(this, null);
+        }
+
         private void _signatureListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _signatureListView_PreviewMouseLeftButtonDown(this, null);
+            try
+            {
+                var selectIndex = _signatureListView.SelectedIndex;
+
+                if (selectIndex == -1)
+                {
+                    _upButton.IsEnabled = false;
+                    _downButton.IsEnabled = false;
+                }
+                else
+                {
+                    if (selectIndex == 0)
+                    {
+                        _upButton.IsEnabled = false;
+                    }
+                    else
+                    {
+                        _upButton.IsEnabled = true;
+                    }
+
+                    if (selectIndex == _signatureListViewItemCollection.Count - 1)
+                    {
+                        _downButton.IsEnabled = false;
+                    }
+                    else
+                    {
+                        _downButton.IsEnabled = true;
+                    }
+                }
+
+                _signatureListView_PreviewMouseLeftButtonDown(this, null);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private void _signatureListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+
         }
 
         private void _importButton_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
-            dialog.Multiselect = true;
-            dialog.DefaultExt = ".sigunature";
-            dialog.Filter = "Sigunature (*.sigunature)|*.sigunature";
-            dialog.ShowDialog();
-
-            foreach (var fileName in dialog.FileNames)
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
             {
-                using (FileStream stream = new FileStream(fileName, FileMode.Open))
+                dialog.Multiselect = true;
+                dialog.DefaultExt = ".sigunature";
+                dialog.Filter = "Sigunature (*.sigunature)|*.sigunature";
+                dialog.ShowDialog();
+
+                foreach (var fileName in dialog.FileNames)
                 {
-                    try
+                    using (FileStream stream = new FileStream(fileName, FileMode.Open))
                     {
-                        var signature = AmoebaConverter.FromSignatureStream(stream);
+                        try
+                        {
+                            var signature = AmoebaConverter.FromSignatureStream(stream);
 
-                        _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
+                            _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
 
-                        _signatureListView.Items.Refresh();
-                    }
-                    catch (Exception)
-                    {
+                            _signatureListView.Items.Refresh();
+                        }
+                        catch (Exception)
+                        {
 
+                        }
                     }
                 }
             }
@@ -90,27 +133,59 @@ namespace Amoeba.Windows
 
             var signature = item.Value;
 
-            System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog();
-            dialog.FileName = MessageConverter.ToSignatureString(signature);
-            dialog.DefaultExt = ".sigunature";
-            dialog.Filter = "Sigunature (*.sigunature)|*.sigunature";
-            dialog.ShowDialog();
-
-            var fileName = dialog.FileName;
-
-            using (FileStream stream = new FileStream(fileName, FileMode.Create))
-            using (Stream signatureStream = AmoebaConverter.ToSignatureStream(signature))
+            using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
-                int i = -1;
-                byte[] buffer = _bufferManager.TakeBuffer(1024);
+                dialog.FileName = MessageConverter.ToSignatureString(signature);
+                dialog.DefaultExt = ".sigunature";
+                dialog.Filter = "Sigunature (*.sigunature)|*.sigunature";
+                dialog.ShowDialog();
 
-                while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                var fileName = dialog.FileName;
+
+                using (FileStream stream = new FileStream(fileName, FileMode.Create))
+                using (Stream signatureStream = AmoebaConverter.ToSignatureStream(signature))
                 {
-                    stream.Write(buffer, 0, i);
-                }
+                    int i = -1;
+                    byte[] buffer = _bufferManager.TakeBuffer(1024);
 
-                _bufferManager.ReturnBuffer(buffer);
+                    while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        stream.Write(buffer, 0, i);
+                    }
+
+                    _bufferManager.ReturnBuffer(buffer);
+                }
             }
+        }
+
+        private void _upButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            if (item == null) return;
+
+            var selectIndex = _signatureListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            _signatureListViewItemCollection.Remove(item);
+            _signatureListViewItemCollection.Insert(selectIndex - 1, item);
+            _signatureListView.Items.Refresh();
+
+            _signatureListViewUpdate();
+        }
+
+        private void _downButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            if (item == null) return;
+
+            var selectIndex = _signatureListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            _signatureListViewItemCollection.Remove(item);
+            _signatureListViewItemCollection.Insert(selectIndex + 1, item);
+            _signatureListView.Items.Refresh();
+
+            _signatureListViewUpdate();
         }
 
         private void _addButton_Click(object sender, RoutedEventArgs e)

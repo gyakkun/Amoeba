@@ -49,6 +49,8 @@
         <TabControl Margin="0,46,0,41">
             <TabItem Header="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" IsSelected="True">
                 <Grid>
+                    <Button Name="_nameUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_nameUpButton_Click" IsEnabled="False" />
+                    <Button Name="_nameDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_nameDownButton_Click" IsEnabled="False" />
                     <Button Name="_nameAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_nameAddButton_Click" />
                     <Button Name="_nameEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_nameEditButton_Click"/>
                     <Button Name="_nameDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameDeleteButton_Click" />
@@ -69,6 +71,8 @@
             </TabItem>
             <TabItem Header="{Binding Path=SearchItemEditWindow_NameRegex, Source={StaticResource ResourcesInstance}}">
                 <Grid>
+                    <Button Name="_nameRegexUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_nameRegexUpButton_Click" IsEnabled="False" />
+                    <Button Name="_nameRegexDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_nameRegexDownButton_Click" IsEnabled="False" />
                     <Button Name="_nameRegexAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_nameRegexAddButton_Click" />
                     <Button Name="_nameRegexEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_nameRegexEditButton_Click"/>
                     <Button Name="_nameRegexDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameRegexDeleteButton_Click" />
@@ -89,6 +93,8 @@
             </TabItem>
             <TabItem Header="{Binding Path=SearchItemEditWindow_Signature, Source={StaticResource ResourcesInstance}}">
                 <Grid>
+                    <Button Name="_signatureUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_signatureUpButton_Click" IsEnabled="False" />
+                    <Button Name="_signatureDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_signatureDownButton_Click" IsEnabled="False" />
                     <Button Name="_signatureAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_signatureAddButton_Click" />
                     <Button Name="_signatureEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_signatureEditButton_Click"/>
                     <Button Name="_signatureDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureDeleteButton_Click" />
@@ -109,6 +115,8 @@
             </TabItem>
             <TabItem Header="{Binding Path=SearchItemEditWindow_Keyword, Source={StaticResource ResourcesInstance}}">
                 <Grid>
+                    <Button Name="_keywordUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_keywordUpButton_Click" IsEnabled="False" />
+                    <Button Name="_keywordDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_keywordDownButton_Click" IsEnabled="False" />
                     <Button Name="_keywordAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_keywordAddButton_Click" />
                     <Button Name="_keywordEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_keywordEditButton_Click"/>
                     <Button Name="_keywordDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordDeleteButton_Click" />
@@ -133,11 +141,13 @@
                         <ColumnDefinition Width="50*" />
                         <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
-                    <Button Name="_creationTimeRangeAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeAddButton_Click" Grid.ColumnSpan="2" />
+                    <Button Name="_creationTimeRangeUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeUpButton_Click" Grid.ColumnSpan="2" IsEnabled="False" />
+                    <Button Name="_creationTimeRangeDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeDownButton_Click" Grid.Column="1" IsEnabled="False" />
+                    <Button Name="_creationTimeRangeAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeAddButton_Click" Grid.Column="1" />
                     <Button Name="_creationTimeRangeEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeEditButton_Click" Grid.ColumnSpan="2" />
                     <Button Name="_creationTimeRangeDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeDeleteButton_Click" Grid.ColumnSpan="2" />
-                    <TextBox Name="_creationTimeRangeMaxTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" Text="0001/01/01 00:00:00" />
-                    <TextBox Name="_creationTimeRangeMinTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" Text="0001/01/01 00:00:00" />
+                    <TextBox Name="_creationTimeRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" Text="0001/01/01 00:00:00" />
+                    <TextBox Name="_creationTimeRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" Text="0001/01/01 00:00:00" />
                     <RadioButton Grid.ColumnSpan="2" Name="_creationTimeRangeContainsRadioButton" GroupName="CreationTimeRangeContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <RadioButton Grid.ColumnSpan="2" Name="_creationTimeRangeNotContainsRadioButton" GroupName="CreationTimeRangeContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_creationTimeRangeListView" Margin="0,0,0,87" SelectionChanged="_creationTimeRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_creationTimeRangeListView_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2">
@@ -145,10 +155,10 @@
                             <GridView>
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Max, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRange_DateTime_Max}" 
-                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Min, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRange_DateTime_Min}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Max, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRange_DateTime_Max}" 
+                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -160,11 +170,13 @@
                         <ColumnDefinition Width="50*" />
                         <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
-                    <Button Name="_lengthRangeAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeAddButton_Click" Grid.ColumnSpan="2" />
+                    <Button Name="_lengthRangeUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeUpButton_Click" Grid.ColumnSpan="2" IsEnabled="False" />
+                    <Button Name="_lengthRangeDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeDownButton_Click" Grid.Column="1" IsEnabled="False" />
+                    <Button Name="_lengthRangeAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeAddButton_Click" Grid.Column="1" />
                     <Button Name="_lengthRangeEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeEditButton_Click" Grid.ColumnSpan="2" />
                     <Button Name="_lengthRangeDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeDeleteButton_Click" Grid.ColumnSpan="2" />
-                    <TextBox Name="_lengthRangeMaxTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" />
-                    <TextBox Name="_lengthRangeMinTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" />
+                    <TextBox Name="_lengthRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" />
+                    <TextBox Name="_lengthRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" />
                     <RadioButton Grid.ColumnSpan="2" Name="_lengthRangeContainsRadioButton" GroupName="LengthContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <RadioButton Grid.ColumnSpan="2" Name="_lengthRangeNotContainsRadioButton" GroupName="LengthContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_lengthRangeListView" Margin="0,0,0,87" SelectionChanged="_lengthRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_lengthRangeListView_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2">
@@ -172,10 +184,10 @@
                             <GridView>
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Max, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRange_Long_Max}" 
-                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Min, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRange_Long_Min}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Max, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRange_Long_Max}" 
+                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
@@ -183,6 +195,8 @@
             </TabItem>
             <TabItem Header="{Binding Path=SearchItemEditWindow_Seed, Source={StaticResource ResourcesInstance}}">
                 <Grid>
+                    <Button Name="_seedUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_seedUpButton_Click" IsEnabled="False" />
+                    <Button Name="_seedDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_seedDownButton_Click" IsEnabled="False" />
                     <Button Name="_seedAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_seedAddButton_Click" />
                     <Button Name="_seedEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_seedEditButton_Click"/>
                     <Button Name="_seedDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_seedDeleteButton_Click" />

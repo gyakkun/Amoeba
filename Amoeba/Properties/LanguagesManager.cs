@@ -1541,6 +1541,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string SearchItemEditWindow_Up
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Up");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Down
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Down");
+                }
+            }
+        }
+
         public string SearchItemEditWindow_Add
         {
             get
@@ -1852,6 +1874,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string SignatureWindow_Up
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SignatureWindow_Up");
+                }
+            }
+        }
+
+        public string SignatureWindow_Down
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SignatureWindow_Down");
+                }
+            }
+        }
+
         public string SignatureWindow_Add
         {
             get
@@ -1941,13 +1985,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionsWindow_MyNode
+        public string ConnectionsWindow_BaseNode
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsWindow_MyNode");
+                    return this.Translate("ConnectionsWindow_BaseNode");
                 }
             }
         }
@@ -1970,6 +2014,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsWindow_Uris");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_Up
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_Up");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_Down
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_Down");
                 }
             }
         }
@@ -2227,24 +2293,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionsWindow_DownloadingConnectionCount
+        public string ConnectionsWindow_DownloadingLowerLimit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsWindow_DownloadingConnectionCount");
+                    return this.Translate("ConnectionsWindow_DownloadingLowerLimit");
                 }
             }
         }
 
-        public string ConnectionsWindow_UploadingConnectionCount
+        public string ConnectionsWindow_UploadingLowerLimit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsWindow_UploadingConnectionCount");
+                    return this.Translate("ConnectionsWindow_UploadingLowerLimit");
                 }
             }
         }
@@ -2267,6 +2333,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsWindow_AutoUpdate");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_AutoBaseNodeSetting
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_AutoBaseNodeSetting");
                 }
             }
         }
