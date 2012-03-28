@@ -178,6 +178,10 @@ namespace Amoeba
                             zipfile.ExtractAll(tempPath);
                         }
                     }
+                    catch(Exception)
+                    {
+                        return;
+                    }
                     finally
                     {
                         if (File.Exists(updatePath))

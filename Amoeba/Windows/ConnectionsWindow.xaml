@@ -9,7 +9,7 @@
         Top="{Binding Path=ConnectionsWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Left="{Binding Path=ConnectionsWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Height="{Binding Path=ConnectionsWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        Width="747"
+        Width="{Binding Path=ConnectionsWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=ConnectionsWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Closing="Window_Closing">
   
