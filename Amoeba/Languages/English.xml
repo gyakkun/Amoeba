@@ -226,7 +226,7 @@
   <Translate Key="ConnectionsWindow_Extends" Value="Extends" />
   <Translate Key="ConnectionsWindow_AutoSetting" Value="Auto Setting" />
   <Translate Key="ConnectionsWindow_RelateSettings" Value="Relate Settings" />
-  <Translate Key="ConnectionsWindow_AutoRelateBoxFile" Value="Auto Relate Box File" />
+  <Translate Key="ConnectionsWindow_RelateBoxFile" Value="Relate Box File" />
   <Translate Key="ConnectionsWindow_Copy" Value="Copy" />
   <Translate Key="ConnectionsWindow_Paste" Value="Paste" />
   <Translate Key="ConnectionsWindow_Searching" Value="Searching" />

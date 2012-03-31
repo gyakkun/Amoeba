@@ -98,7 +98,7 @@ namespace Amoeba.Windows
                 _miscellaneousSearchFilterDownloadedCheckBox.IsChecked = true;
             }
 
-            _miscellaneousAutoRelateBoxFileCheckBox.IsChecked = Settings.Instance.Global_Relate_IsEnabled;
+            _miscellaneousRelateBoxFileCheckBox.IsChecked = Settings.Instance.Global_RelateBoxFile_IsEnabled;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1109,10 +1109,9 @@ namespace Amoeba.Windows
                 Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Downloaded;
             }
 
-
-            if (Settings.Instance.Global_Relate_IsEnabled != _miscellaneousAutoRelateBoxFileCheckBox.IsChecked.Value)
+            if (Settings.Instance.Global_RelateBoxFile_IsEnabled != _miscellaneousRelateBoxFileCheckBox.IsChecked.Value)
             {
-                if (_miscellaneousAutoRelateBoxFileCheckBox.IsChecked.Value)
+                if (_miscellaneousRelateBoxFileCheckBox.IsChecked.Value)
                 {
                     System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
                     p.UseShellExecute = true;
@@ -1147,7 +1146,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Settings.Instance.Global_Relate_IsEnabled = _miscellaneousAutoRelateBoxFileCheckBox.IsChecked.Value;
+                Settings.Instance.Global_RelateBoxFile_IsEnabled = _miscellaneousRelateBoxFileCheckBox.IsChecked.Value;
             }
 
             this.DialogResult = true;
@@ -1156,6 +1155,17 @@ namespace Amoeba.Windows
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
+        }
+
+        private void StackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Expander expander = e.Source as Expander;
+            if (expander == null) return;
+
+            foreach (var item in (_miscellaneousStackPanel.Children).OfType<Expander>())
+            {
+                if (expander != item) item.IsExpanded = false;
+            }
         }
     }
 }

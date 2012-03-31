@@ -178,7 +178,7 @@
             </TabItem>
             <TabItem Name="_miscellaneousTabItem" Header="{Binding Path=ConnectionsWindow_Miscellaneous, Source={StaticResource ResourcesInstance}}" >
                 <Grid>
-                    <StackPanel>
+                    <StackPanel Name="_miscellaneousStackPanel" PreviewMouseLeftButtonUp="StackPanel_PreviewMouseLeftButtonUp">
                         <Expander Header="{Binding Path=ConnectionsWindow_CoreSettings, Source={StaticResource ResourcesInstance}}" Margin="6,6,6,0" Name="groupBox1" VerticalAlignment="Top" IsExpanded="True" >
                             <Grid>
                                 <Label Content="{Binding Path=ConnectionsWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
@@ -210,7 +210,7 @@
                         </Expander>
                         <Expander Header="{Binding Path=ConnectionsWindow_RelateSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0">
                             <Grid>
-                                <CheckBox Content="{Binding Path=ConnectionsWindow_AutoRelateBoxFile, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousAutoRelateBoxFileCheckBox" VerticalAlignment="Top" />
+                                <CheckBox Content="{Binding Path=ConnectionsWindow_RelateBoxFile, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousRelateBoxFileCheckBox" VerticalAlignment="Top" />
                             </Grid>
                         </Expander>
                     </StackPanel>

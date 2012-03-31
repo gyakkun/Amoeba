@@ -26,13 +26,13 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoUpdate_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<SearchState>() { Name = "Global_SearchFilterSettings_State", Value = SearchState.Searching | SearchState.Uploading | SearchState.Downloading | SearchState.Uploaded | SearchState.Downloaded },
-                new Library.Configuration.SettingsContext<bool>() { Name = "Global_Relate_IsEnabled", Value = true },
+                new Library.Configuration.SettingsContext<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Height", Value = 500 },
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Maximized },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
@@ -156,8 +156,8 @@ namespace Amoeba.Properties
                  
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Height", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Width", Value = 800 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "ConnectionsWindow_WindowState", Value = WindowState.Normal },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_BaseNode_Uris_Uri_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_OtherNodes_Node_Width", Value = -1 },
@@ -337,13 +337,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public bool Global_Relate_IsEnabled
+        public bool Global_RelateBoxFile_IsEnabled
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (bool)this["Global_Relate_IsEnabled"];
+                   return (bool)this["Global_RelateBoxFile_IsEnabled"];
                 }
             }
 
@@ -351,7 +351,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["Global_Relate_IsEnabled"] = value;
+                    this["Global_RelateBoxFile_IsEnabled"] = value;
                 }
             }
         }

@@ -2469,13 +2469,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionsWindow_AutoRelateBoxFile
+        public string ConnectionsWindow_RelateBoxFile
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsWindow_AutoRelateBoxFile");
+                    return this.Translate("ConnectionsWindow_RelateBoxFile");
                 }
             }
         }
