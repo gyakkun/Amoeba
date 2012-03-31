@@ -67,6 +67,9 @@ namespace Amoeba.Windows
             _seedListView.ItemsSource = _searchSeedCollection;
 
             _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
+
+            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
@@ -774,8 +777,8 @@ namespace Amoeba.Windows
             _creationTimeRangeListView.Items.Refresh();
             _creationTimeRangeListViewUpdate();
 
-            _creationTimeRangeMaxTextBox.Text = "0001/01/01 00:00:00";
-            _creationTimeRangeMinTextBox.Text = "0001/01/01 00:00:00";
+            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         private void _creationTimeRangeEditButton_Click(object sender, RoutedEventArgs e)
@@ -805,8 +808,8 @@ namespace Amoeba.Windows
             _creationTimeRangeListView.SelectedIndex = selectIndex;
             _creationTimeRangeListViewUpdate();
 
-            _creationTimeRangeMaxTextBox.Text = "0001/01/01 00:00:00";
-            _creationTimeRangeMinTextBox.Text = "0001/01/01 00:00:00";
+            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         #endregion

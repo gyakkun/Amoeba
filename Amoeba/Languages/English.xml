@@ -213,6 +213,9 @@
   <Translate Key="ConnectionsWindow_DownloadingLowerLimit" Value="Download Lower Limit" />
   <Translate Key="ConnectionsWindow_UploadingLowerLimit" Value="Upload Lower Limit" />
   <Translate Key="ConnectionsWindow_CacheSize" Value="Cache Size" />
+  <Translate Key="ConnectionsWindow_CoreSettings" Value="Core Settings" />
+  <Translate Key="ConnectionsWindow_AutoSettings" Value="Auto Settings" />
+  <Translate Key="ConnectionsWindow_SearchFilterSettings" Value="Search Filter Settings" />
   <Translate Key="ConnectionsWindow_AutoUpdate" Value="Auto Update" />
   <Translate Key="ConnectionsWindow_AutoBaseNodeSetting" Value="Auto BaseNode Setting" />
   <Translate Key="ConnectionsWindow_UPnP" Value="UPnP" />
@@ -223,6 +226,11 @@
   <Translate Key="ConnectionsWindow_AutoSetting" Value="Auto Setting" />
   <Translate Key="ConnectionsWindow_Copy" Value="Copy" />
   <Translate Key="ConnectionsWindow_Paste" Value="Paste" />
+  <Translate Key="ConnectionsWindow_Searching" Value="Searching" />
+  <Translate Key="ConnectionsWindow_Uploading" Value="Uploading" />
+  <Translate Key="ConnectionsWindow_Downloading" Value="Downloading" />
+  <Translate Key="ConnectionsWindow_Uploaded" Value="Uploaded" />
+  <Translate Key="ConnectionsWindow_Downloaded" Value="Downloaded" />
 
   <Translate Key="ProgressWindow_Title" Value="Progress Window" />
   <Translate Key="ProgressWindow_Cancel" Value="_Cancel" />

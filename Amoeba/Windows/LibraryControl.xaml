@@ -16,10 +16,10 @@
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
 
         <DataTemplate x:Key="_myTemplate_Name">
-            <StackPanel Orientation="Horizontal">
-                <Image Width="16" Height="16" Source="{Binding Converter={StaticResource _itemToIconConverter}}" />
-                <TextBlock Margin="3,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
-            </StackPanel>
+            <Grid>
+                <Image Width="16" Height="16" Source="{Binding Converter={StaticResource _itemToIconConverter}}" HorizontalAlignment="Left" />
+                <TextBlock Margin="19,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+            </Grid>
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Signature">
             <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
@@ -38,14 +38,14 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Name="_grid" AllowDrop="True" PreviewMouseLeftButtonDown="_grid_PreviewMouseLeftButtonDown" PreviewMouseMove="_grid_PreviewMouseMove" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding Path=LibraryControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
             <ColumnDefinition Width="4" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
-        <ListView Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" SelectionChanged="_listView_SelectionChanged" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" >
+        <ListView Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" >
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewAddBoxMenuItem" Header="{Binding Path=LibraryControl_AddBox, Source={StaticResource ResourcesInstance}}" Click="_listViewAddBoxMenuItem_Click" />
@@ -78,7 +78,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <TreeView Name="_boxTreeView" ContextMenuOpening="_boxTreeView_ContextMenuOpening" PreviewMouseLeftButtonDown="_boxTreeView_PreviewMouseLeftButtonDown" SelectedItemChanged="_boxTreeView_SelectedItemChanged" AllowDrop="True" PreviewDragOver="_boxTreeView_PreviewDragOver" PreviewDrop="_boxTreeView_PreviewDrop" >
+        <TreeView Name="_boxTreeView" ContextMenuOpening="_boxTreeView_ContextMenuOpening" PreviewMouseLeftButtonDown="_boxTreeView_PreviewMouseLeftButtonDown" SelectedItemChanged="_boxTreeView_SelectedItemChanged" AllowDrop="True" PreviewMouseRightButtonDown="_boxTreeView_PreviewMouseRightButtonDown">
             <local:BoxTreeViewItem x:Name="_boxTreeViewItem" IsSelected="True" IsExpanded="True" >
                 <local:BoxTreeViewItem.ContextMenu>
                     <ContextMenu Name="_boxTreeViewContextMenu" >

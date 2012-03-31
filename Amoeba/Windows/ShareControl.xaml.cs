@@ -96,6 +96,14 @@ namespace Amoeba.Windows
             }
         }
 
+        private void _shareListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_shareListView.GetCurrentIndex(e.GetPosition) == -1)
+            {
+                _shareListView.SelectedItems.Clear();
+            }
+        }
+
         private void _shareListView_PreviewDragOver(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.All;

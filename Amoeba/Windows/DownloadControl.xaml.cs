@@ -95,6 +95,14 @@ namespace Amoeba.Windows
             }
         }
 
+        private void _downloadListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_downloadListView.GetCurrentIndex(e.GetPosition) == -1)
+            {
+                _downloadListView.SelectedItems.Clear();
+            }
+        }
+
         private void _downloadListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             if (_downloadListViewDeleteMenuItem != null) _downloadListViewDeleteMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);

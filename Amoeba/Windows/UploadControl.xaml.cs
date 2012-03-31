@@ -96,6 +96,14 @@ namespace Amoeba.Windows
             }
         }
 
+        private void _uploadListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_uploadListView.GetCurrentIndex(e.GetPosition) == -1)
+            {
+                _uploadListView.SelectedItems.Clear();
+            }
+        }
+
         private void _uploadListView_PreviewDragOver(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.All;

@@ -187,7 +187,8 @@ namespace Amoeba.Windows
                 sw.Stop();
                 Debug.WriteLine(string.Format("Searching Time: {0}", sw.ElapsedMilliseconds));
 
-                return searchItems.Values;
+                Random random = new Random();
+                return searchItems.Values.OrderBy(n => random.Next()).Take(1024 * 256);
             }
             catch (Exception ex)
             {
@@ -226,6 +227,14 @@ namespace Amoeba.Windows
         }
 
         #region _searchListView
+
+        private void _searchListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_searchListView.GetCurrentIndex(e.GetPosition) == -1)
+            {
+                _searchListView.SelectedItems.Clear();
+            }
+        }
 
         private void _searchListView_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -393,10 +402,63 @@ namespace Amoeba.Windows
         #endregion
 
         #region _searchTreeView
+      
+        private  Point _startPoint;
 
-        private void _searchTreeView_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void _searchTreeView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            this._searchTreeView_SelectedItemChanged(null, null);
+            if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
+            {
+                Point position = e.GetPosition(null);
+
+                if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
+                    || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
+                {
+                    if (_searchTreeViewItem == _searchTreeView.SelectedItem) return;
+
+                    DataObject data = new DataObject("item", _searchTreeView.SelectedItem);
+                    DragDrop.DoDragDrop(_searchTreeView, data, DragDropEffects.Move);
+                }
+            }
+        }
+
+        private void _searchTreeView_PreviewDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent("item"))
+            {
+                var s = e.Data.GetData("item") as SearchTreeViewItem;
+                var t = _searchTreeView.GetCurrentItem(e.GetPosition) as SearchTreeViewItem;
+                if (t == null || s == t) return;
+
+                if (_searchTreeViewItem.GetLineage(t).OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n, s))) return;
+
+                t.IsSelected = true;
+                t.IsExpanded = true;
+
+                var list = _searchTreeViewItem.GetLineage(s).OfType<SearchTreeViewItem>().ToList();
+                list[list.Count - 2].Value.Items.Remove(s.Value);
+                list[list.Count - 2].Update();
+
+                t.Value.Items.Add(s.Value);
+                t.Update();
+
+                this.Update();
+            }
+        }
+
+        private void _searchTreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var item = _searchTreeView.GetCurrentItem(e.GetPosition) as SearchTreeViewItem;
+            if (item == null) return;
+
+            item.IsSelected = true;
+        }
+        
+        private void _searchTreeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _startPoint = e.GetPosition(null);
+       
+            _searchTreeView_SelectedItemChanged(null, null);
         }
 
         private void _searchTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -418,7 +480,38 @@ namespace Amoeba.Windows
                 }
 
                 _searchListViewItemCollection.Clear();
-                _searchListViewItemCollection.AddRange(searchListViewItems);
+
+                _searchListViewItemCollection.AddRange(searchListViewItems
+                    .Where(n =>
+                    {
+                        if (Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Searching)
+                            && n.State.HasFlag(SearchState.Searching))
+                        {
+                            return true;
+                        }
+                        if (Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Uploading)
+                             && n.State.HasFlag(SearchState.Uploading))
+                        {
+                            return true;
+                        }
+                        if (Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Downloading)
+                             && n.State.HasFlag(SearchState.Downloading))
+                        {
+                            return true;
+                        }
+                        if (Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Uploaded)
+                             && n.State.HasFlag(SearchState.Uploaded))
+                        {
+                            return true;
+                        }
+                        if (Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Downloaded)
+                             && n.State.HasFlag(SearchState.Downloaded))
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }));
 
                 this.Sort();
             }), null);
@@ -481,7 +574,7 @@ namespace Amoeba.Windows
                         if (searchContains.Contains)
                         {
                             return searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
-                                .All(n => searchItem.Name.Contains(n));
+                                .All(n => searchItem.Name.ToLower().Contains(n.ToLower()));
                         }
 
                         return false;
@@ -668,6 +761,9 @@ namespace Amoeba.Windows
             if (selectSearchTreeViewItem == _searchTreeViewItem) return;
 
             var list = _searchTreeViewItem.GetLineage(selectSearchTreeViewItem).OfType<SearchTreeViewItem>().ToList();
+            
+            list[list.Count - 2].IsSelected = true;
+            
             list[list.Count - 2].Value.Items.Remove(selectSearchTreeViewItem.Value);
             list[list.Count - 2].Update();
 
@@ -682,6 +778,9 @@ namespace Amoeba.Windows
             Clipboard.SetSearchTreeItems(new List<SearchTreeItem>() { selectSearchTreeViewItem.Value.DeepClone() });
 
             var list = _searchTreeViewItem.GetLineage(selectSearchTreeViewItem).OfType<SearchTreeViewItem>().ToList();
+
+            list[list.Count - 2].IsSelected = true;
+
             list[list.Count - 2].Value.Items.Remove(selectSearchTreeViewItem.Value);
             list[list.Count - 2].Update();
 
@@ -1012,10 +1111,7 @@ namespace Amoeba.Windows
 
         public void Update()
         {
-            base.Header = new TextBlock()
-            {
-                Text = string.Format("{0} ({1})", _value.SearchItem.Name, _hit)
-            };
+            base.Header = string.Format("{0} ({1})", _value.SearchItem.Name, _hit);
 
             List<SearchTreeViewItem> list = new List<SearchTreeViewItem>();
 
@@ -1039,6 +1135,9 @@ namespace Amoeba.Windows
                     this.Items.Add(item);
                 }
             }
+
+            this.Items.SortDescriptions.Clear();
+            this.Items.SortDescriptions.Add(new SortDescription("Value.SearchItem.Name", ListSortDirection.Ascending));
         }
 
         public SearchTreeItem Value

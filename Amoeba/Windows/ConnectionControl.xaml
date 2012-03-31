@@ -41,7 +41,7 @@
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
 
-        <ListView Name="_connectionsInfomationListView" Grid.Column="2" GridViewColumnHeader.Click="_connectionsInfomationListView_Click">
+        <ListView Name="_connectionsInfomationListView" Grid.Column="2" GridViewColumnHeader.Click="_connectionsInfomationListView_Click" PreviewMouseLeftButtonDown="_connectionsInfomationListView_PreviewMouseLeftButtonDown">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
@@ -50,8 +50,8 @@
                             Width="{Binding Path=ConnectionControl_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>  
-        <ListView Name="_connectionListView" ContextMenuOpening="_connectionListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+        </ListView>
+        <ListView Name="_connectionListView" ContextMenuOpening="_connectionListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_connectionListView_PreviewMouseLeftButtonDown">
             <ListView.ContextMenu>
                 <ContextMenu Name="_connectionListViewContextMenu" >
                     <MenuItem Name="_connectionListViewCopyMenuItem" Header="{Binding Path=ConnectionControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_connectionListViewCopyMenuItem_Click" />

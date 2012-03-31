@@ -36,9 +36,6 @@
         <DataTemplate x:Key="_myTemplate_Comment">
             <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Hash">
-            <TextBlock Text="{Binding Path=Value.Header.Hash, Mode=OneWay, Converter={StaticResource _bytesToHexStringConverter}}" />
-        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
@@ -56,7 +53,7 @@
 
         <TextBox Name="_searchTextBox" KeyDown="_searchTextBox_KeyDown" />
 
-        <TreeView Grid.Row="1" Name="_searchTreeView" ContextMenuOpening="_searchTreeView_ContextMenuOpening" SelectedItemChanged="_searchTreeView_SelectedItemChanged" PreviewMouseLeftButtonUp="_searchTreeView_PreviewMouseLeftButtonUp" >
+        <TreeView Grid.Row="1" Name="_searchTreeView" ContextMenuOpening="_searchTreeView_ContextMenuOpening" SelectedItemChanged="_searchTreeView_SelectedItemChanged" PreviewMouseMove="_searchTreeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_searchTreeView_PreviewDrop" PreviewMouseLeftButtonDown="_searchTreeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_searchTreeView_PreviewMouseRightButtonDown" >
             <TreeView.ContextMenu>
                 <ContextMenu Name="_searchTreeViewContextMenu">
                     <MenuItem Name="_searchTreeViewAddMenuItem" Header="{Binding Path=SearchControl_Add, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewAddMenuItem_Click"/>
@@ -70,7 +67,7 @@
             </TreeView.ContextMenu>
         </TreeView>
 
-        <ListView Grid.Column="2" Name="_searchListView" Grid.RowSpan="2" ContextMenuOpening="_searchListView_ContextMenuOpening" PreviewMouseDoubleClick="_searchListView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+        <ListView Grid.Column="2" Name="_searchListView" Grid.RowSpan="2" ContextMenuOpening="_searchListView_ContextMenuOpening" PreviewMouseDoubleClick="_searchListView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_searchListView_PreviewMouseLeftButtonDown">
             <ListView.ContextMenu>
                 <ContextMenu Name="_searchListViewContextMenu" >
                     <MenuItem Name="_searchListViewCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_searchListViewCopyMenuItem_Click" />
@@ -100,8 +97,6 @@
                             Width="{Binding Path=SearchControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=SearchControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=SearchControl_Hash, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Hash}" 
-                            Width="{Binding Path=SearchControl_GridViewColumn_Hash_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=SearchControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>

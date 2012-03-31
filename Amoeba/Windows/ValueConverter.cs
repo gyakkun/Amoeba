@@ -26,8 +26,8 @@ namespace Amoeba.Windows
                 var directoryImage = ObjectToImageConverter.GetImage(Path.Combine(App.DirectoryPaths["Icons"], "Directory.png"));
                 var keyImage = ObjectToImageConverter.GetImage(Path.Combine(App.DirectoryPaths["Icons"], "Key.png"));
 
-                _images["Amoeba.Windows.LibraryControl+DirectoryListViewItem"] = directoryImage;
-                _images["Amoeba.Windows.LibraryControl+KeyListViewItem"] = keyImage;
+                _images["Amoeba.Windows.LibraryControl+BoxListViewItem"] = directoryImage;
+                _images["Amoeba.Windows.LibraryControl+SeedListViewItem"] = keyImage;
             }
             catch (Exception)
             {

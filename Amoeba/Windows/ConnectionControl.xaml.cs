@@ -41,8 +41,8 @@ namespace Amoeba.Windows
 
             _connectionListView.ItemsSource = _connectionListViewItemCollection;
 
-            _amoebaInfomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ReceivedByteCount" });
             _amoebaInfomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_SentByteCount" });
+            _amoebaInfomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ReceivedByteCount" });
             _amoebaInfomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
             _amoebaInfomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_CreateConnectionCount" });
@@ -80,6 +80,22 @@ namespace Amoeba.Windows
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.AmoebaInfomationShow), this);
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.ConnectionInfomationShow), this);
+        }
+
+        private void _connectionsInfomationListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_connectionsInfomationListView.GetCurrentIndex(e.GetPosition) == -1)
+            {
+                _connectionsInfomationListView.SelectedItems.Clear();
+            }
+        }
+
+        private void _connectionListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_connectionListView.GetCurrentIndex(e.GetPosition) == -1)
+            {
+                _connectionListView.SelectedItems.Clear();
+            }
         }
 
         private void _connectionListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -123,8 +139,8 @@ namespace Amoeba.Windows
                     _amoebaInfomationListViewItemCollection.FirstOrDefault(n => n.Id == "ConnectionControl_CreateConnectionCount").Value = ((int)information["CreateConnectionCount"]).ToString();
                     _amoebaInfomationListViewItemCollection.FirstOrDefault(n => n.Id == "ConnectionControl_AcceptConnectionCount").Value = ((int)information["AcceptConnectionCount"]).ToString();
 
-                    _amoebaInfomationListViewItemCollection.FirstOrDefault(n => n.Id == "ConnectionControl_ReceivedByteCount").Value = NetworkConverter.ToSizeString(_amoebaManager.ReceivedByteCount);
                     _amoebaInfomationListViewItemCollection.FirstOrDefault(n => n.Id == "ConnectionControl_SentByteCount").Value = NetworkConverter.ToSizeString(_amoebaManager.SentByteCount);
+                    _amoebaInfomationListViewItemCollection.FirstOrDefault(n => n.Id == "ConnectionControl_ReceivedByteCount").Value = NetworkConverter.ToSizeString(_amoebaManager.ReceivedByteCount);
 
                     _amoebaInfomationListViewItemCollection.FirstOrDefault(n => n.Id == "ConnectionControl_PullNodesRequestCount").Value = ((int)information["PullNodesRequestCount"]).ToString();
                     _amoebaInfomationListViewItemCollection.FirstOrDefault(n => n.Id == "ConnectionControl_PullNodesCount").Value = ((int)information["PullNodesCount"]).ToString();

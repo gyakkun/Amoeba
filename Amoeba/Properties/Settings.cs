@@ -25,6 +25,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoUpdate_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
+                new Library.Configuration.SettingsContext<SearchState>() { Name = "Global_SearchFilterSettings_State", Value = SearchState.Searching | SearchState.Uploading | SearchState.Downloading | SearchState.Uploaded | SearchState.Downloaded },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Left", Value = 120 },
@@ -154,8 +155,8 @@ namespace Amoeba.Properties
                  
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Height", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Width", Value = 800 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "ConnectionsWindow_WindowState", Value = WindowState.Normal },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_BaseNode_Uris_Uri_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_OtherNodes_Node_Width", Value = -1 },
@@ -312,6 +313,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_AutoBaseNodeSetting_IsEnabled"] = value;
+                }
+            }
+        }
+
+        public SearchState Global_SearchFilterSettings_State
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (SearchState)this["Global_SearchFilterSettings_State"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_SearchFilterSettings_State"] = value;
                 }
             }
         }

@@ -150,7 +150,7 @@ namespace Amoeba.Windows
                 _amoebaManager.SearchKeywords.Add(new Keyword()
                 {
                     HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                    Value = "global"
+                    Value = "box"
                 });
                 _amoebaManager.SearchKeywords.Add(new Keyword()
                 {
@@ -190,33 +190,33 @@ namespace Amoeba.Windows
                 _amoebaManager.DownloadingConnectionCountLowerLimit = 6;
                 _amoebaManager.UploadingConnectionCountLowerLimit = 12;
 
-                Settings.Instance.Global_UploadKeywords.Add("global");
+                Settings.Instance.Global_UploadKeywords.Add("document");
 
-                SearchItem imageSearchItem = new SearchItem()
+                SearchItem pictureSearchItem = new SearchItem()
                 {
                     Name = "Picture"
                 };
-                imageSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
+                pictureSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
                 {
                     Contains = true,
                     Value = @"(.*)\.(jpeg|jpg|png|jp2|gif|bmp)$"
                 });
 
-                SearchItem videoSearchItem = new SearchItem()
+                SearchItem movieSearchItem = new SearchItem()
                 {
                     Name = "Movie"
                 };
-                videoSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
+                movieSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
                 {
                     Contains = true,
                     Value = @"(.*)\.(mpeg|mpg|avi|divx|asf|wmv|rm|ogm|mov|flv|mp4|wav|mid|aif)$"
                 });
 
-                SearchItem audioSearchItem = new SearchItem()
+                SearchItem musicSearchItem = new SearchItem()
                 {
                     Name = "Music"
                 };
-                audioSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
+                musicSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
                 {
                     Contains = true,
                     Value = @"(.*)\.(mp3|ogg|wav|mid|mod|flac|sid)$"
@@ -255,11 +255,15 @@ namespace Amoeba.Windows
                 Settings.Instance.SearchControl_SearchTreeItem.Items.Clear();
                 Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                 {
-                    SearchItem = imageSearchItem
+                    SearchItem = pictureSearchItem
                 });
                 Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                 {
-                    SearchItem = videoSearchItem
+                    SearchItem = movieSearchItem
+                });
+                Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                {
+                    SearchItem = musicSearchItem
                 });
                 Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                 {
@@ -268,10 +272,6 @@ namespace Amoeba.Windows
                 Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                 {
                     SearchItem = documentSearchItem
-                });
-                Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
-                {
-                    SearchItem = audioSearchItem
                 });
                 Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                 {

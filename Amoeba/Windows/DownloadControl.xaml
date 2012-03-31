@@ -36,7 +36,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListView Grid.Column="2" Name="_downloadListView" Grid.RowSpan="2" ContextMenuOpening="_downloadListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+        <ListView Grid.Column="2" Name="_downloadListView" Grid.RowSpan="2" ContextMenuOpening="_downloadListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_downloadListView_PreviewMouseLeftButtonDown" >
             <ListView.ContextMenu>
                 <ContextMenu Name="_downloadListViewContextMenu" >
                     <MenuItem Name="_downloadListViewDeleteMenuItem" Header="{Binding Path=DownloadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewDeleteMenuItem_Click" />

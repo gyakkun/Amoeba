@@ -14,20 +14,24 @@ namespace Amoeba
 
         public static int GetCurrentIndex(this ListView myListView, GetPositionDelegate getPosition)
         {
-            int index = -1;
-
-            for (int i = 0; i < myListView.Items.Count; i++)
+            try
             {
-                ListViewItem item = ListViewExtensions.GetListViewItem(myListView, i);
-
-                if (ListViewExtensions.IsMouseOverTarget(myListView, item, getPosition))
+                for (int i = 0; i < myListView.Items.Count; i++)
                 {
-                    index = i;
-                    break;
+                    ListViewItem item = ListViewExtensions.GetListViewItem(myListView, i);
+
+                    if (ListViewExtensions.IsMouseOverTarget(myListView, item, getPosition))
+                    {
+                        return i;
+                    }
                 }
             }
+            catch (Exception)
+            {
 
-            return index;
+            }
+
+            return -1;
         }
 
         private static ListViewItem GetListViewItem(ListView myListView, int index)
@@ -39,6 +43,44 @@ namespace Amoeba
         }
 
         private static bool IsMouseOverTarget(ListView myListView, Visual target, GetPositionDelegate getPosition)
+        {
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
+            Point mousePos = getPosition((IInputElement)target);
+            return bounds.Contains(mousePos);
+        }
+    }
+
+    static class TreeViewExtensions
+    {
+        public delegate Point GetPositionDelegate(IInputElement element);
+
+        public static object GetCurrentItem(this TreeView myTreeView, GetPositionDelegate getPosition)
+        {
+            var items = new List<TreeViewItem>();
+            try
+            {
+                items.AddRange(myTreeView.Items.OfType<TreeViewItem>());
+
+                for (int i = 0; i < items.Count; i++)
+                {
+                    foreach (TreeViewItem item in items[i].Items)
+                    {
+                        if (TreeViewExtensions.IsMouseOverTarget(myTreeView, item, getPosition))
+                        {
+                            items.Add(item);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return items.LastOrDefault();
+        }
+
+        private static bool IsMouseOverTarget(TreeView myTreeView, Visual target, GetPositionDelegate getPosition)
         {
             Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
             Point mousePos = getPosition((IInputElement)target);

@@ -33,7 +33,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListView Grid.Column="2" Name="_uploadListView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_uploadListView_ContextMenuOpening" PreviewDragOver="_uploadListView_PreviewDragOver" PreviewDrop="_uploadListView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" >
+        <ListView Grid.Column="2" Name="_uploadListView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_uploadListView_ContextMenuOpening" PreviewDragOver="_uploadListView_PreviewDragOver" PreviewDrop="_uploadListView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_uploadListView_PreviewMouseLeftButtonDown"  >
             <ListView.ContextMenu>
                 <ContextMenu Name="_uploadListViewContextMenu" >
                     <MenuItem Name="_uploadListViewAddMenuItem" Header="{Binding Path=UploadControl_Add, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewAddMenuItem_Click" />

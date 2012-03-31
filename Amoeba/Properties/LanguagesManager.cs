@@ -2326,6 +2326,39 @@ namespace Amoeba.Properties
             }
         }
 
+        public string ConnectionsWindow_CoreSettings
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_CoreSettings");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_AutoSettings
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_AutoSettings");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_SearchFilterSettings
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_SearchFilterSettings");
+                }
+            }
+        }
+
         public string ConnectionsWindow_AutoUpdate
         {
             get
@@ -2432,6 +2465,61 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsWindow_Paste");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_Searching
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_Searching");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_Uploading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_Uploading");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_Downloading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_Downloading");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_Uploaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_Uploaded");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_Downloaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_Downloaded");
                 }
             }
         }

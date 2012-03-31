@@ -77,6 +77,27 @@ namespace Amoeba.Windows
             }
 
             _clientFiltersConnectionTypeComboBox.SelectedItem = _clientFiltersConnectionTypeComboBox.Items.GetItemAt(0);
+
+            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Searching) == SearchState.Searching)
+            {
+                _miscellaneousSearchFilterSearchingCheckBox.IsChecked = true;
+            }
+            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Uploading) == SearchState.Uploading)
+            {
+                _miscellaneousSearchFilterUploadingCheckBox.IsChecked = true;
+            }
+            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Downloading) == SearchState.Downloading)
+            {
+                _miscellaneousSearchFilterDownloadingCheckBox.IsChecked = true;
+            }
+            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Uploaded) == SearchState.Uploaded)
+            {
+                _miscellaneousSearchFilterUploadedCheckBox.IsChecked = true;
+            }
+            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Downloaded) == SearchState.Downloaded)
+            {
+                _miscellaneousSearchFilterDownloadedCheckBox.IsChecked = true;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1061,6 +1082,29 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_AutoUpdate_IsEnabled = _miscellaneousAutoUpdateCheckBox.IsChecked.Value;
             Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
+
+            Settings.Instance.Global_SearchFilterSettings_State = 0;
+
+            if (_miscellaneousSearchFilterSearchingCheckBox.IsChecked.Value)
+            {
+                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Searching;
+            }
+            if (_miscellaneousSearchFilterUploadingCheckBox.IsChecked.Value)
+            {
+                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Uploading;
+            }
+            if (_miscellaneousSearchFilterDownloadingCheckBox.IsChecked.Value)
+            {
+                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Downloading;
+            }
+            if (_miscellaneousSearchFilterUploadedCheckBox.IsChecked.Value)
+            {
+                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Uploaded;
+            }
+            if (_miscellaneousSearchFilterDownloadedCheckBox.IsChecked.Value)
+            {
+                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Downloaded;
+            }
 
             this.DialogResult = true;
         }
