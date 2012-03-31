@@ -1021,6 +1021,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string DownloadControl_Reset
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("DownloadControl_Reset");
+                }
+            }
+        }
+
         public string DownloadControl_Priority0
         {
             get
@@ -2443,6 +2454,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsWindow_AutoSetting");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_RelateSettings
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_RelateSettings");
+                }
+            }
+        }
+
+        public string ConnectionsWindow_AutoRelateBoxFile
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsWindow_AutoRelateBoxFile");
                 }
             }
         }

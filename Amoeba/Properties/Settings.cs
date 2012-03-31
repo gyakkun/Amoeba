@@ -26,6 +26,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoUpdate_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<SearchState>() { Name = "Global_SearchFilterSettings_State", Value = SearchState.Searching | SearchState.Uploading | SearchState.Downloading | SearchState.Uploaded | SearchState.Downloaded },
+                new Library.Configuration.SettingsContext<bool>() { Name = "Global_Relate_IsEnabled", Value = true },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Left", Value = 120 },
@@ -332,6 +333,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_SearchFilterSettings_State"] = value;
+                }
+            }
+        }
+
+        public bool Global_Relate_IsEnabled
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (bool)this["Global_Relate_IsEnabled"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_Relate_IsEnabled"] = value;
                 }
             }
         }

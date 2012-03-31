@@ -176,7 +176,7 @@ namespace Amoeba.Windows
 
             foreach (var item in uploadItems.Cast<UploadListViewItem>())
             {
-                if (item.Value != null) sb.AppendLine(AmoebaConverter.ToSeedString(item.Value));
+                if (item.Value != null && (item.State == UploadState.Uploading || item.State == UploadState.Completed)) sb.AppendLine(AmoebaConverter.ToSeedString(item.Value));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -192,7 +192,8 @@ namespace Amoeba.Windows
 
             try
             {
-                Clipboard.SetText(MessageConverter.ToInfoMessage(item.Value));
+                if (item.Value != null
+                    && (item.State == UploadState.Uploading || item.State == UploadState.Completed)) Clipboard.SetText(MessageConverter.ToInfoMessage(item.Value));
             }
             catch (Exception)
             {

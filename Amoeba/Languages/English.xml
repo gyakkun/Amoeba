@@ -88,6 +88,7 @@
   <Translate Key="DownloadControl_Copy" Value="_Copy" />
   <Translate Key="DownloadControl_CopyInfo" Value="_Copy Info" />
   <Translate Key="DownloadControl_Paste" Value="_Paste" />
+  <Translate Key="DownloadControl_Reset" Value="_Reset" />
   <Translate Key="DownloadControl_Priority0" Value="_0 (Low)" />
   <Translate Key="DownloadControl_Priority1" Value="_1" />
   <Translate Key="DownloadControl_Priority2" Value="_2" />
@@ -224,6 +225,8 @@
   <Translate Key="ConnectionsWindow_Ipv6" Value="Ipv6" />
   <Translate Key="ConnectionsWindow_Extends" Value="Extends" />
   <Translate Key="ConnectionsWindow_AutoSetting" Value="Auto Setting" />
+  <Translate Key="ConnectionsWindow_RelateSettings" Value="Relate Settings" />
+  <Translate Key="ConnectionsWindow_AutoRelateBoxFile" Value="Auto Relate Box File" />
   <Translate Key="ConnectionsWindow_Copy" Value="Copy" />
   <Translate Key="ConnectionsWindow_Paste" Value="Paste" />
   <Translate Key="ConnectionsWindow_Searching" Value="Searching" />

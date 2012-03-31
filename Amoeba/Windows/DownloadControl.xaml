@@ -45,6 +45,8 @@
                     <MenuItem Name="_downloadListViewCopyInfoMenuItem" Header="{Binding Path=DownloadControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewCopyInfoMenuItem_Click"/>
                     <MenuItem Name="_downloadListViewPasteMenuItem" Header="{Binding Path=DownloadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewPasteMenuItem_Click"/>
                     <Separator />
+                    <MenuItem Name="_downloadListViewResetMenuItem" Header="{Binding Path=DownloadControl_Reset, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewResetMenuItem_Click"/>
+                    <Separator />
                     <MenuItem Name="_downloadListViewPriorityMenuItem" Header="{Binding Path=DownloadControl_Priority, Source={StaticResource ResourcesInstance}}" >
                         <MenuItem Name="_downloadListViewPriority0MenuItem" Header="{Binding Path=DownloadControl_Priority0, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewPriority0MenuItem_Click"/>
                         <MenuItem Name="_downloadListViewPriority1MenuItem" Header="{Binding Path=DownloadControl_Priority1, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewPriority1MenuItem_Click"/>

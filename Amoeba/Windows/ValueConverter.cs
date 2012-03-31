@@ -23,11 +23,11 @@ namespace Amoeba.Windows
         {
             try
             {
-                var directoryImage = ObjectToImageConverter.GetImage(Path.Combine(App.DirectoryPaths["Icons"], "Directory.png"));
-                var keyImage = ObjectToImageConverter.GetImage(Path.Combine(App.DirectoryPaths["Icons"], "Key.png"));
+                var boxImage = ObjectToImageConverter.GetImage(Path.Combine(App.DirectoryPaths["Icons"], "Box.png"));
+                var seedImage = ObjectToImageConverter.GetImage(Path.Combine(App.DirectoryPaths["Icons"], "Seed.png"));
 
-                _images["Amoeba.Windows.LibraryControl+BoxListViewItem"] = directoryImage;
-                _images["Amoeba.Windows.LibraryControl+SeedListViewItem"] = keyImage;
+                _images["Amoeba.Windows.LibraryControl+BoxListViewItem"] = boxImage;
+                _images["Amoeba.Windows.LibraryControl+SeedListViewItem"] = seedImage;
             }
             catch (Exception)
             {

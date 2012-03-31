@@ -12,7 +12,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Amoeba.Properties;
 using Library;
 using Library.Net.Amoeba;
@@ -98,6 +97,8 @@ namespace Amoeba.Windows
             {
                 _miscellaneousSearchFilterDownloadedCheckBox.IsChecked = true;
             }
+
+            _miscellaneousAutoRelateBoxFileCheckBox.IsChecked = Settings.Instance.Global_Relate_IsEnabled;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -532,6 +533,8 @@ namespace Amoeba.Windows
             {
                 _clientFiltersProxyUriTextBox.IsEnabled = true;
 
+                if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text)) return;
+
                 string scheme = null;
                 int port = 0;
                 Regex regex = new Regex(@"(.*?):(.*):(\d*)");
@@ -656,7 +659,7 @@ namespace Amoeba.Windows
             string proxyUri = null;
             var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };
 
-            if (connectionType != ConnectionType.None && connectionType != ConnectionType.Tcp)
+            if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text))
             {
                 proxyUri = _clientFiltersProxyUriTextBox.Text;
             }
@@ -1104,6 +1107,47 @@ namespace Amoeba.Windows
             if (_miscellaneousSearchFilterDownloadedCheckBox.IsChecked.Value)
             {
                 Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Downloaded;
+            }
+
+
+            if (Settings.Instance.Global_Relate_IsEnabled != _miscellaneousAutoRelateBoxFileCheckBox.IsChecked.Value)
+            {
+                if (_miscellaneousAutoRelateBoxFileCheckBox.IsChecked.Value)
+                {
+                    System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
+                    p.UseShellExecute = true;
+                    p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
+                    p.Arguments = "Relate on";
+                    p.Verb = "runas";
+
+                    try
+                    {
+                        System.Diagnostics.Process.Start(p);
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
+                    p.UseShellExecute = true;
+                    p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
+                    p.Arguments = "Relate off";
+                    p.Verb = "runas";
+
+                    try
+                    {
+                        System.Diagnostics.Process.Start(p);
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+
+                    }
+                }
+
+                Settings.Instance.Global_Relate_IsEnabled = _miscellaneousAutoRelateBoxFileCheckBox.IsChecked.Value;
             }
 
             this.DialogResult = true;

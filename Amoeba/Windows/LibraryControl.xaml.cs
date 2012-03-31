@@ -20,6 +20,8 @@ using Library.Net;
 using Library.Net.Amoeba;
 using Library.Security;
 using System.Collections;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace Amoeba.Windows
 {
@@ -46,8 +48,63 @@ namespace Amoeba.Windows
             _boxTreeViewItem.Value = Settings.Instance.LibraryControl_Box;
 
             this.Update();
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(this.ShareItemShow), this);
         }
 
+        private void ShareItemShow(object state)
+        {
+            for (; ; )
+            {
+                Thread.Sleep(1000 * 3);
+
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                {
+                    try
+                    {
+                        foreach (var filePath in Directory.GetFiles(App.DirectoryPaths["box"]))
+                        {
+                            try
+                            {
+                                using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                                {
+                                    var directory = AmoebaConverter.FromBoxStream(stream);
+
+                                    if (!LibraryControl.BoxDigitalSignatureCheck(ref directory))
+                                    {
+                                        if (MessageBox.Show(
+                                                LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
+                                                "Digital Signature",
+                                                MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                        {
+                                            _boxTreeViewItem.Value.Boxes.Add(directory);
+                                            _boxTreeViewItem.Update();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _boxTreeViewItem.Value.Boxes.Add(directory);
+                                        _boxTreeViewItem.Update();
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
+
+                            File.Delete(filePath);
+                         
+                            this.Update();
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }), null);
+            }
+        }
+        
         private static bool BoxDigitalSignatureCheck(ref Box box)
         {
             bool flag = true;

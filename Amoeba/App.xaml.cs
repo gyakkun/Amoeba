@@ -13,6 +13,7 @@ using Library;
 using Library.Net.Amoeba;
 using System.Text.RegularExpressions;
 using Ionic.Zip;
+using System.Reflection;
 
 namespace Amoeba
 {
@@ -25,20 +26,22 @@ namespace Amoeba
         public static Dictionary<string, string> DirectoryPaths { get; private set; }
         public static string[] UpdateSignature { get; private set; }
         public static Node[] Nodes { get; private set; }
+        public static string[] Args { get; private set; }
 
         public App()
         {
             App.AmoebaVersion = new Version(0, 1, 0);
 
             App.DirectoryPaths = new Dictionary<string, string>();
-            App.DirectoryPaths["Base"] = @"..\";
-            App.DirectoryPaths["Core"] = @".\";
+            App.DirectoryPaths["Base"] = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+            App.DirectoryPaths["Core"] = Path.Combine(App.DirectoryPaths["Base"], "Core");
             App.DirectoryPaths["Configuration"] = Path.Combine(App.DirectoryPaths["Base"], "Configuration");
             App.DirectoryPaths["Update"] = Path.Combine(App.DirectoryPaths["Base"], "Update");
             App.DirectoryPaths["Log"] = Path.Combine(App.DirectoryPaths["Base"], "Log");
             App.DirectoryPaths["Icons"] = Path.Combine(App.DirectoryPaths["Core"], "Icons");
             App.DirectoryPaths["Languages"] = Path.Combine(App.DirectoryPaths["Core"], "Languages");
             App.DirectoryPaths["Temp"] = Path.Combine(App.DirectoryPaths["Core"], "Temp");
+            App.DirectoryPaths["box"] = Path.Combine(App.DirectoryPaths["Core"], "Box");
 
             App.UpdateSignature = new string[] { };
             App.Nodes = new Node[] { };
@@ -116,7 +119,7 @@ namespace Amoeba
 
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(App_UnhandledException);
 
-            this.AmoebaUpdate();
+            this.Update();
         }
 
         void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -128,12 +131,39 @@ namespace Amoeba
             Log.Error(exception);
         }
 
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            App.Args = e.Args;
+        }
+
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             Log.Error(e.Exception);
         }
 
-        private void AmoebaUpdate()
+        private static string GetUniqueFilePath(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return path;
+            }
+
+            for (int index = 1; ; index++)
+            {
+                string text = string.Format(@"{0}\{1} ({2}){3}",
+                    Path.GetDirectoryName(path),
+                    Path.GetFileNameWithoutExtension(path),
+                    index,
+                    Path.GetExtension(path));
+
+                if (!File.Exists(text))
+                {
+                    return text;
+                }
+            }
+        }
+
+        private void Update()
         {
             if (Directory.Exists(App.DirectoryPaths["Update"]))
             {

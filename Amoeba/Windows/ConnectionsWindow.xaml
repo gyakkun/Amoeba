@@ -208,6 +208,11 @@
                                 <CheckBox Content="{Binding Path=ConnectionsWindow_Downloaded, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,94,0,0" Name="_miscellaneousSearchFilterDownloadedCheckBox" VerticalAlignment="Top" />
                             </Grid>
                         </Expander>
+                        <Expander Header="{Binding Path=ConnectionsWindow_RelateSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0">
+                            <Grid>
+                                <CheckBox Content="{Binding Path=ConnectionsWindow_AutoRelateBoxFile, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousAutoRelateBoxFileCheckBox" VerticalAlignment="Top" />
+                            </Grid>
+                        </Expander>
                     </StackPanel>
                 </Grid>
             </TabItem>

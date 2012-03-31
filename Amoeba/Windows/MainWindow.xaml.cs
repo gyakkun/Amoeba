@@ -52,6 +52,8 @@ namespace Amoeba.Windows
 
         public MainWindow()
         {
+            this.Relate();
+
             try
             {
                 _lockStream = new FileStream(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.lock"), FileMode.Create);
@@ -98,34 +100,63 @@ namespace Amoeba.Windows
             this.Dispose();
         }
 
-        public static void CopyDirectory(string sourceDirName, string destDirName)
+        public void Relate()
         {
-            if (!System.IO.Directory.Exists(destDirName))
+            if (App.Args.Length == 2 && App.Args[0] == "Relate")
             {
-                System.IO.Directory.CreateDirectory(destDirName);
-                System.IO.File.SetAttributes(destDirName, System.IO.File.GetAttributes(sourceDirName));
-            }
+                if (App.Args[1] == "on")
+                {
+                    string extension = ".box";
+                    string commandline = "\"" + Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe") + "\" %1";
+                    string fileType = "Amoeba";
+                    string description = "Amoeba Box";
+                    string verb = "open";
+                    string iconPath = Path.Combine(App.DirectoryPaths["Icons"], "Box.ico");
 
-            if (destDirName[destDirName.Length - 1] != System.IO.Path.DirectorySeparatorChar)
-            {
-                destDirName = destDirName + System.IO.Path.DirectorySeparatorChar;
-            }
+                    Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension);
+                    regkey.SetValue("", fileType);
+                    regkey.Close();
 
-            foreach (string file in System.IO.Directory.GetFiles(sourceDirName))
-            {
-                System.IO.File.Copy(file, destDirName + System.IO.Path.GetFileName(file), true);
-            }
+                    Microsoft.Win32.RegistryKey shellkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType);
+                    shellkey.SetValue("", description);
 
-            foreach (string dir in System.IO.Directory.GetDirectories(sourceDirName))
+                    shellkey = shellkey.CreateSubKey("shell\\" + verb);
+
+                    shellkey = shellkey.CreateSubKey("command");
+                    shellkey.SetValue("", commandline);
+                    shellkey.Close();
+
+                    Microsoft.Win32.RegistryKey iconkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType + "\\DefaultIcon");
+                    iconkey.SetValue("", "\"" + iconPath + "\"");
+                    iconkey.Close();
+                }
+                else if (App.Args[1] == "off")
+                {
+                    string extension = ".box";
+                    string fileType = "Amoeba";
+
+                    Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(extension);
+                    Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(fileType);
+
+                    this.Close();
+                }
+            }
+            else if (App.Args.Length == 1 && File.Exists(App.Args[0]))
             {
-                CopyDirectory(dir, destDirName + System.IO.Path.GetFileName(dir));
+                if (Path.GetExtension(App.Args[0]).ToLower() == ".box")
+                {
+                    if (!Directory.Exists(App.DirectoryPaths["box"]))
+                        Directory.CreateDirectory(App.DirectoryPaths["box"]);
+
+                    File.Copy(App.Args[0], MainWindow.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["box"], "temp.box")));
+                }
+
+                this.Close();
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-
             NativeMethods.SetThreadExecutionState(ExecutionState.SystemRequired | ExecutionState.Continuous);
 
             _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "cache.blocks"), App.DirectoryPaths["Temp"], _bufferManager);
@@ -146,6 +177,23 @@ namespace Amoeba.Windows
 
             if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
             {
+                {
+                    System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
+                    p.UseShellExecute = true;
+                    p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
+                    p.Arguments = "Relate on";
+                    p.Verb = "runas";
+
+                    try
+                    {
+                        System.Diagnostics.Process.Start(p);
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+
+                    }
+                }
+
                 _amoebaManager.SearchKeywords.Clear();
                 _amoebaManager.SearchKeywords.Add(new Keyword()
                 {
@@ -487,6 +535,30 @@ namespace Amoeba.Windows
                 {
                     return text;
                 }
+            }
+        }
+
+        private static void CopyDirectory(string sourceDirName, string destDirName)
+        {
+            if (!System.IO.Directory.Exists(destDirName))
+            {
+                System.IO.Directory.CreateDirectory(destDirName);
+                System.IO.File.SetAttributes(destDirName, System.IO.File.GetAttributes(sourceDirName));
+            }
+
+            if (destDirName[destDirName.Length - 1] != System.IO.Path.DirectorySeparatorChar)
+            {
+                destDirName = destDirName + System.IO.Path.DirectorySeparatorChar;
+            }
+
+            foreach (string file in System.IO.Directory.GetFiles(sourceDirName))
+            {
+                System.IO.File.Copy(file, destDirName + System.IO.Path.GetFileName(file), true);
+            }
+
+            foreach (string dir in System.IO.Directory.GetDirectories(sourceDirName))
+            {
+                CopyDirectory(dir, destDirName + System.IO.Path.GetFileName(dir));
             }
         }
 

@@ -163,6 +163,23 @@ namespace Amoeba.Windows
             }
         }
 
+        private void _downloadListViewResetMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var downloadItems = _downloadListView.SelectedItems;
+            if (downloadItems == null) return;
+
+            foreach (var item in downloadItems.Cast<DownloadListViewItem>())
+            {
+                _amoebaManager.DownloadRemove((int)item.Information["Id"]);
+            }
+
+
+            foreach (var item in downloadItems.Cast<DownloadListViewItem>())
+            {
+                _amoebaManager.Download((Seed)item.Information["Seed"]);
+            }
+        }
+
         private void SetPriority(int i)
         {
             var downloadItems = _downloadListView.SelectedItems;
