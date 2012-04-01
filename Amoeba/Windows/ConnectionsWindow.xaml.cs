@@ -1117,7 +1117,13 @@ namespace Amoeba.Windows
                     p.UseShellExecute = true;
                     p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
                     p.Arguments = "Relate on";
-                    p.Verb = "runas";
+                    
+                    OperatingSystem osInfo = Environment.OSVersion;
+
+                    if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
+                    {
+                        p.Verb = "runas";
+                    }
 
                     try
                     {
@@ -1134,7 +1140,13 @@ namespace Amoeba.Windows
                     p.UseShellExecute = true;
                     p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
                     p.Arguments = "Relate off";
-                    p.Verb = "runas";
+                  
+                    OperatingSystem osInfo = Environment.OSVersion;
+
+                    if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
+                    {
+                        p.Verb = "runas";
+                    }
 
                     try
                     {

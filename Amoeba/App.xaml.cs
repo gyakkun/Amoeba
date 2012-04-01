@@ -43,6 +43,8 @@ namespace Amoeba
             App.DirectoryPaths["Temp"] = Path.Combine(App.DirectoryPaths["Core"], "Temp");
             App.DirectoryPaths["box"] = Path.Combine(App.DirectoryPaths["Core"], "Box");
 
+            Directory.SetCurrentDirectory(App.DirectoryPaths["Core"]);
+
             App.UpdateSignature = new string[] { };
             App.Nodes = new Node[] { };
 
