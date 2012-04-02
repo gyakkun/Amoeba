@@ -229,16 +229,19 @@ namespace Amoeba.Windows
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
                     || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (e.Source == _boxTreeView)
+                    if (e.Source.GetType() == typeof(TreeView) || e.Source.GetType() == typeof(BoxTreeViewItem))
                     {
                         if (_boxTreeViewItem == _boxTreeView.SelectedItem) return;
 
                         DataObject data = new DataObject("item", _boxTreeView.SelectedItem);
                         DragDrop.DoDragDrop(_grid, data, DragDropEffects.Move);
                     }
-                    else if (e.Source == _listView && _listView.GetCurrentIndex(e.GetPosition) != -1)
+                    else if (_selectedItems != null && (e.Source.GetType() == typeof(ListView) || e.Source.GetType() == typeof(BoxListViewItem)))
                     {
-                        var posithonItem = _listViewItemCollection[_listView.GetCurrentIndex(e.GetPosition)];
+                        var posithonIndex = _listView.GetCurrentIndex(e.GetPosition);
+                        if (posithonIndex == -1) return;
+
+                        var posithonItem = _listViewItemCollection[posithonIndex];
 
                         if (_selectedItems.Any(n => object.ReferenceEquals(n, posithonItem)))
                         {
@@ -277,6 +280,22 @@ namespace Amoeba.Windows
             {
                 var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
                 if (selectBoxTreeViewItem == null) return;
+
+                var posithonIndex = _listView.GetCurrentIndex(e.GetPosition);
+
+                if (posithonIndex != -1)
+                {
+                    var tl = _listViewItemCollection[posithonIndex] as BoxListViewItem;
+                    var t = selectBoxTreeViewItem.Items.OfType<BoxTreeViewItem>().First(n => object.ReferenceEquals(n.Value, tl.Value));
+
+                    if (t != null)
+                    {
+                        selectBoxTreeViewItem = t;
+                    }
+                }
+
+                var tempItem = _boxTreeView.GetCurrentItem(e.GetPosition) as BoxTreeViewItem;
+                if (tempItem != null) selectBoxTreeViewItem = tempItem;
 
                 foreach (string filePath in ((string[])e.Data.GetData(DataFormats.FileDrop)).Where(item => File.Exists(item)))
                 {
@@ -353,6 +372,8 @@ namespace Amoeba.Windows
 
                         var t = e.Source as BoxTreeViewItem;
 
+                        boxes = boxes.Where(n => !object.ReferenceEquals(n, t.Value)).ToList();
+                        
                         foreach (var box in boxes)
                         {
                             if (_boxTreeViewItem.GetLineage(t).OfType<BoxTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, box))) return;
@@ -504,6 +525,14 @@ namespace Amoeba.Windows
             if (_listViewCopyInfoMenuItem != null) _listViewCopyInfoMenuItem.IsEnabled = (_listView.SelectedItems.Count > 0);
             if (_listViewUploadMenuItem != null) _listViewUploadMenuItem.IsEnabled = (_listView.SelectedItems.Count > 0);
             if (_listViewDownloadMenuItem != null) _listViewDownloadMenuItem.IsEnabled = (_listView.SelectedItems.Count > 0);
+
+            if (_listViewPasteMenuItem != null)
+            {
+                var seeds = Clipboard.GetSeeds();
+                var boxes = Clipboard.GetBoxes();
+
+                _listViewPasteMenuItem.IsEnabled = (seeds.Count() + boxes.Count()) > 0 ? true : false;
+            }
         }
 
         private void _listViewAddBoxMenuItem_Click(object sender, RoutedEventArgs e)
@@ -875,6 +904,13 @@ namespace Amoeba.Windows
 
             if (_boxTreeViewCutContextMenuItem != null) _boxTreeViewCutContextMenuItem.IsEnabled = (selectBoxTreeViewItem != _boxTreeViewItem);
             if (_boxTreeViewDeleteContextMenuItem != null) _boxTreeViewDeleteContextMenuItem.IsEnabled = (selectBoxTreeViewItem != _boxTreeViewItem);
+
+            if (_boxTreeViewPasteContextMenuItem != null)
+            {
+                var boxes = Clipboard.GetBoxes();
+
+                _boxTreeViewPasteContextMenuItem.IsEnabled = (boxes.Count()) > 0 ? true : false;
+            }
         }
 
         private void _boxTreeViewAddBoxContextMenuItem_Click(object sender, RoutedEventArgs e)

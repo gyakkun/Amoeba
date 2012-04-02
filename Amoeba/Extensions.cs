@@ -56,19 +56,26 @@ namespace Amoeba
 
         public static object GetCurrentItem(this TreeView myTreeView, GetPositionDelegate getPosition)
         {
-            var items = new List<TreeViewItem>();
             try
             {
+                var items = new List<TreeViewItem>();
                 items.AddRange(myTreeView.Items.OfType<TreeViewItem>());
 
                 for (int i = 0; i < items.Count; i++)
                 {
                     foreach (TreeViewItem item in items[i].Items)
                     {
-                        if (TreeViewExtensions.IsMouseOverTarget(myTreeView, item, getPosition))
-                        {
-                            items.Add(item);
-                        }
+                        items.Add(item);
+                    }
+                }
+
+                items.Reverse();
+
+                foreach (var item in items)
+                {
+                    if (TreeViewExtensions.IsMouseOverTarget(myTreeView, item, getPosition))
+                    {
+                        return item;
                     }
                 }
             }
@@ -77,7 +84,7 @@ namespace Amoeba
 
             }
 
-            return items.LastOrDefault();
+            return null;
         }
 
         private static bool IsMouseOverTarget(TreeView myTreeView, Visual target, GetPositionDelegate getPosition)

@@ -104,6 +104,8 @@ namespace Amoeba
 
             foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
             {
+                if (!item.StartsWith("Seed@")) continue;
+
                 try
                 {
                     list.Add(AmoebaConverter.FromSeedString(item));

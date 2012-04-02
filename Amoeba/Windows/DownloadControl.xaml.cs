@@ -108,7 +108,15 @@ namespace Amoeba.Windows
             if (_downloadListViewDeleteMenuItem != null) _downloadListViewDeleteMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
             if (_downloadListViewCopyMenuItem != null) _downloadListViewCopyMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
             if (_downloadListViewCopyInfoMenuItem != null) _downloadListViewCopyInfoMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
+            if (_downloadListViewResetMenuItem != null) _downloadListViewResetMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
             if (_downloadListViewPriorityMenuItem != null) _downloadListViewPriorityMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
+
+            if (_downloadListViewPasteMenuItem != null)
+            {
+                var seeds = Clipboard.GetSeeds();
+
+                _downloadListViewPasteMenuItem.IsEnabled = (seeds.Count()) > 0 ? true : false;
+            }
         }
 
         private void _downloadListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)

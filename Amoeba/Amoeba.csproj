@@ -320,9 +320,9 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\Amoeba.readme">
+    <Content Include="Properties\Amoeba.readme">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Library\Library.Collections\Library.Collections.csproj">
