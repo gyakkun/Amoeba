@@ -633,10 +633,13 @@ namespace Amoeba.Windows
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
                     || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (_searchTreeViewItem == _searchTreeView.SelectedItem) return;
+                    if (e.Source.GetType() == typeof(SearchTreeViewItem))
+                    {
+                        if (_searchTreeViewItem == _searchTreeView.SelectedItem) return;
 
-                    DataObject data = new DataObject("item", _searchTreeView.SelectedItem);
-                    DragDrop.DoDragDrop(_searchTreeView, data, DragDropEffects.Move);
+                        DataObject data = new DataObject("item", _searchTreeView.SelectedItem);
+                        DragDrop.DoDragDrop(_searchTreeView, data, DragDropEffects.Move);
+                    }
                 }
             }
         }

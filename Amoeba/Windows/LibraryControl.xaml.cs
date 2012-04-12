@@ -413,7 +413,7 @@ namespace Amoeba.Windows
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
                     || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (e.Source.GetType() == typeof(TreeView) || e.Source.GetType() == typeof(BoxTreeViewItem) || e.Source.GetType() == typeof(TextBlock))
+                    if (e.Source.GetType() == typeof(BoxTreeViewItem) || e.Source.GetType() == typeof(TextBlock))
                     {
                         if (_boxTreeViewItem == _boxTreeView.SelectedItem) return;
 
