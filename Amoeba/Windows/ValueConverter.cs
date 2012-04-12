@@ -73,7 +73,7 @@ namespace Amoeba.Windows
             var item = value as string;
             if (item == null) return null;
 
-            return item.Replace("\r\n", " ").Replace('\r', ' ').Replace('\n', ' ');
+            return item.Replace('\r', ' ').Replace('\n', ' ');
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -44,7 +44,7 @@
                         <Grid>
                             <ListView Name="_baseNodeUrisListView" Margin="6,6,6,99" SelectionChanged="_baseNodeUrisListView_SelectionChanged" PreviewMouseLeftButtonDown="_baseNodeUrisListView_PreviewMouseLeftButtonDown">
                                 <ListView.View>
-                                    <GridView>
+                                    <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_Uri, Source={StaticResource ResourcesInstance}}"
                                             Width="{Binding Path=ConnectionsWindow_BaseNode_Uris_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                     </GridView>
@@ -78,7 +78,7 @@
                                     </ContextMenu>
                                 </ListView.ContextMenu>
                                 <ListView.View>
-                                    <GridView>
+                                    <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_Node, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Node}" 
                                             Width="{Binding Path=ConnectionsWindow_OtherNodes_Node_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                     </GridView>
@@ -98,7 +98,7 @@
                         <Grid>
                             <ListView Margin="6,6,6,214" Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" >
                                 <ListView.View>
-                                    <GridView>
+                                    <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ConnectionType}" 
                                             Width="{Binding Path=ConnectionsWindow_Client_Filters_ConnectionType_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ProxyUri}" 
@@ -138,7 +138,7 @@
                         <Grid>
                             <ListView Margin="6,6,6,99" Name="_serverListenUrisListView" PreviewMouseLeftButtonDown="_serverListenUrisListView_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUrisListView_SelectionChanged" >
                                 <ListView.View>
-                                    <GridView>
+                                    <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_Uri, Source={StaticResource ResourcesInstance}}" 
                                             Width="{Binding Path=ConnectionsWindow_Server_ListenUris_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                     </GridView>
@@ -162,7 +162,7 @@
                 <Grid>
                     <ListView Margin="6,6,6,65" Name="_keywordsListView" PreviewMouseLeftButtonDown="_keywordsListView_PreviewMouseLeftButtonDown" SelectionChanged="_keywordsListView_SelectionChanged" >
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=ConnectionsWindow_Keyword, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keyword}" 
                                         Width="{Binding Path=ConnectionsWindow_Keywords_Keyword_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>

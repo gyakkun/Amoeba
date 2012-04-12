@@ -7,34 +7,20 @@
         Height="500" Width="800">
    
     <UserControl.Resources>
-        <local:StringsToStringConverter x:Key="_stringsToStringConverter"/>
-        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
-        <local:SearchStateToStringConverter x:Key="_searchStateToStringConverter"/>
         <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
+        <local:SearchStateToStringConverter x:Key="_searchStateToStringConverter"/>
+        <local:StringsToStringConverter x:Key="_stringsToStringConverter"/>
         <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
-        <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
-        
+
         <DataTemplate x:Key="_myTemplate_Name">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Signature">
-            <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_State">
-            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Keywords">
             <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringsToStringConverter}}"/>
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_CreationTime">
-            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, StringFormat=yyyy/MM/dd\ HH:mm:ss}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Length">
-            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Comment">
-            <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+        <DataTemplate x:Key="_myTemplate_State">
+            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -53,7 +39,8 @@
 
         <TextBox Name="_searchTextBox" KeyDown="_searchTextBox_KeyDown" />
 
-        <TreeView Grid.Row="1" Name="_searchTreeView" ContextMenuOpening="_searchTreeView_ContextMenuOpening" SelectedItemChanged="_searchTreeView_SelectedItemChanged" PreviewMouseMove="_searchTreeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_searchTreeView_PreviewDrop" PreviewMouseLeftButtonDown="_searchTreeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_searchTreeView_PreviewMouseRightButtonDown" >
+        <TreeView Grid.Row="1" Name="_searchTreeView" ContextMenuOpening="_searchTreeView_ContextMenuOpening" SelectedItemChanged="_searchTreeView_SelectedItemChanged" PreviewMouseMove="_searchTreeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_searchTreeView_PreviewDrop" PreviewMouseLeftButtonDown="_searchTreeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_searchTreeView_PreviewMouseRightButtonDown" 
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <TreeView.ContextMenu>
                 <ContextMenu Name="_searchTreeViewContextMenu">
                     <MenuItem Name="_searchTreeViewAddMenuItem" Header="{Binding Path=SearchControl_Add, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewAddMenuItem_Click"/>
@@ -67,7 +54,13 @@
             </TreeView.ContextMenu>
         </TreeView>
 
-        <ListView Grid.Column="2" Name="_searchListView" Grid.RowSpan="2" ContextMenuOpening="_searchListView_ContextMenuOpening" PreviewMouseDoubleClick="_searchListView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_searchListView_PreviewMouseLeftButtonDown">
+        <ListView Grid.Column="2" Name="_searchListView" Grid.RowSpan="2" ContextMenuOpening="_searchListView_ContextMenuOpening" PreviewMouseDoubleClick="_searchListView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_searchListView_PreviewMouseLeftButtonDown"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_searchListViewContextMenu" >
                     <MenuItem Name="_searchListViewCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_searchListViewCopyMenuItem_Click" />
@@ -77,6 +70,7 @@
                     <Separator />
                     <MenuItem Name="_searchListViewFilterNameMenuItem" Header="{Binding Path=SearchControl_FilterName, Source={StaticResource ResourcesInstance}}" Click="_searchListViewFilterNameMenuItem_Click" />
                     <MenuItem Name="_searchListViewFilterSignatureMenuItem" Header="{Binding Path=SearchControl_FilterSignature, Source={StaticResource ResourcesInstance}}" Click="_searchListViewFilterSignatureMenuItem_Click" />
+                    <MenuItem Name="_searchListViewFilterKeywordMenuItem" Header="{Binding Path=SearchControl_FilterKeyword, Source={StaticResource ResourcesInstance}}" Click="_searchListViewFilterKeywordMenuItem_Click" />
                     <MenuItem Name="_searchListViewFilterSeedMenuItem" Header="{Binding Path=SearchControl_FilterSeed, Source={StaticResource ResourcesInstance}}" Click="_searchListViewFilterSeedMenuItem_Click" />
                     <Separator />
                     <MenuItem Name="_searchListViewDownloadHistoryDeleteMenuItem" Header="{Binding Path=SearchControl_DownloadHistoryDelete, Source={StaticResource ResourcesInstance}}" Click="_searchListViewDownloadHistoryDeleteMenuItem_Click" />
@@ -84,18 +78,18 @@
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
-                <GridView x:Name="_gridView">
+                <GridView x:Name="_gridView" AllowsColumnReorder="False" >
                     <GridViewColumn Header="{Binding Path=SearchControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=SearchControl_Signature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Signature}" 
+                    <GridViewColumn Header="{Binding Path=SearchControl_Signature, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Signature}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Signature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=SearchControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
+                    <GridViewColumn Header="{Binding Path=SearchControl_Length, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Length}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=SearchControl_Keywords, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keywords}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=SearchControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
+                    <GridViewColumn Header="{Binding Path=SearchControl_CreationTime, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=CreationTime}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=SearchControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
+                    <GridViewColumn Header="{Binding Path=SearchControl_Comment, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Comment}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=SearchControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />

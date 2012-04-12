@@ -25,7 +25,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoUpdate_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
-                new Library.Configuration.SettingsContext<SearchState>() { Name = "Global_SearchFilterSettings_State", Value = SearchState.Searching | SearchState.Uploading | SearchState.Downloading | SearchState.Uploaded | SearchState.Downloaded },
+                new Library.Configuration.SettingsContext<SearchState>() { Name = "Global_SearchFilterSettings_State", Value = 0 },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Top", Value = 120 },
@@ -42,94 +42,88 @@ namespace Amoeba.Properties
 
                 new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "SearchControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_Grid_ColumnDefinitions_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Signature_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_State_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Keywords_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_CreationTime_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Length_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Comment_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Hash_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Signature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Keywords_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Comment_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Hash_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_State_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Length_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Priority_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Rank_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Rate_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Path_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Key_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Priority_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Rank_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Rate_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Path_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Key_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_State_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Length_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Priority_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rank_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rate_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Key_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Priority_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rank_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rate_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Key_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Length_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Uri_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Priority_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_ReceivedByteCount_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_SentByteCount_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Uri_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Priority_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_ReceivedByteCount_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_SentByteCount_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Value_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Value_Width", Value = 100 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Grid_ColumnDefinitions_Width", Value = -1 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_Grid_ColumnDefinitions_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Signature_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_State_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Keywords_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_CreationTime_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Length_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Comment_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Key_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Signature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Keywords_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Comment_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Key_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
                 new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_Grid_ColumnDefinitions_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Signature_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_State_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Keywords_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_CreationTime_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Length_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Comment_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Key_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Signature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Keywords_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Comment_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Key_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Height", Value = 500 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "SearchItemEditWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Condition_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Value_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Condition_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Value_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Condition_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Condition_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Value_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Condition_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Value_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Condition_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width", Value = 300 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Condition_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width", Value = 300 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Value_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Value_Width", Value = 600 },
     
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Left", Value = 120 },
@@ -152,20 +146,20 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Height", Value = 500 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_GridViewColumn_Value_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_GridViewColumn_Value_Width", Value = 600 },
                  
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Height", Value = 500 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "ConnectionsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_BaseNode_Uris_Uri_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_OtherNodes_Node_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_BaseNode_Uris_Uri_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_OtherNodes_Node_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ConnectionType_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ProxyUri_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_UriCondition_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Server_ListenUris_Uri_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Keywords_Keyword_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Server_ListenUris_Uri_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Keywords_Keyword_Width", Value = 600 },
             })
         {
 
@@ -1696,25 +1690,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public double SearchItemEditWindow_GridViewColumn_Name_Condition_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Name_Condition_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Name_Condition_Width"] = value;
-                }
-            }
-        }
-
         public double SearchItemEditWindow_GridViewColumn_Name_Contains_Width
         {
             get
@@ -1753,25 +1728,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public double SearchItemEditWindow_GridViewColumn_NameRegex_Condition_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Condition_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Condition_Width"] = value;
-                }
-            }
-        }
-
         public double SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width
         {
             get
@@ -1791,13 +1747,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public double SearchItemEditWindow_GridViewColumn_NameRegex_Value_Width
+        public double SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Width"];
+                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width"];
                 }
             }
 
@@ -1805,18 +1761,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Width"] = value;
+                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width"] = value;
                 }
             }
         }
 
-        public double SearchItemEditWindow_GridViewColumn_Signature_Condition_Width
+        public double SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Condition_Width"];
+                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width"];
                 }
             }
 
@@ -1824,7 +1780,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchItemEditWindow_GridViewColumn_Signature_Condition_Width"] = value;
+                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width"] = value;
                 }
             }
         }
@@ -1867,25 +1823,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public double SearchItemEditWindow_GridViewColumn_Keyword_Condition_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Condition_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Keyword_Condition_Width"] = value;
-                }
-            }
-        }
-
         public double SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width
         {
             get
@@ -1920,25 +1857,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["SearchItemEditWindow_GridViewColumn_Keyword_Value_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_CreationTimeRange_Condition_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Condition_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Condition_Width"] = value;
                 }
             }
         }
@@ -2000,25 +1918,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public double SearchItemEditWindow_GridViewColumn_LengthRange_Condition_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Condition_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_LengthRange_Condition_Width"] = value;
-                }
-            }
-        }
-
         public double SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width
         {
             get
@@ -2072,25 +1971,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Seed_Condition_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Condition_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Seed_Condition_Width"] = value;
                 }
             }
         }

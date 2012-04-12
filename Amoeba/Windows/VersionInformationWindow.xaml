@@ -27,7 +27,7 @@
         <Label Margin="12,55,12,0" Content="Copyright © Albert Lindsay 2009-2012" Height="28" VerticalAlignment="Top" HorizontalAlignment="Center" />
         <ListView Margin="12,89,12,41" Name="_versionListView" >
             <ListView.View>
-                <GridView>
+                <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=VersionInformationWindow_FileName, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_FileName}" 
                             Width="{Binding Path=VersionInformationWindow_GridViewColumn_FileName_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=VersionInformationWindow_Version, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Version}" 

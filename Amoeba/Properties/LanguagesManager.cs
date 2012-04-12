@@ -20,7 +20,7 @@ namespace Amoeba.Properties
         static LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:\Local\Public Project\Amoeba\Amoeba\bin\Debug\Core\Languages";
+            string path = @"C:\Public\Project\Amoeba\Amoeba\bin\Debug\Core\Languages";
 #else
             string path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
 #endif
@@ -143,6 +143,28 @@ namespace Amoeba.Properties
         }
 
         #region Property
+
+        public string MainWindow_Starting
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Starting");
+                }
+            }
+        }
+
+        public string MainWindow_Stopping
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Stopping");
+                }
+            }
+        }
 
         public string MainWindow_Connection
         {
@@ -877,6 +899,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string SearchControl_FilterKeyword
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchControl_FilterKeyword");
+                }
+            }
+        }
+
         public string SearchControl_FilterSeed
         {
             get
@@ -1021,17 +1054,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string DownloadControl_Reset
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("DownloadControl_Reset");
-                }
-            }
-        }
-
         public string DownloadControl_Priority0
         {
             get
@@ -1105,6 +1127,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("DownloadControl_Priority6");
+                }
+            }
+        }
+
+        public string DownloadControl_Reset
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("DownloadControl_Reset");
+                }
+            }
+        }
+
+        public string DownloadControl_CompleteDelete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("DownloadControl_CompleteDelete");
                 }
             }
         }
@@ -1308,6 +1352,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string UploadControl_Reset
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UploadControl_Reset");
+                }
+            }
+        }
+
+        public string UploadControl_CompleteDelete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UploadControl_CompleteDelete");
+                }
+            }
+        }
+
 
         public string ShareControl_Add
         {
@@ -1442,13 +1508,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string SearchItemEditWindow_State
+        public string SearchItemEditWindow_StateFilter
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchItemEditWindow_State");
+                    return this.Translate("SearchItemEditWindow_StateFilter");
                 }
             }
         }
@@ -1636,6 +1702,83 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchItemEditWindow_Min");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_IsIgnoreCase
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_IsIgnoreCase");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Miscellaneous
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Miscellaneous");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Searching
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Searching");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Uploading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Uploading");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Downloading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Downloading");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Uploaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Uploaded");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Downloaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Downloaded");
                 }
             }
         }
@@ -2702,13 +2845,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LibraryControl_Upload
+        public string LibraryControl_KeyUpload
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Upload");
+                    return this.Translate("LibraryControl_KeyUpload");
                 }
             }
         }
@@ -2720,17 +2863,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("LibraryControl_Download");
-                }
-            }
-        }
-
-        public string LibraryControl_KeyUpload
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LibraryControl_KeyUpload");
                 }
             }
         }
@@ -3338,6 +3470,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionControl_SeedCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_CacheSeedCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_CacheSeedCount");
                 }
             }
         }

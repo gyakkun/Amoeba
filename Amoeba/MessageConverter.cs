@@ -28,7 +28,8 @@ namespace Amoeba
             {
                 using (var sha512 = new SHA512Managed())
                 {
-                    return Convert.ToBase64String(sha512.ComputeHash(digitalSignature.PublicKey).ToArray());
+                    return Convert.ToBase64String(sha512.ComputeHash(digitalSignature.PublicKey).ToArray())
+                        .Replace('+', '-').Replace('/', '_').Substring(0, 20);
                 }
             }
             catch (Exception e)
@@ -45,7 +46,8 @@ namespace Amoeba
             {
                 using (var sha512 = new SHA512Managed())
                 {
-                    return Convert.ToBase64String(sha512.ComputeHash(certificate.PublicKey).ToArray());
+                    return Convert.ToBase64String(sha512.ComputeHash(certificate.PublicKey).ToArray())
+                        .Replace('+', '-').Replace('/', '_').Substring(0, 20);
                 }
             }
             catch (Exception e)
@@ -61,7 +63,7 @@ namespace Amoeba
                 StringBuilder builder = new StringBuilder();
 
                 if (seed.Name != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Name, seed.Name));
-                builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Signature, MessageConverter.ToSignatureString(seed.Certificate)));
+                if (seed.Certificate != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Signature, MessageConverter.ToSignatureString(seed.Certificate)));
                 builder.AppendLine(string.Format("{0}: {1:#,0}", LanguagesManager.Instance.SearchControl_Length, seed.Length));
                 if (seed.Keywords.Count != 0) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Keywords, String.Join(", ", seed.Keywords.Select(n => n.Value))));
                 builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_CreationTime, seed.CreationTime.ToString("yyyy/MM/dd HH:mm:ss")));
@@ -83,7 +85,7 @@ namespace Amoeba
                 StringBuilder builder = new StringBuilder();
 
                 if (box.Name != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Name, box.Name));
-                builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Signature, MessageConverter.ToSignatureString(box.Certificate)));
+                if (box.Certificate != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Signature, MessageConverter.ToSignatureString(box.Certificate)));
                 builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_CreationTime, box.CreationTime.ToString("yyyy/MM/dd HH:mm:ss")));
                 if (box.Comment != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Comment, box.Comment));
 

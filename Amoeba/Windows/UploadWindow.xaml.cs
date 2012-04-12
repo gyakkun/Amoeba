@@ -81,7 +81,8 @@ namespace Amoeba.Windows
                     name,
                     keywords,
                     comment,
-                    digitalSignature);
+                    digitalSignature,
+                    0);
             }
             else
             {
@@ -89,7 +90,8 @@ namespace Amoeba.Windows
                     name,
                     keywords,
                     comment,
-                    digitalSignature);
+                    digitalSignature
+                    ,0);
             }
 
             Settings.Instance.Global_UploadKeywords.Clear();

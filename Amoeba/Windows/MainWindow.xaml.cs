@@ -52,7 +52,12 @@ namespace Amoeba.Windows
 
         public MainWindow()
         {
-            this.Relate();
+            if (this.Args())
+            {
+                this.Dispose();
+
+                return;
+            }
 
             try
             {
@@ -61,11 +66,14 @@ namespace Amoeba.Windows
             catch (IOException)
             {
                 this.Dispose();
+
+                return;
             }
 
             _bufferManager = new BufferManager();
 
             this.Setting_Log();
+            this.Setting_DebugLog();
 
             _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
             _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
@@ -84,8 +92,23 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            this.Setting_DebugLog();
             this.Setting_Languages();
+
+            System.Drawing.Icon myIcon = new System.Drawing.Icon(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"));
+            _notifyIcon.Icon = new System.Drawing.Icon(myIcon, new System.Drawing.Size(16, 16));
+            _notifyIcon.Visible = true;
+
+            this.Setting_Init();
+
+            _notifyIcon.Visible = false;
+            _notifyIcon.Click += (object sender2, EventArgs e2) =>
+            {
+                this.Show();
+                this.Activate();
+                this.WindowState = _windowState;
+
+                _notifyIcon.Visible = false;
+            };
         }
 
         ~MainWindow()
@@ -100,326 +123,397 @@ namespace Amoeba.Windows
             this.Dispose();
         }
 
-        public void Relate()
+        private bool Args()
         {
             if (App.Args.Length == 2 && App.Args[0] == "Relate")
             {
                 if (App.Args[1] == "on")
                 {
-                    string extension = ".box";
-                    string commandline = "\"" + Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe") + "\" %1";
-                    string fileType = "Amoeba";
-                    string description = "Amoeba Box";
-                    string verb = "open";
-                    string iconPath = Path.Combine(App.DirectoryPaths["Icons"], "Box.ico");
+                    try
+                    {
+                        string extension = ".box";
+                        string commandline = "\"" + Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe") + "\" \"%1\"";
+                        string fileType = "Amoeba";
+                        string description = "Amoeba Box";
+                        string verb = "open";
+                        string iconPath = Path.Combine(App.DirectoryPaths["Icons"], "Box.ico");
 
-                    Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension);
-                    regkey.SetValue("", fileType);
-                    regkey.Close();
+                        Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension);
+                        regkey.SetValue("", fileType);
+                        regkey.Close();
 
-                    Microsoft.Win32.RegistryKey shellkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType);
-                    shellkey.SetValue("", description);
+                        Microsoft.Win32.RegistryKey shellkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType);
+                        shellkey.SetValue("", description);
 
-                    shellkey = shellkey.CreateSubKey("shell\\" + verb);
+                        shellkey = shellkey.CreateSubKey("shell\\" + verb);
 
-                    shellkey = shellkey.CreateSubKey("command");
-                    shellkey.SetValue("", commandline);
-                    shellkey.Close();
+                        shellkey = shellkey.CreateSubKey("command");
+                        shellkey.SetValue("", commandline);
+                        shellkey.Close();
 
-                    Microsoft.Win32.RegistryKey iconkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType + "\\DefaultIcon");
-                    iconkey.SetValue("", "\"" + iconPath + "\"");
-                    iconkey.Close();
+                        Microsoft.Win32.RegistryKey iconkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType + "\\DefaultIcon");
+                        iconkey.SetValue("", "\"" + iconPath + "\"");
+                        iconkey.Close();
+
+                        this.Close();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    return true;
                 }
                 else if (App.Args[1] == "off")
                 {
-                    string extension = ".box";
-                    string fileType = "Amoeba";
+                    try
+                    {
+                        string extension = ".box";
+                        string fileType = "Amoeba";
 
-                    Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(extension);
-                    Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(fileType);
+                        Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(extension);
+                        Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(fileType);
 
-                    this.Close();
+                        this.Close();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    return true;
                 }
             }
-            else if (App.Args.Length == 1 && File.Exists(App.Args[0]))
+            else if (App.Args.Length == 1 && App.Args[0].EndsWith(".box") && File.Exists(App.Args[0]))
             {
-                if (Path.GetExtension(App.Args[0]).ToLower() == ".box")
+                try
                 {
-                    if (!Directory.Exists(App.DirectoryPaths["box"]))
-                        Directory.CreateDirectory(App.DirectoryPaths["box"]);
+                    if (Path.GetExtension(App.Args[0]).ToLower() == ".box")
+                    {
+                        if (!Directory.Exists(App.DirectoryPaths["Input"]))
+                            Directory.CreateDirectory(App.DirectoryPaths["Input"]);
 
-                    File.Copy(App.Args[0], MainWindow.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["box"], "temp.box")));
+                        File.Copy(App.Args[0], MainWindow.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["Input"], "temp.box")));
+                    }
+                }
+                catch (Exception)
+                {
+
                 }
 
-                this.Close();
+                return false;
+            }
+            else if (App.Args.Length >= 1 && App.Args[0].StartsWith("Seed@"))
+            {
+                try
+                {
+                    if (!Directory.Exists(App.DirectoryPaths["Input"]))
+                        Directory.CreateDirectory(App.DirectoryPaths["Input"]);
+
+                    using (FileStream stream = new FileStream(MainWindow.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["Input"], "seed.txt")), FileMode.Create))
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
+                        foreach (var item in App.Args)
+                        {
+                            if (item == null || !item.StartsWith("Seed@")) continue;
+                            writer.WriteLine(item);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private void Setting_Init()
+        {
+            NativeMethods.SetThreadExecutionState(ExecutionState.SystemRequired | ExecutionState.Continuous);
+
+            {
+                _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "cache.blocks"), App.DirectoryPaths["Temp"], _bufferManager);
+                _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
+
+                if (_amoebaManager.BaseNode == null || _amoebaManager.BaseNode.Id == null)
+                {
+                    byte[] buffer = new byte[64];
+                    (new RNGCryptoServiceProvider()).GetBytes(buffer);
+
+                    var baseNode = new Node();
+                    baseNode.Id = buffer;
+
+                    _amoebaManager.BaseNode = baseNode;
+                }
+
+                _amoebaManager.SetOtherNodes(App.Nodes);
+
+                if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
+                {
+                    {
+                        System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
+                        p.UseShellExecute = true;
+                        p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
+                        p.Arguments = "Relate on";
+
+                        OperatingSystem osInfo = Environment.OSVersion;
+
+                        if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
+                        {
+                            p.Verb = "runas";
+                        }
+
+                        try
+                        {
+                            System.Diagnostics.Process.Start(p);
+                        }
+                        catch (System.ComponentModel.Win32Exception)
+                        {
+
+                        }
+                    }
+
+                    _amoebaManager.SearchKeywords.Clear();
+                    _amoebaManager.SearchKeywords.Add(new Keyword()
+                    {
+                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
+                        Value = "box"
+                    });
+                    _amoebaManager.SearchKeywords.Add(new Keyword()
+                    {
+                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
+                        Value = "picture"
+                    });
+                    _amoebaManager.SearchKeywords.Add(new Keyword()
+                    {
+                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
+                        Value = "movie"
+                    });
+                    _amoebaManager.SearchKeywords.Add(new Keyword()
+                    {
+                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
+                        Value = "music"
+                    });
+                    _amoebaManager.SearchKeywords.Add(new Keyword()
+                    {
+                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
+                        Value = "archive"
+                    });
+                    _amoebaManager.SearchKeywords.Add(new Keyword()
+                    {
+                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
+                        Value = "document"
+                    });
+                    _amoebaManager.SearchKeywords.Add(new Keyword()
+                    {
+                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
+                        Value = "executable"
+                    });
+
+                    Directory.CreateDirectory(Path.Combine(@"..\", "Download"));
+                    _amoebaManager.DownloadDirectory = Path.Combine(@"..\", "Download");
+
+                    _amoebaManager.ConnectionCountLimit = 12;
+                    _amoebaManager.DownloadingConnectionCountLowerLimit = 3;
+                    _amoebaManager.UploadingConnectionCountLowerLimit = 3;
+
+                    Settings.Instance.Global_UploadKeywords.Add("document");
+
+                    SearchItem pictureSearchItem = new SearchItem()
+                    {
+                        Name = "Picture"
+                    };
+                    pictureSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    {
+                        Contains = true,
+                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(jpeg|jpg|png|jp2|gif|bmp)$" }
+                    });
+
+                    SearchItem movieSearchItem = new SearchItem()
+                    {
+                        Name = "Movie"
+                    };
+                    movieSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    {
+                        Contains = true,
+                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(mpeg|mpg|avi|divx|asf|wmv|rm|ogm|mov|flv|mp4|wav|mid|aif)$" }
+                    });
+
+                    SearchItem musicSearchItem = new SearchItem()
+                    {
+                        Name = "Music"
+                    };
+                    musicSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    {
+                        Contains = true,
+                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(mp3|ogg|wav|mid|mod|flac|sid)$" }
+                    });
+
+                    SearchItem archiveSearchItem = new SearchItem()
+                    {
+                        Name = "Archive"
+                    };
+                    archiveSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    {
+                        Contains = true,
+                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(zip|rar|gz|arj|ace|bz|tar|tgz|txz|7z|lzh|lhz|iso)$" }
+                    });
+
+                    SearchItem documentSearchItem = new SearchItem()
+                    {
+                        Name = "Document"
+                    };
+                    documentSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    {
+                        Contains = true,
+                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(dov|txt|pdf|dvi|ps|odt|sxw|rtf|pdb|psw)$" }
+                    });
+
+                    SearchItem ExecutableSearchItem = new SearchItem()
+                    {
+                        Name = "Executable"
+                    };
+                    ExecutableSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    {
+                        Contains = true,
+                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(exe|vbs|jar|sh|bat|bin|scr|msi)$" }
+                    });
+
+                    Settings.Instance.SearchControl_SearchTreeItem.Items.Clear();
+                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    {
+                        SearchItem = pictureSearchItem
+                    });
+                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    {
+                        SearchItem = movieSearchItem
+                    });
+                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    {
+                        SearchItem = musicSearchItem
+                    });
+                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    {
+                        SearchItem = archiveSearchItem
+                    });
+                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    {
+                        SearchItem = documentSearchItem
+                    });
+                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    {
+                        SearchItem = ExecutableSearchItem
+                    });
+
+                    Random random = new Random();
+                    _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), random.Next(1024, 65536)));
+                    _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), random.Next(1024, 65536)));
+
+                    var ipv4ConnectionFilter = new ConnectionFilter()
+                    {
+                        ConnectionType = ConnectionType.Tcp,
+                        UriCondition = new UriCondition()
+                        {
+                            Value = @"tcp:([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}).*",
+                        },
+                    };
+
+                    var ipv6ConnectionFilter = new ConnectionFilter()
+                    {
+                        ConnectionType = ConnectionType.Tcp,
+                        UriCondition = new UriCondition()
+                        {
+                            Value = @"tcp:\[(\d|:)*\].*",
+                        },
+                    };
+
+                    var tcpConnectionFilter = new ConnectionFilter()
+                    {
+                        ConnectionType = ConnectionType.Tcp,
+                        UriCondition = new UriCondition()
+                        {
+                            Value = @"tcp:.*",
+                        },
+                    };
+
+                    var torConnectionFilter = new ConnectionFilter()
+                    {
+                        ConnectionType = ConnectionType.None,
+                        UriCondition = new UriCondition()
+                        {
+                            Value = @"tor:.*",
+                        },
+                    };
+
+                    var i2pConnectionFilter = new ConnectionFilter()
+                    {
+                        ConnectionType = ConnectionType.None,
+                        UriCondition = new UriCondition()
+                        {
+                            Value = @"i2p:.*",
+                        },
+                    };
+
+                    _amoebaManager.Filters.Add(ipv4ConnectionFilter);
+                    _amoebaManager.Filters.Add(ipv6ConnectionFilter);
+                    _amoebaManager.Filters.Add(tcpConnectionFilter);
+                    _amoebaManager.Filters.Add(torConnectionFilter);
+                    _amoebaManager.Filters.Add(i2pConnectionFilter);
+                }
+                else
+                {
+                    Version version;
+
+                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+                    {
+                        version = new Version(reader.ReadLine());
+                    }
+                }
+
+                using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
+                {
+                    writer.WriteLine(App.AmoebaVersion.ToString());
+                }
+
+#if DEBUG
+                if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Debug_NodeId.txt")))
+                {
+                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Debug_NodeId.txt"), new UTF8Encoding(false)))
+                    {
+                        var baseNode = new Node();
+                        byte[] buffer = new byte[64];
+
+                        byte b = byte.Parse(reader.ReadLine());
+
+                        for (int i = 0; i < 64; i++)
+                        {
+                            buffer[i] = b;
+                        }
+
+                        baseNode.Id = buffer;
+                        baseNode.Uris.AddRange(_amoebaManager.BaseNode.Uris);
+
+                        _amoebaManager.BaseNode = baseNode;
+                    }
+                }
+#endif
+
+                _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
+                _autoBaseNodeSettingManager.Load(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+
+                _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+                _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
+                Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            NativeMethods.SetThreadExecutionState(ExecutionState.SystemRequired | ExecutionState.Continuous);
-
-            _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "cache.blocks"), App.DirectoryPaths["Temp"], _bufferManager);
-            _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
-
-            if (_amoebaManager.BaseNode == null || _amoebaManager.BaseNode.Id == null)
-            {
-                byte[] buffer = new byte[64];
-                (new RNGCryptoServiceProvider()).GetBytes(buffer);
-
-                var baseNode = new Node();
-                baseNode.Id = buffer;
-
-                _amoebaManager.BaseNode = baseNode;
-            }
-
-            _amoebaManager.SetOtherNodes(App.Nodes);
-
-            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
-            {
-                {
-                    System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
-                    p.UseShellExecute = true;
-                    p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
-                    p.Arguments = "Relate on";
-                
-                    OperatingSystem osInfo = Environment.OSVersion;
-
-                    if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
-                    {
-                        p.Verb = "runas";
-                    }
-
-                    try
-                    {
-                        System.Diagnostics.Process.Start(p);
-                    }
-                    catch (System.ComponentModel.Win32Exception)
-                    {
-
-                    }
-                }
-
-                _amoebaManager.SearchKeywords.Clear();
-                _amoebaManager.SearchKeywords.Add(new Keyword()
-                {
-                    HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                    Value = "box"
-                });
-                _amoebaManager.SearchKeywords.Add(new Keyword()
-                {
-                    HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                    Value = "picture"
-                });
-                _amoebaManager.SearchKeywords.Add(new Keyword()
-                {
-                    HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                    Value = "movie"
-                });
-                _amoebaManager.SearchKeywords.Add(new Keyword()
-                {
-                    HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                    Value = "music"
-                });
-                _amoebaManager.SearchKeywords.Add(new Keyword()
-                {
-                    HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                    Value = "archive"
-                });
-                _amoebaManager.SearchKeywords.Add(new Keyword()
-                {
-                    HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                    Value = "document"
-                });
-                _amoebaManager.SearchKeywords.Add(new Keyword()
-                {
-                    HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                    Value = "executable"
-                });
-
-                Directory.CreateDirectory(Path.Combine(App.DirectoryPaths["Base"], "Download"));
-                _amoebaManager.DownloadDirectory = Path.Combine(App.DirectoryPaths["Base"], "Download");
-
-                _amoebaManager.ConnectionCountLimit = 32;
-                _amoebaManager.DownloadingConnectionCountLowerLimit = 6;
-                _amoebaManager.UploadingConnectionCountLowerLimit = 12;
-
-                Settings.Instance.Global_UploadKeywords.Add("document");
-
-                SearchItem pictureSearchItem = new SearchItem()
-                {
-                    Name = "Picture"
-                };
-                pictureSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
-                {
-                    Contains = true,
-                    Value = @"(.*)\.(jpeg|jpg|png|jp2|gif|bmp)$"
-                });
-
-                SearchItem movieSearchItem = new SearchItem()
-                {
-                    Name = "Movie"
-                };
-                movieSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
-                {
-                    Contains = true,
-                    Value = @"(.*)\.(mpeg|mpg|avi|divx|asf|wmv|rm|ogm|mov|flv|mp4|wav|mid|aif)$"
-                });
-
-                SearchItem musicSearchItem = new SearchItem()
-                {
-                    Name = "Music"
-                };
-                musicSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
-                {
-                    Contains = true,
-                    Value = @"(.*)\.(mp3|ogg|wav|mid|mod|flac|sid)$"
-                });
-
-                SearchItem archiveSearchItem = new SearchItem()
-                {
-                    Name = "Archive"
-                };
-                archiveSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
-                {
-                    Contains = true,
-                    Value = @"(.*)\.(zip|rar|gz|arj|ace|bz|tar|tgz|txz|7z|lzh|lhz|iso)$"
-                });
-
-                SearchItem documentSearchItem = new SearchItem()
-                {
-                    Name = "Document"
-                };
-                documentSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
-                {
-                    Contains = true,
-                    Value = @"(.*)\.(dov|txt|pdf|dvi|ps|odt|sxw|rtf|pdb|psw)$"
-                });
-
-                SearchItem ExecutableSearchItem = new SearchItem()
-                {
-                    Name = "Executable"
-                };
-                ExecutableSearchItem.SearchNameRegexCollection.Add(new SearchContains<string>()
-                {
-                    Contains = true,
-                    Value = @"(.*)\.(exe|vbs|jar|sh|bat|bin|scr)$"
-                });
-
-                Settings.Instance.SearchControl_SearchTreeItem.Items.Clear();
-                Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
-                {
-                    SearchItem = pictureSearchItem
-                });
-                Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
-                {
-                    SearchItem = movieSearchItem
-                });
-                Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
-                {
-                    SearchItem = musicSearchItem
-                });
-                Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
-                {
-                    SearchItem = archiveSearchItem
-                });
-                Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
-                {
-                    SearchItem = documentSearchItem
-                });
-                Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
-                {
-                    SearchItem = ExecutableSearchItem
-                });
-
-                Random random = new Random();
-                _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), random.Next(1024, 65536)));
-                _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), random.Next(1024, 65536)));
-
-                var ipv4ConnectionFilter = new ConnectionFilter()
-                {
-                    ConnectionType = ConnectionType.Tcp,
-                    UriCondition = new UriCondition()
-                    {
-                        Value = @"tcp:([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}).*",
-                    },
-                };
-
-                var ipv6ConnectionFilter = new ConnectionFilter()
-                {
-                    ConnectionType = ConnectionType.Tcp,
-                    UriCondition = new UriCondition()
-                    {
-                        Value = @"tcp:\[(\d|:)*\].*",
-                    },
-                };
-
-                var tcpConnectionFilter = new ConnectionFilter()
-                {
-                    ConnectionType = ConnectionType.Tcp,
-                    UriCondition = new UriCondition()
-                    {
-                        Value = @"tcp:.*",
-                    },
-                };
-
-                var torConnectionFilter = new ConnectionFilter()
-                {
-                    ConnectionType = ConnectionType.None,
-                    ProxyUri = "tcp:127.0.0.1:9050",
-                    UriCondition = new UriCondition()
-                    {
-                        Value = @"tor:.*",
-                    },
-                };
-
-                _amoebaManager.Filters.Add(ipv4ConnectionFilter);
-                _amoebaManager.Filters.Add(ipv6ConnectionFilter);
-                _amoebaManager.Filters.Add(tcpConnectionFilter);
-                _amoebaManager.Filters.Add(torConnectionFilter);
-            }
-            else
-            {
-                Version version;
-
-                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
-                {
-                    version = new Version(reader.ReadLine());
-                }
-            }
-
-            using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
-            {
-                writer.WriteLine(App.AmoebaVersion.ToString());
-            }
-
-#if DEBUG
-            if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Debug_NodeId.txt")))
-            {
-                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Debug_NodeId.txt"), new UTF8Encoding(false)))
-                {
-                    var baseNode = new Node();
-                    byte[] buffer = new byte[64];
-
-                    byte b = byte.Parse(reader.ReadLine());
-
-                    for (int i = 0; i < 64; i++)
-                    {
-                        buffer[i] = b;
-                    }
-
-                    baseNode.Id = buffer;
-                    baseNode.Uris.AddRange(_amoebaManager.BaseNode.Uris);
-
-                    _amoebaManager.BaseNode = baseNode;
-                }
-            }
-#endif
-
-            _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
-            _autoBaseNodeSettingManager.Load(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
-
-            SearchControl _searchControl = new SearchControl(_amoebaManager, _bufferManager);
+            SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
             _searchControl.Height = Double.NaN;
             _searchControl.Width = Double.NaN;
             _searchTabItem.Content = _searchControl;
@@ -444,7 +538,7 @@ namespace Amoeba.Windows
             _shareControl.Width = Double.NaN;
             _shareTabItem.Content = _shareControl;
 
-            LibraryControl _libraryControl = new LibraryControl(_amoebaManager, _bufferManager);
+            LibraryControl _libraryControl = new LibraryControl(this, _amoebaManager, _bufferManager);
             _libraryControl.Height = Double.NaN;
             _libraryControl.Width = Double.NaN;
             _libraryTabItem.Content = _libraryControl;
@@ -456,19 +550,6 @@ namespace Amoeba.Windows
             {
                 _menuItemStart_Click(null, null);
             }
-
-            _notifyIcon.Click += (object sender2, EventArgs e2) =>
-            {
-                this.Show();
-                this.Activate();
-                this.WindowState = _windowState;
-
-                _notifyIcon.Visible = false;
-            };
-
-            System.Drawing.Icon myIcon = new System.Drawing.Icon(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"));
-            _notifyIcon.Visible = false;
-            _notifyIcon.Icon = new System.Drawing.Icon(myIcon, new System.Drawing.Size(16, 16));
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -491,18 +572,22 @@ namespace Amoeba.Windows
 
             _notifyIcon.Visible = false;
 
+            _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+
             _autoBaseNodeSettingManager.Stop();
             _autoBaseNodeSettingManager.Dispose();
 
             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
 
+            _amoebaManager.Stop();
             _amoebaManager.Dispose();
+
+            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
 
             this.Dispose();
         }
 
-        public static string GetUniqueFilePath(string path)
+        private static string GetUniqueFilePath(string path)
         {
             if (!File.Exists(path))
             {
@@ -524,7 +609,7 @@ namespace Amoeba.Windows
             }
         }
 
-        public static string GetUniqueDirectoryPath(string path)
+        private static string GetUniqueDirectoryPath(string path)
         {
             if (!Directory.Exists(path))
             {
@@ -583,17 +668,17 @@ namespace Amoeba.Windows
 
                 try
                 {
+                    sentByteCountList[count] = _amoebaManager.SentByteCount - sentByteCount;
+                    sentByteCount = _amoebaManager.SentByteCount;
+                    receivedByteCountList[count] = _amoebaManager.ReceivedByteCount - receivedByteCount;
+                    receivedByteCount = _amoebaManager.ReceivedByteCount;
+                    count++;
+                    if (count >= sentByteCountList.Count) count = 0;
+
                     this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
                     {
                         try
                         {
-                            sentByteCountList[count] = _amoebaManager.SentByteCount - sentByteCount;
-                            sentByteCount = _amoebaManager.SentByteCount;
-                            receivedByteCountList[count] = _amoebaManager.ReceivedByteCount - receivedByteCount;
-                            receivedByteCount = _amoebaManager.ReceivedByteCount;
-                            count++;
-                            if (count >= sentByteCountList.Count) count = 0;
-
                             _sendSpeedTextBlock.Text = NetworkConverter.ToSizeString(sentByteCountList.Sum(n => n) / 3) + "/s";
                             _receiveSpeedTextBlock.Text = NetworkConverter.ToSizeString(receivedByteCountList.Sum(n => n) / 3) + "/s";
                         }
@@ -719,7 +804,7 @@ namespace Amoeba.Windows
 
                             if (updateKey != null)
                             {
-                                _amoebaManager.Download(updateKey, App.DirectoryPaths["Update"]);
+                                _amoebaManager.Download(updateKey, App.DirectoryPaths["Update"], 0);
                             }
                         }
                         catch (Exception)
@@ -744,35 +829,6 @@ namespace Amoeba.Windows
                     }
                 }
             }
-        }
-
-        private void Setting_Languages()
-        {
-            foreach (var item in LanguagesManager.Instance.Languages)
-            {
-                var menuItem = new MenuItem() { IsCheckable = true, Header = item };
-
-                menuItem.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
-                {
-                    foreach (var item3 in _menuItemLanguages.Items.Cast<MenuItem>())
-                    {
-                        item3.IsChecked = false;
-                    }
-
-                    menuItem.IsChecked = true;
-                });
-
-                menuItem.Checked += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
-                {
-                    Settings.Instance.Global_UseLanguage = (string)menuItem.Header;
-                    LanguagesManager.ChangeLanguage((string)menuItem.Header);
-                });
-
-                _menuItemLanguages.Items.Add(menuItem);
-            }
-
-            var menuItem2 = _menuItemLanguages.Items.Cast<MenuItem>().FirstOrDefault(n => (string)n.Header == Settings.Instance.Global_UseLanguage);
-            if (menuItem2 != null) menuItem2.IsChecked = true;
         }
 
         private void Setting_Log()
@@ -843,6 +899,35 @@ namespace Amoeba.Windows
             });
 
             Debug.Listeners.Add(new MyTraceListener(this));
+        }
+
+        private void Setting_Languages()
+        {
+            foreach (var item in LanguagesManager.Instance.Languages)
+            {
+                var menuItem = new MenuItem() { IsCheckable = true, Header = item };
+
+                menuItem.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+                {
+                    foreach (var item3 in _menuItemLanguages.Items.Cast<MenuItem>())
+                    {
+                        item3.IsChecked = false;
+                    }
+
+                    menuItem.IsChecked = true;
+                });
+
+                menuItem.Checked += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+                {
+                    Settings.Instance.Global_UseLanguage = (string)menuItem.Header;
+                    LanguagesManager.ChangeLanguage((string)menuItem.Header);
+                });
+
+                _menuItemLanguages.Items.Add(menuItem);
+            }
+
+            var menuItem2 = _menuItemLanguages.Items.Cast<MenuItem>().FirstOrDefault(n => (string)n.Header == Settings.Instance.Global_UseLanguage);
+            if (menuItem2 != null) menuItem2.IsChecked = true;
         }
 
         private class MyTraceListener : TraceListener
@@ -946,17 +1031,57 @@ namespace Amoeba.Windows
                 ".NET Framework:\t{3}", App.AmoebaVersion.ToString(3), osName, osInfo.VersionString, Environment.Version);
         }
 
-        private void _menuItemStart_Click(object sender, RoutedEventArgs e)
+        private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
+            var tabItem = _tabControl.SelectedItem as TabItem;
+
+            if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Connection)
             {
-                ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
-                {
-                    _autoBaseNodeSettingManager.Start();
-                }));
+                App.SelectTab = "Connection";
+            }
+            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Search)
+            {
+                App.SelectTab = "Search";
+            }
+            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Download)
+            {
+                App.SelectTab = "Download";
+            }
+            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Upload)
+            {
+                App.SelectTab = "Upload";
+            }
+            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Share)
+            {
+                App.SelectTab = "Share";
+            }
+            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Library)
+            {
+                App.SelectTab = "Library";
+            }
+            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Log)
+            {
+                App.SelectTab = "Log";
+            }
+            else
+            {
+                App.SelectTab = "";
             }
 
-            _amoebaManager.Start();
+            this.Title = string.Format("Amoeba {0} α", App.AmoebaVersion);
+        }
+
+        private void _menuItemStart_Click(object sender, RoutedEventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+            {
+                if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
+                {
+                    _autoBaseNodeSettingManager.Start();
+                }
+
+                _amoebaManager.Start();
+            }));
 
             _menuItemStart.IsEnabled = false;
             _menuItemStop.IsEnabled = true;
@@ -967,9 +1092,11 @@ namespace Amoeba.Windows
 
         private void _menuItemStop_Click(object sender, RoutedEventArgs e)
         {
-            _autoBaseNodeSettingManager.Stop();
-
-            _amoebaManager.Stop();
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+            {
+                _autoBaseNodeSettingManager.Stop();
+                _amoebaManager.Stop();
+            }));
 
             _menuItemStart.IsEnabled = true;
             _menuItemStop.IsEnabled = false;
@@ -1007,26 +1134,26 @@ namespace Amoeba.Windows
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
                 _amoebaManager.CheckBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
-                  {
-                      bool flag = false;
+                {
+                    bool flag = false;
 
-                      this.Dispatcher.Invoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
-                      {
-                          try
-                          {
-                              window.Value = 100 * ((double)checkedBlockCount / (double)blockCount);
-                          }
-                          catch (Exception)
-                          {
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            window.Value = 100 * ((double)checkedBlockCount / (double)blockCount);
+                        }
+                        catch (Exception)
+                        {
 
-                          }
+                        }
 
-                          window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckingBlocks_State, badBlockCount, checkedBlockCount, blockCount);
-                          if (window.DialogResult == true) flag = true;
-                      }), null);
+                        window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckingBlocks_State, badBlockCount, checkedBlockCount, blockCount);
+                        if (window.DialogResult == true) flag = true;
+                    }), null);
 
-                      isStop = flag;
-                  });
+                    isStop = flag;
+                });
 
                 this.Dispatcher.Invoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
                 {
@@ -1036,6 +1163,16 @@ namespace Amoeba.Windows
 
             window.ShowDialog();
         }
+
+        #region IDisposable メンバ
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
 
         protected void Dispose(bool disposing)
         {
@@ -1055,15 +1192,5 @@ namespace Amoeba.Windows
                 _disposed = true;
             }
         }
-
-        #region IDisposable メンバ
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
     }
 }

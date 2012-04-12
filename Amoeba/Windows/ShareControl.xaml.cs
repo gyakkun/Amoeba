@@ -49,50 +49,100 @@ namespace Amoeba.Windows
 
         private void ShareItemShow(object state)
         {
-            for (; ; )
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            Thread.CurrentThread.IsBackground = true;
+
+            try
             {
-                Thread.Sleep(1000 * 1);
-
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                for (; ; )
                 {
-                    try
-                    {
-                        var shareingInformation = _amoebaManager.ShareInformation.ToArray();
+                    Thread.Sleep(1000 * 3);
+                    if (App.SelectTab != "Share") continue;
 
+                    var shareInformation = _amoebaManager.ShareInformation.ToArray();
+                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+
+                    foreach (var item in shareInformation.ToArray())
+                    {
+                        dic[(int)item["Id"]] = item;
+                    }
+
+                    Dictionary<int, ShareListViewItem> dic2 = new Dictionary<int, ShareListViewItem>();
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
                         foreach (var item in _shareListViewItemCollection.ToArray())
                         {
-                            if (!shareingInformation.Any(n => (int)n["Id"] == (int)item.Information["Id"]))
+                            dic2[(int)item.Information["Id"]] = item;
+                        }
+                    }), null);
+
+                    List<ShareListViewItem> removeList = new List<ShareListViewItem>();
+                    Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
+                    List<ShareListViewItem> newList = new List<ShareListViewItem>();
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
+                        foreach (var item in _shareListViewItemCollection.ToArray())
+                        {
+                            if (!dic.ContainsKey((int)item.Information["Id"]))
+                            {
+                                removeList.Add(item);
+                            }
+                        }
+                    }), null);
+
+                    foreach (var information in shareInformation)
+                    {
+                        ShareListViewItem item = null;
+
+                        if (dic2.ContainsKey((int)information["Id"]))
+                            item = dic2[(int)information["Id"]];
+
+                        if (item != null)
+                        {
+                            if (!Collection.Equals(item.Information, information))
+                            {
+                                updateDic[item] = information;
+                            }
+                        }
+                        else
+                        {
+                            newList.Add(new ShareListViewItem(information));
+                        }
+                    }
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            foreach (var item in removeList)
                             {
                                 _shareListViewItemCollection.Remove(item);
                             }
-                        }
 
-                        foreach (var information in shareingInformation)
+                            foreach (var item in newList)
+                            {
+                                _shareListViewItemCollection.Add(item);
+                            }
+
+                            foreach (var item in updateDic)
+                            {
+                                item.Key.Information = item.Value;
+                            }
+
+                            this.Sort();
+                        }
+                        catch (Exception)
                         {
-                            var item = _shareListViewItemCollection.FirstOrDefault(n => (int)n.Information["Id"] == (int)information["Id"]);
 
-                            if (item != null)
-                            {
-                                if (!Collection.Equals(item.Information, information))
-                                {
-                                    item.Information = information;
-
-                                    this.Sort();
-                                }
-                            }
-                            else
-                            {
-                                _shareListViewItemCollection.Add(new ShareListViewItem(information));
-
-                                this.Sort();
-                            }
                         }
-                    }
-                    catch (Exception)
-                    {
+                    }), null);
+                }
+            }
+            catch (Exception)
+            {
 
-                    }
-                }), null);
             }
         }
 
@@ -130,26 +180,31 @@ namespace Amoeba.Windows
 
         private void _shareListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if (_shareListViewDeleteMenuItem != null) _shareListViewDeleteMenuItem.IsEnabled = (_shareListView.SelectedItems.Count > 0);
+            var selectItems = _shareListView.SelectedItems;
+            if (selectItems == null) return;
+
+            _shareListViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
         }
 
         private void _shareListViewAddMenuItem_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
             dialog.Multiselect = true;
-            dialog.ShowDialog();
 
-            var uploadFilePaths = dialog.FileNames.ToList();
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var uploadFilePaths = dialog.FileNames.ToList();
 
-            if (uploadFilePaths.Count == 1)
-            {
-                UploadWindow window = new UploadWindow(uploadFilePaths[0], true, _amoebaManager);
-                window.ShowDialog();
-            }
-            else if (uploadFilePaths.Count > 1)
-            {
-                UploadListWindow window = new UploadListWindow(uploadFilePaths, true, _amoebaManager);
-                window.ShowDialog();
+                if (uploadFilePaths.Count == 1)
+                {
+                    UploadWindow window = new UploadWindow(uploadFilePaths[0], true, _amoebaManager);
+                    window.ShowDialog();
+                }
+                else if (uploadFilePaths.Count > 1)
+                {
+                    UploadListWindow window = new UploadListWindow(uploadFilePaths, true, _amoebaManager);
+                    window.ShowDialog();
+                }
             }
         }
         
@@ -204,7 +259,18 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Sort(headerClicked, direction);
+                this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                {
+                    var list = new List<ShareListViewItem>(_shareListViewItemCollection);
+                    var list2 = Sort(list, headerClicked, direction).ToList();
+
+                    for (int i = 0; i < list2.Count; i++)
+                    {
+                        var o = _shareListViewItemCollection.IndexOf(list2[i]);
+
+                        if (i != o) _shareListViewItemCollection.Move(o, i);
+                    }
+                }), null);
 
                 _lastHeaderClicked = headerClicked;
                 _lastDirection = direction;
@@ -213,38 +279,83 @@ namespace Amoeba.Windows
             {
                 if (_lastHeaderClicked != null)
                 {
-                    Sort(_lastHeaderClicked, _lastDirection);
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
+                        var list = new List<ShareListViewItem>(_shareListViewItemCollection);
+                        var list2 = Sort(list, _lastHeaderClicked, _lastDirection).ToList();
+
+                        for (int i = 0; i < list2.Count; i++)
+                        {
+                            var o = _shareListViewItemCollection.IndexOf(list2[i]);
+
+                            if (i != o) _shareListViewItemCollection.Move(o, i);
+                        }
+                    }), null);
                 }
             }
         }
 
-        private void Sort(string sortBy, ListSortDirection direction)
+        private IEnumerable<ShareListViewItem> Sort(IEnumerable<ShareListViewItem> collection, string sortBy, ListSortDirection direction)
         {
-            string propertyName = null;
+            List<ShareListViewItem> list = new List<ShareListViewItem>(collection);
 
             if (sortBy == LanguagesManager.Instance.ShareControl_Name)
             {
-                propertyName = "Name";
+                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                {
+                    int c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
             else if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
-                propertyName = "Path";
+                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                {
+                    int c = x.Path.CompareTo(y.Path);
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
             else if (sortBy == LanguagesManager.Instance.ShareControl_Length)
             {
-                propertyName = "Length";
+                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                {
+                    int c = ((long)x.Information["Length"]).CompareTo((long)y.Information["Length"]);
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
             else if (sortBy == LanguagesManager.Instance.ShareControl_BlockCount)
             {
-                propertyName = "BlockCount";
+                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                {
+                    int c = x.BlockCount.CompareTo(y.BlockCount);
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
 
-            if (propertyName == null) return;
+            if (direction == ListSortDirection.Descending)
+            {
+                list.Reverse();
+            }
 
-            _shareListView.Items.SortDescriptions.Clear();
-            _shareListView.Items.SortDescriptions.Add(new SortDescription(propertyName, direction));
+            return list;
         }
-
+        
         #endregion
 
         private class ShareListViewItem : INotifyPropertyChanged
@@ -263,7 +374,7 @@ namespace Amoeba.Windows
             private string _name = null;
             private string _path = null;
             private int _blockCount = 0;
-            private long _length = 0;
+            private string _length = "";
 
             public ShareListViewItem(Information information)
             {
@@ -291,7 +402,7 @@ namespace Amoeba.Windows
 
                     try
                     {
-                        this.Length = new FileInfo(this.Path).Length;
+                        this.Length = NetworkConverter.ToSizeString(new FileInfo(this.Path).Length);
                     }
                     catch (Exception)
                     {
@@ -351,7 +462,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public long Length
+            public string Length
             {
                 get
                 {

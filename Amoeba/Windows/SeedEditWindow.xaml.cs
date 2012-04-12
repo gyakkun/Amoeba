@@ -44,9 +44,9 @@ namespace Amoeba.Windows
 
             _nameTextBox.Text = _seed.Name;
 
-            if (Settings.Instance.Global_UploadKeywords.Count >= 1) _keywordsComboBox1.Text = Settings.Instance.Global_UploadKeywords[0];
-            if (Settings.Instance.Global_UploadKeywords.Count >= 2) _keywordsComboBox2.Text = Settings.Instance.Global_UploadKeywords[1];
-            if (Settings.Instance.Global_UploadKeywords.Count >= 3) _keywordsComboBox3.Text = Settings.Instance.Global_UploadKeywords[2];
+            if (seed.Keywords.Count >= 1) _keywordsComboBox1.Text = seed.Keywords[0].Value;
+            if (seed.Keywords.Count >= 2) _keywordsComboBox2.Text = seed.Keywords[1].Value;
+            if (seed.Keywords.Count >= 3) _keywordsComboBox3.Text = seed.Keywords[2].Value;
 
             _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = "" });
             _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = "" });

@@ -19,7 +19,7 @@
             <RowDefinition Height="438*" />
             <RowDefinition Height="23" />
         </Grid.RowDefinitions>
-        <TabControl Margin="0,28,0,0" Name="_tabControl">
+        <TabControl Margin="0,28,0,0" Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
             <TabItem Header="{Binding Path=MainWindow_Connection, Source={StaticResource ResourcesInstance}}" Name="_connectionTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Search, Source={StaticResource ResourcesInstance}}" Name="_searchTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Download, Source={StaticResource ResourcesInstance}}" Name="_downloadTabItem" />

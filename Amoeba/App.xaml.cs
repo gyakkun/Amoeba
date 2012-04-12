@@ -5,15 +5,15 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using Ionic.Zip;
 using Library;
 using Library.Net.Amoeba;
-using System.Text.RegularExpressions;
-using Ionic.Zip;
-using System.Reflection;
 
 namespace Amoeba
 {
@@ -27,29 +27,35 @@ namespace Amoeba
         public static string[] UpdateSignature { get; private set; }
         public static Node[] Nodes { get; private set; }
         public static string[] Args { get; private set; }
+        public static string SelectTab { get; set; }
 
         public App()
         {
-            System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
+            //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
             App.AmoebaVersion = new Version(0, 1, 0);
 
             App.DirectoryPaths = new Dictionary<string, string>();
             App.DirectoryPaths["Base"] = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
             App.DirectoryPaths["Core"] = Path.Combine(App.DirectoryPaths["Base"], "Core");
+            Directory.SetCurrentDirectory(App.DirectoryPaths["Core"]);
+
             App.DirectoryPaths["Configuration"] = Path.Combine(App.DirectoryPaths["Base"], "Configuration");
             App.DirectoryPaths["Update"] = Path.Combine(App.DirectoryPaths["Base"], "Update");
             App.DirectoryPaths["Log"] = Path.Combine(App.DirectoryPaths["Base"], "Log");
             App.DirectoryPaths["Icons"] = Path.Combine(App.DirectoryPaths["Core"], "Icons");
             App.DirectoryPaths["Languages"] = Path.Combine(App.DirectoryPaths["Core"], "Languages");
-            App.DirectoryPaths["Temp"] = Path.Combine(App.DirectoryPaths["Core"], "Temp");
-            App.DirectoryPaths["box"] = Path.Combine(App.DirectoryPaths["Core"], "Box");
-
-            Directory.SetCurrentDirectory(App.DirectoryPaths["Core"]);
+            App.DirectoryPaths["Temp"] = Path.Combine(App.DirectoryPaths["Base"], "Temp");
+            App.DirectoryPaths["Input"] = Path.Combine(App.DirectoryPaths["Base"], "Input");
 
             App.UpdateSignature = new string[] { };
             App.Nodes = new Node[] { };
 
+            if (Directory.Exists(App.DirectoryPaths["Temp"]))
+            {
+                Directory.Delete(App.DirectoryPaths["Temp"], true);
+            }
+            
             foreach (var item in App.DirectoryPaths.Values)
             {
                 if (!Directory.Exists(item))
@@ -62,7 +68,7 @@ namespace Amoeba
             {
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt"), false, new UTF8Encoding(false)))
                 {
-                    writer.WriteLine("0cfQjFzmkLaXEhjXVHzWtdHT+4VBbUKChW3OnUvpAtPOJOqxTLd3m22cIQwWc4VftWZYu7DNynFhvARqlBLHtg==");
+                    writer.WriteLine("DVF70ndvAZF0IyI5opAS");
                 }
             }
 
@@ -104,21 +110,6 @@ namespace Amoeba
                 }
 
                 App.Nodes = list.ToArray();
-            }
-
-            if (!Directory.Exists(App.DirectoryPaths["Temp"]))
-            {
-                Directory.CreateDirectory(App.DirectoryPaths["Temp"]);
-            }
-
-            foreach (var path in Directory.GetFiles(App.DirectoryPaths["Temp"], "*", SearchOption.TopDirectoryOnly))
-            {
-                File.Delete(path);
-            }
-
-            foreach (var path in Directory.GetDirectories(App.DirectoryPaths["Temp"], "*", SearchOption.TopDirectoryOnly))
-            {
-                Directory.Delete(path, true);
             }
 
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(App_UnhandledException);
@@ -166,7 +157,7 @@ namespace Amoeba
                 }
             }
         }
-
+        
         private void Update()
         {
             if (Directory.Exists(App.DirectoryPaths["Update"]))

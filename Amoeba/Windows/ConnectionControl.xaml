@@ -7,29 +7,7 @@
         Height="300" Width="569">
     
     <UserControl.Resources>
-        <local:NodeToStringConverter x:Key="_nodeToStringConverter"/>
-        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
         <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
-        <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
-        
-        <DataTemplate x:Key="_myTemplate_Uri">
-            <TextBlock Text="{Binding Path=Uri, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Priority">
-            <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_ReceivedByteCount">
-            <TextBlock Text="{Binding Path=ReceivedByteCount, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_SentByteCount">
-            <TextBlock Text="{Binding Path=SentByteCount, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Name">
-            <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Value">
-            <TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
-        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
@@ -43,29 +21,35 @@
 
         <ListView Name="_connectionsInfomationListView" Grid.Column="2" GridViewColumnHeader.Click="_connectionsInfomationListView_Click" PreviewMouseLeftButtonDown="_connectionsInfomationListView_PreviewMouseLeftButtonDown">
             <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="{Binding Path=ConnectionControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=ConnectionControl_Name, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Name}" 
                             Width="{Binding Path=ConnectionControl_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ConnectionControl_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Value}" 
+                    <GridViewColumn Header="{Binding Path=ConnectionControl_Value, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Value}" 
                             Width="{Binding Path=ConnectionControl_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListView Name="_connectionListView" ContextMenuOpening="_connectionListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_connectionListView_PreviewMouseLeftButtonDown">
+        <ListView Name="_connectionListView" ContextMenuOpening="_connectionListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_connectionListView_PreviewMouseLeftButtonDown"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_connectionListViewContextMenu" >
                     <MenuItem Name="_connectionListViewCopyMenuItem" Header="{Binding Path=ConnectionControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_connectionListViewCopyMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="{Binding Path=ConnectionControl_Uri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Uri}" 
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=ConnectionControl_Uri, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Uri}" 
                             Width="{Binding Path=ConnectionControl_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ConnectionControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
+                    <GridViewColumn Header="{Binding Path=ConnectionControl_Priority, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Priority}" 
                             Width="{Binding Path=ConnectionControl_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ConnectionControl_ReceivedByteCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ReceivedByteCount}" 
+                    <GridViewColumn Header="{Binding Path=ConnectionControl_ReceivedByteCount, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=ReceivedByteCount}" 
                             Width="{Binding Path=ConnectionControl_ReceivedByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ConnectionControl_SentByteCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SentByteCount}" 
+                    <GridViewColumn Header="{Binding Path=ConnectionControl_SentByteCount, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=SentByteCount}" 
                             Width="{Binding Path=ConnectionControl_SentByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

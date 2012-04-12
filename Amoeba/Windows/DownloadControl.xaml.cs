@@ -20,6 +20,7 @@ using Amoeba.Properties;
 using Library;
 using Library.Collections;
 using Library.Net.Amoeba;
+using System.IO;
 
 namespace Amoeba.Windows
 {
@@ -44,54 +45,157 @@ namespace Amoeba.Windows
             _downloadListView.ItemsSource = _downloadListViewItemCollection;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.DownloadItemShow), this);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(this.Watch), this);
         }
 
         private void DownloadItemShow(object state)
         {
-            for (; ; )
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            Thread.CurrentThread.IsBackground = true;
+
+            try
             {
-                Thread.Sleep(1000 * 3);
-
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                for (; ; )
                 {
-                    try
-                    {
-                        var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
+                    Thread.Sleep(1000 * 3);
+                    if (App.SelectTab != "Download") continue;
 
+                    var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
+                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+
+                    foreach (var item in downloadingInformation.ToArray())
+                    {
+                        dic[(int)item["Id"]] = item;
+                    }
+
+                    Dictionary<int, DownloadListViewItem> dic2 = new Dictionary<int, DownloadListViewItem>();
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
                         foreach (var item in _downloadListViewItemCollection.ToArray())
                         {
-                            if (!downloadingInformation.Any(n => (int)n["Id"] == (int)item.Information["Id"]))
+                            dic2[(int)item.Information["Id"]] = item;
+                        }
+                    }), null);
+
+                    List<DownloadListViewItem> removeList = new List<DownloadListViewItem>();
+                    Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
+                    List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
+                        foreach (var item in _downloadListViewItemCollection.ToArray())
+                        {
+                            if (!dic.ContainsKey((int)item.Information["Id"]))
+                            {
+                                removeList.Add(item);
+                            }
+                        }
+                    }), null);
+
+                    foreach (var information in downloadingInformation)
+                    {
+                        DownloadListViewItem item = null;
+
+                        if (dic2.ContainsKey((int)information["Id"]))
+                            item = dic2[(int)information["Id"]];
+
+                        if (item != null)
+                        {
+                            if (!Collection.Equals(item.Information, information))
+                            {
+                                updateDic[item] = information;
+                            }
+                        }
+                        else
+                        {
+                            newList.Add(new DownloadListViewItem(information));
+                        }
+                    }
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            foreach (var item in removeList)
                             {
                                 _downloadListViewItemCollection.Remove(item);
                             }
-                        }
 
-                        foreach (var information in downloadingInformation)
-                        {
-                            var item = _downloadListViewItemCollection.FirstOrDefault(n => (int)n.Information["Id"] == (int)information["Id"]);
-
-                            if (item != null)
+                            foreach (var item in newList)
                             {
-                                if (!Collection.Equals(item.Information, information))
-                                {
-                                    item.Information = information;
+                                _downloadListViewItemCollection.Add(item);
+                            }
 
-                                    this.Sort();
+                            foreach (var item in updateDic)
+                            {
+                                item.Key.Information = item.Value;
+                            }
+
+                            this.Sort();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }), null);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void Watch(object state)
+        {
+            try
+            {
+                for (; ; )
+                {
+                    Thread.Sleep(1000 * 3);
+
+                    if (!Directory.Exists(App.DirectoryPaths["Input"])) continue;
+
+                    foreach (var filePath in Directory.GetFiles(App.DirectoryPaths["Input"]))
+                    {
+                        if (!System.IO.Path.GetFileName(filePath).StartsWith("seed") || !filePath.EndsWith(".txt")) continue;
+
+                        try
+                        {
+                            using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                var item = reader.ReadLine();
+                                if (item == null) break;
+
+                                try
+                                {
+                                    Seed s = AmoebaConverter.FromSeedString(item);
+                                    _amoebaManager.Download(s, 0);
+                                }
+                                catch (Exception)
+                                {
+
                                 }
                             }
-                            else
-                            {
-                                _downloadListViewItemCollection.Add(new DownloadListViewItem(information));
-
-                                this.Sort();
-                            }
                         }
-                    }
-                    catch (Exception)
-                    {
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (Exception)
+                        {
 
+                        }
+
+                        File.Delete(filePath);
                     }
-                }), null);
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
@@ -105,17 +209,20 @@ namespace Amoeba.Windows
 
         private void _downloadListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if (_downloadListViewDeleteMenuItem != null) _downloadListViewDeleteMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
-            if (_downloadListViewCopyMenuItem != null) _downloadListViewCopyMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
-            if (_downloadListViewCopyInfoMenuItem != null) _downloadListViewCopyInfoMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
-            if (_downloadListViewResetMenuItem != null) _downloadListViewResetMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
-            if (_downloadListViewPriorityMenuItem != null) _downloadListViewPriorityMenuItem.IsEnabled = (_downloadListView.SelectedItems.Count > 0);
+            var selectItems = _downloadListView.SelectedItems;
+            if (selectItems == null) return;
 
-            if (_downloadListViewPasteMenuItem != null)
+            _downloadListViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
+            _downloadListViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
+            _downloadListViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
+            _downloadListViewResetMenuItem.IsEnabled = (selectItems.Count > 0);
+            _downloadListViewPriorityMenuItem.IsEnabled = (selectItems.Count > 0);
+            _downloadListViewCompleteDeleteMenuItem.IsEnabled = _downloadListViewItemCollection.Any(n => (DownloadState)n.Information["State"] == DownloadState.Completed);
+
             {
                 var seeds = Clipboard.GetSeeds();
 
-                _downloadListViewPasteMenuItem.IsEnabled = (seeds.Count()) > 0 ? true : false;
+                _downloadListViewPasteMenuItem.IsEnabled = (seeds.Count() > 0) ? true : false;
             }
         }
 
@@ -126,7 +233,14 @@ namespace Amoeba.Windows
 
             foreach (var item in downloadItems.Cast<DownloadListViewItem>())
             {
-                _amoebaManager.DownloadRemove((int)item.Information["Id"]);
+                try
+                {
+                    _amoebaManager.DownloadRemove((int)item.Information["Id"]);
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
 
@@ -167,24 +281,7 @@ namespace Amoeba.Windows
         {
             foreach (var item in Clipboard.GetSeeds())
             {
-                _amoebaManager.Download(item);
-            }
-        }
-
-        private void _downloadListViewResetMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var downloadItems = _downloadListView.SelectedItems;
-            if (downloadItems == null) return;
-
-            foreach (var item in downloadItems.Cast<DownloadListViewItem>())
-            {
-                _amoebaManager.DownloadRemove((int)item.Information["Id"]);
-            }
-
-
-            foreach (var item in downloadItems.Cast<DownloadListViewItem>())
-            {
-                _amoebaManager.Download((Seed)item.Information["Seed"]);
+                _amoebaManager.Download(item, 0);
             }
         }
 
@@ -195,7 +292,14 @@ namespace Amoeba.Windows
 
             foreach (var item in downloadItems.Cast<DownloadListViewItem>())
             {
-                _amoebaManager.SetDownloadPriority((int)item.Information["Id"], i);
+                try
+                {
+                    _amoebaManager.SetDownloadPriority((int)item.Information["Id"], i);
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
 
@@ -238,6 +342,47 @@ namespace Amoeba.Windows
 
         #endregion
 
+        private void _downloadListViewResetMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var downloadItems = _downloadListView.SelectedItems;
+            if (downloadItems == null) return;
+
+            foreach (var item in downloadItems.Cast<DownloadListViewItem>())
+            {
+                try
+                {
+                    _amoebaManager.DownloadRestart((int)item.Information["Id"]);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+
+        private void _downloadListViewCompleteDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
+
+                foreach (var item in downloadingInformation)
+                {
+                    if (item.Contains("State") && DownloadState.Completed == (DownloadState)item["State"])
+                    {
+                        try
+                        {
+                            _amoebaManager.DownloadRemove((int)item["Id"]);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+                }
+            }));
+        }
+
         #region Sort
 
         private void Sort()
@@ -278,7 +423,18 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Sort(headerClicked, direction);
+                this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                {
+                    var list = new List<DownloadListViewItem>(_downloadListViewItemCollection);
+                    var list2 = Sort(list, headerClicked, direction).ToList();
+
+                    for (int i = 0; i < list2.Count; i++)
+                    {
+                        var o = _downloadListViewItemCollection.IndexOf(list2[i]);
+
+                        if (i != o) _downloadListViewItemCollection.Move(o, i);
+                    }
+                }), null);
 
                 _lastHeaderClicked = headerClicked;
                 _lastDirection = direction;
@@ -287,44 +443,95 @@ namespace Amoeba.Windows
             {
                 if (_lastHeaderClicked != null)
                 {
-                    Sort(_lastHeaderClicked, _lastDirection);
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
+                        var list = new List<DownloadListViewItem>(_downloadListViewItemCollection);
+                        var list2 = Sort(list, _lastHeaderClicked, _lastDirection).ToList();
+
+                        for (int i = 0; i < list2.Count; i++)
+                        {
+                            var o = _downloadListViewItemCollection.IndexOf(list2[i]);
+
+                            if (i != o) _downloadListViewItemCollection.Move(o, i);
+                        }
+                    }), null);
                 }
             }
         }
 
-        private void Sort(string sortBy, ListSortDirection direction)
+        private IEnumerable<DownloadListViewItem> Sort(IEnumerable<DownloadListViewItem> collection, string sortBy, ListSortDirection direction)
         {
-            string propertyName = null;
+            List<DownloadListViewItem> list = new List<DownloadListViewItem>(collection);
 
             if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
             {
-                propertyName = "Name";
+                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                {
+                    int c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Length)
             {
-                propertyName = "Length";
+                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                {
+                    int c = x.Value.Length.CompareTo(y.Value.Length);
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Priority)
             {
-                propertyName = "Priority";
+                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                {
+                    int c = x.Priority.CompareTo(y.Priority);
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Rate)
             {
-                propertyName = "Rate";
-            }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
-            {
-                propertyName = "Path";
+                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                {
+                    int c = ((int)((DownloadState)x.Information["State"])).CompareTo((int)((DownloadState)y.Information["State"]));
+                    if (c != 0) return c;
+                    c = x.Rate.CompareTo(y.Rate);
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_State)
             {
-                propertyName = "State";
+                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                {
+                    int c = ((int)((DownloadState)x.Information["State"])).CompareTo((int)((DownloadState)y.Information["State"]));
+                    if (c != 0) return c;
+                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
 
-            if (propertyName == null) return;
+            if (direction == ListSortDirection.Descending)
+            {
+                list.Reverse();
+            }
 
-            _downloadListView.Items.SortDescriptions.Clear();
-            _downloadListView.Items.SortDescriptions.Add(new SortDescription(propertyName, direction));
+            return list;
         }
 
         #endregion
@@ -343,8 +550,8 @@ namespace Amoeba.Windows
 
             private Information _information;
             private string _name = null;
-            private DownloadState _state = 0;
-            private long _length = 0;
+            private string _state = "";
+            private string _length = "";
             private int _priority = 0;
             private double _rate = 0;
             private string _rateText = null;
@@ -369,11 +576,34 @@ namespace Amoeba.Windows
                     if (_information.Contains("Name")) this.Name = (string)_information["Name"];
                     else this.Name = null;
 
-                    if (_information.Contains("Length")) this.Length = (long)_information["Length"];
-                    else this.Length = 0;
+                    if (_information.Contains("Length")) this.Length = NetworkConverter.ToSizeString((long)_information["Length"]);
+                    else this.Length = "";
 
-                    if (_information.Contains("State")) this.State = (DownloadState)_information["State"];
-                    else this.State = 0;
+                    if (_information.Contains("State"))
+                    {
+                        var item = (DownloadState)_information["State"];
+
+                        if (item == DownloadState.Downloading)
+                        {
+                            this.State = LanguagesManager.Instance.DownloadState_Downloading;
+                        }
+                        else if (item == DownloadState.Decoding)
+                        {
+                            this.State = LanguagesManager.Instance.DownloadState_Decoding;
+                        }
+                        else if (item == DownloadState.Completed)
+                        {
+                            this.State = LanguagesManager.Instance.DownloadState_Completed;
+                        }
+                        else if (item == DownloadState.Error)
+                        {
+                            this.State = LanguagesManager.Instance.DownloadState_Error;
+                        }
+                    }
+                    else
+                    {
+                        this.State = "";
+                    }
 
                     if (_information.Contains("Priority")) this.Priority = (int)_information["Priority"];
                     else this.Priority = 0;
@@ -435,12 +665,15 @@ namespace Amoeba.Windows
                 {
                     if (value != _name)
                     {
-                        _name = value; this.NotifyPropertyChanged("Name");
+                        if (value == null) _name = null;
+                        else _name = value.Replace('\r', ' ').Replace('\n', ' ');
+
+                        this.NotifyPropertyChanged("Name");
                     }
                 }
             }
 
-            public DownloadState State
+            public string State
             {
                 get
                 {
@@ -450,12 +683,14 @@ namespace Amoeba.Windows
                 {
                     if (value != _state)
                     {
-                        _state = value; this.NotifyPropertyChanged("State");
+                        _state = value;
+
+                        this.NotifyPropertyChanged("State");
                     }
                 }
             }
 
-            public long Length
+            public string Length
             {
                 get
                 {
@@ -465,7 +700,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _length)
                     {
-                        _length = value; this.NotifyPropertyChanged("Length");
+                        _length = value;
+
+                        this.NotifyPropertyChanged("Length");
                     }
                 }
             }
@@ -480,7 +717,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _priority)
                     {
-                        _priority = value; this.NotifyPropertyChanged("Priority");
+                        _priority = value;
+
+                        this.NotifyPropertyChanged("Priority");
                     }
                 }
             }
@@ -495,7 +734,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _rate)
                     {
-                        _rate = value; this.NotifyPropertyChanged("Rate");
+                        _rate = value;
+
+                        this.NotifyPropertyChanged("Rate");
                     }
                 }
             }
@@ -510,7 +751,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _rateText)
                     {
-                        _rateText = value; this.NotifyPropertyChanged("RateText");
+                        _rateText = value;
+
+                        this.NotifyPropertyChanged("RateText");
                     }
                 }
             }
@@ -525,7 +768,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _path)
                     {
-                        _path = value; this.NotifyPropertyChanged("Path");
+                        _path = value;
+
+                        this.NotifyPropertyChanged("Path");
                     }
                 }
             }
@@ -540,7 +785,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _value)
                     {
-                        _value = value; this.NotifyPropertyChanged("Value");
+                        _value = value;
+
+                        this.NotifyPropertyChanged("Value");
                     }
                 }
             }

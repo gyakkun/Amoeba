@@ -7,22 +7,11 @@
         Height="300" Width="300">
     
     <UserControl.Resources>
-        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
-        <local:DownloadStateToStringConverter x:Key="_downloadStateToStringConverter"/>
         <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
 
         <DataTemplate x:Key="_myTemplate_Name">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_State">
-            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _downloadStateToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Length">
-            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Priority">
-            <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Rate">
             <Grid>
@@ -30,13 +19,16 @@
                 <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Path">
-            <TextBlock Text="{Binding Path=Path, Mode=OneWay}" />
-        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
-        <ListView Grid.Column="2" Name="_downloadListView" Grid.RowSpan="2" ContextMenuOpening="_downloadListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_downloadListView_PreviewMouseLeftButtonDown" >
+        <ListView Grid.Column="2" Name="_downloadListView" Grid.RowSpan="2" ContextMenuOpening="_downloadListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_downloadListView_PreviewMouseLeftButtonDown" 
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_downloadListViewContextMenu" >
                     <MenuItem Name="_downloadListViewDeleteMenuItem" Header="{Binding Path=DownloadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewDeleteMenuItem_Click" />
@@ -44,8 +36,6 @@
                     <MenuItem Name="_downloadListViewCopyMenuItem" Header="{Binding Path=DownloadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewCopyMenuItem_Click"/>
                     <MenuItem Name="_downloadListViewCopyInfoMenuItem" Header="{Binding Path=DownloadControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewCopyInfoMenuItem_Click"/>
                     <MenuItem Name="_downloadListViewPasteMenuItem" Header="{Binding Path=DownloadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewPasteMenuItem_Click"/>
-                    <Separator />
-                    <MenuItem Name="_downloadListViewResetMenuItem" Header="{Binding Path=DownloadControl_Reset, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewResetMenuItem_Click"/>
                     <Separator />
                     <MenuItem Name="_downloadListViewPriorityMenuItem" Header="{Binding Path=DownloadControl_Priority, Source={StaticResource ResourcesInstance}}" >
                         <MenuItem Name="_downloadListViewPriority0MenuItem" Header="{Binding Path=DownloadControl_Priority0, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewPriority0MenuItem_Click"/>
@@ -56,21 +46,23 @@
                         <MenuItem Name="_downloadListViewPriority5MenuItem" Header="{Binding Path=DownloadControl_Priority5, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewPriority5MenuItem_Click"/>
                         <MenuItem Name="_downloadListViewPriority6MenuItem" Header="{Binding Path=DownloadControl_Priority6, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewPriority6MenuItem_Click"/>
                     </MenuItem>
+                    <MenuItem Name="_downloadListViewResetMenuItem" Header="{Binding Path=DownloadControl_Reset, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewResetMenuItem_Click"/>
+                    <MenuItem Name="_downloadListViewCompleteDeleteMenuItem" Header="{Binding Path=DownloadControl_CompleteDelete, Source={StaticResource ResourcesInstance}}" Click="_downloadListViewCompleteDeleteMenuItem_Click"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
-                <GridView>
+                <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=DownloadControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Length, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Length}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Priority, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Priority}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=DownloadControl_Rate, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Rate}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Rate_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Path, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Path}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
+                    <GridViewColumn Header="{Binding Path=DownloadControl_State, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=State}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

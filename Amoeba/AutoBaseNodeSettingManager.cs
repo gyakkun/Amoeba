@@ -188,13 +188,18 @@ namespace Amoeba
 
                         string ip = upnpClient.GetExternalIpAddress(new TimeSpan(0, 0, 10));
 
-                        upnpClient.ClosePort(UpnpProtocolType.Tcp, port, new TimeSpan(0, 0, 10));
-                        upnpClient.OpenPort(UpnpProtocolType.Tcp, port, port, "Amoeba", new TimeSpan(0, 0, 10));
+                        if (!string.IsNullOrWhiteSpace(ip))
+                        {
+                            upnpClient.ClosePort(UpnpProtocolType.Tcp, port, new TimeSpan(0, 0, 10));
+                            
+                            if (upnpClient.OpenPort(UpnpProtocolType.Tcp, port, port, "Amoeba", new TimeSpan(0, 0, 10)))
+                            {
+                                _settings.UpnpUri = string.Format("tcp:{0}:{1}", ip, port);
 
-                        _settings.UpnpUri = string.Format("tcp:{0}:{1}", ip, port);
-
-                        if (!_amoebaManager.BaseNode.Uris.Any(n => n == _settings.UpnpUri))
-                            _amoebaManager.BaseNode.Uris.Add(_settings.UpnpUri);
+                                if (!_amoebaManager.BaseNode.Uris.Any(n => n == _settings.UpnpUri))
+                                    _amoebaManager.BaseNode.Uris.Add(_settings.UpnpUri);
+                            }
+                        }
                     }
                 }
                 catch (Exception)
@@ -365,11 +370,13 @@ namespace Amoeba
 
         protected override void Dispose(bool disposing)
         {
-            if (!_disposed)
+            using (DeadlockMonitor.Lock(this.ThisLock))
             {
+                if (_disposed) return;
+
                 if (disposing)
                 {
-
+                    this.Stop();
                 }
 
                 _disposed = true;

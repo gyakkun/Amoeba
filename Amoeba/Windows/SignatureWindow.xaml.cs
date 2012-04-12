@@ -101,25 +101,27 @@ namespace Amoeba.Windows
             using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
             {
                 dialog.Multiselect = true;
-                dialog.DefaultExt = ".sigunature";
-                dialog.Filter = "Sigunature (*.sigunature)|*.sigunature";
-                dialog.ShowDialog();
+                dialog.DefaultExt = ".signature";
+                dialog.Filter = "Signature (*.signature)|*.signature";
 
-                foreach (var fileName in dialog.FileNames)
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    using (FileStream stream = new FileStream(fileName, FileMode.Open))
+                    foreach (var fileName in dialog.FileNames)
                     {
-                        try
+                        using (FileStream stream = new FileStream(fileName, FileMode.Open))
                         {
-                            var signature = AmoebaConverter.FromSignatureStream(stream);
+                            try
+                            {
+                                var signature = AmoebaConverter.FromSignatureStream(stream);
 
-                            _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
+                                _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
 
-                            _signatureListView.Items.Refresh();
-                        }
-                        catch (Exception)
-                        {
+                                _signatureListView.Items.Refresh();
+                            }
+                            catch (Exception)
+                            {
 
+                            }
                         }
                     }
                 }
@@ -136,24 +138,26 @@ namespace Amoeba.Windows
             using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
                 dialog.FileName = MessageConverter.ToSignatureString(signature);
-                dialog.DefaultExt = ".sigunature";
-                dialog.Filter = "Sigunature (*.sigunature)|*.sigunature";
-                dialog.ShowDialog();
+                dialog.DefaultExt = ".signature";
+                dialog.Filter = "Signature (*.signature)|*.signature";
 
-                var fileName = dialog.FileName;
-
-                using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                using (Stream signatureStream = AmoebaConverter.ToSignatureStream(signature))
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    int i = -1;
-                    byte[] buffer = _bufferManager.TakeBuffer(1024);
+                    var fileName = dialog.FileName;
 
-                    while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
+                    using (Stream signatureStream = AmoebaConverter.ToSignatureStream(signature))
                     {
-                        stream.Write(buffer, 0, i);
-                    }
+                        int i = -1;
+                        byte[] buffer = _bufferManager.TakeBuffer(1024);
 
-                    _bufferManager.ReturnBuffer(buffer);
+                        while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            stream.Write(buffer, 0, i);
+                        }
+
+                        _bufferManager.ReturnBuffer(buffer);
+                    }
                 }
             }
         }

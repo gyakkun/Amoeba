@@ -12,17 +12,6 @@
         Width="{Binding Path=UploadWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" >
 
-    <Window.Resources>
-        <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
-
-        <DataTemplate x:Key="_myTemplate_Name">
-            <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Path">
-            <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-    </Window.Resources>
-    
     <Grid>
         <Label Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" />
         <Grid Height="24" Margin="138,12,12,0" Name="grid1" VerticalAlignment="Top">
@@ -40,17 +29,23 @@
         <Label HorizontalAlignment="Left" Margin="12,46,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="28" VerticalAlignment="Top" />
         <ComboBox Height="24" Margin="138,46,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
         <Label Height="28" HorizontalAlignment="Left" Margin="12,80,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" />
-        <ListView Name="_uploadListView" Margin="138,80,12,41">
+        <ListView Name="_uploadListView" Margin="138,80,12,41"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" IsItemsHost="True"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_uploadListViewContextMenu" >
                     <MenuItem Name="_uploadListViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewDeleteMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Name}" 
                             Width="{Binding Path=UploadWindow_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadWindow_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
+                    <GridViewColumn Header="{Binding Path=UploadWindow_Path, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Path}" 
                             Width="{Binding Path=UploadWindow_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

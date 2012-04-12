@@ -21,7 +21,7 @@
     <Grid>
         <ListView Name="_signatureListView" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" Margin="6,6,6,41">
             <ListView.View>
-                <GridView>
+                <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=SignatureWindow_Value, Source={StaticResource ResourcesInstance}}"  CellTemplate="{StaticResource _myTemplate_Value}" 
                             Width="{Binding Path=SignatureWindow_GridViewColumn_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>

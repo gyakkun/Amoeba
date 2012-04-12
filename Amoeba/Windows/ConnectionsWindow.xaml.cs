@@ -223,7 +223,7 @@ namespace Amoeba.Windows
             try
             {
                 string scheme = (string)((ComboBoxItem)_baseNodeUriSchemeComboBox.SelectedItem).Content;
-                Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                Regex regex = new Regex(@"(.*?):(.*)");
                 Match match = regex.Match(_baseNodeUriTextBox.Text);
 
                 if (!match.Success)
@@ -232,7 +232,7 @@ namespace Amoeba.Windows
                 }
                 else
                 {
-                    _baseNodeUriTextBox.Text = string.Format("{0}:{1}:{2}", scheme, match.Groups[2].Value, match.Groups[3].Value);
+                    _baseNodeUriTextBox.Text = string.Format("{0}:{1}", scheme, match.Groups[2].Value);
                 }
             }
             catch (Exception)
@@ -276,7 +276,8 @@ namespace Amoeba.Windows
             if (_baseNodeUriTextBox.Text == "") return;
 
             var uri = _baseNodeUriTextBox.Text;
-            if (_baseNode.Uris.Any(n => n == uri)) return;
+            if (!Regex.IsMatch(uri, @"(.*?):(.+)")
+                || _baseNode.Uris.Any(n => n == uri)) return;
 
             _baseNode.Uris.Add(uri);
             _baseNodeUrisListView.Items.Refresh();
@@ -313,10 +314,13 @@ namespace Amoeba.Windows
         private void _baseNodeUriDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             int selectIndex = _baseNodeUrisListView.SelectedIndex;
+            if (selectIndex == -1) return;
+            
             foreach (var item in _baseNodeUrisListView.SelectedItems.OfType<string>().ToArray())
             {
                 _baseNode.Uris.Remove(item);
             }
+            
             _baseNodeUrisListView.Items.Refresh();
             _baseNodeUrisListView.SelectedIndex = selectIndex;
 
@@ -395,7 +399,10 @@ namespace Amoeba.Windows
 
         private void _otherNodesListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            if (_otherNodesCopyContextMenuItem != null) _otherNodesCopyContextMenuItem.IsEnabled = (_otherNodesListView.SelectedItems.Count > 0);
+            var selectItems = _otherNodesListView.SelectedItems;
+            if (selectItems == null) return;
+
+           _otherNodesCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
         }
 
         private void _otherNodesCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
@@ -487,7 +494,7 @@ namespace Amoeba.Windows
             {
                 _clientFiltersConditionTextBox.Text = item.UriCondition.Value;
 
-                Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                Regex regex = new Regex(@"(.*?):(.*)");
                 Match match = regex.Match(item.UriCondition.Value);
 
                 if (match.Success)
@@ -528,6 +535,7 @@ namespace Amoeba.Windows
             if (connectionType == ConnectionType.None || connectionType == ConnectionType.Tcp)
             {
                 _clientFiltersProxyUriTextBox.IsEnabled = false;
+                _clientFiltersProxyUriTextBox.Text = "";
             }
             else
             {
@@ -619,31 +627,46 @@ namespace Amoeba.Windows
         {
             if (_clientFiltersConditionTextBox.Text == "") return;
 
-            var connectionTypeText = (string)((ComboBoxItem)_clientFiltersConnectionTypeComboBox.SelectedItem).Content;
-            var connectionType = (ConnectionType)new ConnectionTypeToStringConverter().ConvertBack(connectionTypeText, typeof(string), null, null);
-
-            var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };
-            string proxyUri = null;
-
-            if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text))
+            try
             {
-                proxyUri = _clientFiltersProxyUriTextBox.Text;
+                var connectionTypeText = (string)((ComboBoxItem)_clientFiltersConnectionTypeComboBox.SelectedItem).Content;
+                var connectionType = (ConnectionType)new ConnectionTypeToStringConverter().ConvertBack(connectionTypeText, typeof(string), null, null);
+
+                var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };
+                string proxyUri = null;
+
+                if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text))
+                {
+                    proxyUri = _clientFiltersProxyUriTextBox.Text;
+                }
+
+                if (connectionType == ConnectionType.Socks4Proxy
+                    || connectionType == ConnectionType.Socks4aProxy
+                    || connectionType == ConnectionType.Socks5Proxy
+                    || connectionType == ConnectionType.HttpProxy)
+                {
+                    if (proxyUri == null) return;
+                }
+
+                var connectionFilter = new ConnectionFilter()
+                {
+                    ConnectionType = connectionType,
+                    ProxyUri = proxyUri,
+                    UriCondition = uriCondition,
+                };
+
+                if (_clientFilters.Any(n => n == connectionFilter)) return;
+
+                _clientFilters.Add(connectionFilter);
+
+                _clientFiltersListView.Items.Refresh();
+                _clientFiltersConditionTextBox.Text = "";
+                _clientFiltersListViewUpdate();
             }
-
-            var connectionFilter = new ConnectionFilter()
+            catch (Exception)
             {
-                ConnectionType = connectionType,
-                ProxyUri = proxyUri,
-                UriCondition = uriCondition,
-            };
 
-            if (_clientFilters.Any(n => n == connectionFilter)) return;
-
-            _clientFilters.Add(connectionFilter);
-
-            _clientFiltersListView.Items.Refresh();
-            _clientFiltersConditionTextBox.Text = "";
-            _clientFiltersListViewUpdate();
+            }
         }
 
         private void _clientFilterEditButton_Click(object sender, RoutedEventArgs e)
@@ -653,37 +676,62 @@ namespace Amoeba.Windows
             var item = _clientFiltersListView.SelectedItem as ConnectionFilter;
             if (item == null) return;
 
-            var connectionTypeText = (string)((ComboBoxItem)_clientFiltersConnectionTypeComboBox.SelectedItem).Content;
-            var connectionType = (ConnectionType)new ConnectionTypeToStringConverter().ConvertBack(connectionTypeText, typeof(string), null, null);
-
-            string proxyUri = null;
-            var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };
-
-            if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text))
+            try
             {
-                proxyUri = _clientFiltersProxyUriTextBox.Text;
+                var connectionTypeText = (string)((ComboBoxItem)_clientFiltersConnectionTypeComboBox.SelectedItem).Content;
+                var connectionType = (ConnectionType)new ConnectionTypeToStringConverter().ConvertBack(connectionTypeText, typeof(string), null, null);
+
+                string proxyUri = null;
+                var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };
+
+                if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text))
+                {
+                    proxyUri = _clientFiltersProxyUriTextBox.Text;
+                }
+
+                if (connectionType == ConnectionType.Socks4Proxy
+                   || connectionType == ConnectionType.Socks4aProxy
+                   || connectionType == ConnectionType.Socks5Proxy
+                   || connectionType == ConnectionType.HttpProxy)
+                {
+                    if (proxyUri == null) return;
+                }
+
+                item.ConnectionType = connectionType;
+                item.ProxyUri = proxyUri;
+                item.UriCondition = uriCondition;
+
+                _clientFiltersListView.Items.Refresh();
+                _clientFiltersListViewUpdate();
             }
+            catch (Exception)
+            {
 
-            item.ConnectionType = connectionType;
-            item.ProxyUri = proxyUri;
-            item.UriCondition = uriCondition;
-
-            _clientFiltersListView.Items.Refresh();
-            _clientFiltersListViewUpdate();
+            }
         }
 
         private void _clientFilterDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            int selectIndex = _clientFiltersListView.SelectedIndex;
-            foreach (var item in _clientFiltersListView.SelectedItems.OfType<ConnectionFilter>().ToArray())
+            try
             {
-                _clientFilters.Remove(item);
-            }
-            _clientFiltersListView.Items.Refresh();
-            _clientFiltersListView.SelectedIndex = selectIndex;
+                int selectIndex = _clientFiltersListView.SelectedIndex;
+                if (selectIndex == -1) return;
 
-            _clientFiltersConditionTextBox.Text = "";
-            _clientFiltersListViewUpdate();
+                foreach (var item in _clientFiltersListView.SelectedItems.OfType<ConnectionFilter>().ToArray())
+                {
+                    _clientFilters.Remove(item);
+                }
+
+                _clientFiltersListView.Items.Refresh();
+                _clientFiltersListView.SelectedIndex = selectIndex;
+
+                _clientFiltersConditionTextBox.Text = "";
+                _clientFiltersListViewUpdate();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         #endregion
@@ -742,7 +790,7 @@ namespace Amoeba.Windows
 
             _serverListenUriTextBox.Text = item;
 
-            Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+            Regex regex = new Regex(@"(.*?):(.*)");
             Match match = regex.Match(item);
 
             if (match.Success)
@@ -768,7 +816,7 @@ namespace Amoeba.Windows
             if (item == null) return;
 
             string scheme = (string)((ComboBoxItem)_serverListenUriSchemeComboBox.SelectedItem).Content;
-            Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+            Regex regex = new Regex(@"(.*?):(.*)");
             Match match = regex.Match(_serverListenUriTextBox.Text);
 
             if (!match.Success)
@@ -777,7 +825,7 @@ namespace Amoeba.Windows
             }
             else
             {
-                _serverListenUriTextBox.Text = string.Format("{0}:{1}:{2}", scheme, match.Groups[2].Value, match.Groups[3].Value);
+                _serverListenUriTextBox.Text = string.Format("{0}:{1}", scheme, match.Groups[2].Value);
             }
         }
 
@@ -842,10 +890,13 @@ namespace Amoeba.Windows
         private void _serverListenUriDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             int selectIndex = _serverListenUrisListView.SelectedIndex;
+            if (selectIndex == -1) return;
+            
             foreach (var item in _serverListenUrisListView.SelectedItems.OfType<string>().ToArray())
             {
                 _listenUris.Remove(item);
             }
+            
             _serverListenUrisListView.Items.Refresh();
             _serverListenUrisListView.SelectedIndex = selectIndex;
 
@@ -944,6 +995,7 @@ namespace Amoeba.Windows
         private void _keywordAddButton_Click(object sender, RoutedEventArgs e)
         {
             if (_keywordTextBox.Text == "") return;
+            if (string.IsNullOrWhiteSpace(new Keyword() { HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512, Value = _keywordTextBox.Text }.Value)) return;
 
             _keywords.Add(new Keyword() { HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512, Value = _keywordTextBox.Text });
 
@@ -956,6 +1008,7 @@ namespace Amoeba.Windows
         private void _keywordEditButton_Click(object sender, RoutedEventArgs e)
         {
             if (_keywordTextBox.Text == "") return;
+            if (string.IsNullOrWhiteSpace(new Keyword() { HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512, Value = _keywordTextBox.Text }.Value)) return;
 
             var item = _keywordsListView.SelectedItem as Keyword;
             if (item == null) return;
@@ -969,10 +1022,13 @@ namespace Amoeba.Windows
         private void _keywordDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             int selectIndex = _keywordsListView.SelectedIndex;
+            if (selectIndex == -1) return;
+            
             foreach (var item in _keywordsListView.SelectedItems.OfType<Keyword>().ToArray())
             {
                 _keywords.Remove(item);
             }
+            
             _keywordsListView.Items.Refresh();
             _keywordsListView.SelectedIndex = selectIndex;
             _keywordsListViewUpdate();
@@ -1045,7 +1101,16 @@ namespace Amoeba.Windows
         {
             using (DeadlockMonitor.Lock(_amoebaManager.ThisLock))
             {
-                long size = (long)NetworkConverter.FromSizeString(_miscellaneousCacheSizeTextBox.Text);
+                long size = (long)NetworkConverter.FromSizeString("50 GB");
+
+                try
+                {
+                    size = Math.Abs((long)NetworkConverter.FromSizeString(_miscellaneousCacheSizeTextBox.Text));
+                }
+                catch (Exception)
+                {
+
+                }       
 
                 if (_amoebaManager.Size != size)
                 {
@@ -1062,10 +1127,10 @@ namespace Amoeba.Windows
                 _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 50), 1);
 
                 int scount = int.Parse(_miscellaneousDownloadingConnectionCountTextBox.Text);
-                _amoebaManager.DownloadingConnectionCountLowerLimit = Math.Max(Math.Min(scount, 100), 1);
+                _amoebaManager.DownloadingConnectionCountLowerLimit = Math.Max(Math.Min(scount, 50), 1);
 
                 int ucount = int.Parse(_miscellaneousUploadingConnectionCountTextBox.Text);
-                _amoebaManager.UploadingConnectionCountLowerLimit = Math.Max(Math.Min(ucount, 100), 1);
+                _amoebaManager.UploadingConnectionCountLowerLimit = Math.Max(Math.Min(ucount, 50), 1);
 
                 _amoebaManager.Filters.Clear();
                 _amoebaManager.Filters.AddRange(_clientFilters.Select(n => n.DeepClone()));

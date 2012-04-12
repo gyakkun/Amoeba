@@ -21,6 +21,12 @@
         <DataTemplate x:Key="_myTemplate_SearchContains_Contains">
             <TextBlock Text="{Binding Path=Contains, Mode=OneWay, Converter={StaticResource _boolToStringConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_SearchContains_SearchRegex_IsIgnoreCase">
+            <TextBlock Text="{Binding Path=Value.IsIgnoreCase, Mode=OneWay, Converter={StaticResource _boolToStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_SearchContains_SearchRegex_Value">
+            <TextBlock Text="{Binding Path=Value.Value, Mode=OneWay}" />
+        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_SearchContains_String_Value">
             <TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
         </DataTemplate>
@@ -55,11 +61,10 @@
                     <Button Name="_nameEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_nameEditButton_Click"/>
                     <Button Name="_nameDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameDeleteButton_Click" />
                     <TextBox Name="_nameTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
-                    <RadioButton Name="_nameContainsRadioButton" GroupName="NameContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <RadioButton Name="_nameNotContainsRadioButton" GroupName="NameContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
+                    <CheckBox Name="_nameContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_nameListView" Margin="0,0,0,87" SelectionChanged="_nameListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameListView_PreviewMouseLeftButtonDown">
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Name_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_String_Value}" 
@@ -77,18 +82,20 @@
                     <Button Name="_nameRegexEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_nameRegexEditButton_Click"/>
                     <Button Name="_nameRegexDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameRegexDeleteButton_Click" />
                     <TextBox Name="_nameRegexTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
-                    <RadioButton Name="_nameRegexContainsRadioButton" GroupName="NameRegexContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <RadioButton Name="_nameRegexNotContainsRadioButton" GroupName="NameRegexContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
+                    <CheckBox Name="_nameRegexContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_nameRegexListView" Margin="0,0,0,87" SelectionChanged="_nameRegexListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameRegexListView_PreviewMouseLeftButtonDown">
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_String_Value}" 
-                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_NameRegex_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_IsIgnoreCase, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRegex_IsIgnoreCase}" 
+                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRegex_Value}" 
+                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
                     </ListView>
+                    <CheckBox Content="{Binding Path=SearchItemEditWindow_IsIgnoreCase, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="138,271,0,0" Name="_nameRegexIsIgnoreCaseCheckBox" VerticalAlignment="Top" Width="120" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding Path=SearchItemEditWindow_Signature, Source={StaticResource ResourcesInstance}}">
@@ -99,11 +106,10 @@
                     <Button Name="_signatureEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_signatureEditButton_Click"/>
                     <Button Name="_signatureDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureDeleteButton_Click" />
                     <TextBox Name="_signatureTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
-                    <RadioButton Name="_signatureContainsRadioButton" GroupName="SignatureContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <RadioButton Name="_signatureNotContainsRadioButton" GroupName="SignatureContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
+                    <CheckBox Name="_signatureContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_signatureListView" Margin="0,0,0,87" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown">
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Signature_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_String_Value}" 
@@ -121,11 +127,10 @@
                     <Button Name="_keywordEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_keywordEditButton_Click"/>
                     <Button Name="_keywordDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordDeleteButton_Click" />
                     <TextBox Name="_keywordTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
-                    <RadioButton Name="_keywordContainsRadioButton" GroupName="KeywordContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <RadioButton Name="_keywordNotContainsRadioButton" GroupName="KeywordContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
+                    <CheckBox Name="_keywordContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_keywordListView" Margin="0,0,0,87" SelectionChanged="_keywordListView_SelectionChanged" PreviewMouseLeftButtonDown="_keywordListView_PreviewMouseLeftButtonDown">
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_String_Value}" 
@@ -148,11 +153,10 @@
                     <Button Name="_creationTimeRangeDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeDeleteButton_Click" Grid.ColumnSpan="2" />
                     <TextBox Name="_creationTimeRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" Text="0001/01/01 00:00:00" />
                     <TextBox Name="_creationTimeRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" Text="0001/01/01 00:00:00" />
-                    <RadioButton Grid.ColumnSpan="2" Name="_creationTimeRangeContainsRadioButton" GroupName="CreationTimeRangeContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <RadioButton Grid.ColumnSpan="2" Name="_creationTimeRangeNotContainsRadioButton" GroupName="CreationTimeRangeContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
+                    <CheckBox Grid.ColumnSpan="2" Name="_creationTimeRangeContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_creationTimeRangeListView" Margin="0,0,0,87" SelectionChanged="_creationTimeRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_creationTimeRangeListView_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2">
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Min, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRange_DateTime_Min}" 
@@ -177,11 +181,10 @@
                     <Button Name="_lengthRangeDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeDeleteButton_Click" Grid.ColumnSpan="2" />
                     <TextBox Name="_lengthRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" />
                     <TextBox Name="_lengthRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" />
-                    <RadioButton Grid.ColumnSpan="2" Name="_lengthRangeContainsRadioButton" GroupName="LengthContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <RadioButton Grid.ColumnSpan="2" Name="_lengthRangeNotContainsRadioButton" GroupName="LengthContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
+                    <CheckBox Grid.ColumnSpan="2" Name="_lengthRangeContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_lengthRangeListView" Margin="0,0,0,87" SelectionChanged="_lengthRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_lengthRangeListView_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2">
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Min, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRange_Long_Min}" 
@@ -201,11 +204,10 @@
                     <Button Name="_seedEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_seedEditButton_Click"/>
                     <Button Name="_seedDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_seedDeleteButton_Click" />
                     <TextBox Name="_seedTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
-                    <RadioButton Name="_seedContainsRadioButton" GroupName="SeedContains" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <RadioButton Name="_seedNotContainsRadioButton" GroupName="SeedContains" Height="16" HorizontalAlignment="Left" Margin="132,0,0,65" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=SearchItemEditWindow_NotContains, Source={StaticResource ResourcesInstance}}" />
+                    <CheckBox Name="_seedContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <ListView Name="_seedListView" Margin="0,45,0,87" SelectionChanged="_seedListView_SelectionChanged" PreviewMouseLeftButtonDown="_seedListView_PreviewMouseLeftButtonDown" >
                         <ListView.View>
-                            <GridView>
+                            <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Seed_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Seed_Value}" 
@@ -215,6 +217,19 @@
                     </ListView>
                     <Label Content="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="12,11,0,0" VerticalAlignment="Top" Width="120" />
                     <TextBox Height="24" Margin="138,11,6,0" Name="_seedNameTextBox" VerticalAlignment="Top" IsReadOnly="True" />
+                </Grid>
+            </TabItem>
+            <TabItem Name="_miscellaneousTabItem" Header="{Binding Path=SearchItemEditWindow_Miscellaneous, Source={StaticResource ResourcesInstance}}">
+                <Grid>
+                    <GroupBox Header="{Binding Path=SearchItemEditWindow_StateFilter, Source={StaticResource ResourcesInstance}}" Margin="6,6,6,199" Height="147" Width="666">
+                        <Grid>
+                            <CheckBox Content="{Binding Path=SearchItemEditWindow_Searching, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousSearchFilterSearchingCheckBox" VerticalAlignment="Top" />
+                            <CheckBox Content="{Binding Path=SearchItemEditWindow_Uploading, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,28,0,0" Name="_miscellaneousSearchFilterUploadingCheckBox" VerticalAlignment="Top" />
+                            <CheckBox Content="{Binding Path=SearchItemEditWindow_Downloading, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,50,0,0" Name="_miscellaneousSearchFilterDownloadingCheckBox" VerticalAlignment="Top" />
+                            <CheckBox Content="{Binding Path=SearchItemEditWindow_Uploaded, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,72,0,0" Name="_miscellaneousSearchFilterUploadedCheckBox" VerticalAlignment="Top" />
+                            <CheckBox Content="{Binding Path=SearchItemEditWindow_Downloaded, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,94,0,0" Name="_miscellaneousSearchFilterDownloadedCheckBox" VerticalAlignment="Top" />
+                        </Grid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
         </TabControl>

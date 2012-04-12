@@ -101,7 +101,8 @@ namespace Amoeba.Windows
                         item.Name,
                         keywords,
                         null,
-                        digitalSignature);
+                        digitalSignature,
+                        0);
                 }
             }
             else
@@ -112,7 +113,8 @@ namespace Amoeba.Windows
                         item.Name,
                         keywords,
                         null,
-                        digitalSignature);
+                        digitalSignature,
+                        0);
                 }
             }
 
