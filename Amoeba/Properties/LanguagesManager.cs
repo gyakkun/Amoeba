@@ -1397,6 +1397,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string ShareControl_CheckExist
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_CheckExist");
+                }
+            }
+        }
+
         public string ShareControl_Name
         {
             get

@@ -18,11 +18,23 @@
         <DataTemplate x:Key="_myTemplate_Name">
             <Grid>
                 <Image Width="16" Height="16" Source="{Binding Converter={StaticResource _itemToIconConverter}}" HorizontalAlignment="Left" />
-                <TextBlock Margin="24,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+                <TextBlock Margin="19,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
             </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Signature">
+            <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Keywords">
             <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringsToStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_CreationTime">
+            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, StringFormat=yyyy/MM/dd\ HH:mm:ss}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Length">
+            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Comment">
+            <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -59,15 +71,15 @@
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=LibraryControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=LibraryControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Signature, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Signature}" 
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Signature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Signature}" 
                             Width="{Binding Path=LibraryControl_GridViewColumn_Signature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Length, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Length}" 
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
                             Width="{Binding Path=LibraryControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=LibraryControl_Keywords, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keywords}" 
                             Width="{Binding Path=LibraryControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_CreationTime, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=CreationTime}" 
+                    <GridViewColumn Header="{Binding Path=LibraryControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
                             Width="{Binding Path=LibraryControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Comment, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Comment}" 
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
                             Width="{Binding Path=LibraryControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

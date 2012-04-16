@@ -257,29 +257,27 @@ namespace Amoeba.Windows
 
                     this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
                     {
-                        try
+                        bool sortFlag = false;
+
+                        foreach (var item in removeList)
                         {
-                            foreach (var item in removeList)
-                            {
-                                _connectionListViewItemCollection.Remove(item);
-                            }
-
-                            foreach (var item in newList)
-                            {
-                                _connectionListViewItemCollection.Add(item);
-                            }
-
-                            foreach (var item in updateDic)
-                            {
-                                item.Key.Information = item.Value;
-                            }
-
-                            this.Sort();
+                            _connectionListViewItemCollection.Remove(item);
+                            sortFlag = true;
                         }
-                        catch (Exception)
+
+                        foreach (var item in newList)
                         {
-
+                            _connectionListViewItemCollection.Add(item);
+                            sortFlag = true;
                         }
+
+                        foreach (var item in updateDic)
+                        {
+                            item.Key.Information = item.Value;
+                            sortFlag = true;
+                        }
+
+                        if (sortFlag && _connectionListViewItemCollection.Count < 10000) this.Sort();
                     }), null);
                 }
             }
@@ -296,9 +294,6 @@ namespace Amoeba.Windows
             this.GridViewColumnHeaderClickedHandler(null, null);
         }
 
-        private string _lastHeaderClicked = LanguagesManager.Instance.ConnectionControl_Uri;
-        private ListSortDirection _lastDirection = ListSortDirection.Ascending;
-
         private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             if (e != null)
@@ -313,13 +308,13 @@ namespace Amoeba.Windows
 
                 ListSortDirection direction;
 
-                if (headerClicked != _lastHeaderClicked)
+                if (headerClicked != Settings.Instance.ConnectionControl_LastHeaderClicked)
                 {
                     direction = ListSortDirection.Ascending;
                 }
                 else
                 {
-                    if (_lastDirection == ListSortDirection.Ascending)
+                    if (Settings.Instance.ConnectionControl_ListSortDirection == ListSortDirection.Ascending)
                     {
                         direction = ListSortDirection.Descending;
                     }
@@ -329,10 +324,17 @@ namespace Amoeba.Windows
                     }
                 }
 
-                this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                Sort(headerClicked, direction);
+
+                Settings.Instance.ConnectionControl_LastHeaderClicked = headerClicked;
+                Settings.Instance.ConnectionControl_ListSortDirection = direction;
+            }
+            else
+            {
+                if (Settings.Instance.ConnectionControl_LastHeaderClicked != null)
                 {
                     var list = new List<ConnectionListViewItem>(_connectionListViewItemCollection);
-                    var list2 = Sort(list, headerClicked, direction).ToList();
+                    var list2 = Sort(list, Settings.Instance.ConnectionControl_LastHeaderClicked, Settings.Instance.ConnectionControl_ListSortDirection).ToList();
 
                     for (int i = 0; i < list2.Count; i++)
                     {
@@ -340,28 +342,29 @@ namespace Amoeba.Windows
 
                         if (i != o) _connectionListViewItemCollection.Move(o, i);
                     }
-                }), null);
-
-                _lastHeaderClicked = headerClicked;
-                _lastDirection = direction;
-            }
-            else
-            {
-                if (_lastHeaderClicked != null)
-                {
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
-                    {
-                        var list = new List<ConnectionListViewItem>(_connectionListViewItemCollection);
-                        var list2 = Sort(list, _lastHeaderClicked, _lastDirection).ToList();
-
-                        for (int i = 0; i < list2.Count; i++)
-                        {
-                            var o = _connectionListViewItemCollection.IndexOf(list2[i]);
-
-                            if (i != o) _connectionListViewItemCollection.Move(o, i);
-                        }
-                    }), null);
                 }
+            }
+        }
+
+        private void Sort(string sortBy, ListSortDirection direction)
+        {
+            _connectionListView.Items.SortDescriptions.Clear();
+
+            if (sortBy == LanguagesManager.Instance.ConnectionControl_Uri)
+            {
+                _connectionListView.Items.SortDescriptions.Add(new SortDescription("Uri", direction));
+            }
+            else if (sortBy == LanguagesManager.Instance.ConnectionControl_Priority)
+            {
+                _connectionListView.Items.SortDescriptions.Add(new SortDescription("Priority", direction));
+            }
+            else if (sortBy == LanguagesManager.Instance.ConnectionControl_ReceivedByteCount)
+            {
+                _connectionListView.Items.SortDescriptions.Add(new SortDescription("ReceivedByteCount", direction));
+            }
+            else if (sortBy == LanguagesManager.Instance.ConnectionControl_SentByteCount)
+            {
+                _connectionListView.Items.SortDescriptions.Add(new SortDescription("SentByteCount", direction));
             }
         }
 
@@ -425,7 +428,7 @@ namespace Amoeba.Windows
 
             return list;
         }
-        
+
         #endregion
 
         private void _connectionsInfomationListView_Click(object sender, RoutedEventArgs e)
@@ -510,8 +513,8 @@ namespace Amoeba.Windows
             private Information _information;
             private string _uri = null;
             private int _priority = 0;
-            private string _receivedByteCount = "";
-            private string _sentByteCount = "";
+            private long _receivedByteCount = 0;
+            private long _sentByteCount = 0;
 
             public ConnectionListViewItem(Information information)
             {
@@ -534,11 +537,11 @@ namespace Amoeba.Windows
                     if (_information.Contains("Priority")) this.Priority = (int)_information["Priority"];
                     else this.Priority = 0;
 
-                    if (_information.Contains("ReceivedByteCount")) this.ReceivedByteCount = NetworkConverter.ToSizeString((long)_information["ReceivedByteCount"]);
-                    else this.ReceivedByteCount = "";
+                    if (_information.Contains("ReceivedByteCount")) this.ReceivedByteCount = (long)_information["ReceivedByteCount"];
+                    else this.ReceivedByteCount = 0;
 
-                    if (_information.Contains("SentByteCount")) this.SentByteCount = NetworkConverter.ToSizeString((long)_information["SentByteCount"]);
-                    else this.SentByteCount = "";
+                    if (_information.Contains("SentByteCount")) this.SentByteCount = (long)_information["SentByteCount"];
+                    else this.SentByteCount = 0;
                 }
             }
 
@@ -576,7 +579,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public string ReceivedByteCount
+            public long ReceivedByteCount
             {
                 get
                 {
@@ -593,7 +596,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public string SentByteCount
+            public long SentByteCount
             {
                 get
                 {

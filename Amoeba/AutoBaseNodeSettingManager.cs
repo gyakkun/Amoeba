@@ -36,7 +36,7 @@ namespace Amoeba
         {
             get
             {
-                using (DeadlockMonitor.Lock(this.ThisLock))
+                lock (this.ThisLock)
                 {
                     return _state;
                 }
@@ -81,7 +81,7 @@ namespace Amoeba
 
         public override void Start()
         {
-            using (DeadlockMonitor.Lock(this.ThisLock))
+            lock (this.ThisLock)
             {
                 if (this.State == ManagerState.Start) return;
                 _state = ManagerState.Start;
@@ -211,7 +211,7 @@ namespace Amoeba
 
         public override void Stop()
         {
-            using (DeadlockMonitor.Lock(this.ThisLock))
+            lock (this.ThisLock)
             {
                 if (this.State == ManagerState.Stop) return;
                 _state = ManagerState.Stop;
@@ -255,7 +255,7 @@ namespace Amoeba
 
         public void Load(string directoryPath)
         {
-            using (DeadlockMonitor.Lock(this.ThisLock))
+            lock (this.ThisLock)
             {
                 _settings.Load(directoryPath);
             }
@@ -263,7 +263,7 @@ namespace Amoeba
 
         public void Save(string directoryPath)
         {
-            using (DeadlockMonitor.Lock(this.ThisLock))
+            lock (this.ThisLock)
             {
                 _settings.Save(directoryPath);
             }
@@ -287,7 +287,7 @@ namespace Amoeba
 
             public override void Load(string directoryPath)
             {
-                using (DeadlockMonitor.Lock(this.ThisLock))
+                lock (this.ThisLock)
                 {
                     base.Load(directoryPath);
                 }
@@ -295,7 +295,7 @@ namespace Amoeba
 
             public override void Save(string directoryPath)
             {
-                using (DeadlockMonitor.Lock(this.ThisLock))
+                lock (this.ThisLock)
                 {
                     base.Save(directoryPath);
                 }
@@ -305,14 +305,14 @@ namespace Amoeba
             {
                 get
                 {
-                    using (DeadlockMonitor.Lock(this.ThisLock))
+                    lock (this.ThisLock)
                     {
                         return (string)this["Ipv4Uri"];
                     }
                 }
                 set
                 {
-                    using (DeadlockMonitor.Lock(this.ThisLock))
+                    lock (this.ThisLock)
                     {
                         this["Ipv4Uri"] = value;
                     }
@@ -323,14 +323,14 @@ namespace Amoeba
             {
                 get
                 {
-                    using (DeadlockMonitor.Lock(this.ThisLock))
+                    lock (this.ThisLock)
                     {
                         return (string)this["Ipv6Uri"];
                     }
                 }
                 set
                 {
-                    using (DeadlockMonitor.Lock(this.ThisLock))
+                    lock (this.ThisLock)
                     {
                         this["Ipv6Uri"] = value;
                     }
@@ -341,14 +341,14 @@ namespace Amoeba
             {
                 get
                 {
-                    using (DeadlockMonitor.Lock(this.ThisLock))
+                    lock (this.ThisLock)
                     {
                         return (string)this["UpnpUri"];
                     }
                 }
                 set
                 {
-                    using (DeadlockMonitor.Lock(this.ThisLock))
+                    lock (this.ThisLock)
                     {
                         this["UpnpUri"] = value;
                     }
@@ -370,7 +370,7 @@ namespace Amoeba
 
         protected override void Dispose(bool disposing)
         {
-            using (DeadlockMonitor.Lock(this.ThisLock))
+            lock (this.ThisLock)
             {
                 if (_disposed) return;
 

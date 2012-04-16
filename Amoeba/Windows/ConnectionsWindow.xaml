@@ -42,7 +42,7 @@
                     <Label Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=ConnectionsWindow_Node, Source={StaticResource ResourcesInstance}}" />
                     <GroupBox Header="{Binding Path=ConnectionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Margin="6,40,6,6" >
                         <Grid>
-                            <ListView Name="_baseNodeUrisListView" Margin="6,6,6,99" SelectionChanged="_baseNodeUrisListView_SelectionChanged" PreviewMouseLeftButtonDown="_baseNodeUrisListView_PreviewMouseLeftButtonDown">
+                            <ListView Name="_baseNodeUrisListView" Margin="6,6,6,99" SelectionChanged="_baseNodeUrisListView_SelectionChanged" PreviewMouseLeftButtonDown="_baseNodeUrisListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_Uri, Source={StaticResource ResourcesInstance}}"
@@ -70,7 +70,7 @@
                 <Grid>
                     <GroupBox Header="{Binding Path=ConnectionsWindow_Nodes, Source={StaticResource ResourcesInstance}}" Margin="6,40,6,6" >
                         <Grid>
-                            <ListView Name="_otherNodesListView" Margin="6,6,6,65" ContextMenuOpening="_otherNodesListView_ContextMenuOpening" PreviewMouseLeftButtonDown="_otherNodesListView_PreviewMouseLeftButtonDown" SelectionChanged="_otherNodesListView_SelectionChanged">
+                            <ListView Name="_otherNodesListView" Margin="6,6,6,65" ContextMenuOpening="_otherNodesListView_ContextMenuOpening" PreviewMouseLeftButtonDown="_otherNodesListView_PreviewMouseLeftButtonDown" SelectionChanged="_otherNodesListView_SelectionChanged" SelectionMode="Single">
                                 <ListView.ContextMenu>
                                     <ContextMenu Name="_otherNodesContextMenu" >
                                         <MenuItem Name="_otherNodesCopyContextMenuItem" Header="{Binding Path=ConnectionsWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_otherNodesCopyContextMenuItem_Click"/>
@@ -96,7 +96,7 @@
                 <Grid>
                     <GroupBox Header="{Binding Path=ConnectionsWindow_Filters, Source={StaticResource ResourcesInstance}}" Margin="6" >
                         <Grid>
-                            <ListView Margin="6,6,6,214" Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" >
+                            <ListView Margin="6,6,6,214" Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" SelectionMode="Single">
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ConnectionType}" 
@@ -136,7 +136,7 @@
                 <Grid>
                     <GroupBox Header="{Binding Path=ConnectionsWindow_ListenUris, Source={StaticResource ResourcesInstance}}" Margin="6" Name="groupBox3">
                         <Grid>
-                            <ListView Margin="6,6,6,99" Name="_serverListenUrisListView" PreviewMouseLeftButtonDown="_serverListenUrisListView_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUrisListView_SelectionChanged" >
+                            <ListView Margin="6,6,6,99" Name="_serverListenUrisListView" PreviewMouseLeftButtonDown="_serverListenUrisListView_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUrisListView_SelectionChanged" SelectionMode="Single">
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_Uri, Source={StaticResource ResourcesInstance}}" 
@@ -160,7 +160,7 @@
             </TabItem>
             <TabItem Name="_keywordsTabItem" Header="{Binding Path=ConnectionsWindow_Keywords, Source={StaticResource ResourcesInstance}}" >
                 <Grid>
-                    <ListView Margin="6,6,6,65" Name="_keywordsListView" PreviewMouseLeftButtonDown="_keywordsListView_PreviewMouseLeftButtonDown" SelectionChanged="_keywordsListView_SelectionChanged" >
+                    <ListView Margin="6,6,6,65" Name="_keywordsListView" PreviewMouseLeftButtonDown="_keywordsListView_PreviewMouseLeftButtonDown" SelectionChanged="_keywordsListView_SelectionChanged" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=ConnectionsWindow_Keyword, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keyword}" 

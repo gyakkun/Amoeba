@@ -124,6 +124,7 @@
 
   <Translate Key="ShareControl_Add" Value="_Add" />
   <Translate Key="ShareControl_Delete" Value="_Delete" />
+  <Translate Key="ShareControl_CheckExist" Value="_Check Exist" />
   <Translate Key="ShareControl_Name" Value="Name" />
   <Translate Key="ShareControl_Path" Value="Path" />
   <Translate Key="ShareControl_Length" Value="Length" />

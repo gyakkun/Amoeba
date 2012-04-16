@@ -62,7 +62,7 @@
                     <Button Name="_nameDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameDeleteButton_Click" />
                     <TextBox Name="_nameTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
                     <CheckBox Name="_nameContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <ListView Name="_nameListView" Margin="0,0,0,87" SelectionChanged="_nameListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameListView_PreviewMouseLeftButtonDown">
+                    <ListView Name="_nameListView" Margin="0,0,0,87" SelectionChanged="_nameListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
@@ -83,7 +83,7 @@
                     <Button Name="_nameRegexDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameRegexDeleteButton_Click" />
                     <TextBox Name="_nameRegexTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
                     <CheckBox Name="_nameRegexContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <ListView Name="_nameRegexListView" Margin="0,0,0,87" SelectionChanged="_nameRegexListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameRegexListView_PreviewMouseLeftButtonDown">
+                    <ListView Name="_nameRegexListView" Margin="0,0,0,87" SelectionChanged="_nameRegexListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameRegexListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
@@ -95,7 +95,7 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
-                    <CheckBox Content="{Binding Path=SearchItemEditWindow_IsIgnoreCase, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="138,271,0,0" Name="_nameRegexIsIgnoreCaseCheckBox" VerticalAlignment="Top" Width="120" />
+                    <CheckBox Content="{Binding Path=SearchItemEditWindow_IsIgnoreCase, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="138,0,0,65" Name="_nameRegexIsIgnoreCaseCheckBox" VerticalAlignment="Bottom" Width="120" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding Path=SearchItemEditWindow_Signature, Source={StaticResource ResourcesInstance}}">
@@ -107,7 +107,7 @@
                     <Button Name="_signatureDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureDeleteButton_Click" />
                     <TextBox Name="_signatureTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
                     <CheckBox Name="_signatureContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <ListView Name="_signatureListView" Margin="0,0,0,87" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown">
+                    <ListView Name="_signatureListView" Margin="0,0,0,87" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
@@ -128,7 +128,7 @@
                     <Button Name="_keywordDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordDeleteButton_Click" />
                     <TextBox Name="_keywordTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
                     <CheckBox Name="_keywordContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <ListView Name="_keywordListView" Margin="0,0,0,87" SelectionChanged="_keywordListView_SelectionChanged" PreviewMouseLeftButtonDown="_keywordListView_PreviewMouseLeftButtonDown">
+                    <ListView Name="_keywordListView" Margin="0,0,0,87" SelectionChanged="_keywordListView_SelectionChanged" PreviewMouseLeftButtonDown="_keywordListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
@@ -154,7 +154,7 @@
                     <TextBox Name="_creationTimeRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" Text="0001/01/01 00:00:00" />
                     <TextBox Name="_creationTimeRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" Text="0001/01/01 00:00:00" />
                     <CheckBox Grid.ColumnSpan="2" Name="_creationTimeRangeContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <ListView Name="_creationTimeRangeListView" Margin="0,0,0,87" SelectionChanged="_creationTimeRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_creationTimeRangeListView_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2">
+                    <ListView Name="_creationTimeRangeListView" Margin="0,0,0,87" SelectionChanged="_creationTimeRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_creationTimeRangeListView_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
@@ -182,7 +182,7 @@
                     <TextBox Name="_lengthRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" />
                     <TextBox Name="_lengthRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" />
                     <CheckBox Grid.ColumnSpan="2" Name="_lengthRangeContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <ListView Name="_lengthRangeListView" Margin="0,0,0,87" SelectionChanged="_lengthRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_lengthRangeListView_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2">
+                    <ListView Name="_lengthRangeListView" Margin="0,0,0,87" SelectionChanged="_lengthRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_lengthRangeListView_PreviewMouseLeftButtonDown" Grid.ColumnSpan="2" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
@@ -198,14 +198,13 @@
             </TabItem>
             <TabItem Header="{Binding Path=SearchItemEditWindow_Seed, Source={StaticResource ResourcesInstance}}">
                 <Grid>
-                    <Button Name="_seedUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_seedUpButton_Click" IsEnabled="False" />
-                    <Button Name="_seedDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_seedDownButton_Click" IsEnabled="False" />
-                    <Button Name="_seedAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_seedAddButton_Click" />
-                    <Button Name="_seedEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_seedEditButton_Click"/>
+                    <Button Name="_seedUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_seedUpButton_Click" IsEnabled="False" />
+                    <Button Name="_seedDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_seedDownButton_Click" IsEnabled="False" />
+                    <Button Name="_seedAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_seedAddButton_Click" />
                     <Button Name="_seedDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_seedDeleteButton_Click" />
                     <TextBox Name="_seedTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
                     <CheckBox Name="_seedContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <ListView Name="_seedListView" Margin="0,45,0,87" SelectionChanged="_seedListView_SelectionChanged" PreviewMouseLeftButtonDown="_seedListView_PreviewMouseLeftButtonDown" >
+                    <ListView Name="_seedListView" Margin="0,45,0,87" SelectionChanged="_seedListView_SelectionChanged" PreviewMouseLeftButtonDown="_seedListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
@@ -221,7 +220,7 @@
             </TabItem>
             <TabItem Name="_miscellaneousTabItem" Header="{Binding Path=SearchItemEditWindow_Miscellaneous, Source={StaticResource ResourcesInstance}}">
                 <Grid>
-                    <GroupBox Header="{Binding Path=SearchItemEditWindow_StateFilter, Source={StaticResource ResourcesInstance}}" Margin="6,6,6,199" Height="147" Width="666">
+                    <GroupBox Header="{Binding Path=SearchItemEditWindow_StateFilter, Source={StaticResource ResourcesInstance}}" Margin="6,6,6,0" Height="147" VerticalAlignment="Top">
                         <Grid>
                             <CheckBox Content="{Binding Path=SearchItemEditWindow_Searching, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousSearchFilterSearchingCheckBox" VerticalAlignment="Top" />
                             <CheckBox Content="{Binding Path=SearchItemEditWindow_Uploading, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,28,0,0" Name="_miscellaneousSearchFilterUploadingCheckBox" VerticalAlignment="Top" />

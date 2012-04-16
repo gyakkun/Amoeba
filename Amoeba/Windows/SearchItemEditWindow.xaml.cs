@@ -194,7 +194,12 @@ namespace Amoeba.Windows
         private void _nameListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _nameListView.SelectedItem as SearchContains<string>;
-            if (item == null) return;
+            if (item == null)
+            {
+                _nameContainsCheckBox.IsChecked = true;
+                _nameTextBox.Text = "";
+                return;
+            }
 
             _nameContainsCheckBox.IsChecked = item.Contains;
             _nameTextBox.Text = item.Value;
@@ -243,15 +248,24 @@ namespace Amoeba.Windows
             if (_searchNameCollection.Contains(item)) return;
             _searchNameCollection.Add(item);
 
+            _nameTextBox.Text = "";
+            _nameListView.SelectedIndex = _searchNameCollection.Count - 1;
+
             _nameListView.Items.Refresh();
             _nameListViewUpdate();
-
-            _nameTextBox.Text = "";
         }
 
         private void _nameEditButton_Click(object sender, RoutedEventArgs e)
         {
             if (_nameTextBox.Text == "") return;
+
+            var uitem = new SearchContains<string>()
+            {
+                Contains = _nameContainsCheckBox.IsChecked.Value,
+                Value = _nameTextBox.Text,
+            };
+
+            if (_searchNameCollection.Contains(uitem)) return;
 
             var item = _nameListView.SelectedItem as SearchContains<string>;
             if (item == null) return;
@@ -268,13 +282,13 @@ namespace Amoeba.Windows
             var item = _nameListView.SelectedItem as SearchContains<string>;
             if (item == null) return;
 
+            _nameTextBox.Text = "";
+
             int selectIndex = _nameListView.SelectedIndex;
             _searchNameCollection.Remove(item);
             _nameListView.Items.Refresh();
             _nameListView.SelectedIndex = selectIndex;
             _nameListViewUpdate();
-
-            _nameTextBox.Text = "";
         }
 
         #endregion
@@ -329,7 +343,13 @@ namespace Amoeba.Windows
         private void _nameRegexListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _nameRegexListView.SelectedItem as SearchContains<SearchRegex>;
-            if (item == null) return;
+            if (item == null)
+            {
+                _nameRegexContainsCheckBox.IsChecked = true;
+                _nameRegexIsIgnoreCaseCheckBox.IsChecked = false;
+                _nameRegexTextBox.Text = "";
+                return;
+            }
 
             _nameRegexContainsCheckBox.IsChecked = item.Contains;
             _nameRegexIsIgnoreCaseCheckBox.IsChecked = item.Value.IsIgnoreCase;
@@ -388,10 +408,11 @@ namespace Amoeba.Windows
             if (_searchNameRegexCollection.Contains(item)) return;
             _searchNameRegexCollection.Add(item);
 
+            _nameRegexTextBox.Text = "";
+            _nameRegexListView.SelectedIndex = _searchNameRegexCollection.Count - 1;
+
             _nameRegexListView.Items.Refresh();
             _nameRegexListViewUpdate();
-
-            _nameRegexTextBox.Text = "";
         }
 
         private void _nameRegexEditButton_Click(object sender, RoutedEventArgs e)
@@ -406,6 +427,14 @@ namespace Amoeba.Windows
             {
                 return;
             }
+
+            var uitem = new SearchContains<SearchRegex>()
+            {
+                Contains = _nameRegexContainsCheckBox.IsChecked.Value,
+                Value = new SearchRegex() { IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value, Value = _nameRegexTextBox.Text },
+            };
+
+            if (_searchNameRegexCollection.Contains(uitem)) return;
 
             var item = _nameRegexListView.SelectedItem as SearchContains<SearchRegex>;
             if (item == null) return;
@@ -422,13 +451,13 @@ namespace Amoeba.Windows
             var item = _nameRegexListView.SelectedItem as SearchContains<SearchRegex>;
             if (item == null) return;
 
+            _nameRegexTextBox.Text = "";
+
             int selectIndex = _nameRegexListView.SelectedIndex;
             _searchNameRegexCollection.Remove(item);
             _nameRegexListView.Items.Refresh();
             _nameRegexListView.SelectedIndex = selectIndex;
             _nameRegexListViewUpdate();
-
-            _nameRegexTextBox.Text = "";
         }
 
         #endregion
@@ -483,7 +512,12 @@ namespace Amoeba.Windows
         private void _signatureListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _signatureListView.SelectedItem as SearchContains<string>;
-            if (item == null) return;
+            if (item == null)
+            {
+                _signatureContainsCheckBox.IsChecked = true;
+                _signatureTextBox.Text = "";
+                return;
+            }
 
             _signatureContainsCheckBox.IsChecked = item.Contains;
             _signatureTextBox.Text = item.Value;
@@ -522,6 +556,7 @@ namespace Amoeba.Windows
         private void _signatureAddButton_Click(object sender, RoutedEventArgs e)
         {
             if (_signatureTextBox.Text == "") return;
+            if (!Regex.IsMatch(_signatureTextBox.Text, @"^[a-zA-Z0-9\-_]*$")) return;
 
             var item = new SearchContains<string>()
             {
@@ -532,15 +567,25 @@ namespace Amoeba.Windows
             if (_searchSignatureCollection.Contains(item)) return;
             _searchSignatureCollection.Add(item);
 
+            _signatureTextBox.Text = "";
+            _signatureListView.SelectedIndex = _searchSignatureCollection.Count - 1;
+
             _signatureListView.Items.Refresh();
             _signatureListViewUpdate();
-
-            _signatureTextBox.Text = "";
         }
 
         private void _signatureEditButton_Click(object sender, RoutedEventArgs e)
         {
             if (_signatureTextBox.Text == "") return;
+            if (!Regex.IsMatch(_signatureTextBox.Text, @"^[a-zA-Z0-9\-_]*$")) return;
+
+            var uitem = new SearchContains<string>()
+            {
+                Contains = _signatureContainsCheckBox.IsChecked.Value,
+                Value = _signatureTextBox.Text,
+            };
+
+            if (_searchSignatureCollection.Contains(uitem)) return;
 
             var item = _signatureListView.SelectedItem as SearchContains<string>;
             if (item == null) return;
@@ -557,13 +602,13 @@ namespace Amoeba.Windows
             var item = _signatureListView.SelectedItem as SearchContains<string>;
             if (item == null) return;
 
+            _signatureTextBox.Text = "";
+
             int selectIndex = _signatureListView.SelectedIndex;
             _searchSignatureCollection.Remove(item);
             _signatureListView.Items.Refresh();
             _signatureListView.SelectedIndex = selectIndex;
             _signatureListViewUpdate();
-
-            _signatureTextBox.Text = "";
         }
 
         #endregion
@@ -618,7 +663,12 @@ namespace Amoeba.Windows
         private void _keywordListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _keywordListView.SelectedItem as SearchContains<string>;
-            if (item == null) return;
+            if (item == null)
+            {
+                _keywordContainsCheckBox.IsChecked = true;
+                _keywordTextBox.Text = "";
+                return;
+            }
 
             _keywordContainsCheckBox.IsChecked = item.Contains;
             _keywordTextBox.Text = item.Value;
@@ -657,6 +707,7 @@ namespace Amoeba.Windows
         private void _keywordAddButton_Click(object sender, RoutedEventArgs e)
         {
             if (_keywordTextBox.Text == "") return;
+            if (!Regex.IsMatch(_keywordTextBox.Text, "^[a-z0-9_]*$")) return;
 
             var item = new SearchContains<string>()
             {
@@ -667,15 +718,25 @@ namespace Amoeba.Windows
             if (_searchKeywordCollection.Contains(item)) return;
             _searchKeywordCollection.Add(item);
 
+            _keywordTextBox.Text = "";
+            _keywordListView.SelectedIndex = _searchKeywordCollection.Count - 1;
+
             _keywordListView.Items.Refresh();
             _keywordListViewUpdate();
-
-            _keywordTextBox.Text = "";
         }
 
         private void _keywordEditButton_Click(object sender, RoutedEventArgs e)
         {
             if (_keywordTextBox.Text == "") return;
+            if (!Regex.IsMatch(_keywordTextBox.Text, "^[a-z0-9_]*$")) return;
+
+            var uitem = new SearchContains<string>()
+            {
+                Contains = _keywordContainsCheckBox.IsChecked.Value,
+                Value = _keywordTextBox.Text,
+            };
+
+            if (_searchKeywordCollection.Contains(uitem)) return;
 
             var item = _keywordListView.SelectedItem as SearchContains<string>;
             if (item == null) return;
@@ -692,13 +753,13 @@ namespace Amoeba.Windows
             var item = _keywordListView.SelectedItem as SearchContains<string>;
             if (item == null) return;
 
+            _keywordTextBox.Text = "";
+
             int selectIndex = _keywordListView.SelectedIndex;
             _searchKeywordCollection.Remove(item);
             _keywordListView.Items.Refresh();
             _keywordListView.SelectedIndex = selectIndex;
             _keywordListViewUpdate();
-
-            _keywordTextBox.Text = "";
         }
 
         #endregion
@@ -753,7 +814,13 @@ namespace Amoeba.Windows
         private void _creationTimeRangeListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _creationTimeRangeListView.SelectedItem as SearchContains<SearchRange<DateTime>>;
-            if (item == null) return;
+            if (item == null)
+            {
+                _creationTimeRangeContainsCheckBox.IsChecked = true; ;
+                _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                return;
+            }
 
             _creationTimeRangeContainsCheckBox.IsChecked = item.Contains;
             _creationTimeRangeMaxTextBox.Text = item.Value.Max.ToUniversalTime().ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
@@ -809,11 +876,14 @@ namespace Amoeba.Windows
 
                 if (_searchCreationTimeRangeCollection.Contains(item)) return;
                 _searchCreationTimeRangeCollection.Add(item);
+
+                _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                _creationTimeRangeListView.SelectedIndex = _searchCreationTimeRangeCollection.Count - 1;
             }
             catch (FormatException)
             {
-                _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
             }
 
             _creationTimeRangeListView.Items.Refresh();
@@ -824,6 +894,18 @@ namespace Amoeba.Windows
         {
             if (_creationTimeRangeMaxTextBox.Text == "") return;
             if (_creationTimeRangeMinTextBox.Text == "") return;
+
+            var uitem = new SearchContains<SearchRange<DateTime>>()
+            {
+                Contains = _creationTimeRangeContainsCheckBox.IsChecked.Value,
+                Value = new SearchRange<DateTime>()
+                {
+                    Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, "yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeUniversal).ToUniversalTime(),
+                    Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, "yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeUniversal).ToUniversalTime(),
+                }
+            };
+
+            if (_searchCreationTimeRangeCollection.Contains(uitem)) return;
 
             var item = _creationTimeRangeListView.SelectedItem as SearchContains<SearchRange<DateTime>>;
             if (item == null) return;
@@ -841,14 +923,14 @@ namespace Amoeba.Windows
             var item = _creationTimeRangeListView.SelectedItem as SearchContains<SearchRange<DateTime>>;
             if (item == null) return;
 
+            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
             int selectIndex = _creationTimeRangeListView.SelectedIndex;
             _searchCreationTimeRangeCollection.Remove(item);
             _creationTimeRangeListView.Items.Refresh();
             _creationTimeRangeListView.SelectedIndex = selectIndex;
             _creationTimeRangeListViewUpdate();
-
-            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         #endregion
@@ -903,7 +985,13 @@ namespace Amoeba.Windows
         private void _lengthRangeListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _lengthRangeListView.SelectedItem as SearchContains<SearchRange<long>>;
-            if (item == null) return;
+            if (item == null)
+            {
+                _lengthRangeContainsCheckBox.IsChecked = true;
+                _lengthRangeMaxTextBox.Text = "";
+                _lengthRangeMinTextBox.Text = "";
+                return;
+            }
 
             _lengthRangeContainsCheckBox.IsChecked = item.Contains;
             _lengthRangeMaxTextBox.Text = item.Value.Max.ToString();
@@ -959,23 +1047,36 @@ namespace Amoeba.Windows
 
                 if (_searchLengthRangeCollection.Contains(item)) return;
                 _searchLengthRangeCollection.Add(item);
+
+                _lengthRangeMaxTextBox.Text = "";
+                _lengthRangeMinTextBox.Text = "";
+                _lengthRangeListView.SelectedIndex = _searchLengthRangeCollection.Count - 1;
             }
             catch (FormatException)
             {
-
+                return;
             }
 
             _lengthRangeListView.Items.Refresh();
             _lengthRangeListViewUpdate();
-
-            _lengthRangeMaxTextBox.Text = "";
-            _lengthRangeMinTextBox.Text = "";
         }
 
         private void _lengthRangeEditButton_Click(object sender, RoutedEventArgs e)
         {
             if (_lengthRangeMaxTextBox.Text == "") return;
             if (_lengthRangeMinTextBox.Text == "") return;
+
+            var uitem = new SearchContains<SearchRange<long>>()
+            {
+                Contains = _lengthRangeContainsCheckBox.IsChecked.Value,
+                Value = new SearchRange<long>()
+                {
+                    Max = long.Parse(_lengthRangeMaxTextBox.Text),
+                    Min = long.Parse(_lengthRangeMinTextBox.Text),
+                }
+            };
+
+            if (_searchLengthRangeCollection.Contains(uitem)) return;
 
             var item = _lengthRangeListView.SelectedItem as SearchContains<SearchRange<long>>;
             if (item == null) return;
@@ -993,14 +1094,14 @@ namespace Amoeba.Windows
             var item = _lengthRangeListView.SelectedItem as SearchContains<SearchRange<long>>;
             if (item == null) return;
 
+            _lengthRangeMaxTextBox.Text = "";
+            _lengthRangeMinTextBox.Text = "";
+
             int selectIndex = _lengthRangeListView.SelectedIndex;
             _searchLengthRangeCollection.Remove(item);
             _lengthRangeListView.Items.Refresh();
             _lengthRangeListView.SelectedIndex = selectIndex;
             _lengthRangeListViewUpdate();
-
-            _lengthRangeMaxTextBox.Text = "";
-            _lengthRangeMinTextBox.Text = "";
         }
 
         #endregion
@@ -1057,6 +1158,8 @@ namespace Amoeba.Windows
             var item = _seedListView.SelectedItem as SearchContains<Seed>;
             if (item == null)
             {
+                _seedContainsCheckBox.IsChecked = true;
+                _seedTextBox.Text = "";
                 _seedNameTextBox.Text = "";
                 return;
             }
@@ -1110,33 +1213,13 @@ namespace Amoeba.Windows
 
                 if (_searchSeedCollection.Contains(item)) return;
                 _searchSeedCollection.Add(item);
+
+                _seedTextBox.Text = "";
+                _seedListView.SelectedIndex = _searchSeedCollection.Count - 1;
             }
             catch (Exception)
             {
-
-            }
-
-            _seedListView.Items.Refresh();
-            _seedListViewUpdate();
-
-            _seedTextBox.Text = "";
-        }
-
-        private void _seedEditButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_seedTextBox.Text == "") return;
-
-            var item = _seedListView.SelectedItem as SearchContains<Seed>;
-            if (item == null) return;
-
-            try
-            {
-                item.Contains = _seedContainsCheckBox.IsChecked.Value;
-                item.Value = AmoebaConverter.FromSeedString(_seedTextBox.Text);
-            }
-            catch (Exception)
-            {
-
+                return;
             }
 
             _seedListView.Items.Refresh();
@@ -1148,13 +1231,13 @@ namespace Amoeba.Windows
             var item = _seedListView.SelectedItem as SearchContains<Seed>;
             if (item == null) return;
 
+            _seedTextBox.Text = "";
+
             int selectIndex = _seedListView.SelectedIndex;
             _searchSeedCollection.Remove(item);
             _seedListView.Items.Refresh();
             _seedListView.SelectedIndex = selectIndex;
             _seedListViewUpdate();
-
-            _seedTextBox.Text = "";
         }
 
         #endregion

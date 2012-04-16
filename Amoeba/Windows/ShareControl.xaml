@@ -6,6 +6,24 @@
         xmlns:local="clr-namespace:Amoeba.Windows" 
         Height="300" Width="300">
 
+    <UserControl.Resources>
+        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
+        <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
+
+        <DataTemplate x:Key="_myTemplate_Name">
+            <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_BlockCount">
+            <TextBlock Text="{Binding Path=BlockCount, Mode=OneWay, StringFormat=\{0:#\,0\}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Length">
+            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Path">
+            <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid>
         <ListView Grid.Column="2" Name="_shareListView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_shareListView_ContextMenuOpening" PreviewDragOver="_shareListView_PreviewDragOver" PreviewDrop="_shareListView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_shareListView_PreviewMouseLeftButtonDown" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
@@ -18,17 +36,19 @@
                 <ContextMenu Name="_shareListViewContextMenu" >
                     <MenuItem Name="_shareListViewAddMenuItem" Header="{Binding Path=ShareControl_Add, Source={StaticResource ResourcesInstance}}" Click="_shareListViewAddMenuItem_Click" />
                     <MenuItem Name="_shareListViewDeleteMenuItem" Header="{Binding Path=ShareControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_shareListViewDeleteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_shareListViewCheckExistMenuItem" Header="{Binding Path=ShareControl_CheckExist, Source={StaticResource ResourcesInstance}}" Click="_shareListViewCheckExistMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=ShareControl_Name, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Name}" 
+                    <GridViewColumn Header="{Binding Path=ShareControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=ShareControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ShareControl_BlockCount, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=BlockCount}" 
+                    <GridViewColumn Header="{Binding Path=ShareControl_BlockCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_BlockCount}" 
                             Width="{Binding Path=ShareControl_GridViewColumn_BlockCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ShareControl_Length, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Length}" 
+                    <GridViewColumn Header="{Binding Path=ShareControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
                             Width="{Binding Path=ShareControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ShareControl_Path, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Path}" 
+                    <GridViewColumn Header="{Binding Path=ShareControl_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
                             Width="{Binding Path=ShareControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

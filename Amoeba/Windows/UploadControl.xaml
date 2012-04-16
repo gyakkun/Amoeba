@@ -7,11 +7,22 @@
         Height="300" Width="300">
 
     <UserControl.Resources>
+        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
+        <local:UploadStateToStringConverter x:Key="_uploadStateToStringConverter"/>
         <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
 
         <DataTemplate x:Key="_myTemplate_Name">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_State">
+            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _uploadStateToStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Length">
+            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Priority">
+            <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Rate">
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto">
@@ -54,13 +65,13 @@
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=UploadControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=UploadControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadControl_Length, Source={StaticResource ResourcesInstance}}"  DisplayMemberBinding="{Binding Path=Length}"
+                    <GridViewColumn Header="{Binding Path=UploadControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
                             Width="{Binding Path=UploadControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadControl_Priority, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Priority}"
+                    <GridViewColumn Header="{Binding Path=UploadControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
                             Width="{Binding Path=UploadControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=UploadControl_Rate, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Rate}" 
                             Width="{Binding Path=UploadControl_GridViewColumn_Rate_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadControl_State, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=State}"
+                    <GridViewColumn Header="{Binding Path=UploadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=UploadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

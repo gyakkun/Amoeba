@@ -196,6 +196,7 @@ namespace Amoeba.Windows
         {
             _signatureListViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(DigitalSignatureAlgorithm.ECDsa521_Sha512)));
 
+            _signatureListView.SelectedIndex = _signatureListViewItemCollection.Count - 1;
             _signatureListView.Items.Refresh();
         }
 

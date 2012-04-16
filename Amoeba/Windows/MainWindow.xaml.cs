@@ -85,7 +85,7 @@ namespace Amoeba.Windows
 
             _windowState = this.WindowState;
 
-            this.Title = string.Format("Amoeba {0} α", App.AmoebaVersion);
+            this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
 
             using (FileStream stream = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open))
             {
@@ -236,6 +236,8 @@ namespace Amoeba.Windows
             NativeMethods.SetThreadExecutionState(ExecutionState.SystemRequired | ExecutionState.Continuous);
 
             {
+                bool initFlag = false;
+
                 _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "cache.blocks"), App.DirectoryPaths["Temp"], _bufferManager);
                 _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
 
@@ -254,6 +256,8 @@ namespace Amoeba.Windows
 
                 if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
                 {
+                    initFlag = true;
+
                     {
                         System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
                         p.UseShellExecute = true;
@@ -505,9 +509,12 @@ namespace Amoeba.Windows
                 _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
                 _autoBaseNodeSettingManager.Load(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
 
-                _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
-                _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-                Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                if (initFlag)
+                {
+                    _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+                    _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
+                    Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                }
             }
         }
 
@@ -856,7 +863,7 @@ namespace Amoeba.Windows
 
             Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
             {
-                using (DeadlockMonitor.Lock(_logPath))
+                lock (_logPath)
                 {
                     if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
                     {
@@ -1068,7 +1075,7 @@ namespace Amoeba.Windows
                 App.SelectTab = "";
             }
 
-            this.Title = string.Format("Amoeba {0} α", App.AmoebaVersion);
+            this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
 
         private void _menuItemStart_Click(object sender, RoutedEventArgs e)

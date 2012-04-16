@@ -68,7 +68,7 @@ namespace Amoeba
             {
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt"), false, new UTF8Encoding(false)))
                 {
-                    writer.WriteLine("DVF70ndvAZF0IyI5opAS");
+                    writer.WriteLine("kbMq8T1x_bwrJ--Wzwyu");
                 }
             }
 

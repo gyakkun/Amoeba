@@ -7,17 +7,31 @@
         Height="300" Width="300">
     
     <UserControl.Resources>
+        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
+        <local:DownloadStateToStringConverter x:Key="_downloadStateToStringConverter"/>
         <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
 
         <DataTemplate x:Key="_myTemplate_Name">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_State">
+            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _downloadStateToStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Length">
+            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Priority">
+            <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
+        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Rate">
             <Grid>
                 <ProgressBar Value="{Binding Path=Rate, Mode=OneWay}" />
                 <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Path">
+            <TextBlock Text="{Binding Path=Path, Mode=OneWay}" />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -54,15 +68,15 @@
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=DownloadControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_Length, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Length}" 
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_Priority, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Priority}" 
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=DownloadControl_Rate, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Rate}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Rate_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_Path, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Path}" 
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_State, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=State}" 
+                    <GridViewColumn Header="{Binding Path=DownloadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

@@ -73,12 +73,12 @@ namespace Amoeba.Windows
 
                         if (selectBoxTreeViewItem == null) continue;
 
-                        List<object> newlist = new List<object>();
-                        List<object> oldlist = new List<object>();
+                        HashSet<object> newlist = new HashSet<object>(new ReferenceEqualityComparer());
+                        HashSet<object> oldlist = new HashSet<object>(new ReferenceEqualityComparer());
 
                         this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
                         {
-                            oldlist.AddRange(_listViewItemCollection);
+                            oldlist.UnionWith(_listViewItemCollection);
                         }), null);
 
                         foreach (var item in selectBoxTreeViewItem.Value.Boxes)
@@ -86,8 +86,8 @@ namespace Amoeba.Windows
                             var boxesListViewItem = new BoxListViewItem();
                             boxesListViewItem.Name = item.Name;
                             boxesListViewItem.Signature = MessageConverter.ToSignatureString(item.Certificate);
-                            boxesListViewItem.CreationTime = item.CreationTime.ToString("yyyy/MM/dd HH:mm:ss");
-                            boxesListViewItem.Length = NetworkConverter.ToSizeString(LibraryControl.GetBoxLength(item));
+                            boxesListViewItem.CreationTime = item.CreationTime;
+                            boxesListViewItem.Length = LibraryControl.GetBoxLength(item);
                             boxesListViewItem.Comment = item.Comment;
                             boxesListViewItem.Value = item;
 
@@ -100,8 +100,8 @@ namespace Amoeba.Windows
                             seedListViewItem.Name = item.Name;
                             seedListViewItem.Signature = MessageConverter.ToSignatureString(item.Certificate);
                             seedListViewItem.Keywords = item.Keywords.Select(n => n.Value);
-                            seedListViewItem.CreationTime = item.CreationTime.ToString("yyyy/MM/dd HH:mm:ss");
-                            seedListViewItem.Length = NetworkConverter.ToSizeString(item.Length);
+                            seedListViewItem.CreationTime = item.CreationTime;
+                            seedListViewItem.Length = item.Length;
                             seedListViewItem.Comment = item.Comment;
                             seedListViewItem.Value = item;
 
@@ -113,91 +113,35 @@ namespace Amoeba.Windows
 
                         foreach (var item in oldlist)
                         {
-                            if (!newlist.Any(n =>
-                            {
-                                var x = n;
-                                var y = item;
-
-                                if (x is SeedListViewItem && y is SeedListViewItem)
-                                {
-                                    var tx = ((SeedListViewItem)x).Value;
-                                    var ty = ((SeedListViewItem)y).Value;
-
-                                    if (ty == null || tx == null) return false;
-                                    return object.ReferenceEquals(tx, ty);
-                                }
-                                else if (x is BoxListViewItem && y is BoxListViewItem)
-                                {
-                                    var tx = ((BoxListViewItem)x).Value;
-                                    var ty = ((BoxListViewItem)y).Value;
-
-                                    if (ty == null || tx == null) return false;
-                                    return object.ReferenceEquals(tx, ty);
-                                }
-
-                                return false;
-                            })) removeList.Add(item);
+                            if (!newlist.Contains(item)) removeList.Add(item);
                         }
 
                         foreach (var item in newlist)
                         {
-                            if (!oldlist.Any(n =>
-                            {
-                                var x = n;
-                                var y = item;
-
-                                if (x is SeedListViewItem && y is SeedListViewItem)
-                                {
-                                    var tx = ((SeedListViewItem)x).Value;
-                                    var ty = ((SeedListViewItem)y).Value;
-
-                                    if (ty == null || tx == null) return false;
-                                    return object.ReferenceEquals(tx, ty);
-                                }
-                                else if (x is BoxListViewItem && y is BoxListViewItem)
-                                {
-                                    var tx = ((BoxListViewItem)x).Value;
-                                    var ty = ((BoxListViewItem)y).Value;
-
-                                    if (ty == null || tx == null) return false;
-                                    return object.ReferenceEquals(tx, ty);
-                                }
-
-                                return false;
-                            })) addList.Add(item);
+                            if (!oldlist.Contains(item)) addList.Add(item);
                         }
 
+                        this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
                         {
+                            bool sortFlag = false;
+
                             foreach (var item in addList)
                             {
-                                oldlist.Add(item);
+                                _listViewItemCollection.Add(item);
+                                sortFlag = true;
                             }
 
                             foreach (var item in removeList)
                             {
-                                oldlist.Add(item);
+                                _listViewItemCollection.Remove(item);
+                                sortFlag = true;
                             }
 
-                            var list2 = Sort(oldlist, _lastHeaderClicked, _lastDirection).ToList();
+                            if (sortFlag && _listViewItemCollection.Count < 10000) this.Sort();
 
-                            this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
-                            {
-                                for (int i = 0; i < list2.Count; i++)
-                                {
-                                    if (addList.Contains(list2[i])) _listViewItemCollection.Insert(Math.Min(_listViewItemCollection.Count, i), list2[i]);
-                                    else if (removeList.Contains(list2[i])) _listViewItemCollection.Remove(list2[i]);
-                                    else
-                                    {
-                                        var o = _listViewItemCollection.IndexOf(list2[i]);
-
-                                        if (i != o) _listViewItemCollection.Move(o, Math.Min(_listViewItemCollection.Count - 1, i));
-                                    }
-                                }
-
-                                if (App.SelectTab == "Library")
-                                    _mainWindow.Title = string.Format("Amoeba {0} α - {1}", App.AmoebaVersion, selectBoxTreeViewItem.Value.Name);
-                            }), null);
-                        }
+                            if (App.SelectTab == "Library")
+                                _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectBoxTreeViewItem.Value.Name);
+                        }), null);
                     }
                 }
                 catch (Exception)
@@ -211,6 +155,54 @@ namespace Amoeba.Windows
             _searchThread.Start();
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.Watch), this);
+        }
+
+        class ReferenceEqualityComparer : IEqualityComparer<object>
+        {
+            public new bool Equals(object x, object y)
+            {
+                if ((x == null) != (y == null)) return false;
+                if (x == null && y == null) return true;
+
+                if (x is BoxListViewItem && y is SeedListViewItem)
+                {
+                    return false;
+                }
+                else if (x is SeedListViewItem && y is BoxListViewItem)
+                {
+                    return false;
+                }
+                else if (x is BoxListViewItem && y is BoxListViewItem)
+                {
+                    var xi = (BoxListViewItem)x;
+                    var yi = (BoxListViewItem)y;
+
+                    return object.ReferenceEquals(xi.Value, yi.Value);
+                }
+                else if (x is SeedListViewItem && y is SeedListViewItem)
+                {
+                    var xi = (SeedListViewItem)x;
+                    var yi = (SeedListViewItem)y;
+
+                    return object.ReferenceEquals(xi.Value, yi.Value);
+                }
+
+                return false;
+            }
+
+            public int GetHashCode(object obj)
+            {
+                if (obj is BoxListViewItem)
+                {
+                    return ((BoxListViewItem)obj).Value.GetHashCode();
+                }
+                else if (obj is SeedListViewItem)
+                {
+                    return ((SeedListViewItem)obj).Value.GetHashCode();
+                }
+
+                return 0;
+            }
         }
 
         private void Watch(object state)
@@ -1101,7 +1093,7 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            _mainWindow.Title = string.Format("Amoeba {0} α", App.AmoebaVersion);
+            _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
             _refresh = true;
         }
 
@@ -1319,9 +1311,6 @@ namespace Amoeba.Windows
             this.GridViewColumnHeaderClickedHandler(null, null);
         }
 
-        private string _lastHeaderClicked = LanguagesManager.Instance.LibraryControl_Name;
-        private ListSortDirection _lastDirection = ListSortDirection.Ascending;
-
         private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             if (e != null)
@@ -1336,13 +1325,13 @@ namespace Amoeba.Windows
 
                 ListSortDirection direction;
 
-                if (headerClicked != _lastHeaderClicked)
+                if (headerClicked != Settings.Instance.LibraryControl_LastHeaderClicked)
                 {
                     direction = ListSortDirection.Ascending;
                 }
                 else
                 {
-                    if (_lastDirection == ListSortDirection.Ascending)
+                    if (Settings.Instance.LibraryControl_ListSortDirection == ListSortDirection.Ascending)
                     {
                         direction = ListSortDirection.Descending;
                     }
@@ -1352,272 +1341,99 @@ namespace Amoeba.Windows
                     }
                 }
 
-                this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
-                {
-                    var list = new List<object>(_listViewItemCollection);
-                    var list2 = Sort(list, headerClicked, direction).ToList();
+                Sort(headerClicked, direction);
 
-                    for (int i = 0; i < list2.Count; i++)
-                    {
-                        var o = _listViewItemCollection.IndexOf(list2[i]);
-
-                        if (i != o) _listViewItemCollection.Move(o, i);
-                    }
-                }), null);
-
-                _lastHeaderClicked = headerClicked;
-                _lastDirection = direction;
+                Settings.Instance.LibraryControl_LastHeaderClicked = headerClicked;
+                Settings.Instance.LibraryControl_ListSortDirection = direction;
             }
             else
             {
-                if (_lastHeaderClicked != null)
+                if (Settings.Instance.LibraryControl_LastHeaderClicked != null)
                 {
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
-                    {
-                        var list = new List<object>(_listViewItemCollection);
-                        var list2 = Sort(list, _lastHeaderClicked, _lastDirection).ToList();
-
-                        for (int i = 0; i < list2.Count; i++)
-                        {
-                            var o = _listViewItemCollection.IndexOf(list2[i]);
-
-                            if (i != o) _listViewItemCollection.Move(o, i);
-                        }
-                    }), null);
+                    Sort(Settings.Instance.LibraryControl_LastHeaderClicked, Settings.Instance.LibraryControl_ListSortDirection);
                 }
             }
         }
 
-        private IEnumerable<object> Sort(IEnumerable<object> collection, string sortBy, ListSortDirection direction)
+        private void Sort(string sortBy, ListSortDirection direction)
         {
-            List<object> list = new List<object>(collection);
-
-            list.Sort(delegate(object x, object y)
-            {
-                return x.GetHashCode().CompareTo(y.GetHashCode());
-            });
+            _listView.Items.SortDescriptions.Clear();
+            _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
 
             if (sortBy == LanguagesManager.Instance.LibraryControl_Name)
             {
-                list.Sort(delegate(object x, object y)
-                {
-                    string xName = "";
-                    string yName = "";
-
-                    if (x is BoxListViewItem && y is SeedListViewItem)
-                    {
-                        return -1;
-                    }
-                    else if (x is SeedListViewItem && y is BoxListViewItem)
-                    {
-                        return 1;
-                    }
-                    else if (x is BoxListViewItem && y is BoxListViewItem)
-                    {
-                        xName = ((BoxListViewItem)x).Name == null ? "" : ((BoxListViewItem)x).Name;
-                        yName = ((BoxListViewItem)y).Name == null ? "" : ((BoxListViewItem)y).Name;
-                    }
-                    else if (x is SeedListViewItem && y is SeedListViewItem)
-                    {
-                        xName = ((SeedListViewItem)x).Name == null ? "" : ((SeedListViewItem)x).Name;
-                        yName = ((SeedListViewItem)y).Name == null ? "" : ((SeedListViewItem)y).Name;
-                    }
-
-                    return xName.CompareTo(yName);
-                });
+                _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             }
             else if (sortBy == LanguagesManager.Instance.LibraryControl_Signature)
             {
-                list.Sort(delegate(object x, object y)
-                {
-                    string xSignature = "";
-                    string ySignature = "";
-
-                    if (x is BoxListViewItem && y is SeedListViewItem)
-                    {
-                        return -1;
-                    }
-                    else if (x is SeedListViewItem && y is BoxListViewItem)
-                    {
-                        return 1;
-                    }
-                    else if (x is BoxListViewItem && y is BoxListViewItem)
-                    {
-                        xSignature = ((BoxListViewItem)x).Signature == null ? "" : ((BoxListViewItem)x).Signature;
-                        ySignature = ((BoxListViewItem)y).Signature == null ? "" : ((BoxListViewItem)y).Signature;
-                    }
-                    else if (x is SeedListViewItem && y is SeedListViewItem)
-                    {
-                        xSignature = ((SeedListViewItem)x).Signature == null ? "" : ((SeedListViewItem)x).Signature;
-                        ySignature = ((SeedListViewItem)y).Signature == null ? "" : ((SeedListViewItem)y).Signature;
-                    }
-
-                    return xSignature.CompareTo(ySignature);
-                });
+                _listView.Items.SortDescriptions.Add(new SortDescription("Signature", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.LibraryControl_Length)
+            else if (sortBy == LanguagesManager.Instance.SearchControl_Length)
             {
-                list.Sort(delegate(object x, object y)
-                {
-                    long xLength = 0;
-                    long yLength = 0;
-
-                    if (x is BoxListViewItem && y is SeedListViewItem)
-                    {
-                        return -1;
-                    }
-                    else if (x is SeedListViewItem && y is BoxListViewItem)
-                    {
-                        return 1;
-                    }
-                    else if (x is BoxListViewItem && y is BoxListViewItem)
-                    {
-                        xLength = LibraryControl.GetBoxLength(((BoxListViewItem)x).Value);
-                        yLength = LibraryControl.GetBoxLength(((BoxListViewItem)y).Value);
-                    }
-                    else if (x is SeedListViewItem && y is SeedListViewItem)
-                    {
-                        xLength = ((SeedListViewItem)x).Value.Length;
-                        yLength = ((SeedListViewItem)y).Value.Length;
-                    }
-
-                    return xLength.CompareTo(yLength);
-                });
+                _listView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.LibraryControl_Keywords)
+            else if (sortBy == LanguagesManager.Instance.SearchControl_Keywords)
             {
-                list.Sort(delegate(object x, object y)
-                {
-                    IEnumerable<string> xKeywords = new string[] { };
-                    IEnumerable<string> yKeywords = new string[] { };
-
-                    if (x is BoxListViewItem && y is SeedListViewItem)
-                    {
-                        return -1;
-                    }
-                    else if (x is SeedListViewItem && y is BoxListViewItem)
-                    {
-                        return 1;
-                    }
-                    else if (x is SeedListViewItem && y is SeedListViewItem)
-                    {
-                        xKeywords = ((SeedListViewItem)x).Keywords;
-                        yKeywords = ((SeedListViewItem)y).Keywords;
-                    }
-
-                    StringBuilder xBuilder = new StringBuilder();
-                    foreach (var item in xKeywords) xBuilder.Append(item);
-                    StringBuilder yBuilder = new StringBuilder();
-                    foreach (var item in yKeywords) yBuilder.Append(item);
-
-                    return xBuilder.ToString().CompareTo(yBuilder.ToString());
-                });
+                var view = (ListCollectionView)CollectionViewSource.GetDefaultView(_listView.ItemsSource);
+                view.CustomSort = (IComparer)new KeywordsIComparer(direction);
             }
             else if (sortBy == LanguagesManager.Instance.LibraryControl_CreationTime)
             {
-                list.Sort(delegate(object x, object y)
-                {
-                    DateTime xCreationTime = DateTime.MinValue;
-                    DateTime yCreationTime = DateTime.MinValue;
-
-                    if (x is BoxListViewItem && y is SeedListViewItem)
-                    {
-                        return -1;
-                    }
-                    else if (x is SeedListViewItem && y is BoxListViewItem)
-                    {
-                        return 1;
-                    }
-                    else if (x is BoxListViewItem && y is BoxListViewItem)
-                    {
-                        xCreationTime = ((BoxListViewItem)x).Value.CreationTime;
-                        yCreationTime = ((BoxListViewItem)y).Value.CreationTime;
-                    }
-                    else if (x is SeedListViewItem && y is SeedListViewItem)
-                    {
-                        xCreationTime = ((SeedListViewItem)x).Value.CreationTime;
-                        yCreationTime = ((SeedListViewItem)y).Value.CreationTime;
-                    }
-
-                    return xCreationTime.CompareTo(yCreationTime);
-                });
+                _listView.Items.SortDescriptions.Add(new SortDescription("CreationTime", direction));
             }
             else if (sortBy == LanguagesManager.Instance.LibraryControl_Comment)
             {
-                list.Sort(delegate(object x, object y)
-                {
-                    string xComment = "";
-                    string yComment = "";
-
-                    if (x is BoxListViewItem && y is SeedListViewItem)
-                    {
-                        return -1;
-                    }
-                    else if (x is SeedListViewItem && y is BoxListViewItem)
-                    {
-                        return 1;
-                    }
-                    else if (x is BoxListViewItem && y is BoxListViewItem)
-                    {
-                        xComment = ((BoxListViewItem)x).Comment == null ? "" : ((SeedListViewItem)x).Comment;
-                        yComment = ((BoxListViewItem)y).Comment == null ? "" : ((SeedListViewItem)y).Comment;
-                    }
-                    else if (x is SeedListViewItem && y is SeedListViewItem)
-                    {
-                        xComment = ((SeedListViewItem)x).Comment == null ? "" : ((SeedListViewItem)x).Comment;
-                        yComment = ((SeedListViewItem)y).Comment == null ? "" : ((SeedListViewItem)y).Comment;
-                    }
-
-                    return xComment.CompareTo(yComment);
-                });
+                _listView.Items.SortDescriptions.Add(new SortDescription("Comment", direction));
             }
+        }
 
-            if (direction == ListSortDirection.Descending)
+        private class KeywordsIComparer : IComparer
+        {
+            private ListSortDirection _direction;
+            private int flag = 0;
+
+            public KeywordsIComparer(ListSortDirection direction)
             {
-                list.Reverse();
+                _direction = direction;
+
+                flag = (_direction == ListSortDirection.Ascending) ? 1 : -1;
             }
 
-            return list;
+            public int Compare(object x, object y)
+            {
+                if (x is BoxListViewItem && y is SeedListViewItem)
+                {
+                    return flag * -1;
+                }
+                else if (x is SeedListViewItem && y is BoxListViewItem)
+                {
+                    return flag * 1;
+                }
+                else if (x is SeedListViewItem && y is SeedListViewItem)
+                {
+                    var xi = (SeedListViewItem)x;
+                    var yi = (SeedListViewItem)y;
+
+                    int c = Collection.Compare<string>(xi.Keywords, yi.Keywords);
+                    if (c != 0) return flag * c;
+                    return flag * xi.GetHashCode().CompareTo(yi.GetHashCode());
+                }
+
+                return 0;
+            }
         }
 
         #endregion
 
         private class SeedListViewItem
         {
-            string _name = null;
-            string _comment = null;
-
-            public string Name
-            {
-                get
-                {
-                    return _name;
-                }
-                set
-                {
-                    if (value == null) _name = null;
-                    else _name = value.Replace('\r', ' ').Replace('\n', ' ');
-                }
-            }
-
+            public int Index { get { return 1; } }
+            public string Name { get; set; }
             public string Signature { get; set; }
             public IEnumerable<string> Keywords { get; set; }
-            public string CreationTime { get; set; }
-            public string Length { get; set; }
-
-            public string Comment
-            {
-                get
-                {
-                    return _comment;
-                }
-                set
-                {
-                    if (value == null) _comment = null;
-                    else _comment = value.Replace('\r', ' ').Replace('\n', ' ');
-                }
-            }
-
+            public DateTime CreationTime { get; set; }
+            public long Length { get; set; }
+            public string Comment { get; set; }
             public Seed Value { get; set; }
 
             public override int GetHashCode()
@@ -1629,39 +1445,12 @@ namespace Amoeba.Windows
 
         private class BoxListViewItem
         {
-            string _name = null;
-            string _comment = null;
-
-            public string Name
-            {
-                get
-                {
-                    return _name;
-                }
-                set
-                {
-                    if (value == null) _name = null;
-                    else _name = value.Replace('\r', ' ').Replace('\n', ' ');
-                }
-            }
-
+            public int Index { get { return 0; } }
+            public string Name { get; set; }
             public string Signature { get; set; }
-            public string CreationTime { get; set; }
-            public string Length { get; set; }
-
-            public string Comment
-            {
-                get
-                {
-                    return _comment;
-                }
-                set
-                {
-                    if (value == null) _comment = null;
-                    else _comment = value.Replace('\r', ' ').Replace('\n', ' ');
-                }
-            }
-
+            public DateTime CreationTime { get; set; }
+            public long Length { get; set; }
+            public string Comment { get; set; }
             public Box Value { get; set; }
 
             public override int GetHashCode()
