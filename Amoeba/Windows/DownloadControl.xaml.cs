@@ -91,6 +91,13 @@ namespace Amoeba.Windows
                                 removeList.Add(item);
                             }
                         }
+              
+                        if (removeList.Count > 100)
+                        {
+                            updateDic.Clear();
+                            removeList.Clear();
+                            _downloadListViewItemCollection.Clear();
+                        }
                     }), null);
 
                     foreach (var information in downloadingInformation)
@@ -117,22 +124,23 @@ namespace Amoeba.Windows
                     {
                         bool sortFlag = false;
 
-                        foreach (var item in removeList)
-                        {
-                            _downloadListViewItemCollection.Remove(item);
-                            sortFlag = true;
-                        }
+                        if (newList.Count != 0) sortFlag = true;
+                        if (removeList.Count != 0) sortFlag = true;
+                        if (updateDic.Count != 0) sortFlag = true;
 
                         foreach (var item in newList)
                         {
                             _downloadListViewItemCollection.Add(item);
-                            sortFlag = true;
+                        }
+
+                        foreach (var item in removeList)
+                        {
+                            _downloadListViewItemCollection.Remove(item);
                         }
 
                         foreach (var item in updateDic)
                         {
                             item.Key.Information = item.Value;
-                            sortFlag = true;
                         }
 
                         if (sortFlag && _downloadListViewItemCollection.Count < 10000) this.Sort();

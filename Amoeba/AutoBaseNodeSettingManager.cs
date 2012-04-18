@@ -160,6 +160,14 @@ namespace Amoeba
                         {
                             continue;
                         }
+                        if (myIpAddress.ToString().StartsWith("2001:"))
+                        {
+                            continue;
+                        }
+                        if (myIpAddress.ToString().StartsWith("2002:"))
+                        {
+                            continue;
+                        }
 
                         _settings.Ipv6Uri = string.Format("tcp:[{0}]:{1}", myIpAddress.ToString(), port);
 

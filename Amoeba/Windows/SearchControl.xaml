@@ -55,17 +55,19 @@
 
         <TreeView Grid.Row="1" Name="_searchTreeView" ContextMenuOpening="_searchTreeView_ContextMenuOpening" SelectedItemChanged="_searchTreeView_SelectedItemChanged" PreviewMouseMove="_searchTreeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_searchTreeView_PreviewDrop" PreviewMouseLeftButtonDown="_searchTreeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_searchTreeView_PreviewMouseRightButtonDown" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <TreeView.ContextMenu>
-                <ContextMenu Name="_searchTreeViewContextMenu">
-                    <MenuItem Name="_searchTreeViewAddMenuItem" Header="{Binding Path=SearchControl_Add, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewAddMenuItem_Click"/>
-                    <MenuItem Name="_searchTreeViewEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewEditMenuItem_Click"/>
-                    <MenuItem Name="_searchTreeViewDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewDeleteMenuItem_Click"/>
-                    <Separator />
-                    <MenuItem Name="_searchTreeViewCutContextMenuItem" Header="{Binding Path=SearchControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewCutContextMenuItem_Click" />
-                    <MenuItem Name="_searchTreeViewCopyContextMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewCopyContextMenuItem_Click" />
-                    <MenuItem Name="_searchTreeViewPasteContextMenuItem" Header="{Binding Path=SearchControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewPasteContextMenuItem_Click" />
-                </ContextMenu>
-            </TreeView.ContextMenu>
+            <local:SearchTreeViewItem x:Name="_searchTreeViewItem" IsExpanded="True">
+                <local:SearchTreeViewItem.ContextMenu>
+                    <ContextMenu Name="_searchTreeViewContextMenu">
+                        <MenuItem Name="_searchTreeViewAddMenuItem" Header="{Binding Path=SearchControl_Add, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewAddMenuItem_Click"/>
+                        <MenuItem Name="_searchTreeViewEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewEditMenuItem_Click"/>
+                        <MenuItem Name="_searchTreeViewDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewDeleteMenuItem_Click"/>
+                        <Separator />
+                        <MenuItem Name="_searchTreeViewCutContextMenuItem" Header="{Binding Path=SearchControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewCutContextMenuItem_Click" />
+                        <MenuItem Name="_searchTreeViewCopyContextMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewCopyContextMenuItem_Click" />
+                        <MenuItem Name="_searchTreeViewPasteContextMenuItem" Header="{Binding Path=SearchControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewPasteContextMenuItem_Click" />
+                    </ContextMenu>
+                </local:SearchTreeViewItem.ContextMenu>
+            </local:SearchTreeViewItem>
         </TreeView>
 
         <ListView Grid.Column="2" Name="_searchListView" Grid.RowSpan="2" ContextMenuOpening="_searchListView_ContextMenuOpening" PreviewMouseDoubleClick="_searchListView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_searchListView_PreviewMouseLeftButtonDown"

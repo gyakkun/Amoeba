@@ -37,10 +37,9 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private SearchTreeViewItem _searchTreeViewItem;
         private ObservableCollection<SearchListViewItem> _searchListViewItemCollection;
         private Thread _searchThread = null;
-        private volatile bool _refresh = true;
+        private volatile bool _refresh = false;
 
         private volatile List<SearchListViewItem> _searchingCache = new List<SearchListViewItem>();
         private Stopwatch _updateStopwatch = new Stopwatch();
@@ -58,8 +57,7 @@ namespace Amoeba.Windows
             InitializeComponent();
 
             _searchListView.ItemsSource = _searchListViewItemCollection;
-
-            _searchTreeViewItem = new SearchTreeViewItem(Settings.Instance.SearchControl_SearchTreeItem);
+            _searchTreeViewItem.Value = Settings.Instance.SearchControl_SearchTreeItem;
 
             try
             {
@@ -69,8 +67,6 @@ namespace Amoeba.Windows
             {
 
             }
-
-            _searchTreeView.Items.Add(_searchTreeViewItem);
 
             _amoebaManager.GetFilterSeedsEvent = (object sender, IEnumerable<Seed> seeds) =>
             {
@@ -153,8 +149,8 @@ namespace Amoeba.Windows
                                 tempList2.Add(item.Value, item.State);
                             }
 
-                            HashSet<SearchListViewItem> removeList = new HashSet<SearchListViewItem>();
-                            HashSet<SearchListViewItem> addList = new HashSet<SearchListViewItem>();
+                            var removeList = new List<SearchListViewItem>();
+                            var addList = new List<SearchListViewItem>();
 
                             foreach (var item in oldList)
                             {
@@ -176,16 +172,31 @@ namespace Amoeba.Windows
                             {
                                 bool sortFlag = false;
 
-                                foreach (var item in addList)
+                                if (removeList.Count > 100)
                                 {
-                                    _searchListViewItemCollection.Add(item);
                                     sortFlag = true;
-                                }
 
-                                foreach (var item in removeList)
+                                    _searchListViewItemCollection.Clear();
+
+                                    foreach (var item in newList)
+                                    {
+                                        _searchListViewItemCollection.Add(item);
+                                    }
+                                }
+                                else
                                 {
-                                    _searchListViewItemCollection.Remove(item);
-                                    sortFlag = true;
+                                    if (addList.Count != 0) sortFlag = true;
+                                    if (removeList.Count != 0) sortFlag = true;
+
+                                    foreach (var item in addList)
+                                    {
+                                        _searchListViewItemCollection.Add(item);
+                                    }
+
+                                    foreach (var item in removeList)
+                                    {
+                                        _searchListViewItemCollection.Remove(item);
+                                    }
                                 }
 
                                 if (sortFlag && _searchListViewItemCollection.Count < 10000) this.Sort();

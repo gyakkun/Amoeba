@@ -233,6 +233,13 @@ namespace Amoeba.Windows
                                 removeList.Add(item);
                             }
                         }
+
+                        if (removeList.Count > 100)
+                        {
+                            updateDic.Clear();
+                            removeList.Clear();
+                            _connectionListViewItemCollection.Clear();
+                        }
                     }), null);
 
                     foreach (var information in connectionInformation)
@@ -259,15 +266,19 @@ namespace Amoeba.Windows
                     {
                         bool sortFlag = false;
 
-                        foreach (var item in removeList)
-                        {
-                            _connectionListViewItemCollection.Remove(item);
-                            sortFlag = true;
-                        }
+                        if (newList.Count != 0) sortFlag = true;
+                        if (removeList.Count != 0) sortFlag = true;
+                        if (updateDic.Count != 0) sortFlag = true;
 
                         foreach (var item in newList)
                         {
                             _connectionListViewItemCollection.Add(item);
+                            sortFlag = true;
+                        }
+
+                        foreach (var item in removeList)
+                        {
+                            _connectionListViewItemCollection.Remove(item);
                             sortFlag = true;
                         }
 

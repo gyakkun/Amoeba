@@ -17,9 +17,9 @@ namespace Amoeba.Windows
     [ValueConversion(typeof(object), typeof(BitmapImage))]
     class ObjectToImageConverter : IValueConverter
     {
-        private Dictionary<string, BitmapImage> _images = new Dictionary<string, BitmapImage>();
+        private static Dictionary<string, BitmapImage> _images = new Dictionary<string, BitmapImage>();
 
-        public ObjectToImageConverter()
+        static ObjectToImageConverter()
         {
             try
             {

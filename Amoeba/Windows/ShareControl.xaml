@@ -10,17 +10,11 @@
         <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
 
-        <DataTemplate x:Key="_myTemplate_Name">
-            <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+        <DataTemplate x:Key="_myTemplate_Path">
+            <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_BlockCount">
             <TextBlock Text="{Binding Path=BlockCount, Mode=OneWay, StringFormat=\{0:#\,0\}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Length">
-            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Path">
-            <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -42,14 +36,10 @@
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=ShareControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
-                            Width="{Binding Path=ShareControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ShareControl_BlockCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_BlockCount}" 
-                            Width="{Binding Path=ShareControl_GridViewColumn_BlockCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ShareControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
-                            Width="{Binding Path=ShareControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=ShareControl_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
                             Width="{Binding Path=ShareControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=ShareControl_BlockCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_BlockCount}" 
+                            Width="{Binding Path=ShareControl_GridViewColumn_BlockCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </ListView>

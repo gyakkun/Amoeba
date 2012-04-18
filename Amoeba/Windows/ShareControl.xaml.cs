@@ -90,6 +90,13 @@ namespace Amoeba.Windows
                                 removeList.Add(item);
                             }
                         }
+
+                        if (removeList.Count > 100)
+                        {
+                            updateDic.Clear();
+                            removeList.Clear();
+                            _listViewItemCollection.Clear();
+                        }
                     }), null);
 
                     foreach (var information in shareInformation)
@@ -116,22 +123,23 @@ namespace Amoeba.Windows
                     {
                         bool sortFlag = false;
 
-                        foreach (var item in removeList)
-                        {
-                            _listViewItemCollection.Remove(item);
-                            sortFlag = true;
-                        }
+                        if (newList.Count != 0) sortFlag = true;
+                        if (removeList.Count != 0) sortFlag = true;
+                        if (updateDic.Count != 0) sortFlag = true;
 
                         foreach (var item in newList)
                         {
                             _listViewItemCollection.Add(item);
-                            sortFlag = true;
+                        }
+
+                        foreach (var item in removeList)
+                        {
+                            _listViewItemCollection.Remove(item);
                         }
 
                         foreach (var item in updateDic)
                         {
                             item.Key.Information = item.Value;
-                            sortFlag = true;
                         }
 
                         if (sortFlag && _listViewItemCollection.Count < 10000) this.Sort();
@@ -310,17 +318,9 @@ namespace Amoeba.Windows
         {
             _shareListView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.ShareControl_Name)
-            {
-                _shareListView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.ShareControl_Path)
+            if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
                 _shareListView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.ShareControl_Length)
-            {
-                _shareListView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
             }
             else if (sortBy == LanguagesManager.Instance.ShareControl_BlockCount)
             {
@@ -332,35 +332,11 @@ namespace Amoeba.Windows
         {
             List<ShareListViewItem> list = new List<ShareListViewItem>(collection);
 
-            if (sortBy == LanguagesManager.Instance.ShareControl_Name)
-            {
-                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
-                {
-                    int c = x.Name.CompareTo(y.Name);
-                    if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
-                    if (c != 0) return c;
-
-                    return 0;
-                });
-            }
-            else if (sortBy == LanguagesManager.Instance.ShareControl_Path)
+            if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
                 list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
                 {
                     int c = x.Path.CompareTo(y.Path);
-                    if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
-                    if (c != 0) return c;
-
-                    return 0;
-                });
-            }
-            else if (sortBy == LanguagesManager.Instance.ShareControl_Length)
-            {
-                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
-                {
-                    int c = ((long)x.Information["Length"]).CompareTo((long)y.Information["Length"]);
                     if (c != 0) return c;
                     c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
                     if (c != 0) return c;
@@ -404,10 +380,8 @@ namespace Amoeba.Windows
             }
 
             private Information _information;
-            private string _name = null;
             private string _path = null;
             private int _blockCount = 0;
-            private long _length = 0;
 
             public ShareListViewItem(Information information)
             {
@@ -424,40 +398,11 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
-                    if (_information.Contains("Path")) this.Name = System.IO.Path.GetFileName((string)_information["Path"]);
-                    else this.Name = null;
-
                     if (_information.Contains("Path")) this.Path = (string)_information["Path"];
                     else this.Path = null;
 
                     if (_information.Contains("BlockCount")) this.BlockCount = (int)_information["BlockCount"];
                     else this.BlockCount = 0;
-
-                    try
-                    {
-                        this.Length = new FileInfo(this.Path).Length;
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-            }
-
-            public string Name
-            {
-                get
-                {
-                    return _name;
-                }
-                set
-                {
-                    if (value != _name)
-                    {
-                        _name = value;
-
-                        this.NotifyPropertyChanged("Name");
-                    }
                 }
             }
 
@@ -491,23 +436,6 @@ namespace Amoeba.Windows
                         _blockCount = value;
 
                         this.NotifyPropertyChanged("BlockCount");
-                    }
-                }
-            }
-
-            public long Length
-            {
-                get
-                {
-                    return _length;
-                }
-                set
-                {
-                    if (value != _length)
-                    {
-                        _length = value;
-
-                        this.NotifyPropertyChanged("Length");
                     }
                 }
             }
