@@ -520,6 +520,9 @@ namespace Amoeba.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+
             SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
             _searchControl.Height = Double.NaN;
             _searchControl.Width = Double.NaN;
@@ -682,7 +685,7 @@ namespace Amoeba.Windows
                     count++;
                     if (count >= sentByteCountList.Count) count = 0;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         try
                         {
@@ -695,7 +698,7 @@ namespace Amoeba.Windows
                         }
                     }), null);
 
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         try
                         {
@@ -747,7 +750,7 @@ namespace Amoeba.Windows
                         {
                             if (_amoebaManager.State == ManagerState.Start)
                             {
-                                this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                                this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                                 {
                                     _menuItemStop_Click(null, null);
                                 }), null);
@@ -1144,7 +1147,7 @@ namespace Amoeba.Windows
                 {
                     bool flag = false;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         try
                         {
@@ -1162,7 +1165,7 @@ namespace Amoeba.Windows
                     isStop = flag;
                 });
 
-                this.Dispatcher.Invoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                 {
                     window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Ok;
                 }), null);

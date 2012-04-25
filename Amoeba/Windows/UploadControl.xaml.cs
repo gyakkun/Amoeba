@@ -68,7 +68,7 @@ namespace Amoeba.Windows
 
                     Dictionary<int, UploadListViewItem> dic2 = new Dictionary<int, UploadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in _uploadListViewItemCollection.ToArray())
                         {
@@ -80,7 +80,7 @@ namespace Amoeba.Windows
                     Dictionary<UploadListViewItem, Information> updateDic = new Dictionary<UploadListViewItem, Information>();
                     List<UploadListViewItem> newList = new List<UploadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in _uploadListViewItemCollection.ToArray())
                         {
@@ -118,7 +118,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         bool sortFlag = false;
 

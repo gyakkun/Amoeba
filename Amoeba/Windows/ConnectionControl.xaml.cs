@@ -173,7 +173,7 @@ namespace Amoeba.Windows
                     dic["ConnectionControl_UploadCount"] = ((int)information["UploadingCount"]).ToString();
                     dic["ConnectionControl_BlockCount"] = ((int)information["BlockCount"]).ToString();
 
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in dic)
                         {
@@ -212,7 +212,7 @@ namespace Amoeba.Windows
 
                     Dictionary<int, ConnectionListViewItem> dic2 = new Dictionary<int, ConnectionListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in _connectionListViewItemCollection.ToArray())
                         {
@@ -224,7 +224,7 @@ namespace Amoeba.Windows
                     Dictionary<ConnectionListViewItem, Information> updateDic = new Dictionary<ConnectionListViewItem, Information>();
                     List<ConnectionListViewItem> newList = new List<ConnectionListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in _connectionListViewItemCollection.ToArray())
                         {
@@ -262,7 +262,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         bool sortFlag = false;
 

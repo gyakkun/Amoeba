@@ -20,7 +20,7 @@ namespace Amoeba.Properties
         static LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:\Public\Project\Amoeba\Amoeba\bin\Debug\Core\Languages";
+            string path = @"C:\Core\Project\Amoeba\Amoeba\bin\Debug\Core\Languages";
 #else
             string path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
 #endif

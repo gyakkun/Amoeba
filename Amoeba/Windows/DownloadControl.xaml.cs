@@ -70,7 +70,7 @@ namespace Amoeba.Windows
 
                     Dictionary<int, DownloadListViewItem> dic2 = new Dictionary<int, DownloadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in _downloadListViewItemCollection.ToArray())
                         {
@@ -82,7 +82,7 @@ namespace Amoeba.Windows
                     Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
                     List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in _downloadListViewItemCollection.ToArray())
                         {
@@ -120,7 +120,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         bool sortFlag = false;
 
@@ -172,17 +172,18 @@ namespace Amoeba.Windows
                             using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             using (StreamReader reader = new StreamReader(stream))
                             {
-                                var item = reader.ReadLine();
-                                if (item == null) break;
+                                string item;
 
-                                try
+                                while ((item = reader.ReadLine()) != null)
                                 {
-                                    Seed s = AmoebaConverter.FromSeedString(item);
-                                    _amoebaManager.Download(s, 0);
-                                }
-                                catch (Exception)
-                                {
+                                    try
+                                    {
+                                        _amoebaManager.Download(AmoebaConverter.FromSeedString(item), 0);
+                                    }
+                                    catch (Exception)
+                                    {
 
+                                    }
                                 }
                             }
                         }

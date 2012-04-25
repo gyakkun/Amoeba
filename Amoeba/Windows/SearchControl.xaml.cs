@@ -101,7 +101,7 @@ namespace Amoeba.Windows
 
                         SearchTreeViewItem selectSearchTreeViewItem = null;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
                             selectSearchTreeViewItem = _searchTreeView.SelectedItem as SearchTreeViewItem;
                         }), null);
@@ -111,7 +111,7 @@ namespace Amoeba.Windows
                         HashSet<SearchListViewItem> newList = new HashSet<SearchListViewItem>(this.GetSearchListViewItems());
                         List<SearchTreeViewItem> searchTreeViewItems = new List<SearchTreeViewItem>();
 
-                        this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
                             searchTreeViewItems.AddRange(_searchTreeViewItem.GetLineage(selectSearchTreeViewItem).OfType<SearchTreeViewItem>());
                         }), null);
@@ -120,7 +120,7 @@ namespace Amoeba.Windows
                         {
                             SearchControl.Filter(ref newList, searchTreeViewItem.Value);
 
-                            this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                             {
                                 searchTreeViewItem.Hit = newList.Count;
                                 searchTreeViewItem.Update();
@@ -130,7 +130,7 @@ namespace Amoeba.Windows
                         {
                             List<SearchListViewItem> oldList = null;
 
-                            this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                             {
                                 oldList = _searchListViewItemCollection.ToList();
                             }), null);
@@ -168,7 +168,7 @@ namespace Amoeba.Windows
                                 }
                             }
 
-                            this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                             {
                                 bool sortFlag = false;
 
@@ -451,7 +451,7 @@ namespace Amoeba.Windows
                 }
 
                 sw.Stop();
-                Debug.WriteLine("Search {0}", sw.Elapsed.TotalSeconds);
+                Debug.WriteLine("Search {0}", sw.ElapsedMilliseconds);
 
                 Random random = new Random();
                 _searchingCache = searchItems.Values.OrderBy(n => random.Next()).Take(1000000).ToList();

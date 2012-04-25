@@ -69,7 +69,7 @@ namespace Amoeba.Windows
 
                     Dictionary<int, ShareListViewItem> dic2 = new Dictionary<int, ShareListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
@@ -81,7 +81,7 @@ namespace Amoeba.Windows
                     Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
                     List<ShareListViewItem> newList = new List<ShareListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
@@ -119,7 +119,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         bool sortFlag = false;
 
@@ -197,6 +197,7 @@ namespace Amoeba.Windows
             if (selectItems == null) return;
 
             _shareListViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
+            _shareListViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
         }
 
         private void _shareListViewAddMenuItem_Click(object sender, RoutedEventArgs e)
@@ -245,6 +246,7 @@ namespace Amoeba.Windows
                         try
                         {
                             _amoebaManager.ShareRemove((int)item["Id"]);
+                            Log.Information("Share Delete: " + (string)item["Path"]);
                         }
                         catch (Exception)
                         {

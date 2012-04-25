@@ -73,7 +73,7 @@ namespace Amoeba.Windows
 
                         BoxTreeViewItem selectBoxTreeViewItem = null;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
                             selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
                         }), null);
@@ -83,7 +83,7 @@ namespace Amoeba.Windows
                         HashSet<object> newList = new HashSet<object>(new ReferenceEqualityComparer());
                         HashSet<object> oldList = new HashSet<object>(new ReferenceEqualityComparer());
 
-                        this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
                             oldList.UnionWith(_listViewItemCollection);
                         }), null);
@@ -128,7 +128,7 @@ namespace Amoeba.Windows
                             if (!oldList.Contains(item)) addList.Add(item);
                         }
 
-                        this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
                             bool sortFlag = false;
 
@@ -242,14 +242,14 @@ namespace Amoeba.Windows
                     {
                         if (!filePath.EndsWith(".box")) continue;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action<object>(delegate(object state2)
+                        try
                         {
-                            try
+                            using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             {
-                                using (FileStream stream = new FileStream(filePath, FileMode.Open))
-                                {
-                                    var directory = AmoebaConverter.FromBoxStream(stream);
+                                var directory = AmoebaConverter.FromBoxStream(stream);
 
+                                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                                {
                                     if (!LibraryControl.BoxDigitalSignatureCheck(ref directory))
                                     {
                                         if (MessageBox.Show(
@@ -266,21 +266,21 @@ namespace Amoeba.Windows
                                         _boxTreeViewItem.Value.Boxes.Add(directory);
                                         _boxTreeViewItem.Update();
                                     }
-                                }
-                            }
-                            catch (IOException)
-                            {
-                                return;
-                            }
-                            catch (Exception)
-                            {
 
+                                    this.Update();
+                                }), null);
                             }
+                        }
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (Exception)
+                        {
 
-                            File.Delete(filePath);
+                        }
 
-                            this.Update();
-                        }), null);
+                        File.Delete(filePath);
                     }
                 }
             }
