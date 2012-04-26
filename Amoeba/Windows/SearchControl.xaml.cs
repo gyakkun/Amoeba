@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -23,8 +25,6 @@ using Amoeba.Properties;
 using Library;
 using Library.Collections;
 using Library.Net.Amoeba;
-using System.Collections.ObjectModel;
-using System.Collections;
 
 namespace Amoeba.Windows
 {
@@ -40,6 +40,7 @@ namespace Amoeba.Windows
         private ObservableCollection<SearchListViewItem> _searchListViewItemCollection;
         private Thread _searchThread = null;
         private volatile bool _refresh = false;
+        private volatile bool _recache = false;
 
         private volatile List<SearchListViewItem> _searchingCache = new List<SearchListViewItem>();
         private Stopwatch _updateStopwatch = new Stopwatch();
@@ -67,6 +68,11 @@ namespace Amoeba.Windows
             {
 
             }
+
+            _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
+            {
+                _recache = true;
+            };
 
             _amoebaManager.GetFilterSeedsEvent = (object sender, IEnumerable<Seed> seeds) =>
             {
@@ -222,10 +228,12 @@ namespace Amoeba.Windows
         {
             try
             {
-                if (_updateStopwatch.IsRunning && _updateStopwatch.Elapsed.TotalSeconds < 60)
+                if (!_recache && _updateStopwatch.IsRunning && _updateStopwatch.Elapsed.TotalSeconds < 60)
                 {
                     return _searchingCache;
                 }
+
+                _recache = false;
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
@@ -569,6 +577,8 @@ namespace Amoeba.Windows
             {
                 _amoebaManager.Download(item.Value, 0);
             }
+
+            _recache = true;
         }
 
         private void _searchListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -642,6 +652,8 @@ namespace Amoeba.Windows
             {
                 _amoebaManager.Download(item.Value, 0);
             }
+
+            _recache = true;
         }
 
         private void _searchListViewFilterNameMenuItem_Click(object sender, RoutedEventArgs e)
@@ -662,7 +674,7 @@ namespace Amoeba.Windows
                     Value = listItem.Name,
                 };
 
-                if (selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Contains(item)) return;
+                if (selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Contains(item)) continue;
                 selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Add(item);
             }
 
@@ -687,7 +699,7 @@ namespace Amoeba.Windows
                     Value = listItem.Signature,
                 };
 
-                if (selectSearchTreeViewItem.Value.SearchItem.SearchSignatureCollection.Contains(item)) return;
+                if (selectSearchTreeViewItem.Value.SearchItem.SearchSignatureCollection.Contains(item)) continue;
                 selectSearchTreeViewItem.Value.SearchItem.SearchSignatureCollection.Add(item);
             }
 
@@ -714,7 +726,7 @@ namespace Amoeba.Windows
                         Value = keyword.Value,
                     };
 
-                    if (selectSearchTreeViewItem.Value.SearchItem.SearchKeywordCollection.Contains(item)) return;
+                    if (selectSearchTreeViewItem.Value.SearchItem.SearchKeywordCollection.Contains(item)) continue;
                     selectSearchTreeViewItem.Value.SearchItem.SearchKeywordCollection.Add(item);
                 }
             }
@@ -730,12 +742,18 @@ namespace Amoeba.Windows
             var selectSearchTreeViewItem = _searchTreeView.SelectedItem as SearchTreeViewItem;
             if (selectSearchTreeViewItem == null) return;
 
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            foreach (var listitem in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
-                if (item.Value == null) continue;
+                if (listitem.Value == null) continue;
 
-                selectSearchTreeViewItem.Value.SearchItem.SearchSeedCollection.Add(
-                    new SearchContains<Seed>() { Contains = false, Value = item.Value });
+                var item = new SearchContains<Seed>()
+                {
+                    Contains = false,
+                    Value = listitem.Value
+                };
+
+                if (selectSearchTreeViewItem.Value.SearchItem.SearchSeedCollection.Contains(item)) continue;
+                selectSearchTreeViewItem.Value.SearchItem.SearchSeedCollection.Add(item);
             }
 
             this.Update();
@@ -759,13 +777,9 @@ namespace Amoeba.Windows
                         _amoebaManager.DownloadedSeeds.Remove(seed);
                     }
                 }
-
-                item.State ^= SearchState.Downloaded;
-
-                if (item.State == 0) _searchingCache.Remove(item);
             }
 
-            this.Update();
+            _recache = true;
         }
 
         private void _searchListViewUploadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -786,13 +800,9 @@ namespace Amoeba.Windows
                         _amoebaManager.UploadedSeeds.Remove(seed);
                     }
                 }
-
-                item.State ^= SearchState.Uploaded;
-
-                if (item.State == 0) _searchingCache.Remove(item);
             }
 
-            this.Update();
+            _recache = true;
         }
 
         #endregion
@@ -1328,25 +1338,9 @@ namespace Amoeba.Windows
                 }
             }
 
-            private SearchState _state;
-
             public string Name { get; set; }
             public string Signature { get; set; }
-
-            public SearchState State
-            {
-                get
-                {
-                    return _state;
-                }
-                set
-                {
-                    _state = value;
-
-                    this.NotifyPropertyChanged("State");
-                }
-            }
-
+            public SearchState State{ get; set; }
             public IEnumerable<string> Keywords { get; set; }
             public DateTime CreationTime { get; set; }
             public long Length { get; set; }
