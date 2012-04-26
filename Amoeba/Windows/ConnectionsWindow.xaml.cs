@@ -98,7 +98,37 @@ namespace Amoeba.Windows
                 _miscellaneousSearchFilterDownloadedCheckBox.IsChecked = true;
             }
 
-            _miscellaneousRelateBoxFileCheckBox.IsChecked = Settings.Instance.Global_RelateBoxFile_IsEnabled;
+            try
+            {
+                string extension = ".box";
+                string commandline = "\"" + Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe") + "\" \"%1\"";
+                string fileType = "Amoeba";
+                string verb = "open";
+
+                using (var regkey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(extension))
+                {
+                    if (fileType != (string)regkey.GetValue("")) throw new Exception();
+                }
+
+                using (var shellkey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileType))
+                {
+                    using (var shellkey2 = shellkey.OpenSubKey("shell\\" + verb))
+                    {
+                        using (var shellkey3 = shellkey2.OpenSubKey("command"))
+                        {
+                            if (commandline != (string)shellkey3.GetValue("")) throw new Exception();
+                        }
+                    }
+                }
+
+                Settings.Instance.Global_RelateBoxFile_IsEnabled = true;
+                _miscellaneousRelateBoxFileCheckBox.IsChecked = true;
+            }
+            catch
+            {
+                Settings.Instance.Global_RelateBoxFile_IsEnabled = false;
+                _miscellaneousRelateBoxFileCheckBox.IsChecked = false;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

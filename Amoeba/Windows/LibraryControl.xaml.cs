@@ -61,6 +61,14 @@ namespace Amoeba.Windows
 
             }
 
+            _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
+            {
+                var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
+                
+                if (App.SelectTab == "Library")
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectBoxTreeViewItem.Value.Name);
+            };
+
             _searchThread = new Thread(new ThreadStart(() =>
             {
                 try
@@ -248,27 +256,37 @@ namespace Amoeba.Windows
                             {
                                 var directory = AmoebaConverter.FromBoxStream(stream);
 
-                                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                                if (directory != null)
                                 {
-                                    if (!LibraryControl.BoxDigitalSignatureCheck(ref directory))
+                                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                                     {
-                                        if (MessageBox.Show(
-                                                LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
-                                                "Digital Signature",
-                                                MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                        try
                                         {
-                                            _boxTreeViewItem.Value.Boxes.Add(directory);
-                                            _boxTreeViewItem.Update();
-                                        }
-                                    }
-                                    else
-                                    {
-                                        _boxTreeViewItem.Value.Boxes.Add(directory);
-                                        _boxTreeViewItem.Update();
-                                    }
+                                            if (!LibraryControl.BoxDigitalSignatureCheck(ref directory))
+                                            {
+                                                if (MessageBox.Show(
+                                                        LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
+                                                        "Digital Signature",
+                                                        MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                                {
+                                                    _boxTreeViewItem.Value.Boxes.Add(directory);
+                                                    _boxTreeViewItem.Update();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                _boxTreeViewItem.Value.Boxes.Add(directory);
+                                                _boxTreeViewItem.Update();
+                                            }
 
-                                    this.Update();
-                                }), null);
+                                            this.Update();
+                                        }
+                                        catch (Exception)
+                                        {
+
+                                        }
+                                    }), null);
+                                }
                             }
                         }
                         catch (IOException)

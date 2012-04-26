@@ -138,22 +138,29 @@ namespace Amoeba.Windows
                         string verb = "open";
                         string iconPath = Path.Combine(App.DirectoryPaths["Icons"], "Box.ico");
 
-                        Microsoft.Win32.RegistryKey regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension);
-                        regkey.SetValue("", fileType);
-                        regkey.Close();
+                        using (var regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension))
+                        {
+                            regkey.SetValue("", fileType);
+                        }
 
-                        Microsoft.Win32.RegistryKey shellkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType);
-                        shellkey.SetValue("", description);
+                        using (var shellkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType))
+                        {
+                            shellkey.SetValue("", description);
 
-                        shellkey = shellkey.CreateSubKey("shell\\" + verb);
+                            using (var shellkey2 = shellkey.CreateSubKey("shell\\" + verb))
+                            {
+                                using (var shellkey3 = shellkey2.CreateSubKey("command"))
+                                {
+                                    shellkey3.SetValue("", commandline);
+                                    shellkey3.Close();
+                                }
+                            }
+                        }
 
-                        shellkey = shellkey.CreateSubKey("command");
-                        shellkey.SetValue("", commandline);
-                        shellkey.Close();
-
-                        Microsoft.Win32.RegistryKey iconkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType + "\\DefaultIcon");
-                        iconkey.SetValue("", "\"" + iconPath + "\"");
-                        iconkey.Close();
+                        using (var iconkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType + "\\DefaultIcon"))
+                        {
+                            iconkey.SetValue("", "\"" + iconPath + "\"");
+                        }
 
                         this.Close();
                     }

@@ -72,6 +72,11 @@ namespace Amoeba.Windows
             _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
                 _recache = true;
+
+                var selectSearchTreeViewItem = _searchTreeView.SelectedItem as SearchTreeViewItem;
+                
+                if (App.SelectTab == "Search")
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectSearchTreeViewItem.Value.SearchItem.Name);
             };
 
             _amoebaManager.GetFilterSeedsEvent = (object sender, IEnumerable<Seed> seeds) =>
