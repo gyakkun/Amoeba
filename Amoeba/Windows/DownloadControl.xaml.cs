@@ -500,7 +500,7 @@ namespace Amoeba.Windows
             {
                 list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
                 {
-                    int c = x.Value.Length.CompareTo(y.Value.Length);
+                    int c = x.Length.CompareTo(y.Length);
                     if (c != 0) return c;
                     c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
                     if (c != 0) return c;
