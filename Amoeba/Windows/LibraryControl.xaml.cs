@@ -835,6 +835,7 @@ namespace Amoeba.Windows
             }
 
             BoxEditWindow window = new BoxEditWindow(ref box);
+            window.Owner = _mainWindow;
 
             if (true == window.ShowDialog())
             {
@@ -863,6 +864,7 @@ namespace Amoeba.Windows
                 if (selectBox == null) return;
 
                 BoxEditWindow window = new BoxEditWindow(ref selectBox);
+                window.Owner = _mainWindow;
                 window.ShowDialog();
 
                 selectBoxTreeViewItem.Value.Boxes.Remove(selectBoxListViewItem.Value);
@@ -881,6 +883,7 @@ namespace Amoeba.Windows
                 if (selectSeed == null) return;
 
                 SeedEditWindow window = new SeedEditWindow(ref selectSeed, _amoebaManager);
+                window.Owner = _mainWindow;
                 window.ShowDialog();
 
                 selectBoxTreeViewItem.Value.Seeds.Remove(selectSeedListViewItem.Value);
@@ -1200,6 +1203,7 @@ namespace Amoeba.Windows
             }
 
             BoxEditWindow window = new BoxEditWindow(ref box);
+            window.Owner = _mainWindow;
 
             if (true == window.ShowDialog())
             {
@@ -1221,6 +1225,7 @@ namespace Amoeba.Windows
 
             var directory = selectBoxTreeViewItem.Value;
             BoxEditWindow window = new BoxEditWindow(ref directory);
+            window.Owner = _mainWindow;
             window.ShowDialog();
 
             selectBoxTreeViewItem.Update();

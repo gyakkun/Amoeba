@@ -530,6 +530,16 @@ namespace Amoeba.Windows
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
+            TopRelativeDoubleConverter.GetDoubleEvent = (object state) =>
+            {
+                return this.PointToScreen(new Point(0, 0)).Y;
+            };
+
+            LeftRelativeDoubleConverter.GetDoubleEvent = (object state) =>
+            {
+                return this.PointToScreen(new Point(0, 0)).X;
+            };
+
             SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
             _searchControl.Height = Double.NaN;
             _searchControl.Width = Double.NaN;
@@ -545,12 +555,12 @@ namespace Amoeba.Windows
             _downloadControl.Width = Double.NaN;
             _downloadTabItem.Content = _downloadControl;
 
-            UploadControl _uploadControl = new UploadControl(_amoebaManager, _bufferManager);
+            UploadControl _uploadControl = new UploadControl(this, _amoebaManager, _bufferManager);
             _uploadControl.Height = Double.NaN;
             _uploadControl.Width = Double.NaN;
             _uploadTabItem.Content = _uploadControl;
 
-            ShareControl _shareControl = new ShareControl(_amoebaManager, _bufferManager);
+            ShareControl _shareControl = new ShareControl(this, _amoebaManager, _bufferManager);
             _shareControl.Height = Double.NaN;
             _shareControl.Width = Double.NaN;
             _shareTabItem.Content = _shareControl;
@@ -1125,18 +1135,21 @@ namespace Amoeba.Windows
         private void _menuItemSignatureSetting_Click(object sender, RoutedEventArgs e)
         {
             SignatureWindow window = new SignatureWindow(_bufferManager);
+            window.Owner = this;
             window.ShowDialog();
         }
 
         private void _menuItemConnectionsSetting_Click(object sender, RoutedEventArgs e)
         {
             ConnectionsWindow window = new ConnectionsWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
+            window.Owner = this;
             window.ShowDialog();
         }
 
         private void _menuItemVersionInformation_Click(object sender, RoutedEventArgs e)
         {
             VersionInformationWindow window = new VersionInformationWindow();
+            window.Owner = this;
             window.ShowDialog();
         }
 
@@ -1178,6 +1191,7 @@ namespace Amoeba.Windows
                 }), null);
             }));
 
+            window.Owner = this;
             window.ShowDialog();
         }
 

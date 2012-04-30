@@ -20,6 +20,9 @@
 
             <Style TargetType="{x:Type local:DigitalSignatureComboBoxItem}" BasedOn="{StaticResource ComboBoxItemStyle}" />
             <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource ComboBoxItemStyle}" />
+
+            <local:TopRelativeDoubleConverter x:Key="_topRelativeDoubleConverter"/>
+            <local:LeftRelativeDoubleConverter x:Key="_leftRelativeDoubleConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

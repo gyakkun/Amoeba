@@ -116,6 +116,52 @@ namespace Amoeba.Windows
         }
     }
 
+    public delegate double GetDoubleEventHandler(object sender);
+
+    [ValueConversion(typeof(double), typeof(double))]
+    class TopRelativeDoubleConverter : IValueConverter
+    {
+        public static GetDoubleEventHandler GetDoubleEvent;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var item = value as double?;
+            if (item == null) return null;
+
+            return item + GetDoubleEvent(this);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var item = value as double?;
+            if (item == null) return null;
+
+            return item - GetDoubleEvent(this);
+        }
+    }
+
+    [ValueConversion(typeof(double), typeof(double))]
+    class LeftRelativeDoubleConverter : IValueConverter
+    {
+        public static GetDoubleEventHandler GetDoubleEvent;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var item = value as double?;
+            if (item == null) return null;
+
+            return item + GetDoubleEvent(this);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var item = value as double?;
+            if (item == null) return null;
+
+            return item - GetDoubleEvent(this);
+        }
+    }
+
     [ValueConversion(typeof(object), typeof(string))]
     class ObjectToInfoStringConverter : IValueConverter
     {

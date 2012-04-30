@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:Amoeba.Windows" 
         Background="{DynamicResource WindowBackgroundBrush}"
         Title="{Binding Path=SignatureWindow_Title, Source={StaticResource ResourcesInstance}}"
-        Top="{Binding Path=SignatureWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        Left="{Binding Path=SignatureWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Top="{Binding Path=SignatureWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _topRelativeDoubleConverter}}"
+        Left="{Binding Path=SignatureWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Height="{Binding Path=SignatureWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Width="{Binding Path=SignatureWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        WindowState="{Binding Path=SignatureWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" >
+        WindowState="{Binding Path=SignatureWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}">
    
     <Window.Resources>
         <DataTemplate x:Key="_myTemplate_Value">

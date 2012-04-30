@@ -47,6 +47,8 @@ namespace Amoeba.Windows
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = true;
+            
             string name = _nameTextBox.Text;
             string comment = _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
@@ -63,8 +65,6 @@ namespace Amoeba.Windows
             {
                 _box.CreateCertificate(digitalSignature);
             }
-
-            this.DialogResult = true;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

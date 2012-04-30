@@ -364,6 +364,8 @@ namespace Amoeba.Windows
                                         if (item.Certificate.Signature != null) stream.Write(item.Certificate.Signature, 0, item.Certificate.Signature.Length);
                                     }
 
+                                    stream.Seek(0, SeekOrigin.Begin);
+
                                     _seedHash.Add(item, sha1.ComputeHash(stream));
                                 }
                             }
@@ -398,6 +400,8 @@ namespace Amoeba.Windows
 
                                     stream.Write(BitConverter.GetBytes((int)item.CryptoAlgorithm), 0, 4);
                                     if (item.CryptoKey != null) stream.Write(item.CryptoKey, 0, item.CryptoKey.Length);
+
+                                    stream.Seek(0, SeekOrigin.Begin);
 
                                     _seedBinaryHash.Add(item, sha1.ComputeHash(stream));
                                 }
@@ -596,6 +600,7 @@ namespace Amoeba.Windows
                 _searchListViewUploadHistoryDeleteMenuItem.IsEnabled = false;
                 _searchListViewFilterNameMenuItem.IsEnabled = false;
                 _searchListViewFilterSignatureMenuItem.IsEnabled = false;
+                _searchListViewFilterKeywordMenuItem.IsEnabled = false;
                 _searchListViewFilterSeedMenuItem.IsEnabled = false;
                 _searchListViewDownloadMenuItem.IsEnabled = false;
 
@@ -609,6 +614,7 @@ namespace Amoeba.Windows
             _searchListViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
             _searchListViewFilterNameMenuItem.IsEnabled = (selectItems.Count > 0);
             _searchListViewFilterSignatureMenuItem.IsEnabled = (selectItems.Count > 0);
+            _searchListViewFilterKeywordMenuItem.IsEnabled = (selectItems.Count > 0);
             _searchListViewFilterSeedMenuItem.IsEnabled = (selectItems.Count > 0);
             _searchListViewDownloadMenuItem.IsEnabled = (selectItems.Count > 0);
             _searchListViewDownloadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
@@ -924,7 +930,7 @@ namespace Amoeba.Windows
                 if (string.IsNullOrWhiteSpace(n.Value.Name)) return false;
                 if (n.Value.Rank == 0) return false;
                 if (n.Value.Keywords.Count == 0) return false;
-                if ((now - n.Value.CreationTime) > new TimeSpan(3, 0, 0, 0)) return false;
+                if ((n.Value.CreationTime - now) > new TimeSpan(3, 0, 0, 0)) return false;
 
                 return true;
             }));
@@ -1135,6 +1141,7 @@ namespace Amoeba.Windows
 
             var searchItem = searchTreeItem.SearchItem;
             SearchItemEditWindow window = new SearchItemEditWindow(ref searchItem);
+            window.Owner = _mainWindow;
 
             if (true == window.ShowDialog())
             {
@@ -1154,6 +1161,7 @@ namespace Amoeba.Windows
 
             var searchItem = selectSearchTreeViewItem.Value.SearchItem;
             SearchItemEditWindow window = new SearchItemEditWindow(ref searchItem);
+            window.Owner = _mainWindow;
             window.ShowDialog();
 
             selectSearchTreeViewItem.Update();

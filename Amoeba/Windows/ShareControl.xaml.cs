@@ -30,13 +30,15 @@ namespace Amoeba.Windows
     /// </summary>
     partial class ShareControl : UserControl
     {
+        private MainWindow _mainWindow;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
         private ObservableCollection<ShareListViewItem> _listViewItemCollection = new ObservableCollection<ShareListViewItem>();
 
-        public ShareControl(AmoebaManager amoebaManager, BufferManager bufferManager)
+        public ShareControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
+            _mainWindow = mainWindow;
             _bufferManager = bufferManager;
             _amoebaManager = amoebaManager;
 
@@ -182,11 +184,13 @@ namespace Amoeba.Windows
             if (filePaths.Count == 1)
             {
                 UploadWindow window = new UploadWindow(filePaths[0], true, _amoebaManager);
+                window.Owner = _mainWindow;
                 window.ShowDialog();
             }
             else if (filePaths.Count > 1)
             {
                 UploadListWindow window = new UploadListWindow(filePaths, true, _amoebaManager);
+                window.Owner = _mainWindow;
                 window.ShowDialog();
             }
         }
@@ -212,11 +216,13 @@ namespace Amoeba.Windows
                 if (uploadFilePaths.Count == 1)
                 {
                     UploadWindow window = new UploadWindow(uploadFilePaths[0], true, _amoebaManager);
+                    window.Owner = _mainWindow;
                     window.ShowDialog();
                 }
                 else if (uploadFilePaths.Count > 1)
                 {
                     UploadListWindow window = new UploadListWindow(uploadFilePaths, true, _amoebaManager);
+                    window.Owner = _mainWindow;
                     window.ShowDialog();
                 }
             }

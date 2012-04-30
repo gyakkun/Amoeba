@@ -213,10 +213,10 @@ namespace Amoeba.Windows
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = true;
+
             Settings.Instance.Global_DigitalSignatureCollection.Clear();
             Settings.Instance.Global_DigitalSignatureCollection.AddRange(_signatureListViewItemCollection.Select(n => n.Value));
-
-            this.DialogResult = true;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

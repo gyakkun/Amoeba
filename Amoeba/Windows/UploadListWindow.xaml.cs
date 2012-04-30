@@ -85,6 +85,8 @@ namespace Amoeba.Windows
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = true;
+
             var keywords = new KeywordCollection();
             if (_keywordsComboBox1.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox1.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
             if (_keywordsComboBox2.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox2.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
@@ -120,8 +122,6 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_UploadKeywords.Clear();
             Settings.Instance.Global_UploadKeywords.AddRange(keywords.Select(n => n.Value));
-
-            this.DialogResult = true;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

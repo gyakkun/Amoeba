@@ -10,7 +10,7 @@
         Width="600" 
         VerticalAlignment="Center"
         ResizeMode="NoResize" 
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         Closing="Window_Closing">
     
     <Grid>

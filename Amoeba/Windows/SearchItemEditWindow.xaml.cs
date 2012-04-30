@@ -95,6 +95,8 @@ namespace Amoeba.Windows
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = true;
+          
             _searchItem.Name = _searchTreeViewItemNameTextBox.Text;
 
             _searchItem.SearchNameCollection.Clear();
@@ -136,7 +138,6 @@ namespace Amoeba.Windows
             }
 
             _searchItem.SearchState = state;
-            this.DialogResult = true;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

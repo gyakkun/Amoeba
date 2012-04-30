@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:Amoeba.Windows" 
         Background="{DynamicResource WindowBackgroundBrush}"
         Title="{Binding Path=UploadWindow_Title, Source={StaticResource ResourcesInstance}}"
-        Top="{Binding Path=UploadWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        Left="{Binding Path=UploadWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Top="{Binding Path=UploadWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _topRelativeDoubleConverter}}"
+        Left="{Binding Path=UploadWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Height="{Binding Path=UploadWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Width="{Binding Path=UploadWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" >
+        WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}">
 
     <Grid>
         <Label Content="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />

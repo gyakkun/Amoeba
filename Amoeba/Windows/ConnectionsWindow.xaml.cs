@@ -213,7 +213,7 @@ namespace Amoeba.Windows
                 _baseNodeUriTextBox.Text = "";
                 return;
             }
-        
+
             try
             {
                 _baseNodeUriTextBox.Text = item;
@@ -339,7 +339,7 @@ namespace Amoeba.Windows
             var uri = _baseNodeUriTextBox.Text;
             if (!Regex.IsMatch(uri, @"(.*?):(.+)")
                 || _baseNode.Uris.Any(n => n == uri)) return;
-            
+
             var item = _baseNodeUrisListView.SelectedItem as string;
             if (item == null) return;
 
@@ -347,7 +347,7 @@ namespace Amoeba.Windows
             _baseNodeUrisListView.Items.Refresh();
 
             _baseNodeUrisListView.SelectedIndex = selectIndex;
-            
+
             var random = new RNGCryptoServiceProvider();
             byte[] buffer = new byte[64];
             random.GetBytes(buffer);
@@ -360,14 +360,14 @@ namespace Amoeba.Windows
         {
             int selectIndex = _baseNodeUrisListView.SelectedIndex;
             if (selectIndex == -1) return;
-            
+
             foreach (var item in _baseNodeUrisListView.SelectedItems.OfType<string>().ToArray())
             {
                 _baseNode.Uris.Remove(item);
             }
- 
+
             _baseNodeUriTextBox.Text = "";
-           
+
             _baseNodeUrisListView.Items.Refresh();
             _baseNodeUrisListView.SelectedIndex = selectIndex;
             _baseNodeUriSchemeComboBox_SelectionChanged(this, null);
@@ -451,7 +451,7 @@ namespace Amoeba.Windows
             var selectItems = _otherNodesListView.SelectedItems;
             if (selectItems == null) return;
 
-           _otherNodesCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _otherNodesCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
         }
 
         private void _otherNodesCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
@@ -765,7 +765,7 @@ namespace Amoeba.Windows
                 };
 
                 if (_clientFilters.Any(n => n == connectionFilter)) return;
-                
+
                 item.ConnectionType = connectionType;
                 item.ProxyUri = proxyUri;
                 item.UriCondition = uriCondition;
@@ -970,12 +970,12 @@ namespace Amoeba.Windows
             if (selectIndex == -1) return;
 
             _serverListenUriTextBox.Text = "";
-            
+
             foreach (var item in _serverListenUrisListView.SelectedItems.OfType<string>().ToArray())
             {
                 _listenUris.Remove(item);
             }
-            
+
             _serverListenUrisListView.Items.Refresh();
             _serverListenUrisListView.SelectedIndex = selectIndex;
             _serverListenUriSchemeComboBox_SelectionChanged(this, null);
@@ -1174,6 +1174,8 @@ namespace Amoeba.Windows
             {
                 dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
                 dialog.SelectedPath = _miscellaneousDownloadDirectoryTextBox.Text;
+                dialog.ShowNewFolderButton = true;
+                dialog.Description = LanguagesManager.Instance.ConnectionsWindow_DownloadDirectory;
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -1186,6 +1188,8 @@ namespace Amoeba.Windows
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = true;
+
             lock (_amoebaManager.ThisLock)
             {
                 long size = (long)NetworkConverter.FromSizeString("50 GB");
@@ -1197,7 +1201,7 @@ namespace Amoeba.Windows
                 catch (Exception)
                 {
 
-                }       
+                }
 
                 if (_amoebaManager.Size != size)
                 {
@@ -1269,7 +1273,7 @@ namespace Amoeba.Windows
                     p.UseShellExecute = true;
                     p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
                     p.Arguments = "Relate on";
-                    
+
                     OperatingSystem osInfo = Environment.OSVersion;
 
                     if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
@@ -1292,7 +1296,7 @@ namespace Amoeba.Windows
                     p.UseShellExecute = true;
                     p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
                     p.Arguments = "Relate off";
-                  
+
                     OperatingSystem osInfo = Environment.OSVersion;
 
                     if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
@@ -1312,8 +1316,6 @@ namespace Amoeba.Windows
 
                 Settings.Instance.Global_RelateBoxFile_IsEnabled = _miscellaneousRelateBoxFileCheckBox.IsChecked.Value;
             }
-
-            this.DialogResult = true;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
