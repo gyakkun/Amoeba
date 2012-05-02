@@ -42,14 +42,14 @@
                     <Label Height="28" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=ConnectionsWindow_Node, Source={StaticResource ResourcesInstance}}" />
                     <GroupBox Header="{Binding Path=ConnectionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Margin="6,40,6,6" >
                         <Grid>
-                            <ListView Name="_baseNodeUrisListView" Margin="6,6,6,99" SelectionChanged="_baseNodeUrisListView_SelectionChanged" PreviewMouseLeftButtonDown="_baseNodeUrisListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
+                            <local:ListViewEx x:Name="_baseNodeUrisListView" Margin="6,6,6,99" SelectionChanged="_baseNodeUrisListView_SelectionChanged" PreviewMouseLeftButtonDown="_baseNodeUrisListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_Uri, Source={StaticResource ResourcesInstance}}"
                                             Width="{Binding Path=ConnectionsWindow_BaseNode_Uris_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                     </GridView>
                                 </ListView.View>
-                            </ListView>
+                            </local:ListViewEx>
                             <TextBox Name="_baseNodeUriTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
                             <Label Content="{Binding Path=ConnectionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120" />
                             <ComboBox Height="24" Margin="132,0,6,69" Name="_baseNodeUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_baseNodeUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_baseNodeUriSchemeComboBox_SelectionChanged" >
@@ -70,7 +70,7 @@
                 <Grid>
                     <GroupBox Header="{Binding Path=ConnectionsWindow_Nodes, Source={StaticResource ResourcesInstance}}" Margin="6,40,6,6" >
                         <Grid>
-                            <ListView Name="_otherNodesListView" Margin="6,6,6,65" ContextMenuOpening="_otherNodesListView_ContextMenuOpening" PreviewMouseLeftButtonDown="_otherNodesListView_PreviewMouseLeftButtonDown" SelectionChanged="_otherNodesListView_SelectionChanged" SelectionMode="Single">
+                            <local:ListViewEx x:Name="_otherNodesListView" Margin="6,6,6,65" ContextMenuOpening="_otherNodesListView_ContextMenuOpening" PreviewMouseLeftButtonDown="_otherNodesListView_PreviewMouseLeftButtonDown" SelectionChanged="_otherNodesListView_SelectionChanged" SelectionMode="Single">
                                 <ListView.ContextMenu>
                                     <ContextMenu Name="_otherNodesContextMenu" >
                                         <MenuItem Name="_otherNodesCopyContextMenuItem" Header="{Binding Path=ConnectionsWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_otherNodesCopyContextMenuItem_Click"/>
@@ -83,7 +83,7 @@
                                             Width="{Binding Path=ConnectionsWindow_OtherNodes_Node_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                     </GridView>
                                 </ListView.View>
-                            </ListView>
+                            </local:ListViewEx>
                             <TextBox Name="_otherNodesNodeTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" AcceptsReturn="True" />
                             <Button Name="_otherNodesAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=ConnectionsWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_otherNodesAddButton_Click" />
                         </Grid>
@@ -96,7 +96,7 @@
                 <Grid>
                     <GroupBox Header="{Binding Path=ConnectionsWindow_Filters, Source={StaticResource ResourcesInstance}}" Margin="6" >
                         <Grid>
-                            <ListView Margin="6,6,6,214" Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" SelectionMode="Single">
+                            <local:ListViewEx Margin="6,6,6,214" x:Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" SelectionMode="Single">
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ConnectionType}" 
@@ -107,7 +107,7 @@
                                             Width="{Binding Path=ConnectionsWindow_Client_Filters_UriCondition_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" CellTemplate="{StaticResource _myTemplate_UriCondition}" />
                                     </GridView>
                                 </ListView.View>
-                            </ListView>
+                            </local:ListViewEx>
                             <Label Height="28" HorizontalAlignment="Left" Margin="6,0,0,146" VerticalAlignment="Bottom" Width="119" Content="{Binding Path=ConnectionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" />
                             <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="131,0,6,150" VerticalAlignment="Bottom" />
                             <Label Margin="6,0,0,180" HorizontalAlignment="Left" Width="119" Content="{Binding Path=ConnectionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="28" VerticalAlignment="Bottom" />
@@ -136,14 +136,14 @@
                 <Grid>
                     <GroupBox Header="{Binding Path=ConnectionsWindow_ListenUris, Source={StaticResource ResourcesInstance}}" Margin="6" Name="groupBox3">
                         <Grid>
-                            <ListView Margin="6,6,6,99" Name="_serverListenUrisListView" PreviewMouseLeftButtonDown="_serverListenUrisListView_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUrisListView_SelectionChanged" SelectionMode="Single">
+                            <local:ListViewEx Margin="6,6,6,99" x:Name="_serverListenUrisListView" PreviewMouseLeftButtonDown="_serverListenUrisListView_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUrisListView_SelectionChanged" SelectionMode="Single">
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionsWindow_Uri, Source={StaticResource ResourcesInstance}}" 
                                             Width="{Binding Path=ConnectionsWindow_Server_ListenUris_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                     </GridView>
                                 </ListView.View>
-                            </ListView>
+                            </local:ListViewEx>
                             <TextBox Height="24" Margin="6,0,6,35" Name="_serverListenUriTextBox" VerticalAlignment="Bottom" />
                             <Label Content="{Binding Path=ConnectionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="28" HorizontalAlignment="Left" Margin="6,0,0,65" Name="label4" VerticalAlignment="Bottom" Width="120" />
                             <ComboBox Height="24" Margin="132,0,6,69" Name="_serverListenUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_serverListenUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUriSchemeComboBox_SelectionChanged" >
@@ -160,14 +160,14 @@
             </TabItem>
             <TabItem Name="_keywordsTabItem" Header="{Binding Path=ConnectionsWindow_Keywords, Source={StaticResource ResourcesInstance}}" >
                 <Grid>
-                    <ListView Margin="6,6,6,65" Name="_keywordsListView" PreviewMouseLeftButtonDown="_keywordsListView_PreviewMouseLeftButtonDown" SelectionChanged="_keywordsListView_SelectionChanged" SelectionMode="Single">
+                    <local:ListViewEx Margin="6,6,6,65" x:Name="_keywordsListView" PreviewMouseLeftButtonDown="_keywordsListView_PreviewMouseLeftButtonDown" SelectionChanged="_keywordsListView_SelectionChanged" SelectionMode="Single">
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=ConnectionsWindow_Keyword, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keyword}" 
                                         Width="{Binding Path=ConnectionsWindow_Keywords_Keyword_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
-                    </ListView>
+                    </local:ListViewEx>
                     <TextBox Height="24" Margin="6,0,6,35" Name="_keywordTextBox" VerticalAlignment="Bottom" />
                     <Button Content="{Binding Path=ConnectionsWindow_Up, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" Name="_keywordUpButton" VerticalAlignment="Bottom" Width="75" Click="_keywordUpButton_Click" IsEnabled="False" />
                     <Button Content="{Binding Path=ConnectionsWindow_Down, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" Name="_keywordDownButton" VerticalAlignment="Bottom" Width="75" Click="_keywordDownButton_Click" IsEnabled="False" />

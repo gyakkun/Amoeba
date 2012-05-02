@@ -19,7 +19,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListView Grid.Column="2" Name="_shareListView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_shareListView_ContextMenuOpening" PreviewDragOver="_shareListView_PreviewDragOver" PreviewDrop="_shareListView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_shareListView_PreviewMouseLeftButtonDown" 
+        <local:ListViewEx Grid.Column="2" x:Name="_shareListView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_shareListView_ContextMenuOpening" PreviewDragOver="_shareListView_PreviewDragOver" PreviewDrop="_shareListView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -42,6 +42,6 @@
                             Width="{Binding Path=ShareControl_GridViewColumn_BlockCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>
+        </local:ListViewEx>
     </Grid>
 </UserControl>

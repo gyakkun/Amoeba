@@ -164,9 +164,6 @@ namespace Amoeba.Windows
 
         private void _baseNodeUrisListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var item = _baseNodeUrisListView.SelectedItem as string;
-            if (item == null) return;
-
             try
             {
                 var selectIndex = _baseNodeUrisListView.SelectedIndex;
@@ -207,12 +204,17 @@ namespace Amoeba.Windows
 
         private void _baseNodeUrisListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var item = _baseNodeUrisListView.SelectedItem as string;
-            if (item == null)
+            var selectIndex = _baseNodeUrisListView.SelectedIndex;
+            if (selectIndex == -1)
             {
-                _baseNodeUriTextBox.Text = "";
+                _baseNodeUriTextBox.Text = "tcp:";
+                ((ComboBoxItem)_baseNodeUriSchemeComboBox.Items[0]).IsSelected = true;
+
                 return;
             }
+
+            var item = _baseNodeUrisListView.SelectedItem as string;
+            if (item == null) return;
 
             try
             {
@@ -319,7 +321,7 @@ namespace Amoeba.Windows
             _baseNode.Uris.Add(uri);
             _baseNodeUrisListView.SelectedIndex = _baseNode.Uris.Count - 1;
             _baseNodeUrisListView.Items.Refresh();
-            _baseNodeUriSchemeComboBox_SelectionChanged(this, null);
+            _baseNodeUrisListView_SelectionChanged(this, null);
 
             var random = new RNGCryptoServiceProvider();
             byte[] buffer = new byte[64];
@@ -370,7 +372,7 @@ namespace Amoeba.Windows
 
             _baseNodeUrisListView.Items.Refresh();
             _baseNodeUrisListView.SelectedIndex = selectIndex;
-            _baseNodeUriSchemeComboBox_SelectionChanged(this, null);
+            _baseNodeUrisListView_SelectionChanged(this, null);
 
             var random = new RNGCryptoServiceProvider();
             byte[] buffer = new byte[64];
@@ -527,8 +529,8 @@ namespace Amoeba.Windows
 
         private void _clientFiltersListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var item = _clientFiltersListView.SelectedItem as ConnectionFilter;
-            if (item == null)
+            var selectIndex = _clientFiltersListView.SelectedIndex;
+            if (selectIndex == -1)
             {
                 _clientFiltersProxyUriTextBox.Text = "";
                 _clientFiltersConditionTextBox.Text = "tcp:.*";
@@ -537,6 +539,9 @@ namespace Amoeba.Windows
                 return;
             }
 
+            var item = _clientFiltersListView.SelectedItem as ConnectionFilter;
+            if (item == null) return;
+            
             if (item.ProxyUri != null)
             {
                 _clientFiltersProxyUriTextBox.Text = item.ProxyUri;
@@ -716,14 +721,14 @@ namespace Amoeba.Windows
 
                 _clientFiltersConditionTextBox.Text = "";
                 _clientFiltersListView.SelectedIndex = _clientFilters.Count - 1;
-
-                _clientFiltersListView.Items.Refresh();
-                _clientFiltersListViewUpdate();
             }
             catch (Exception)
             {
-
+                return;
             }
+
+            _clientFiltersListView.Items.Refresh();
+            _clientFiltersListViewUpdate();
         }
 
         private void _clientFilterEditButton_Click(object sender, RoutedEventArgs e)
@@ -771,37 +776,31 @@ namespace Amoeba.Windows
                 item.UriCondition = uriCondition;
 
                 _clientFiltersListView.SelectedIndex = selectIndex;
-                _clientFiltersListView.Items.Refresh();
-                _clientFiltersListViewUpdate();
             }
             catch (Exception)
             {
-
+                return;
             }
+
+            _clientFiltersListView.Items.Refresh();
+            _clientFiltersListViewUpdate();
         }
 
         private void _clientFilterDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            int selectIndex = _clientFiltersListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            _clientFiltersConditionTextBox.Text = "";
+
+            foreach (var item in _clientFiltersListView.SelectedItems.OfType<ConnectionFilter>().ToArray())
             {
-                int selectIndex = _clientFiltersListView.SelectedIndex;
-                if (selectIndex == -1) return;
-
-                _clientFiltersConditionTextBox.Text = "";
-
-                foreach (var item in _clientFiltersListView.SelectedItems.OfType<ConnectionFilter>().ToArray())
-                {
-                    _clientFilters.Remove(item);
-                }
-
-                _clientFiltersListView.Items.Refresh();
-                _clientFiltersListView.SelectedIndex = selectIndex;
-                _clientFiltersListViewUpdate();
+                _clientFilters.Remove(item);
             }
-            catch (Exception)
-            {
 
-            }
+            _clientFiltersListView.Items.Refresh();
+            _clientFiltersListView.SelectedIndex = selectIndex;
+            _clientFiltersListViewUpdate();
         }
 
         #endregion
@@ -855,6 +854,15 @@ namespace Amoeba.Windows
 
         private void _serverListenUrisListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            var selectIndex = _serverListenUrisListView.SelectedIndex;
+            if (selectIndex == -1)
+            {
+                _serverListenUriTextBox.Text = string.Format("tcp:0.0.0.0:{1}", new Random().Next(1024, 65536));
+                ((ComboBoxItem)_serverListenUriSchemeComboBox.Items[0]).IsSelected = true;
+
+                return;
+            }
+            
             var item = _serverListenUrisListView.SelectedItem as string;
             if (item == null) return;
 
@@ -1033,6 +1041,14 @@ namespace Amoeba.Windows
 
         private void _keywordsListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            var selectIndex = _keywordsListView.SelectedIndex;
+            if (selectIndex == -1)
+            {
+                _keywordTextBox.Text = "";
+
+                return;
+            }
+
             var item = _keywordsListView.SelectedItem as Keyword;
             if (item == null) return;
 
@@ -1151,6 +1167,17 @@ namespace Amoeba.Windows
             }
 
             return count;
+        }
+
+        private void StackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Expander expander = e.Source as Expander;
+            if (expander == null) return;
+
+            foreach (var item in (_miscellaneousStackPanel.Children).OfType<Expander>())
+            {
+                if (expander != item) item.IsExpanded = false;
+            }
         }
 
         private void _miscellaneousConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -1321,17 +1348,6 @@ namespace Amoeba.Windows
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
-        }
-
-        private void StackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            Expander expander = e.Source as Expander;
-            if (expander == null) return;
-
-            foreach (var item in (_miscellaneousStackPanel.Children).OfType<Expander>())
-            {
-                if (expander != item) item.IsExpanded = false;
-            }
         }
     }
 }

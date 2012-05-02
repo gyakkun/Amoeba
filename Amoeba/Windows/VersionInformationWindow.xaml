@@ -25,7 +25,7 @@
     <Grid>
         <Label Height="37" Margin="12,12,12,0" VerticalAlignment="Top" Content="Amoeba" FontSize="20" HorizontalAlignment="Center" />
         <Label Margin="12,55,12,0" Content="Copyright © Albert Lindsay 2009-2012" Height="28" VerticalAlignment="Top" HorizontalAlignment="Center" />
-        <ListView Margin="12,89,12,41" Name="_versionListView" >
+        <local:ListViewEx Margin="12,89,12,41" x:Name="_versionListView" SelectionMode="Single" >
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=VersionInformationWindow_FileName, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_FileName}" 
@@ -34,7 +34,7 @@
                             Width="{Binding Path=VersionInformationWindow_GridViewColumn_Version_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>
+        </local:ListViewEx>
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_licenseButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_License, Source={StaticResource ResourcesInstance}}" Click="_licenseButton_Click" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_closeButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_Close, Source={StaticResource ResourcesInstance}}" Click="_closeButton_Click" />
     </Grid>

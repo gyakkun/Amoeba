@@ -29,7 +29,7 @@
         <Label HorizontalAlignment="Left" Margin="12,46,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="28" VerticalAlignment="Top" />
         <ComboBox Height="24" Margin="138,46,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
         <Label Height="28" HorizontalAlignment="Left" Margin="12,80,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" />
-        <ListView Name="_uploadListView" Margin="138,80,12,41"
+        <local:ListViewEx x:Name="_uploadListView" Margin="138,80,12,41"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -49,7 +49,7 @@
                             Width="{Binding Path=UploadWindow_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>
+        </local:ListViewEx>
         <Button Name="_cancelButton" Grid.Row="2" Height="23" Margin="0,0,12,12"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Content="{Binding Path=UploadWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" />
         <Button Name="_okButton" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" VerticalAlignment="Bottom" Width="75" Grid.Row="2" Content="{Binding Path=UploadWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" />
     </Grid>

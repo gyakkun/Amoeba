@@ -435,7 +435,7 @@ namespace Amoeba.Windows
         #region Grid
 
         private Point _startPoint;
-        private IList<object> _selectedItems;
+       
         private void _boxTreeView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
@@ -466,7 +466,8 @@ namespace Amoeba.Windows
                 Point lposition = e.GetPosition(_listView);
 
                 if (lposition.Y < 20
-                    || (_listView.ActualWidth - lposition.X) < 20 || (_listView.ActualHeight - lposition.Y) < 20)
+                    || (_listView.ActualWidth - lposition.X) < 20 
+                    || (_listView.ActualHeight - lposition.Y) < 20)
                 {
                     _isMouseDown = true;
                     return;
@@ -475,27 +476,9 @@ namespace Amoeba.Windows
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
                     || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (_selectedItems != null && !_refresh)
+                    if (!_refresh)
                     {
-                        var posithonIndex = _listView.GetCurrentIndex(e.GetPosition);
-                        if (posithonIndex == -1) return;
-
-                        var posithonItem = _listView.Items[posithonIndex];
-
-                        if (_selectedItems.Any(n => object.ReferenceEquals(n, posithonItem)))
-                        {
-                            _listView.SelectedItems.Clear();
-
-                            foreach (var item in _selectedItems)
-                            {
-                                _listView.SelectedItems.Add(item);
-                            }
-                        }
-                        else
-                        {
-                            _listView.SelectedItems.Clear();
-                            _listView.SelectedItems.Add(posithonItem);
-                        }
+                        if (_listView.SelectedItems.Count == 0) return;
 
                         DataObject data = new DataObject("list", _listView.SelectedItems);
                         DragDrop.DoDragDrop(_grid, data, DragDropEffects.Move);
@@ -600,7 +583,7 @@ namespace Amoeba.Windows
                     var boxes = ((IList)e.Data.GetData("list")).OfType<BoxListViewItem>().Select(n => n.Value).ToList();
                     var seeds = ((IList)e.Data.GetData("list")).OfType<SeedListViewItem>().Select(n => n.Value).ToList();
 
-                    if (e.Source.GetType() == typeof(ListView))
+                    if (e.Source.GetType() == typeof(ListViewEx))
                     {
                         var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
                         if (selectBoxTreeViewItem == null) return;
@@ -693,13 +676,6 @@ namespace Amoeba.Windows
 
         private void _listView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _selectedItems = _listView.SelectedItems.OfType<object>().ToList();
-
-            if (_listView.GetCurrentIndex(e.GetPosition) == -1)
-            {
-                _listView.SelectedItems.Clear();
-            }
-
             _isMouseDown = false;
         }
 
@@ -1385,13 +1361,13 @@ namespace Amoeba.Windows
         {
             if (e != null)
             {
-                _listView.SelectedIndex = -1;
-
                 var item = e.OriginalSource as GridViewColumnHeader;
                 if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
 
                 string headerClicked = item.Column.Header as string;
                 if (headerClicked == null) return;
+
+                _listView.SelectedIndex = -1;
 
                 ListSortDirection direction;
 

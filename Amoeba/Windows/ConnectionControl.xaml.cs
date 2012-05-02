@@ -83,22 +83,6 @@ namespace Amoeba.Windows
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.ConnectionInfomationShow), this);
         }
 
-        private void _connectionsInfomationListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (_connectionsInfomationListView.GetCurrentIndex(e.GetPosition) == -1)
-            {
-                _connectionsInfomationListView.SelectedItems.Clear();
-            }
-        }
-
-        private void _connectionListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (_connectionListView.GetCurrentIndex(e.GetPosition) == -1)
-            {
-                _connectionListView.SelectedItems.Clear();
-            }
-        }
-
         private void _connectionListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _connectionListView.SelectedItems;
@@ -309,13 +293,13 @@ namespace Amoeba.Windows
         {
             if (e != null)
             {
-                _connectionListView.SelectedIndex = -1;
-
                 var item = e.OriginalSource as GridViewColumnHeader;
                 if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
 
                 string headerClicked = item.Column.Header as string;
                 if (headerClicked == null) return;
+
+                _connectionListView.SelectedIndex = -1;
 
                 ListSortDirection direction;
 
@@ -441,11 +425,6 @@ namespace Amoeba.Windows
         }
 
         #endregion
-
-        private void _connectionsInfomationListView_Click(object sender, RoutedEventArgs e)
-        {
-            _connectionsInfomationListView.SelectedIndex = -1;
-        }
 
         private class AmoebaInfomationListViewItem : INotifyPropertyChanged
         {

@@ -154,14 +154,6 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _shareListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (_shareListView.GetCurrentIndex(e.GetPosition) == -1)
-            {
-                _shareListView.SelectedItems.Clear();
-            }
-        }
-
         private void _shareListView_PreviewDragOver(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.All;
@@ -274,13 +266,13 @@ namespace Amoeba.Windows
         {
             if (e != null)
             {
-                _shareListView.SelectedIndex = -1;
-
                 var item = e.OriginalSource as GridViewColumnHeader;
                 if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
 
                 string headerClicked = item.Column.Header as string;
                 if (headerClicked == null) return;
+
+                _shareListView.SelectedIndex = -1;
 
                 ListSortDirection direction;
 

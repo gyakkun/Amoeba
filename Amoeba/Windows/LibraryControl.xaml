@@ -45,7 +45,7 @@
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
-        <ListView Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" 
+        <local:ListViewEx x:Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove" >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -83,7 +83,7 @@
                             Width="{Binding Path=LibraryControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>
+        </local:ListViewEx>
         <TreeView Name="_boxTreeView" ContextMenuOpening="_boxTreeView_ContextMenuOpening" PreviewMouseLeftButtonDown="_boxTreeView_PreviewMouseLeftButtonDown" SelectedItemChanged="_boxTreeView_SelectedItemChanged" AllowDrop="True" PreviewMouseRightButtonDown="_boxTreeView_PreviewMouseRightButtonDown"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_boxTreeView_PreviewMouseMove">
             <local:BoxTreeViewItem x:Name="_boxTreeViewItem" IsExpanded="True">

@@ -567,14 +567,6 @@ namespace Amoeba.Windows
 
         #region _searchListView
 
-        private void _searchListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (_searchListView.GetCurrentIndex(e.GetPosition) == -1)
-            {
-                _searchListView.SelectedItems.Clear();
-            }
-        }
-
         private void _searchListView_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (_searchListView.GetCurrentIndex(e.GetPosition) < 0) return;
@@ -1239,13 +1231,13 @@ namespace Amoeba.Windows
         {
             if (e != null)
             {
-                _searchListView.SelectedIndex = -1;
-
                 var item = e.OriginalSource as GridViewColumnHeader;
                 if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
 
                 string headerClicked = item.Column.Header as string;
                 if (headerClicked == null) return;
+
+                _searchListView.SelectedIndex = -1;
 
                 ListSortDirection direction;
 

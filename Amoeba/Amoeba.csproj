@@ -201,6 +201,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windows\ListViewEx.cs" />
     <Compile Include="Windows\UploadListWindow.xaml.cs">
       <DependentUpon>UploadListWindow.xaml</DependentUpon>
     </Compile>

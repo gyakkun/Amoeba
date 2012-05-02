@@ -17,6 +17,10 @@
 
             <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}" />
             <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}" />
+            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}" />
+            
+            <Style TargetType="{x:Type local:ListViewEx}" BasedOn="{StaticResource ListViewStyle}" />
+            <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewStyle}" />
 
             <Style TargetType="{x:Type local:DigitalSignatureComboBoxItem}" BasedOn="{StaticResource ComboBoxItemStyle}" />
             <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource ComboBoxItemStyle}" />

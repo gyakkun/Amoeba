@@ -33,7 +33,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <ListView Grid.Column="2" Name="_uploadListView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_uploadListView_ContextMenuOpening" PreviewDragOver="_uploadListView_PreviewDragOver" PreviewDrop="_uploadListView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_uploadListView_PreviewMouseLeftButtonDown"  
+        <local:ListViewEx Grid.Column="2" x:Name="_uploadListView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_uploadListView_ContextMenuOpening" PreviewDragOver="_uploadListView_PreviewDragOver" PreviewDrop="_uploadListView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -75,6 +75,6 @@
                             Width="{Binding Path=UploadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>
+        </local:ListViewEx>
     </Grid>
 </UserControl>

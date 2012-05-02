@@ -50,7 +50,7 @@
         </Grid.ColumnDefinitions>
 
         <GridSplitter Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" />
-
+        
         <TextBox Name="_searchTextBox" KeyDown="_searchTextBox_KeyDown" />
 
         <TreeView Grid.Row="1" Name="_searchTreeView" ContextMenuOpening="_searchTreeView_ContextMenuOpening" SelectedItemChanged="_searchTreeView_SelectedItemChanged" PreviewMouseMove="_searchTreeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_searchTreeView_PreviewDrop" PreviewMouseLeftButtonDown="_searchTreeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_searchTreeView_PreviewMouseRightButtonDown" 
@@ -70,7 +70,7 @@
             </local:SearchTreeViewItem>
         </TreeView>
 
-        <ListView Grid.Column="2" Name="_searchListView" Grid.RowSpan="2" ContextMenuOpening="_searchListView_ContextMenuOpening" PreviewMouseDoubleClick="_searchListView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_searchListView_PreviewMouseLeftButtonDown"
+        <local:ListViewEx Grid.Column="2" x:Name="_searchListView" Grid.RowSpan="2" ContextMenuOpening="_searchListView_ContextMenuOpening" PreviewMouseDoubleClick="_searchListView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -111,6 +111,6 @@
                             Width="{Binding Path=SearchControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>
+        </local:ListViewEx>
     </Grid>
 </UserControl>

@@ -41,7 +41,7 @@
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
 
-        <ListView Name="_connectionsInfomationListView" Grid.Column="2" GridViewColumnHeader.Click="_connectionsInfomationListView_Click" PreviewMouseLeftButtonDown="_connectionsInfomationListView_PreviewMouseLeftButtonDown">
+        <local:ListViewEx x:Name="_connectionsInfomationListView" Grid.Column="2" SelectionMode="Single">
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
@@ -50,8 +50,8 @@
                             Width="{Binding Path=ConnectionControl_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>
-        <ListView Name="_connectionListView" ContextMenuOpening="_connectionListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" PreviewMouseLeftButtonDown="_connectionListView_PreviewMouseLeftButtonDown"
+        </local:ListViewEx>
+        <local:ListViewEx x:Name="_connectionListView" ContextMenuOpening="_connectionListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -75,6 +75,6 @@
                             Width="{Binding Path=ConnectionControl_ReceivedByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
-        </ListView>
+        </local:ListViewEx>
     </Grid>
 </UserControl>
