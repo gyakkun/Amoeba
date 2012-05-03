@@ -27,11 +27,19 @@ namespace Amoeba.Windows
 {
     class ListViewEx : ListView
     {
-        private IList<object> _selectedItems;
-
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseLeftButtonDown(e);
+
+            {
+                Point lposition = e.GetPosition(this);
+
+                if ((this.ActualWidth - lposition.X) < 15
+                    || (this.ActualHeight - lposition.Y) < 15)
+                {
+                    return;
+                }
+            }
 
             if (this.GetCurrentIndex(e.GetPosition) == -1)
             {
@@ -68,11 +76,11 @@ namespace Amoeba.Windows
 
             if (this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
             {
-                _selectedItems = this.SelectedItems.OfType<object>().ToList();
-
                 if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
                     && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                 {
+                    var selectedItems = this.SelectedItems.OfType<object>().ToList();
+
                     this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         var posithonIndex = this.GetCurrentIndex(e.GetPosition);
@@ -80,11 +88,11 @@ namespace Amoeba.Windows
 
                         var posithonItem = this.Items[posithonIndex];
 
-                        if (_selectedItems.Any(n => object.ReferenceEquals(n, posithonItem)))
+                        if (selectedItems.Any(n => object.ReferenceEquals(n, posithonItem)))
                         {
                             this.SelectedItems.Clear();
 
-                            foreach (var item in _selectedItems)
+                            foreach (var item in selectedItems)
                             {
                                 this.SelectedItems.Add(item);
                             }
@@ -103,13 +111,16 @@ namespace Amoeba.Windows
         {
             if (this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
             {
-                _selectedItems = this.SelectedItems.OfType<object>().ToList();
-
                 if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
                     && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                 {
                     var posithonIndex = this.GetCurrentIndex(e.GetPosition);
                     if (posithonIndex == -1) return;
+
+                    var selectedItems = this.SelectedItems.OfType<object>().ToList();
+                    var posithonItem = this.Items[posithonIndex];
+
+                    if (!selectedItems.Any(n => object.ReferenceEquals(n, posithonItem))) return;
 
                     this.SelectedItems.Clear();
                     this.SelectedItems.Add(this.Items[posithonIndex]);

@@ -388,8 +388,6 @@ namespace Amoeba.Windows
                 string headerClicked = item.Column.Header as string;
                 if (headerClicked == null) return;
 
-                _uploadListView.SelectedIndex = -1;
-
                 ListSortDirection direction;
 
                 if (headerClicked != Settings.Instance.UploadControl_LastHeaderClicked)

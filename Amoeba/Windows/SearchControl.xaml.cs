@@ -108,7 +108,6 @@ namespace Amoeba.Windows
                     {
                         Thread.Sleep(100);
                         if (!_refresh) continue;
-                        _refresh = false;
 
                         SearchTreeViewItem selectSearchTreeViewItem = null;
 
@@ -181,6 +180,9 @@ namespace Amoeba.Windows
 
                             this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                             {
+                                if (selectSearchTreeViewItem != _searchTreeView.SelectedItem) return;
+                                _refresh = false;
+
                                 bool sortFlag = false;
 
                                 if (removeList.Count > 100)
@@ -812,24 +814,23 @@ namespace Amoeba.Windows
 
         #region _searchTreeView
 
-        private Point _startPoint;
+        private Point _startPoint = new Point(-1, -1);
 
         private void _searchTreeView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
             {
+                if (_startPoint.X == -1 && _startPoint.Y == -1) return;
+
                 Point position = e.GetPosition(null);
 
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
                     || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (e.Source.GetType() == typeof(SearchTreeViewItem))
-                    {
-                        if (_searchTreeViewItem == _searchTreeView.SelectedItem) return;
+                    if (_searchTreeViewItem == _searchTreeView.SelectedItem) return;
 
-                        DataObject data = new DataObject("item", _searchTreeView.SelectedItem);
-                        DragDrop.DoDragDrop(_searchTreeView, data, DragDropEffects.Move);
-                    }
+                    DataObject data = new DataObject("item", _searchTreeView.SelectedItem);
+                    DragDrop.DoDragDrop(_searchTreeView, data, DragDropEffects.Move);
                 }
             }
         }
@@ -869,6 +870,14 @@ namespace Amoeba.Windows
 
         private void _searchTreeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            var item = _searchTreeView.GetCurrentItem(e.GetPosition) as SearchTreeViewItem;
+            if (item == null)
+            {
+                _startPoint = new Point(-1, -1);
+
+                return;
+            }
+
             _startPoint = e.GetPosition(null);
 
             _searchTreeView_SelectedItemChanged(null, null);
@@ -1110,6 +1119,8 @@ namespace Amoeba.Windows
 
         private void _searchTreeView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
+            _startPoint = new Point(-1, -1);
+            
             var selectSearchTreeViewItem = _searchTreeView.SelectedItem as SearchTreeViewItem;
             if (selectSearchTreeViewItem == null) return;
 
@@ -1236,8 +1247,6 @@ namespace Amoeba.Windows
 
                 string headerClicked = item.Column.Header as string;
                 if (headerClicked == null) return;
-
-                _searchListView.SelectedIndex = -1;
 
                 ListSortDirection direction;
 

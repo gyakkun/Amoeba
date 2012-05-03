@@ -67,6 +67,8 @@ namespace Amoeba
 
                 for (int i = 0; i < items.Count; i++)
                 {
+                    if (!items[i].IsExpanded) continue;
+
                     foreach (TreeViewItem item in items[i].Items)
                     {
                         items.Add(item);

@@ -77,7 +77,6 @@ namespace Amoeba.Windows
                     {
                         Thread.Sleep(100);
                         if (!_refresh) continue;
-                        _refresh = false;
 
                         BoxTreeViewItem selectBoxTreeViewItem = null;
 
@@ -138,6 +137,9 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
+                            if (selectBoxTreeViewItem != _boxTreeView.SelectedItem) return;
+                            _refresh = false;
+
                             bool sortFlag = false;
 
                             if (removeList.Count > 100)
@@ -434,47 +436,37 @@ namespace Amoeba.Windows
 
         #region Grid
 
-        private Point _startPoint;
-       
+        private Point _startPoint = new Point(-1, -1);
+
         private void _boxTreeView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
             {
+                if (_startPoint.X == -1 && _startPoint.Y == -1) return;
+
                 Point position = e.GetPosition(null);
 
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
                     || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (e.Source.GetType() == typeof(BoxTreeViewItem) || e.Source.GetType() == typeof(TextBlock))
-                    {
-                        if (_boxTreeViewItem == _boxTreeView.SelectedItem) return;
+                    if (_boxTreeViewItem == _boxTreeView.SelectedItem) return;
 
-                        DataObject data = new DataObject("item", _boxTreeView.SelectedItem);
-                        DragDrop.DoDragDrop(_grid, data, DragDropEffects.Move);
-                    }
+                    DataObject data = new DataObject("item", _boxTreeView.SelectedItem);
+                    DragDrop.DoDragDrop(_grid, data, DragDropEffects.Move);
                 }
             }
         }
 
-        bool _isMouseDown = false;
-
         private void _listView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (!_isMouseDown && e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
+            if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
             {
+                if (_startPoint.X == -1 && _startPoint.Y == -1) return;
+                
                 Point position = e.GetPosition(null);
-                Point lposition = e.GetPosition(_listView);
-
-                if (lposition.Y < 20
-                    || (_listView.ActualWidth - lposition.X) < 20 
-                    || (_listView.ActualHeight - lposition.Y) < 20)
-                {
-                    _isMouseDown = true;
-                    return;
-                }
 
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
-                    || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
+                        || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
                     if (!_refresh)
                     {
@@ -665,18 +657,25 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        private void _grid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            _startPoint = e.GetPosition(null);
-        }
-
         #endregion
 
         #region _listView
 
         private void _listView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _isMouseDown = false;
+            Point lposition = e.GetPosition(_listView);
+
+            if (_listView.GetCurrentIndex(e.GetPosition) < 0
+                || lposition.Y < 20
+                || (_listView.ActualWidth - lposition.X) < 15
+                || (_listView.ActualHeight - lposition.Y) < 15)
+            {
+                _startPoint = new Point(-1, -1);
+
+                return;
+            }
+
+            _startPoint = e.GetPosition(null);
         }
 
         private void _listView_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -744,6 +743,8 @@ namespace Amoeba.Windows
 
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
+            _startPoint = new Point(-1, -1);
+            
             if (_refresh)
             {
                 _listViewAddBoxMenuItem.IsEnabled = false;
@@ -1129,7 +1130,15 @@ namespace Amoeba.Windows
 
         private void _boxTreeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            var item = _boxTreeView.GetCurrentItem(e.GetPosition) as BoxTreeViewItem;
+            if (item == null)
+            {
+                _startPoint = new Point(-1, -1);
 
+                return;
+            }
+
+            _startPoint = e.GetPosition(null);
         }
 
         private void _boxTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -1143,6 +1152,8 @@ namespace Amoeba.Windows
 
         private void _boxTreeView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
+            _startPoint = new Point(-1, -1);
+            
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
@@ -1366,8 +1377,6 @@ namespace Amoeba.Windows
 
                 string headerClicked = item.Column.Header as string;
                 if (headerClicked == null) return;
-
-                _listView.SelectedIndex = -1;
 
                 ListSortDirection direction;
 

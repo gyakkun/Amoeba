@@ -38,7 +38,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid Name="_grid" AllowDrop="True" PreviewMouseLeftButtonDown="_grid_PreviewMouseLeftButtonDown" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
+    <Grid Name="_grid" AllowDrop="True" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding Path=LibraryControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
             <ColumnDefinition Width="4" />

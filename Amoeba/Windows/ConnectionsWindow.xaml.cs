@@ -857,7 +857,7 @@ namespace Amoeba.Windows
             var selectIndex = _serverListenUrisListView.SelectedIndex;
             if (selectIndex == -1)
             {
-                _serverListenUriTextBox.Text = string.Format("tcp:0.0.0.0:{1}", new Random().Next(1024, 65536));
+                _serverListenUriTextBox.Text = string.Format("tcp:0.0.0.0:{0}", new Random().Next(1024, 65536));
                 ((ComboBoxItem)_serverListenUriSchemeComboBox.Items[0]).IsSelected = true;
 
                 return;

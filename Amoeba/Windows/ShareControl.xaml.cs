@@ -272,8 +272,6 @@ namespace Amoeba.Windows
                 string headerClicked = item.Column.Header as string;
                 if (headerClicked == null) return;
 
-                _shareListView.SelectedIndex = -1;
-
                 ListSortDirection direction;
 
                 if (headerClicked != Settings.Instance.ShareControl_LastHeaderClicked)
