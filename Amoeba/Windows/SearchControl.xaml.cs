@@ -847,7 +847,6 @@ namespace Amoeba.Windows
                 if (_searchTreeViewItem.GetLineage(t).OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n, s))) return;
 
                 t.IsSelected = true;
-                t.IsExpanded = true;
 
                 var list = _searchTreeViewItem.GetLineage(s).OfType<SearchTreeViewItem>().ToList();
                 list[list.Count - 2].Value.Items.Remove(s.Value);
@@ -1148,7 +1147,6 @@ namespace Amoeba.Windows
 
             if (true == window.ShowDialog())
             {
-                selectSearchTreeViewItem.IsExpanded = true;
                 selectSearchTreeViewItem.Value.Items.Add(searchTreeItem);
 
                 selectSearchTreeViewItem.Update();

@@ -817,7 +817,6 @@ namespace Amoeba.Windows
             if (true == window.ShowDialog())
             {
                 selectBoxTreeViewItem.Value.Boxes.Add(box);
-                selectBoxTreeViewItem.IsExpanded = true;
 
                 selectBoxTreeViewItem.Update();
             }
@@ -1195,7 +1194,6 @@ namespace Amoeba.Windows
             if (true == window.ShowDialog())
             {
                 selectBoxTreeViewItem.Value.Boxes.Add(box);
-                selectBoxTreeViewItem.IsExpanded = true;
 
                 selectBoxTreeViewItem.Update();
             }
