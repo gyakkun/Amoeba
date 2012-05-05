@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,15 +17,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Amoeba.Properties;
 using Library;
 using Library.Net;
 using Library.Net.Amoeba;
 using Library.Security;
-using System.Collections;
-using System.Threading;
-using System.Windows.Threading;
-using System.Collections.ObjectModel;
 
 namespace Amoeba.Windows
 {
@@ -64,7 +64,7 @@ namespace Amoeba.Windows
             _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
                 var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
-                
+
                 if (App.SelectTab == "Library")
                     _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectBoxTreeViewItem.Value.Name);
             };
@@ -87,8 +87,8 @@ namespace Amoeba.Windows
 
                         if (selectBoxTreeViewItem == null) continue;
 
-                        HashSet<object> newList = new HashSet<object>(new ReferenceEqualityComparer());
-                        HashSet<object> oldList = new HashSet<object>(new ReferenceEqualityComparer());
+                        HashSet<object> newList = new HashSet<object>();
+                        HashSet<object> oldList = new HashSet<object>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
@@ -98,6 +98,7 @@ namespace Amoeba.Windows
                         foreach (var item in selectBoxTreeViewItem.Value.Boxes)
                         {
                             var boxesListViewItem = new BoxListViewItem();
+                            boxesListViewItem.Index = newList.Count;
                             boxesListViewItem.Name = item.Name;
                             boxesListViewItem.Signature = MessageConverter.ToSignatureString(item.Certificate);
                             boxesListViewItem.CreationTime = item.CreationTime;
@@ -111,6 +112,7 @@ namespace Amoeba.Windows
                         foreach (var item in selectBoxTreeViewItem.Value.Seeds)
                         {
                             var seedListViewItem = new SeedListViewItem();
+                            seedListViewItem.Index = newList.Count;
                             seedListViewItem.Name = item.Name;
                             seedListViewItem.Signature = MessageConverter.ToSignatureString(item.Certificate);
                             seedListViewItem.Keywords = item.Keywords.Select(n => n.Value);
@@ -140,6 +142,8 @@ namespace Amoeba.Windows
                             if (selectBoxTreeViewItem != _boxTreeView.SelectedItem) return;
                             _refresh = false;
 
+                            _listView.SelectedItems.Clear();
+
                             bool sortFlag = false;
 
                             if (removeList.Count > 100)
@@ -157,7 +161,7 @@ namespace Amoeba.Windows
                             {
                                 if (addList.Count != 0) sortFlag = true;
                                 if (removeList.Count != 0) sortFlag = true;
-                                
+
                                 foreach (var item in addList)
                                 {
                                     _listViewItemCollection.Add(item);
@@ -187,55 +191,6 @@ namespace Amoeba.Windows
             _searchThread.Start();
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.Watch), this);
-        }
-
-        class ReferenceEqualityComparer : IEqualityComparer<object>
-        {
-            public new bool Equals(object x, object y)
-            {
-                if ((x == null) != (y == null)) return false;
-                if (x == null && y == null) return true;
-
-                if (x is BoxListViewItem)
-                {
-                    if (y is BoxListViewItem)
-                    {
-                        var xi = (BoxListViewItem)x;
-                        var yi = (BoxListViewItem)y;
-
-                        return object.ReferenceEquals(xi.Value, yi.Value);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    if (y is SeedListViewItem)
-                    {
-                        var xi = (SeedListViewItem)x;
-                        var yi = (SeedListViewItem)y;
-
-                        return object.ReferenceEquals(xi.Value, yi.Value);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            public int GetHashCode(object obj)
-            {
-                var bl = obj as BoxListViewItem;
-                if (bl != null) return bl.Name.GetHashCode();
-
-                var sl = obj as SeedListViewItem;
-                if (sl != null) return sl.Name.GetHashCode();
-
-                return 0;
-            }
         }
 
         private void Watch(object state)
@@ -427,11 +382,49 @@ namespace Amoeba.Windows
             return filePath;
         }
 
+        private static IEnumerable<Box> GetBoxLineage(Box parentItem, Seed childItem)
+        {
+            var list = new List<Box>();
+            list.Add(parentItem);
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                foreach (var item in list[i].Boxes)
+                {
+                    list.Add(item);
+                }
+            }
+
+            var targetList = new List<Box>();
+
+            try
+            {
+                targetList.Add(list.First(n => n.Seeds.Any(m => object.ReferenceEquals(m, childItem))));
+
+                for (; ; )
+                {
+                    var item = targetList.Last();
+                    if (item == parentItem) break;
+
+                    targetList.Add(list.First(n => n.Boxes.Any(m => object.ReferenceEquals(m, item))));
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            targetList.Reverse();
+
+            return targetList;
+        }
+
         private void Update()
         {
             Settings.Instance.LibraryControl_Box = _boxTreeViewItem.Value;
 
             _boxTreeView_SelectedItemChanged(this, null);
+            _boxTreeViewItem.Sort();
         }
 
         #region Grid
@@ -462,7 +455,7 @@ namespace Amoeba.Windows
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
             {
                 if (_startPoint.X == -1 && _startPoint.Y == -1) return;
-                
+
                 Point position = e.GetPosition(null);
 
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
@@ -599,10 +592,9 @@ namespace Amoeba.Windows
                         selectBoxTreeViewItem.Value.Boxes.Clear();
                         selectBoxTreeViewItem.Value.Boxes.AddRange(tboxes);
 
-                        foreach (var item in seeds)
-                        {
-                            selectBoxTreeViewItem.Value.Seeds.Remove(item);
-                        }
+                        var tseeds = selectBoxTreeViewItem.Value.Seeds.Where(n => !seeds.Any(m => object.ReferenceEquals(n, m))).ToArray();
+                        selectBoxTreeViewItem.Value.Seeds.Clear();
+                        selectBoxTreeViewItem.Value.Seeds.AddRange(tseeds);
 
                         t.Value.Boxes.AddRange(boxes);
                         t.Value.Seeds.AddRange(seeds);
@@ -638,10 +630,9 @@ namespace Amoeba.Windows
                         selectBoxTreeViewItem.Value.Boxes.Clear();
                         selectBoxTreeViewItem.Value.Boxes.AddRange(tboxes);
 
-                        foreach (var item in seeds)
-                        {
-                            selectBoxTreeViewItem.Value.Seeds.Remove(item);
-                        }
+                        var tseeds = selectBoxTreeViewItem.Value.Seeds.Where(n => !seeds.Any(m => object.ReferenceEquals(n, m))).ToArray();
+                        selectBoxTreeViewItem.Value.Seeds.Clear();
+                        selectBoxTreeViewItem.Value.Seeds.AddRange(tseeds);
 
                         t.Value.Boxes.AddRange(boxes);
                         t.Value.Seeds.AddRange(seeds);
@@ -666,7 +657,7 @@ namespace Amoeba.Windows
             Point lposition = e.GetPosition(_listView);
 
             if (_listView.GetCurrentIndex(e.GetPosition) < 0
-                || lposition.Y < 20
+                || lposition.Y < 25
                 || (_listView.ActualWidth - lposition.X) < 15
                 || (_listView.ActualHeight - lposition.Y) < 15)
             {
@@ -737,14 +728,14 @@ namespace Amoeba.Windows
                     return;
                 }
 
-                _amoebaManager.Download(seed.DeepClone(), baseDirectory, 0);
+                _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
             }
         }
 
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             _startPoint = new Point(-1, -1);
-            
+
             if (_refresh)
             {
                 _listViewAddBoxMenuItem.IsEnabled = false;
@@ -814,7 +805,7 @@ namespace Amoeba.Windows
             BoxEditWindow window = new BoxEditWindow(ref box);
             window.Owner = _mainWindow;
 
-            if (true == window.ShowDialog())
+            if (window.ShowDialog() == true)
             {
                 selectBoxTreeViewItem.Value.Boxes.Add(box);
 
@@ -841,12 +832,14 @@ namespace Amoeba.Windows
 
                 BoxEditWindow window = new BoxEditWindow(ref selectBox);
                 window.Owner = _mainWindow;
-                window.ShowDialog();
 
-                selectBoxTreeViewItem.Value.Boxes.Remove(selectBoxListViewItem.Value);
-                selectBoxTreeViewItem.Value.Boxes.Add(selectBox);
+                if (window.ShowDialog() == true)
+                {
+                    selectBoxTreeViewItem.Value.Boxes.Remove(selectBoxListViewItem.Value);
+                    selectBoxTreeViewItem.Value.Boxes.Add(selectBox);
 
-                selectBoxTreeViewItem.Update();
+                    selectBoxTreeViewItem.Update();
+                }
             }
             else if (_listView.SelectedItem is SeedListViewItem)
             {
@@ -860,15 +853,15 @@ namespace Amoeba.Windows
 
                 SeedEditWindow window = new SeedEditWindow(ref selectSeed, _amoebaManager);
                 window.Owner = _mainWindow;
-                window.ShowDialog();
 
-                selectBoxTreeViewItem.Value.Seeds.Remove(selectSeedListViewItem.Value);
-                selectBoxTreeViewItem.Value.Seeds.Add(selectSeed);
+                if (window.ShowDialog() == true)
+                {
+                    selectBoxTreeViewItem.Value.Seeds.Remove(selectSeedListViewItem.Value);
+                    selectBoxTreeViewItem.Value.Seeds.Add(selectSeed);
 
-                selectBoxTreeViewItem.Update();
+                    selectBoxTreeViewItem.Update();
+                }
             }
-
-            _listView.SelectedItems.Clear();
 
             this.Update();
         }
@@ -1000,118 +993,50 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value);
-            var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);
-            string baseDirectory = "";
+            var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value).ToList();
 
-            foreach (var item in _boxTreeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().ToList().Select(n => n.Value))
             {
-                if (item.Certificate == null)
+                var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value).ToList();
+
+                for (int i = 0; i < boxes.Count; i++)
                 {
-                    baseDirectory += string.Format("{0}/", LibraryControl.GetNormalizedPath(item.Name));
+                    boxes.AddRange(boxes[i].Boxes);
                 }
-                else
+
+                foreach (var box in boxes)
                 {
-                    baseDirectory += string.Format("{0}@{1}/", LibraryControl.GetNormalizedPath(item.Name), MessageConverter.ToSignatureString(item.Certificate));
+                    seeds.AddRange(box.Seeds);
                 }
             }
 
             foreach (var seed in seeds)
             {
-                var downloadDirectory = baseDirectory;
+                string baseDirectory = "";
+
+                foreach (var item in LibraryControl.GetBoxLineage(_boxTreeViewItem.Value, seed))
+                {
+                    if (item.Certificate == null)
+                    {
+                        baseDirectory += string.Format("{0}/", LibraryControl.GetNormalizedPath(item.Name));
+                    }
+                    else
+                    {
+                        baseDirectory += string.Format("{0}@{1}/", LibraryControl.GetNormalizedPath(item.Name), MessageConverter.ToSignatureString(item.Certificate));
+                    }
+                }
+
                 var path = System.IO.Path.Combine(baseDirectory, seed.Name);
 
                 if (File.Exists(System.IO.Path.Combine(_amoebaManager.DownloadDirectory, path))) continue;
 
                 if (_amoebaManager.DownloadingInformation.Any(n =>
-                    (n.Contains("Path") && ((string)n["Path"]) == downloadDirectory)
+                    (n.Contains("Path") && ((string)n["Path"]) == baseDirectory)
                     && (n.Contains("Name") && ((string)n["Name"]) == seed.Name)))
                 {
                     continue;
                 }
 
-                _amoebaManager.Download(seed.DeepClone(), downloadDirectory, 0);
-            }
-
-            foreach (var box in boxes)
-            {
-                var boxList = new List<Box>();
-                var seedList = new List<Seed>();
-                var keyDictionary = new Dictionary<string, List<Seed>>();
-
-                boxList.Add(box);
-
-                for (int i = 0; i < boxList.Count; i++)
-                {
-                    boxList.AddRange(boxList[i].Boxes);
-                }
-
-                foreach (var item in boxList)
-                {
-                    seedList.AddRange(item.Seeds);
-                }
-
-                foreach (var seed in seedList)
-                {
-                    List<string> paths = new List<string>();
-                    Box tempDirectory = null;
-
-                    for (int i = boxList.Count - 1; i >= 0; i--)
-                    {
-                        if (tempDirectory == null)
-                        {
-                            if (boxList[i].Seeds.Contains(seed))
-                            {
-                                paths.Add(boxList[i].Name);
-                                tempDirectory = boxList[i];
-                            }
-                        }
-                        else
-                        {
-                            if (boxList[i].Boxes.Contains(tempDirectory))
-                            {
-                                paths.Add(boxList[i].Name);
-                                tempDirectory = boxList[i];
-                            }
-                        }
-                    }
-
-                    string path = "";
-                    paths.Reverse();
-
-                    foreach (var item in paths)
-                    {
-                        path += string.Format("{0}{1}", LibraryControl.GetNormalizedPath(item), "/");
-                    }
-
-                    if (!keyDictionary.ContainsKey(path))
-                        keyDictionary[path] = new List<Seed>();
-
-                    keyDictionary[path].Add(seed);
-                }
-
-                foreach (var path in keyDictionary.Keys)
-                {
-                    foreach (var seed in keyDictionary[path])
-                    {
-                        var downloadDirectory = System.IO.Path.Combine(baseDirectory, path);
-                        var path2 = System.IO.Path.Combine(downloadDirectory, seed.Name);
-
-                        if (File.Exists(System.IO.Path.Combine(_amoebaManager.DownloadDirectory, path2)))
-                        {
-                            continue;
-                        }
-
-                        if (_amoebaManager.DownloadingInformation.Any(n =>
-                            (n.Contains("Path") && ((string)n["Path"]) == downloadDirectory)
-                            && (n.Contains("Name") && ((string)n["Name"]) == seed.Name)))
-                        {
-                            continue;
-                        }
-
-                        _amoebaManager.Download(seed.DeepClone(), downloadDirectory, 0);
-                    }
-                }
+                _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
             }
         }
 
@@ -1152,7 +1077,7 @@ namespace Amoeba.Windows
         private void _boxTreeView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             _startPoint = new Point(-1, -1);
-            
+
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
@@ -1191,7 +1116,7 @@ namespace Amoeba.Windows
             BoxEditWindow window = new BoxEditWindow(ref box);
             window.Owner = _mainWindow;
 
-            if (true == window.ShowDialog())
+            if (window.ShowDialog() == true)
             {
                 selectBoxTreeViewItem.Value.Boxes.Add(box);
 
@@ -1206,7 +1131,7 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            if (!this.DigitalSignatureRelease(_boxTreeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
+            if (!this.DigitalSignatureRelease(_boxTreeViewItem.GetLineage(selectBoxTreeViewItem).Where(n => n != selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
             var directory = selectBoxTreeViewItem.Value;
             BoxEditWindow window = new BoxEditWindow(ref directory);
@@ -1411,7 +1336,7 @@ namespace Amoeba.Windows
         private void Sort(string sortBy, ListSortDirection direction)
         {
             _listView.Items.SortDescriptions.Clear();
-            _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
+            _listView.Items.SortDescriptions.Add(new SortDescription("Type", direction));
 
             if (sortBy == LanguagesManager.Instance.LibraryControl_Name)
             {
@@ -1438,6 +1363,8 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Comment", direction));
             }
+
+            _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
         }
 
         private class KeywordsIComparer : IComparer
@@ -1488,7 +1415,8 @@ namespace Amoeba.Windows
 
         private class BoxListViewItem
         {
-            public int Index { get { return 0; } }
+            public int Type { get { return 0; } }
+            public int Index { get; set; }
             public string Name { get; set; }
             public string Signature { get; set; }
             public IEnumerable<string> Keywords { get; set; }
@@ -1502,11 +1430,41 @@ namespace Amoeba.Windows
                 if (this.Value == null) return 0;
                 else return this.Name.GetHashCode();
             }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is BoxListViewItem)) return false;
+                if (obj == null) return false;
+                if (object.ReferenceEquals(this, obj)) return true;
+                if (this.GetHashCode() != obj.GetHashCode()) return false;
+
+                var other = (BoxListViewItem)obj;
+
+                if (this.Index != other.Index
+                    || this.Name != other.Name
+                    || this.Signature != other.Signature
+                    || ((this.Keywords == null) != (other.Keywords == null))
+                    || this.CreationTime != other.CreationTime
+                    || this.Length != other.Length
+                    || this.Comment != other.Comment
+                    || this.Value != other.Value)
+                {
+                    return false;
+                }
+
+                if (this.Keywords != null && other.Keywords != null)
+                {
+                    if (!Collection.Equals(this.Keywords, other.Keywords)) return false;
+                }
+
+                return true;
+            }
         }
 
         private class SeedListViewItem
         {
-            public int Index { get { return 1; } }
+            public int Type { get { return 1; } }
+            public int Index { get; set; }
             public string Name { get; set; }
             public string Signature { get; set; }
             public IEnumerable<string> Keywords { get; set; }
@@ -1520,19 +1478,51 @@ namespace Amoeba.Windows
                 if (this.Value == null) return 0;
                 else return this.Name.GetHashCode();
             }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is SeedListViewItem)) return false;
+                if (obj == null) return false;
+                if (object.ReferenceEquals(this, obj)) return true;
+                if (this.GetHashCode() != obj.GetHashCode()) return false;
+
+                var other = (SeedListViewItem)obj;
+
+                if (this.Index != other.Index
+                    || this.Name != other.Name
+                    || this.Signature != other.Signature
+                    || ((this.Keywords == null) != (other.Keywords == null))
+                    || this.CreationTime != other.CreationTime
+                    || this.Length != other.Length
+                    || this.Comment != other.Comment
+                    || this.Value != other.Value)
+                {
+                    return false;
+                }
+
+                if (this.Keywords != null && other.Keywords != null)
+                {
+                    if (!Collection.Equals(this.Keywords, other.Keywords)) return false;
+                }
+
+                return true;
+            }
         }
     }
 
     public class BoxTreeViewItem : TreeViewItem
     {
         private Box _value = new Box();
+        private ObservableCollection<BoxTreeViewItem> _listViewItemCollection = new ObservableCollection<BoxTreeViewItem>();
 
         public BoxTreeViewItem()
+            : base()
         {
-
+            this.ItemsSource = _listViewItemCollection;
         }
 
         public BoxTreeViewItem(Box box)
+            : this()
         {
             this.Value = box;
         }
@@ -1553,7 +1543,7 @@ namespace Amoeba.Windows
                 {
                     Text = "@" + MessageConverter.ToSignatureString(this.Value.Certificate),
                     //Foreground = new SolidColorBrush(Color.FromRgb(64, 255, 0))
-                    FontWeight = FontWeight.FromOpenTypeWeight(700),
+                    FontWeight = FontWeight.FromOpenTypeWeight(800),
                 });
                 w.Children.Add(new TextBlock() { Text = string.Format(" ({0})", this.Value.Seeds.Count) });
 
@@ -1567,24 +1557,59 @@ namespace Amoeba.Windows
                 list.Add(new BoxTreeViewItem(item));
             }
 
-            foreach (var item in this.Items.OfType<BoxTreeViewItem>().ToArray())
+            foreach (var item in _listViewItemCollection.OfType<BoxTreeViewItem>().ToArray())
             {
                 if (!list.Any(n => object.ReferenceEquals(n.Value, item.Value)))
                 {
-                    this.Items.Remove(item);
+                    _listViewItemCollection.Remove(item);
                 }
             }
 
             foreach (var item in list)
             {
-                if (!this.Items.OfType<BoxTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, item.Value)))
+                if (!_listViewItemCollection.OfType<BoxTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, item.Value)))
                 {
-                    this.Items.Add(item);
+                    _listViewItemCollection.Add(item);
                 }
             }
 
-            this.Items.SortDescriptions.Clear();
-            this.Items.SortDescriptions.Add(new SortDescription("Value.Name", ListSortDirection.Ascending));
+            this.Sort();
+        }
+
+        public void Sort()
+        {
+            var list = _listViewItemCollection.OfType<BoxTreeViewItem>().ToList();
+
+            list.Sort(delegate(BoxTreeViewItem x, BoxTreeViewItem y)
+            {
+                int c = x.Value.Name.CompareTo(y.Value.Name);
+                if (c != 0) return c;
+                c = (x.Value.Certificate == null).CompareTo(y.Value.Certificate == null);
+                if (c != 0) return c;
+                if (x.Value.Certificate != null && x.Value.Certificate != null)
+                {
+                    c = Collection.Compare(x.Value.Certificate.PublicKey, y.Value.Certificate.PublicKey);
+                    if (c != 0) return c;
+                }
+                c = x.Value.Seeds.Count.CompareTo(y.Value.Seeds.Count);
+                if (c != 0) return c;
+                c = x.Value.Boxes.Count.CompareTo(y.Value.Boxes.Count);
+                if (c != 0) return c;
+
+                return x.Value.GetHashCode().CompareTo(y.Value.GetHashCode());
+            });
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var o = _listViewItemCollection.IndexOf(list[i]);
+
+                if (i != o) _listViewItemCollection.Move(o, i);
+            }
+
+            foreach (var item in this.Items.OfType<BoxTreeViewItem>())
+            {
+                item.Sort();
+            }
         }
 
         public Box Value

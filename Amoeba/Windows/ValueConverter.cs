@@ -128,7 +128,7 @@ namespace Amoeba.Windows
             var item = value as double?;
             if (item == null) return null;
 
-            return item + GetDoubleEvent(this);
+            return item + this.OnGetDoubleEvent();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -136,7 +136,17 @@ namespace Amoeba.Windows
             var item = value as double?;
             if (item == null) return null;
 
-            return item - GetDoubleEvent(this);
+            return item - this.OnGetDoubleEvent();
+        }
+
+        protected virtual double OnGetDoubleEvent()
+        {
+            if (GetDoubleEvent != null)
+            {
+                return GetDoubleEvent(this);
+            }
+
+            return 0;
         }
     }
 
@@ -150,7 +160,7 @@ namespace Amoeba.Windows
             var item = value as double?;
             if (item == null) return null;
 
-            return item + GetDoubleEvent(this);
+            return item + this.OnGetDoubleEvent();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -158,7 +168,17 @@ namespace Amoeba.Windows
             var item = value as double?;
             if (item == null) return null;
 
-            return item - GetDoubleEvent(this);
+            return item - this.OnGetDoubleEvent();
+        }
+
+        protected virtual double OnGetDoubleEvent()
+        {
+            if (GetDoubleEvent != null)
+            {
+                return GetDoubleEvent(this);
+            }
+
+            return 0;
         }
     }
 

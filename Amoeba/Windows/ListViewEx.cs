@@ -31,17 +31,29 @@ namespace Amoeba.Windows
         {
             base.OnPreviewMouseLeftButtonDown(e);
 
-            {
-                Point lposition = e.GetPosition(this);
+            this.MouseButtonDown(e);
+        }
 
-                if ((this.ActualWidth - lposition.X) < 15
-                    || (this.ActualHeight - lposition.Y) < 15)
-                {
-                    return;
-                }
+        protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnPreviewMouseRightButtonDown(e);
+
+            this.MouseButtonDown(e);
+        }
+
+        private void MouseButtonDown(MouseButtonEventArgs e)
+        {
+            Point lposition = e.GetPosition(this);
+
+            if ((this.ActualWidth - lposition.X) < 15
+                || (this.ActualHeight - lposition.Y) < 15)
+            {
+                return;
             }
 
-            if (this.GetCurrentIndex(e.GetPosition) == -1)
+            var posithonIndex = this.GetCurrentIndex(e.GetPosition);
+
+            if (posithonIndex == -1 || lposition.Y < 25)
             {
                 if (this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
                 {
@@ -74,7 +86,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            if (this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
+            if (posithonIndex != -1 && this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
             {
                 if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
                     && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
@@ -83,13 +95,13 @@ namespace Amoeba.Windows
 
                     this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
-                        var posithonIndex = this.GetCurrentIndex(e.GetPosition);
-                        if (posithonIndex == -1) return;
-
                         var posithonItem = this.Items[posithonIndex];
 
                         if (selectedItems.Any(n => object.ReferenceEquals(n, posithonItem)))
                         {
+                            selectedItems.Remove(posithonItem);
+                            selectedItems.Insert(0, posithonItem);
+
                             this.SelectedItems.Clear();
 
                             foreach (var item in selectedItems)
@@ -109,14 +121,15 @@ namespace Amoeba.Windows
 
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            if (this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
+            base.OnPreviewMouseLeftButtonUp(e);
+
+            var posithonIndex = this.GetCurrentIndex(e.GetPosition);
+
+            if (posithonIndex != -1 && this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
             {
                 if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
                     && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                 {
-                    var posithonIndex = this.GetCurrentIndex(e.GetPosition);
-                    if (posithonIndex == -1) return;
-
                     var selectedItems = this.SelectedItems.OfType<object>().ToList();
                     var posithonItem = this.Items[posithonIndex];
 
@@ -126,8 +139,6 @@ namespace Amoeba.Windows
                     this.SelectedItems.Add(this.Items[posithonIndex]);
                 }
             }
-
-            base.OnPreviewMouseLeftButtonUp(e);
         }
     }
 }

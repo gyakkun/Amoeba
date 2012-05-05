@@ -339,7 +339,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _amoebaManager.UploadRestart((int)item.Information["Id"]);
+                    _amoebaManager.UploadReset((int)item.Information["Id"]);
                 }
                 catch (Exception)
                 {

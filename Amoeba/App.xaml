@@ -15,15 +15,10 @@
       
             <ObjectDataProvider x:Key="ResourcesInstance" ObjectType="{x:Type prop:LanguagesManager}" MethodName="GetInstance"/>
 
-            <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}" />
-            <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}" />
-            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}" />
-            
-            <Style TargetType="{x:Type local:ListViewEx}" BasedOn="{StaticResource ListViewStyle}" />
-            <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewStyle}" />
-
-            <Style TargetType="{x:Type local:DigitalSignatureComboBoxItem}" BasedOn="{StaticResource ComboBoxItemStyle}" />
-            <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource ComboBoxItemStyle}" />
+            <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" />
+            <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" />
+            <Style TargetType="{x:Type local:ListViewEx}" BasedOn="{StaticResource {x:Type ListView}}" />
+            <Style TargetType="{x:Type local:DigitalSignatureComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}" />
 
             <local:TopRelativeDoubleConverter x:Key="_topRelativeDoubleConverter"/>
             <local:LeftRelativeDoubleConverter x:Key="_leftRelativeDoubleConverter"/>

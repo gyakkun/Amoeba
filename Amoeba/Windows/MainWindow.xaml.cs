@@ -715,7 +715,7 @@ namespace Amoeba.Windows
                         }
                     }), null);
 
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         try
                         {
@@ -767,7 +767,7 @@ namespace Amoeba.Windows
                         {
                             if (_amoebaManager.State == ManagerState.Start)
                             {
-                                this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                                 {
                                     _menuItemStop_Click(null, null);
                                 }), null);
@@ -831,7 +831,7 @@ namespace Amoeba.Windows
 
                             if (updateKey != null)
                             {
-                                _amoebaManager.Download(updateKey, App.DirectoryPaths["Update"], 0);
+                                _amoebaManager.Download(updateKey, App.DirectoryPaths["Update"], 6);
                             }
                         }
                         catch (Exception)
@@ -912,7 +912,7 @@ namespace Amoeba.Windows
         {
             Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
             {
-                this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
+                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
                 {
                     if (_logParagraph.Inlines.Count > 100)
                     {
@@ -968,7 +968,7 @@ namespace Amoeba.Windows
 
             public override void Write(string message)
             {
-                _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
+                _mainWindow.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
                 {
                     if (_mainWindow._logParagraph.Inlines.Count > 100)
                     {
@@ -983,7 +983,7 @@ namespace Amoeba.Windows
 
             public override void WriteLine(string message)
             {
-                _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
+                _mainWindow.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
                 {
                     if (_mainWindow._logParagraph.Inlines.Count > 100)
                     {

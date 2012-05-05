@@ -178,7 +178,7 @@ namespace Amoeba.Windows
                                 {
                                     try
                                     {
-                                        _amoebaManager.Download(AmoebaConverter.FromSeedString(item), 0);
+                                        _amoebaManager.Download(AmoebaConverter.FromSeedString(item), 3);
                                     }
                                     catch (Exception)
                                     {
@@ -280,7 +280,7 @@ namespace Amoeba.Windows
         {
             foreach (var item in Clipboard.GetSeeds())
             {
-                _amoebaManager.Download(item, 0);
+                _amoebaManager.Download(item, 3);
             }
         }
 
@@ -350,7 +350,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _amoebaManager.DownloadRestart((int)item.Information["Id"]);
+                    _amoebaManager.DownloadReset((int)item.Information["Id"]);
                 }
                 catch (Exception)
                 {

@@ -137,87 +137,87 @@ namespace Amoeba.Windows
                             }), null);
                         }
 
+                        List<SearchListViewItem> oldList = null;
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            List<SearchListViewItem> oldList = null;
+                            oldList = _searchListViewItemCollection.ToList();
+                        }), null);
 
-                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                            {
-                                oldList = _searchListViewItemCollection.ToList();
-                            }), null);
+                        Dictionary<Seed, SearchState> tempList1 = new Dictionary<Seed, SearchState>(new SeedReferenceEqualityComparer());
 
-                            Dictionary<Seed, SearchState> tempList1 = new Dictionary<Seed, SearchState>(new SeedReferenceEqualityComparer());
-
-                            foreach (var item in oldList)
-                            {
-                                tempList1.Add(item.Value, item.State);
-                            }
-
-                            Dictionary<Seed, SearchState> tempList2 = new Dictionary<Seed, SearchState>(new SeedReferenceEqualityComparer());
-
-                            foreach (var item in newList)
-                            {
-                                tempList2.Add(item.Value, item.State);
-                            }
-
-                            var removeList = new List<SearchListViewItem>();
-                            var addList = new List<SearchListViewItem>();
-
-                            foreach (var item in oldList)
-                            {
-                                if (!tempList2.ContainsKey(item.Value) || tempList2[item.Value] != item.State)
-                                {
-                                    removeList.Add(item);
-                                }
-                            }
-
-                            foreach (var item in newList)
-                            {
-                                if (!tempList1.ContainsKey(item.Value) || tempList1[item.Value] != item.State)
-                                {
-                                    addList.Add(item);
-                                }
-                            }
-
-                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                            {
-                                if (selectSearchTreeViewItem != _searchTreeView.SelectedItem) return;
-                                _refresh = false;
-
-                                bool sortFlag = false;
-
-                                if (removeList.Count > 100)
-                                {
-                                    sortFlag = true;
-
-                                    _searchListViewItemCollection.Clear();
-
-                                    foreach (var item in newList)
-                                    {
-                                        _searchListViewItemCollection.Add(item);
-                                    }
-                                }
-                                else
-                                {
-                                    if (addList.Count != 0) sortFlag = true;
-                                    if (removeList.Count != 0) sortFlag = true;
-
-                                    foreach (var item in addList)
-                                    {
-                                        _searchListViewItemCollection.Add(item);
-                                    }
-
-                                    foreach (var item in removeList)
-                                    {
-                                        _searchListViewItemCollection.Remove(item);
-                                    }
-                                }
-
-                                if (sortFlag && _searchListViewItemCollection.Count < 10000) this.Sort();
-
-                                if (App.SelectTab == "Search")
-                                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectSearchTreeViewItem.Value.SearchItem.Name);
-                            }), null);
+                        foreach (var item in oldList)
+                        {
+                            tempList1.Add(item.Value, item.State);
                         }
+
+                        Dictionary<Seed, SearchState> tempList2 = new Dictionary<Seed, SearchState>(new SeedReferenceEqualityComparer());
+
+                        foreach (var item in newList)
+                        {
+                            tempList2.Add(item.Value, item.State);
+                        }
+
+                        var removeList = new List<SearchListViewItem>();
+                        var addList = new List<SearchListViewItem>();
+
+                        foreach (var item in oldList)
+                        {
+                            if (!tempList2.ContainsKey(item.Value) || tempList2[item.Value] != item.State)
+                            {
+                                removeList.Add(item);
+                            }
+                        }
+
+                        foreach (var item in newList)
+                        {
+                            if (!tempList1.ContainsKey(item.Value) || tempList1[item.Value] != item.State)
+                            {
+                                addList.Add(item);
+                            }
+                        }
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        {
+                            if (selectSearchTreeViewItem != _searchTreeView.SelectedItem) return;
+                            _refresh = false;
+
+                            _searchListView.SelectedItems.Clear();
+
+                            bool sortFlag = false;
+
+                            if (removeList.Count > 100)
+                            {
+                                sortFlag = true;
+
+                                _searchListViewItemCollection.Clear();
+
+                                foreach (var item in newList)
+                                {
+                                    _searchListViewItemCollection.Add(item);
+                                }
+                            }
+                            else
+                            {
+                                if (addList.Count != 0) sortFlag = true;
+                                if (removeList.Count != 0) sortFlag = true;
+
+                                foreach (var item in addList)
+                                {
+                                    _searchListViewItemCollection.Add(item);
+                                }
+
+                                foreach (var item in removeList)
+                                {
+                                    _searchListViewItemCollection.Remove(item);
+                                }
+                            }
+
+                            if (sortFlag && _searchListViewItemCollection.Count < 10000) this.Sort();
+
+                            if (App.SelectTab == "Search")
+                                _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectSearchTreeViewItem.Value.SearchItem.Name);
+                        }), null);
                     }
                 }
                 catch (Exception)
@@ -544,6 +544,7 @@ namespace Amoeba.Windows
             Settings.Instance.SearchControl_SearchTreeItem = _searchTreeViewItem.Value;
 
             _searchTreeView_SelectedItemChanged(this, null);
+            _searchTreeViewItem.Sort();
         }
 
         private void _searchTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -578,7 +579,7 @@ namespace Amoeba.Windows
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
-                _amoebaManager.Download(item.Value, 0);
+                _amoebaManager.Download(item.Value, 3);
             }
 
             _recache = true;
@@ -655,7 +656,7 @@ namespace Amoeba.Windows
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
-                _amoebaManager.Download(item.Value, 0);
+                _amoebaManager.Download(item.Value, 3);
             }
 
             _recache = true;
@@ -1145,7 +1146,7 @@ namespace Amoeba.Windows
             SearchItemEditWindow window = new SearchItemEditWindow(ref searchItem);
             window.Owner = _mainWindow;
 
-            if (true == window.ShowDialog())
+            if (window.ShowDialog() == true)
             {
                 selectSearchTreeViewItem.Value.Items.Add(searchTreeItem);
 
@@ -1467,6 +1468,7 @@ namespace Amoeba.Windows
     {
         private int _hit;
         private SearchTreeItem _value;
+        private ObservableCollection<SearchTreeViewItem> _listViewItemCollection = new ObservableCollection<SearchTreeViewItem>();
 
         public SearchTreeViewItem()
             : base()
@@ -1480,14 +1482,16 @@ namespace Amoeba.Windows
             };
 
             base.IsExpanded = true;
+            base.ItemsSource = _listViewItemCollection;
         }
 
         public SearchTreeViewItem(SearchTreeItem searchTreeItem)
-            : this()
+            : base()
         {
             this.Value = searchTreeItem;
 
             base.IsExpanded = true;
+            base.ItemsSource = _listViewItemCollection;
         }
 
         public void Update()
@@ -1501,24 +1505,50 @@ namespace Amoeba.Windows
                 list.Add(new SearchTreeViewItem(item));
             }
 
-            foreach (var item in this.Items.OfType<SearchTreeViewItem>().ToArray())
+            foreach (var item in _listViewItemCollection.OfType<SearchTreeViewItem>().ToArray())
             {
                 if (!list.Any(n => object.ReferenceEquals(n.Value.SearchItem, item.Value.SearchItem)))
                 {
-                    this.Items.Remove(item);
+                    _listViewItemCollection.Remove(item);
                 }
             }
 
             foreach (var item in list)
             {
-                if (!this.Items.OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n.Value.SearchItem, item.Value.SearchItem)))
+                if (!_listViewItemCollection.OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n.Value.SearchItem, item.Value.SearchItem)))
                 {
-                    this.Items.Add(item);
+                    _listViewItemCollection.Add(item);
                 }
             }
 
-            this.Items.SortDescriptions.Clear();
-            this.Items.SortDescriptions.Add(new SortDescription("Value.SearchItem.Name", ListSortDirection.Ascending));
+            this.Sort();
+        }
+
+        public void Sort()
+        {
+            var list = _listViewItemCollection.OfType<SearchTreeViewItem>().ToList();
+
+            list.Sort(delegate(SearchTreeViewItem x, SearchTreeViewItem y)
+            {
+                int c = x.Value.SearchItem.Name.CompareTo(y.Value.SearchItem.Name);
+                if (c != 0) return c;
+                c = x.Hit.CompareTo(y.Hit);
+                if (c != 0) return c;
+
+                return x.Value.GetHashCode().CompareTo(y.Value.GetHashCode());
+            });
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var o = _listViewItemCollection.IndexOf(list[i]);
+
+                if (i != o) _listViewItemCollection.Move(o, i);
+            }
+
+            foreach (var item in this.Items.OfType<SearchTreeViewItem>())
+            {
+                item.Sort();
+            }
         }
 
         public SearchTreeItem Value

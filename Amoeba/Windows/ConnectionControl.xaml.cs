@@ -157,7 +157,7 @@ namespace Amoeba.Windows
                     dic["ConnectionControl_UploadCount"] = ((int)information["UploadingCount"]).ToString();
                     dic["ConnectionControl_BlockCount"] = ((int)information["BlockCount"]).ToString();
 
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         foreach (var item in dic)
                         {

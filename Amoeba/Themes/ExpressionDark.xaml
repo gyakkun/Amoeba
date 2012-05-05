@@ -83,21 +83,14 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ContextMenu}">
-                    <Border x:Name="Border" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="0,0,0,0" Margin="3,2,3,2">
-                        <Grid x:Name="SubMenu" SnapsToDevicePixels="True" Margin="0,0,3,3">
-                            <Border x:Name="SubMenuBorder" Background="{DynamicResource LightBrush}" BitmapEffect="{DynamicResource PopupDropShadow}" BorderThickness="1" Opacity="0.8">
-                                <Border.BorderBrush>
-                                    <SolidColorBrush Color="{DynamicResource WhiteColor}" />
-                                </Border.BorderBrush>
-                            </Border>
-                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
-                        </Grid>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+                    <Grid x:Name="SubMenu" SnapsToDevicePixels="True" Margin="0,0,3,3">
+                        <Border x:Name="SubMenuBorder" Background="{DynamicResource LightBrush}" BitmapEffect="{DynamicResource PopupDropShadow}" BorderThickness="{TemplateBinding BorderThickness}" Opacity="0.8">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource WhiteColor}" />
+                            </Border.BorderBrush>
+                        </Border>
+                        <StackPanel Margin="0,2,0,4" IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -1385,7 +1378,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style x:Key="ComboBoxItemStyle" d:IsControlPart="True" TargetType="{x:Type ComboBoxItem}">
+    <Style d:IsControlPart="True" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="Template">
@@ -1482,9 +1475,9 @@
                                 <OuterGlowBitmapEffect Opacity="0" GlowColor="{DynamicResource WhiteColor}" GlowSize="3" />
                             </Border.BitmapEffect>
                         </Border>
-                        <Border HorizontalAlignment="Left" x:Name="PART_Indicator" BorderBrush="{DynamicResource NormalBorderBrush}" BorderThickness="1" CornerRadius="0,0,0,0">
+                        <Border HorizontalAlignment="Left" x:Name="PART_Indicator" CornerRadius="0,0,0,0">
                             <Border.Background>
-                                <LinearGradientBrush EndPoint=".7,1" StartPoint=".7,0">
+                                <!--<LinearGradientBrush EndPoint=".7,1" StartPoint=".7,0">
                                     <GradientStop Color="#B2FFFFFF" Offset="0" />
                                     <GradientStop Color="#C6FFFFFF" Offset="0.15" />
                                     <GradientStop Color="#D1FFFFFF" Offset="0.275" />
@@ -1492,6 +1485,10 @@
                                     <GradientStop Color="#BFFFFFFF" Offset="0.65" />
                                     <GradientStop Color="#A5FFFFFF" Offset="0.75" />
                                     <GradientStop Color="#91FFFFFF" Offset="0.85" />
+                                    <GradientStop Color="#72FFFFFF" Offset="1" />
+                                </LinearGradientBrush>-->
+                                <LinearGradientBrush EndPoint=".7,1" StartPoint=".7,0">
+                                    <GradientStop Color="#C6FFFFFF" Offset="0" />
                                     <GradientStop Color="#72FFFFFF" Offset="1" />
                                 </LinearGradientBrush>
                             </Border.Background>
@@ -1841,7 +1838,7 @@
                                 <ColumnDefinition MinWidth="17" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIGTColumnGroup" />
-                                <ColumnDefinition Width="14" />
+                                <ColumnDefinition Width="17" />
                             </Grid.ColumnDefinitions>
                             <Border Grid.Column="0" Grid.ColumnSpan="4" Background="{DynamicResource HoverBrush}" Opacity="0" x:Name="HoverBorder" CornerRadius="1,1,1,1"/>
                             <Border Grid.ColumnSpan="4" Background="{DynamicResource HoverShineBrush}" Opacity="0" x:Name="HoverShineBorder" CornerRadius="1,1,1,1"/>
@@ -1860,7 +1857,7 @@
                                             <SolidColorBrush Color="{DynamicResource WhiteColor}" />
                                         </Border.BorderBrush>
                                     </Border>
-                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                    <StackPanel Margin="0,2,0,4" IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
                                 </Grid>
                             </Popup>
                         </Grid>
@@ -1919,14 +1916,14 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style TargetType="{x:Type Separator}">
+    <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
         <Setter Property="Height" Value="1" />
-        <Setter Property="Margin" Value="0,2,0,2" />
+        <Setter Property="Margin" Value="20,4,0,4" />
         <Setter Property="Focusable" Value="false" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Separator}">
-                    <Border BorderBrush="{DynamicResource SolidBorderBrush}" BorderThickness="1" />
+                    <Border BorderBrush="{DynamicResource SolidBorderBrush}" BorderThickness="1" Opacity="0.8"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -2370,7 +2367,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="TreeViewItemStyle" d:IsControlPart="True" TargetType="{x:Type TreeViewItem}">
+    <Style d:IsControlPart="True" TargetType="{x:Type TreeViewItem}">
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Foreground">
@@ -2719,7 +2716,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="ListViewStyle" TargetType="{x:Type ListView}">
+    <Style TargetType="{x:Type ListView}">
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
         <Setter Property="BorderBrush" Value="{StaticResource ListBorder}" />
         <Setter Property="BorderThickness" Value="1" />

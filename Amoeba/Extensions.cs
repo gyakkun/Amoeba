@@ -107,21 +107,38 @@ namespace Amoeba
     {
         public static IEnumerable<TreeViewItem> GetLineage(this TreeViewItem parentItem, TreeViewItem childItem)
         {
-            var items = new List<TreeViewItem>();
-            items.Add(parentItem);
+            var list = new List<TreeViewItem>();
+            list.Add(parentItem);
 
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                foreach (TreeViewItem item in items[i].Items)
+                foreach (TreeViewItem item in list[i].Items)
                 {
-                    if (childItem.IsDescendantOf(item))
-                    {
-                        items.Add(item);
-                    }
+                    list.Add(item);
                 }
             }
 
-            return items;
+            var targetList = new List<TreeViewItem>();
+            targetList.Add(childItem);
+
+            try
+            {
+                for (; ; )
+                {
+                    var item = targetList.Last();
+                    if (item == parentItem) break;
+
+                    targetList.Add(list.First(n => n.Items.Contains(item)));
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            targetList.Reverse();
+
+            return targetList;
         }
     }
 

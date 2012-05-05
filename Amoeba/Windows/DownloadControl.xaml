@@ -27,7 +27,7 @@
         <DataTemplate x:Key="_myTemplate_Rate">
             <Grid>
                 <ProgressBar Value="{Binding Path=Rate, Mode=OneWay}" />
-                <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Path">
