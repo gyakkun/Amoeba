@@ -64,7 +64,7 @@
                     <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=LibraryControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
                     <Separator />
                     <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=LibraryControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
-                    <MenuItem Name="_listViewKeyUploadMenuItem" Header="{Binding Path=LibraryControl_KeyUpload, Source={StaticResource ResourcesInstance}}" Click="_listViewKeyUploadMenuItem_Click" />
+                    <MenuItem Name="_listViewSeedUploadMenuItem" Header="{Binding Path=LibraryControl_SeedUpload, Source={StaticResource ResourcesInstance}}" Click="_listViewSeedUploadMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

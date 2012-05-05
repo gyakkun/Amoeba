@@ -744,7 +744,7 @@ namespace Amoeba.Windows
                 _listViewCutMenuItem.IsEnabled = false;
                 _listViewCopyMenuItem.IsEnabled = false;
                 _listViewCopyInfoMenuItem.IsEnabled = false;
-                _listViewKeyUploadMenuItem.IsEnabled = false;
+                _listViewSeedUploadMenuItem.IsEnabled = false;
                 _listViewDownloadMenuItem.IsEnabled = false;
                 _listViewPasteMenuItem.IsEnabled = false;
 
@@ -759,7 +759,7 @@ namespace Amoeba.Windows
             _listViewCutMenuItem.IsEnabled = (selectItems.Count > 0);
             _listViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
             _listViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewKeyUploadMenuItem.IsEnabled = (selectItems.OfType<SeedListViewItem>().Count() > 0);
+            _listViewSeedUploadMenuItem.IsEnabled = (selectItems.OfType<SeedListViewItem>().Count() > 0);
             _listViewDownloadMenuItem.IsEnabled = (selectItems.Count > 0);
 
             {
@@ -974,9 +974,9 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        private void _listViewKeyUploadMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewSeedUploadMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show(LanguagesManager.Instance.LibraryControl_KeyUpload_Message, "Key Upload", MessageBoxButton.YesNo)
+            if (MessageBox.Show(LanguagesManager.Instance.LibraryControl_SeedUpload_Message, "Seed Upload", MessageBoxButton.YesNo)
                 == MessageBoxResult.Yes)
             {
                 var keys = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);

@@ -2856,13 +2856,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LibraryControl_KeyUpload
+        public string LibraryControl_SeedUpload
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_KeyUpload");
+                    return this.Translate("LibraryControl_SeedUpload");
                 }
             }
         }
@@ -2977,223 +2977,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LibraryControl_KeyUpload_Message
+        public string LibraryControl_SeedUpload_Message
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_KeyUpload_Message");
-                }
-            }
-        }
-
-
-        public string CacheControl_NewBox
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_NewBox");
-                }
-            }
-        }
-
-        public string CacheControl_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Name");
-                }
-            }
-        }
-
-        public string CacheControl_Signature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Signature");
-                }
-            }
-        }
-
-        public string CacheControl_Keywords
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Keywords");
-                }
-            }
-        }
-
-        public string CacheControl_CreationTime
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_CreationTime");
-                }
-            }
-        }
-
-        public string CacheControl_Length
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Length");
-                }
-            }
-        }
-
-        public string CacheControl_Comment
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Comment");
-                }
-            }
-        }
-
-        public string CacheControl_Add
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Add");
-                }
-            }
-        }
-
-        public string CacheControl_Edit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Edit");
-                }
-            }
-        }
-
-        public string CacheControl_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Delete");
-                }
-            }
-        }
-
-        public string CacheControl_Download
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Download");
-                }
-            }
-        }
-
-        public string CacheControl_Update
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Update");
-                }
-            }
-        }
-
-        public string CacheControl_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Copy");
-                }
-            }
-        }
-
-        public string CacheControl_CopyInfo
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_CopyInfo");
-                }
-            }
-        }
-
-        public string CacheControl_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Cut");
-                }
-            }
-        }
-
-        public string CacheControl_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Paste");
-                }
-            }
-        }
-
-        public string CacheControl_Import
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Import");
-                }
-            }
-        }
-
-        public string CacheControl_Export
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Export");
-                }
-            }
-        }
-
-        public string CacheControl_Seed
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Seed");
+                    return this.Translate("LibraryControl_SeedUpload_Message");
                 }
             }
         }

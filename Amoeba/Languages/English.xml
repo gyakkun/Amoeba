@@ -263,7 +263,7 @@
   <Translate Key="LibraryControl_Edit" Value="_Edit" />
   <Translate Key="LibraryControl_NewBox" Value="_New Box" />
   <Translate Key="LibraryControl_Delete" Value="_Delete" />
-  <Translate Key="LibraryControl_KeyUpload" Value="Key _Upload" />
+  <Translate Key="LibraryControl_SeedUpload" Value="Seed _Upload" />
   <Translate Key="LibraryControl_Download" Value="_Download" />
   <Translate Key="LibraryControl_Copy" Value="_Copy" />
   <Translate Key="LibraryControl_CopyInfo" Value="_Copy Info" />
@@ -274,27 +274,7 @@
   <Translate Key="LibraryControl_Seed" Value="Seed" />
   <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="The signature is annulled. Is it good?" />
   <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="Digital Signature Error" />
-  <Translate Key="LibraryControl_KeyUpload_Message" Value="Key Upload" />
-
-  <Translate Key="CacheControl_NewBox" Value="_New Box" />
-  <Translate Key="CacheControl_Name" Value="Name" />
-  <Translate Key="CacheControl_Signature" Value="Signature" />
-  <Translate Key="CacheControl_Keywords" Value="Keywords" />
-  <Translate Key="CacheControl_CreationTime" Value="Creation Time" />
-  <Translate Key="CacheControl_Length" Value="Length" />
-  <Translate Key="CacheControl_Comment" Value="Comment" />
-  <Translate Key="CacheControl_Add" Value="_Add" />
-  <Translate Key="CacheControl_Edit" Value="_Edit" />
-  <Translate Key="CacheControl_Delete" Value="_Delete" />
-  <Translate Key="CacheControl_Download" Value="_Download" />
-  <Translate Key="CacheControl_Update" Value="_Update" />
-  <Translate Key="CacheControl_Copy" Value="_Copy" />
-  <Translate Key="CacheControl_CopyInfo" Value="_Copy Info" />
-  <Translate Key="CacheControl_Cut" Value="_Cut" />
-  <Translate Key="CacheControl_Paste" Value="_Paste" />
-  <Translate Key="CacheControl_Import" Value="_Import" />
-  <Translate Key="CacheControl_Export" Value="_Export" />
-  <Translate Key="CacheControl_Seed" Value="Seed" />
+  <Translate Key="LibraryControl_SeedUpload_Message" Value="Seed Upload" />
 
   <Translate Key="ConnectionControl_Uri" Value="Uri" />
   <Translate Key="ConnectionControl_Copy" Value="_Copy" />
