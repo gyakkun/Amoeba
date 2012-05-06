@@ -30,9 +30,6 @@
                 <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Path">
-            <TextBlock Text="{Binding Path=Path, Mode=OneWay}" />
-        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
@@ -74,8 +71,6 @@
                             Width="{Binding Path=DownloadControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=DownloadControl_Rate, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Rate}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Rate_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=DownloadControl_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
-                            Width="{Binding Path=DownloadControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=DownloadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>

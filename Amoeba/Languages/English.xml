@@ -86,7 +86,6 @@
   <Translate Key="DownloadControl_Rank" Value="Rank" />
   <Translate Key="DownloadControl_Rate" Value="Rate" />
   <Translate Key="DownloadControl_Seed" Value="Seed" />
-  <Translate Key="DownloadControl_Path" Value="Path" />
   <Translate Key="DownloadControl_Delete" Value="_Delete" />
   <Translate Key="DownloadControl_Copy" Value="_Copy" />
   <Translate Key="DownloadControl_CopyInfo" Value="_Copy Info" />

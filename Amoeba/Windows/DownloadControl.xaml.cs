@@ -460,10 +460,6 @@ namespace Amoeba.Windows
                 _downloadListView.Items.SortDescriptions.Add(new SortDescription("State", direction));
                 _downloadListView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
-            {
-                _downloadListView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
-            }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_State)
             {
                 _downloadListView.Items.SortDescriptions.Add(new SortDescription("State", direction));
@@ -566,7 +562,6 @@ namespace Amoeba.Windows
             private int _priority = 0;
             private double _rate = 0;
             private string _rateText = null;
-            private string _path = null;
             private Seed _value = null;
 
             public DownloadListViewItem(Information information)
@@ -584,7 +579,17 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
-                    if (_information.Contains("Name")) this.Name = (string)_information["Name"];
+                    if (_information.Contains("Name"))
+                    {
+                        if (_information.Contains("Path"))
+                        {
+                            this.Name = System.IO.Path.Combine((string)_information["Path"], (string)_information["Name"]);
+                        }
+                        else
+                        {
+                            this.Name = (string)_information["Name"];
+                        }
+                    }
                     else this.Name = null;
 
                     if (_information.Contains("Length")) this.Length = (long)_information["Length"];
@@ -634,9 +639,6 @@ namespace Amoeba.Windows
                     {
                         this.RateText = "";
                     }
-
-                    if (_information.Contains("Path")) this.Path = (string)_information["Path"];
-                    else this.Path = null;
 
                     if (_information.Contains("Seed")) this.Value = (Seed)_information["Seed"];
                     else this.Value = null;
@@ -729,21 +731,6 @@ namespace Amoeba.Windows
                     if (value != _rateText)
                     {
                         _rateText = value; this.NotifyPropertyChanged("RateText");
-                    }
-                }
-            }
-
-            public string Path
-            {
-                get
-                {
-                    return _path;
-                }
-                set
-                {
-                    if (value != _path)
-                    {
-                        _path = value; this.NotifyPropertyChanged("Path");
                     }
                 }
             }

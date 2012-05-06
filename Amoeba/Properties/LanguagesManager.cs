@@ -999,17 +999,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string DownloadControl_Path
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("DownloadControl_Path");
-                }
-            }
-        }
-
         public string DownloadControl_Delete
         {
             get
