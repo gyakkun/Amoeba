@@ -73,6 +73,8 @@ namespace Amoeba
 
             foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
             {
+                if (!item.StartsWith("Node@")) continue;
+                
                 try
                 {
                     list.Add(AmoebaConverter.FromNodeString(item));

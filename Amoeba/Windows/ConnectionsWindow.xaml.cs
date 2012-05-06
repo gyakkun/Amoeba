@@ -425,6 +425,12 @@ namespace Amoeba.Windows
             if (selectItems == null) return;
 
             _otherNodesCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+
+            {
+                var nodes = Clipboard.GetNodes();
+
+                _otherNodesPasteContextMenuItem.IsEnabled = (nodes.Count() > 0) ? true : false;
+            }
         }
 
         private void _otherNodesCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
