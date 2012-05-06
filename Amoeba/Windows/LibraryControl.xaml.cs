@@ -35,7 +35,6 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<object> _listViewItemCollection;
         private Thread _searchThread = null;
         private volatile bool _refresh = false;
 
@@ -45,11 +44,8 @@ namespace Amoeba.Windows
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
 
-            _listViewItemCollection = new ObservableCollection<object>();
-
             InitializeComponent();
 
-            _listView.ItemsSource = _listViewItemCollection;
             _boxTreeViewItem.Value = Settings.Instance.LibraryControl_Box;
 
             try
@@ -87,17 +83,18 @@ namespace Amoeba.Windows
 
                         if (selectBoxTreeViewItem == null) continue;
 
-                        HashSet<object> newList = new HashSet<object>();
-                        HashSet<object> oldList = new HashSet<object>();
+                        HashSet<LibraryListViewItem> newList = new HashSet<LibraryListViewItem>();
+                        HashSet<LibraryListViewItem> oldList = new HashSet<LibraryListViewItem>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            oldList.UnionWith(_listViewItemCollection);
+                            oldList.UnionWith(_listView.Items.OfType<LibraryListViewItem>());
                         }), null);
 
                         foreach (var item in selectBoxTreeViewItem.Value.Boxes)
                         {
-                            var boxesListViewItem = new BoxListViewItem();
+                            var boxesListViewItem = new LibraryListViewItem();
+                            boxesListViewItem.Type = 0;
                             boxesListViewItem.Index = newList.Count;
                             boxesListViewItem.Name = item.Name;
                             boxesListViewItem.Signature = MessageConverter.ToSignatureString(item.Certificate);
@@ -111,11 +108,12 @@ namespace Amoeba.Windows
 
                         foreach (var item in selectBoxTreeViewItem.Value.Seeds)
                         {
-                            var seedListViewItem = new SeedListViewItem();
+                            var seedListViewItem = new LibraryListViewItem();
+                            seedListViewItem.Type = 1;
                             seedListViewItem.Index = newList.Count;
                             seedListViewItem.Name = item.Name;
                             seedListViewItem.Signature = MessageConverter.ToSignatureString(item.Certificate);
-                            seedListViewItem.Keywords = item.Keywords.Select(n => n.Value);
+                            seedListViewItem.Keywords = string.Join(", ", item.Keywords.Select(n => n.Value));
                             seedListViewItem.CreationTime = item.CreationTime;
                             seedListViewItem.Length = item.Length;
                             seedListViewItem.Comment = item.Comment;
@@ -124,8 +122,8 @@ namespace Amoeba.Windows
                             newList.Add(seedListViewItem);
                         }
 
-                        var removeList = new List<object>();
-                        var addList = new List<object>();
+                        var removeList = new List<LibraryListViewItem>();
+                        var addList = new List<LibraryListViewItem>();
 
                         foreach (var item in oldList)
                         {
@@ -150,11 +148,11 @@ namespace Amoeba.Windows
                             {
                                 sortFlag = true;
 
-                                _listViewItemCollection.Clear();
+                                _listView.Items.Clear();
 
                                 foreach (var item in newList)
                                 {
-                                    _listViewItemCollection.Add(item);
+                                    _listView.Items.Add(item);
                                 }
                             }
                             else
@@ -164,16 +162,16 @@ namespace Amoeba.Windows
 
                                 foreach (var item in addList)
                                 {
-                                    _listViewItemCollection.Add(item);
+                                    _listView.Items.Add(item);
                                 }
 
                                 foreach (var item in removeList)
                                 {
-                                    _listViewItemCollection.Remove(item);
+                                    _listView.Items.Remove(item);
                                 }
                             }
 
-                            if (sortFlag && _listViewItemCollection.Count < 10000) this.Sort();
+                            if (sortFlag) this.Sort();
 
                             if (App.SelectTab == "Library")
                                 _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectBoxTreeViewItem.Value.Name);
@@ -195,6 +193,9 @@ namespace Amoeba.Windows
 
         private void Watch(object state)
         {
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            Thread.CurrentThread.IsBackground = true;
+
             try
             {
                 for (; ; )
@@ -492,7 +493,7 @@ namespace Amoeba.Windows
 
                 if (posithonIndex != -1)
                 {
-                    var tl = _listView.Items[posithonIndex] as BoxListViewItem;
+                    var tl = _listView.Items[posithonIndex] as LibraryListViewItem;
                     var t = selectBoxTreeViewItem.Items.OfType<BoxTreeViewItem>().First(n => object.ReferenceEquals(n.Value, tl.Value));
 
                     if (t != null)
@@ -558,15 +559,18 @@ namespace Amoeba.Windows
                     var tboxes = list[list.Count - 2].Value.Boxes.Where(n => !object.ReferenceEquals(n, s.Value)).ToArray();
                     list[list.Count - 2].Value.Boxes.Clear();
                     list[list.Count - 2].Value.Boxes.AddRange(tboxes);
-                    list[list.Count - 2].Update();
+                    list[list.Count - 2].Value.CreationTime = DateTime.UtcNow;
 
                     t.Value.Boxes.Add(s.Value);
+                    t.Value.CreationTime = DateTime.UtcNow;
+
+                    list[list.Count - 2].Update();
                     t.Update();
                 }
                 else if (e.Data.GetDataPresent("list"))
                 {
-                    var boxes = ((IList)e.Data.GetData("list")).OfType<BoxListViewItem>().Select(n => n.Value).ToList();
-                    var seeds = ((IList)e.Data.GetData("list")).OfType<SeedListViewItem>().Select(n => n.Value).ToList();
+                    var boxes = ((IList)e.Data.GetData("list")).OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Box>().ToList();
+                    var seeds = ((IList)e.Data.GetData("list")).OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Seed>().ToList();
 
                     if (e.Source.GetType() == typeof(ListViewEx))
                     {
@@ -576,7 +580,7 @@ namespace Amoeba.Windows
                         int index = _listView.GetCurrentIndex(e.GetPosition);
                         if (index == -1) return;
 
-                        var tl = _listView.Items[index] as BoxListViewItem;
+                        var tl = _listView.Items[index] as LibraryListViewItem;
                         if (tl == null) return;
 
                         var t = selectBoxTreeViewItem.Items.OfType<BoxTreeViewItem>().First(n => object.ReferenceEquals(n.Value, tl.Value));
@@ -591,13 +595,14 @@ namespace Amoeba.Windows
                         var tboxes = selectBoxTreeViewItem.Value.Boxes.Where(n => !boxes.Any(m => object.ReferenceEquals(n, m))).ToArray();
                         selectBoxTreeViewItem.Value.Boxes.Clear();
                         selectBoxTreeViewItem.Value.Boxes.AddRange(tboxes);
-
                         var tseeds = selectBoxTreeViewItem.Value.Seeds.Where(n => !seeds.Any(m => object.ReferenceEquals(n, m))).ToArray();
                         selectBoxTreeViewItem.Value.Seeds.Clear();
                         selectBoxTreeViewItem.Value.Seeds.AddRange(tseeds);
+                        selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
                         t.Value.Boxes.AddRange(boxes);
                         t.Value.Seeds.AddRange(seeds);
+                        t.Value.CreationTime = DateTime.UtcNow;
 
                         selectBoxTreeViewItem.Update();
                         t.Update();
@@ -629,18 +634,17 @@ namespace Amoeba.Windows
                         var tboxes = selectBoxTreeViewItem.Value.Boxes.Where(n => !boxes.Any(m => object.ReferenceEquals(n, m))).ToArray();
                         selectBoxTreeViewItem.Value.Boxes.Clear();
                         selectBoxTreeViewItem.Value.Boxes.AddRange(tboxes);
-
                         var tseeds = selectBoxTreeViewItem.Value.Seeds.Where(n => !seeds.Any(m => object.ReferenceEquals(n, m))).ToArray();
                         selectBoxTreeViewItem.Value.Seeds.Clear();
                         selectBoxTreeViewItem.Value.Seeds.AddRange(tseeds);
+                        selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
                         t.Value.Boxes.AddRange(boxes);
                         t.Value.Seeds.AddRange(seeds);
+                        t.Value.CreationTime = DateTime.UtcNow;
 
                         selectBoxTreeViewItem.Update();
                         t.Update();
-
-                        _listView.SelectedItems.Clear();
                     }
                 }
             }
@@ -667,15 +671,52 @@ namespace Amoeba.Windows
             }
 
             _startPoint = e.GetPosition(null);
+
+            {
+                var posithonIndex = _listView.GetCurrentIndex(e.GetPosition);
+
+                if (_listView.SelectionMode != System.Windows.Controls.SelectionMode.Single)
+                {
+                    if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
+                        && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        var posithonItem = _listView.Items[posithonIndex];
+
+                        if (_listView.SelectedItems.Cast<object>().Any(n => object.ReferenceEquals(n, posithonItem)))
+                        {
+                            e.Handled = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void _listView_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            {
+                var posithonIndex = _listView.GetCurrentIndex(e.GetPosition);
+
+                if (posithonIndex != -1 && _listView.SelectionMode != System.Windows.Controls.SelectionMode.Single)
+                {
+                    if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
+                        && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                    {
+                        var posithonItem = _listView.Items[posithonIndex];
+
+                        _listView.SelectedItems.Clear();
+                        _listView.SelectedItems.Add(posithonItem);
+                    }
+                }
+            }
         }
 
         private void _listView_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (_listView.GetCurrentIndex(e.GetPosition) < 0) return;
 
-            if (_listView.SelectedItem is BoxListViewItem)
+            if (((LibraryListViewItem)_listView.SelectedItem).Value is Box)
             {
-                var selectBoxListViewItem = _listView.SelectedItem as BoxListViewItem;
+                var selectBoxListViewItem = _listView.SelectedItem as LibraryListViewItem;
                 if (selectBoxListViewItem == null) return;
 
                 var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
@@ -694,15 +735,15 @@ namespace Amoeba.Windows
 
                 }
             }
-            else if (_listView.SelectedItem is SeedListViewItem)
+            else if (((LibraryListViewItem)_listView.SelectedItem).Value is Seed)
             {
                 var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
                 if (selectBoxTreeViewItem == null) return;
 
-                var selectSeedListViewItem = _listView.SelectedItem as SeedListViewItem;
+                var selectSeedListViewItem = _listView.SelectedItem as LibraryListViewItem;
                 if (selectSeedListViewItem == null) return;
 
-                var seed = selectSeedListViewItem.Value;
+                var seed = (Seed)selectSeedListViewItem.Value;
                 string baseDirectory = "";
 
                 foreach (var item in _boxTreeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().ToList().Select(n => n.Value))
@@ -759,7 +800,7 @@ namespace Amoeba.Windows
             _listViewCutMenuItem.IsEnabled = (selectItems.Count > 0);
             _listViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
             _listViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewSeedUploadMenuItem.IsEnabled = (selectItems.OfType<SeedListViewItem>().Count() > 0);
+            _listViewSeedUploadMenuItem.IsEnabled = (selectItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Seed>().Count() > 0);
             _listViewDownloadMenuItem.IsEnabled = (selectItems.Count > 0);
 
             {
@@ -775,9 +816,9 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            if (_listView.SelectedItem is BoxListViewItem)
+            if (_listView.SelectedItem is LibraryListViewItem)
             {
-                var tl = _listView.SelectedItem as BoxListViewItem;
+                var tl = _listView.SelectedItem as LibraryListViewItem;
                 var t = selectBoxTreeViewItem.Items.OfType<BoxTreeViewItem>().First(n => object.ReferenceEquals(n.Value, tl.Value));
 
                 if (t != null)
@@ -820,14 +861,14 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            if (_listView.SelectedItem is BoxListViewItem)
+            if (((LibraryListViewItem)_listView.SelectedItem).Value is Box)
             {
-                var selectBoxListViewItem = _listView.SelectedItem as BoxListViewItem;
+                var selectBoxListViewItem = _listView.SelectedItem as LibraryListViewItem;
                 if (selectBoxListViewItem == null) return;
 
                 if (!this.DigitalSignatureRelease(_boxTreeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-                var selectBox = selectBoxListViewItem.Value.DeepClone();
+                var selectBox = ((Box)selectBoxListViewItem.Value).DeepClone();
                 if (selectBox == null) return;
 
                 BoxEditWindow window = new BoxEditWindow(ref selectBox);
@@ -835,20 +876,21 @@ namespace Amoeba.Windows
 
                 if (window.ShowDialog() == true)
                 {
-                    selectBoxTreeViewItem.Value.Boxes.Remove(selectBoxListViewItem.Value);
+                    selectBoxTreeViewItem.Value.Boxes.Remove((Box)selectBoxListViewItem.Value);
                     selectBoxTreeViewItem.Value.Boxes.Add(selectBox);
+                    selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
                     selectBoxTreeViewItem.Update();
                 }
             }
-            else if (_listView.SelectedItem is SeedListViewItem)
+            else if (((LibraryListViewItem)_listView.SelectedItem).Value is Seed)
             {
-                var selectSeedListViewItem = _listView.SelectedItem as SeedListViewItem;
+                var selectSeedListViewItem = _listView.SelectedItem as LibraryListViewItem;
                 if (selectSeedListViewItem == null) return;
 
                 if (!this.DigitalSignatureRelease(_boxTreeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-                var selectSeed = selectSeedListViewItem.Value.DeepClone();
+                var selectSeed = ((Seed)selectSeedListViewItem.Value).DeepClone();
                 if (selectSeed == null) return;
 
                 SeedEditWindow window = new SeedEditWindow(ref selectSeed, _amoebaManager);
@@ -856,8 +898,9 @@ namespace Amoeba.Windows
 
                 if (window.ShowDialog() == true)
                 {
-                    selectBoxTreeViewItem.Value.Seeds.Remove(selectSeedListViewItem.Value);
+                    selectBoxTreeViewItem.Value.Seeds.Remove((Seed)selectSeedListViewItem.Value);
                     selectBoxTreeViewItem.Value.Seeds.Add(selectSeed);
+                    selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
                     selectBoxTreeViewItem.Update();
                 }
@@ -873,8 +916,8 @@ namespace Amoeba.Windows
 
             if (!this.DigitalSignatureRelease(_boxTreeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-            var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value);
-            var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);
+            var boxes = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Box>();
+            var seeds = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Seed>();
 
             foreach (var item in boxes)
             {
@@ -885,6 +928,8 @@ namespace Amoeba.Windows
             {
                 selectBoxTreeViewItem.Value.Seeds.Remove(item);
             }
+
+            selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
             selectBoxTreeViewItem.Update();
 
@@ -898,8 +943,8 @@ namespace Amoeba.Windows
 
             if (!this.DigitalSignatureRelease(_boxTreeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-            var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value);
-            var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);
+            var boxes = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Box>();
+            var seeds = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Seed>();
 
             Clipboard.SetBoxes(boxes.Select(n => n.DeepClone()));
             Clipboard.SetSeeds(seeds.Select(n => n.DeepClone()));
@@ -914,6 +959,8 @@ namespace Amoeba.Windows
                 selectBoxTreeViewItem.Value.Seeds.Remove(item);
             }
 
+            selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
+
             selectBoxTreeViewItem.Update();
 
             this.Update();
@@ -921,8 +968,8 @@ namespace Amoeba.Windows
 
         private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value);
-            var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);
+            var boxes = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Box>();
+            var seeds = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Seed>();
 
             Clipboard.SetBoxes(boxes.Select(n => n.DeepClone()));
             Clipboard.SetSeeds(seeds.Select(n => n.DeepClone()));
@@ -930,22 +977,24 @@ namespace Amoeba.Windows
 
         private void _listViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value);
-            var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);
+            var boxes = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Box>();
+            var seeds = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Seed>();
 
-            StringBuilder builder = new StringBuilder();
+            var sb = new StringBuilder();
 
             foreach (var item in boxes)
             {
-                builder.AppendLine(MessageConverter.ToInfoMessage(item));
+                sb.AppendLine(MessageConverter.ToInfoMessage(item));
+                sb.AppendLine();
             }
 
             foreach (var item in seeds)
             {
-                builder.AppendLine(MessageConverter.ToInfoMessage(item));
+                sb.AppendLine(MessageConverter.ToInfoMessage(item));
+                sb.AppendLine();
             }
 
-            Clipboard.SetText(builder.ToString());
+            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
         }
 
         private void _listViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -953,9 +1002,9 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            if (_listView.SelectedItem is BoxListViewItem)
+            if (_listView.SelectedItem is LibraryListViewItem)
             {
-                var tl = _listView.SelectedItem as BoxListViewItem;
+                var tl = _listView.SelectedItem as LibraryListViewItem;
                 var t = selectBoxTreeViewItem.Items.OfType<BoxTreeViewItem>().First(n => object.ReferenceEquals(n.Value, tl.Value));
 
                 if (t != null)
@@ -968,6 +1017,7 @@ namespace Amoeba.Windows
 
             selectBoxTreeViewItem.Value.Boxes.AddRange(Clipboard.GetBoxes().Select(n => n.DeepClone()));
             selectBoxTreeViewItem.Value.Seeds.AddRange(Clipboard.GetSeeds().Select(n => n.DeepClone()));
+            selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
             selectBoxTreeViewItem.Update();
 
@@ -979,7 +1029,7 @@ namespace Amoeba.Windows
             if (MessageBox.Show(LanguagesManager.Instance.LibraryControl_SeedUpload_Message, "Seed Upload", MessageBoxButton.YesNo)
                 == MessageBoxResult.Yes)
             {
-                var keys = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);
+                var keys = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Seed>();
 
                 foreach (var key in keys)
                 {
@@ -993,10 +1043,10 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _boxTreeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value).ToList();
+            var seeds = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Seed>().ToList();
 
             {
-                var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value).ToList();
+                var boxes = _listView.SelectedItems.OfType<LibraryListViewItem>().Select(n => n.Value).OfType<Box>().ToList();
 
                 for (int i = 0; i < boxes.Count; i++)
                 {
@@ -1119,6 +1169,7 @@ namespace Amoeba.Windows
             if (window.ShowDialog() == true)
             {
                 selectBoxTreeViewItem.Value.Boxes.Add(box);
+                selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
                 selectBoxTreeViewItem.Update();
             }
@@ -1138,6 +1189,8 @@ namespace Amoeba.Windows
             window.Owner = _mainWindow;
             window.ShowDialog();
 
+            selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
+
             selectBoxTreeViewItem.Update();
 
             this.Update();
@@ -1152,6 +1205,8 @@ namespace Amoeba.Windows
             if (!this.DigitalSignatureRelease(_boxTreeViewItem.GetLineage(selectBoxTreeViewItem).Where(n => n != selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
             list[list.Count - 2].Value.Boxes.Remove(selectBoxTreeViewItem.Value);
+            list[list.Count - 2].Value.CreationTime = DateTime.UtcNow;
+
             list[list.Count - 2].Update();
 
             this.Update();
@@ -1168,6 +1223,8 @@ namespace Amoeba.Windows
             Clipboard.SetBoxes(new List<Box>() { selectBoxTreeViewItem.Value.DeepClone() });
 
             list[list.Count - 2].Value.Boxes.Remove(selectBoxTreeViewItem.Value);
+            list[list.Count - 2].Value.CreationTime = DateTime.UtcNow;
+
             list[list.Count - 2].Update();
 
             this.Update();
@@ -1190,6 +1247,7 @@ namespace Amoeba.Windows
 
             selectBoxTreeViewItem.Value.Boxes.AddRange(Clipboard.GetBoxes().Select(n => n.DeepClone()));
             selectBoxTreeViewItem.Value.Seeds.AddRange(Clipboard.GetSeeds().Select(n => n.DeepClone()));
+            selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
             selectBoxTreeViewItem.Update();
 
@@ -1233,6 +1291,7 @@ namespace Amoeba.Windows
                                 else
                                 {
                                     selectBoxTreeViewItem.Value.Boxes.Add(directory);
+                                    selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
                                     selectBoxTreeViewItem.Update();
                                 }
                             }
@@ -1352,8 +1411,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.SearchControl_Keywords)
             {
-                var view = (ListCollectionView)CollectionViewSource.GetDefaultView(_listView.ItemsSource);
-                view.CustomSort = (IComparer)new KeywordsIComparer(direction);
+                _listView.Items.SortDescriptions.Add(new SortDescription("Keywords", direction));
             }
             else if (sortBy == LanguagesManager.Instance.LibraryControl_CreationTime)
             {
@@ -1367,142 +1425,45 @@ namespace Amoeba.Windows
             _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
         }
 
-        private class KeywordsIComparer : IComparer
-        {
-            private ListSortDirection _direction;
-            private int flag = 0;
-
-            public KeywordsIComparer(ListSortDirection direction)
-            {
-                _direction = direction;
-
-                flag = (_direction == ListSortDirection.Ascending) ? 1 : -1;
-            }
-
-            public int Compare(object x, object y)
-            {
-                if (x is BoxListViewItem)
-                {
-                    if (y is BoxListViewItem)
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return flag * -1;
-                    }
-                }
-                else
-                {
-                    if (y is SeedListViewItem)
-                    {
-                        var xi = (SeedListViewItem)x;
-                        var yi = (SeedListViewItem)y;
-
-                        int c = Collection.Compare<string>(xi.Keywords, yi.Keywords);
-                        if (c != 0) return flag * c;
-                        return flag * xi.GetHashCode().CompareTo(yi.GetHashCode());
-                    }
-                    else
-                    {
-                        return flag * 1;
-                    }
-                }
-            }
-        }
-
         #endregion
 
-        private class BoxListViewItem
+        private class LibraryListViewItem
         {
-            public int Type { get { return 0; } }
+            public int Type { get; set; }
             public int Index { get; set; }
             public string Name { get; set; }
             public string Signature { get; set; }
-            public IEnumerable<string> Keywords { get; set; }
+            public string Keywords { get; set; }
             public DateTime CreationTime { get; set; }
             public long Length { get; set; }
             public string Comment { get; set; }
-            public Box Value { get; set; }
+            public object Value { get; set; }
 
             public override int GetHashCode()
             {
-                if (this.Value == null) return 0;
-                else return this.Name.GetHashCode();
+                return this.Length.GetHashCode();
             }
 
             public override bool Equals(object obj)
             {
-                if (!(obj is BoxListViewItem)) return false;
+                if (!(obj is LibraryListViewItem)) return false;
                 if (obj == null) return false;
                 if (object.ReferenceEquals(this, obj)) return true;
                 if (this.GetHashCode() != obj.GetHashCode()) return false;
 
-                var other = (BoxListViewItem)obj;
+                var other = (LibraryListViewItem)obj;
 
-                if (this.Index != other.Index
+                if (this.Type != other.Type
+                    || this.Index != other.Index
                     || this.Name != other.Name
                     || this.Signature != other.Signature
-                    || ((this.Keywords == null) != (other.Keywords == null))
+                    || this.Keywords != other.Keywords
                     || this.CreationTime != other.CreationTime
                     || this.Length != other.Length
                     || this.Comment != other.Comment
                     || this.Value != other.Value)
                 {
                     return false;
-                }
-
-                if (this.Keywords != null && other.Keywords != null)
-                {
-                    if (!Collection.Equals(this.Keywords, other.Keywords)) return false;
-                }
-
-                return true;
-            }
-        }
-
-        private class SeedListViewItem
-        {
-            public int Type { get { return 1; } }
-            public int Index { get; set; }
-            public string Name { get; set; }
-            public string Signature { get; set; }
-            public IEnumerable<string> Keywords { get; set; }
-            public DateTime CreationTime { get; set; }
-            public long Length { get; set; }
-            public string Comment { get; set; }
-            public Seed Value { get; set; }
-
-            public override int GetHashCode()
-            {
-                if (this.Value == null) return 0;
-                else return this.Name.GetHashCode();
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (!(obj is SeedListViewItem)) return false;
-                if (obj == null) return false;
-                if (object.ReferenceEquals(this, obj)) return true;
-                if (this.GetHashCode() != obj.GetHashCode()) return false;
-
-                var other = (SeedListViewItem)obj;
-
-                if (this.Index != other.Index
-                    || this.Name != other.Name
-                    || this.Signature != other.Signature
-                    || ((this.Keywords == null) != (other.Keywords == null))
-                    || this.CreationTime != other.CreationTime
-                    || this.Length != other.Length
-                    || this.Comment != other.Comment
-                    || this.Value != other.Value)
-                {
-                    return false;
-                }
-
-                if (this.Keywords != null && other.Keywords != null)
-                {
-                    if (!Collection.Equals(this.Keywords, other.Keywords)) return false;
                 }
 
                 return true;

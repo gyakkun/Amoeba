@@ -10,8 +10,8 @@
         <local:StringsToStringConverter x:Key="_stringsToStringConverter"/>
         <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
         <local:SearchStateToStringConverter x:Key="_searchStateToStringConverter"/>
-        <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
         <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
+        <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
         <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
 
@@ -25,7 +25,7 @@
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Keywords">
-            <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringsToStringConverter}}"/>
+            <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_CreationTime">
             <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, StringFormat=yyyy/MM/dd\ HH:mm:ss}" />

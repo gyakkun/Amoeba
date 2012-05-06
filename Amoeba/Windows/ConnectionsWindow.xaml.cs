@@ -404,7 +404,6 @@ namespace Amoeba.Windows
             var node = _otherNodesListView.SelectedItem as Node;
             if (node == null)
             {
-                _otherNodesNodeTextBox.Text = "";
                 _otherNodesUrisTextBox.Text = "";
                 return;
             }
@@ -418,34 +417,6 @@ namespace Amoeba.Windows
 
             if (builder.Length <= 2) _otherNodesUrisTextBox.Text = "";
             else _otherNodesUrisTextBox.Text = builder.ToString().Remove(builder.Length - 2);
-        }
-
-        private void _otherNodesAddButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_otherNodesNodeTextBox.Text == "") return;
-
-            try
-            {
-                foreach (var item in _otherNodesNodeTextBox.Text.Split(new string[] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    var otherNode = AmoebaConverter.FromNodeString(item);
-                    if (_otherNodes.Contains(otherNode)) continue;
-
-                    if (otherNode.Id != null && otherNode.Uris.Count != 0)
-                    {
-                        _otherNodes.Add(otherNode);
-                    }
-
-                    _otherNodesNodeTextBox.Text = "";
-                    _otherNodesListView.SelectedIndex = _otherNodes.Count - 1;
-                }
-            }
-            catch (Exception)
-            {
-                return;
-            }
-
-            _otherNodesListView.Items.Refresh();
         }
 
         private void _otherNodesListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -472,6 +443,8 @@ namespace Amoeba.Windows
         {
             foreach (var item in Clipboard.GetNodes())
             {
+                if (_otherNodes.Contains(item)) continue;
+
                 _otherNodes.Add(item);
             }
 

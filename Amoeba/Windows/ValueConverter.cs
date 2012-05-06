@@ -26,8 +26,8 @@ namespace Amoeba.Windows
                 var boxImage = ObjectToImageConverter.GetImage(Path.Combine(App.DirectoryPaths["Icons"], "Box.png"));
                 var seedImage = ObjectToImageConverter.GetImage(Path.Combine(App.DirectoryPaths["Icons"], "Seed.png"));
 
-                _images["Amoeba.Windows.LibraryControl+BoxListViewItem"] = boxImage;
-                _images["Amoeba.Windows.LibraryControl+SeedListViewItem"] = seedImage;
+                _images["Box"] = boxImage;
+                _images["Seed"] = seedImage;
             }
             catch (Exception)
             {
@@ -47,11 +47,11 @@ namespace Amoeba.Windows
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null) return null;
-            var key = value.GetType().ToString();
+            var key = value.GetType().Name.ToString();
 
             if (_images.ContainsKey(key))
             {
-                return _images[value.GetType().ToString()];
+                return _images[key];
             }
             else
             {

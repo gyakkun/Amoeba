@@ -80,8 +80,6 @@ namespace Amoeba.Windows
                     }), null);
 
                     List<ShareListViewItem> removeList = new List<ShareListViewItem>();
-                    Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
-                    List<ShareListViewItem> newList = new List<ShareListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -95,12 +93,14 @@ namespace Amoeba.Windows
 
                         if (removeList.Count > 100)
                         {
-                            updateDic.Clear();
                             removeList.Clear();
                             _listViewItemCollection.Clear();
                         }
                     }), null);
 
+                    List<ShareListViewItem> newList = new List<ShareListViewItem>();
+                    Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
+                
                     foreach (var information in shareInformation)
                     {
                         ShareListViewItem item = null;
@@ -299,12 +299,11 @@ namespace Amoeba.Windows
             {
                 if (Settings.Instance.ShareControl_LastHeaderClicked != null)
                 {
-                    var list = new List<ShareListViewItem>(_listViewItemCollection);
-                    var list2 = Sort(list, Settings.Instance.ShareControl_LastHeaderClicked, Settings.Instance.ShareControl_ListSortDirection).ToList();
+                    var list = Sort(_listViewItemCollection, Settings.Instance.ShareControl_LastHeaderClicked, Settings.Instance.ShareControl_ListSortDirection).ToList();
 
-                    for (int i = 0; i < list2.Count; i++)
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        var o = _listViewItemCollection.IndexOf(list2[i]);
+                        var o = _listViewItemCollection.IndexOf(list[i]);
 
                         if (i != o) _listViewItemCollection.Move(o, i);
                     }

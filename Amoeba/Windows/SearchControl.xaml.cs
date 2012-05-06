@@ -37,7 +37,6 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<SearchListViewItem> _searchListViewItemCollection;
         private Thread _searchThread = null;
         private volatile bool _refresh = false;
         private volatile bool _recache = false;
@@ -53,11 +52,8 @@ namespace Amoeba.Windows
             _bufferManager = bufferManager;
             _amoebaManager = amoebaManager;
 
-            _searchListViewItemCollection = new ObservableCollection<SearchListViewItem>();
-
             InitializeComponent();
 
-            _searchListView.ItemsSource = _searchListViewItemCollection;
             _searchTreeViewItem.Value = Settings.Instance.SearchControl_SearchTreeItem;
 
             try
@@ -74,7 +70,7 @@ namespace Amoeba.Windows
                 _recache = true;
 
                 var selectSearchTreeViewItem = _searchTreeView.SelectedItem as SearchTreeViewItem;
-                
+
                 if (App.SelectTab == "Search")
                     _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectSearchTreeViewItem.Value.SearchItem.Name);
             };
@@ -87,9 +83,7 @@ namespace Amoeba.Windows
                 {
                     var searchItem = new SearchListViewItem();
 
-                    searchItem.Name = item.Name;
                     searchItem.Signature = MessageConverter.ToSignatureString(item.Certificate);
-                    searchItem.Keywords = item.Keywords.Where(n => n != null || n.Value != null).Select(m => m.Value);
                     searchItem.Value = item;
 
                     searchItems.Add(searchItem);
@@ -141,7 +135,7 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            oldList = _searchListViewItemCollection.ToList();
+                            oldList = _searchListView.Items.OfType<SearchListViewItem>().ToList();
                         }), null);
 
                         Dictionary<Seed, SearchState> tempList1 = new Dictionary<Seed, SearchState>(new SeedReferenceEqualityComparer());
@@ -190,11 +184,11 @@ namespace Amoeba.Windows
                             {
                                 sortFlag = true;
 
-                                _searchListViewItemCollection.Clear();
+                                _searchListView.Items.Clear();
 
                                 foreach (var item in newList)
                                 {
-                                    _searchListViewItemCollection.Add(item);
+                                    _searchListView.Items.Add(item);
                                 }
                             }
                             else
@@ -204,16 +198,16 @@ namespace Amoeba.Windows
 
                                 foreach (var item in addList)
                                 {
-                                    _searchListViewItemCollection.Add(item);
+                                    _searchListView.Items.Add(item);
                                 }
 
                                 foreach (var item in removeList)
                                 {
-                                    _searchListViewItemCollection.Remove(item);
+                                    _searchListView.Items.Remove(item);
                                 }
                             }
 
-                            if (sortFlag && _searchListViewItemCollection.Count < 10000) this.Sort();
+                            if (sortFlag) this.Sort();
 
                             if (App.SelectTab == "Search")
                                 _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectSearchTreeViewItem.Value.SearchItem.Name);
@@ -444,7 +438,7 @@ namespace Amoeba.Windows
 
                         searchItem.Name = seed.Name;
                         searchItem.Signature = MessageConverter.ToSignatureString(seed.Certificate);
-                        searchItem.Keywords = seed.Keywords.Where(n => n != null || n.Value != null).Select(m => m.Value);
+                        searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => n != null || n.Value != null).Select(m => m.Value));
                         searchItem.CreationTime = seed.CreationTime;
                         searchItem.Length = seed.Length;
                         searchItem.Comment = seed.Comment;
@@ -612,6 +606,7 @@ namespace Amoeba.Windows
             _searchListViewFilterKeywordMenuItem.IsEnabled = (selectItems.Count > 0);
             _searchListViewFilterSeedMenuItem.IsEnabled = (selectItems.Count > 0);
             _searchListViewDownloadMenuItem.IsEnabled = (selectItems.Count > 0);
+
             _searchListViewDownloadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
             _searchListViewUploadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploaded));
         }
@@ -623,9 +618,9 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            foreach (var seed in selectSearchListViewItems.Cast<SearchListViewItem>().Select(n => n.Value))
             {
-                sb.AppendLine(AmoebaConverter.ToSeedString(item.Value));
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -636,17 +631,15 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _searchListView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            var item = selectSearchListViewItems.Cast<SearchListViewItem>().FirstOrDefault();
-            if (item == null) return;
+            var sb = new StringBuilder();
 
-            try
+            foreach (var seed in selectSearchListViewItems.Cast<SearchListViewItem>().Select(n => n.Value))
             {
-                Clipboard.SetText(MessageConverter.ToInfoMessage(item.Value));
+                sb.AppendLine(MessageConverter.ToInfoMessage(seed));
+                sb.AppendLine();
             }
-            catch (Exception)
-            {
 
-            }
+            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
         }
 
         private void _searchListViewDownloadMenuItem_Click(object sender, RoutedEventArgs e)
@@ -966,7 +959,7 @@ namespace Amoeba.Windows
                 {
                     flag = searchTreeItem.SearchItem.SearchKeywordCollection.Any(searchContains =>
                     {
-                        if (searchContains.Contains) return searchItem.Keywords.Contains(searchContains.Value);
+                        if (searchContains.Contains) return searchItem.Value.Keywords.Any(n => n.Value == searchContains.Value);
 
                         return false;
                     });
@@ -991,7 +984,7 @@ namespace Amoeba.Windows
                         if (searchContains.Contains)
                         {
                             return searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
-                                .All(n => searchItem.Name.ToLower().Contains(n.ToLower()));
+                                .All(n => searchItem.Value.Name.ToLower().Contains(n.ToLower()));
                         }
 
                         return false;
@@ -1003,7 +996,7 @@ namespace Amoeba.Windows
                 {
                     flag = searchTreeItem.SearchItem.SearchNameRegexCollection.Any(searchContains =>
                     {
-                        if (searchContains.Contains) return searchContains.Value.IsMatch(searchItem.Name);
+                        if (searchContains.Contains) return searchContains.Value.IsMatch(searchItem.Value.Name);
 
                         return false;
                     });
@@ -1056,7 +1049,7 @@ namespace Amoeba.Windows
                 {
                     flag = searchTreeItem.SearchItem.SearchKeywordCollection.Any(searchContains =>
                     {
-                        if (!searchContains.Contains) return searchItem.Keywords.Contains(searchContains.Value);
+                        if (!searchContains.Contains) return searchItem.Value.Keywords.Any(n => n.Value == searchContains.Value);
 
                         return false;
                     });
@@ -1081,7 +1074,7 @@ namespace Amoeba.Windows
                         if (!searchContains.Contains)
                         {
                             return searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
-                                .All(n => searchItem.Name.Contains(n));
+                                .All(n => searchItem.Value.Name.Contains(n));
                         }
 
                         return false;
@@ -1093,7 +1086,7 @@ namespace Amoeba.Windows
                 {
                     flag = searchTreeItem.SearchItem.SearchNameRegexCollection.Any(searchContains =>
                     {
-                        if (!searchContains.Contains) return searchContains.Value.IsMatch(searchItem.Name);
+                        if (!searchContains.Contains) return searchContains.Value.IsMatch(searchItem.Value.Name);
 
                         return false;
                     });
@@ -1120,7 +1113,7 @@ namespace Amoeba.Windows
         private void _searchTreeView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             _startPoint = new Point(-1, -1);
-            
+
             var selectSearchTreeViewItem = _searchTreeView.SelectedItem as SearchTreeViewItem;
             if (selectSearchTreeViewItem == null) return;
 
@@ -1297,8 +1290,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.SearchControl_Keywords)
             {
-                var view = (ListCollectionView)CollectionViewSource.GetDefaultView(_searchListView.ItemsSource);
-                view.CustomSort = (IComparer)new KeywordsIComparer(direction);
+                _searchListView.Items.SortDescriptions.Add(new SortDescription("Keywords", direction));
             }
             else if (sortBy == LanguagesManager.Instance.SearchControl_CreationTime)
             {
@@ -1314,47 +1306,14 @@ namespace Amoeba.Windows
             }
         }
 
-        private class KeywordsIComparer : IComparer
-        {
-            private ListSortDirection _direction;
-            private int flag = 0;
-
-            public KeywordsIComparer(ListSortDirection direction)
-            {
-                _direction = direction;
-
-                flag = (_direction == ListSortDirection.Ascending) ? 1 : -1;
-            }
-
-            public int Compare(object x, object y)
-            {
-                var xi = x as SearchListViewItem;
-                var yi = y as SearchListViewItem;
-
-                int c = Collection.Compare<string>(xi.Keywords, yi.Keywords);
-                if (c != 0) return flag * c;
-                return flag * xi.GetHashCode().CompareTo(yi.GetHashCode());
-            }
-        }
-
         #endregion
 
-        private class SearchListViewItem : INotifyPropertyChanged
+        private class SearchListViewItem
         {
-            public event PropertyChangedEventHandler PropertyChanged;
-
-            private void NotifyPropertyChanged(string info)
-            {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(info));
-                }
-            }
-
             public string Name { get; set; }
             public string Signature { get; set; }
-            public SearchState State{ get; set; }
-            public IEnumerable<string> Keywords { get; set; }
+            public SearchState State { get; set; }
+            public string Keywords { get; set; }
             public DateTime CreationTime { get; set; }
             public long Length { get; set; }
             public string Comment { get; set; }
@@ -1362,8 +1321,7 @@ namespace Amoeba.Windows
 
             public override int GetHashCode()
             {
-                if (this.Value == null) return 0;
-                else return this.Value.GetHashCode();
+                return this.Length.GetHashCode();
             }
         }
 

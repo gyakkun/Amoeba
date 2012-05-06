@@ -70,7 +70,7 @@
                 <Grid>
                     <GroupBox Header="{Binding Path=ConnectionsWindow_Nodes, Source={StaticResource ResourcesInstance}}" Margin="6,40,6,6" >
                         <Grid>
-                            <local:ListViewEx x:Name="_otherNodesListView" Margin="6,6,6,65" ContextMenuOpening="_otherNodesListView_ContextMenuOpening" PreviewMouseLeftButtonDown="_otherNodesListView_PreviewMouseLeftButtonDown" SelectionChanged="_otherNodesListView_SelectionChanged" SelectionMode="Single">
+                            <local:ListViewEx x:Name="_otherNodesListView" Margin="6" ContextMenuOpening="_otherNodesListView_ContextMenuOpening" PreviewMouseLeftButtonDown="_otherNodesListView_PreviewMouseLeftButtonDown" SelectionChanged="_otherNodesListView_SelectionChanged" Height="309">
                                 <ListView.ContextMenu>
                                     <ContextMenu Name="_otherNodesContextMenu" >
                                         <MenuItem Name="_otherNodesCopyContextMenuItem" Header="{Binding Path=ConnectionsWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_otherNodesCopyContextMenuItem_Click"/>
@@ -84,8 +84,6 @@
                                     </GridView>
                                 </ListView.View>
                             </local:ListViewEx>
-                            <TextBox Name="_otherNodesNodeTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" AcceptsReturn="True" />
-                            <Button Name="_otherNodesAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=ConnectionsWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_otherNodesAddButton_Click" />
                         </Grid>
                     </GroupBox>
                     <TextBox Height="24" IsReadOnly="True" Margin="132,6,6,0" Name="_otherNodesUrisTextBox" VerticalAlignment="Top" />

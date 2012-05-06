@@ -4,20 +4,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prop="clr-namespace:Amoeba.Properties"     
         xmlns:local="clr-namespace:Amoeba.Windows" 
-        Height="379" Width="634">
-    
+        Height="500" Width="800">
+
     <UserControl.Resources>
         <local:StringsToStringConverter x:Key="_stringsToStringConverter"/>
         <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
         <local:SearchStateToStringConverter x:Key="_searchStateToStringConverter"/>
-        <local:ObjectToImageConverter x:Key="_itemToIconConverter" />
-        <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
         <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
+        <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
+        <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
+        <local:ObjectToImageConverter x:Key="_itemToIconConverter" />
 
         <DataTemplate x:Key="_myTemplate_Name">
             <Grid>
-                <Image Width="16" Height="16" Source="{Binding Converter={StaticResource _itemToIconConverter}}" HorizontalAlignment="Left" />
+                <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _itemToIconConverter}}" HorizontalAlignment="Left" />
                 <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
             </Grid>
         </DataTemplate>
@@ -25,7 +26,7 @@
             <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Keywords">
-            <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringsToStringConverter}}" />
+            <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_CreationTime">
             <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, StringFormat=yyyy/MM/dd\ HH:mm:ss}" />
@@ -45,7 +46,7 @@
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
-        <local:ListViewEx x:Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" 
+        <local:ListViewEx x:Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="_listView_PreviewMouseLeftButtonUp" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove" >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>

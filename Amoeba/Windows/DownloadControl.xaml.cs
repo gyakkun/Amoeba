@@ -79,8 +79,6 @@ namespace Amoeba.Windows
                     }), null);
 
                     List<DownloadListViewItem> removeList = new List<DownloadListViewItem>();
-                    Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
-                    List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -94,12 +92,14 @@ namespace Amoeba.Windows
               
                         if (removeList.Count > 100)
                         {
-                            updateDic.Clear();
                             removeList.Clear();
                             _downloadListViewItemCollection.Clear();
                         }
                     }), null);
 
+                    List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
+                    Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
+                   
                     foreach (var information in downloadingInformation)
                     {
                         DownloadListViewItem item = null;
@@ -155,6 +155,9 @@ namespace Amoeba.Windows
 
         private void Watch(object state)
         {
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            Thread.CurrentThread.IsBackground = true;
+            
             try
             {
                 for (; ; )
@@ -245,14 +248,16 @@ namespace Amoeba.Windows
 
         private void _downloadListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var downloadItems = _downloadListView.SelectedItems;
-            if (downloadItems == null) return;
+            var selectItems = _downloadListView.SelectedItems;
+            if (selectItems == null) return;
 
             var sb = new StringBuilder();
 
-            foreach (var item in downloadItems.Cast<DownloadListViewItem>())
+            foreach (var seed in selectItems.Cast<DownloadListViewItem>().Select(n => n.Value))
             {
-                if (item.Value != null) sb.AppendLine(AmoebaConverter.ToSeedString(item.Value));
+                if (seed == null) continue;
+
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -263,17 +268,17 @@ namespace Amoeba.Windows
             var selectItems = _downloadListView.SelectedItems;
             if (selectItems == null) return;
 
-            var item = selectItems.Cast<DownloadListViewItem>().FirstOrDefault();
-            if (item == null || item.Value == null) return;
+            var sb = new StringBuilder();
 
-            try
+            foreach (var seed in selectItems.Cast<DownloadListViewItem>().Select(n=>n.Value))
             {
-                Clipboard.SetText(MessageConverter.ToInfoMessage(item.Value));
+                if (seed == null) continue;
+                
+                sb.AppendLine(MessageConverter.ToInfoMessage(seed));
+                sb.AppendLine();
             }
-            catch (Exception)
-            {
 
-            }
+            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
         }
 
         private void _downloadListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -426,12 +431,11 @@ namespace Amoeba.Windows
             {
                 if (Settings.Instance.DownloadControl_LastHeaderClicked != null)
                 {
-                    var list = new List<DownloadListViewItem>(_downloadListViewItemCollection);
-                    var list2 = Sort(list, Settings.Instance.DownloadControl_LastHeaderClicked, Settings.Instance.DownloadControl_ListSortDirection).ToList();
+                    var list = Sort(_downloadListViewItemCollection, Settings.Instance.DownloadControl_LastHeaderClicked, Settings.Instance.DownloadControl_ListSortDirection).ToList();
 
-                    for (int i = 0; i < list2.Count; i++)
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        var o = _downloadListViewItemCollection.IndexOf(list2[i]);
+                        var o = _downloadListViewItemCollection.IndexOf(list[i]);
 
                         if (i != o) _downloadListViewItemCollection.Move(o, i);
                     }

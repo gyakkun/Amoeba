@@ -79,8 +79,6 @@ namespace Amoeba.Windows
                     }), null);
 
                     List<UploadListViewItem> removeList = new List<UploadListViewItem>();
-                    Dictionary<UploadListViewItem, Information> updateDic = new Dictionary<UploadListViewItem, Information>();
-                    List<UploadListViewItem> newList = new List<UploadListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -94,12 +92,14 @@ namespace Amoeba.Windows
 
                         if (removeList.Count > 100)
                         {
-                            updateDic.Clear();
                             removeList.Clear();
                             _uploadListViewItemCollection.Clear();
                         }
                     }), null);
 
+                    List<UploadListViewItem> newList = new List<UploadListViewItem>();
+                    Dictionary<UploadListViewItem, Information> updateDic = new Dictionary<UploadListViewItem, Information>();
+                 
                     foreach (var information in uploadingInformation)
                     {
                         UploadListViewItem item = null;
@@ -242,14 +242,16 @@ namespace Amoeba.Windows
 
         private void _uploadListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var uploadItems = _uploadListView.SelectedItems;
-            if (uploadItems == null) return;
+            var selectItems = _uploadListView.SelectedItems;
+            if (selectItems == null) return;
 
             var sb = new StringBuilder();
 
-            foreach (var item in uploadItems.Cast<UploadListViewItem>())
+            foreach (var seed in selectItems.Cast<UploadListViewItem>().Select(n => n.Value))
             {
-                if (item.Value != null) sb.AppendLine(AmoebaConverter.ToSeedString(item.Value));
+                if (seed == null) continue;
+
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -260,17 +262,17 @@ namespace Amoeba.Windows
             var selectItems = _uploadListView.SelectedItems;
             if (selectItems == null) return;
 
-            var item = selectItems.Cast<UploadListViewItem>().FirstOrDefault();
-            if (item == null || item.Value == null) return;
+            var sb = new StringBuilder();
 
-            try
+            foreach (var seed in selectItems.Cast<UploadListViewItem>().Select(n => n.Value))
             {
-                Clipboard.SetText(MessageConverter.ToInfoMessage(item.Value));
-            }
-            catch (Exception)
-            {
+                if (seed == null) continue;
 
+                sb.AppendLine(MessageConverter.ToInfoMessage(seed));
+                sb.AppendLine();
             }
+
+            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
         }
 
         private void SetPriority(int i)
@@ -415,12 +417,11 @@ namespace Amoeba.Windows
             {
                 if (Settings.Instance.UploadControl_LastHeaderClicked != null)
                 {
-                    var list = new List<UploadListViewItem>(_uploadListViewItemCollection);
-                    var list2 = Sort(list, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
+                    var list = Sort(_uploadListViewItemCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
 
-                    for (int i = 0; i < list2.Count; i++)
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        var o = _uploadListViewItemCollection.IndexOf(list2[i]);
+                        var o = _uploadListViewItemCollection.IndexOf(list[i]);
 
                         if (i != o) _uploadListViewItemCollection.Move(o, i);
                     }

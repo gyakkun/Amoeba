@@ -96,26 +96,24 @@ namespace Amoeba.Windows
             var selectItems = _connectionListView.SelectedItems;
             if (selectItems == null) return;
 
-            var item = selectItems.OfType<ConnectionListViewItem>().FirstOrDefault();
-            if (item == null) return;
+            var nodes = new List<Node>();
 
-            try
+            foreach (var information in selectItems.OfType<ConnectionListViewItem>().Select(n => n.Information))
             {
-                if (item.Information.Contains("Node"))
+                if (information.Contains("Node"))
                 {
-                    var node = (Node)item.Information["Node"];
-
-                    Clipboard.SetText(AmoebaConverter.ToNodeString(node));
+                    nodes.Add((Node)information["Node"]);
                 }
             }
-            catch (Exception)
-            {
 
-            }
+            Clipboard.SetNodes(nodes);
         }
 
         private void AmoebaInfomationShow(object state)
         {
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            Thread.CurrentThread.IsBackground = true;
+            
             try
             {
                 for (; ; )
@@ -205,8 +203,6 @@ namespace Amoeba.Windows
                     }), null);
 
                     List<ConnectionListViewItem> removeList = new List<ConnectionListViewItem>();
-                    Dictionary<ConnectionListViewItem, Information> updateDic = new Dictionary<ConnectionListViewItem, Information>();
-                    List<ConnectionListViewItem> newList = new List<ConnectionListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -220,12 +216,14 @@ namespace Amoeba.Windows
 
                         if (removeList.Count > 100)
                         {
-                            updateDic.Clear();
                             removeList.Clear();
                             _connectionListViewItemCollection.Clear();
                         }
                     }), null);
 
+                    List<ConnectionListViewItem> newList = new List<ConnectionListViewItem>();
+                    Dictionary<ConnectionListViewItem, Information> updateDic = new Dictionary<ConnectionListViewItem, Information>();
+                 
                     foreach (var information in connectionInformation)
                     {
                         ConnectionListViewItem item = null;
@@ -326,12 +324,11 @@ namespace Amoeba.Windows
             {
                 if (Settings.Instance.ConnectionControl_LastHeaderClicked != null)
                 {
-                    var list = new List<ConnectionListViewItem>(_connectionListViewItemCollection);
-                    var list2 = Sort(list, Settings.Instance.ConnectionControl_LastHeaderClicked, Settings.Instance.ConnectionControl_ListSortDirection).ToList();
+                    var list = Sort(_connectionListViewItemCollection, Settings.Instance.ConnectionControl_LastHeaderClicked, Settings.Instance.ConnectionControl_ListSortDirection).ToList();
 
-                    for (int i = 0; i < list2.Count; i++)
+                    for (int i = 0; i < list.Count; i++)
                     {
-                        var o = _connectionListViewItemCollection.IndexOf(list2[i]);
+                        var o = _connectionListViewItemCollection.IndexOf(list[i]);
 
                         if (i != o) _connectionListViewItemCollection.Move(o, i);
                     }

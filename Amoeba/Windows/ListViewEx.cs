@@ -31,18 +31,6 @@ namespace Amoeba.Windows
         {
             base.OnPreviewMouseLeftButtonDown(e);
 
-            this.MouseButtonDown(e);
-        }
-
-        protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
-        {
-            base.OnPreviewMouseRightButtonDown(e);
-
-            this.MouseButtonDown(e);
-        }
-
-        private void MouseButtonDown(MouseButtonEventArgs e)
-        {
             Point lposition = e.GetPosition(this);
 
             if ((this.ActualWidth - lposition.X) < 15
@@ -85,58 +73,70 @@ namespace Amoeba.Windows
 
                 }
             }
+        }
 
-            if (posithonIndex != -1 && this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
+        protected override void OnPreviewMouseRightButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnPreviewMouseRightButtonDown(e);
+
+            Point lposition = e.GetPosition(this);
+
+            if ((this.ActualWidth - lposition.X) < 15
+                || (this.ActualHeight - lposition.Y) < 15)
             {
-                if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
-                    && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                return;
+            }
+
+            var posithonIndex = this.GetCurrentIndex(e.GetPosition);
+
+            if (posithonIndex == -1 || lposition.Y < 25)
+            {
+                if (this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
                 {
-                    var selectedItems = this.SelectedItems.OfType<object>().ToList();
-
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    try
                     {
-                        var posithonItem = this.Items[posithonIndex];
+                        this.SelectedItems.Clear();
+                    }
+                    catch (Exception)
+                    {
 
-                        if (selectedItems.Any(n => object.ReferenceEquals(n, posithonItem)))
-                        {
-                            selectedItems.Remove(posithonItem);
-                            selectedItems.Insert(0, posithonItem);
+                    }
+                }
 
-                            this.SelectedItems.Clear();
+                try
+                {
+                    this.SelectedItem = null;
+                }
+                catch (Exception)
+                {
 
-                            foreach (var item in selectedItems)
-                            {
-                                this.SelectedItems.Add(item);
-                            }
-                        }
-                        else
-                        {
-                            this.SelectedItems.Clear();
-                            this.SelectedItems.Add(posithonItem);
-                        }
-                    }), null);
+                }
+
+                try
+                {
+                    this.SelectedIndex = -1;
+                }
+                catch (Exception)
+                {
+
                 }
             }
         }
 
-        protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
+        protected override void OnPreviewMouseRightButtonUp(MouseButtonEventArgs e)
         {
-            base.OnPreviewMouseLeftButtonUp(e);
+            base.OnPreviewMouseRightButtonUp(e);
 
             var posithonIndex = this.GetCurrentIndex(e.GetPosition);
 
             if (posithonIndex != -1 && this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
             {
-                if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
-                    && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+                var posithonItem = this.Items[posithonIndex];
+
+                if (this.SelectedItems.OfType<object>().Any(n => object.ReferenceEquals(n, posithonItem)))
                 {
-                    var selectedItems = this.SelectedItems.OfType<object>().ToList();
-                    var posithonItem = this.Items[posithonIndex];
-
-                    if (!selectedItems.Any(n => object.ReferenceEquals(n, posithonItem))) return;
-
-                    this.SelectedItems.Clear();
-                    this.SelectedItems.Add(this.Items[posithonIndex]);
+                    this.SelectedItems.Remove(posithonItem);
+                    this.SelectedItems.Insert(0, posithonItem);
                 }
             }
         }

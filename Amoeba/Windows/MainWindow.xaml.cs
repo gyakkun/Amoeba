@@ -73,7 +73,6 @@ namespace Amoeba.Windows
             _bufferManager = new BufferManager();
 
             this.Setting_Log();
-            this.Setting_DebugLog();
 
             _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
             _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
@@ -121,6 +120,162 @@ namespace Amoeba.Windows
             base.OnClosed(e);
 
             this.Dispose();
+        }
+
+        #region IDisposable メンバ
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
+
+        protected void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    this.Close();
+
+                    if (_lockStream != null)
+                    {
+                        _lockStream.Close();
+                        _lockStream = null;
+                    }
+                }
+
+                _disposed = true;
+            }
+        }
+        
+        private static string GetMachineInfomation()
+        {
+            OperatingSystem osInfo = Environment.OSVersion;
+            string osName = "";
+
+            if (osInfo.Platform == PlatformID.Win32NT)
+            {
+                if (osInfo.Version.Major == 4)
+                {
+                    osName = "Windows NT 4.0";
+                }
+                else if (osInfo.Version.Major == 5)
+                {
+                    switch (osInfo.Version.Minor)
+                    {
+                        case 0:
+                            osName = "Windows 2000";
+                            break;
+
+                        case 1:
+                            osName = "Windows XP";
+                            break;
+
+                        case 2:
+                            osName = "Windows Server 2003";
+                            break;
+                    }
+                }
+                else if (osInfo.Version.Major == 6)
+                {
+                    switch (osInfo.Version.Minor)
+                    {
+                        case 0:
+                            osName = "Windows Vista";
+                            break;
+
+                        case 1:
+                            osName = "Windows 7";
+                            break;
+                    }
+                }
+            }
+            else if (osInfo.Platform == PlatformID.WinCE)
+            {
+                osName = "Windows CE";
+            }
+            else if (osInfo.Platform == PlatformID.MacOSX)
+            {
+                osName = "MacOSX";
+            }
+            else if (osInfo.Platform == PlatformID.Unix)
+            {
+                osName = "Unix";
+            }
+
+            return string.Format(
+                "Amoeba:\t\t{0}\r\n" +
+                "OS:\t\t{1} ({2})\r\n" +
+                ".NET Framework:\t{3}", App.AmoebaVersion.ToString(3), osName, osInfo.VersionString, Environment.Version);
+        }
+
+        private static string GetUniqueFilePath(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return path;
+            }
+
+            for (int index = 1; ; index++)
+            {
+                string text = string.Format(@"{0}\{1} ({2}){3}",
+                    Path.GetDirectoryName(path),
+                    Path.GetFileNameWithoutExtension(path),
+                    index,
+                    Path.GetExtension(path));
+
+                if (!File.Exists(text))
+                {
+                    return text;
+                }
+            }
+        }
+
+        private static string GetUniqueDirectoryPath(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                return path;
+            }
+
+            for (int index = 1; ; index++)
+            {
+                string text = string.Format(@"{0} ({1})",
+                    path,
+                    index);
+
+                if (!Directory.Exists(text))
+                {
+                    return text;
+                }
+            }
+        }
+
+        private static void CopyDirectory(string sourceDirName, string destDirName)
+        {
+            if (!System.IO.Directory.Exists(destDirName))
+            {
+                System.IO.Directory.CreateDirectory(destDirName);
+                System.IO.File.SetAttributes(destDirName, System.IO.File.GetAttributes(sourceDirName));
+            }
+
+            if (destDirName[destDirName.Length - 1] != System.IO.Path.DirectorySeparatorChar)
+            {
+                destDirName = destDirName + System.IO.Path.DirectorySeparatorChar;
+            }
+
+            foreach (string file in System.IO.Directory.GetFiles(sourceDirName))
+            {
+                System.IO.File.Copy(file, destDirName + System.IO.Path.GetFileName(file), true);
+            }
+
+            foreach (string dir in System.IO.Directory.GetDirectories(sourceDirName))
+            {
+                CopyDirectory(dir, destDirName + System.IO.Path.GetFileName(dir));
+            }
         }
 
         private bool Args()
@@ -236,6 +391,109 @@ namespace Amoeba.Windows
             }
 
             return false;
+        }
+
+        private void Setting_Log()
+        {
+            Directory.CreateDirectory(App.DirectoryPaths["Log"]);
+            int logCount = 0;
+            bool isHeaderWrite = true;
+
+            if (_logPath == null)
+            {
+                do
+                {
+                    if (logCount == 0)
+                    {
+                        _logPath = Path.Combine(App.DirectoryPaths["Log"], string.Format("{0}.txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")));
+                    }
+                    else
+                    {
+                        _logPath = Path.Combine(App.DirectoryPaths["Log"], string.Format("{0}.({1}).txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"), logCount));
+                    }
+
+                    logCount++;
+                } while (File.Exists(_logPath));
+            }
+
+            Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
+            {
+                lock (_logPath)
+                {
+                    if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
+                    {
+                        using (var writer = new StreamWriter(_logPath, true, new UTF8Encoding(false)))
+                        {
+                            if (isHeaderWrite)
+                            {
+                                writer.WriteLine(MainWindow.GetMachineInfomation());
+                                isHeaderWrite = false;
+                            }
+
+                            writer.WriteLine(string.Format(
+                                "\r\n--------------------------------------------------------------------------------\r\n\r\n" +
+                                "Time:\t\t{0}\r\n" +
+                                "Level:\t\t{1}\r\n" +
+                                "{2}",
+                                DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
+                            writer.Flush();
+                        }
+                    }
+                }
+            });
+
+            Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
+            {
+                try
+                {
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
+                    {
+                        if (_logParagraph.Inlines.Count > 100)
+                        {
+                            _logParagraph.Inlines.Remove(_logParagraph.Inlines.FirstInline);
+                        }
+
+                        _logParagraph.Inlines.Add(string.Format("Log:\t{0} {1}:\t{2}\r\n",
+                        DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
+                        _logRichTextBox.ScrollToEnd();
+                    }), null);
+                }
+                catch (Exception)
+                {
+
+                }
+            });
+
+            Debug.Listeners.Add(new MyTraceListener(this));
+        }
+
+        private void Setting_Languages()
+        {
+            foreach (var item in LanguagesManager.Instance.Languages)
+            {
+                var menuItem = new MenuItem() { IsCheckable = true, Header = item };
+
+                menuItem.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+                {
+                    foreach (var item3 in _menuItemLanguages.Items.Cast<MenuItem>())
+                    {
+                        item3.IsChecked = false;
+                    }
+
+                    menuItem.IsChecked = true;
+                });
+
+                menuItem.Checked += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+                {
+                    Settings.Instance.Global_UseLanguage = (string)menuItem.Header;
+                    LanguagesManager.ChangeLanguage((string)menuItem.Header);
+                });
+
+                _menuItemLanguages.Items.Add(menuItem);
+            }
+
+            var menuItem2 = _menuItemLanguages.Items.Cast<MenuItem>().FirstOrDefault(n => (string)n.Header == Settings.Instance.Global_UseLanguage);
+            if (menuItem2 != null) menuItem2.IsChecked = true;
         }
 
         private void Setting_Init()
@@ -525,158 +783,57 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private class MyTraceListener : TraceListener
         {
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
+            MainWindow _mainWindow;
 
-            TopRelativeDoubleConverter.GetDoubleEvent = (object state) =>
+            public MyTraceListener(MainWindow mainWindow)
             {
-                return this.PointToScreen(new Point(0, 0)).Y;
-            };
-
-            LeftRelativeDoubleConverter.GetDoubleEvent = (object state) =>
-            {
-                return this.PointToScreen(new Point(0, 0)).X;
-            };
-
-            SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
-            _searchControl.Height = Double.NaN;
-            _searchControl.Width = Double.NaN;
-            _searchTabItem.Content = _searchControl;
-
-            ConnectionControl _connectionControl = new ConnectionControl(_amoebaManager);
-            _connectionControl.Height = Double.NaN;
-            _connectionControl.Width = Double.NaN;
-            _connectionTabItem.Content = _connectionControl;
-
-            DownloadControl _downloadControl = new DownloadControl(_amoebaManager, _bufferManager);
-            _downloadControl.Height = Double.NaN;
-            _downloadControl.Width = Double.NaN;
-            _downloadTabItem.Content = _downloadControl;
-
-            UploadControl _uploadControl = new UploadControl(this, _amoebaManager, _bufferManager);
-            _uploadControl.Height = Double.NaN;
-            _uploadControl.Width = Double.NaN;
-            _uploadTabItem.Content = _uploadControl;
-
-            ShareControl _shareControl = new ShareControl(this, _amoebaManager, _bufferManager);
-            _shareControl.Height = Double.NaN;
-            _shareControl.Width = Double.NaN;
-            _shareTabItem.Content = _shareControl;
-
-            LibraryControl _libraryControl = new LibraryControl(this, _amoebaManager, _bufferManager);
-            _libraryControl.Height = Double.NaN;
-            _libraryControl.Width = Double.NaN;
-            _libraryTabItem.Content = _libraryControl;
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.ConnectionsInformationShow), this);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.Timer), this);
-
-            if (Settings.Instance.Global_IsStart)
-            {
-                _menuItemStart_Click(null, null);
-            }
-        }
-
-        private void Window_StateChanged(object sender, EventArgs e)
-        {
-            if (this.WindowState == WindowState.Minimized)
-            {
-                this.Hide();
-
-                _notifyIcon.Visible = true;
-            }
-            else
-            {
-                _windowState = this.WindowState;
-            }
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            NativeMethods.SetThreadExecutionState(ExecutionState.Continuous);
-
-            _notifyIcon.Visible = false;
-
-            _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
-
-            _autoBaseNodeSettingManager.Stop();
-            _autoBaseNodeSettingManager.Dispose();
-
-            _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-
-            _amoebaManager.Stop();
-            _amoebaManager.Dispose();
-
-            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
-
-            this.Dispose();
-        }
-
-        private static string GetUniqueFilePath(string path)
-        {
-            if (!File.Exists(path))
-            {
-                return path;
+                _mainWindow = mainWindow;
             }
 
-            for (int index = 1; ; index++)
+            public override void Write(string message)
             {
-                string text = string.Format(@"{0}\{1} ({2}){3}",
-                    Path.GetDirectoryName(path),
-                    Path.GetFileNameWithoutExtension(path),
-                    index,
-                    Path.GetExtension(path));
-
-                if (!File.Exists(text))
+                try
                 {
-                    return text;
+                    _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
+                    {
+                        if (_mainWindow._logParagraph.Inlines.Count > 100)
+                        {
+                            _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
+                        }
+
+                        _mainWindow._logParagraph.Inlines.Add(
+                            string.Format("Debug:\t{0} {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
+                        _mainWindow._logRichTextBox.ScrollToEnd();
+                    }), null);
+                }
+                catch (Exception)
+                {
+
                 }
             }
-        }
 
-        private static string GetUniqueDirectoryPath(string path)
-        {
-            if (!Directory.Exists(path))
+            public override void WriteLine(string message)
             {
-                return path;
-            }
-
-            for (int index = 1; ; index++)
-            {
-                string text = string.Format(@"{0} ({1})",
-                    path,
-                    index);
-
-                if (!Directory.Exists(text))
+                try
                 {
-                    return text;
+                    _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
+                    {
+                        if (_mainWindow._logParagraph.Inlines.Count > 100)
+                        {
+                            _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
+                        }
+
+                        _mainWindow._logParagraph.Inlines.Add(
+                            string.Format("Debug:\t{0} {1}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
+                        _mainWindow._logRichTextBox.ScrollToEnd();
+                    }), null);
                 }
-            }
-        }
+                catch (Exception)
+                {
 
-        private static void CopyDirectory(string sourceDirName, string destDirName)
-        {
-            if (!System.IO.Directory.Exists(destDirName))
-            {
-                System.IO.Directory.CreateDirectory(destDirName);
-                System.IO.File.SetAttributes(destDirName, System.IO.File.GetAttributes(sourceDirName));
-            }
-
-            if (destDirName[destDirName.Length - 1] != System.IO.Path.DirectorySeparatorChar)
-            {
-                destDirName = destDirName + System.IO.Path.DirectorySeparatorChar;
-            }
-
-            foreach (string file in System.IO.Directory.GetFiles(sourceDirName))
-            {
-                System.IO.File.Copy(file, destDirName + System.IO.Path.GetFileName(file), true);
-            }
-
-            foreach (string dir in System.IO.Directory.GetDirectories(sourceDirName))
-            {
-                CopyDirectory(dir, destDirName + System.IO.Path.GetFileName(dir));
+                }
             }
         }
 
@@ -858,204 +1015,91 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Setting_Log()
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Directory.CreateDirectory(App.DirectoryPaths["Log"]);
-            int logCount = 0;
-            bool isHeaderWrite = true;
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
-            if (_logPath == null)
+            TopRelativeDoubleConverter.GetDoubleEvent = (object state) =>
             {
-                do
-                {
-                    if (logCount == 0)
-                    {
-                        _logPath = Path.Combine(App.DirectoryPaths["Log"], string.Format("{0}.txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss")));
-                    }
-                    else
-                    {
-                        _logPath = Path.Combine(App.DirectoryPaths["Log"], string.Format("{0}.({1}).txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"), logCount));
-                    }
+                return this.PointToScreen(new Point(0, 0)).Y;
+            };
 
-                    logCount++;
-                } while (File.Exists(_logPath));
-            }
-
-            Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
+            LeftRelativeDoubleConverter.GetDoubleEvent = (object state) =>
             {
-                lock (_logPath)
-                {
-                    if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
-                    {
-                        using (var writer = new StreamWriter(_logPath, true, new UTF8Encoding(false)))
-                        {
-                            if (isHeaderWrite)
-                            {
-                                writer.WriteLine(this.GetMachineInfomation());
-                                isHeaderWrite = false;
-                            }
+                return this.PointToScreen(new Point(0, 0)).X;
+            };
 
-                            writer.WriteLine(string.Format(
-                                "\r\n--------------------------------------------------------------------------------\r\n\r\n" +
-                                "Time:\t\t{0}\r\n" +
-                                "Level:\t\t{1}\r\n" +
-                                "{2}",
-                                DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
-                            writer.Flush();
-                        }
-                    }
-                }
-            });
-        }
+            SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
+            _searchControl.Height = Double.NaN;
+            _searchControl.Width = Double.NaN;
+            _searchTabItem.Content = _searchControl;
 
-        private void Setting_DebugLog()
-        {
-            Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
+            ConnectionControl _connectionControl = new ConnectionControl(_amoebaManager);
+            _connectionControl.Height = Double.NaN;
+            _connectionControl.Width = Double.NaN;
+            _connectionTabItem.Content = _connectionControl;
+
+            DownloadControl _downloadControl = new DownloadControl(_amoebaManager, _bufferManager);
+            _downloadControl.Height = Double.NaN;
+            _downloadControl.Width = Double.NaN;
+            _downloadTabItem.Content = _downloadControl;
+
+            UploadControl _uploadControl = new UploadControl(this, _amoebaManager, _bufferManager);
+            _uploadControl.Height = Double.NaN;
+            _uploadControl.Width = Double.NaN;
+            _uploadTabItem.Content = _uploadControl;
+
+            ShareControl _shareControl = new ShareControl(this, _amoebaManager, _bufferManager);
+            _shareControl.Height = Double.NaN;
+            _shareControl.Width = Double.NaN;
+            _shareTabItem.Content = _shareControl;
+
+            LibraryControl _libraryControl = new LibraryControl(this, _amoebaManager, _bufferManager);
+            _libraryControl.Height = Double.NaN;
+            _libraryControl.Width = Double.NaN;
+            _libraryTabItem.Content = _libraryControl;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(this.ConnectionsInformationShow), this);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(this.Timer), this);
+
+            if (Settings.Instance.Global_IsStart)
             {
-                this.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
-                {
-                    if (_logParagraph.Inlines.Count > 100)
-                    {
-                        _logParagraph.Inlines.Remove(_logParagraph.Inlines.FirstInline);
-                    }
-
-                    _logParagraph.Inlines.Add(string.Format("Log:\t{0} {1}:\t{2}\r\n",
-                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
-                    _logRichTextBox.ScrollToEnd();
-                }), null);
-            });
-
-            Debug.Listeners.Add(new MyTraceListener(this));
-        }
-
-        private void Setting_Languages()
-        {
-            foreach (var item in LanguagesManager.Instance.Languages)
-            {
-                var menuItem = new MenuItem() { IsCheckable = true, Header = item };
-
-                menuItem.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
-                {
-                    foreach (var item3 in _menuItemLanguages.Items.Cast<MenuItem>())
-                    {
-                        item3.IsChecked = false;
-                    }
-
-                    menuItem.IsChecked = true;
-                });
-
-                menuItem.Checked += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
-                {
-                    Settings.Instance.Global_UseLanguage = (string)menuItem.Header;
-                    LanguagesManager.ChangeLanguage((string)menuItem.Header);
-                });
-
-                _menuItemLanguages.Items.Add(menuItem);
-            }
-
-            var menuItem2 = _menuItemLanguages.Items.Cast<MenuItem>().FirstOrDefault(n => (string)n.Header == Settings.Instance.Global_UseLanguage);
-            if (menuItem2 != null) menuItem2.IsChecked = true;
-        }
-
-        private class MyTraceListener : TraceListener
-        {
-            MainWindow _mainWindow;
-
-            public MyTraceListener(MainWindow mainWindow)
-            {
-                _mainWindow = mainWindow;
-            }
-
-            public override void Write(string message)
-            {
-                _mainWindow.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
-                {
-                    if (_mainWindow._logParagraph.Inlines.Count > 100)
-                    {
-                        _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
-                    }
-
-                    _mainWindow._logParagraph.Inlines.Add(
-                        string.Format("Debug:\t{0} {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
-                    _mainWindow._logRichTextBox.ScrollToEnd();
-                }), null);
-            }
-
-            public override void WriteLine(string message)
-            {
-                _mainWindow.Dispatcher.Invoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
-                {
-                    if (_mainWindow._logParagraph.Inlines.Count > 100)
-                    {
-                        _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
-                    }
-
-                    _mainWindow._logParagraph.Inlines.Add(
-                        string.Format("Debug:\t{0} {1}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
-                    _mainWindow._logRichTextBox.ScrollToEnd();
-                }), null);
+                _menuItemStart_Click(null, null);
             }
         }
 
-        private string GetMachineInfomation()
+        private void Window_Closed(object sender, EventArgs e)
         {
-            OperatingSystem osInfo = Environment.OSVersion;
-            string osName = "";
+            NativeMethods.SetThreadExecutionState(ExecutionState.Continuous);
 
-            if (osInfo.Platform == PlatformID.Win32NT)
+            _notifyIcon.Visible = false;
+
+            _autoBaseNodeSettingManager.Stop();
+            _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+            _autoBaseNodeSettingManager.Dispose();
+
+            _amoebaManager.Stop();
+            _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
+            _amoebaManager.Dispose();
+
+            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+
+            this.Dispose();
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == WindowState.Minimized)
             {
-                if (osInfo.Version.Major == 4)
-                {
-                    osName = "Windows NT 4.0";
-                }
-                else if (osInfo.Version.Major == 5)
-                {
-                    switch (osInfo.Version.Minor)
-                    {
-                        case 0:
-                            osName = "Windows 2000";
-                            break;
+                this.Hide();
 
-                        case 1:
-                            osName = "Windows XP";
-                            break;
-
-                        case 2:
-                            osName = "Windows Server 2003";
-                            break;
-                    }
-                }
-                else if (osInfo.Version.Major == 6)
-                {
-                    switch (osInfo.Version.Minor)
-                    {
-                        case 0:
-                            osName = "Windows Vista";
-                            break;
-
-                        case 1:
-                            osName = "Windows 7";
-                            break;
-                    }
-                }
+                _notifyIcon.Visible = true;
             }
-            else if (osInfo.Platform == PlatformID.WinCE)
+            else
             {
-                osName = "Windows CE";
+                _windowState = this.WindowState;
             }
-            else if (osInfo.Platform == PlatformID.MacOSX)
-            {
-                osName = "MacOSX";
-            }
-            else if (osInfo.Platform == PlatformID.Unix)
-            {
-                osName = "Unix";
-            }
-
-            return string.Format(
-                "Amoeba:\t\t{0}\r\n" +
-                "OS:\t\t{1} ({2})\r\n" +
-                ".NET Framework:\t{3}", App.AmoebaVersion.ToString(3), osName, osInfo.VersionString, Environment.Version);
         }
 
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1193,35 +1237,6 @@ namespace Amoeba.Windows
 
             window.Owner = this;
             window.ShowDialog();
-        }
-
-        #region IDisposable メンバ
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        protected void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    this.Close();
-
-                    if (_lockStream != null)
-                    {
-                        _lockStream.Close();
-                        _lockStream = null;
-                    }
-                }
-
-                _disposed = true;
-            }
         }
     }
 }
