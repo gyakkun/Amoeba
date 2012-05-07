@@ -33,7 +33,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <local:ListViewEx Grid.Column="2" x:Name="_uploadListView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_uploadListView_ContextMenuOpening" PreviewDragOver="_uploadListView_PreviewDragOver" PreviewDrop="_uploadListView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+        <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -41,24 +41,24 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ContextMenu>
-                <ContextMenu Name="_uploadListViewContextMenu" >
-                    <MenuItem Name="_uploadListViewAddMenuItem" Header="{Binding Path=UploadControl_Add, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewAddMenuItem_Click" />
-                    <MenuItem Name="_uploadListViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewDeleteMenuItem_Click" />
+                <ContextMenu Name="_listViewContextMenu" >
+                    <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=UploadControl_Add, Source={StaticResource ResourcesInstance}}" Click="_listViewAddMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_uploadListViewCopyMenuItem" Header="{Binding Path=UploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewCopyMenuItem_Click" />
-                    <MenuItem Name="_uploadListViewCopyInfoMenuItem" Header="{Binding Path=UploadControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewCopyInfoMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=UploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=UploadControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_uploadListViewPriorityMenuItem" Header="{Binding Path=UploadControl_Priority, Source={StaticResource ResourcesInstance}}" >
-                        <MenuItem Name="_uploadListViewPriority0MenuItem" Header="{Binding Path=UploadControl_Priority0, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewPriority0MenuItem_Click"/>
-                        <MenuItem Name="_uploadListViewPriority1MenuItem" Header="{Binding Path=UploadControl_Priority1, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewPriority1MenuItem_Click"/>
-                        <MenuItem Name="_uploadListViewPriority2MenuItem" Header="{Binding Path=UploadControl_Priority2, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewPriority2MenuItem_Click"/>
-                        <MenuItem Name="_uploadListViewPriority3MenuItem" Header="{Binding Path=UploadControl_Priority3, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewPriority3MenuItem_Click"/>
-                        <MenuItem Name="_uploadListViewPriority4MenuItem" Header="{Binding Path=UploadControl_Priority4, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewPriority4MenuItem_Click"/>
-                        <MenuItem Name="_uploadListViewPriority5MenuItem" Header="{Binding Path=UploadControl_Priority5, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewPriority5MenuItem_Click"/>
-                        <MenuItem Name="_uploadListViewPriority6MenuItem" Header="{Binding Path=UploadControl_Priority6, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewPriority6MenuItem_Click"/>
+                    <MenuItem Name="_listViewPriorityMenuItem" Header="{Binding Path=UploadControl_Priority, Source={StaticResource ResourcesInstance}}" >
+                        <MenuItem Name="_listViewPriority0MenuItem" Header="{Binding Path=UploadControl_Priority0, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority0MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority1MenuItem" Header="{Binding Path=UploadControl_Priority1, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority1MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority2MenuItem" Header="{Binding Path=UploadControl_Priority2, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority2MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority3MenuItem" Header="{Binding Path=UploadControl_Priority3, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority3MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority4MenuItem" Header="{Binding Path=UploadControl_Priority4, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority4MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority5MenuItem" Header="{Binding Path=UploadControl_Priority5, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority5MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority6MenuItem" Header="{Binding Path=UploadControl_Priority6, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority6MenuItem_Click"/>
                     </MenuItem>
-                    <MenuItem Name="_uploadListViewResetMenuItem" Header="{Binding Path=UploadControl_Reset, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewResetMenuItem_Click"/>
-                    <MenuItem Name="_uploadListViewCompleteDeleteMenuItem" Header="{Binding Path=UploadControl_CompleteDelete, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewCompleteDeleteMenuItem_Click" />
+                    <MenuItem Name="_listViewResetMenuItem" Header="{Binding Path=UploadControl_Reset, Source={StaticResource ResourcesInstance}}" Click="_listViewResetMenuItem_Click"/>
+                    <MenuItem Name="_listViewCompleteDeleteMenuItem" Header="{Binding Path=UploadControl_CompleteDelete, Source={StaticResource ResourcesInstance}}" Click="_listViewCompleteDeleteMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

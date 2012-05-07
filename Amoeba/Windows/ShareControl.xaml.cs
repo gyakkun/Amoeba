@@ -100,24 +100,39 @@ namespace Amoeba.Windows
 
                     List<ShareListViewItem> newList = new List<ShareListViewItem>();
                     Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
-                
-                    foreach (var information in shareInformation)
+                    bool removeFlag = false;
+
+                    if (removeList.Count > 100)
                     {
-                        ShareListViewItem item = null;
+                        removeFlag = true;
+                        removeList.Clear();
 
-                        if (dic2.ContainsKey((int)information["Id"]))
-                            item = dic2[(int)information["Id"]];
-
-                        if (item != null)
-                        {
-                            if (!Collection.Equals(item.Information, information))
-                            {
-                                updateDic[item] = information;
-                            }
-                        }
-                        else
+                        foreach (var information in shareInformation)
                         {
                             newList.Add(new ShareListViewItem(information));
+                        }
+                    }
+                    else
+                    {
+
+                        foreach (var information in shareInformation)
+                        {
+                            ShareListViewItem item = null;
+
+                            if (dic2.ContainsKey((int)information["Id"]))
+                                item = dic2[(int)information["Id"]];
+
+                            if (item != null)
+                            {
+                                if (!Collection.Equals(item.Information, information))
+                                {
+                                    updateDic[item] = information;
+                                }
+                            }
+                            else
+                            {
+                                newList.Add(new ShareListViewItem(information));
+                            }
                         }
                     }
 
@@ -128,6 +143,8 @@ namespace Amoeba.Windows
                         if (newList.Count != 0) sortFlag = true;
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
+
+                        if (removeFlag) _listViewItemCollection.Clear();
 
                         foreach (var item in newList)
                         {

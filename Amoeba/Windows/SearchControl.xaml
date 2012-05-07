@@ -51,26 +51,26 @@
 
         <GridSplitter Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" />
         
-        <TextBox Name="_searchTextBox" KeyDown="_searchTextBox_KeyDown" />
+        <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" />
 
-        <TreeView Grid.Row="1" Name="_searchTreeView" ContextMenuOpening="_searchTreeView_ContextMenuOpening" SelectedItemChanged="_searchTreeView_SelectedItemChanged" PreviewMouseMove="_searchTreeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_searchTreeView_PreviewDrop" PreviewMouseLeftButtonDown="_searchTreeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_searchTreeView_PreviewMouseRightButtonDown" 
+        <TreeView Grid.Row="1" Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" SelectedItemChanged="_treeView_SelectedItemChanged" PreviewMouseMove="_treeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_treeView_PreviewDrop" PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_treeView_PreviewMouseRightButtonDown" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <local:SearchTreeViewItem x:Name="_searchTreeViewItem" IsExpanded="True">
+            <local:SearchTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
                 <local:SearchTreeViewItem.ContextMenu>
-                    <ContextMenu Name="_searchTreeViewContextMenu">
-                        <MenuItem Name="_searchTreeViewAddMenuItem" Header="{Binding Path=SearchControl_Add, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewAddMenuItem_Click"/>
-                        <MenuItem Name="_searchTreeViewEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewEditMenuItem_Click"/>
-                        <MenuItem Name="_searchTreeViewDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewDeleteMenuItem_Click"/>
+                    <ContextMenu Name="_treeViewContextMenu">
+                        <MenuItem Name="_treeViewAddMenuItem" Header="{Binding Path=SearchControl_Add, Source={StaticResource ResourcesInstance}}" Click="_treeViewAddMenuItem_Click"/>
+                        <MenuItem Name="_treeViewEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewEditMenuItem_Click"/>
+                        <MenuItem Name="_treeViewDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewDeleteMenuItem_Click"/>
                         <Separator />
-                        <MenuItem Name="_searchTreeViewCutContextMenuItem" Header="{Binding Path=SearchControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewCutContextMenuItem_Click" />
-                        <MenuItem Name="_searchTreeViewCopyContextMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewCopyContextMenuItem_Click" />
-                        <MenuItem Name="_searchTreeViewPasteContextMenuItem" Header="{Binding Path=SearchControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_searchTreeViewPasteContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewCutContextMenuItem" Header="{Binding Path=SearchControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewCutContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewCopyContextMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewCopyContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewPasteContextMenuItem" Header="{Binding Path=SearchControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewPasteContextMenuItem_Click" />
                     </ContextMenu>
                 </local:SearchTreeViewItem.ContextMenu>
             </local:SearchTreeViewItem>
         </TreeView>
 
-        <local:ListViewEx Grid.Column="2" x:Name="_searchListView" Grid.RowSpan="2" ContextMenuOpening="_searchListView_ContextMenuOpening" PreviewMouseDoubleClick="_searchListView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+        <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -78,19 +78,19 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ContextMenu>
-                <ContextMenu Name="_searchListViewContextMenu" >
-                    <MenuItem Name="_searchListViewCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_searchListViewCopyMenuItem_Click" />
-                    <MenuItem Name="_searchListViewCopyInfoMenuItem" Header="{Binding Path=SearchControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_searchListViewCopyInfoMenuItem_Click" />
+                <ContextMenu Name="_listViewContextMenu" >
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=SearchControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_searchListViewDownloadMenuItem" Header="{Binding Path=SearchControl_Download, Source={StaticResource ResourcesInstance}}" Click="_searchListViewDownloadMenuItem_Click" />
+                    <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=SearchControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_searchListViewFilterNameMenuItem" Header="{Binding Path=SearchControl_FilterName, Source={StaticResource ResourcesInstance}}" Click="_searchListViewFilterNameMenuItem_Click" />
-                    <MenuItem Name="_searchListViewFilterSignatureMenuItem" Header="{Binding Path=SearchControl_FilterSignature, Source={StaticResource ResourcesInstance}}" Click="_searchListViewFilterSignatureMenuItem_Click" />
-                    <MenuItem Name="_searchListViewFilterKeywordMenuItem" Header="{Binding Path=SearchControl_FilterKeyword, Source={StaticResource ResourcesInstance}}" Click="_searchListViewFilterKeywordMenuItem_Click" />
-                    <MenuItem Name="_searchListViewFilterSeedMenuItem" Header="{Binding Path=SearchControl_FilterSeed, Source={StaticResource ResourcesInstance}}" Click="_searchListViewFilterSeedMenuItem_Click" />
+                    <MenuItem Name="_listViewFilterNameMenuItem" Header="{Binding Path=SearchControl_FilterName, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterNameMenuItem_Click" />
+                    <MenuItem Name="_listViewFilterSignatureMenuItem" Header="{Binding Path=SearchControl_FilterSignature, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSignatureMenuItem_Click" />
+                    <MenuItem Name="_listViewFilterKeywordMenuItem" Header="{Binding Path=SearchControl_FilterKeyword, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterKeywordMenuItem_Click" />
+                    <MenuItem Name="_listViewFilterSeedMenuItem" Header="{Binding Path=SearchControl_FilterSeed, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSeedMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_searchListViewDownloadHistoryDeleteMenuItem" Header="{Binding Path=SearchControl_DownloadHistoryDelete, Source={StaticResource ResourcesInstance}}" Click="_searchListViewDownloadHistoryDeleteMenuItem_Click" />
-                    <MenuItem Name="_searchListViewUploadHistoryDeleteMenuItem" Header="{Binding Path=SearchControl_UploadHistoryDelete, Source={StaticResource ResourcesInstance}}" Click="_searchListViewUploadHistoryDeleteMenuItem_Click" />
+                    <MenuItem Name="_listViewDownloadHistoryDeleteMenuItem" Header="{Binding Path=SearchControl_DownloadHistoryDelete, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadHistoryDeleteMenuItem_Click" />
+                    <MenuItem Name="_listViewUploadHistoryDeleteMenuItem" Header="{Binding Path=SearchControl_UploadHistoryDelete, Source={StaticResource ResourcesInstance}}" Click="_listViewUploadHistoryDeleteMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

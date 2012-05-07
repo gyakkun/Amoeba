@@ -85,21 +85,21 @@
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
-        <TreeView Name="_boxTreeView" ContextMenuOpening="_boxTreeView_ContextMenuOpening" PreviewMouseLeftButtonDown="_boxTreeView_PreviewMouseLeftButtonDown" SelectedItemChanged="_boxTreeView_SelectedItemChanged" AllowDrop="True" PreviewMouseRightButtonDown="_boxTreeView_PreviewMouseRightButtonDown"
-                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_boxTreeView_PreviewMouseMove">
-            <local:BoxTreeViewItem x:Name="_boxTreeViewItem" IsExpanded="True">
+        <TreeView Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown" SelectedItemChanged="_treeView_SelectedItemChanged" AllowDrop="True" PreviewMouseRightButtonDown="_treeView_PreviewMouseRightButtonDown"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove">
+            <local:BoxTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
                 <local:BoxTreeViewItem.ContextMenu>
-                    <ContextMenu Name="_boxTreeViewContextMenu" >
-                        <MenuItem Name="_boxTreeViewAddBoxContextMenuItem" Header="{Binding Path=LibraryControl_AddBox, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewAddBoxContextMenuItem_Click" />
-                        <MenuItem Name="_boxTreeViewEditContextMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewEditContextMenuItem_Click" />
-                        <MenuItem Name="_boxTreeViewDeleteContextMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewDeleteContextMenuItem_Click" />
+                    <ContextMenu Name="_treeViewContextMenu" >
+                        <MenuItem Name="_treeViewAddBoxContextMenuItem" Header="{Binding Path=LibraryControl_AddBox, Source={StaticResource ResourcesInstance}}" Click="_treeViewAddBoxContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewEditContextMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewEditContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewDeleteContextMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewDeleteContextMenuItem_Click" />
                         <Separator />
-                        <MenuItem Name="_boxTreeViewCutContextMenuItem" Header="{Binding Path=LibraryControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewCutContextMenuItem_Click" />
-                        <MenuItem Name="_boxTreeViewCopyContextMenuItem" Header="{Binding Path=LibraryControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewCopyContextMenuItem_Click" />
-                        <MenuItem Name="_boxTreeViewPasteContextMenuItem" Header="{Binding Path=LibraryControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewPasteContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewCutContextMenuItem" Header="{Binding Path=LibraryControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewCutContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewCopyContextMenuItem" Header="{Binding Path=LibraryControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewCopyContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewPasteContextMenuItem" Header="{Binding Path=LibraryControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewPasteContextMenuItem_Click" />
                         <Separator />
-                        <MenuItem Name="_boxTreeViewImportContextMenuItem" Header="{Binding Path=LibraryControl_Import, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewImportContextMenuItem_Click" />
-                        <MenuItem Name="_boxTreeViewExportContextMenuItem" Header="{Binding Path=LibraryControl_Export, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewExportContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewImportContextMenuItem" Header="{Binding Path=LibraryControl_Import, Source={StaticResource ResourcesInstance}}" Click="_treeViewImportContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewExportContextMenuItem" Header="{Binding Path=LibraryControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewExportContextMenuItem_Click" />
                     </ContextMenu>
                 </local:BoxTreeViewItem.ContextMenu>
             </local:BoxTreeViewItem>

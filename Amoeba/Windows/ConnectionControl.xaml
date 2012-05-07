@@ -41,7 +41,7 @@
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
 
-        <local:ListViewEx x:Name="_connectionsInfomationListView" Grid.Column="2" SelectionMode="Single">
+        <local:ListViewEx x:Name="_infomationListView" Grid.Column="2" SelectionMode="Single">
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
@@ -51,7 +51,7 @@
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
-        <local:ListViewEx x:Name="_connectionListView" ContextMenuOpening="_connectionListView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+        <local:ListViewEx x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -59,8 +59,8 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ContextMenu>
-                <ContextMenu Name="_connectionListViewContextMenu" >
-                    <MenuItem Name="_connectionListViewCopyMenuItem" Header="{Binding Path=ConnectionControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_connectionListViewCopyMenuItem_Click" />
+                <ContextMenu Name="_listViewContextMenu" >
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=ConnectionControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

@@ -34,7 +34,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<UploadListViewItem> _uploadListViewItemCollection = new ObservableCollection<UploadListViewItem>();
+        private ObservableCollection<UploadListViewItem> _listViewItemCollection = new ObservableCollection<UploadListViewItem>();
 
         public UploadControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
@@ -44,7 +44,7 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _uploadListView.ItemsSource = _uploadListViewItemCollection;
+            _listView.ItemsSource = _listViewItemCollection;
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.UploadItemShow), this);
         }
 
@@ -72,7 +72,7 @@ namespace Amoeba.Windows
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
-                        foreach (var item in _uploadListViewItemCollection.ToArray())
+                        foreach (var item in _listViewItemCollection.ToArray())
                         {
                             dic2[(int)item.Information["Id"]] = item;
                         }
@@ -82,41 +82,49 @@ namespace Amoeba.Windows
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
-                        foreach (var item in _uploadListViewItemCollection.ToArray())
+                        foreach (var item in _listViewItemCollection.ToArray())
                         {
                             if (!dic.ContainsKey((int)item.Information["Id"]))
                             {
                                 removeList.Add(item);
                             }
                         }
-
-                        if (removeList.Count > 100)
-                        {
-                            removeList.Clear();
-                            _uploadListViewItemCollection.Clear();
-                        }
                     }), null);
 
                     List<UploadListViewItem> newList = new List<UploadListViewItem>();
                     Dictionary<UploadListViewItem, Information> updateDic = new Dictionary<UploadListViewItem, Information>();
-                 
-                    foreach (var information in uploadingInformation)
+                    bool removeFlag = false;
+
+                    if (removeList.Count > 100)
                     {
-                        UploadListViewItem item = null;
+                        removeFlag = true;
+                        removeList.Clear();
 
-                        if (dic2.ContainsKey((int)information["Id"]))
-                            item = dic2[(int)information["Id"]];
-
-                        if (item != null)
-                        {
-                            if (!Collection.Equals(item.Information, information))
-                            {
-                                updateDic[item] = information;
-                            }
-                        }
-                        else
+                        foreach (var information in uploadingInformation)
                         {
                             newList.Add(new UploadListViewItem(information));
+                        }
+                    }
+                    else
+                    {
+                        foreach (var information in uploadingInformation)
+                        {
+                            UploadListViewItem item = null;
+
+                            if (dic2.ContainsKey((int)information["Id"]))
+                                item = dic2[(int)information["Id"]];
+
+                            if (item != null)
+                            {
+                                if (!Collection.Equals(item.Information, information))
+                                {
+                                    updateDic[item] = information;
+                                }
+                            }
+                            else
+                            {
+                                newList.Add(new UploadListViewItem(information));
+                            }
                         }
                     }
 
@@ -128,14 +136,16 @@ namespace Amoeba.Windows
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
+                        if (removeFlag) _listViewItemCollection.Clear();
+
                         foreach (var item in newList)
                         {
-                            _uploadListViewItemCollection.Add(item);
+                            _listViewItemCollection.Add(item);
                         }
 
                         foreach (var item in removeList)
                         {
-                            _uploadListViewItemCollection.Remove(item);
+                            _listViewItemCollection.Remove(item);
                         }
 
                         foreach (var item in updateDic)
@@ -143,7 +153,7 @@ namespace Amoeba.Windows
                             item.Key.Information = item.Value;
                         }
 
-                        if (sortFlag && _uploadListViewItemCollection.Count < 10000) this.Sort();
+                        if (sortFlag && _listViewItemCollection.Count < 10000) this.Sort();
                     }), null);
                 }
             }
@@ -153,13 +163,13 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _uploadListView_PreviewDragOver(object sender, DragEventArgs e)
+        private void _listView_PreviewDragOver(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.All;
             e.Handled = true;
         }
 
-        private void _uploadListView_PreviewDrop(object sender, DragEventArgs e)
+        private void _listView_PreviewDrop(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
@@ -185,20 +195,20 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _uploadListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var selectItems = _uploadListView.SelectedItems;
+            var selectItems = _listView.SelectedItems;
             if (selectItems == null) return;
 
-            _uploadListViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
-            _uploadListViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
-            _uploadListViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
-            _uploadListViewResetMenuItem.IsEnabled = (selectItems.Count > 0);
-            _uploadListViewPriorityMenuItem.IsEnabled = (selectItems.Count > 0);
-            _uploadListViewCompleteDeleteMenuItem.IsEnabled = _uploadListViewItemCollection.Any(n => (UploadState)n.Information["State"] == UploadState.Completed);
+            _listViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewResetMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewPriorityMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewCompleteDeleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => (UploadState)n.Information["State"] == UploadState.Completed);
         }
 
-        private void _uploadListViewAddMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
             dialog.Multiselect = true;
@@ -222,9 +232,9 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _uploadListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var uploadItems = _uploadListView.SelectedItems;
+            var uploadItems = _listView.SelectedItems;
             if (uploadItems == null) return;
 
             foreach (var item in uploadItems.Cast<UploadListViewItem>())
@@ -240,9 +250,9 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _uploadListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var selectItems = _uploadListView.SelectedItems;
+            var selectItems = _listView.SelectedItems;
             if (selectItems == null) return;
 
             var sb = new StringBuilder();
@@ -257,9 +267,9 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _uploadListViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var selectItems = _uploadListView.SelectedItems;
+            var selectItems = _listView.SelectedItems;
             if (selectItems == null) return;
 
             var sb = new StringBuilder();
@@ -277,7 +287,7 @@ namespace Amoeba.Windows
 
         private void SetPriority(int i)
         {
-            var uploadItems = _uploadListView.SelectedItems;
+            var uploadItems = _listView.SelectedItems;
             if (uploadItems == null) return;
 
             foreach (var item in uploadItems.Cast<UploadListViewItem>())
@@ -295,46 +305,46 @@ namespace Amoeba.Windows
 
         #region Priority
 
-        private void _uploadListViewPriority0MenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewPriority0MenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.SetPriority(0);
         }
 
-        private void _uploadListViewPriority1MenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewPriority1MenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.SetPriority(1);
         }
 
-        private void _uploadListViewPriority2MenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewPriority2MenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.SetPriority(2);
         }
 
-        private void _uploadListViewPriority3MenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewPriority3MenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.SetPriority(3);
         }
 
-        private void _uploadListViewPriority4MenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewPriority4MenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.SetPriority(4);
         }
 
-        private void _uploadListViewPriority5MenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewPriority5MenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.SetPriority(5);
         }
 
-        private void _uploadListViewPriority6MenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewPriority6MenuItem_Click(object sender, RoutedEventArgs e)
         {
             this.SetPriority(6);
         }
 
         #endregion
 
-        private void _uploadListViewResetMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewResetMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var uploadItems = _uploadListView.SelectedItems;
+            var uploadItems = _listView.SelectedItems;
             if (uploadItems == null) return;
 
             foreach (var item in uploadItems.Cast<UploadListViewItem>())
@@ -350,7 +360,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _uploadListViewCompleteDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewCompleteDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -417,13 +427,13 @@ namespace Amoeba.Windows
             {
                 if (Settings.Instance.UploadControl_LastHeaderClicked != null)
                 {
-                    var list = Sort(_uploadListViewItemCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
+                    var list = Sort(_listViewItemCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
 
                     for (int i = 0; i < list.Count; i++)
                     {
-                        var o = _uploadListViewItemCollection.IndexOf(list[i]);
+                        var o = _listViewItemCollection.IndexOf(list[i]);
 
-                        if (i != o) _uploadListViewItemCollection.Move(o, i);
+                        if (i != o) _listViewItemCollection.Move(o, i);
                     }
                 }
             }
@@ -431,28 +441,28 @@ namespace Amoeba.Windows
 
         private void Sort(string sortBy, ListSortDirection direction)
         {
-            _uploadListView.Items.SortDescriptions.Clear();
+            _listView.Items.SortDescriptions.Clear();
 
             if (sortBy == LanguagesManager.Instance.UploadControl_Name)
             {
-                _uploadListView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_Length)
             {
-                _uploadListView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_Priority)
             {
-                _uploadListView.Items.SortDescriptions.Add(new SortDescription("Priority", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Priority", direction));
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_Rate)
             {
-                _uploadListView.Items.SortDescriptions.Add(new SortDescription("State", direction));
-                _uploadListView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_State)
             {
-                _uploadListView.Items.SortDescriptions.Add(new SortDescription("State", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
             }
         }
 

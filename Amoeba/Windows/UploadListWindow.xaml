@@ -29,7 +29,7 @@
         <Label HorizontalAlignment="Left" Margin="12,46,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="28" VerticalAlignment="Top" />
         <ComboBox Height="24" Margin="138,46,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
         <Label Height="28" HorizontalAlignment="Left" Margin="12,80,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" />
-        <local:ListViewEx x:Name="_uploadListView" Margin="138,80,12,41"
+        <local:ListViewEx x:Name="_listView" Margin="138,80,12,41"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -37,8 +37,8 @@
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ContextMenu>
-                <ContextMenu Name="_uploadListViewContextMenu" >
-                    <MenuItem Name="_uploadListViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_uploadListViewDeleteMenuItem_Click" />
+                <ContextMenu Name="_listViewContextMenu" >
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

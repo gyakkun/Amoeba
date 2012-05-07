@@ -28,13 +28,13 @@ namespace Amoeba.Windows
     {
         private BufferManager _bufferManager = new BufferManager();
      
-        private List<SignatureListViewItem> _signatureListViewItemCollection = new List<SignatureListViewItem>();
+        private List<SignatureListViewItem> _listViewItemCollection = new List<SignatureListViewItem>();
 
         public SignatureWindow(BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
 
-            _signatureListViewItemCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n.DeepClone())));
+            _listViewItemCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n.DeepClone())));
 
             InitializeComponent();
 
@@ -43,19 +43,19 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            _signatureListView.ItemsSource = _signatureListViewItemCollection;
+            _listView.ItemsSource = _listViewItemCollection;
         }
 
-        private void _signatureListViewUpdate()
+        private void _listViewUpdate()
         {
-            _signatureListView_SelectionChanged(this, null);
+            _listView_SelectionChanged(this, null);
         }
 
-        private void _signatureListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void _listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                var selectIndex = _signatureListView.SelectedIndex;
+                var selectIndex = _listView.SelectedIndex;
 
                 if (selectIndex == -1)
                 {
@@ -73,7 +73,7 @@ namespace Amoeba.Windows
                         _upButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _signatureListViewItemCollection.Count - 1)
+                    if (selectIndex == _listViewItemCollection.Count - 1)
                     {
                         _downButton.IsEnabled = false;
                     }
@@ -83,7 +83,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _signatureListView_PreviewMouseLeftButtonDown(this, null);
+                _listView_PreviewMouseLeftButtonDown(this, null);
             }
             catch (Exception)
             {
@@ -91,7 +91,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _signatureListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void _listView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
 
         }
@@ -114,9 +114,9 @@ namespace Amoeba.Windows
                             {
                                 var signature = AmoebaConverter.FromSignatureStream(stream);
 
-                                _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
+                                _listViewItemCollection.Add(new SignatureListViewItem(signature));
 
-                                _signatureListView.Items.Refresh();
+                                _listView.Items.Refresh();
                             }
                             catch (Exception)
                             {
@@ -130,7 +130,7 @@ namespace Amoeba.Windows
 
         private void _exportButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            var item = _listView.SelectedItem as SignatureListViewItem;
             if (item == null) return;
 
             var signature = item.Value;
@@ -164,51 +164,51 @@ namespace Amoeba.Windows
 
         private void _upButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            var item = _listView.SelectedItem as SignatureListViewItem;
             if (item == null) return;
 
-            var selectIndex = _signatureListView.SelectedIndex;
+            var selectIndex = _listView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _signatureListViewItemCollection.Remove(item);
-            _signatureListViewItemCollection.Insert(selectIndex - 1, item);
-            _signatureListView.Items.Refresh();
+            _listViewItemCollection.Remove(item);
+            _listViewItemCollection.Insert(selectIndex - 1, item);
+            _listView.Items.Refresh();
 
-            _signatureListViewUpdate();
+            _listViewUpdate();
         }
 
         private void _downButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            var item = _listView.SelectedItem as SignatureListViewItem;
             if (item == null) return;
 
-            var selectIndex = _signatureListView.SelectedIndex;
+            var selectIndex = _listView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _signatureListViewItemCollection.Remove(item);
-            _signatureListViewItemCollection.Insert(selectIndex + 1, item);
-            _signatureListView.Items.Refresh();
+            _listViewItemCollection.Remove(item);
+            _listViewItemCollection.Insert(selectIndex + 1, item);
+            _listView.Items.Refresh();
 
-            _signatureListViewUpdate();
+            _listViewUpdate();
         }
 
         private void _addButton_Click(object sender, RoutedEventArgs e)
         {
-            _signatureListViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(DigitalSignatureAlgorithm.ECDsa521_Sha512)));
+            _listViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(DigitalSignatureAlgorithm.ECDsa521_Sha512)));
 
-            _signatureListView.SelectedIndex = _signatureListViewItemCollection.Count - 1;
-            _signatureListView.Items.Refresh();
+            _listView.SelectedIndex = _listViewItemCollection.Count - 1;
+            _listView.Items.Refresh();
         }
 
         private void _deleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            var item = _listView.SelectedItem as SignatureListViewItem;
             if (item == null) return;
 
-            int selectIndex = _signatureListView.SelectedIndex;
-            _signatureListViewItemCollection.Remove(item);
-            _signatureListView.Items.Refresh();
-            _signatureListView.SelectedIndex = selectIndex;
+            int selectIndex = _listView.SelectedIndex;
+            _listViewItemCollection.Remove(item);
+            _listView.Items.Refresh();
+            _listView.SelectedIndex = selectIndex;
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
@@ -216,7 +216,7 @@ namespace Amoeba.Windows
             this.DialogResult = true;
 
             Settings.Instance.Global_DigitalSignatureCollection.Clear();
-            Settings.Instance.Global_DigitalSignatureCollection.AddRange(_signatureListViewItemCollection.Select(n => n.Value));
+            Settings.Instance.Global_DigitalSignatureCollection.AddRange(_listViewItemCollection.Select(n => n.Value));
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

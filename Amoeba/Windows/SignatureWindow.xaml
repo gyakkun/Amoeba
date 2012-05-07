@@ -19,7 +19,7 @@
     </Window.Resources>
 
     <Grid>
-        <local:ListViewEx x:Name="_signatureListView" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" Margin="6,6,6,41">
+        <local:ListViewEx x:Name="_listView" SelectionChanged="_listView_SelectionChanged" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" Margin="6,6,6,41">
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=SignatureWindow_Value, Source={StaticResource ResourcesInstance}}"  CellTemplate="{StaticResource _myTemplate_Value}" 

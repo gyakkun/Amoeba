@@ -67,14 +67,14 @@ namespace Amoeba.Windows
             foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item.Value });
             foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item.Value });
 
-            _uploadListView.ItemsSource = _filePaths;
+            _listView.ItemsSource = _filePaths;
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
         }
 
-        private void _uploadListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var uploadItems = _uploadListView.SelectedItems;
+            var uploadItems = _listView.SelectedItems;
             if (uploadItems == null) return;
 
             foreach (var item in uploadItems.Cast<UploadListViewItem>().ToArray())
