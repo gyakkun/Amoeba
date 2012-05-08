@@ -419,6 +419,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string MainWindow_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Copy");
+                }
+            }
+        }
+
 
         public string SeedEditWindow_Title
         {

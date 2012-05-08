@@ -93,11 +93,11 @@ namespace Amoeba.Windows
 
                     List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
                     Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
-                    bool removeFlag = false;
+                    bool clearFlag = false;
 
                     if (removeList.Count > 100)
                     {
-                        removeFlag = true;
+                        clearFlag = true;
                         removeList.Clear();
 
                         foreach (var information in downloadingInformation)
@@ -136,7 +136,7 @@ namespace Amoeba.Windows
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
-                        if (removeFlag) _listViewItemCollection.Clear();
+                        if (clearFlag) _listViewItemCollection.Clear();
 
                         foreach (var item in newList)
                         {

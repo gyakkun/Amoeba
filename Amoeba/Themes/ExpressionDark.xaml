@@ -1368,7 +1368,7 @@
                 <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
             </Trigger>
             <Trigger Property="AllowsTransparency" SourceName="Popup" Value="true">
-                <Setter Property="Margin" Value="0,2,0,0" TargetName="DropDownBorder" />
+                <Setter Property="Margin" Value="0,2,0,2" TargetName="DropDownBorder" />
             </Trigger>
             <Trigger Property="IsEditable" Value="true">
                 <Setter Property="IsTabStop" Value="false" />
@@ -1415,7 +1415,7 @@
                         </Storyboard>
 
                     </ControlTemplate.Resources>
-                    <Grid SnapsToDevicePixels="true" Margin="1,1,1,1">
+                    <Grid SnapsToDevicePixels="true">
                         <Rectangle x:Name="Background" Opacity="0.25" Fill="{StaticResource NormalBrush}" RadiusX="1" RadiusY="1" />
                         <Rectangle x:Name="HoverRectangle" Opacity="0" Fill="{StaticResource NormalBrush}" RadiusX="1" RadiusY="1" />
                         <Rectangle x:Name="SelectedRectangle" Opacity="0" Fill="{StaticResource SelectedBackgroundBrush}" RadiusX="1" RadiusY="1" />
@@ -2763,7 +2763,7 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Margin" Value="0,0,0,1" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="5,2,5,2" />
         <!--<Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />-->

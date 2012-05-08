@@ -150,7 +150,7 @@ namespace Amoeba.Windows
                 _disposed = true;
             }
         }
-        
+
         private static string GetMachineInfomation()
         {
             OperatingSystem osInfo = Environment.OSVersion;
@@ -1237,6 +1237,16 @@ namespace Amoeba.Windows
 
             window.Owner = this;
             window.ShowDialog();
+        }
+
+        private void _logRichTextBox_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            _logRichTextBoxCopyMenuItem.IsEnabled = !string.IsNullOrWhiteSpace(_logRichTextBox.Selection.Text);
+        }
+
+        private void _logRichTextBoxCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(_logRichTextBox.Selection.Text);
         }
     }
 }

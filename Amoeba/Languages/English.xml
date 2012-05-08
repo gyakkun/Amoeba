@@ -25,7 +25,8 @@
   <Translate Key="MainWindow_ReceiveSpeed" Value="Receive:" />
   <Translate Key="MainWindow_SpaceNotFound" Value="Space Not Found" />
   <Translate Key="MainWindow_CheckingBlocks_Message" Value="Checking Blocks" />
-  <Translate Key="MainWindow_CheckingBlocks_State" Value="Checked:{1} Bad:{0} Count:{2} " />
+  <Translate Key="MainWindow_CheckingBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
+  <Translate Key="MainWindow_Copy" Value="_Copy" />
 
   <Translate Key="SeedEditWindow_Title" Value="Seed Edit" />
 

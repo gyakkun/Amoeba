@@ -27,7 +27,12 @@
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Library, Source={StaticResource ResourcesInstance}}" Name="_libraryTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem" >
-                <RichTextBox Name="_logRichTextBox" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True" >
+                <RichTextBox Name="_logRichTextBox" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True" ContextMenuOpening="_logRichTextBox_ContextMenuOpening" >
+                    <RichTextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Name="_logRichTextBoxCopyMenuItem" Header="{Binding Path=MainWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_logRichTextBoxCopyMenuItem_Click"/>
+                        </ContextMenu>
+                    </RichTextBox.ContextMenu>
                     <RichTextBox.Document>
                         <FlowDocument>
                             <FlowDocument.Blocks>
