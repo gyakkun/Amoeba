@@ -418,9 +418,9 @@ namespace Amoeba.Windows
 
             Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
             {
-                try
+                lock (_logPath)
                 {
-                    lock (_logPath)
+                    try
                     {
                         if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
                         {
@@ -442,10 +442,10 @@ namespace Amoeba.Windows
                             }
                         }
                     }
-                }
-                catch (Exception)
-                {
+                    catch (Exception)
+                    {
 
+                    }
                 }
             });
 
@@ -453,15 +453,15 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
+                        _logParagraph.Inlines.Add(string.Format("{0} {1}:\t{2}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
+
                         if (_logParagraph.Inlines.Count > 100)
                         {
                             _logParagraph.Inlines.Remove(_logParagraph.Inlines.FirstInline);
                         }
 
-                        _logParagraph.Inlines.Add(string.Format("Log:\t{0} {1}:\t{2}\r\n",
-                        DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
                         _logRichTextBox.ScrollToEnd();
                     }), null);
                 }
@@ -472,6 +472,43 @@ namespace Amoeba.Windows
             });
 
             Debug.Listeners.Add(new MyTraceListener(this));
+        }
+
+        private class MyTraceListener : TraceListener
+        {
+            MainWindow _mainWindow;
+
+            public MyTraceListener(MainWindow mainWindow)
+            {
+                _mainWindow = mainWindow;
+            }
+
+            public override void Write(string message)
+            {
+                this.WriteLine(message);
+            }
+
+            public override void WriteLine(string message)
+            {
+                try
+                {
+                    _mainWindow.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        _mainWindow._logParagraph.Inlines.Add(string.Format("{0} Debug:\t{1}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
+
+                        if (_mainWindow._logParagraph.Inlines.Count > 100)
+                        {
+                            _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
+                        }
+
+                        _mainWindow._logRichTextBox.ScrollToEnd();
+                    }), null);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
         }
 
         private void Setting_Languages()
@@ -597,6 +634,7 @@ namespace Amoeba.Windows
                     _amoebaManager.DownloadingConnectionCountLowerLimit = 3;
                     _amoebaManager.UploadingConnectionCountLowerLimit = 3;
 
+                    Settings.Instance.Global_UploadKeywords.Clear();
                     Settings.Instance.Global_UploadKeywords.Add("document");
 
                     SearchItem pictureSearchItem = new SearchItem()
@@ -792,60 +830,6 @@ namespace Amoeba.Windows
             }
         }
 
-        private class MyTraceListener : TraceListener
-        {
-            MainWindow _mainWindow;
-
-            public MyTraceListener(MainWindow mainWindow)
-            {
-                _mainWindow = mainWindow;
-            }
-
-            public override void Write(string message)
-            {
-                try
-                {
-                    _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
-                    {
-                        if (_mainWindow._logParagraph.Inlines.Count > 100)
-                        {
-                            _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
-                        }
-
-                        _mainWindow._logParagraph.Inlines.Add(
-                            string.Format("Debug:\t{0} {1}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
-                        _mainWindow._logRichTextBox.ScrollToEnd();
-                    }), null);
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-
-            public override void WriteLine(string message)
-            {
-                try
-                {
-                    _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action<object>(delegate(object state2)
-                    {
-                        if (_mainWindow._logParagraph.Inlines.Count > 100)
-                        {
-                            _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
-                        }
-
-                        _mainWindow._logParagraph.Inlines.Add(
-                            string.Format("Debug:\t{0} {1}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
-                        _mainWindow._logRichTextBox.ScrollToEnd();
-                    }), null);
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-        }
-
         private void ConnectionsInformationShow(object state)
         {
             long sentByteCount = 0;
@@ -1013,6 +997,7 @@ namespace Amoeba.Windows
 
                     try
                     {
+                        _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                         _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                         Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
                     }
@@ -1246,16 +1231,6 @@ namespace Amoeba.Windows
 
             window.Owner = this;
             window.ShowDialog();
-        }
-
-        private void _logRichTextBox_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            _logRichTextBoxCopyMenuItem.IsEnabled = !string.IsNullOrWhiteSpace(_logRichTextBox.Selection.Text);
-        }
-
-        private void _logRichTextBoxCopyMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Clipboard.SetText(_logRichTextBox.Selection.Text);
         }
     }
 }

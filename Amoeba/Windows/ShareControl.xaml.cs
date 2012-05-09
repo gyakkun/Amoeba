@@ -226,7 +226,7 @@ namespace Amoeba.Windows
             if (selectItems == null) return;
 
             _listViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
-            if (!_listViewCheckExistMenuItemIsEnabled) _listViewCheckExistMenuItem.IsEnabled = false;
+            if (!_listViewCheckExistMenuItem_IsEnabled) _listViewCheckExistMenuItem.IsEnabled = false;
             else _listViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
         }
 
@@ -265,17 +265,19 @@ namespace Amoeba.Windows
             }
         }
 
-        volatile bool _listViewCheckExistMenuItemIsEnabled = true;
+        volatile bool _listViewCheckExistMenuItem_IsEnabled = true;
 
         private void _listViewCheckExistMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _listViewCheckExistMenuItemIsEnabled = false;
+            _listViewCheckExistMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                
+
                 var shareInformation = _amoebaManager.ShareInformation.ToArray();
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Share Delete");
 
                 foreach (var item in shareInformation)
                 {
@@ -284,7 +286,7 @@ namespace Amoeba.Windows
                         try
                         {
                             _amoebaManager.ShareRemove((int)item["Id"]);
-                            Log.Information("Share Delete: " + (string)item["Path"]);
+                            sb.AppendLine((string)item["Path"]);
                         }
                         catch (Exception)
                         {
@@ -293,7 +295,9 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _listViewCheckExistMenuItemIsEnabled = true;
+                Log.Information(sb.ToString().TrimEnd('\r', '\n'));
+
+                _listViewCheckExistMenuItem_IsEnabled = true;
             }));
         }
 

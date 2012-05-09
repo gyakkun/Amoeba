@@ -27,7 +27,7 @@ namespace Amoeba.Windows
 {
     class ListViewEx : ListView
     {
-        public void SetSelectedItems(IEnumerable selectedItems)
+        public new void SetSelectedItems(IEnumerable selectedItems)
         {
             base.SetSelectedItems(selectedItems);
         }

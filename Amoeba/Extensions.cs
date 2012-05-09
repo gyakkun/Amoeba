@@ -54,6 +54,50 @@ namespace Amoeba
         }
     }
 
+    static class ListBoxExtensions
+    {
+        public delegate Point GetPositionDelegate(IInputElement element);
+
+        public static int GetCurrentIndex(this ListBox myListBox, GetPositionDelegate getPosition)
+        {
+            try
+            {
+                for (int i = 0; i < myListBox.Items.Count; i++)
+                {
+                    ListBoxItem item = ListBoxExtensions.GetListBoxItem(myListBox, i);
+
+                    if (ListBoxExtensions.IsMouseOverTarget(myListBox, item, getPosition))
+                    {
+                        return i;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return -1;
+        }
+
+        private static ListBoxItem GetListBoxItem(ListBox myListBox, int index)
+        {
+            if (myListBox.ItemContainerGenerator.Status != System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
+                return null;
+
+            return myListBox.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
+        }
+
+        private static bool IsMouseOverTarget(ListBox myListBox, Visual target, GetPositionDelegate getPosition)
+        {
+            if (target == null) return false;
+
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
+            Point mousePos = MouseUtilities.GetMousePosition(target);
+            return bounds.Contains(mousePos);
+        }
+    }
+
     static class TreeViewExtensions
     {
         public delegate Point GetPositionDelegate(IInputElement element);

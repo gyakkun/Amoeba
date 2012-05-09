@@ -93,7 +93,7 @@ namespace Amoeba.Windows
 
                 return searchItems.Select(n => n.Value);
             };
-
+            var o = _textBox.ContextMenu;
             _searchThread = new Thread(new ThreadStart(() =>
             {
                 try
@@ -607,9 +607,9 @@ namespace Amoeba.Windows
             _listViewFilterSeedMenuItem.IsEnabled = (selectItems.Count > 0);
             _listViewDownloadMenuItem.IsEnabled = (selectItems.Count > 0);
 
-            if (!_listViewDownloadHistoryDeleteMenuItemIsEnabled) _listViewDownloadHistoryDeleteMenuItem.IsEnabled = false;
+            if (!_listViewDownloadHistoryDeleteMenuItem_IsEnabled) _listViewDownloadHistoryDeleteMenuItem.IsEnabled = false;
             else _listViewDownloadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
-            if (!_listViewUploadHistoryDeleteMenuItemIsEnabled) _listViewUploadHistoryDeleteMenuItem.IsEnabled = false;
+            if (!_listViewUploadHistoryDeleteMenuItem_IsEnabled) _listViewUploadHistoryDeleteMenuItem.IsEnabled = false;
             else _listViewUploadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploaded));
         }
 
@@ -760,14 +760,14 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        volatile bool _listViewDownloadHistoryDeleteMenuItemIsEnabled = true;
+        volatile bool _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
 
         private void _listViewDownloadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewDownloadHistoryDeleteMenuItemIsEnabled = false;
+            _listViewDownloadHistoryDeleteMenuItem_IsEnabled = false;
 
             var list = new HashSet<Seed>(new SeedHashEqualityComparer());
 
@@ -797,18 +797,18 @@ namespace Amoeba.Windows
 
                 _recache = true;
 
-                _listViewDownloadHistoryDeleteMenuItemIsEnabled = true;
+                _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
             }));
         }
 
-        volatile bool _listViewUploadHistoryDeleteMenuItemIsEnabled = true;
+        volatile bool _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
       
         private void _listViewUploadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewUploadHistoryDeleteMenuItemIsEnabled = false;
+            _listViewUploadHistoryDeleteMenuItem_IsEnabled = false;
 
             var list = new HashSet<Seed>(new SeedHashEqualityComparer());
 
@@ -838,7 +838,7 @@ namespace Amoeba.Windows
 
                 _recache = true;
 
-                _listViewUploadHistoryDeleteMenuItemIsEnabled = true;
+                _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
             }));
         }
 
