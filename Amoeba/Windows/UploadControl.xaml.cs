@@ -650,7 +650,7 @@ namespace Amoeba.Windows
                             this.RateText = string.Format("{0}% {1}/{2}",
                                 this.Rate,
                                 (int)_information["UploadBlockCount"],
-                               (int)_information["BlockCount"]);
+                                (int)_information["BlockCount"]);
                         }
                         else if (_information.Contains("EncodeBytes") && _information.Contains("EncodingBytes") && _information.Contains("Rank")
                             && ((UploadState)_information["State"] == UploadState.ComputeHash || (UploadState)_information["State"] == UploadState.Encoding || (UploadState)_information["State"] == UploadState.ComputeCorrection))
@@ -659,7 +659,7 @@ namespace Amoeba.Windows
                                 this.Rate,
                                 NetworkConverter.ToSizeString((long)_information["EncodingBytes"]),
                                 NetworkConverter.ToSizeString((long)_information["EncodeBytes"]),
-                               (int)_information["Rank"]);
+                                (int)_information["Rank"]);
                         }
                         else
                         {
