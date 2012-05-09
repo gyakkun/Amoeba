@@ -13,10 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml;
-using Library.Net.Amoeba;
 using Amoeba.Properties;
 using Library;
 using Library.Net;
+using Library.Net.Amoeba;
 using Library.Security;
 
 namespace Amoeba.Windows
@@ -113,6 +113,7 @@ namespace Amoeba.Windows
                             try
                             {
                                 var signature = AmoebaConverter.FromSignatureStream(stream);
+                                if (_listViewItemCollection.Any(n => n.Value == signature)) continue;
 
                                 _listViewItemCollection.Add(new SignatureListViewItem(signature));
 
