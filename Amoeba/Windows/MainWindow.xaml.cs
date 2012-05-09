@@ -679,6 +679,7 @@ namespace Amoeba.Windows
                     });
 
                     Random random = new Random();
+                    _amoebaManager.ListenUris.Clear();
                     _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), random.Next(1024, 65536)));
                     _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), random.Next(1024, 65536)));
 
@@ -727,6 +728,7 @@ namespace Amoeba.Windows
                         },
                     };
 
+                    _amoebaManager.Filters.Clear();
                     _amoebaManager.Filters.Add(ipv4ConnectionFilter);
                     _amoebaManager.Filters.Add(ipv6ConnectionFilter);
                     _amoebaManager.Filters.Add(tcpConnectionFilter);
