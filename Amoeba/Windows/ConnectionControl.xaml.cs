@@ -83,32 +83,6 @@ namespace Amoeba.Windows
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.ConnectionInfomationShow), this);
         }
 
-        private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            var selectItems = _listView.SelectedItems;
-            if (selectItems == null) return;
-            
-            _listViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
-        }
-
-        private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectItems = _listView.SelectedItems;
-            if (selectItems == null) return;
-
-            var nodes = new List<Node>();
-
-            foreach (var information in selectItems.OfType<ConnectionListViewItem>().Select(n => n.Information))
-            {
-                if (information.Contains("Node"))
-                {
-                    nodes.Add((Node)information["Node"]);
-                }
-            }
-
-            Clipboard.SetNodes(nodes);
-        }
-
         private void AmoebaInfomationShow(object state)
         {
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
@@ -218,15 +192,32 @@ namespace Amoeba.Windows
                     List<ConnectionListViewItem> newList = new List<ConnectionListViewItem>();
                     Dictionary<ConnectionListViewItem, Information> updateDic = new Dictionary<ConnectionListViewItem, Information>();
                     bool clearFlag = false;
+                    var selectItems = new List<ConnectionListViewItem>();
 
                     if (removeList.Count > 100)
                     {
                         clearFlag = true;
                         removeList.Clear();
+                        updateDic.Clear();
 
                         foreach (var information in connectionInformation)
                         {
                             newList.Add(new ConnectionListViewItem(information));
+                        }
+
+                        HashSet<int> hid = new HashSet<int>();
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        {
+                            hid.UnionWith(_listView.SelectedItems.OfType<ConnectionListViewItem>().Select(n => (int)n.Information["Id"]));
+                        }), null);
+
+                        foreach (var item in newList)
+                        {
+                            if (hid.Contains((int)item.Information["Id"]))
+                            {
+                                selectItems.Add(item);
+                            }
                         }
                     }
                     else
@@ -265,22 +256,25 @@ namespace Amoeba.Windows
                         foreach (var item in newList)
                         {
                             _listViewItemCollection.Add(item);
-                            sortFlag = true;
                         }
 
                         foreach (var item in removeList)
                         {
                             _listViewItemCollection.Remove(item);
-                            sortFlag = true;
                         }
 
                         foreach (var item in updateDic)
                         {
                             item.Key.Information = item.Value;
-                            sortFlag = true;
                         }
 
-                        if (sortFlag && _listViewItemCollection.Count < 10000) this.Sort();
+                        if (clearFlag)
+                        {
+                            _listView.SelectedItems.Clear();
+                            _listView.SetSelectedItems(selectItems);
+                        }
+
+                        if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
                     }), null);
                 }
             }
@@ -288,6 +282,32 @@ namespace Amoeba.Windows
             {
 
             }
+        }
+
+        private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _listView.SelectedItems;
+            if (selectItems == null) return;
+
+            _listViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
+        }
+
+        private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectItems = _listView.SelectedItems;
+            if (selectItems == null) return;
+
+            var nodes = new List<Node>();
+
+            foreach (var information in selectItems.OfType<ConnectionListViewItem>().Select(n => n.Information))
+            {
+                if (information.Contains("Node"))
+                {
+                    nodes.Add((Node)information["Node"]);
+                }
+            }
+
+            Clipboard.SetNodes(nodes);
         }
 
         #region Sort

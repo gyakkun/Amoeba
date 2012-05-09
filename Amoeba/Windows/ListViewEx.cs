@@ -27,6 +27,11 @@ namespace Amoeba.Windows
 {
     class ListViewEx : ListView
     {
+        public void SetSelectedItems(IEnumerable selectedItems)
+        {
+            base.SetSelectedItems(selectedItems);
+        }
+
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseLeftButtonDown(e);
@@ -38,7 +43,7 @@ namespace Amoeba.Windows
             {
                 return;
             }
-
+            
             var posithonIndex = this.GetCurrentIndex(e.GetPosition);
 
             if (posithonIndex == -1 || lposition.Y < 25)

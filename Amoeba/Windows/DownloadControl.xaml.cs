@@ -94,15 +94,32 @@ namespace Amoeba.Windows
                     List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
                     Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
                     bool clearFlag = false;
+                    var selectItems = new List<DownloadListViewItem>();
 
                     if (removeList.Count > 100)
                     {
                         clearFlag = true;
                         removeList.Clear();
+                        updateDic.Clear();
 
                         foreach (var information in downloadingInformation)
                         {
                             newList.Add(new DownloadListViewItem(information));
+                        }
+
+                        HashSet<int> hid = new HashSet<int>();
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        {
+                            hid.UnionWith(_listView.SelectedItems.OfType<DownloadListViewItem>().Select(n => (int)n.Information["Id"]));
+                        }), null);
+
+                        foreach (var item in newList)
+                        {
+                            if (hid.Contains((int)item.Information["Id"]))
+                            {
+                                selectItems.Add(item);
+                            }
                         }
                     }
                     else
@@ -153,7 +170,13 @@ namespace Amoeba.Windows
                             item.Key.Information = item.Value;
                         }
 
-                        if (sortFlag && _listViewItemCollection.Count < 10000) this.Sort();
+                        if (clearFlag)
+                        {
+                            _listView.SelectedItems.Clear();
+                            _listView.SetSelectedItems(selectItems);
+                        }
+
+                        if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
                     }), null);
                 }
             }

@@ -44,7 +44,7 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _shareListView.ItemsSource = _listViewItemCollection;
+            _listView.ItemsSource = _listViewItemCollection;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback(this.ShareItemShow), this);
         }
@@ -101,20 +101,36 @@ namespace Amoeba.Windows
                     List<ShareListViewItem> newList = new List<ShareListViewItem>();
                     Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
                     bool clearFlag = false;
+                    var selectItems = new List<ShareListViewItem>();
 
                     if (removeList.Count > 100)
                     {
                         clearFlag = true;
                         removeList.Clear();
+                        updateDic.Clear();
 
                         foreach (var information in shareInformation)
                         {
                             newList.Add(new ShareListViewItem(information));
                         }
+
+                        HashSet<int> hid = new HashSet<int>();
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        {
+                            hid.UnionWith(_listView.SelectedItems.OfType<ShareListViewItem>().Select(n => (int)n.Information["Id"]));
+                        }), null);
+
+                        foreach (var item in newList)
+                        {
+                            if (hid.Contains((int)item.Information["Id"]))
+                            {
+                                selectItems.Add(item);
+                            }
+                        }
                     }
                     else
                     {
-
                         foreach (var information in shareInformation)
                         {
                             ShareListViewItem item = null;
@@ -161,7 +177,13 @@ namespace Amoeba.Windows
                             item.Key.Information = item.Value;
                         }
 
-                        if (sortFlag && _listViewItemCollection.Count < 10000) this.Sort();
+                        if (clearFlag)
+                        {
+                            _listView.SelectedItems.Clear();
+                            _listView.SetSelectedItems(selectItems);
+                        }
+
+                        if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
                     }), null);
                 }
             }
@@ -171,13 +193,13 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _shareListView_PreviewDragOver(object sender, DragEventArgs e)
+        private void _listView_PreviewDragOver(object sender, DragEventArgs e)
         {
             e.Effects = DragDropEffects.All;
             e.Handled = true;
         }
 
-        private void _shareListView_PreviewDrop(object sender, DragEventArgs e)
+        private void _listView_PreviewDrop(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
@@ -204,16 +226,16 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _shareListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var selectItems = _shareListView.SelectedItems;
+            var selectItems = _listView.SelectedItems;
             if (selectItems == null) return;
 
-            _shareListViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
-            _shareListViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
+            _listViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
         }
 
-        private void _shareListViewAddMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
             dialog.Multiselect = true;
@@ -237,9 +259,9 @@ namespace Amoeba.Windows
             }
         }
         
-        private void _shareListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var shareItems = _shareListView.SelectedItems;
+            var shareItems = _listView.SelectedItems;
             if (shareItems == null) return;
 
             foreach (var item in shareItems.Cast<ShareListViewItem>())
@@ -248,7 +270,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _shareListViewCheckExistMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewCheckExistMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -330,15 +352,15 @@ namespace Amoeba.Windows
 
         private void Sort(string sortBy, ListSortDirection direction)
         {
-            _shareListView.Items.SortDescriptions.Clear();
+            _listView.Items.SortDescriptions.Clear();
 
             if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
-                _shareListView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
             }
             else if (sortBy == LanguagesManager.Instance.ShareControl_BlockCount)
             {
-                _shareListView.Items.SortDescriptions.Add(new SortDescription("BlockCount", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("BlockCount", direction));
             }
         }
 
