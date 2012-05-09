@@ -418,27 +418,34 @@ namespace Amoeba.Windows
 
             Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
             {
-                lock (_logPath)
+                try
                 {
-                    if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
+                    lock (_logPath)
                     {
-                        using (var writer = new StreamWriter(_logPath, true, new UTF8Encoding(false)))
+                        if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
                         {
-                            if (isHeaderWrite)
+                            using (var writer = new StreamWriter(_logPath, true, new UTF8Encoding(false)))
                             {
-                                writer.WriteLine(MainWindow.GetMachineInfomation());
-                                isHeaderWrite = false;
-                            }
+                                if (isHeaderWrite)
+                                {
+                                    writer.WriteLine(MainWindow.GetMachineInfomation());
+                                    isHeaderWrite = false;
+                                }
 
-                            writer.WriteLine(string.Format(
-                                "\r\n--------------------------------------------------------------------------------\r\n\r\n" +
-                                "Time:\t\t{0}\r\n" +
-                                "Level:\t\t{1}\r\n" +
-                                "{2}",
-                                DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
-                            writer.Flush();
+                                writer.WriteLine(string.Format(
+                                    "\r\n--------------------------------------------------------------------------------\r\n\r\n" +
+                                    "Time:\t\t{0}\r\n" +
+                                    "Level:\t\t{1}\r\n" +
+                                    "{2}",
+                                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
+                                writer.Flush();
+                            }
                         }
                     }
+                }
+                catch (Exception)
+                {
+
                 }
             });
 
