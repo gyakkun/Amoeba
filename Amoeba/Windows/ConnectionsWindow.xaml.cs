@@ -1148,12 +1148,12 @@ namespace Amoeba.Windows
             return count;
         }
 
-        private void StackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void _miscellaneousStackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Expander expander = e.Source as Expander;
             if (expander == null) return;
 
-            foreach (var item in (_miscellaneousStackPanel.Children).OfType<Expander>())
+            foreach (var item in _miscellaneousStackPanel.Children.OfType<Expander>())
             {
                 if (expander != item) item.IsExpanded = false;
             }
