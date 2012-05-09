@@ -90,12 +90,6 @@ namespace Amoeba.Windows
                                 removeList.Add(item);
                             }
                         }
-
-                        if (removeList.Count > 100)
-                        {
-                            removeList.Clear();
-                            _listViewItemCollection.Clear();
-                        }
                     }), null);
 
                     List<ShareListViewItem> newList = new List<ShareListViewItem>();
@@ -232,7 +226,8 @@ namespace Amoeba.Windows
             if (selectItems == null) return;
 
             _listViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
+            if (!_listViewCheckExistMenuItemIsEnabled) _listViewCheckExistMenuItem.IsEnabled = false;
+            else _listViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
         }
 
         private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
@@ -270,10 +265,16 @@ namespace Amoeba.Windows
             }
         }
 
+        volatile bool _listViewCheckExistMenuItemIsEnabled = true;
+
         private void _listViewCheckExistMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            _listViewCheckExistMenuItemIsEnabled = false;
+
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
+                Thread.CurrentThread.IsBackground = true;
+                
                 var shareInformation = _amoebaManager.ShareInformation.ToArray();
 
                 foreach (var item in shareInformation)
@@ -291,6 +292,8 @@ namespace Amoeba.Windows
                         }
                     }
                 }
+
+                _listViewCheckExistMenuItemIsEnabled = true;
             }));
         }
 

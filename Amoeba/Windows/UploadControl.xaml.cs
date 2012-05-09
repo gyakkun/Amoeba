@@ -228,7 +228,8 @@ namespace Amoeba.Windows
             _listViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
             _listViewResetMenuItem.IsEnabled = (selectItems.Count > 0);
             _listViewPriorityMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewCompleteDeleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => (UploadState)n.Information["State"] == UploadState.Completed);
+            if (!_listViewCompleteDeleteMenuItemIsEnabled) _listViewCompleteDeleteMenuItem.IsEnabled = false;
+            else _listViewCompleteDeleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => (UploadState)n.Information["State"] == UploadState.Completed);
         }
 
         private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
@@ -383,10 +384,16 @@ namespace Amoeba.Windows
             }
         }
 
+        volatile bool _listViewCompleteDeleteMenuItemIsEnabled = true;
+
         private void _listViewCompleteDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            _listViewCompleteDeleteMenuItemIsEnabled = false;
+
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
+                Thread.CurrentThread.IsBackground = true;
+
                 var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
 
                 foreach (var item in uploadingInformation)
@@ -403,6 +410,8 @@ namespace Amoeba.Windows
                         }
                     }
                 }
+
+                _listViewCompleteDeleteMenuItemIsEnabled = true;
             }));
         }
 
