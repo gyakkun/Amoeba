@@ -159,8 +159,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_BaseNode_Uris_Uri_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_OtherNodes_Node_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ConnectionType_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ProxyUri_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_UriCondition_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ProxyUri_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_UriCondition_Width", Value = 300 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Server_ListenUris_Uri_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Keywords_Keyword_Width", Value = 600 },
             })
