@@ -71,7 +71,7 @@ namespace Amoeba.Windows
 
                 var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
 
-                if (App.SelectTab == "Search")
+                if (App.SelectTab == "Search" && !_refresh)
                     _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectSearchTreeViewItem.Value.SearchItem.Name);
             };
 

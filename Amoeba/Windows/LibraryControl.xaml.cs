@@ -61,7 +61,7 @@ namespace Amoeba.Windows
             {
                 var selectBoxTreeViewItem = _treeView.SelectedItem as BoxTreeViewItem;
 
-                if (App.SelectTab == "Library")
+                if (App.SelectTab == "Library" && !_refresh)
                     _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectBoxTreeViewItem.Value.Name);
             };
 

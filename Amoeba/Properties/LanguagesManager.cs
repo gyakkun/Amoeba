@@ -3077,13 +3077,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_PullNodesCount
+        public string ConnectionControl_PullNodeCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PullNodesCount");
+                    return this.Translate("ConnectionControl_PullNodeCount");
                 }
             }
         }
@@ -3110,13 +3110,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_PullSeedsCount
+        public string ConnectionControl_PullSeedCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PullSeedsCount");
+                    return this.Translate("ConnectionControl_PullSeedCount");
                 }
             }
         }
@@ -3165,13 +3165,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_PushNodesCount
+        public string ConnectionControl_PushNodeCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PushNodesCount");
+                    return this.Translate("ConnectionControl_PushNodeCount");
                 }
             }
         }
@@ -3198,13 +3198,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_PushSeedsCount
+        public string ConnectionControl_PushSeedCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PushSeedsCount");
+                    return this.Translate("ConnectionControl_PushSeedCount");
                 }
             }
         }
@@ -3337,6 +3337,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionControl_BlockCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_ShareCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_ShareCount");
                 }
             }
         }

@@ -453,16 +453,23 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
-                        _logParagraph.Inlines.Add(string.Format("{0} {1}:\t{2}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
-
-                        if (_logParagraph.Inlines.Count > 100)
+                        try
                         {
-                            _logParagraph.Inlines.Remove(_logParagraph.Inlines.FirstInline);
-                        }
+                            _logParagraph.Inlines.Add(string.Format("{0} {1}:\t{2}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
 
-                        _logRichTextBox.ScrollToEnd();
+                            if (_logParagraph.Inlines.Count > 100)
+                            {
+                                _logParagraph.Inlines.Remove(_logParagraph.Inlines.FirstInline);
+                            }
+
+                            _logRichTextBox.ScrollToEnd();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                     }), null);
                 }
                 catch (Exception)
@@ -492,16 +499,23 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _mainWindow.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
-                        _mainWindow._logParagraph.Inlines.Add(string.Format("{0} Debug:\t{1}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
-
-                        if (_mainWindow._logParagraph.Inlines.Count > 100)
+                        try
                         {
-                            _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
-                        }
+                            _mainWindow._logParagraph.Inlines.Add(string.Format("{0} Debug:\t{1}\r\n", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), message));
 
-                        _mainWindow._logRichTextBox.ScrollToEnd();
+                            if (_mainWindow._logParagraph.Inlines.Count > 100)
+                            {
+                                _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
+                            }
+
+                            _mainWindow._logRichTextBox.ScrollToEnd();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                     }), null);
                 }
                 catch (Exception)
@@ -1094,6 +1108,8 @@ namespace Amoeba.Windows
             {
                 _windowState = this.WindowState;
             }
+
+            _logRichTextBox.ScrollToEnd();
         }
 
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1133,6 +1149,7 @@ namespace Amoeba.Windows
                 App.SelectTab = "";
             }
 
+            _logRichTextBox.ScrollToEnd();
             this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
 
