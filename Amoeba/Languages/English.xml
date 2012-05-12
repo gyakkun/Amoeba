@@ -197,7 +197,7 @@
   <Translate Key="SignatureWindow_Export" Value="_Export" />
 
   <Translate Key="ConnectionsWindow_Title" Value="Connections Setting" />
-  <Translate Key="ConnectionsWindow_BaseNode" Value="BaseNode" />
+  <Translate Key="ConnectionsWindow_BaseNode" Value="Base Node" />
   <Translate Key="ConnectionsWindow_Node" Value="Node" />
   <Translate Key="ConnectionsWindow_Uris" Value="Uris" />
   <Translate Key="ConnectionsWindow_Up" Value="_Up" />
@@ -232,7 +232,7 @@
   <Translate Key="ConnectionsWindow_AutoSettings" Value="Auto Settings" />
   <Translate Key="ConnectionsWindow_SearchFilterSettings" Value="Search Filter Settings" />
   <Translate Key="ConnectionsWindow_AutoUpdate" Value="Auto Update" />
-  <Translate Key="ConnectionsWindow_AutoBaseNodeSetting" Value="Auto BaseNode Setting" />
+  <Translate Key="ConnectionsWindow_AutoBaseNodeSetting" Value="Auto Base Node Setting" />
   <Translate Key="ConnectionsWindow_UPnP" Value="UPnP" />
   <Translate Key="ConnectionsWindow_Tor" Value="Tor" />
   <Translate Key="ConnectionsWindow_Ipv4" Value="Ipv4" />
