@@ -35,7 +35,7 @@ namespace Amoeba.Windows
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class MainWindow : Window, IDisposable
+    partial class MainWindow : Window
     {
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
@@ -46,30 +46,11 @@ namespace Amoeba.Windows
 
         private Dictionary<string, string> _configrationDirectoryPaths = new Dictionary<string, string>();
         private string _logPath = null;
-        private FileStream _lockStream = null;
 
         private bool _disposed = false;
 
         public MainWindow()
         {
-            if (this.Args())
-            {
-                this.Dispose();
-
-                return;
-            }
-
-            try
-            {
-                _lockStream = new FileStream(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.lock"), FileMode.Create);
-            }
-            catch (IOException)
-            {
-                this.Dispose();
-
-                return;
-            }
-
             _bufferManager = new BufferManager();
 
             this.Setting_Log();
@@ -108,47 +89,6 @@ namespace Amoeba.Windows
 
                 _notifyIcon.Visible = false;
             };
-        }
-
-        ~MainWindow()
-        {
-            this.Dispose(false);
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-
-            this.Dispose();
-        }
-
-        #region IDisposable メンバ
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
-
-        protected void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    this.Close();
-
-                    if (_lockStream != null)
-                    {
-                        _lockStream.Close();
-                        _lockStream = null;
-                    }
-                }
-
-                _disposed = true;
-            }
         }
 
         private static string GetMachineInfomation()
@@ -212,48 +152,6 @@ namespace Amoeba.Windows
                 ".NET Framework:\t{3}", App.AmoebaVersion.ToString(3), osName, osInfo.VersionString, Environment.Version);
         }
 
-        private static string GetUniqueFilePath(string path)
-        {
-            if (!File.Exists(path))
-            {
-                return path;
-            }
-
-            for (int index = 1; ; index++)
-            {
-                string text = string.Format(@"{0}\{1} ({2}){3}",
-                    Path.GetDirectoryName(path),
-                    Path.GetFileNameWithoutExtension(path),
-                    index,
-                    Path.GetExtension(path));
-
-                if (!File.Exists(text))
-                {
-                    return text;
-                }
-            }
-        }
-
-        private static string GetUniqueDirectoryPath(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                return path;
-            }
-
-            for (int index = 1; ; index++)
-            {
-                string text = string.Format(@"{0} ({1})",
-                    path,
-                    index);
-
-                if (!Directory.Exists(text))
-                {
-                    return text;
-                }
-            }
-        }
-
         private static void CopyDirectory(string sourceDirName, string destDirName)
         {
             if (!System.IO.Directory.Exists(destDirName))
@@ -276,121 +174,6 @@ namespace Amoeba.Windows
             {
                 CopyDirectory(dir, destDirName + System.IO.Path.GetFileName(dir));
             }
-        }
-
-        private bool Args()
-        {
-            if (App.Args.Length == 2 && App.Args[0] == "Relate")
-            {
-                if (App.Args[1] == "on")
-                {
-                    try
-                    {
-                        string extension = ".box";
-                        string commandline = "\"" + Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe") + "\" \"%1\"";
-                        string fileType = "Amoeba";
-                        string description = "Amoeba Box";
-                        string verb = "open";
-                        string iconPath = Path.Combine(App.DirectoryPaths["Icons"], "Box.ico");
-
-                        using (var regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension))
-                        {
-                            regkey.SetValue("", fileType);
-                        }
-
-                        using (var shellkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType))
-                        {
-                            shellkey.SetValue("", description);
-
-                            using (var shellkey2 = shellkey.CreateSubKey("shell\\" + verb))
-                            {
-                                using (var shellkey3 = shellkey2.CreateSubKey("command"))
-                                {
-                                    shellkey3.SetValue("", commandline);
-                                    shellkey3.Close();
-                                }
-                            }
-                        }
-
-                        using (var iconkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType + "\\DefaultIcon"))
-                        {
-                            iconkey.SetValue("", "\"" + iconPath + "\"");
-                        }
-
-                        this.Close();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-
-                    return true;
-                }
-                else if (App.Args[1] == "off")
-                {
-                    try
-                    {
-                        string extension = ".box";
-                        string fileType = "Amoeba";
-
-                        Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(extension);
-                        Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(fileType);
-
-                        this.Close();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-
-                    return true;
-                }
-            }
-            else if (App.Args.Length == 1 && App.Args[0].EndsWith(".box") && File.Exists(App.Args[0]))
-            {
-                try
-                {
-                    if (Path.GetExtension(App.Args[0]).ToLower() == ".box")
-                    {
-                        if (!Directory.Exists(App.DirectoryPaths["Input"]))
-                            Directory.CreateDirectory(App.DirectoryPaths["Input"]);
-
-                        File.Copy(App.Args[0], MainWindow.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["Input"], "temp.box")));
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-
-                return false;
-            }
-            else if (App.Args.Length >= 1 && App.Args[0].StartsWith("Seed@"))
-            {
-                try
-                {
-                    if (!Directory.Exists(App.DirectoryPaths["Input"]))
-                        Directory.CreateDirectory(App.DirectoryPaths["Input"]);
-
-                    using (FileStream stream = new FileStream(MainWindow.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["Input"], "seed.txt")), FileMode.Create))
-                    using (StreamWriter writer = new StreamWriter(stream))
-                    {
-                        foreach (var item in App.Args)
-                        {
-                            if (item == null || !item.StartsWith("Seed@")) continue;
-                            writer.WriteLine(item);
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-
-                return false;
-            }
-
-            return false;
         }
 
         private void Setting_Log()
@@ -561,7 +344,7 @@ namespace Amoeba.Windows
             {
                 bool initFlag = false;
 
-                _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "cache.blocks"), App.DirectoryPaths["Temp"], _bufferManager);
+                _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.blocks"), _bufferManager);
                 _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
 
                 if (_amoebaManager.BaseNode == null || _amoebaManager.BaseNode.Id == null)
@@ -1092,8 +875,6 @@ namespace Amoeba.Windows
             _amoebaManager.Dispose();
 
             Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
-
-            this.Dispose();
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
