@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Library;
 using Library.Net.Amoeba;
+using Amoeba.Properties;
 
 namespace Amoeba.Windows
 {
@@ -68,8 +69,8 @@ namespace Amoeba.Windows
 
             _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
 
-            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
 
             if ((_searchItem.SearchState & SearchState.Searching) == SearchState.Searching)
             {
@@ -830,8 +831,8 @@ namespace Amoeba.Windows
             if (selectIndex == -1)
             {
                 _creationTimeRangeContainsCheckBox.IsChecked = true; ;
-                _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 return;
             }
 
@@ -839,8 +840,8 @@ namespace Amoeba.Windows
             if (item == null) return;
 
             _creationTimeRangeContainsCheckBox.IsChecked = item.Contains;
-            _creationTimeRangeMaxTextBox.Text = item.Value.Max.ToUniversalTime().ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeMinTextBox.Text = item.Value.Min.ToUniversalTime().ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMaxTextBox.Text = item.Value.Max.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMinTextBox.Text = item.Value.Min.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
         }
 
         private void _creationTimeRangeUpButton_Click(object sender, RoutedEventArgs e)
@@ -885,16 +886,16 @@ namespace Amoeba.Windows
                     Contains = _creationTimeRangeContainsCheckBox.IsChecked.Value,
                     Value = new SearchRange<DateTime>()
                     {
-                        Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, "yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeUniversal).ToUniversalTime(),
-                        Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, "yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeUniversal).ToUniversalTime(),
+                        Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
+                        Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
                     }
                 };
 
                 if (_searchCreationTimeRangeCollection.Contains(item)) return;
                 _searchCreationTimeRangeCollection.Add(item);
 
-                _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 _creationTimeRangeListView.SelectedIndex = _searchCreationTimeRangeCollection.Count - 1;
             }
             catch (Exception)
@@ -918,8 +919,8 @@ namespace Amoeba.Windows
                     Contains = _creationTimeRangeContainsCheckBox.IsChecked.Value,
                     Value = new SearchRange<DateTime>()
                     {
-                        Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, "yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeUniversal).ToUniversalTime(),
-                        Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, "yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeUniversal).ToUniversalTime(),
+                        Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
+                        Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
                     }
                 };
 
@@ -929,8 +930,8 @@ namespace Amoeba.Windows
                 if (item == null) return;
 
                 item.Contains = _creationTimeRangeContainsCheckBox.IsChecked.Value;
-                item.Value.Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, "yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeUniversal).ToUniversalTime();
-                item.Value.Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, "yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeUniversal).ToUniversalTime();
+                item.Value.Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
+                item.Value.Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
             }
             catch (Exception)
             {
@@ -946,8 +947,8 @@ namespace Amoeba.Windows
             var item = _creationTimeRangeListView.SelectedItem as SearchContains<SearchRange<DateTime>>;
             if (item == null) return;
 
-            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day).ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
 
             int selectIndex = _creationTimeRangeListView.SelectedIndex;
             _searchCreationTimeRangeCollection.Remove(item);

@@ -307,6 +307,23 @@ namespace Amoeba.Windows
         }
     }
 
+    [ValueConversion(typeof(DateTime), typeof(string))]
+    class DateTimeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var item = value as DateTime?;
+            if (item == null) return null;
+
+            return item.Value.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [ValueConversion(typeof(SearchState), typeof(string))]
     class SearchStateToStringConverter : IValueConverter
     {

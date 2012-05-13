@@ -15,6 +15,7 @@
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
         <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
         <local:ObjectToImageConverter x:Key="_itemToIconConverter" />
+        <local:DateTimeToStringConverter x:Key="_dateTimeToStringConverter" />
 
         <DataTemplate x:Key="_myTemplate_Name">
             <Grid>
@@ -29,7 +30,7 @@
             <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_CreationTime">
-            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, StringFormat=yyyy/MM/dd\ HH:mm:ss}" />
+            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Length">
             <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />

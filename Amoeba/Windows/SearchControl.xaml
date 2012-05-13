@@ -14,6 +14,7 @@
         <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
         <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
         <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
+        <local:DateTimeToStringConverter x:Key="_dateTimeToStringConverter" />
 
         <DataTemplate x:Key="_myTemplate_Name">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
@@ -28,7 +29,7 @@
             <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_CreationTime">
-            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, StringFormat=yyyy/MM/dd\ HH:mm:ss}" />
+            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Length">
             <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />

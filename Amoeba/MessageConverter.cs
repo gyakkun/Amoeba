@@ -66,7 +66,7 @@ namespace Amoeba
                 if (seed.Certificate != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Signature, MessageConverter.ToSignatureString(seed.Certificate)));
                 builder.AppendLine(string.Format("{0}: {1:#,0}", LanguagesManager.Instance.SearchControl_Length, seed.Length));
                 if (seed.Keywords.Count != 0) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Keywords, String.Join(", ", seed.Keywords.Select(n => n.Value))));
-                builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_CreationTime, seed.CreationTime.ToString("yyyy/MM/dd HH:mm:ss")));
+                builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_CreationTime, seed.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo)));
                 if (!string.IsNullOrWhiteSpace(seed.Comment)) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Comment, seed.Comment));
 
                 if (builder.Length != 0) return builder.ToString().Remove(builder.Length - 2);
@@ -86,7 +86,7 @@ namespace Amoeba
 
                 if (!string.IsNullOrWhiteSpace(box.Name)) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Name, box.Name));
                 if (box.Certificate != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Signature, MessageConverter.ToSignatureString(box.Certificate)));
-                builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_CreationTime, box.CreationTime.ToString("yyyy/MM/dd HH:mm:ss")));
+                builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_CreationTime, box.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo)));
                 if (!string.IsNullOrWhiteSpace(box.Comment)) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.SearchControl_Comment, box.Comment));
 
                 if (builder.Length != 0) return builder.ToString().Remove(builder.Length - 2);
