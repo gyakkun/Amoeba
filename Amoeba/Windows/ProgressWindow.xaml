@@ -5,18 +5,17 @@
         xmlns:prop="clr-namespace:Amoeba.Properties"     
         xmlns:local="clr-namespace:Amoeba.Windows" 
         Background="{DynamicResource WindowBackgroundBrush}"
-        Title="{Binding Path=ProgressWindow_Title, Source={StaticResource ResourcesInstance}}"
-        Height="180" 
+        Title="{Binding Path=ProgressWindow_Title, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Center"
         Width="600" 
-        VerticalAlignment="Center"
+        SizeToContent="Height"
         ResizeMode="NoResize" 
         WindowStartupLocation="CenterOwner"
         Closing="Window_Closing">
     
     <Grid>
-        <Label Content="" Height="28" Margin="0,12,0,0" Name="_label1" VerticalAlignment="Top" HorizontalAlignment="Center" />
-        <Label Content="" Height="28" Margin="0,46,0,0" Name="_label2" VerticalAlignment="Top" HorizontalAlignment="Center" />
-        <ProgressBar Height="24" Name="_progressBar" VerticalAlignment="Top" Margin="12,80,12,0" />
-        <Button Content="" HorizontalAlignment="Center" Margin="0,118,0,0" Name="_button" Width="75" Click="_button_Click" Height="23" VerticalAlignment="Top" />
+        <Label Height="24" Margin="0,12,0,0" Name="_label1" VerticalAlignment="Top" HorizontalAlignment="Center" />
+        <Label Height="24" Margin="0,42,0,0" Name="_label2" VerticalAlignment="Top" HorizontalAlignment="Center" />
+        <ProgressBar Height="24" Name="_progressBar" VerticalAlignment="Top" Margin="12,78,12,0" />
+        <Button Content="" HorizontalAlignment="Center" Margin="0,114,0,12" Name="_button" Width="75" Click="_button_Click" Height="23" VerticalAlignment="Top" />
     </Grid>
 </Window>
