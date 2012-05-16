@@ -178,6 +178,8 @@
   <Translate Key="SearchItemEditWindow_Title" Value="Search Item Edit" />
   <Translate Key="SearchItemEditWindow_Ok" Value="_Ok" />
   <Translate Key="SearchItemEditWindow_Cancel" Value="_Cancel" />
+  <Translate Key="SearchItemEditWindow_Copy" Value="_Copy" />
+  <Translate Key="SearchItemEditWindow_Paste" Value="_Paste" />
   <Translate Key="SearchItemEditWindow_Name" Value="Name" />
   <Translate Key="SearchItemEditWindow_NameRegex" Value="Name Regex" />
   <Translate Key="SearchItemEditWindow_Signature" Value="Signature" />

@@ -1991,6 +1991,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string SearchItemEditWindow_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Copy");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Paste");
+                }
+            }
+        }
+
         public string SearchItemEditWindow_Name
         {
             get

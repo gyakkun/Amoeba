@@ -1206,6 +1206,60 @@ namespace Amoeba.Windows
             _seedNameTextBox.Text = string.Format("{0}, {1:#,0}", item.Value.Name, item.Value.Length);
         }
 
+        private void _seedListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _seedListView.SelectedItems;
+            if (selectItems == null) return;
+
+            _seedListViewCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+
+            {
+                var seeds = Clipboard.GetSeeds();
+
+                _seedListViewPasteContextMenuItem.IsEnabled = (seeds.Count() > 0) ? true : false;
+            }
+        }
+
+        private void _seedListViewCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var item in _seedListView.SelectedItems.OfType<SearchContains<Seed>>())
+            {
+                sb.AppendLine(AmoebaConverter.ToSeedString(item.Value));
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void _seedListViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var seed in Clipboard.GetSeeds())
+            {
+                try
+                {
+                    var item = new SearchContains<Seed>()
+                    {
+                        Contains = _seedContainsCheckBox.IsChecked.Value,
+                        Value = seed,
+                    };
+
+                    if (_searchSeedCollection.Contains(item)) continue;
+                    _searchSeedCollection.Add(item);
+
+                    _seedTextBox.Text = "";
+                    _seedListView.SelectedIndex = _searchSeedCollection.Count - 1;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            _seedListView.Items.Refresh();
+            _seedListViewUpdate();
+        }
+
         private void _seedUpButton_Click(object sender, RoutedEventArgs e)
         {
             var item = _seedListView.SelectedItem as SearchContains<Seed>;
