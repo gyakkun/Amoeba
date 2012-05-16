@@ -78,7 +78,7 @@
     <Style TargetType="{x:Type TextBlock}">
         <Setter Property="FontFamily" Value="Segoe UI, Meiryo UI, Console, Verdana"  />
     </Style>
-    
+
     <Style TargetType="{x:Type StatusBar}">
         <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -1688,6 +1688,7 @@
 
     <Style TargetType="{x:Type RichTextBox}">
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+        <Setter Property="FontFamily" Value="Segoe UI, Meiryo UI, Console, Verdana"  />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="AllowDrop" Value="true" />
         <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
