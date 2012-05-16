@@ -35,11 +35,43 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Maximized },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "BoxEditWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_GridViewColumn_Value_Width", Value = 600 },
+                 
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "ConnectionsWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_BaseNode_Uris_Uri_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_OtherNodes_Node_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ConnectionType_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ProxyUri_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_UriCondition_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Server_ListenUris_Uri_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Keywords_Keyword_Width", Value = 600 },
+
+                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "VersionInformationWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_GridViewColumn_FileName_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_GridViewColumn_Version_Width", Value = -1 },
+
+                new Library.Configuration.SettingsContext<string>() { Name = "ConnectionControl_LastHeaderClicked", Value = "Uri" },
+                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "ConnectionControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Uri_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Priority_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_ReceivedByteCount_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_SentByteCount_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Name_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Value_Width", Value = 100 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Grid_ColumnDefinitions_Width", Value = -1 },
 
                 new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "SearchControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
                 new Library.Configuration.SettingsContext<string>() { Name = "SearchControl_LastHeaderClicked", Value = "Name" },
@@ -53,6 +85,29 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Comment_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Hash_Width", Value = 120 },
+
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "SearchItemEditWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Value_Width", Value = 600 },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "DownloadControl_LastHeaderClicked", Value = "Rate" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "DownloadControl_ListSortDirection", Value = ListSortDirection.Descending },
@@ -81,16 +136,14 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
-
-                new Library.Configuration.SettingsContext<string>() { Name = "ConnectionControl_LastHeaderClicked", Value = "Uri" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "ConnectionControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Uri_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Priority_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_ReceivedByteCount_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_SentByteCount_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Value_Width", Value = 100 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Grid_ColumnDefinitions_Width", Value = -1 },
+    
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "UploadWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Name_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Path_Width", Value = -1 },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "LibraryControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "LibraryControl_ListSortDirection", Value = ListSortDirection.Ascending },
@@ -105,64 +158,17 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Comment_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Key_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "SearchItemEditWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Value_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Value_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Value_Width", Value = 600 },
-    
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "UploadWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Path_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "BoxEditWindow_WindowState", Value = WindowState.Normal },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "VersionInformationWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_GridViewColumn_FileName_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_GridViewColumn_Version_Width", Value = -1 },
-
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_GridViewColumn_Value_Width", Value = 600 },
-                 
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "ConnectionsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_BaseNode_Uris_Uri_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_OtherNodes_Node_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ConnectionType_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ProxyUri_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_UriCondition_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Server_ListenUris_Uri_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Keywords_Keyword_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "SeedEditWindow_WindowState", Value = WindowState.Normal },
             })
         {
 
@@ -450,13 +456,13 @@ namespace Amoeba.Properties
         }
 
 
-        public double BoxEditWindow_Top
+        public double SignatureWindow_Top
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["BoxEditWindow_Top"];
+                   return (double)this["SignatureWindow_Top"];
                 }
             }
 
@@ -464,18 +470,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["BoxEditWindow_Top"] = value;
+                    this["SignatureWindow_Top"] = value;
                 }
             }
         }
 
-        public double BoxEditWindow_Left
+        public double SignatureWindow_Left
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["BoxEditWindow_Left"];
+                   return (double)this["SignatureWindow_Left"];
                 }
             }
 
@@ -483,18 +489,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["BoxEditWindow_Left"] = value;
+                    this["SignatureWindow_Left"] = value;
                 }
             }
         }
 
-        public double BoxEditWindow_Height
+        public double SignatureWindow_Height
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["BoxEditWindow_Height"];
+                   return (double)this["SignatureWindow_Height"];
                 }
             }
 
@@ -502,18 +508,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["BoxEditWindow_Height"] = value;
+                    this["SignatureWindow_Height"] = value;
                 }
             }
         }
 
-        public double BoxEditWindow_Width
+        public double SignatureWindow_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["BoxEditWindow_Width"];
+                   return (double)this["SignatureWindow_Width"];
                 }
             }
 
@@ -521,18 +527,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["BoxEditWindow_Width"] = value;
+                    this["SignatureWindow_Width"] = value;
                 }
             }
         }
 
-        public WindowState BoxEditWindow_WindowState
+        public WindowState SignatureWindow_WindowState
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["BoxEditWindow_WindowState"];
+                   return (WindowState)this["SignatureWindow_WindowState"];
                 }
             }
 
@@ -540,7 +546,561 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["BoxEditWindow_WindowState"] = value;
+                    this["SignatureWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double SignatureWindow_GridViewColumn_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SignatureWindow_GridViewColumn_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SignatureWindow_GridViewColumn_Value_Width"] = value;
+                }
+            }
+        }
+
+
+        public double ConnectionsWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Top"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Left"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Height"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState ConnectionsWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["ConnectionsWindow_WindowState"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_BaseNode_Uris_Uri_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_BaseNode_Uris_Uri_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_BaseNode_Uris_Uri_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_OtherNodes_Node_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_OtherNodes_Node_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_OtherNodes_Node_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_Client_Filters_ConnectionType_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Client_Filters_ConnectionType_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Client_Filters_ConnectionType_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_Client_Filters_ProxyUri_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Client_Filters_ProxyUri_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Client_Filters_ProxyUri_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_Client_Filters_UriCondition_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Client_Filters_UriCondition_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Client_Filters_UriCondition_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_Server_ListenUris_Uri_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Server_ListenUris_Uri_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Server_ListenUris_Uri_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsWindow_Keywords_Keyword_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsWindow_Keywords_Keyword_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsWindow_Keywords_Keyword_Width"] = value;
+                }
+            }
+        }
+
+
+        public double VersionInformationWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["VersionInformationWindow_Top"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["VersionInformationWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double VersionInformationWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["VersionInformationWindow_Left"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["VersionInformationWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double VersionInformationWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["VersionInformationWindow_Height"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["VersionInformationWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double VersionInformationWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["VersionInformationWindow_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["VersionInformationWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState VersionInformationWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["VersionInformationWindow_WindowState"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["VersionInformationWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double VersionInformationWindow_GridViewColumn_FileName_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["VersionInformationWindow_GridViewColumn_FileName_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["VersionInformationWindow_GridViewColumn_FileName_Width"] = value;
+                }
+            }
+        }
+
+        public double VersionInformationWindow_GridViewColumn_Version_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["VersionInformationWindow_GridViewColumn_Version_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["VersionInformationWindow_GridViewColumn_Version_Width"] = value;
+                }
+            }
+        }
+
+
+        public string ConnectionControl_LastHeaderClicked
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["ConnectionControl_LastHeaderClicked"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_LastHeaderClicked"] = value;
+                }
+            }
+        }
+
+        public ListSortDirection ConnectionControl_ListSortDirection
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (ListSortDirection)this["ConnectionControl_ListSortDirection"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_ListSortDirection"] = value;
+                }
+            }
+        }
+
+        public double ConnectionControl_Uri_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionControl_Uri_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_Uri_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionControl_Priority_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionControl_Priority_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_Priority_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionControl_ReceivedByteCount_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionControl_ReceivedByteCount_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_ReceivedByteCount_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionControl_SentByteCount_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionControl_SentByteCount_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_SentByteCount_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionControl_Name_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionControl_Name_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_Name_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionControl_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionControl_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionControl_Grid_ColumnDefinitions_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionControl_Grid_ColumnDefinitions_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_Grid_ColumnDefinitions_Width"] = value;
                 }
             }
         }
@@ -770,6 +1330,425 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["SearchControl_GridViewColumn_Hash_Width"] = value;
+                }
+            }
+        }
+
+
+        public double SearchItemEditWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_Top"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_Left"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_Height"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState SearchItemEditWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["SearchItemEditWindow_WindowState"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Name_Contains_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Name_Contains_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Name_Contains_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Name_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Name_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Name_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Signature_Contains_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Contains_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Signature_Contains_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Signature_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Signature_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Keyword_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Keyword_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Seed_Contains_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Contains_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Seed_Contains_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Seed_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Seed_Value_Width"] = value;
                 }
             }
         }
@@ -1253,13 +2232,13 @@ namespace Amoeba.Properties
         }
 
 
-        public string ConnectionControl_LastHeaderClicked
+        public double UploadWindow_Top
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["ConnectionControl_LastHeaderClicked"];
+                   return (double)this["UploadWindow_Top"];
                 }
             }
 
@@ -1267,18 +2246,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionControl_LastHeaderClicked"] = value;
+                    this["UploadWindow_Top"] = value;
                 }
             }
         }
 
-        public ListSortDirection ConnectionControl_ListSortDirection
+        public double UploadWindow_Left
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["ConnectionControl_ListSortDirection"];
+                   return (double)this["UploadWindow_Left"];
                 }
             }
 
@@ -1286,18 +2265,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionControl_ListSortDirection"] = value;
+                    this["UploadWindow_Left"] = value;
                 }
             }
         }
 
-        public double ConnectionControl_Uri_Width
+        public double UploadWindow_Height
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionControl_Uri_Width"];
+                   return (double)this["UploadWindow_Height"];
                 }
             }
 
@@ -1305,18 +2284,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionControl_Uri_Width"] = value;
+                    this["UploadWindow_Height"] = value;
                 }
             }
         }
 
-        public double ConnectionControl_Priority_Width
+        public double UploadWindow_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionControl_Priority_Width"];
+                   return (double)this["UploadWindow_Width"];
                 }
             }
 
@@ -1324,18 +2303,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionControl_Priority_Width"] = value;
+                    this["UploadWindow_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionControl_ReceivedByteCount_Width
+        public WindowState UploadWindow_WindowState
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionControl_ReceivedByteCount_Width"];
+                   return (WindowState)this["UploadWindow_WindowState"];
                 }
             }
 
@@ -1343,18 +2322,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionControl_ReceivedByteCount_Width"] = value;
+                    this["UploadWindow_WindowState"] = value;
                 }
             }
         }
 
-        public double ConnectionControl_SentByteCount_Width
+        public double UploadWindow_GridViewColumn_Name_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionControl_SentByteCount_Width"];
+                   return (double)this["UploadWindow_GridViewColumn_Name_Width"];
                 }
             }
 
@@ -1362,18 +2341,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionControl_SentByteCount_Width"] = value;
+                    this["UploadWindow_GridViewColumn_Name_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionControl_Name_Width
+        public double UploadWindow_GridViewColumn_Path_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionControl_Name_Width"];
+                   return (double)this["UploadWindow_GridViewColumn_Path_Width"];
                 }
             }
 
@@ -1381,45 +2360,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionControl_Name_Width"] = value;
-                }
-            }
-        }
-
-        public double ConnectionControl_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionControl_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionControl_Value_Width"] = value;
-                }
-            }
-        }
-
-        public double ConnectionControl_Grid_ColumnDefinitions_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionControl_Grid_ColumnDefinitions_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionControl_Grid_ColumnDefinitions_Width"] = value;
+                    this["UploadWindow_GridViewColumn_Path_Width"] = value;
                 }
             }
         }
@@ -1654,13 +2595,13 @@ namespace Amoeba.Properties
         }
 
 
-        public double SearchItemEditWindow_Top
+        public double BoxEditWindow_Top
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_Top"];
+                   return (double)this["BoxEditWindow_Top"];
                 }
             }
 
@@ -1668,18 +2609,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchItemEditWindow_Top"] = value;
+                    this["BoxEditWindow_Top"] = value;
                 }
             }
         }
 
-        public double SearchItemEditWindow_Left
+        public double BoxEditWindow_Left
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_Left"];
+                   return (double)this["BoxEditWindow_Left"];
                 }
             }
 
@@ -1687,18 +2628,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchItemEditWindow_Left"] = value;
+                    this["BoxEditWindow_Left"] = value;
                 }
             }
         }
 
-        public double SearchItemEditWindow_Height
+        public double BoxEditWindow_Height
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_Height"];
+                   return (double)this["BoxEditWindow_Height"];
                 }
             }
 
@@ -1706,18 +2647,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchItemEditWindow_Height"] = value;
+                    this["BoxEditWindow_Height"] = value;
                 }
             }
         }
 
-        public double SearchItemEditWindow_Width
+        public double BoxEditWindow_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_Width"];
+                   return (double)this["BoxEditWindow_Width"];
                 }
             }
 
@@ -1725,18 +2666,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchItemEditWindow_Width"] = value;
+                    this["BoxEditWindow_Width"] = value;
                 }
             }
         }
 
-        public WindowState SearchItemEditWindow_WindowState
+        public WindowState BoxEditWindow_WindowState
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["SearchItemEditWindow_WindowState"];
+                   return (WindowState)this["BoxEditWindow_WindowState"];
                 }
             }
 
@@ -1744,342 +2685,19 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchItemEditWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Name_Contains_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Name_Contains_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Name_Contains_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Name_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Name_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Name_Value_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Signature_Contains_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Contains_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Signature_Contains_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Signature_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Signature_Value_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Keyword_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Keyword_Value_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Seed_Contains_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Contains_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Seed_Contains_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchItemEditWindow_GridViewColumn_Seed_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchItemEditWindow_GridViewColumn_Seed_Value_Width"] = value;
+                    this["BoxEditWindow_WindowState"] = value;
                 }
             }
         }
 
 
-        public double UploadWindow_Top
+        public double SeedEditWindow_Top
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Top"];
+                   return (double)this["SeedEditWindow_Top"];
                 }
             }
 
@@ -2087,18 +2705,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_Top"] = value;
+                    this["SeedEditWindow_Top"] = value;
                 }
             }
         }
 
-        public double UploadWindow_Left
+        public double SeedEditWindow_Left
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Left"];
+                   return (double)this["SeedEditWindow_Left"];
                 }
             }
 
@@ -2106,18 +2724,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_Left"] = value;
+                    this["SeedEditWindow_Left"] = value;
                 }
             }
         }
 
-        public double UploadWindow_Height
+        public double SeedEditWindow_Height
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Height"];
+                   return (double)this["SeedEditWindow_Height"];
                 }
             }
 
@@ -2125,18 +2743,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_Height"] = value;
+                    this["SeedEditWindow_Height"] = value;
                 }
             }
         }
 
-        public double UploadWindow_Width
+        public double SeedEditWindow_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Width"];
+                   return (double)this["SeedEditWindow_Width"];
                 }
             }
 
@@ -2144,18 +2762,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_Width"] = value;
+                    this["SeedEditWindow_Width"] = value;
                 }
             }
         }
 
-        public WindowState UploadWindow_WindowState
+        public WindowState SeedEditWindow_WindowState
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["UploadWindow_WindowState"];
+                   return (WindowState)this["SeedEditWindow_WindowState"];
                 }
             }
 
@@ -2163,523 +2781,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double UploadWindow_GridViewColumn_Name_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UploadWindow_GridViewColumn_Name_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UploadWindow_GridViewColumn_Name_Width"] = value;
-                }
-            }
-        }
-
-        public double UploadWindow_GridViewColumn_Path_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UploadWindow_GridViewColumn_Path_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UploadWindow_GridViewColumn_Path_Width"] = value;
-                }
-            }
-        }
-
-
-        public double VersionInformationWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["VersionInformationWindow_Top"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["VersionInformationWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double VersionInformationWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["VersionInformationWindow_Left"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["VersionInformationWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double VersionInformationWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["VersionInformationWindow_Height"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["VersionInformationWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double VersionInformationWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["VersionInformationWindow_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["VersionInformationWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState VersionInformationWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["VersionInformationWindow_WindowState"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["VersionInformationWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double VersionInformationWindow_GridViewColumn_FileName_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["VersionInformationWindow_GridViewColumn_FileName_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["VersionInformationWindow_GridViewColumn_FileName_Width"] = value;
-                }
-            }
-        }
-
-        public double VersionInformationWindow_GridViewColumn_Version_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["VersionInformationWindow_GridViewColumn_Version_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["VersionInformationWindow_GridViewColumn_Version_Width"] = value;
-                }
-            }
-        }
-
-
-        public double SignatureWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Top"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Left"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Height"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState SignatureWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["SignatureWindow_WindowState"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_GridViewColumn_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_GridViewColumn_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_GridViewColumn_Value_Width"] = value;
-                }
-            }
-        }
-
-
-        public double ConnectionsWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Top"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Left"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Height"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState ConnectionsWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["ConnectionsWindow_WindowState"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_BaseNode_Uris_Uri_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_BaseNode_Uris_Uri_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_BaseNode_Uris_Uri_Width"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_OtherNodes_Node_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_OtherNodes_Node_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_OtherNodes_Node_Width"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_Client_Filters_ConnectionType_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Client_Filters_ConnectionType_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Client_Filters_ConnectionType_Width"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_Client_Filters_ProxyUri_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Client_Filters_ProxyUri_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Client_Filters_ProxyUri_Width"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_Client_Filters_UriCondition_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Client_Filters_UriCondition_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Client_Filters_UriCondition_Width"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_Server_ListenUris_Uri_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Server_ListenUris_Uri_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Server_ListenUris_Uri_Width"] = value;
-                }
-            }
-        }
-
-        public double ConnectionsWindow_Keywords_Keyword_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ConnectionsWindow_Keywords_Keyword_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ConnectionsWindow_Keywords_Keyword_Width"] = value;
+                    this["SeedEditWindow_WindowState"] = value;
                 }
             }
         }

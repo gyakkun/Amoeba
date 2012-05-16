@@ -2854,6 +2854,84 @@ namespace Amoeba.Properties
         }
 
 
+        public string ShareControl_Add
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_Add");
+                }
+            }
+        }
+
+        public string ShareControl_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_Delete");
+                }
+            }
+        }
+
+        public string ShareControl_CheckExist
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_CheckExist");
+                }
+            }
+        }
+
+        public string ShareControl_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_Name");
+                }
+            }
+        }
+
+        public string ShareControl_Path
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_Path");
+                }
+            }
+        }
+
+        public string ShareControl_Length
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_Length");
+                }
+            }
+        }
+
+        public string ShareControl_BlockCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_BlockCount");
+                }
+            }
+        }
+
+
         public string UploadWindow_Title
         {
             get
@@ -2931,72 +3009,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UploadWindow_Details
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UploadWindow_Details");
-                }
-            }
-        }
-
-        public string UploadWindow_CompressionAlgorithm
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UploadWindow_CompressionAlgorithm");
-                }
-            }
-        }
-
-        public string UploadWindow_CryptoAlgorithm
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UploadWindow_CryptoAlgorithm");
-                }
-            }
-        }
-
-        public string UploadWindow_CorrectionAlgorithm
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UploadWindow_CorrectionAlgorithm");
-                }
-            }
-        }
-
-        public string UploadWindow_HashAlgorithm
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UploadWindow_HashAlgorithm");
-                }
-            }
-        }
-
-        public string UploadWindow_DigitalSignatureAlgorithm
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UploadWindow_DigitalSignatureAlgorithm");
-                }
-            }
-        }
-
         public string UploadWindow_Cancel
         {
             get
@@ -3015,84 +3027,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("UploadWindow_Ok");
-                }
-            }
-        }
-
-
-        public string ShareControl_Add
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Add");
-                }
-            }
-        }
-
-        public string ShareControl_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Delete");
-                }
-            }
-        }
-
-        public string ShareControl_CheckExist
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_CheckExist");
-                }
-            }
-        }
-
-        public string ShareControl_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Name");
-                }
-            }
-        }
-
-        public string ShareControl_Path
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Path");
-                }
-            }
-        }
-
-        public string ShareControl_Length
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Length");
-                }
-            }
-        }
-
-        public string ShareControl_BlockCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_BlockCount");
                 }
             }
         }
@@ -3352,6 +3286,72 @@ namespace Amoeba.Properties
             }
         }
 
+        public string SeedEditWindow_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedEditWindow_Name");
+                }
+            }
+        }
+
+        public string SeedEditWindow_Keywords
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedEditWindow_Keywords");
+                }
+            }
+        }
+
+        public string SeedEditWindow_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedEditWindow_Signature");
+                }
+            }
+        }
+
+        public string SeedEditWindow_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedEditWindow_Comment");
+                }
+            }
+        }
+
+        public string SeedEditWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedEditWindow_Cancel");
+                }
+            }
+        }
+
+        public string SeedEditWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedEditWindow_Ok");
+                }
+            }
+        }
+
 
         public string BoxEditWindow_Title
         {
@@ -3360,6 +3360,61 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("BoxEditWindow_Title");
+                }
+            }
+        }
+
+        public string BoxEditWindow_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("BoxEditWindow_Name");
+                }
+            }
+        }
+
+        public string BoxEditWindow_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("BoxEditWindow_Signature");
+                }
+            }
+        }
+
+        public string BoxEditWindow_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("BoxEditWindow_Comment");
+                }
+            }
+        }
+
+        public string BoxEditWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("BoxEditWindow_Cancel");
+                }
+            }
+        }
+
+        public string BoxEditWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("BoxEditWindow_Ok");
                 }
             }
         }
