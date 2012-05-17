@@ -5,6 +5,7 @@
         xmlns:prop="clr-namespace:Amoeba.Properties"     
         xmlns:local="clr-namespace:Amoeba.Windows" 
         Background="{DynamicResource WindowBackgroundBrush}"
+        FontFamily="Segoe UI, Meiryo UI, Console, Verdana"
         Top="{Binding Path=MainWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Left="{Binding Path=MainWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Height="{Binding Path=MainWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"

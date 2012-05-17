@@ -75,10 +75,6 @@
     <SolidColorBrush x:Key="DefaultedBorderBrush" Color="{StaticResource DefaultColor}" />
     <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
 
-    <Style TargetType="{x:Type TextBlock}">
-        <Setter Property="FontFamily" Value="Segoe UI, Meiryo UI, Console, Verdana"  />
-    </Style>
-
     <Style TargetType="{x:Type StatusBar}">
         <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
@@ -1688,7 +1684,6 @@
 
     <Style TargetType="{x:Type RichTextBox}">
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
-        <Setter Property="FontFamily" Value="Segoe UI, Meiryo UI, Console, Verdana"  />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="AllowDrop" Value="true" />
         <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
@@ -1808,7 +1803,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <DropShadowBitmapEffect x:Key="PopupDropShadow" ShadowDepth="1.5" Softness="0.15" />
+    
     <Style TargetType="{x:Type MenuItem}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
