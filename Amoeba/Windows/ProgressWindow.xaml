@@ -4,6 +4,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:prop="clr-namespace:Amoeba.Properties"     
         xmlns:local="clr-namespace:Amoeba.Windows" 
+        FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
+        FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}"
         Background="{DynamicResource WindowBackgroundBrush}"
         Title="{Binding Path=ProgressWindow_Title, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Center"
         Width="600" 

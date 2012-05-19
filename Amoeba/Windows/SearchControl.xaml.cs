@@ -334,8 +334,8 @@ namespace Amoeba.Windows
                                 {
                                     if (item.Name != null)
                                     {
-                                        var nameBuffer = encoding.GetBytes(item.Name);
-                                        stream.Write(nameBuffer, 0, nameBuffer.Length);
+                                        var buffer = encoding.GetBytes(item.Name);
+                                        stream.Write(buffer, 0, buffer.Length);
                                     }
 
                                     stream.Write(BitConverter.GetBytes(item.Length), 0, 8);
@@ -355,6 +355,12 @@ namespace Amoeba.Windows
 
                                     if (item.Certificate != null)
                                     {
+                                        if (item.Certificate.Nickname != null)
+                                        {
+                                            var buffer = encoding.GetBytes(item.Certificate.Nickname);
+                                            stream.Write(buffer, 0, buffer.Length);
+                                        }
+
                                         stream.Write(BitConverter.GetBytes((int)item.Certificate.DigitalSignatureAlgorithm), 0, 4);
                                         if (item.Certificate.PublicKey != null) stream.Write(item.Certificate.PublicKey, 0, item.Certificate.PublicKey.Length);
                                         if (item.Certificate.Signature != null) stream.Write(item.Certificate.Signature, 0, item.Certificate.Signature.Length);
@@ -960,6 +966,7 @@ namespace Amoeba.Windows
             {
                 if (n.Value.Length == 0) return false;
                 if (string.IsNullOrWhiteSpace(n.Value.Name)) return false;
+                if (n.Value.Certificate != null && string.IsNullOrWhiteSpace(n.Value.Certificate.Nickname)) return false;
                 if (n.Value.Rank == 0) return false;
                 if (n.Value.Keywords.Count == 0) return false;
                 if ((n.Value.CreationTime - now) > new TimeSpan(3, 0, 0, 0)) return false;
@@ -2082,7 +2089,7 @@ namespace Amoeba.Windows
             set
             {
                 _max = value;
-                _max = (_max.CompareTo(_min) < 0) ? _min : _max;
+                _min = (_min.CompareTo(_max) > 0) ? _max : _min;
             }
         }
 
@@ -2096,7 +2103,7 @@ namespace Amoeba.Windows
             set
             {
                 _min = value;
-                _min = (_min.CompareTo(_max) > 0) ? _max : _min;
+                _max = (_max.CompareTo(_min) < 0) ? _min : _max;
             }
         }
 

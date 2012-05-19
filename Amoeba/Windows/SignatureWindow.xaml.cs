@@ -195,7 +195,9 @@ namespace Amoeba.Windows
 
         private void _addButton_Click(object sender, RoutedEventArgs e)
         {
-            _listViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(DigitalSignatureAlgorithm.ECDsa521_Sha512)));
+            if (string.IsNullOrWhiteSpace(_textBox.Text)) return;
+         
+            _listViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(_textBox.Text, DigitalSignatureAlgorithm.Rsa2048_Sha512)));
 
             _listView.SelectedIndex = _listViewItemCollection.Count - 1;
             _listView.Items.Refresh();

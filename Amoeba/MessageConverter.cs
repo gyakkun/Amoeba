@@ -10,6 +10,7 @@ using Amoeba.Properties;
 using Library.Net.Amoeba;
 using Library.Security;
 using System.Security.Cryptography;
+using Library.Io;
 
 namespace Amoeba
 {
@@ -22,14 +23,25 @@ namespace Amoeba
 
         public static string ToSignatureString(DigitalSignature digitalSignature)
         {
-            if (digitalSignature == null || digitalSignature.PublicKey == null) return null;
+            if (digitalSignature == null || digitalSignature.Nickname == null || digitalSignature.PublicKey == null) return null;
 
             try
             {
                 using (var sha512 = new SHA512Managed())
                 {
-                    return Convert.ToBase64String(sha512.ComputeHash(digitalSignature.PublicKey).ToArray())
-                        .Replace('+', '-').Replace('/', '_').Substring(0, 20);
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (StreamWriter writer = new StreamWriter(new RangeStream(memoryStream, true), new UTF8Encoding(false)))
+                        {
+                            writer.Write(digitalSignature.Nickname);
+                        }
+
+                        memoryStream.Write(digitalSignature.PublicKey, 0, digitalSignature.PublicKey.Length);
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+
+                        return digitalSignature.Nickname.Replace("@", "_") + "@" + Convert.ToBase64String(sha512.ComputeHash(memoryStream).ToArray())
+                            .Replace('+', '-').Replace('/', '_').Substring(0, 30);
+                    }
                 }
             }
             catch (Exception e)
@@ -40,14 +52,25 @@ namespace Amoeba
 
         public static string ToSignatureString(Certificate certificate)
         {
-            if (certificate == null || certificate.PublicKey == null) return null;
+            if (certificate == null || certificate.Nickname == null || certificate.PublicKey == null) return null;
 
             try
             {
                 using (var sha512 = new SHA512Managed())
                 {
-                    return Convert.ToBase64String(sha512.ComputeHash(certificate.PublicKey).ToArray())
-                        .Replace('+', '-').Replace('/', '_').Substring(0, 20);
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (StreamWriter writer = new StreamWriter(new RangeStream(memoryStream, true), new UTF8Encoding(false)))
+                        {
+                            writer.Write(certificate.Nickname);
+                        }
+
+                        memoryStream.Write(certificate.PublicKey, 0, certificate.PublicKey.Length);
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+
+                        return certificate.Nickname.Replace("@", "_") + "@" + Convert.ToBase64String(sha512.ComputeHash(memoryStream).ToArray())
+                            .Replace('+', '-').Replace('/', '_').Substring(0, 30);
+                    }
                 }
             }
             catch (Exception e)

@@ -33,7 +33,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 5);
+            App.AmoebaVersion = new Version(0, 1, 6);
 
             App.DirectoryPaths = new Dictionary<string, string>();
             App.DirectoryPaths["Base"] = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
@@ -365,7 +365,7 @@ namespace Amoeba
             {
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt"), false, new UTF8Encoding(false)))
                 {
-                    writer.WriteLine("kbMq8T1x_bwrJ--Wzwyu");
+                    writer.WriteLine("A-ZQfOIAtTep6voYLXcC");
                 }
             }
 

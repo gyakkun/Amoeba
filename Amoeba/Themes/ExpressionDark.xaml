@@ -1525,7 +1525,6 @@
     <Style TargetType="{x:Type TextBox}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="AllowDrop" Value="true" />
@@ -1762,8 +1761,6 @@
         <Setter Property="BorderBrush" Value="#FF000000"/>
     </Style>
     <Style TargetType="{x:Type Label}">
-        <Setter Property="HorizontalContentAlignment" Value="Left" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Label}">
@@ -2774,7 +2771,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="ListViewItemFocusVisual">
+    <!--<Style x:Key="ListViewItemFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -2782,12 +2779,12 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
     <Style TargetType="{x:Type ListViewItem}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-        <Setter Property="FocusVisualStyle" Value="{StaticResource ListViewItemFocusVisual}" />
+        <!--<Setter Property="FocusVisualStyle" Value="{StaticResource ListViewItemFocusVisual}" />-->
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="1" />

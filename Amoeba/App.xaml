@@ -22,6 +22,8 @@
 
             <local:TopRelativeDoubleConverter x:Key="_topRelativeDoubleConverter"/>
             <local:LeftRelativeDoubleConverter x:Key="_leftRelativeDoubleConverter"/>
+            <local:StringToFontFamilyConverter x:Key="_stringToFontFamilyConverter"/>
+            <local:StringToDoubleConverter x:Key="_stringToDoubleConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

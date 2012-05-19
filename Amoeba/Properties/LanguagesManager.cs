@@ -144,6 +144,28 @@ namespace Amoeba.Properties
 
         #region Property
 
+        public string FontFamily
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("FontFamily");
+                }
+            }
+        }
+
+        public string FontSize
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("FontSize");
+                }
+            }
+        }
+
         public string DateTime_StringFormat
         {
             get

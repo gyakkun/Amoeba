@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using Amoeba.Properties;
 using Library;
 using Library.Net.Amoeba;
+using System.Drawing;
 
 namespace Amoeba.Windows
 {
@@ -316,6 +317,39 @@ namespace Amoeba.Windows
             if (item == null) return null;
 
             return item.Value.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [ValueConversion(typeof(string), typeof(System.Windows.Media.FontFamily))]
+    class StringToFontFamilyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var item = value as string;
+            if (item == null) return null;
+
+            return new System.Windows.Media.FontFamily(item);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    [ValueConversion(typeof(string), typeof(double))]
+    class StringToDoubleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var item = value as string;
+            if (item == null) return null;
+
+            return double.Parse(item);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

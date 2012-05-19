@@ -1541,13 +1541,13 @@ namespace Amoeba.Windows
             {
                 var w = new WrapPanel();
                 w.Children.Add(new TextBlock() { Text = this.Value.Name });
+                w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) ", this.Value.Seeds.Count) });
                 w.Children.Add(new TextBlock()
                 {
-                    Text = "@" + MessageConverter.ToSignatureString(this.Value.Certificate),
+                    Text = MessageConverter.ToSignatureString(this.Value.Certificate),
                     //Foreground = new SolidColorBrush(Color.FromRgb(64, 255, 0))
-                    FontWeight = FontWeight.FromOpenTypeWeight(800),
+                    //FontWeight = FontWeight.FromOpenTypeWeight(800),
                 });
-                w.Children.Add(new TextBlock() { Text = string.Format(" ({0})", this.Value.Seeds.Count) });
 
                 this.Header = w;
             }

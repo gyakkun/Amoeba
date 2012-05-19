@@ -4,8 +4,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prop="clr-namespace:Amoeba.Properties"     
         xmlns:local="clr-namespace:Amoeba.Windows" 
+        FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
+        FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}"
         Background="{DynamicResource WindowBackgroundBrush}"
-        FontFamily="Segoe UI, Meiryo UI, Console, Verdana"
         Top="{Binding Path=MainWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Left="{Binding Path=MainWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Height="{Binding Path=MainWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
@@ -54,18 +55,20 @@
                 <MenuItem Name="_menuItemVersionInformation" Header="{Binding Path=MainWindow_VersionInformation, Source={StaticResource ResourcesInstance}}" Click="_menuItemVersionInformation_Click" />
             </MenuItem>
         </Menu>
-        <StatusBar Grid.Row="1">
+        <StatusBar Grid.Row="1" 
+                   FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
+                   FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}" >
             <StatusBarItem>
                 <Grid>
-                    <TextBlock Name="_stateTextBlock" Margin="9,0,0,0" />
+                    <TextBlock Name="_stateTextBlock" Margin="6,0,0,0" />
                 </Grid>
             </StatusBarItem>
             <StatusBarItem HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Path=MainWindow_SendSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,9,0" />
-                    <TextBlock Name="_sendSpeedTextBlock" Margin="0,0,9,0" MinWidth="80" />
-                    <TextBlock Text="{Binding Path=MainWindow_ReceiveSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,9,0" />
-                    <TextBlock Name="_receiveSpeedTextBlock"  Margin="0,0,9,0" MinWidth="80" />
+                    <TextBlock Text="{Binding Path=MainWindow_SendSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,6,0" />
+                    <TextBlock Name="_sendSpeedTextBlock" Margin="0,0,6,0" MinWidth="80" />
+                    <TextBlock Text="{Binding Path=MainWindow_ReceiveSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,6,0" />
+                    <TextBlock Name="_receiveSpeedTextBlock"  Margin="0,0,6,0" MinWidth="80" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
