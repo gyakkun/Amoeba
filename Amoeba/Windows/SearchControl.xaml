@@ -52,7 +52,7 @@
 
         <GridSplitter Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" />
         
-        <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" />
+        <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" VerticalContentAlignment="Center" />
 
         <TreeView Grid.Row="1" Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" SelectedItemChanged="_treeView_SelectedItemChanged" PreviewMouseMove="_treeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_treeView_PreviewDrop" PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_treeView_PreviewMouseRightButtonDown" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">

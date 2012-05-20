@@ -40,8 +40,8 @@
         <TabControl Margin="0,0,0,41">
             <TabItem Name="_baseNodeTabItem" Header="{Binding Path=ConnectionsWindow_BaseNode, Source={StaticResource ResourcesInstance}}" >
                 <Grid>
-                    <TextBox Name="_baseNodeTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" IsReadOnly="True" />
-                    <Label Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=ConnectionsWindow_Node, Source={StaticResource ResourcesInstance}}" />
+                    <TextBox Name="_baseNodeTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" IsReadOnly="True" VerticalContentAlignment="Center" />
+                    <Label Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=ConnectionsWindow_Node, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
                     <GroupBox Header="{Binding Path=ConnectionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Margin="6,36,6,6">
                         <Grid>
                             <local:ListViewEx x:Name="_baseNodeUrisListView" Margin="6,6,6,95" SelectionChanged="_baseNodeUrisListView_SelectionChanged" PreviewMouseLeftButtonDown="_baseNodeUrisListView_PreviewMouseLeftButtonDown" SelectionMode="Single">
@@ -52,9 +52,9 @@
                                     </GridView>
                                 </ListView.View>
                             </local:ListViewEx>
-                            <TextBox Name="_baseNodeUriTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
-                            <Label Content="{Binding Path=ConnectionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120" />
-                            <ComboBox Height="24" Margin="132,0,6,65" Name="_baseNodeUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_baseNodeUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_baseNodeUriSchemeComboBox_SelectionChanged" >
+                            <TextBox Name="_baseNodeUriTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                            <Label Content="{Binding Path=ConnectionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120" VerticalContentAlignment="Center" />
+                            <ComboBox Height="24" Margin="132,0,6,65" Name="_baseNodeUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_baseNodeUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_baseNodeUriSchemeComboBox_SelectionChanged" VerticalContentAlignment="Center">
                                 <ComboBoxItem Content="tcp" IsSelected="True" />
                                 <ComboBoxItem Content="tor" />
                                 <ComboBoxItem Content="i2p" />
@@ -88,8 +88,8 @@
                             </local:ListViewEx>
                         </Grid>
                     </GroupBox>
-                    <TextBox Height="24" IsReadOnly="True" Margin="132,6,6,0" Name="_otherNodesUrisTextBox" VerticalAlignment="Top" />
-                    <Label Content="{Binding Path=ConnectionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
+                    <TextBox Height="24" IsReadOnly="True" Margin="132,6,6,0" Name="_otherNodesUrisTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                    <Label Content="{Binding Path=ConnectionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
                 </Grid>
             </TabItem>
             <TabItem Name="_clientTabItem" Header="{Binding Path=ConnectionsWindow_Client, Source={StaticResource ResourcesInstance}}" >
@@ -108,15 +108,15 @@
                                     </GridView>
                                 </ListView.View>
                             </local:ListViewEx>
-                            <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" Width="119" Content="{Binding Path=ConnectionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" />
-                            <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="131,0,6,139" VerticalAlignment="Bottom" />
-                            <Label Margin="6,0,0,169" HorizontalAlignment="Left" Width="119" Content="{Binding Path=ConnectionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Bottom" />
-                            <ComboBox Margin="131,0,6,169" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" />
+                            <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" Width="119" Content="{Binding Path=ConnectionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+                            <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="131,0,6,139" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                            <Label Margin="6,0,0,169" HorizontalAlignment="Left" Width="119" Content="{Binding Path=ConnectionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                            <ComboBox Margin="131,0,6,169" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" VerticalContentAlignment="Center" />
                             <GroupBox Header="{Binding Path=ConnectionsWindow_UriCondition, Source={StaticResource ResourcesInstance}}" Margin="6,0,6,35" Name="groupBox2" Height="98" VerticalAlignment="Bottom">
                                 <Grid>
-                                    <Label HorizontalAlignment="Left" Margin="6,6,0,0" Width="120" Height="24" VerticalAlignment="Top" Content="{Binding Path=ConnectionsWindow_Type, Source={StaticResource ResourcesInstance}}" />
-                                    <TextBox Margin="6,36,6,0" Name="_clientFiltersConditionTextBox" Height="24" VerticalAlignment="Top" />
-                                    <ComboBox Margin="132,6,6,0" Name="_clientFiltersConditionSchemeComboBox" Height="24" VerticalAlignment="Top" PreviewMouseLeftButtonDown="_clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConditionSchemeComboBox_SelectionChanged" >
+                                    <Label HorizontalAlignment="Left" Margin="6,6,0,0" Width="120" Height="24" VerticalAlignment="Top" Content="{Binding Path=ConnectionsWindow_Type, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+                                    <TextBox Margin="6,36,6,0" Name="_clientFiltersConditionTextBox" Height="24" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                                    <ComboBox Margin="132,6,6,0" Name="_clientFiltersConditionSchemeComboBox" Height="24" VerticalAlignment="Top" PreviewMouseLeftButtonDown="_clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConditionSchemeComboBox_SelectionChanged" VerticalContentAlignment="Center">
                                         <ComboBoxItem Content="tcp" IsSelected="True" />
                                         <ComboBoxItem Content="tor" />
                                         <ComboBoxItem Content="i2p" />
@@ -144,9 +144,9 @@
                                     </GridView>
                                 </ListView.View>
                             </local:ListViewEx>
-                            <TextBox Height="24" Margin="6,0,6,35" Name="_serverListenUriTextBox" VerticalAlignment="Bottom" />
-                            <Label Content="{Binding Path=ConnectionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,65" Name="label4" VerticalAlignment="Bottom" Width="120" />
-                            <ComboBox Height="24" Margin="132,0,6,65" Name="_serverListenUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_serverListenUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUriSchemeComboBox_SelectionChanged" >
+                            <TextBox Height="24" Margin="6,0,6,35" Name="_serverListenUriTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                            <Label Content="{Binding Path=ConnectionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,65" Name="label4" VerticalAlignment="Bottom" Width="120" VerticalContentAlignment="Center" />
+                            <ComboBox Height="24" Margin="132,0,6,65" Name="_serverListenUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_serverListenUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUriSchemeComboBox_SelectionChanged" VerticalContentAlignment="Center">
                                 <ComboBoxItem Content="tcp" IsSelected="True" />
                             </ComboBox>
                             <Button Name="_serverListenUriUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=ConnectionsWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_serverListenUriUpButton_Click" IsEnabled="False" />
@@ -168,7 +168,7 @@
                             </GridView>
                         </ListView.View>
                     </local:ListViewEx>
-                    <TextBox Height="24" Margin="6,0,6,35" Name="_keywordTextBox" VerticalAlignment="Bottom" />
+                    <TextBox Height="24" Margin="6,0,6,35" Name="_keywordTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
                     <Button Content="{Binding Path=ConnectionsWindow_Up, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" Name="_keywordUpButton" VerticalAlignment="Bottom" Width="75" Click="_keywordUpButton_Click" IsEnabled="False" />
                     <Button Content="{Binding Path=ConnectionsWindow_Down, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" Name="_keywordDownButton" VerticalAlignment="Bottom" Width="75" Click="_keywordDownButton_Click" IsEnabled="False" />
                     <Button Content="{Binding Path=ConnectionsWindow_Add, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" Name="_keywordAddButton" VerticalAlignment="Bottom" Width="75" Click="_keywordAddButton_Click" />
@@ -181,16 +181,16 @@
                     <StackPanel Name="_miscellaneousStackPanel" PreviewMouseLeftButtonUp="_miscellaneousStackPanel_PreviewMouseLeftButtonUp">
                         <Expander Header="{Binding Path=ConnectionsWindow_CoreSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0" IsExpanded="True">
                             <Grid Margin="0,0,0,6">
-                                <Label Content="{Binding Path=ConnectionsWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
-                                <TextBox Name="_miscellaneousDownloadDirectoryTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" PreviewMouseDoubleClick="_miscellaneousDownloadDirectoryTextBox_PreviewMouseDoubleClick" />
-                                <Label Content="{Binding Path=ConnectionsWindow_ConnectionCount, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="120" />
-                                <TextBox Height="24" Margin="132,36,6,0" Name="_miscellaneousConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousConnectionCountTextBox_TextChanged" />
-                                <Label Content="{Binding Path=ConnectionsWindow_DownloadingLowerLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="120" />
-                                <TextBox Height="24" Margin="132,66,6,0" Name="_miscellaneousDownloadingConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousSearchingConnectionCountTextBox_TextChanged" />
-                                <Label Content="{Binding Path=ConnectionsWindow_UploadingLowerLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,96,0,0" VerticalAlignment="Top" Width="120" />
-                                <TextBox Height="24" Margin="132,96,6,0" Name="_miscellaneousUploadingConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousUploadingConnectionCountTextBox_TextChanged" />
-                                <Label Content="{Binding Path=ConnectionsWindow_CacheSize, Source={StaticResource ResourcesInstance}}" Height="22" HorizontalAlignment="Left" Margin="6,126,0,0" VerticalAlignment="Top" Width="120" />
-                                <TextBox Height="24" Margin="132,126,6,0" Name="_miscellaneousCacheSizeTextBox" VerticalAlignment="Top" />
+                                <Label Content="{Binding Path=ConnectionsWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+                                <TextBox Name="_miscellaneousDownloadDirectoryTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" PreviewMouseDoubleClick="_miscellaneousDownloadDirectoryTextBox_PreviewMouseDoubleClick" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionsWindow_ConnectionCount, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+                                <TextBox Height="24" Margin="132,36,6,0" Name="_miscellaneousConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionsWindow_DownloadingLowerLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+                                <TextBox Height="24" Margin="132,66,6,0" Name="_miscellaneousDownloadingConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousSearchingConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionsWindow_UploadingLowerLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,96,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+                                <TextBox Height="24" Margin="132,96,6,0" Name="_miscellaneousUploadingConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousUploadingConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionsWindow_CacheSize, Source={StaticResource ResourcesInstance}}" Height="22" HorizontalAlignment="Left" Margin="6,126,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+                                <TextBox Height="24" Margin="132,126,6,0" Name="_miscellaneousCacheSizeTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
                             </Grid>
                         </Expander>
                         <Expander Header="{Binding Path=ConnectionsWindow_AutoSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0">

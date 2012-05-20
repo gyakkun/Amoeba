@@ -15,9 +15,9 @@
         WindowState="{Binding Path=SeedEditWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}">
 
     <Grid>
-        <Label Content="{Binding Path=SeedEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />
-        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" />
-        <Label Content="{Binding Path=SeedEditWindow_Keywords, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" />
+        <Label Content="{Binding Path=SeedEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Content="{Binding Path=SeedEditWindow_Keywords, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
         <Grid Height="24" Margin="138,42,12,0" Name="grid1" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -26,13 +26,13 @@
                 <ColumnDefinition Width="3" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <ComboBox Name="_keywordsComboBox1" IsEditable="True" />
-            <ComboBox IsEditable="True" Name="_keywordsComboBox2" Grid.Column="2" />
-            <ComboBox IsEditable="True" Name="_keywordsComboBox3" Grid.Column="4" />
+            <ComboBox Name="_keywordsComboBox1" IsEditable="True" VerticalContentAlignment="Center" />
+            <ComboBox IsEditable="True" Name="_keywordsComboBox2" Grid.Column="2" VerticalContentAlignment="Center" />
+            <ComboBox IsEditable="True" Name="_keywordsComboBox3" Grid.Column="4" VerticalContentAlignment="Center" />
         </Grid>
-        <Label Content="{Binding Path=SeedEditWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" />
-        <ComboBox Height="24" Margin="138,72,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
-        <Label Content="{Binding Path=SeedEditWindow_Comment, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" VerticalAlignment="Top" Width="120" />
+        <Label Content="{Binding Path=SeedEditWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+        <ComboBox Height="24" Margin="138,72,12,0" Name="_signatureComboBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <Label Content="{Binding Path=SeedEditWindow_Comment, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
         <TextBox AcceptsReturn="True" HorizontalScrollBarVisibility="Visible" Margin="138,102,12,41" Name="_commentTextBox" VerticalScrollBarVisibility="Visible" />
         <Button Content="{Binding Path=SeedEditWindow_Ok, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Click="_okButton_Click" />
         <Button Content="{Binding Path=SeedEditWindow_Cancel, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Click="_cancelButton_Click" />

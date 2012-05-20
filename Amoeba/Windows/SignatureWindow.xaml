@@ -37,6 +37,6 @@
         <Button Name="_deleteButton" Height="23" Margin="0,0,174,12" VerticalAlignment="Bottom" Content="{Binding Path=SignatureWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_deleteButton_Click" HorizontalAlignment="Right" Width="75" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SignatureWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SignatureWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" />
-        <TextBox Height="23" Margin="12,0,12,41" Name="_textBox" VerticalAlignment="Bottom" />
+        <TextBox Height="23" Margin="12,0,12,41" Name="_textBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
     </Grid>
 </Window>

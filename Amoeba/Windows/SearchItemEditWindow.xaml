@@ -51,8 +51,8 @@
     </Window.Resources>
 
     <Grid>
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" />
-        <TextBox Height="24" Margin="138,12,12,0" Name="_searchTreeViewItemNameTextBox" VerticalAlignment="Top" />
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+        <TextBox Height="24" Margin="138,12,12,0" Name="_searchTreeViewItemNameTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" />
         <TabControl Margin="0,42,0,41">
@@ -63,7 +63,7 @@
                     <Button Name="_nameAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_nameAddButton_Click" />
                     <Button Name="_nameEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_nameEditButton_Click"/>
                     <Button Name="_nameDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameDeleteButton_Click" />
-                    <TextBox Name="_nameTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
+                    <TextBox Name="_nameTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
                     <CheckBox Name="_nameContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_nameListView" Margin="0,0,0,87" SelectionChanged="_nameListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_nameListView_ContextMenuOpening">
                         <ListView.ContextMenu>
@@ -90,7 +90,7 @@
                     <Button Name="_nameRegexAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_nameRegexAddButton_Click" />
                     <Button Name="_nameRegexEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_nameRegexEditButton_Click"/>
                     <Button Name="_nameRegexDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameRegexDeleteButton_Click" />
-                    <TextBox Name="_nameRegexTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
+                    <TextBox Name="_nameRegexTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
                     <CheckBox Name="_nameRegexContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_nameRegexListView" Margin="0,0,0,87" SelectionChanged="_nameRegexListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameRegexListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_nameRegexListView_ContextMenuOpening">
                         <ListView.ContextMenu>
@@ -120,7 +120,7 @@
                     <Button Name="_signatureAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_signatureAddButton_Click" />
                     <Button Name="_signatureEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_signatureEditButton_Click"/>
                     <Button Name="_signatureDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureDeleteButton_Click" />
-                    <TextBox Name="_signatureTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
+                    <TextBox Name="_signatureTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
                     <CheckBox Name="_signatureContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_signatureListView" Margin="0,0,0,87" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_signatureListView_ContextMenuOpening">
                         <ListView.ContextMenu>
@@ -147,7 +147,7 @@
                     <Button Name="_keywordAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_keywordAddButton_Click" />
                     <Button Name="_keywordEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_keywordEditButton_Click"/>
                     <Button Name="_keywordDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordDeleteButton_Click" />
-                    <TextBox Name="_keywordTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
+                    <TextBox Name="_keywordTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
                     <CheckBox Name="_keywordContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_keywordListView" Margin="0,0,0,87" SelectionChanged="_keywordListView_SelectionChanged" PreviewMouseLeftButtonDown="_keywordListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_keywordListView_ContextMenuOpening">
                         <ListView.ContextMenu>
@@ -178,8 +178,8 @@
                     <Button Name="_creationTimeRangeAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeAddButton_Click" Grid.ColumnSpan="2"  />
                     <Button Name="_creationTimeRangeEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeEditButton_Click" Grid.ColumnSpan="2" />
                     <Button Name="_creationTimeRangeDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeDeleteButton_Click" Grid.ColumnSpan="2" />
-                    <TextBox Name="_creationTimeRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" Text="0001/01/01 00:00:00" />
-                    <TextBox Name="_creationTimeRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" Text="0001/01/01 00:00:00" />
+                    <TextBox Name="_creationTimeRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" Text="0001/01/01 00:00:00" VerticalContentAlignment="Center" />
+                    <TextBox Name="_creationTimeRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" Text="0001/01/01 00:00:00" VerticalContentAlignment="Center" />
                     <CheckBox Grid.ColumnSpan="2" Name="_creationTimeRangeContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_creationTimeRangeListView" Margin="0,0,0,87" SelectionChanged="_creationTimeRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_creationTimeRangeListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_creationTimeRangeListView_ContextMenuOpening"  Grid.ColumnSpan="2">
                         <ListView.ContextMenu>
@@ -212,8 +212,8 @@
                     <Button Name="_lengthRangeAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeAddButton_Click" Grid.ColumnSpan="2" />
                     <Button Name="_lengthRangeEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeEditButton_Click" Grid.ColumnSpan="2" />
                     <Button Name="_lengthRangeDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeDeleteButton_Click" Grid.ColumnSpan="2" />
-                    <TextBox Name="_lengthRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" />
-                    <TextBox Name="_lengthRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" />
+                    <TextBox Name="_lengthRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                    <TextBox Name="_lengthRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" VerticalContentAlignment="Center" />
                     <CheckBox Grid.ColumnSpan="2" Name="_lengthRangeContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_lengthRangeListView" Margin="0,0,0,87" SelectionChanged="_lengthRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_lengthRangeListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_lengthRangeListView_ContextMenuOpening" Grid.ColumnSpan="2">
                         <ListView.ContextMenu>
@@ -242,7 +242,7 @@
                     <Button Name="_seedAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_seedAddButton_Click" />
                     <Button Name="_seedEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_seedEditButton_Click" />
                     <Button Name="_seedDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_seedDeleteButton_Click" />
-                    <TextBox Name="_seedTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" />
+                    <TextBox Name="_seedTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
                     <CheckBox Name="_seedContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_seedListView" Margin="0,36,0,87" SelectionChanged="_seedListView_SelectionChanged" PreviewMouseLeftButtonDown="_seedListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_seedListView_ContextMenuOpening">
                         <ListView.ContextMenu>
@@ -260,8 +260,8 @@
                             </GridView>
                         </ListView.View>
                     </local:ListViewEx>
-                    <Label Content="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
-                    <TextBox Height="24" Margin="132,6,6,0" Name="_seedNameTextBox" VerticalAlignment="Top" IsReadOnly="True" />
+                    <Label Content="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+                    <TextBox Height="24" Margin="132,6,6,0" Name="_seedNameTextBox" VerticalAlignment="Top" IsReadOnly="True" VerticalContentAlignment="Center" />
                 </Grid>
             </TabItem>
             <TabItem Name="_miscellaneousTabItem" Header="{Binding Path=SearchItemEditWindow_Miscellaneous, Source={StaticResource ResourcesInstance}}">
