@@ -97,7 +97,7 @@
   <Translate Key="ConnectionsWindow_Uploaded" Value="Uploaded" />
   <Translate Key="ConnectionsWindow_Downloaded" Value="Downloaded" />
 
-  <Translate Key="ProgressWindow_Title" Value="Progress Window" />
+  <Translate Key="ProgressWindow_Title" Value="Progress State" />
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
 
