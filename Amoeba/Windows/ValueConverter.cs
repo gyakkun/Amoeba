@@ -368,9 +368,9 @@ namespace Amoeba.Windows
 
             string text = "";
 
-            if ((item & SearchState.Searching) == SearchState.Searching)
+            if ((item & SearchState.Cache) == SearchState.Cache)
             {
-                text += LanguagesManager.Instance.SearchState_Searching + ", ";
+                text += LanguagesManager.Instance.SearchState_Cache + ", ";
             }
             if ((item & SearchState.Uploading) == SearchState.Uploading)
             {

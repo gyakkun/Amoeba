@@ -44,19 +44,20 @@ namespace Amoeba.Windows
 
             _nameTextBox.Text = _seed.Name;
 
-            if (seed.Keywords.Count >= 1) _keywordsComboBox1.Text = seed.Keywords[0].Value;
-            if (seed.Keywords.Count >= 2) _keywordsComboBox2.Text = seed.Keywords[1].Value;
-            if (seed.Keywords.Count >= 3) _keywordsComboBox3.Text = seed.Keywords[2].Value;
+            if (seed.Keywords.Count >= 1) _keywordsComboBox1.Text = seed.Keywords[0];
+            if (seed.Keywords.Count >= 2) _keywordsComboBox2.Text = seed.Keywords[1];
+            if (seed.Keywords.Count >= 3) _keywordsComboBox3.Text = seed.Keywords[2];
 
             _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = "" });
             _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = "" });
             _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = "" });
 
-            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = item.Value });
-            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item.Value });
-            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item.Value });
+            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = item });
+            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item });
+            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item });
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
+            _signatureComboBox.SelectedIndex = 1;
             _commentTextBox.Text = _seed.Comment;
         }
 
@@ -66,10 +67,10 @@ namespace Amoeba.Windows
 
             string name = _nameTextBox.Text;
             var keywords = new KeywordCollection();
-            if (_keywordsComboBox1.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox1.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
-            if (_keywordsComboBox2.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox2.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
-            if (_keywordsComboBox3.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox3.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
-            keywords = new KeywordCollection(new HashSet<Keyword>(keywords));
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox1.Text)) keywords.Add(_keywordsComboBox1.Text);
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox2.Text)) keywords.Add(_keywordsComboBox2.Text);
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox3.Text)) keywords.Add(_keywordsComboBox3.Text);
+            keywords = new KeywordCollection(new HashSet<string>(keywords));
             string comment = _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
@@ -89,7 +90,7 @@ namespace Amoeba.Windows
             }
 
             Settings.Instance.Global_UploadKeywords.Clear();
-            Settings.Instance.Global_UploadKeywords.AddRange(keywords.Select(n => n.Value));
+            Settings.Instance.Global_UploadKeywords.AddRange(keywords);
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

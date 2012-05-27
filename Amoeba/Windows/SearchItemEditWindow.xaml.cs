@@ -72,9 +72,9 @@ namespace Amoeba.Windows
             _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.UtcNow.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
             _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
 
-            if ((_searchItem.SearchState & SearchState.Searching) == SearchState.Searching)
+            if ((_searchItem.SearchState & SearchState.Cache) == SearchState.Cache)
             {
-                _miscellaneousSearchFilterSearchingCheckBox.IsChecked = true;
+                _miscellaneousSearchFilterCacheCheckBox.IsChecked = true;
             }
             if ((_searchItem.SearchState & SearchState.Uploading) == SearchState.Uploading)
             {
@@ -117,9 +117,9 @@ namespace Amoeba.Windows
 
             SearchState state = 0;
 
-            if (_miscellaneousSearchFilterSearchingCheckBox.IsChecked.Value)
+            if (_miscellaneousSearchFilterCacheCheckBox.IsChecked.Value)
             {
-                state |= SearchState.Searching;
+                state |= SearchState.Cache;
             }
             if (_miscellaneousSearchFilterUploadingCheckBox.IsChecked.Value)
             {
@@ -213,9 +213,8 @@ namespace Amoeba.Windows
         private void _nameListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _nameListView.SelectedItems;
-            if (selectItems == null) return;
 
-            _nameListViewCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _nameListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
@@ -426,9 +425,8 @@ namespace Amoeba.Windows
         private void _nameRegexListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _nameRegexListView.SelectedItems;
-            if (selectItems == null) return;
 
-            _nameRegexListViewCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _nameRegexListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
@@ -676,9 +674,8 @@ namespace Amoeba.Windows
         private void _signatureListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _signatureListView.SelectedItems;
-            if (selectItems == null) return;
 
-            _signatureListViewCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _signatureListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
@@ -891,9 +888,8 @@ namespace Amoeba.Windows
         private void _keywordListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _keywordListView.SelectedItems;
-            if (selectItems == null) return;
 
-            _keywordListViewCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _keywordListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
@@ -1108,9 +1104,8 @@ namespace Amoeba.Windows
         private void _creationTimeRangeListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _creationTimeRangeListView.SelectedItems;
-            if (selectItems == null) return;
 
-            _creationTimeRangeListViewCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _creationTimeRangeListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
@@ -1355,9 +1350,8 @@ namespace Amoeba.Windows
         private void _lengthRangeListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _lengthRangeListView.SelectedItems;
-            if (selectItems == null) return;
 
-            _lengthRangeListViewCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _lengthRangeListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
@@ -1600,9 +1594,8 @@ namespace Amoeba.Windows
         private void _seedListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _seedListView.SelectedItems;
-            if (selectItems == null) return;
 
-            _seedListViewCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _seedListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var seeds = Clipboard.GetSeeds();

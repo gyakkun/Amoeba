@@ -245,13 +245,13 @@ namespace Amoeba.Windows
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _listView.SelectedItems;
-            if (selectItems == null) return;
 
-            _listViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewResetMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewPriorityMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewResetMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewPriorityMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            
             if (!_listViewCompleteDeleteMenuItem_IsEnabled) _listViewCompleteDeleteMenuItem.IsEnabled = false;
             else _listViewCompleteDeleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => (DownloadState)n.Information["State"] == DownloadState.Completed);
 
@@ -271,7 +271,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _amoebaManager.DownloadRemove((int)item.Information["Id"]);
+                    _amoebaManager.RemoveDownload((int)item.Information["Id"]);
                 }
                 catch (Exception)
                 {
@@ -389,7 +389,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _amoebaManager.DownloadReset((int)item.Information["Id"]);
+                    _amoebaManager.ResetDownload((int)item.Information["Id"]);
                 }
                 catch (Exception)
                 {
@@ -416,7 +416,7 @@ namespace Amoeba.Windows
                     {
                         try
                         {
-                            _amoebaManager.DownloadRemove((int)item["Id"]);
+                            _amoebaManager.RemoveDownload((int)item["Id"]);
                         }
                         catch (Exception)
                         {

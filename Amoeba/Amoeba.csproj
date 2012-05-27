@@ -156,7 +156,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\SearchControl.xaml">
+    <Page Include="Windows\CacheControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
@@ -242,8 +242,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\Settings.cs" />
-    <Compile Include="Windows\SearchControl.xaml.cs">
-      <DependentUpon>SearchControl.xaml</DependentUpon>
+    <Compile Include="Windows\CacheControl.xaml.cs">
+      <DependentUpon>CacheControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SearchItemEditWindow.xaml.cs">
       <DependentUpon>SearchItemEditWindow.xaml</DependentUpon>

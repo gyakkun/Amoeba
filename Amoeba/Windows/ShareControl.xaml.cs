@@ -223,9 +223,9 @@ namespace Amoeba.Windows
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _listView.SelectedItems;
-            if (selectItems == null) return;
 
-            _listViewDeleteMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+
             if (!_listViewCheckExistMenuItem_IsEnabled) _listViewCheckExistMenuItem.IsEnabled = false;
             else _listViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
         }
@@ -261,7 +261,7 @@ namespace Amoeba.Windows
 
             foreach (var item in shareItems.Cast<ShareListViewItem>())
             {
-                _amoebaManager.ShareRemove((int)item.Information["Id"]);
+                _amoebaManager.RemoveShare((int)item.Information["Id"]);
             }
         }
 
@@ -285,7 +285,7 @@ namespace Amoeba.Windows
                     {
                         try
                         {
-                            _amoebaManager.ShareRemove((int)item["Id"]);
+                            _amoebaManager.RemoveShare((int)item["Id"]);
                             sb.AppendLine((string)item["Path"]);
                         }
                         catch (Exception)

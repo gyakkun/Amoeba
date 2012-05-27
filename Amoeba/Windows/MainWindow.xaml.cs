@@ -387,42 +387,14 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    _amoebaManager.SearchKeywords.Clear();
-                    _amoebaManager.SearchKeywords.Add(new Keyword()
-                    {
-                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                        Value = "box"
-                    });
-                    _amoebaManager.SearchKeywords.Add(new Keyword()
-                    {
-                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                        Value = "picture"
-                    });
-                    _amoebaManager.SearchKeywords.Add(new Keyword()
-                    {
-                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                        Value = "movie"
-                    });
-                    _amoebaManager.SearchKeywords.Add(new Keyword()
-                    {
-                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                        Value = "music"
-                    });
-                    _amoebaManager.SearchKeywords.Add(new Keyword()
-                    {
-                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                        Value = "archive"
-                    });
-                    _amoebaManager.SearchKeywords.Add(new Keyword()
-                    {
-                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                        Value = "document"
-                    });
-                    _amoebaManager.SearchKeywords.Add(new Keyword()
-                    {
-                        HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512,
-                        Value = "executable"
-                    });
+                    Settings.Instance.Global_SearchKeywords.Clear();
+                    Settings.Instance.Global_SearchKeywords.Add("Box");
+                    Settings.Instance.Global_SearchKeywords.Add("Picture");
+                    Settings.Instance.Global_SearchKeywords.Add("Movie");
+                    Settings.Instance.Global_SearchKeywords.Add("Music");
+                    Settings.Instance.Global_SearchKeywords.Add("Archive");
+                    Settings.Instance.Global_SearchKeywords.Add("Document");
+                    Settings.Instance.Global_SearchKeywords.Add("Executable");
 
                     Directory.CreateDirectory(Path.Combine(@"..\", "Download"));
                     _amoebaManager.DownloadDirectory = Path.Combine(@"..\", "Download");
@@ -432,7 +404,7 @@ namespace Amoeba.Windows
                     _amoebaManager.UploadingConnectionCountLowerLimit = 3;
 
                     Settings.Instance.Global_UploadKeywords.Clear();
-                    Settings.Instance.Global_UploadKeywords.Add("document");
+                    Settings.Instance.Global_UploadKeywords.Add("Document");
 
                     SearchItem pictureSearchItem = new SearchItem()
                     {
@@ -494,28 +466,28 @@ namespace Amoeba.Windows
                         Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(exe|vbs|jar|sh|bat|bin|scr|msi)$" }
                     });
 
-                    Settings.Instance.SearchControl_SearchTreeItem.Items.Clear();
-                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Items.Clear();
+                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                     {
                         SearchItem = pictureSearchItem
                     });
-                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                     {
                         SearchItem = movieSearchItem
                     });
-                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                     {
                         SearchItem = musicSearchItem
                     });
-                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                     {
                         SearchItem = archiveSearchItem
                     });
-                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                     {
                         SearchItem = documentSearchItem
                     });
-                    Settings.Instance.SearchControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
                     {
                         SearchItem = ExecutableSearchItem
                     });
@@ -821,10 +793,10 @@ namespace Amoeba.Windows
                 return this.PointToScreen(new Point(0, 0)).X;
             };
 
-            SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
-            _searchControl.Height = Double.NaN;
-            _searchControl.Width = Double.NaN;
-            _searchTabItem.Content = _searchControl;
+            CacheControl _cacheControl = new CacheControl(this, _amoebaManager, _bufferManager);
+            _cacheControl.Height = Double.NaN;
+            _cacheControl.Width = Double.NaN;
+            _cacheTabItem.Content = _cacheControl;
 
             ConnectionControl _connectionControl = new ConnectionControl(_amoebaManager);
             _connectionControl.Height = Double.NaN;
@@ -901,7 +873,7 @@ namespace Amoeba.Windows
             {
                 App.SelectTab = "Connection";
             }
-            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Search)
+            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Cache)
             {
                 App.SelectTab = "Search";
             }

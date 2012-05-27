@@ -211,13 +211,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_Search
+        public string MainWindow_Cache
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Search");
+                    return this.Translate("MainWindow_Cache");
+                }
+            }
+        }
+
+        public string MainWindow_Library
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Library");
                 }
             }
         }
@@ -251,28 +262,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Share");
-                }
-            }
-        }
-
-        public string MainWindow_Cache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Cache");
-                }
-            }
-        }
-
-        public string MainWindow_Library
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Library");
                 }
             }
         }
@@ -1104,13 +1093,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionsWindow_Searching
+        public string ConnectionsWindow_Cache
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsWindow_Searching");
+                    return this.Translate("ConnectionsWindow_Cache");
                 }
             }
         }
@@ -1681,256 +1670,267 @@ namespace Amoeba.Properties
         }
 
 
-        public string SearchControl_Name
+        public string CacheControl_Name
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Name");
+                    return this.Translate("CacheControl_Name");
                 }
             }
         }
 
-        public string SearchControl_Signature
+        public string CacheControl_Signature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Signature");
+                    return this.Translate("CacheControl_Signature");
                 }
             }
         }
 
-        public string SearchControl_State
+        public string CacheControl_State
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_State");
+                    return this.Translate("CacheControl_State");
                 }
             }
         }
 
-        public string SearchControl_Keywords
+        public string CacheControl_Keywords
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Keywords");
+                    return this.Translate("CacheControl_Keywords");
                 }
             }
         }
 
-        public string SearchControl_CreationTime
+        public string CacheControl_CreationTime
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_CreationTime");
+                    return this.Translate("CacheControl_CreationTime");
                 }
             }
         }
 
-        public string SearchControl_Length
+        public string CacheControl_Length
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Length");
+                    return this.Translate("CacheControl_Length");
                 }
             }
         }
 
-        public string SearchControl_Comment
+        public string CacheControl_Comment
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Comment");
+                    return this.Translate("CacheControl_Comment");
                 }
             }
         }
 
-        public string SearchControl_Hash
+        public string CacheControl_Hash
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Hash");
+                    return this.Translate("CacheControl_Hash");
                 }
             }
         }
 
-        public string SearchControl_Add
+        public string CacheControl_Add
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Add");
+                    return this.Translate("CacheControl_Add");
                 }
             }
         }
 
-        public string SearchControl_Edit
+        public string CacheControl_Edit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Edit");
+                    return this.Translate("CacheControl_Edit");
                 }
             }
         }
 
-        public string SearchControl_Delete
+        public string CacheControl_Delete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Delete");
+                    return this.Translate("CacheControl_Delete");
                 }
             }
         }
 
-        public string SearchControl_Download
+        public string CacheControl_Download
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Download");
+                    return this.Translate("CacheControl_Download");
                 }
             }
         }
 
-        public string SearchControl_Copy
+        public string CacheControl_Copy
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Copy");
+                    return this.Translate("CacheControl_Copy");
                 }
             }
         }
 
-        public string SearchControl_CopyInfo
+        public string CacheControl_CopyInfo
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_CopyInfo");
+                    return this.Translate("CacheControl_CopyInfo");
                 }
             }
         }
 
-        public string SearchControl_Cut
+        public string CacheControl_Cut
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Cut");
+                    return this.Translate("CacheControl_Cut");
                 }
             }
         }
 
-        public string SearchControl_Paste
+        public string CacheControl_Paste
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Paste");
+                    return this.Translate("CacheControl_Paste");
                 }
             }
         }
 
-        public string SearchControl_DownloadHistoryDelete
+        public string CacheControl_Export
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_DownloadHistoryDelete");
+                    return this.Translate("CacheControl_Export");
                 }
             }
         }
 
-        public string SearchControl_UploadHistoryDelete
+        public string CacheControl_DownloadHistoryDelete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_UploadHistoryDelete");
+                    return this.Translate("CacheControl_DownloadHistoryDelete");
                 }
             }
         }
 
-        public string SearchControl_FilterName
+        public string CacheControl_UploadHistoryDelete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_FilterName");
+                    return this.Translate("CacheControl_UploadHistoryDelete");
                 }
             }
         }
 
-        public string SearchControl_FilterSignature
+        public string CacheControl_FilterName
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_FilterSignature");
+                    return this.Translate("CacheControl_FilterName");
                 }
             }
         }
 
-        public string SearchControl_FilterKeyword
+        public string CacheControl_FilterSignature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_FilterKeyword");
+                    return this.Translate("CacheControl_FilterSignature");
                 }
             }
         }
 
-        public string SearchControl_FilterSeed
+        public string CacheControl_FilterKeyword
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_FilterSeed");
+                    return this.Translate("CacheControl_FilterKeyword");
+                }
+            }
+        }
+
+        public string CacheControl_FilterSeed
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterSeed");
                 }
             }
         }
 
 
-        public string SearchState_Searching
+        public string SearchState_Cache
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchState_Searching");
+                    return this.Translate("SearchState_Cache");
                 }
             }
         }
@@ -2288,13 +2288,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string SearchItemEditWindow_Searching
+        public string SearchItemEditWindow_Cache
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchItemEditWindow_Searching");
+                    return this.Translate("SearchItemEditWindow_Cache");
                 }
             }
         }
@@ -3138,6 +3138,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("LibraryControl_Comment");
+                }
+            }
+        }
+
+        public string LibraryControl_State
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_State");
                 }
             }
         }

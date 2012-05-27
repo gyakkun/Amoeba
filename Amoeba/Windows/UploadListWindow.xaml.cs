@@ -63,13 +63,14 @@ namespace Amoeba.Windows
             _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = "" });
             _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = "" });
 
-            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = item.Value });
-            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item.Value });
-            foreach (var item in _amoebaManager.SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item.Value });
+            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = item });
+            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item });
+            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item });
 
             _listView.ItemsSource = _filePaths;
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
+            _signatureComboBox.SelectedIndex = 1;
         }
 
         private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -88,10 +89,10 @@ namespace Amoeba.Windows
             this.DialogResult = true;
 
             var keywords = new KeywordCollection();
-            if (_keywordsComboBox1.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox1.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
-            if (_keywordsComboBox2.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox2.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
-            if (_keywordsComboBox3.Text != "") keywords.Add(new Keyword() { Value = _keywordsComboBox3.Text, HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512 });
-            keywords = new KeywordCollection(new HashSet<Keyword>(keywords));
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox1.Text)) keywords.Add(_keywordsComboBox1.Text);
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox2.Text)) keywords.Add(_keywordsComboBox2.Text);
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox3.Text)) keywords.Add(_keywordsComboBox3.Text);
+            keywords = new KeywordCollection(new HashSet<string>(keywords));
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
@@ -121,7 +122,7 @@ namespace Amoeba.Windows
             }
 
             Settings.Instance.Global_UploadKeywords.Clear();
-            Settings.Instance.Global_UploadKeywords.AddRange(keywords.Select(n => n.Value));
+            Settings.Instance.Global_UploadKeywords.AddRange(keywords);
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

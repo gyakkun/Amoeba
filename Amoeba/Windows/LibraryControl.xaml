@@ -38,6 +38,9 @@
         <DataTemplate x:Key="_myTemplate_Comment">
             <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_State">
+            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
+        </DataTemplate>
     </UserControl.Resources>
 
     <Grid Name="_grid" AllowDrop="True" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
@@ -66,7 +69,6 @@
                     <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=LibraryControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
                     <Separator />
                     <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=LibraryControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
-                    <MenuItem Name="_listViewSeedUploadMenuItem" Header="{Binding Path=LibraryControl_SeedUpload, Source={StaticResource ResourcesInstance}}" Click="_listViewSeedUploadMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
@@ -83,6 +85,8 @@
                             Width="{Binding Path=LibraryControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=LibraryControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
                             Width="{Binding Path=LibraryControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
+                            Width="{Binding Path=LibraryControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

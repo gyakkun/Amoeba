@@ -8,12 +8,11 @@
   <Translate Key="MainWindow_Starting" Value="Starting" />
   <Translate Key="MainWindow_Stopping" Value="Stopping" />
   <Translate Key="MainWindow_Connection" Value="Connection" />
-  <Translate Key="MainWindow_Search" Value="Search" />
+  <Translate Key="MainWindow_Cache" Value="Cache" />
+  <Translate Key="MainWindow_Library" Value="Library" />
   <Translate Key="MainWindow_Download" Value="Download" />
   <Translate Key="MainWindow_Upload" Value="Upload" />
   <Translate Key="MainWindow_Share" Value="Share" />
-  <Translate Key="MainWindow_Cache" Value="Cache" />
-  <Translate Key="MainWindow_Library" Value="Library" />
   <Translate Key="MainWindow_Log" Value="Log" />
   <Translate Key="MainWindow_Connections" Value="Connections" />
   <Translate Key="MainWindow_Start" Value="Start" />
@@ -91,7 +90,7 @@
   <Translate Key="ConnectionsWindow_RelateBoxFile" Value="Relate Box File" />
   <Translate Key="ConnectionsWindow_Copy" Value="Copy" />
   <Translate Key="ConnectionsWindow_Paste" Value="Paste" />
-  <Translate Key="ConnectionsWindow_Searching" Value="Searching" />
+  <Translate Key="ConnectionsWindow_Cache" Value="Cache" />
   <Translate Key="ConnectionsWindow_Uploading" Value="Uploading" />
   <Translate Key="ConnectionsWindow_Downloading" Value="Downloading" />
   <Translate Key="ConnectionsWindow_Uploaded" Value="Uploaded" />
@@ -148,30 +147,31 @@
   <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5Proxy" />
   <Translate Key="ConnectionType_HttpProxy" Value="HttpProxy" />
 
-  <Translate Key="SearchControl_Name" Value="Name" />
-  <Translate Key="SearchControl_Signature" Value="Signature" />
-  <Translate Key="SearchControl_State" Value="State" />
-  <Translate Key="SearchControl_Keywords" Value="Keywords" />
-  <Translate Key="SearchControl_CreationTime" Value="Creation Time" />
-  <Translate Key="SearchControl_Length" Value="Length" />
-  <Translate Key="SearchControl_Comment" Value="Comment" />
-  <Translate Key="SearchControl_Hash" Value="Hash" />
-  <Translate Key="SearchControl_Add" Value="Add" />
-  <Translate Key="SearchControl_Edit" Value="Edit" />
-  <Translate Key="SearchControl_Delete" Value="Delete" />
-  <Translate Key="SearchControl_Download" Value="Download" />
-  <Translate Key="SearchControl_Copy" Value="Copy" />
-  <Translate Key="SearchControl_CopyInfo" Value="Copy Info" />
-  <Translate Key="SearchControl_Cut" Value="Cut" />
-  <Translate Key="SearchControl_Paste" Value="Paste" />
-  <Translate Key="SearchControl_DownloadHistoryDelete" Value="Download History Delete" />
-  <Translate Key="SearchControl_UploadHistoryDelete" Value="Upload History Delete" />
-  <Translate Key="SearchControl_FilterName" Value="Filter Name" />
-  <Translate Key="SearchControl_FilterSignature" Value="Filter Signature" />
-  <Translate Key="SearchControl_FilterKeyword" Value="Filter Keyword" />
-  <Translate Key="SearchControl_FilterSeed" Value="Filter Seed" />
+  <Translate Key="CacheControl_Name" Value="Name" />
+  <Translate Key="CacheControl_Signature" Value="Signature" />
+  <Translate Key="CacheControl_State" Value="State" />
+  <Translate Key="CacheControl_Keywords" Value="Keywords" />
+  <Translate Key="CacheControl_CreationTime" Value="Creation Time" />
+  <Translate Key="CacheControl_Length" Value="Length" />
+  <Translate Key="CacheControl_Comment" Value="Comment" />
+  <Translate Key="CacheControl_Hash" Value="Hash" />
+  <Translate Key="CacheControl_Add" Value="Add" />
+  <Translate Key="CacheControl_Edit" Value="Edit" />
+  <Translate Key="CacheControl_Delete" Value="Delete" />
+  <Translate Key="CacheControl_Download" Value="Download" />
+  <Translate Key="CacheControl_Copy" Value="Copy" />
+  <Translate Key="CacheControl_CopyInfo" Value="Copy Info" />
+  <Translate Key="CacheControl_Cut" Value="Cut" />
+  <Translate Key="CacheControl_Paste" Value="Paste" />
+  <Translate Key="CacheControl_Export" Value="Export" />
+  <Translate Key="CacheControl_DownloadHistoryDelete" Value="Download History Delete" />
+  <Translate Key="CacheControl_UploadHistoryDelete" Value="Upload History Delete" />
+  <Translate Key="CacheControl_FilterName" Value="Filter Name" />
+  <Translate Key="CacheControl_FilterSignature" Value="Filter Signature" />
+  <Translate Key="CacheControl_FilterKeyword" Value="Filter Keyword" />
+  <Translate Key="CacheControl_FilterSeed" Value="Filter Seed" />
 
-  <Translate Key="SearchState_Searching" Value="S" />
+  <Translate Key="SearchState_Cache" Value="C" />
   <Translate Key="SearchState_Downloading" Value="D" />
   <Translate Key="SearchState_Uploading" Value="U" />
   <Translate Key="SearchState_Downloaded" Value="HD" />
@@ -205,7 +205,7 @@
   <Translate Key="SearchItemEditWindow_Min" Value="Min" />
   <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="Ignore Case" />
   <Translate Key="SearchItemEditWindow_Miscellaneous" Value="Miscellaneous" />
-  <Translate Key="SearchItemEditWindow_Searching" Value="Searching" />
+  <Translate Key="SearchItemEditWindow_Cache" Value="Cache" />
   <Translate Key="SearchItemEditWindow_Uploading" Value="Uploading" />
   <Translate Key="SearchItemEditWindow_Downloading" Value="Downloading" />
   <Translate Key="SearchItemEditWindow_Uploaded" Value="Uploaded" />
@@ -289,6 +289,7 @@
   <Translate Key="LibraryControl_CreationTime" Value="Creation Time" />
   <Translate Key="LibraryControl_Length" Value="Length" />
   <Translate Key="LibraryControl_Comment" Value="Comment" />
+  <Translate Key="LibraryControl_State" Value="State" />
   <Translate Key="LibraryControl_AddBox" Value="Add Box" />
   <Translate Key="LibraryControl_Edit" Value="Edit" />
   <Translate Key="LibraryControl_NewBox" Value="New Box" />

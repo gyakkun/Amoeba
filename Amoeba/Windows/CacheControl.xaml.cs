@@ -29,9 +29,9 @@ using Library.Net.Amoeba;
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// SearchControl.xaml の相互作用ロジック
+    /// CacheControl.xaml の相互作用ロジック
     /// </summary>
-    partial class SearchControl : UserControl
+    partial class CacheControl : UserControl
     {
         private MainWindow _mainWindow;
         private BufferManager _bufferManager;
@@ -43,10 +43,8 @@ namespace Amoeba.Windows
 
         private volatile List<SearchListViewItem> _searchingCache = new List<SearchListViewItem>();
         private Stopwatch _updateStopwatch = new Stopwatch();
-        private Dictionary<Seed, byte[]> _seedHash = new Dictionary<Seed, byte[]>(new SeedReferenceEqualityComparer());
-        private Dictionary<Seed, byte[]> _seedBinaryHash = new Dictionary<Seed, byte[]>(new SeedReferenceEqualityComparer());
 
-        public SearchControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
+        public CacheControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _mainWindow = mainWindow;
             _bufferManager = bufferManager;
@@ -54,7 +52,7 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _treeViewItem.Value = Settings.Instance.SearchControl_SearchTreeItem;
+            _treeViewItem.Value = Settings.Instance.CacheControl_SearchTreeItem;
 
             try
             {
@@ -75,25 +73,6 @@ namespace Amoeba.Windows
                     _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectSearchTreeViewItem.Value.SearchItem.Name);
             };
 
-            _amoebaManager.GetFilterSeedsEvent = (object sender, IEnumerable<Seed> seeds) =>
-            {
-                HashSet<SearchListViewItem> searchItems = new HashSet<SearchListViewItem>();
-
-                foreach (var item in seeds)
-                {
-                    var searchItem = new SearchListViewItem();
-
-                    searchItem.Signature = MessageConverter.ToSignatureString(item.Certificate);
-                    searchItem.Value = item;
-
-                    searchItems.Add(searchItem);
-                }
-
-                SearchControl.Filter(ref searchItems, _treeViewItem.Value);
-
-                return searchItems.Select(n => n.Value);
-            };
-            var o = _textBox.ContextMenu;
             _searchThread = new Thread(new ThreadStart(() =>
             {
                 try
@@ -122,7 +101,7 @@ namespace Amoeba.Windows
 
                         foreach (var searchTreeViewItem in searchTreeViewItems)
                         {
-                            SearchControl.Filter(ref newList, searchTreeViewItem.Value);
+                            CacheControl.Filter(ref newList, searchTreeViewItem.Value);
 
                             this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                             {
@@ -131,33 +110,19 @@ namespace Amoeba.Windows
                             }), null);
                         }
 
-                        List<SearchListViewItem> oldList = null;
+                        HashSet<SearchListViewItem> oldList = null;
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            oldList = _listView.Items.OfType<SearchListViewItem>().ToList();
+                            oldList = new HashSet<SearchListViewItem>(_listView.Items.OfType<SearchListViewItem>().ToArray());
                         }), null);
-
-                        Dictionary<Seed, SearchState> tempList1 = new Dictionary<Seed, SearchState>(new SeedReferenceEqualityComparer());
-
-                        foreach (var item in oldList)
-                        {
-                            tempList1.Add(item.Value, item.State);
-                        }
-
-                        Dictionary<Seed, SearchState> tempList2 = new Dictionary<Seed, SearchState>(new SeedReferenceEqualityComparer());
-
-                        foreach (var item in newList)
-                        {
-                            tempList2.Add(item.Value, item.State);
-                        }
 
                         var removeList = new List<SearchListViewItem>();
                         var addList = new List<SearchListViewItem>();
 
                         foreach (var item in oldList)
                         {
-                            if (!tempList2.ContainsKey(item.Value) || tempList2[item.Value] != item.State)
+                            if (!newList.Contains(item))
                             {
                                 removeList.Add(item);
                             }
@@ -165,7 +130,7 @@ namespace Amoeba.Windows
 
                         foreach (var item in newList)
                         {
-                            if (!tempList1.ContainsKey(item.Value) || tempList1[item.Value] != item.State)
+                            if (!oldList.Contains(item))
                             {
                                 addList.Add(item);
                             }
@@ -239,14 +204,16 @@ namespace Amoeba.Windows
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
 
-                Dictionary<Seed, SearchState> seedsDictionary = new Dictionary<Seed, SearchState>(new SeedReferenceEqualityComparer());
+                HashSet<Seed> seeds = new HashSet<Seed>();
+                Dictionary<Seed, SearchState> seedsDictionary = new Dictionary<Seed, SearchState>(new SeedHashEqualityComparer());
 
                 {
-                    if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Searching))
+                    if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Cache))
                     {
                         foreach (var seed in _amoebaManager.Seeds)
                         {
-                            seedsDictionary[seed] = SearchState.Searching;
+                            seeds.Add(seed);
+                            seedsDictionary[seed] = SearchState.Cache;
                         }
                     }
 
@@ -257,6 +224,7 @@ namespace Amoeba.Windows
                             if (information.Contains("Seed") && ((UploadState)information["State"]) != UploadState.Completed)
                             {
                                 var seed = (Seed)information["Seed"];
+                                seeds.Add(seed);
 
                                 if (!seedsDictionary.ContainsKey(seed))
                                 {
@@ -277,6 +245,7 @@ namespace Amoeba.Windows
                             if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed)
                             {
                                 var seed = (Seed)information["Seed"];
+                                seeds.Add(seed);
 
                                 if (!seedsDictionary.ContainsKey(seed))
                                 {
@@ -294,6 +263,8 @@ namespace Amoeba.Windows
                     {
                         foreach (var seed in _amoebaManager.UploadedSeeds)
                         {
+                            seeds.Add(seed);
+
                             if (!seedsDictionary.ContainsKey(seed))
                             {
                                 seedsDictionary[seed] = SearchState.Uploaded;
@@ -309,6 +280,8 @@ namespace Amoeba.Windows
                     {
                         foreach (var seed in _amoebaManager.DownloadedSeeds)
                         {
+                            seeds.Add(seed);
+
                             if (!seedsDictionary.ContainsKey(seed))
                             {
                                 seedsDictionary[seed] = SearchState.Downloaded;
@@ -321,159 +294,29 @@ namespace Amoeba.Windows
                     }
                 }
 
+                List<SearchListViewItem> searchItems = new List<SearchListViewItem>();
+
+                foreach (var seed in seeds)
                 {
-                    UTF8Encoding encoding = new UTF8Encoding(false);
+                    var searchItem = new SearchListViewItem();
 
-                    using (var sha1 = System.Security.Cryptography.SHA1.Create())
-                    {
-                        foreach (var item in seedsDictionary.Keys)
-                        {
-                            if (!_seedHash.ContainsKey(item))
-                            {
-                                using (MemoryStream stream = new MemoryStream())
-                                {
-                                    if (item.Name != null)
-                                    {
-                                        var buffer = encoding.GetBytes(item.Name);
-                                        stream.Write(buffer, 0, buffer.Length);
-                                    }
+                    searchItem.Name = seed.Name;
+                    searchItem.Signature = MessageConverter.ToSignatureString(seed.Certificate);
+                    searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
+                    searchItem.CreationTime = seed.CreationTime;
+                    searchItem.Length = seed.Length;
+                    searchItem.Comment = seed.Comment;
+                    searchItem.Value = seed;
+                    searchItem.State = seedsDictionary[seed];
 
-                                    stream.Write(BitConverter.GetBytes(item.Length), 0, 8);
-
-                                    stream.Write(BitConverter.GetBytes(item.Rank), 0, 4);
-
-                                    if (item.Key != null)
-                                    {
-                                        stream.Write(BitConverter.GetBytes((int)item.Key.HashAlgorithm), 0, 4);
-                                        if (item.Key.Hash != null) stream.Write(item.Key.Hash, 0, item.Key.Hash.Length);
-                                    }
-
-                                    stream.Write(BitConverter.GetBytes((int)item.CompressionAlgorithm), 0, 4);
-
-                                    stream.Write(BitConverter.GetBytes((int)item.CryptoAlgorithm), 0, 4);
-                                    if (item.CryptoKey != null) stream.Write(item.CryptoKey, 0, item.CryptoKey.Length);
-
-                                    if (item.Certificate != null)
-                                    {
-                                        if (item.Certificate.Nickname != null)
-                                        {
-                                            var buffer = encoding.GetBytes(item.Certificate.Nickname);
-                                            stream.Write(buffer, 0, buffer.Length);
-                                        }
-
-                                        stream.Write(BitConverter.GetBytes((int)item.Certificate.DigitalSignatureAlgorithm), 0, 4);
-                                        if (item.Certificate.PublicKey != null) stream.Write(item.Certificate.PublicKey, 0, item.Certificate.PublicKey.Length);
-                                        if (item.Certificate.Signature != null) stream.Write(item.Certificate.Signature, 0, item.Certificate.Signature.Length);
-                                    }
-
-                                    stream.Seek(0, SeekOrigin.Begin);
-
-                                    _seedHash.Add(item, sha1.ComputeHash(stream));
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (var item in _seedHash.Keys.ToArray())
-                    {
-                        if (!seedsDictionary.ContainsKey(item))
-                        {
-                            _seedHash.Remove(item);
-                        }
-                    }
-
-                    using (var sha1 = System.Security.Cryptography.SHA1.Create())
-                    {
-                        foreach (var item in seedsDictionary.Keys)
-                        {
-                            if (!_seedBinaryHash.ContainsKey(item))
-                            {
-                                using (MemoryStream stream = new MemoryStream())
-                                {
-                                    stream.Write(BitConverter.GetBytes(item.Rank), 0, 4);
-
-                                    if (item.Key != null)
-                                    {
-                                        stream.Write(BitConverter.GetBytes((int)item.Key.HashAlgorithm), 0, 4);
-                                        if (item.Key.Hash != null) stream.Write(item.Key.Hash, 0, item.Key.Hash.Length);
-                                    }
-
-                                    stream.Write(BitConverter.GetBytes((int)item.CompressionAlgorithm), 0, 4);
-
-                                    stream.Write(BitConverter.GetBytes((int)item.CryptoAlgorithm), 0, 4);
-                                    if (item.CryptoKey != null) stream.Write(item.CryptoKey, 0, item.CryptoKey.Length);
-
-                                    stream.Seek(0, SeekOrigin.Begin);
-
-                                    _seedBinaryHash.Add(item, sha1.ComputeHash(stream));
-                                }
-                            }
-                        }
-                    }
-
-                    foreach (var item in _seedBinaryHash.Keys.ToArray())
-                    {
-                        if (!seedsDictionary.ContainsKey(item))
-                        {
-                            _seedBinaryHash.Remove(item);
-                        }
-                    }
-                }
-
-                Dictionary<Seed, SearchListViewItem> searchItems = new Dictionary<Seed, SearchListViewItem>(new CacheSeedEqualityComparer(_seedHash));
-                Dictionary<Seed, SearchState> stateDic = new Dictionary<Seed, SearchState>(new CacheSeedEqualityComparer(_seedBinaryHash));
-
-                foreach (var item in seedsDictionary)
-                {
-                    var seed = item.Key;
-
-                    if (searchItems.ContainsKey(seed))
-                    {
-                        var target = searchItems[seed];
-
-                        if (target.Value.CreationTime < seed.CreationTime)
-                        {
-                            target.CreationTime = seed.CreationTime;
-                            target.Comment = seed.Comment;
-                            target.Value = seed;
-                        }
-                    }
-                    else
-                    {
-                        var searchItem = new SearchListViewItem();
-
-                        searchItem.Name = seed.Name;
-                        searchItem.Signature = MessageConverter.ToSignatureString(seed.Certificate);
-                        searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => n != null || n.Value != null).Select(m => m.Value));
-                        searchItem.CreationTime = seed.CreationTime;
-                        searchItem.Length = seed.Length;
-                        searchItem.Comment = seed.Comment;
-                        searchItem.Value = seed;
-                        searchItem.State = item.Value;
-
-                        searchItems.Add(seed, searchItem);
-                    }
-
-                    if (!stateDic.ContainsKey(seed))
-                    {
-                        stateDic.Add(seed, item.Value);
-                    }
-                    else
-                    {
-                        stateDic[seed] |= item.Value;
-                    }
-                }
-
-                foreach (var item in searchItems)
-                {
-                    item.Value.State = stateDic[item.Key];
+                    searchItems.Add(searchItem);
                 }
 
                 sw.Stop();
                 Debug.WriteLine("Search {0}", sw.ElapsedMilliseconds);
 
                 Random random = new Random();
-                _searchingCache = searchItems.Values.OrderBy(n => random.Next()).Take(1000000).ToList();
+                _searchingCache = searchItems.OrderBy(n => random.Next()).Take(1000000).ToList();
 
                 _updateStopwatch.Restart();
 
@@ -487,14 +330,44 @@ namespace Amoeba.Windows
             return new SearchListViewItem[0];
         }
 
-        class SeedReferenceEqualityComparer : IEqualityComparer<Seed>
+        class SeedHashEqualityComparer : IEqualityComparer<Seed>
         {
             public bool Equals(Seed x, Seed y)
             {
-                if ((x == null) != (y == null)) return false;
                 if (x == null && y == null) return true;
+                if ((x == null) != (y == null)) return false;
+                if (object.ReferenceEquals(x, y)) return true;
 
-                return object.ReferenceEquals(x, y);
+                if (//x.Length != y.Length
+                    //|| ((x.Keywords == null) != (y.Keywords == null))
+                    //|| x.CreationTime != y.CreationTime
+                    //|| x.Name != y.Name
+                    //|| x.Comment != y.Comment
+                    x.Rank != y.Rank
+
+                    || x.Key != y.Key
+
+                    || x.CompressionAlgorithm != y.CompressionAlgorithm
+
+                    || x.CryptoAlgorithm != y.CryptoAlgorithm
+                    || ((x.CryptoKey == null) != (y.CryptoKey == null)))
+
+                //|| x.Certificate != y.Certificate)
+                {
+                    return false;
+                }
+
+                //if (x.Keywords != null && y.Keywords != null)
+                //{
+                //    if (!Collection.Equals(x.Keywords, y.Keywords)) return false;
+                //}
+
+                if (x.CryptoKey != null && y.CryptoKey != null)
+                {
+                    if (!Collection.Equals(x.CryptoKey, y.CryptoKey)) return false;
+                }
+
+                return true;
             }
 
             public int GetHashCode(Seed obj)
@@ -504,44 +377,10 @@ namespace Amoeba.Windows
                 else return obj.Key.GetHashCode();
             }
         }
-
-        class CacheSeedEqualityComparer : IEqualityComparer<Seed>
-        {
-            Dictionary<Seed, byte[]> _seedHash;
-
-            public CacheSeedEqualityComparer(Dictionary<Seed, byte[]> seedHash)
-            {
-                _seedHash = seedHash;
-            }
-
-            public bool Equals(Seed x, Seed y)
-            {
-                if (object.ReferenceEquals(x, y)) return true;
-
-                var xh = _seedHash[x];
-                var yh = _seedHash[y];
-
-                if (xh != null && yh != null)
-                {
-                    if (xh.Length != yh.Length) return false;
-
-                    for (int i = 0; i < xh.Length; i++) if (xh[i] != yh[i]) return false;
-                }
-
-                return true;
-            }
-
-            public int GetHashCode(Seed obj)
-            {
-                if (obj == null) return 0;
-                if (obj.Key == null) return 0;
-                else return obj.Key.GetHashCode();
-            }
-        }
-
+        
         private void Update()
         {
-            Settings.Instance.SearchControl_SearchTreeItem = _treeViewItem.Value;
+            Settings.Instance.CacheControl_SearchTreeItem = _treeViewItem.Value;
 
             _treeView_SelectedItemChanged(this, null);
             _treeViewItem.Sort();
@@ -591,6 +430,7 @@ namespace Amoeba.Windows
             {
                 _listViewCopyMenuItem.IsEnabled = false;
                 _listViewCopyInfoMenuItem.IsEnabled = false;
+                _listViewDeleteMenuItem.IsEnabled = false;
                 _listViewDownloadHistoryDeleteMenuItem.IsEnabled = false;
                 _listViewUploadHistoryDeleteMenuItem.IsEnabled = false;
                 _listViewFilterNameMenuItem.IsEnabled = false;
@@ -603,16 +443,17 @@ namespace Amoeba.Windows
             }
 
             var selectItems = _listView.SelectedItems;
-            if (selectItems == null) return;
 
-            _listViewCopyMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewCopyInfoMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewFilterNameMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewFilterSignatureMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewFilterKeywordMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewFilterSeedMenuItem.IsEnabled = (selectItems.Count > 0);
-            _listViewDownloadMenuItem.IsEnabled = (selectItems.Count > 0);
+            _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterNameMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterSignatureMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterKeywordMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterSeedMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
+            if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
+            else _listViewDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Cache));
             if (!_listViewDownloadHistoryDeleteMenuItem_IsEnabled) _listViewDownloadHistoryDeleteMenuItem.IsEnabled = false;
             else _listViewDownloadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
             if (!_listViewUploadHistoryDeleteMenuItem_IsEnabled) _listViewUploadHistoryDeleteMenuItem.IsEnabled = false;
@@ -648,6 +489,129 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
+        }
+
+        volatile bool _listViewDeleteMenuItem_IsEnabled = true;
+
+        private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewDeleteMenuItem_IsEnabled = false;
+
+            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null || !item.State.HasFlag(SearchState.Cache)) continue;
+
+                list.Add(item.Value);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                foreach (var item in list)
+                {
+                    _amoebaManager.RemoveSeed(item);
+                }
+
+                foreach (var seed in _amoebaManager.Seeds.ToArray())
+                {
+                    if (list.Contains(seed))
+                    {
+                        _amoebaManager.RemoveSeed(seed);
+                    }
+                }
+
+                _recache = true;
+
+                _listViewDeleteMenuItem_IsEnabled = true;
+            }));
+        }
+
+        volatile bool _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
+
+        private void _listViewDownloadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewDownloadHistoryDeleteMenuItem_IsEnabled = false;
+
+            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null || !item.State.HasFlag(SearchState.Downloaded)) continue;
+
+                list.Add(item.Value);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                foreach (var item in list)
+                {
+                    _amoebaManager.DownloadedSeeds.Remove(item);
+                }
+
+                foreach (var seed in _amoebaManager.DownloadedSeeds.ToArray())
+                {
+                    if (list.Contains(seed))
+                    {
+                        _amoebaManager.DownloadedSeeds.Remove(seed);
+                    }
+                }
+
+                _recache = true;
+
+                _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
+            }));
+        }
+
+        volatile bool _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
+
+        private void _listViewUploadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewUploadHistoryDeleteMenuItem_IsEnabled = false;
+
+            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null || !item.State.HasFlag(SearchState.Uploaded)) continue;
+
+                list.Add(item.Value);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                foreach (var item in list)
+                {
+                    _amoebaManager.UploadedSeeds.Remove(item);
+                }
+
+                foreach (var seed in _amoebaManager.UploadedSeeds.ToArray())
+                {
+                    if (list.Contains(seed))
+                    {
+                        _amoebaManager.UploadedSeeds.Remove(seed);
+                    }
+                }
+
+                _recache = true;
+
+                _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
+            }));
         }
 
         private void _listViewDownloadMenuItem_Click(object sender, RoutedEventArgs e)
@@ -725,12 +689,12 @@ namespace Amoeba.Windows
             {
                 foreach (var keyword in listItem.Value.Keywords)
                 {
-                    if (string.IsNullOrWhiteSpace(keyword.Value)) continue;
+                    if (string.IsNullOrWhiteSpace(keyword)) continue;
 
                     var item = new SearchContains<string>()
                     {
                         Contains = false,
-                        Value = keyword.Value,
+                        Value = keyword,
                     };
 
                     if (selectSearchTreeViewItem.Value.SearchItem.SearchKeywordCollection.Contains(item)) continue;
@@ -764,88 +728,6 @@ namespace Amoeba.Windows
             }
 
             this.Update();
-        }
-
-        volatile bool _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
-
-        private void _listViewDownloadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            _listViewDownloadHistoryDeleteMenuItem_IsEnabled = false;
-
-            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (item.Value == null || !item.State.HasFlag(SearchState.Downloaded)) continue;
-
-                list.Add(item.Value);
-            }
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                foreach (var item in list)
-                {
-                    _amoebaManager.DownloadedSeeds.Remove(item);
-                }
-
-                foreach (var seed in _amoebaManager.DownloadedSeeds.ToArray())
-                {
-                    if (list.Contains(seed))
-                    {
-                        _amoebaManager.DownloadedSeeds.Remove(seed);
-                    }
-                }
-
-                _recache = true;
-
-                _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
-            }));
-        }
-
-        volatile bool _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
-      
-        private void _listViewUploadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            _listViewUploadHistoryDeleteMenuItem_IsEnabled = false;
-
-            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (item.Value == null || !item.State.HasFlag(SearchState.Uploaded)) continue;
-
-                list.Add(item.Value);
-            }
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                foreach (var item in list)
-                {
-                    _amoebaManager.UploadedSeeds.Remove(item);
-                }
-
-                foreach (var seed in _amoebaManager.UploadedSeeds.ToArray())
-                {
-                    if (list.Contains(seed))
-                    {
-                        _amoebaManager.UploadedSeeds.Remove(seed);
-                    }
-                }
-
-                _recache = true;
-
-                _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
-            }));
         }
 
         #endregion
@@ -936,7 +818,7 @@ namespace Amoeba.Windows
                 var x = searchTreeItem.SearchItem.SearchState;
                 var y = searchItem.State;
 
-                if (x.HasFlag(SearchState.Searching) && y.HasFlag(SearchState.Searching))
+                if (x.HasFlag(SearchState.Cache) && y.HasFlag(SearchState.Cache))
                 {
                     return false;
                 }
@@ -1004,7 +886,7 @@ namespace Amoeba.Windows
                 {
                     flag = searchTreeItem.SearchItem.SearchKeywordCollection.Any(searchContains =>
                     {
-                        if (searchContains.Contains) return searchItem.Value.Keywords.Any(n => n.Value == searchContains.Value);
+                        if (searchContains.Contains) return searchItem.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) && n == searchContains.Value);
 
                         return false;
                     });
@@ -1094,7 +976,7 @@ namespace Amoeba.Windows
                 {
                     flag = searchTreeItem.SearchItem.SearchKeywordCollection.Any(searchContains =>
                     {
-                        if (!searchContains.Contains) return searchItem.Value.Keywords.Any(n => n.Value == searchContains.Value);
+                        if (!searchContains.Contains) return searchItem.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) && n == searchContains.Value);
 
                         return false;
                     });
@@ -1159,11 +1041,19 @@ namespace Amoeba.Windows
         {
             _startPoint = new Point(-1, -1);
 
+            if (_refresh)
+            {
+                _treeViewExportContextMenuItem.IsEnabled = false;
+
+                return;
+            }
+            
             var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectSearchTreeViewItem == null) return;
 
             _treeViewDeleteMenuItem.IsEnabled = !(selectSearchTreeViewItem == _treeViewItem);
             _treeViewCutContextMenuItem.IsEnabled = !(selectSearchTreeViewItem == _treeViewItem);
+            _treeViewExportContextMenuItem.IsEnabled = true;
 
             {
                 var searchTreeItems = Clipboard.GetSearchTreeItems();
@@ -1266,6 +1156,55 @@ namespace Amoeba.Windows
             this.Update();
         }
 
+        private void _treeViewExportContextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectSearchTreeViewItem == null) return;
+
+            Box box = new Box();
+            box.Name = selectSearchTreeViewItem.Value.SearchItem.Name;
+            box.CreationTime = DateTime.UtcNow;
+
+            foreach (var seed in _listView.Items.OfType<SearchListViewItem>().Select(n => n.Value))
+            {
+                box.Seeds.Add(seed);
+            }
+
+            BoxEditWindow window = new BoxEditWindow(ref box);
+            window.Owner = _mainWindow;
+            window.ShowDialog();
+
+            if (window.DialogResult != true) return; 
+
+            using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
+            {
+                dialog.FileName = box.Name;
+                dialog.DefaultExt = ".box";
+                dialog.Filter = "Box (*.box)|*.box";
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var fileName = dialog.FileName;
+
+                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
+                    using (Stream directoryStream = AmoebaConverter.ToBoxStream(box))
+                    {
+                        int i = -1;
+                        byte[] buffer = _bufferManager.TakeBuffer(1024);
+
+                        while ((i = directoryStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            stream.Write(buffer, 0, i);
+                        }
+
+                        _bufferManager.ReturnBuffer(buffer);
+                    }
+
+                    this.Update();
+                }
+            }
+        }
+        
         #endregion
 
         #region Sort
@@ -1287,13 +1226,13 @@ namespace Amoeba.Windows
 
                 ListSortDirection direction;
 
-                if (headerClicked != Settings.Instance.SearchControl_LastHeaderClicked)
+                if (headerClicked != Settings.Instance.CacheControl_LastHeaderClicked)
                 {
                     direction = ListSortDirection.Ascending;
                 }
                 else
                 {
-                    if (Settings.Instance.SearchControl_ListSortDirection == ListSortDirection.Ascending)
+                    if (Settings.Instance.CacheControl_ListSortDirection == ListSortDirection.Ascending)
                     {
                         direction = ListSortDirection.Descending;
                     }
@@ -1305,14 +1244,14 @@ namespace Amoeba.Windows
 
                 Sort(headerClicked, direction);
 
-                Settings.Instance.SearchControl_LastHeaderClicked = headerClicked;
-                Settings.Instance.SearchControl_ListSortDirection = direction;
+                Settings.Instance.CacheControl_LastHeaderClicked = headerClicked;
+                Settings.Instance.CacheControl_ListSortDirection = direction;
             }
             else
             {
-                if (Settings.Instance.SearchControl_LastHeaderClicked != null)
+                if (Settings.Instance.CacheControl_LastHeaderClicked != null)
                 {
-                    Sort(Settings.Instance.SearchControl_LastHeaderClicked, Settings.Instance.SearchControl_ListSortDirection);
+                    Sort(Settings.Instance.CacheControl_LastHeaderClicked, Settings.Instance.CacheControl_ListSortDirection);
                 }
             }
         }
@@ -1321,31 +1260,31 @@ namespace Amoeba.Windows
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.SearchControl_Name)
+            if (sortBy == LanguagesManager.Instance.CacheControl_Name)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_Signature)
+            else if (sortBy == LanguagesManager.Instance.CacheControl_Signature)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Signature", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_Length)
+            else if (sortBy == LanguagesManager.Instance.CacheControl_Length)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_Keywords)
+            else if (sortBy == LanguagesManager.Instance.CacheControl_Keywords)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Keywords", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_CreationTime)
+            else if (sortBy == LanguagesManager.Instance.CacheControl_CreationTime)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("CreationTime", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_Comment)
+            else if (sortBy == LanguagesManager.Instance.CacheControl_Comment)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Comment", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_State)
+            else if (sortBy == LanguagesManager.Instance.CacheControl_State)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
             }
@@ -1369,101 +1308,29 @@ namespace Amoeba.Windows
                 if (this.Name == null) return 0;
                 else return this.Name.GetHashCode();
             }
-        }
 
-        class SeedEqualityComparer : IEqualityComparer<Seed>
-        {
-            public bool Equals(Seed x, Seed y)
+            public override bool Equals(object obj)
             {
-                if (x == null && y == null) return true;
-                if ((x == null) != (y == null)) return false;
-                if (object.ReferenceEquals(x, y)) return true;
+                if (!(obj is SearchListViewItem)) return false;
+                if (obj == null) return false;
+                if (object.ReferenceEquals(this, obj)) return true;
+                if (this.GetHashCode() != obj.GetHashCode()) return false;
 
-                if (x.Length != y.Length
-                    || ((x.Keywords == null) != (y.Keywords == null))
-                    //|| x.CreationTime != y.CreationTime
-                    || x.Name != y.Name
-                    //|| x.Comment != y.Comment
-                    || x.Rank != y.Rank
+                var other = (SearchListViewItem)obj;
 
-                    || x.Key != y.Key
-
-                    || x.CompressionAlgorithm != y.CompressionAlgorithm
-
-                    || x.CryptoAlgorithm != y.CryptoAlgorithm
-                    || ((x.CryptoKey == null) != (y.CryptoKey == null))
-
-                    || x.Certificate != y.Certificate)
+                if (this.Name != other.Name
+                    || this.Signature != other.Signature
+                    || this.Keywords != other.Keywords
+                    || this.CreationTime != other.CreationTime
+                    || this.Length != other.Length
+                    || this.Comment != other.Comment
+                    || this.State != other.State
+                    || this.Value != other.Value)
                 {
                     return false;
                 }
 
-                if (x.Keywords != null && y.Keywords != null)
-                {
-                    if (!Collection.Equals(x.Keywords, y.Keywords)) return false;
-                }
-
-                if (x.CryptoKey != null && y.CryptoKey != null)
-                {
-                    if (!Collection.Equals(x.CryptoKey, y.CryptoKey)) return false;
-                }
-
                 return true;
-            }
-
-            public int GetHashCode(Seed obj)
-            {
-                if (obj == null) return 0;
-                else if (obj.Name == null) return 0;
-                else return obj.Name.GetHashCode();
-            }
-        }
-
-        class SeedHashEqualityComparer : IEqualityComparer<Seed>
-        {
-            public bool Equals(Seed x, Seed y)
-            {
-                if (x == null && y == null) return true;
-                if ((x == null) != (y == null)) return false;
-                if (object.ReferenceEquals(x, y)) return true;
-
-                if (//x.Length != y.Length
-                    //|| ((x.Keywords == null) != (y.Keywords == null))
-                    //|| x.CreationTime != y.CreationTime
-                    //|| x.Name != y.Name
-                    //|| x.Comment != y.Comment
-                    x.Rank != y.Rank
-
-                    || x.Key != y.Key
-
-                    || x.CompressionAlgorithm != y.CompressionAlgorithm
-
-                    || x.CryptoAlgorithm != y.CryptoAlgorithm
-                    || ((x.CryptoKey == null) != (y.CryptoKey == null)))
-
-                //|| x.Certificate != y.Certificate)
-                {
-                    return false;
-                }
-
-                //if (x.Keywords != null && y.Keywords != null)
-                //{
-                //    if (!Collection.Equals(x.Keywords, y.Keywords)) return false;
-                //}
-
-                if (x.CryptoKey != null && y.CryptoKey != null)
-                {
-                    if (!Collection.Equals(x.CryptoKey, y.CryptoKey)) return false;
-                }
-
-                return true;
-            }
-
-            public int GetHashCode(Seed obj)
-            {
-                if (obj == null) return 0;
-                else if (obj.Key == null) return 0;
-                else return obj.Key.GetHashCode();
             }
         }
     }
@@ -1883,8 +1750,8 @@ namespace Amoeba.Windows
     [DataContract(Name = "SearchState", Namespace = "http://Amoeba/Windows")]
     enum SearchState
     {
-        [EnumMember(Value = "Searching")]
-        Searching = 0x1,
+        [EnumMember(Value = "Cache")]
+        Cache = 0x1,
 
         [EnumMember(Value = "Uploading")]
         Uploading = 0x2,

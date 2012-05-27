@@ -43,7 +43,7 @@ namespace Amoeba.Windows
             {
                 _baseNode = _amoebaManager.BaseNode.DeepClone();
                 _otherNodes.AddRange(_amoebaManager.OtherNodes.Select(n => n.DeepClone()));
-                _keywords.AddRange(_amoebaManager.SearchKeywords.Select(n => n.DeepClone()));
+                _keywords.AddRange(Settings.Instance.Global_SearchKeywords);
                 _clientFilters.AddRange(_amoebaManager.Filters.Select(n => n.DeepClone()));
                 _listenUris.AddRange(_amoebaManager.ListenUris);
             }
@@ -77,9 +77,9 @@ namespace Amoeba.Windows
 
             _clientFiltersConnectionTypeComboBox.SelectedItem = _clientFiltersConnectionTypeComboBox.Items.GetItemAt(1);
 
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Searching) == SearchState.Searching)
+            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Cache) == SearchState.Cache)
             {
-                _miscellaneousSearchFilterSearchingCheckBox.IsChecked = true;
+                _miscellaneousSearchFilterCacheCheckBox.IsChecked = true;
             }
             if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Uploading) == SearchState.Uploading)
             {
@@ -422,9 +422,8 @@ namespace Amoeba.Windows
         private void _otherNodesListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _otherNodesListView.SelectedItems;
-            if (selectItems == null) return;
 
-            _otherNodesCopyContextMenuItem.IsEnabled = (selectItems.Count > 0);
+            _otherNodesCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var nodes = Clipboard.GetNodes();
@@ -1028,15 +1027,15 @@ namespace Amoeba.Windows
                 return;
             }
 
-            var item = _keywordsListView.SelectedItem as Keyword;
+            var item = _keywordsListView.SelectedItem as string;
             if (item == null) return;
 
-            _keywordTextBox.Text = item.Value;
+            _keywordTextBox.Text = item;
         }
 
         private void _keywordUpButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _keywordsListView.SelectedItem as Keyword;
+            var item = _keywordsListView.SelectedItem as string;
             if (item == null) return;
 
             var selectIndex = _keywordsListView.SelectedIndex;
@@ -1051,7 +1050,7 @@ namespace Amoeba.Windows
 
         private void _keywordDownButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _keywordsListView.SelectedItem as Keyword;
+            var item = _keywordsListView.SelectedItem as string;
             if (item == null) return;
 
             var selectIndex = _keywordsListView.SelectedIndex;
@@ -1067,9 +1066,9 @@ namespace Amoeba.Windows
         private void _keywordAddButton_Click(object sender, RoutedEventArgs e)
         {
             if (_keywordTextBox.Text == "") return;
-            if (string.IsNullOrWhiteSpace(new Keyword() { HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512, Value = _keywordTextBox.Text }.Value)) return;
+            if (string.IsNullOrWhiteSpace(_keywordTextBox.Text)) return;
 
-            var keyword = new Keyword() { HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512, Value = _keywordTextBox.Text };
+            var keyword = _keywordTextBox.Text;
             if (_keywords.Contains(keyword)) return;
             _keywords.Add(keyword);
 
@@ -1083,21 +1082,18 @@ namespace Amoeba.Windows
         private void _keywordEditButton_Click(object sender, RoutedEventArgs e)
         {
             if (_keywordTextBox.Text == "") return;
-            if (string.IsNullOrWhiteSpace(new Keyword() { HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512, Value = _keywordTextBox.Text }.Value)) return;
+            if (string.IsNullOrWhiteSpace(_keywordTextBox.Text)) return;
 
-            var keyword = new Keyword() { HashAlgorithm = Library.Net.Amoeba.HashAlgorithm.Sha512, Value = _keywordTextBox.Text };
+            var keyword = _keywordTextBox.Text;
             if (_keywords.Contains(keyword)) return;
 
             int selectIndex = _keywordsListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            var item = _keywordsListView.SelectedItem as Keyword;
-            if (item == null) return;
+            _keywords[selectIndex] = _keywordTextBox.Text;
 
-            item.Value = _keywordTextBox.Text;
-
-            _keywordsListView.SelectedIndex = selectIndex;
             _keywordsListView.Items.Refresh();
+            _keywordsListView.SelectedIndex = selectIndex;
             _keywordsListViewUpdate();
         }
 
@@ -1108,7 +1104,7 @@ namespace Amoeba.Windows
 
             _keywordTextBox.Text = "";
 
-            foreach (var item in _keywordsListView.SelectedItems.OfType<Keyword>().ToArray())
+            foreach (var item in _keywordsListView.SelectedItems.OfType<string>().ToArray())
             {
                 _keywords.Remove(item);
             }
@@ -1164,7 +1160,7 @@ namespace Amoeba.Windows
             _miscellaneousConnectionCountTextBox.Text = ConnectionsWindow.GetStringToInt(_miscellaneousConnectionCountTextBox.Text).ToString();
         }
 
-        private void _miscellaneousSearchingConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void _miscellaneousCacheConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             _miscellaneousDownloadingConnectionCountTextBox.Text = ConnectionsWindow.GetStringToInt(_miscellaneousDownloadingConnectionCountTextBox.Text).ToString();
         }
@@ -1217,8 +1213,8 @@ namespace Amoeba.Windows
                 _amoebaManager.BaseNode = _baseNode.DeepClone();
                 _amoebaManager.SetOtherNodes(_otherNodes.Where(n => n != null && n.Id != null && n.Uris.Count != 0));
 
-                _amoebaManager.SearchKeywords.Clear();
-                _amoebaManager.SearchKeywords.AddRange(_keywords);
+                Settings.Instance.Global_SearchKeywords.Clear();
+                Settings.Instance.Global_SearchKeywords.AddRange(_keywords);
 
                 int count = int.Parse(_miscellaneousConnectionCountTextBox.Text);
                 _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 50), 1);
@@ -1232,8 +1228,13 @@ namespace Amoeba.Windows
                 _amoebaManager.Filters.Clear();
                 _amoebaManager.Filters.AddRange(_clientFilters.Select(n => n.DeepClone()));
 
-                _amoebaManager.ListenUris.Clear();
-                _amoebaManager.ListenUris.AddRange(_listenUris);
+                if (!Collection.Equals(_amoebaManager.ListenUris, _listenUris))
+                {
+                    _amoebaManager.ListenUris.Clear();
+                    _amoebaManager.ListenUris.AddRange(_listenUris);
+
+                    _autoBaseNodeSettingManager.Restart();
+                }
 
                 string path = _miscellaneousDownloadDirectoryTextBox.Text;
 
@@ -1250,9 +1251,9 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_SearchFilterSettings_State = 0;
 
-            if (_miscellaneousSearchFilterSearchingCheckBox.IsChecked.Value)
+            if (_miscellaneousSearchFilterCacheCheckBox.IsChecked.Value)
             {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Searching;
+                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Cache;
             }
             if (_miscellaneousSearchFilterUploadingCheckBox.IsChecked.Value)
             {

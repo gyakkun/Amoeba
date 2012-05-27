@@ -21,6 +21,7 @@ namespace Amoeba.Properties
             : base(new List<Library.Configuration.ISettingsContext>()
             {
                 new Library.Configuration.SettingsContext<List<DigitalSignature>>() { Name = "Global_DigitalSignatureCollection", Value = new List<DigitalSignature>() },
+                new Library.Configuration.SettingsContext<List<string>>() { Name = "Global_SearchKeywords", Value = new List<string>() },
                 new Library.Configuration.SettingsContext<List<string>>() { Name = "Global_UploadKeywords", Value = new List<string>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_UseLanguage", Value = "English" },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
@@ -73,18 +74,18 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Value_Width", Value = 100 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Grid_ColumnDefinitions_Width", Value = -1 },
 
-                new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "SearchControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
-                new Library.Configuration.SettingsContext<string>() { Name = "SearchControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "SearchControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_Grid_ColumnDefinitions_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Signature_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_State_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Keywords_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_CreationTime_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Length_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Comment_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Hash_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "CacheControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
+                new Library.Configuration.SettingsContext<string>() { Name = "CacheControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "CacheControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_Grid_ColumnDefinitions_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Signature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Keywords_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Comment_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Hash_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Left", Value = 120 },
@@ -222,6 +223,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_DigitalSignatureCollection"] = value;
+                }
+            }
+        }
+
+        public List<string> Global_SearchKeywords
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (List<string>)this["Global_SearchKeywords"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_SearchKeywords"] = value;
                 }
             }
         }
@@ -1106,13 +1126,13 @@ namespace Amoeba.Properties
         }
 
 
-        public Windows.SearchTreeItem SearchControl_SearchTreeItem
+        public Windows.SearchTreeItem CacheControl_SearchTreeItem
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (Windows.SearchTreeItem)this["SearchControl_SearchTreeItem"];
+                   return (Windows.SearchTreeItem)this["CacheControl_SearchTreeItem"];
                 }
             }
 
@@ -1120,18 +1140,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_SearchTreeItem"] = value;
+                    this["CacheControl_SearchTreeItem"] = value;
                 }
             }
         }
 
-        public string SearchControl_LastHeaderClicked
+        public string CacheControl_LastHeaderClicked
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["SearchControl_LastHeaderClicked"];
+                   return (string)this["CacheControl_LastHeaderClicked"];
                 }
             }
 
@@ -1139,18 +1159,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_LastHeaderClicked"] = value;
+                    this["CacheControl_LastHeaderClicked"] = value;
                 }
             }
         }
 
-        public ListSortDirection SearchControl_ListSortDirection
+        public ListSortDirection CacheControl_ListSortDirection
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["SearchControl_ListSortDirection"];
+                   return (ListSortDirection)this["CacheControl_ListSortDirection"];
                 }
             }
 
@@ -1158,18 +1178,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_ListSortDirection"] = value;
+                    this["CacheControl_ListSortDirection"] = value;
                 }
             }
         }
 
-        public double SearchControl_Grid_ColumnDefinitions_Width
+        public double CacheControl_Grid_ColumnDefinitions_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_Grid_ColumnDefinitions_Width"];
+                   return (double)this["CacheControl_Grid_ColumnDefinitions_Width"];
                 }
             }
 
@@ -1177,18 +1197,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_Grid_ColumnDefinitions_Width"] = value;
+                    this["CacheControl_Grid_ColumnDefinitions_Width"] = value;
                 }
             }
         }
 
-        public double SearchControl_GridViewColumn_Name_Width
+        public double CacheControl_GridViewColumn_Name_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Name_Width"];
+                   return (double)this["CacheControl_GridViewColumn_Name_Width"];
                 }
             }
 
@@ -1196,18 +1216,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_GridViewColumn_Name_Width"] = value;
+                    this["CacheControl_GridViewColumn_Name_Width"] = value;
                 }
             }
         }
 
-        public double SearchControl_GridViewColumn_Signature_Width
+        public double CacheControl_GridViewColumn_Signature_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Signature_Width"];
+                   return (double)this["CacheControl_GridViewColumn_Signature_Width"];
                 }
             }
 
@@ -1215,18 +1235,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_GridViewColumn_Signature_Width"] = value;
+                    this["CacheControl_GridViewColumn_Signature_Width"] = value;
                 }
             }
         }
 
-        public double SearchControl_GridViewColumn_State_Width
+        public double CacheControl_GridViewColumn_State_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_State_Width"];
+                   return (double)this["CacheControl_GridViewColumn_State_Width"];
                 }
             }
 
@@ -1234,18 +1254,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_GridViewColumn_State_Width"] = value;
+                    this["CacheControl_GridViewColumn_State_Width"] = value;
                 }
             }
         }
 
-        public double SearchControl_GridViewColumn_Keywords_Width
+        public double CacheControl_GridViewColumn_Keywords_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Keywords_Width"];
+                   return (double)this["CacheControl_GridViewColumn_Keywords_Width"];
                 }
             }
 
@@ -1253,18 +1273,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_GridViewColumn_Keywords_Width"] = value;
+                    this["CacheControl_GridViewColumn_Keywords_Width"] = value;
                 }
             }
         }
 
-        public double SearchControl_GridViewColumn_CreationTime_Width
+        public double CacheControl_GridViewColumn_CreationTime_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_CreationTime_Width"];
+                   return (double)this["CacheControl_GridViewColumn_CreationTime_Width"];
                 }
             }
 
@@ -1272,18 +1292,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_GridViewColumn_CreationTime_Width"] = value;
+                    this["CacheControl_GridViewColumn_CreationTime_Width"] = value;
                 }
             }
         }
 
-        public double SearchControl_GridViewColumn_Length_Width
+        public double CacheControl_GridViewColumn_Length_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Length_Width"];
+                   return (double)this["CacheControl_GridViewColumn_Length_Width"];
                 }
             }
 
@@ -1291,18 +1311,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_GridViewColumn_Length_Width"] = value;
+                    this["CacheControl_GridViewColumn_Length_Width"] = value;
                 }
             }
         }
 
-        public double SearchControl_GridViewColumn_Comment_Width
+        public double CacheControl_GridViewColumn_Comment_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Comment_Width"];
+                   return (double)this["CacheControl_GridViewColumn_Comment_Width"];
                 }
             }
 
@@ -1310,18 +1330,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_GridViewColumn_Comment_Width"] = value;
+                    this["CacheControl_GridViewColumn_Comment_Width"] = value;
                 }
             }
         }
 
-        public double SearchControl_GridViewColumn_Hash_Width
+        public double CacheControl_GridViewColumn_Hash_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Hash_Width"];
+                   return (double)this["CacheControl_GridViewColumn_Hash_Width"];
                 }
             }
 
@@ -1329,7 +1349,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_GridViewColumn_Hash_Width"] = value;
+                    this["CacheControl_GridViewColumn_Hash_Width"] = value;
                 }
             }
         }
