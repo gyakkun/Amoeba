@@ -1018,21 +1018,29 @@ namespace Amoeba.Windows
             }
             else if (_listView.SelectedItem is SeedListViewItem)
             {
-                var selectSeedListViewItem = _listView.SelectedItem as SeedListViewItem;
-                if (selectSeedListViewItem == null) return;
+                var selectSeedListViewItems = _listView.SelectedItems.OfType<SeedListViewItem>();
+                if (selectSeedListViewItems == null) return;
 
                 if (!this.DigitalSignatureRelease(_treeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-                var selectSeed = selectSeedListViewItem.Value.DeepClone();
-                if (selectSeed == null) return;
+                var selectSeeds = (IList<Seed>)selectSeedListViewItems.Select(n => n.Value.DeepClone()).ToList();
+                if (selectSeeds == null) return;
 
-                SeedEditWindow window = new SeedEditWindow(ref selectSeed, _amoebaManager);
+                SeedEditWindow window = new SeedEditWindow(ref selectSeeds, _amoebaManager);
                 window.Owner = _mainWindow;
 
                 if (window.ShowDialog() == true)
                 {
-                    selectBoxTreeViewItem.Value.Seeds.Remove(selectSeedListViewItem.Value);
-                    selectBoxTreeViewItem.Value.Seeds.Add(selectSeed);
+                    foreach (var item in selectSeedListViewItems)
+                    {
+                        selectBoxTreeViewItem.Value.Seeds.Remove(item.Value);
+                    }
+
+                    foreach (var seed in selectSeeds)
+                    {
+                        selectBoxTreeViewItem.Value.Seeds.Add(seed);
+                    }
+
                     selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
                     selectBoxTreeViewItem.Update();

@@ -397,7 +397,11 @@ namespace Amoeba.Windows
                 var searchTreeItem = new SearchTreeItem();
                 searchTreeItem.SearchItem = new SearchItem();
                 searchTreeItem.SearchItem.Name = _textBox.Text;
-                searchTreeItem.SearchItem.SearchNameCollection.Add(new SearchContains<string>() { Contains = true, Value = _textBox.Text });
+                searchTreeItem.SearchItem.SearchNameCollection.Add(new SearchContains<string>()
+                {
+                    Contains = true,
+                    Value = _textBox.Text
+                });
 
                 selectSearchTreeViewItem.Value.Items.Add(searchTreeItem);
 
@@ -460,6 +464,21 @@ namespace Amoeba.Windows
             else _listViewUploadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploaded));
         }
 
+        private void _listViewEditMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems.OfType<SearchListViewItem>();
+            if (selectSearchListViewItems == null) return;
+
+            var selectSeeds = (IList<Seed>)selectSearchListViewItems.Select(n => n.Value).ToList();
+            if (selectSeeds == null) return;
+
+            SeedEditWindow window = new SeedEditWindow(ref selectSeeds, _amoebaManager);
+            window.Owner = _mainWindow;
+            window.ShowDialog();
+
+            this.Update();
+        }
+        
         private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectSearchListViewItems = _listView.SelectedItems;

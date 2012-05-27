@@ -410,60 +410,60 @@ namespace Amoeba.Windows
                     {
                         Name = "Picture"
                     };
-                    pictureSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    pictureSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
                         Contains = true,
-                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(jpeg|jpg|png|jp2|gif|bmp)$" }
+                        Value = "Picture",
                     });
 
                     SearchItem movieSearchItem = new SearchItem()
                     {
                         Name = "Movie"
                     };
-                    movieSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    movieSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
                         Contains = true,
-                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(mpeg|mpg|avi|divx|asf|wmv|rm|ogm|mov|flv|mp4|wav|mid|aif)$" }
+                        Value = "Movie",
                     });
 
                     SearchItem musicSearchItem = new SearchItem()
                     {
                         Name = "Music"
                     };
-                    musicSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    musicSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
                         Contains = true,
-                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(mp3|ogg|wav|mid|mod|flac|sid)$" }
+                        Value = "Music",
                     });
 
                     SearchItem archiveSearchItem = new SearchItem()
                     {
                         Name = "Archive"
                     };
-                    archiveSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    archiveSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
                         Contains = true,
-                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(zip|rar|gz|arj|ace|bz|tar|tgz|txz|7z|lzh|lhz|iso)$" }
+                        Value = "Archive",
                     });
 
                     SearchItem documentSearchItem = new SearchItem()
                     {
                         Name = "Document"
                     };
-                    documentSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    documentSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
                         Contains = true,
-                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(dov|txt|pdf|dvi|ps|odt|sxw|rtf|pdb|psw)$" }
+                        Value = "Document",
                     });
 
                     SearchItem ExecutableSearchItem = new SearchItem()
                     {
                         Name = "Executable"
                     };
-                    ExecutableSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>()
+                    ExecutableSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
                         Contains = true,
-                        Value = new SearchRegex() { IsIgnoreCase = true, Value = @"(.*)\.(exe|vbs|jar|sh|bat|bin|scr|msi)$" }
+                        Value = "Executable",
                     });
 
                     Settings.Instance.CacheControl_SearchTreeItem.Items.Clear();

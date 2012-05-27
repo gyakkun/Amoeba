@@ -23,12 +23,12 @@ namespace Amoeba.Windows
     /// </summary>
     partial class SeedEditWindow : Window
     {
-        private Seed _seed;
+        private IList<Seed> _seeds;
         private AmoebaManager _amoebaManager;
 
-        public SeedEditWindow(ref Seed seed, AmoebaManager amoebaManager)
+        public SeedEditWindow(ref IList<Seed> seeds, AmoebaManager amoebaManager)
         {
-            _seed = seed;
+            _seeds = seeds;
             _amoebaManager = amoebaManager;
 
             var digitalSignatureCollection = new List<object>();
@@ -42,11 +42,22 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            _nameTextBox.Text = _seed.Name;
+            if (_seeds.Count == 0)
+            {
+                throw new ArgumentOutOfRangeException("seeds");
+            }
+            else if (_seeds.Count == 1)
+            {
+                _nameTextBox.Text = _seeds[0].Name;
+            }
+            else
+            {
+                _nameTextBox.IsEnabled = false;
+            }
 
-            if (seed.Keywords.Count >= 1) _keywordsComboBox1.Text = seed.Keywords[0];
-            if (seed.Keywords.Count >= 2) _keywordsComboBox2.Text = seed.Keywords[1];
-            if (seed.Keywords.Count >= 3) _keywordsComboBox3.Text = seed.Keywords[2];
+            if (_seeds[0].Keywords.Count >= 1) _keywordsComboBox1.Text = _seeds[0].Keywords[0];
+            if (_seeds[0].Keywords.Count >= 2) _keywordsComboBox2.Text = _seeds[0].Keywords[1];
+            if (_seeds[0].Keywords.Count >= 3) _keywordsComboBox3.Text = _seeds[0].Keywords[2];
 
             _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = "" });
             _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = "" });
@@ -56,9 +67,10 @@ namespace Amoeba.Windows
             foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item });
             foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item });
 
+            _commentTextBox.Text = _seeds[0].Comment;
+
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
             _signatureComboBox.SelectedIndex = 1;
-            _commentTextBox.Text = _seed.Comment;
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
@@ -75,18 +87,25 @@ namespace Amoeba.Windows
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
-            _seed.Name = name;
-            _seed.Keywords.Clear();
-            _seed.Keywords.AddRange(keywords);
-            _seed.Comment = comment;
+            foreach (var seed in _seeds)
+            {
+                if (_seeds.Count == 1)
+                {
+                    seed.Name = name;
+                }
 
-            if (digitalSignature == null)
-            {
-                _seed.CreateCertificate(null);
-            }
-            else
-            {
-                _seed.CreateCertificate(digitalSignature);
+                seed.Keywords.Clear();
+                seed.Keywords.AddRange(keywords);
+                seed.Comment = comment;
+
+                if (digitalSignature == null)
+                {
+                    seed.CreateCertificate(null);
+                }
+                else
+                {
+                    seed.CreateCertificate(digitalSignature);
+                }
             }
 
             Settings.Instance.Global_UploadKeywords.Clear();

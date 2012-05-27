@@ -82,6 +82,7 @@
             </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
+                    <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=CacheControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=CacheControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
