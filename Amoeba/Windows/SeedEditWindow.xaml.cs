@@ -52,7 +52,7 @@ namespace Amoeba.Windows
             }
             else
             {
-                _nameTextBox.IsEnabled = false;
+                _nameTextBox.IsReadOnly = true;
             }
 
             if (_seeds[0].Keywords.Count >= 1) _keywordsComboBox1.Text = _seeds[0].Keywords[0];

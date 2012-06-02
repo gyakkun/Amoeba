@@ -47,8 +47,6 @@ namespace Amoeba.Windows
         private Dictionary<string, string> _configrationDirectoryPaths = new Dictionary<string, string>();
         private string _logPath = null;
 
-        private bool _disposed = false;
-
         public MainWindow()
         {
             _bufferManager = new BufferManager();
@@ -150,30 +148,6 @@ namespace Amoeba.Windows
                 "Amoeba:\t\t{0}\r\n" +
                 "OS:\t\t{1} ({2})\r\n" +
                 ".NET Framework:\t{3}", App.AmoebaVersion.ToString(3), osName, osInfo.VersionString, Environment.Version);
-        }
-
-        private static void CopyDirectory(string sourceDirName, string destDirName)
-        {
-            if (!System.IO.Directory.Exists(destDirName))
-            {
-                System.IO.Directory.CreateDirectory(destDirName);
-                System.IO.File.SetAttributes(destDirName, System.IO.File.GetAttributes(sourceDirName));
-            }
-
-            if (destDirName[destDirName.Length - 1] != System.IO.Path.DirectorySeparatorChar)
-            {
-                destDirName = destDirName + System.IO.Path.DirectorySeparatorChar;
-            }
-
-            foreach (string file in System.IO.Directory.GetFiles(sourceDirName))
-            {
-                System.IO.File.Copy(file, destDirName + System.IO.Path.GetFileName(file), true);
-            }
-
-            foreach (string dir in System.IO.Directory.GetDirectories(sourceDirName))
-            {
-                CopyDirectory(dir, destDirName + System.IO.Path.GetFileName(dir));
-            }
         }
 
         private void Setting_Log()
@@ -610,7 +584,6 @@ namespace Amoeba.Windows
             for (; ; )
             {
                 Thread.Sleep(1000);
-                if (_disposed) return;
 
                 try
                 {
@@ -672,7 +645,6 @@ namespace Amoeba.Windows
             for (; ; )
             {
                 Thread.Sleep(1000);
-                if (_disposed) return;
 
                 if (spaceCheckStopwatch.Elapsed > new TimeSpan(0, 1, 0))
                 {

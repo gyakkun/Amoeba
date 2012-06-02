@@ -327,7 +327,9 @@
     <Content Include="Properties\Amoeba.readme">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="app.manifest" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Library\Library.Collections\Library.Collections.csproj">
