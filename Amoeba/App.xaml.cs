@@ -26,8 +26,6 @@ namespace Amoeba
     {
         public static Version AmoebaVersion { get; private set; }
         public static Dictionary<string, string> DirectoryPaths { get; private set; }
-        public static string[] UpdateSignature { get; private set; }
-        public static Node[] Nodes { get; private set; }
         public static string SelectTab { get; set; }
         private FileStream _lockStream = null;
         private List<Process> _processList = new List<Process>();
@@ -36,7 +34,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 8);
+            App.AmoebaVersion = new Version(0, 1, 9);
 
             App.DirectoryPaths = new Dictionary<string, string>();
             App.DirectoryPaths["Base"] = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
@@ -49,9 +47,6 @@ namespace Amoeba
             App.DirectoryPaths["Icons"] = Path.Combine(App.DirectoryPaths["Core"], "Icons");
             App.DirectoryPaths["Languages"] = Path.Combine(App.DirectoryPaths["Core"], "Languages");
             App.DirectoryPaths["Input"] = Path.Combine(App.DirectoryPaths["Base"], "Input");
-
-            App.UpdateSignature = new string[] { };
-            App.Nodes = new Node[] { };
 
             foreach (var item in App.DirectoryPaths.Values)
             {
@@ -486,55 +481,6 @@ namespace Amoeba
                         }
                     }
                 }
-            }
-
-            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt")))
-            {
-                using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt"), false, new UTF8Encoding(false)))
-                {
-                    writer.WriteLine("Lyrise@FZkdeQlERqLezL_jgG5dSlbzbqEsPm");
-                }
-            }
-
-            using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt"), new UTF8Encoding(false)))
-            {
-                string item = null;
-                List<string> list = new List<string>();
-
-                while ((item = reader.ReadLine()) != null)
-                {
-                    list.Add(item);
-                }
-
-                App.UpdateSignature = list.ToArray();
-            }
-
-            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Nodes.txt")))
-            {
-                using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Nodes.txt"), false, new UTF8Encoding(false)))
-                {
-
-                }
-            }
-
-            using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Nodes.txt"), new UTF8Encoding(false)))
-            {
-                string item = null;
-                List<Node> list = new List<Node>();
-
-                while ((item = reader.ReadLine()) != null)
-                {
-                    try
-                    {
-                        list.Add(AmoebaConverter.FromNodeString(item));
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-
-                App.Nodes = list.ToArray();
             }
         }
 

@@ -332,8 +332,6 @@ namespace Amoeba.Windows
                     _amoebaManager.BaseNode = baseNode;
                 }
 
-                _amoebaManager.SetOtherNodes(App.Nodes);
-
                 if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
                 {
                     initFlag = true;
@@ -671,65 +669,6 @@ namespace Amoeba.Windows
                     catch (Exception)
                     {
 
-                    }
-                }
-
-                if (updateStopwatch.Elapsed > new TimeSpan(0, 5, 0))
-                {
-                    updateStopwatch.Restart();
-
-                    if (Settings.Instance.Global_AutoUpdate_IsEnabled)
-                    {
-                        try
-                        {
-                            Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
-                            Version version = App.AmoebaVersion;
-                            Seed updateKey = null;
-
-                            foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
-                            {
-                                string name = Path.GetFileName(path);
-
-                                if (name.StartsWith("Amoeba"))
-                                {
-                                    var match = regex.Match(name);
-
-                                    if (match.Success)
-                                    {
-                                        var tempVersion = new Version(match.Groups[1].Value);
-                                        version = (version < tempVersion) ? tempVersion : version;
-                                    }
-                                }
-                            }
-
-                            foreach (var key in _amoebaManager.Seeds)
-                            {
-                                if (key.Name.StartsWith("Amoeba") && App.UpdateSignature.Contains(MessageConverter.ToSignatureString(key.Certificate)))
-                                {
-                                    var match = regex.Match(key.Name);
-
-                                    if (match.Success)
-                                    {
-                                        var tempVersion = new Version(match.Groups[1].Value);
-
-                                        if (version < tempVersion)
-                                        {
-                                            version = tempVersion;
-                                            updateKey = key;
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (updateKey != null)
-                            {
-                                _amoebaManager.Download(updateKey, App.DirectoryPaths["Update"], 6);
-                            }
-                        }
-                        catch (Exception)
-                        {
-
-                        }
                     }
                 }
 

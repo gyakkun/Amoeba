@@ -67,7 +67,6 @@ namespace Amoeba.Windows
             _miscellaneousDownloadingConnectionCountTextBox.Text = _amoebaManager.DownloadingConnectionCountLowerLimit.ToString();
             _miscellaneousUploadingConnectionCountTextBox.Text = _amoebaManager.UploadingConnectionCountLowerLimit.ToString();
             _miscellaneousCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size);
-            _miscellaneousAutoUpdateCheckBox.IsChecked = Settings.Instance.Global_AutoUpdate_IsEnabled;
             _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
 
             foreach (var item in Enum.GetValues(typeof(ConnectionType)))
@@ -1246,7 +1245,6 @@ namespace Amoeba.Windows
                 _amoebaManager.DownloadDirectory = path;
             }
 
-            Settings.Instance.Global_AutoUpdate_IsEnabled = _miscellaneousAutoUpdateCheckBox.IsChecked.Value;
             Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
 
             Settings.Instance.Global_SearchFilterSettings_State = 0;

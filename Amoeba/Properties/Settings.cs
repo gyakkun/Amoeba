@@ -25,7 +25,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<List<string>>() { Name = "Global_UploadKeywords", Value = new List<string>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_UseLanguage", Value = "English" },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
-                new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoUpdate_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<SearchState>() { Name = "Global_SearchFilterSettings_State", Value = 0 },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
@@ -299,25 +298,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_IsStart"] = value;
-                }
-            }
-        }
-
-        public bool Global_AutoUpdate_IsEnabled
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (bool)this["Global_AutoUpdate_IsEnabled"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["Global_AutoUpdate_IsEnabled"] = value;
                 }
             }
         }
