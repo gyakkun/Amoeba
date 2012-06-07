@@ -203,7 +203,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Windows\ListViewEx.cs" />
     <Compile Include="Windows\UploadListWindow.xaml.cs">
