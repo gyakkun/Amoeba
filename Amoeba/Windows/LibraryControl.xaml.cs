@@ -564,6 +564,29 @@ namespace Amoeba.Windows
             _treeViewItem.Sort();
         }
 
+        private void _textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                var selectBoxTreeViewItem = _treeView.SelectedItem as BoxTreeViewItem;
+                if (selectBoxTreeViewItem == null) return;
+
+                if (!this.DigitalSignatureRelease(_treeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
+
+                Box box;
+
+                box = new Box() { Name = _textBox.Text, CreationTime = DateTime.UtcNow };
+
+                selectBoxTreeViewItem.Value.Boxes.Add(box);
+                selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
+
+                selectBoxTreeViewItem.Update();
+
+                _textBox.Text = "";
+                this.Update();
+            }
+        }
+        
         #region Grid
 
         private Point _startPoint = new Point(-1, -1);

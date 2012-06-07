@@ -500,7 +500,8 @@ namespace Amoeba.Windows
 
                     var torConnectionFilter = new ConnectionFilter()
                     {
-                        ConnectionType = ConnectionType.None,
+                        ConnectionType = ConnectionType.Socks5Proxy,
+                        ProxyUri = "tcp:127.0.0.1:9050",
                         UriCondition = new UriCondition()
                         {
                             Value = @"tor:.*",

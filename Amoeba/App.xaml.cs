@@ -11,8 +11,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using System.Xml;
 using Ionic.Zip;
 using Library;
+using Library.Io;
 using Library.Net.Amoeba;
 
 namespace Amoeba
@@ -28,12 +30,13 @@ namespace Amoeba
         public static Node[] Nodes { get; private set; }
         public static string SelectTab { get; set; }
         private FileStream _lockStream = null;
+        private List<Process> _processList = new List<Process>();
 
         public App()
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 7);
+            App.AmoebaVersion = new Version(0, 1, 8);
 
             App.DirectoryPaths = new Dictionary<string, string>();
             App.DirectoryPaths["Base"] = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
@@ -361,11 +364,135 @@ namespace Amoeba
 
         private void Setting()
         {
+            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml")))
+            {
+                using (XmlTextWriter xml = new XmlTextWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
+                {
+                    xml.Formatting = Formatting.Indented;
+                    xml.WriteStartDocument();
+
+                    xml.WriteStartElement("Configuration");
+
+                    {
+                        xml.WriteStartElement("Process");
+                        xml.WriteElementString("Path", @"Tor\tor.exe");
+                        xml.WriteElementString("Arguments", "-f torrc");
+                        xml.WriteElementString("WorkingDirectory", "Tor");
+
+                        xml.WriteEndElement(); //Process
+                    }
+
+                    xml.WriteEndElement(); //Configuration
+
+                    xml.WriteEndDocument();
+                    xml.Flush();
+                }
+            }
+
+            using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
+            using (XmlTextReader xml = new XmlTextReader(r))
+            {
+                while (xml.Read())
+                {
+                    if (xml.NodeType == XmlNodeType.Element)
+                    {
+                        if (xml.LocalName == "Process")
+                        {
+                            string path = null;
+                            string arguments = null;
+                            string workingDirectory = null;
+
+                            using (var xmlReader = xml.ReadSubtree())
+                            {
+                                while (xmlReader.Read())
+                                {
+                                    if (xmlReader.NodeType == XmlNodeType.Element)
+                                    {
+                                        if (xmlReader.LocalName == "Path")
+                                        {
+                                            try
+                                            {
+                                                path = xmlReader.ReadString();
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+                                        }
+                                        else if (xml.LocalName == "Arguments")
+                                        {
+                                            try
+                                            {
+                                                arguments = xmlReader.ReadString();
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+                                        }
+                                        else if (xmlReader.LocalName == "WorkingDirectory")
+                                        {
+                                            try
+                                            {
+                                                workingDirectory = xmlReader.ReadString();
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            foreach (var p in Process.GetProcesses())
+                            {
+                                try
+                                {
+                                    if (p.MainModule.FileName == Path.GetFullPath(path))
+                                    {
+                                        try
+                                        {
+                                            p.Kill();
+                                        }
+                                        catch (Exception)
+                                        {
+
+                                        }
+                                    }
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+                            }
+
+                            try
+                            {
+                                Process process = new Process();
+                                process.StartInfo.FileName = path;
+                                process.StartInfo.Arguments = arguments;
+                                process.StartInfo.WorkingDirectory = workingDirectory;
+                                process.StartInfo.CreateNoWindow = true;
+                                process.StartInfo.UseShellExecute = false;
+                                process.Start();
+
+                                _processList.Add(process);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
+
             if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt")))
             {
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "UpdateSignature.txt"), false, new UTF8Encoding(false)))
                 {
-                    writer.WriteLine("A-ZQfOIAtTep6voYLXcC");
+                    writer.WriteLine("Lyrise@FZkdeQlERqLezL_jgG5dSlbzbqEsPm");
                 }
             }
 
@@ -386,6 +513,7 @@ namespace Amoeba
             {
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Nodes.txt"), false, new UTF8Encoding(false)))
                 {
+
                 }
             }
 
@@ -416,6 +544,18 @@ namespace Amoeba
             {
                 _lockStream.Close();
                 _lockStream = null;
+            }
+
+            foreach (var p in _processList)
+            {
+                try
+                {
+                    p.Kill();
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
     }
