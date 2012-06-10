@@ -1110,8 +1110,8 @@ namespace Amoeba.Windows
             var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value);
             var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);
 
-            Clipboard.SetBoxes(boxes.Select(n => n.DeepClone()));
-            Clipboard.SetSeeds(seeds.Select(n => n.DeepClone()));
+            Clipboard.SetBoxes(boxes);
+            Clipboard.SetSeeds(seeds);
 
             foreach (var item in boxes)
             {
@@ -1135,8 +1135,8 @@ namespace Amoeba.Windows
             var boxes = _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value);
             var seeds = _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value);
 
-            Clipboard.SetBoxes(boxes.Select(n => n.DeepClone()));
-            Clipboard.SetSeeds(seeds.Select(n => n.DeepClone()));
+            Clipboard.SetBoxes(boxes);
+            Clipboard.SetSeeds(seeds);
         }
 
         private void _listViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1146,15 +1146,16 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var item in boxes)
+            foreach (var box in boxes)
             {
-                sb.AppendLine(MessageConverter.ToInfoMessage(item));
+                sb.AppendLine(MessageConverter.ToInfoMessage(box));
                 sb.AppendLine();
             }
 
-            foreach (var item in seeds)
+            foreach (var seed in seeds)
             {
-                sb.AppendLine(MessageConverter.ToInfoMessage(item));
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
+                sb.AppendLine(MessageConverter.ToInfoMessage(seed));
                 sb.AppendLine();
             }
 
@@ -1179,8 +1180,8 @@ namespace Amoeba.Windows
 
             if (!this.DigitalSignatureRelease(_treeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-            selectBoxTreeViewItem.Value.Boxes.AddRange(Clipboard.GetBoxes().Select(n => n.DeepClone()));
-            selectBoxTreeViewItem.Value.Seeds.AddRange(Clipboard.GetSeeds().Select(n => n.DeepClone()));
+            selectBoxTreeViewItem.Value.Boxes.AddRange(Clipboard.GetBoxes());
+            selectBoxTreeViewItem.Value.Seeds.AddRange(Clipboard.GetSeeds());
             selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
             selectBoxTreeViewItem.Update();
@@ -1372,7 +1373,7 @@ namespace Amoeba.Windows
             var list = _treeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().ToList();
             if (!this.DigitalSignatureRelease(_treeViewItem.GetLineage(selectBoxTreeViewItem).Where(n => n != selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-            Clipboard.SetBoxes(new List<Box>() { selectBoxTreeViewItem.Value.DeepClone() });
+            Clipboard.SetBoxes(new List<Box>() { selectBoxTreeViewItem.Value });
 
             list[list.Count - 2].Value.Boxes.Remove(selectBoxTreeViewItem.Value);
             list[list.Count - 2].Value.CreationTime = DateTime.UtcNow;
@@ -1387,7 +1388,7 @@ namespace Amoeba.Windows
             var selectBoxTreeViewItem = _treeView.SelectedItem as BoxTreeViewItem;
             if (selectBoxTreeViewItem == null) return;
 
-            Clipboard.SetBoxes(new List<Box>() { selectBoxTreeViewItem.Value.DeepClone() });
+            Clipboard.SetBoxes(new List<Box>() { selectBoxTreeViewItem.Value });
         }
 
         private void _treeViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1397,8 +1398,8 @@ namespace Amoeba.Windows
 
             if (!this.DigitalSignatureRelease(_treeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
-            selectBoxTreeViewItem.Value.Boxes.AddRange(Clipboard.GetBoxes().Select(n => n.DeepClone()));
-            selectBoxTreeViewItem.Value.Seeds.AddRange(Clipboard.GetSeeds().Select(n => n.DeepClone()));
+            selectBoxTreeViewItem.Value.Boxes.AddRange(Clipboard.GetBoxes());
+            selectBoxTreeViewItem.Value.Seeds.AddRange(Clipboard.GetSeeds());
             selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
 
             selectBoxTreeViewItem.Update();

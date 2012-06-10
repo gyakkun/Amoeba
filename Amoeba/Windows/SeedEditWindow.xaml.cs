@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -10,10 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Library.Net.Amoeba;
 using Amoeba.Properties;
-using System.IO;
 using Library.Net;
+using Library.Net.Amoeba;
 using Library.Security;
 
 namespace Amoeba.Windows
@@ -28,6 +28,8 @@ namespace Amoeba.Windows
 
         public SeedEditWindow(ref IList<Seed> seeds, AmoebaManager amoebaManager)
         {
+            if (seeds.Count == 0) throw new ArgumentOutOfRangeException("seeds");
+
             _seeds = seeds;
             _amoebaManager = amoebaManager;
 
@@ -42,17 +44,17 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            if (_seeds.Count == 0)
+            _nameTextBox.Text = _seeds[0].Name;
+
+            foreach (var seed in _seeds)
             {
-                throw new ArgumentOutOfRangeException("seeds");
-            }
-            else if (_seeds.Count == 1)
-            {
-                _nameTextBox.Text = _seeds[0].Name;
-            }
-            else
-            {
-                _nameTextBox.IsReadOnly = true;
+                if (_nameTextBox.Text != seed.Name)
+                {
+                    _nameTextBox.Text = "";
+                    _nameTextBox.IsReadOnly = true;
+
+                    break;
+                }
             }
 
             if (_seeds[0].Keywords.Count >= 1) _keywordsComboBox1.Text = _seeds[0].Keywords[0];
@@ -89,7 +91,7 @@ namespace Amoeba.Windows
 
             foreach (var seed in _seeds)
             {
-                if (_seeds.Count == 1)
+                if (!_nameTextBox.IsReadOnly)
                 {
                     seed.Name = name;
                 }

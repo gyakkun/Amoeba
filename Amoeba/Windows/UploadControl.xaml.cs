@@ -302,6 +302,7 @@ namespace Amoeba.Windows
             {
                 if (seed == null) continue;
 
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
                 sb.AppendLine(MessageConverter.ToInfoMessage(seed));
                 sb.AppendLine();
             }

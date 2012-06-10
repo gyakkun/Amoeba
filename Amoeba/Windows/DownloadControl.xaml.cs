@@ -307,7 +307,8 @@ namespace Amoeba.Windows
             foreach (var seed in selectItems.Cast<DownloadListViewItem>().Select(n=>n.Value))
             {
                 if (seed == null) continue;
-                
+
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
                 sb.AppendLine(MessageConverter.ToInfoMessage(seed));
                 sb.AppendLine();
             }

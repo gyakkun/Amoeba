@@ -432,6 +432,7 @@ namespace Amoeba.Windows
         {
             if (_refresh)
             {
+                _listViewEditMenuItem.IsEnabled = false;
                 _listViewCopyMenuItem.IsEnabled = false;
                 _listViewCopyInfoMenuItem.IsEnabled = false;
                 _listViewDeleteMenuItem.IsEnabled = false;
@@ -448,6 +449,7 @@ namespace Amoeba.Windows
 
             var selectItems = _listView.SelectedItems;
 
+            _listViewEditMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewFilterNameMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
@@ -469,29 +471,75 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems.OfType<SearchListViewItem>();
             if (selectSearchListViewItems == null) return;
 
-            var selectSeeds = (IList<Seed>)selectSearchListViewItems.Select(n => n.Value).ToList();
+            var selectSeeds = new HashSet<Seed>(selectSearchListViewItems.Select(n => n.Value));
             if (selectSeeds == null) return;
 
-            SeedEditWindow window = new SeedEditWindow(ref selectSeeds, _amoebaManager);
+            IList<Seed> seeds = new List<Seed>();
+
+            {
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Cache))
+                {
+                    foreach (var seed in _amoebaManager.Seeds)
+                    {
+                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                    }
+                }
+
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Uploading))
+                {
+                    foreach (var information in _amoebaManager.UploadingInformation)
+                    {
+                        if (information.Contains("Seed") && ((UploadState)information["State"]) != UploadState.Completed)
+                        {
+                            var seed = (Seed)information["Seed"];
+                            if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                        }
+                    }
+                }
+
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Downloading))
+                {
+                    foreach (var information in _amoebaManager.DownloadingInformation)
+                    {
+                        if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed)
+                        {
+                            var seed = (Seed)information["Seed"];
+                            if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                        }
+                    }
+                }
+
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Uploaded))
+                {
+                    foreach (var seed in _amoebaManager.UploadedSeeds)
+                    {
+                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                    }
+                }
+
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Downloaded))
+                {
+                    foreach (var seed in _amoebaManager.DownloadedSeeds)
+                    {
+                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                    }
+                }
+            }
+
+            SeedEditWindow window = new SeedEditWindow(ref seeds, _amoebaManager);
             window.Owner = _mainWindow;
             window.ShowDialog();
 
+            _recache = true;
+
             this.Update();
         }
-        
+
         private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
+            var seeds = _listView.SelectedItems.OfType<SearchListViewItem>().Select(n => n.Value);
 
-            var sb = new StringBuilder();
-
-            foreach (var seed in selectSearchListViewItems.Cast<SearchListViewItem>().Select(n => n.Value))
-            {
-                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
-            }
-
-            Clipboard.SetText(sb.ToString());
+            Clipboard.SetSeeds(seeds);
         }
 
         private void _listViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
@@ -503,6 +551,7 @@ namespace Amoeba.Windows
 
             foreach (var seed in selectSearchListViewItems.Cast<SearchListViewItem>().Select(n => n.Value))
             {
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
                 sb.AppendLine(MessageConverter.ToInfoMessage(seed));
                 sb.AppendLine();
             }
@@ -548,6 +597,18 @@ namespace Amoeba.Windows
                 _recache = true;
 
                 _listViewDeleteMenuItem_IsEnabled = true;
+
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                {
+                    try
+                    {
+                        this.Update();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }), null);
             }));
         }
 
@@ -589,6 +650,18 @@ namespace Amoeba.Windows
                 _recache = true;
 
                 _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
+
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                {
+                    try
+                    {
+                        this.Update();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }), null);
             }));
         }
 
@@ -630,6 +703,18 @@ namespace Amoeba.Windows
                 _recache = true;
 
                 _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
+
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                {
+                    try
+                    {
+                        this.Update();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }), null);
             }));
         }
 
@@ -667,6 +752,8 @@ namespace Amoeba.Windows
                 if (selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Contains(item)) continue;
                 selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Add(item);
             }
+
+            _recache = true;
 
             this.Update();
         }
@@ -1140,7 +1227,7 @@ namespace Amoeba.Windows
             var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectSearchTreeViewItem == null) return;
 
-            Clipboard.SetSearchTreeItems(new List<SearchTreeItem>() { selectSearchTreeViewItem.Value.DeepClone() });
+            Clipboard.SetSearchTreeItems(new List<SearchTreeItem>() { selectSearchTreeViewItem.Value });
 
             var list = _treeViewItem.GetLineage(selectSearchTreeViewItem).OfType<SearchTreeViewItem>().ToList();
 
@@ -1157,7 +1244,7 @@ namespace Amoeba.Windows
             var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectSearchTreeViewItem == null) return;
 
-            Clipboard.SetSearchTreeItems(new List<SearchTreeItem>() { selectSearchTreeViewItem.Value.DeepClone() });
+            Clipboard.SetSearchTreeItems(new List<SearchTreeItem>() { selectSearchTreeViewItem.Value });
         }
 
         private void _treeViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1165,7 +1252,7 @@ namespace Amoeba.Windows
             var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectSearchTreeViewItem == null) return;
 
-            foreach (var searchTreeitem in Clipboard.GetSearchTreeItems().Select(n => n.DeepClone()))
+            foreach (var searchTreeitem in Clipboard.GetSearchTreeItems())
             {
                 selectSearchTreeViewItem.Value.Items.Add(searchTreeitem);
             }

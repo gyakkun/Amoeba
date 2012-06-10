@@ -135,24 +135,24 @@ namespace Amoeba
 
         public static IEnumerable<Box> GetBoxes()
         {
-            return _boxList;
+            return _boxList.Select(n => n.DeepClone());
         }
 
         public static void SetBoxes(IEnumerable<Box> boxes)
         {
             _boxList.Clear();
-            _boxList.AddRange(boxes);
+            _boxList.AddRange(boxes.Select(n => n.DeepClone()));
         }
 
         public static IEnumerable<Windows.SearchTreeItem> GetSearchTreeItems()
         {
-            return _searchTreeItemList;
+            return _searchTreeItemList.Select(n => n.DeepClone());
         }
 
         public static void SetSearchTreeItems(List<Windows.SearchTreeItem> searchTreeItems)
         {
             _searchTreeItemList.Clear();
-            _searchTreeItemList.AddRange(searchTreeItems);
+            _searchTreeItemList.AddRange(searchTreeItems.Select(n => n.DeepClone()));
         }
     }
 }
