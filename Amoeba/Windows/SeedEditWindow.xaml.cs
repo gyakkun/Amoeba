@@ -91,22 +91,25 @@ namespace Amoeba.Windows
 
             foreach (var seed in _seeds)
             {
-                if (!_nameTextBox.IsReadOnly)
+                lock (seed.ThisLock)
                 {
-                    seed.Name = name;
-                }
+                    if (!_nameTextBox.IsReadOnly)
+                    {
+                        seed.Name = name;
+                    }
 
-                seed.Keywords.Clear();
-                seed.Keywords.AddRange(keywords);
-                seed.Comment = comment;
+                    seed.Keywords.Clear();
+                    seed.Keywords.AddRange(keywords);
+                    seed.Comment = comment;
 
-                if (digitalSignature == null)
-                {
-                    seed.CreateCertificate(null);
-                }
-                else
-                {
-                    seed.CreateCertificate(digitalSignature);
+                    if (digitalSignature == null)
+                    {
+                        seed.CreateCertificate(null);
+                    }
+                    else
+                    {
+                        seed.CreateCertificate(digitalSignature);
+                    }
                 }
             }
 

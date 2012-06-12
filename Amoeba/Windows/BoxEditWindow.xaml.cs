@@ -49,23 +49,26 @@ namespace Amoeba.Windows
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
-            
+
             string name = _nameTextBox.Text;
             string comment = _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
-            _box.Name = name;
-            _box.Comment = comment;
-            _box.CreationTime = DateTime.UtcNow;
+            lock (_box.ThisLock)
+            {
+                _box.Name = name;
+                _box.Comment = comment;
+                _box.CreationTime = DateTime.UtcNow;
 
-            if (digitalSignature == null)
-            {
-                _box.CreateCertificate(null);
-            }
-            else
-            {
-                _box.CreateCertificate(digitalSignature);
+                if (digitalSignature == null)
+                {
+                    _box.CreateCertificate(null);
+                }
+                else
+                {
+                    _box.CreateCertificate(digitalSignature);
+                }
             }
         }
 
