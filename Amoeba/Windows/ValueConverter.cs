@@ -341,6 +341,7 @@ namespace Amoeba.Windows
             throw new NotImplementedException();
         }
     }
+
     [ValueConversion(typeof(string), typeof(double))]
     class StringToDoubleConverter : IValueConverter
     {

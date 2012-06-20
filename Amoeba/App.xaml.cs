@@ -34,7 +34,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 10);
+            App.AmoebaVersion = new Version(0, 1, 11);
 
             App.DirectoryPaths = new Dictionary<string, string>();
             App.DirectoryPaths["Base"] = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));

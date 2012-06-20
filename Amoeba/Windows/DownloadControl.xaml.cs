@@ -190,7 +190,7 @@ namespace Amoeba.Windows
         {
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
             Thread.CurrentThread.IsBackground = true;
-            
+
             try
             {
                 for (; ; )
@@ -232,7 +232,14 @@ namespace Amoeba.Windows
 
                         }
 
-                        File.Delete(filePath);
+                        try
+                        {
+                            File.Delete(filePath);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                     }
                 }
             }

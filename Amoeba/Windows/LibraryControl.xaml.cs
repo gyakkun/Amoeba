@@ -392,7 +392,14 @@ namespace Amoeba.Windows
 
                         }
 
-                        File.Delete(filePath);
+                        try
+                        {
+                            File.Delete(filePath);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                     }
                 }
             }
