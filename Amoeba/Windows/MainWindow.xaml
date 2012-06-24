@@ -46,8 +46,9 @@
                 <MenuItem Name="_menuItemStop" Header="{Binding Path=MainWindow_Stop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_menuItemStop_Click" />
             </MenuItem>
             <MenuItem Header="{Binding Path=MainWindow_Settings, Source={StaticResource ResourcesInstance}}">
+                <MenuItem Name="_menuItemKeywordSetting" Header="{Binding Path=MainWindow_KeywordSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemKeywordSetting_Click" />
                 <MenuItem Name="_menuItemSignatureSetting" Header="{Binding Path=MainWindow_SignatureSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemSignatureSetting_Click" />
-                <MenuItem Name="_menuItemConnectionsSetting" Header="{Binding Path=MainWindow_ConnectionsSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemConnectionsSetting_Click" />
+                <MenuItem Name="_menuItemConnectionSetting" Header="{Binding Path=MainWindow_ConnectionSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemConnectionSetting_Click" />
                 <MenuItem Name="_menuItemCheckingBlocks" Header="{Binding Path=MainWindow_CheckingBlocks, Source={StaticResource ResourcesInstance}}" Click="_menuItemCheckingBlocks_Click" />
             </MenuItem>
             <MenuItem Name="_menuItemLanguages" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />

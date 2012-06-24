@@ -19,9 +19,9 @@ using Library.Net.Amoeba;
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// ConnectionsWindow.xaml の相互作用ロジック
+    /// ConnectionWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class ConnectionsWindow : Window
+    partial class ConnectionWindow : Window
     {
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
@@ -29,11 +29,10 @@ namespace Amoeba.Windows
 
         private Node _baseNode;
         private NodeCollection _otherNodes = new NodeCollection();
-        private KeywordCollection _keywords = new KeywordCollection();
         private ConnectionFilterCollection _clientFilters = new ConnectionFilterCollection();
         private UriCollection _listenUris = new UriCollection();
 
-        public ConnectionsWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, BufferManager bufferManager)
+        public ConnectionWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, BufferManager bufferManager)
         {
             _amoebaManager = amoebaManager;
             _autoBaseNodeSettingManager = autoBaseNodeSettingManager;
@@ -43,7 +42,6 @@ namespace Amoeba.Windows
             {
                 _baseNode = _amoebaManager.BaseNode.DeepClone();
                 _otherNodes.AddRange(_amoebaManager.OtherNodes.Select(n => n.DeepClone()));
-                _keywords.AddRange(Settings.Instance.Global_SearchKeywords);
                 _clientFilters.AddRange(_amoebaManager.Filters.Select(n => n.DeepClone()));
                 _listenUris.AddRange(_amoebaManager.ListenUris);
             }
@@ -61,7 +59,6 @@ namespace Amoeba.Windows
             _otherNodesListView.ItemsSource = _otherNodes;
             _clientFiltersListView.ItemsSource = _clientFilters;
             _serverListenUrisListView.ItemsSource = _listenUris;
-            _keywordsListView.ItemsSource = _keywords;
             _miscellaneousDownloadDirectoryTextBox.Text = _amoebaManager.DownloadDirectory;
             _miscellaneousConnectionCountTextBox.Text = _amoebaManager.ConnectionCountLimit.ToString();
             _miscellaneousDownloadingConnectionCountTextBox.Text = _amoebaManager.DownloadingConnectionCountLowerLimit.ToString();
@@ -954,152 +951,6 @@ namespace Amoeba.Windows
 
         #endregion
 
-        #region Keywords
-
-        private void _keywordsListViewUpdate()
-        {
-            _keywordsListView_SelectionChanged(this, null);
-        }
-
-        private void _keywordsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                var selectIndex = _keywordsListView.SelectedIndex;
-
-                if (selectIndex == -1)
-                {
-                    _keywordUpButton.IsEnabled = false;
-                    _keywordDownButton.IsEnabled = false;
-                }
-                else
-                {
-                    if (selectIndex == 0)
-                    {
-                        _keywordUpButton.IsEnabled = false;
-                    }
-                    else
-                    {
-                        _keywordUpButton.IsEnabled = true;
-                    }
-
-                    if (selectIndex == _keywords.Count - 1)
-                    {
-                        _keywordDownButton.IsEnabled = false;
-                    }
-                    else
-                    {
-                        _keywordDownButton.IsEnabled = true;
-                    }
-                }
-
-                _keywordsListView_PreviewMouseLeftButtonDown(this, null);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        private void _keywordsListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var selectIndex = _keywordsListView.SelectedIndex;
-            if (selectIndex == -1)
-            {
-                _keywordTextBox.Text = "";
-
-                return;
-            }
-
-            var item = _keywordsListView.SelectedItem as string;
-            if (item == null) return;
-
-            _keywordTextBox.Text = item;
-        }
-
-        private void _keywordUpButton_Click(object sender, RoutedEventArgs e)
-        {
-            var item = _keywordsListView.SelectedItem as string;
-            if (item == null) return;
-
-            var selectIndex = _keywordsListView.SelectedIndex;
-            if (selectIndex == -1) return;
-
-            _keywords.Remove(item);
-            _keywords.Insert(selectIndex - 1, item);
-            _keywordsListView.Items.Refresh();
-
-            _keywordsListViewUpdate();
-        }
-
-        private void _keywordDownButton_Click(object sender, RoutedEventArgs e)
-        {
-            var item = _keywordsListView.SelectedItem as string;
-            if (item == null) return;
-
-            var selectIndex = _keywordsListView.SelectedIndex;
-            if (selectIndex == -1) return;
-
-            _keywords.Remove(item);
-            _keywords.Insert(selectIndex + 1, item);
-            _keywordsListView.Items.Refresh();
-
-            _keywordsListViewUpdate();
-        }
-
-        private void _keywordAddButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_keywordTextBox.Text == "") return;
-            if (string.IsNullOrWhiteSpace(_keywordTextBox.Text)) return;
-
-            var keyword = _keywordTextBox.Text;
-            if (_keywords.Contains(keyword)) return;
-            _keywords.Add(keyword);
-
-            _keywordTextBox.Text = "";
-            _keywordsListView.SelectedIndex = _keywords.Count - 1;
-
-            _keywordsListView.Items.Refresh();
-            _keywordsListViewUpdate();
-        }
-
-        private void _keywordEditButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_keywordTextBox.Text == "") return;
-            if (string.IsNullOrWhiteSpace(_keywordTextBox.Text)) return;
-
-            var keyword = _keywordTextBox.Text;
-            if (_keywords.Contains(keyword)) return;
-
-            int selectIndex = _keywordsListView.SelectedIndex;
-            if (selectIndex == -1) return;
-
-            _keywords[selectIndex] = _keywordTextBox.Text;
-
-            _keywordsListView.Items.Refresh();
-            _keywordsListView.SelectedIndex = selectIndex;
-            _keywordsListViewUpdate();
-        }
-
-        private void _keywordDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int selectIndex = _keywordsListView.SelectedIndex;
-            if (selectIndex == -1) return;
-
-            _keywordTextBox.Text = "";
-
-            foreach (var item in _keywordsListView.SelectedItems.OfType<string>().ToArray())
-            {
-                _keywords.Remove(item);
-            }
-
-            _keywordsListView.Items.Refresh();
-            _keywordsListView.SelectedIndex = selectIndex;
-            _keywordsListViewUpdate();
-        }
-
-        #endregion
-
         #region Miscellaneous
 
         private static int GetStringToInt(string value)
@@ -1141,17 +992,17 @@ namespace Amoeba.Windows
 
         private void _miscellaneousConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _miscellaneousConnectionCountTextBox.Text = ConnectionsWindow.GetStringToInt(_miscellaneousConnectionCountTextBox.Text).ToString();
+            _miscellaneousConnectionCountTextBox.Text = ConnectionWindow.GetStringToInt(_miscellaneousConnectionCountTextBox.Text).ToString();
         }
 
         private void _miscellaneousCacheConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _miscellaneousDownloadingConnectionCountTextBox.Text = ConnectionsWindow.GetStringToInt(_miscellaneousDownloadingConnectionCountTextBox.Text).ToString();
+            _miscellaneousDownloadingConnectionCountTextBox.Text = ConnectionWindow.GetStringToInt(_miscellaneousDownloadingConnectionCountTextBox.Text).ToString();
         }
 
         private void _miscellaneousUploadingConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _miscellaneousUploadingConnectionCountTextBox.Text = ConnectionsWindow.GetStringToInt(_miscellaneousUploadingConnectionCountTextBox.Text).ToString();
+            _miscellaneousUploadingConnectionCountTextBox.Text = ConnectionWindow.GetStringToInt(_miscellaneousUploadingConnectionCountTextBox.Text).ToString();
         }
 
         private void _miscellaneousDownloadDirectoryTextBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -1161,7 +1012,7 @@ namespace Amoeba.Windows
                 dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
                 dialog.SelectedPath = _miscellaneousDownloadDirectoryTextBox.Text;
                 dialog.ShowNewFolderButton = true;
-                dialog.Description = LanguagesManager.Instance.ConnectionsWindow_DownloadDirectory;
+                dialog.Description = LanguagesManager.Instance.ConnectionWindow_DownloadDirectory;
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -1196,9 +1047,6 @@ namespace Amoeba.Windows
 
                 _amoebaManager.BaseNode = _baseNode.DeepClone();
                 _amoebaManager.SetOtherNodes(_otherNodes.Where(n => n != null && n.Id != null && n.Uris.Count != 0));
-
-                Settings.Instance.Global_SearchKeywords.Clear();
-                Settings.Instance.Global_SearchKeywords.AddRange(_keywords);
 
                 int count = int.Parse(_miscellaneousConnectionCountTextBox.Text);
                 _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 50), 1);

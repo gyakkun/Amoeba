@@ -35,6 +35,13 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Maximized },
 
+                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "KeywordWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_GridViewColumn_Value_Width", Value = 600 },
+                 
                 new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Height", Value = 500 },
@@ -42,18 +49,18 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
                 new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_GridViewColumn_Value_Width", Value = 600 },
                  
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "ConnectionsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_BaseNode_Uris_Uri_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_OtherNodes_Node_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ConnectionType_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_ProxyUri_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Client_Filters_UriCondition_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Server_ListenUris_Uri_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsWindow_Keywords_Keyword_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "ConnectionWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_BaseNode_Uris_Uri_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_OtherNodes_Node_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Client_Filters_ConnectionType_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Client_Filters_ProxyUri_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Client_Filters_UriCondition_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Server_ListenUris_Uri_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Keywords_Keyword_Width", Value = 600 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
@@ -456,6 +463,121 @@ namespace Amoeba.Properties
         }
 
 
+        public double KeywordWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["KeywordWindow_Top"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["KeywordWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double KeywordWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["KeywordWindow_Left"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["KeywordWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double KeywordWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["KeywordWindow_Height"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["KeywordWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double KeywordWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["KeywordWindow_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["KeywordWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState KeywordWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["KeywordWindow_WindowState"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["KeywordWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double KeywordWindow_GridViewColumn_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["KeywordWindow_GridViewColumn_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["KeywordWindow_GridViewColumn_Value_Width"] = value;
+                }
+            }
+        }
+
+
         public double SignatureWindow_Top
         {
             get
@@ -571,13 +693,13 @@ namespace Amoeba.Properties
         }
 
 
-        public double ConnectionsWindow_Top
+        public double ConnectionWindow_Top
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Top"];
+                   return (double)this["ConnectionWindow_Top"];
                 }
             }
 
@@ -585,18 +707,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Top"] = value;
+                    this["ConnectionWindow_Top"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_Left
+        public double ConnectionWindow_Left
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Left"];
+                   return (double)this["ConnectionWindow_Left"];
                 }
             }
 
@@ -604,18 +726,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Left"] = value;
+                    this["ConnectionWindow_Left"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_Height
+        public double ConnectionWindow_Height
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Height"];
+                   return (double)this["ConnectionWindow_Height"];
                 }
             }
 
@@ -623,18 +745,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Height"] = value;
+                    this["ConnectionWindow_Height"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_Width
+        public double ConnectionWindow_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Width"];
+                   return (double)this["ConnectionWindow_Width"];
                 }
             }
 
@@ -642,18 +764,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Width"] = value;
+                    this["ConnectionWindow_Width"] = value;
                 }
             }
         }
 
-        public WindowState ConnectionsWindow_WindowState
+        public WindowState ConnectionWindow_WindowState
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["ConnectionsWindow_WindowState"];
+                   return (WindowState)this["ConnectionWindow_WindowState"];
                 }
             }
 
@@ -661,18 +783,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_WindowState"] = value;
+                    this["ConnectionWindow_WindowState"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_BaseNode_Uris_Uri_Width
+        public double ConnectionWindow_BaseNode_Uris_Uri_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_BaseNode_Uris_Uri_Width"];
+                   return (double)this["ConnectionWindow_BaseNode_Uris_Uri_Width"];
                 }
             }
 
@@ -680,18 +802,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_BaseNode_Uris_Uri_Width"] = value;
+                    this["ConnectionWindow_BaseNode_Uris_Uri_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_OtherNodes_Node_Width
+        public double ConnectionWindow_OtherNodes_Node_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_OtherNodes_Node_Width"];
+                   return (double)this["ConnectionWindow_OtherNodes_Node_Width"];
                 }
             }
 
@@ -699,18 +821,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_OtherNodes_Node_Width"] = value;
+                    this["ConnectionWindow_OtherNodes_Node_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_Client_Filters_ConnectionType_Width
+        public double ConnectionWindow_Client_Filters_ConnectionType_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Client_Filters_ConnectionType_Width"];
+                   return (double)this["ConnectionWindow_Client_Filters_ConnectionType_Width"];
                 }
             }
 
@@ -718,18 +840,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Client_Filters_ConnectionType_Width"] = value;
+                    this["ConnectionWindow_Client_Filters_ConnectionType_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_Client_Filters_ProxyUri_Width
+        public double ConnectionWindow_Client_Filters_ProxyUri_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Client_Filters_ProxyUri_Width"];
+                   return (double)this["ConnectionWindow_Client_Filters_ProxyUri_Width"];
                 }
             }
 
@@ -737,18 +859,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Client_Filters_ProxyUri_Width"] = value;
+                    this["ConnectionWindow_Client_Filters_ProxyUri_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_Client_Filters_UriCondition_Width
+        public double ConnectionWindow_Client_Filters_UriCondition_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Client_Filters_UriCondition_Width"];
+                   return (double)this["ConnectionWindow_Client_Filters_UriCondition_Width"];
                 }
             }
 
@@ -756,18 +878,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Client_Filters_UriCondition_Width"] = value;
+                    this["ConnectionWindow_Client_Filters_UriCondition_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_Server_ListenUris_Uri_Width
+        public double ConnectionWindow_Server_ListenUris_Uri_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Server_ListenUris_Uri_Width"];
+                   return (double)this["ConnectionWindow_Server_ListenUris_Uri_Width"];
                 }
             }
 
@@ -775,18 +897,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Server_ListenUris_Uri_Width"] = value;
+                    this["ConnectionWindow_Server_ListenUris_Uri_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsWindow_Keywords_Keyword_Width
+        public double ConnectionWindow_Keywords_Keyword_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsWindow_Keywords_Keyword_Width"];
+                   return (double)this["ConnectionWindow_Keywords_Keyword_Width"];
                 }
             }
 
@@ -794,7 +916,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsWindow_Keywords_Keyword_Width"] = value;
+                    this["ConnectionWindow_Keywords_Keyword_Width"] = value;
                 }
             }
         }

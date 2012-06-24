@@ -112,7 +112,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\ConnectionsWindow.xaml">
+    <Page Include="Windows\ConnectionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
@@ -121,6 +121,10 @@
     <Page Include="Windows\BoxEditWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\KeywordWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -204,6 +208,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windows\KeywordWindow.xaml.cs">
+      <DependentUpon>KeywordWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ListViewEx.cs" />
     <Compile Include="Windows\UploadListWindow.xaml.cs">
       <DependentUpon>UploadListWindow.xaml</DependentUpon>
@@ -218,8 +225,8 @@
     <Compile Include="Windows\ConnectionControl.xaml.cs">
       <DependentUpon>ConnectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ConnectionsWindow.xaml.cs">
-      <DependentUpon>ConnectionsWindow.xaml</DependentUpon>
+    <Compile Include="Windows\ConnectionWindow.xaml.cs">
+      <DependentUpon>ConnectionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\BoxEditWindow.xaml.cs">
       <DependentUpon>BoxEditWindow.xaml</DependentUpon>

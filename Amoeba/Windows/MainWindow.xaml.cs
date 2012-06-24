@@ -852,6 +852,13 @@ namespace Amoeba.Windows
             Log.Information("Stop");
         }
 
+        private void _menuItemKeywordSetting_Click(object sender, RoutedEventArgs e)
+        {
+            KeywordWindow window = new KeywordWindow(_bufferManager);
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
         private void _menuItemSignatureSetting_Click(object sender, RoutedEventArgs e)
         {
             SignatureWindow window = new SignatureWindow(_bufferManager);
@@ -859,9 +866,9 @@ namespace Amoeba.Windows
             window.ShowDialog();
         }
 
-        private void _menuItemConnectionsSetting_Click(object sender, RoutedEventArgs e)
+        private void _menuItemConnectionSetting_Click(object sender, RoutedEventArgs e)
         {
-            ConnectionsWindow window = new ConnectionsWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
+            ConnectionWindow window = new ConnectionWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
             window.Owner = this;
             window.ShowDialog();
         }
