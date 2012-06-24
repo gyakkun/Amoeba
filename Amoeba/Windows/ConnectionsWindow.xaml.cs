@@ -130,21 +130,6 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (_amoebaManager.State == ManagerState.Start)
-            {
-                if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
-                {
-                    _autoBaseNodeSettingManager.Start();
-                }
-                else
-                {
-                    _autoBaseNodeSettingManager.Stop();
-                }
-            }
-        }
-
         #region BaseNode
 
         private void _baseNodeTextBoxUpdate()
@@ -1320,6 +1305,15 @@ namespace Amoeba.Windows
                 }
 
                 Settings.Instance.Global_RelateBoxFile_IsEnabled = _miscellaneousRelateBoxFileCheckBox.IsChecked.Value;
+            }
+
+            if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
+            {
+                _autoBaseNodeSettingManager.Start();
+            }
+            else
+            {
+                _autoBaseNodeSettingManager.Stop();
             }
         }
 

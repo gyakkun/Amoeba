@@ -12,8 +12,7 @@
         Left="{Binding Path=ConnectionsWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Height="{Binding Path=ConnectionsWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Width="{Binding Path=ConnectionsWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        WindowState="{Binding Path=ConnectionsWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        Closing="Window_Closing">
+        WindowState="{Binding Path=ConnectionsWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" >
   
     <Window.Resources>
         <local:NodeToStringConverter x:Key="_nodeToStringConverter"/>
