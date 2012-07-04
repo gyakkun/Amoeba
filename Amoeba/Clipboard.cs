@@ -110,7 +110,10 @@ namespace Amoeba
 
                 try
                 {
-                    list.Add(AmoebaConverter.FromSeedString(item));
+                    var seed = AmoebaConverter.FromSeedString(item);
+                    if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
+
+                    list.Add(seed);
                 }
                 catch (Exception)
                 {

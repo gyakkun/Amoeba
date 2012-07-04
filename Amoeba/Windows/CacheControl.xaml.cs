@@ -1588,7 +1588,7 @@ namespace Amoeba.Windows
             }
         }
 
-        #region IDeepClone<SearchTreeItem> メンバ
+        #region IDeepClone<SearchTreeItem>
 
         public SearchTreeItem DeepClone()
         {
@@ -1827,7 +1827,7 @@ namespace Amoeba.Windows
             return string.Format("Name = {0}", this.Name);
         }
 
-        #region IDeepClone<SearchItem> メンバ
+        #region IDeepClone<SearchItem>
 
         public SearchItem DeepClone()
         {
@@ -1908,7 +1908,7 @@ namespace Amoeba.Windows
             return true;
         }
 
-        #region IDeepClone<SearchContains<T>> メンバ
+        #region IDeepClone<SearchContains<T>>
 
         public SearchContains<T> DeepClone()
         {
@@ -2021,7 +2021,7 @@ namespace Amoeba.Windows
             return true;
         }
 
-        #region IDeepClone<SearchRegex> メンバ
+        #region IDeepClone<SearchRegex>
 
         public SearchRegex DeepClone()
         {
@@ -2124,7 +2124,7 @@ namespace Amoeba.Windows
             return string.Format("Max = {0}, Min = {1}", this.Max, this.Min);
         }
 
-        #region IDeepClone<SearchRange<T>> メンバ
+        #region IDeepClone<SearchRange<T>>
 
         public SearchRange<T> DeepClone()
         {

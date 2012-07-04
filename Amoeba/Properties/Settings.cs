@@ -2910,7 +2910,7 @@ namespace Amoeba.Properties
 
         #endregion
 
-        #region IThisLock メンバ
+        #region IThisLock
 
         public object ThisLock
         {

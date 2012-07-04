@@ -259,7 +259,7 @@ namespace Amoeba
             }
         }
 
-        #region ISettings メンバ
+        #region ISettings
 
         public void Load(string directoryPath)
         {
@@ -363,7 +363,7 @@ namespace Amoeba
                 }
             }
 
-            #region IThisLock メンバ
+            #region IThisLock
 
             public object ThisLock
             {
@@ -391,7 +391,7 @@ namespace Amoeba
             }
         }
 
-        #region IThisLock メンバ
+        #region IThisLock
 
         public object ThisLock
         {

@@ -59,14 +59,14 @@ namespace Amoeba.Windows
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushNodeCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushBlocksLinkCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushBlocksRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushBlockLinkCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushBlockRequestCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushBlockCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullNodeCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullBlocksLinkCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullBlocksRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullBlockLinkCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullBlockRequestCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullBlockCount" });
 
             _infomationListView.ItemsSource = _infomationListViewItemCollection;
@@ -94,13 +94,13 @@ namespace Amoeba.Windows
                     dic["ConnectionControl_ReceivedByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.ReceivedByteCount);
 
                     dic["ConnectionControl_PullNodeCount"] = ((int)information["PullNodeCount"]).ToString();
-                    dic["ConnectionControl_PullBlocksLinkCount"] = ((int)information["PullBlocksLinkCount"]).ToString();
-                    dic["ConnectionControl_PullBlocksRequestCount"] = ((int)information["PullBlocksRequestCount"]).ToString();
+                    dic["ConnectionControl_PullBlockLinkCount"] = ((int)information["PullBlockLinkCount"]).ToString();
+                    dic["ConnectionControl_PullBlockRequestCount"] = ((int)information["PullBlockRequestCount"]).ToString();
                     dic["ConnectionControl_PullBlockCount"] = ((int)information["PullBlockCount"]).ToString();
 
                     dic["ConnectionControl_PushNodeCount"] = ((int)information["PushNodeCount"]).ToString();
-                    dic["ConnectionControl_PushBlocksLinkCount"] = ((int)information["PushBlocksLinkCount"]).ToString();
-                    dic["ConnectionControl_PushBlocksRequestCount"] = ((int)information["PushBlocksRequestCount"]).ToString();
+                    dic["ConnectionControl_PushBlockLinkCount"] = ((int)information["PushBlockLinkCount"]).ToString();
+                    dic["ConnectionControl_PushBlockRequestCount"] = ((int)information["PushBlockRequestCount"]).ToString();
                     dic["ConnectionControl_PushBlockCount"] = ((int)information["PushBlockCount"]).ToString();
 
                     dic["ConnectionControl_RelayBlockCount"] = ((int)information["RelayBlockCount"]).ToString();

@@ -348,28 +348,28 @@ namespace Amoeba.Windows
                         {
                             using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             {
-                                var directory = AmoebaConverter.FromBoxStream(stream);
+                                var box = AmoebaConverter.FromBoxStream(stream);
 
-                                if (directory != null)
+                                if (box != null)
                                 {
                                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                                     {
                                         try
                                         {
-                                            if (!LibraryControl.BoxDigitalSignatureCheck(ref directory))
+                                            if (!LibraryControl.BoxDigitalSignatureCheck(ref box))
                                             {
                                                 if (MessageBox.Show(
                                                         LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
                                                         "Digital Signature",
                                                         MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                                                 {
-                                                    _treeViewItem.Value.Boxes.Add(directory);
+                                                    _treeViewItem.Value.Boxes.Add(box);
                                                     _treeViewItem.Update();
                                                 }
                                             }
                                             else
                                             {
-                                                _treeViewItem.Value.Boxes.Add(directory);
+                                                _treeViewItem.Value.Boxes.Add(box);
                                                 _treeViewItem.Update();
                                             }
 
@@ -914,14 +914,7 @@ namespace Amoeba.Windows
 
                 foreach (var item in _treeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().ToList().Select(n => n.Value))
                 {
-                    if (item.Certificate == null)
-                    {
-                        baseDirectory += string.Format("{0}/", LibraryControl.GetNormalizedPath(item.Name));
-                    }
-                    else
-                    {
-                        baseDirectory += string.Format("{0}@{1}/", LibraryControl.GetNormalizedPath(item.Name), MessageConverter.ToSignatureString(item.Certificate));
-                    }
+                    baseDirectory += string.Format("{0}/", LibraryControl.GetNormalizedPath(item.Name));
                 }
 
                 var path = System.IO.Path.Combine(baseDirectory, seed.Name);
@@ -1223,14 +1216,7 @@ namespace Amoeba.Windows
 
                 foreach (var item in LibraryControl.GetBoxLineage(_treeViewItem.Value, seed))
                 {
-                    if (item.Certificate == null)
-                    {
-                        baseDirectory += string.Format("{0}/", LibraryControl.GetNormalizedPath(item.Name));
-                    }
-                    else
-                    {
-                        baseDirectory += string.Format("{0}@{1}/", LibraryControl.GetNormalizedPath(item.Name), MessageConverter.ToSignatureString(item.Certificate));
-                    }
+                    baseDirectory += string.Format("{0}/", LibraryControl.GetNormalizedPath(item.Name));
                 }
 
                 var path = System.IO.Path.Combine(baseDirectory, seed.Name);
@@ -1435,22 +1421,22 @@ namespace Amoeba.Windows
                         {
                             try
                             {
-                                var directory = AmoebaConverter.FromBoxStream(stream);
+                                var box = AmoebaConverter.FromBoxStream(stream);
 
-                                if (!LibraryControl.BoxDigitalSignatureCheck(ref directory))
+                                if (!LibraryControl.BoxDigitalSignatureCheck(ref box))
                                 {
                                     if (MessageBox.Show(
                                             LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
                                             "Digital Signature",
                                             MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                                     {
-                                        selectBoxTreeViewItem.Value.Boxes.Add(directory);
+                                        selectBoxTreeViewItem.Value.Boxes.Add(box);
                                         selectBoxTreeViewItem.Update();
                                     }
                                 }
                                 else
                                 {
-                                    selectBoxTreeViewItem.Value.Boxes.Add(directory);
+                                    selectBoxTreeViewItem.Value.Boxes.Add(box);
                                     selectBoxTreeViewItem.Value.CreationTime = DateTime.UtcNow;
                                     selectBoxTreeViewItem.Update();
                                 }

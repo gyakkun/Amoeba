@@ -1647,10 +1647,13 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
+                    var seed = AmoebaConverter.FromSeedString(match.Groups[2].Value);
+                    if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
+                    
                     var item = new SearchContains<Seed>()
                     {
                         Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = AmoebaConverter.FromSeedString(match.Groups[2].Value),
+                        Value = seed,
                     };
 
                     if (_searchSeedCollection.Contains(item)) continue;
@@ -1705,10 +1708,13 @@ namespace Amoeba.Windows
 
             try
             {
+                var seed = AmoebaConverter.FromSeedString(_seedTextBox.Text);
+                if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
+                
                 var item = new SearchContains<Seed>()
                 {
                     Contains = _seedContainsCheckBox.IsChecked.Value,
-                    Value = AmoebaConverter.FromSeedString(_seedTextBox.Text),
+                    Value = seed,
                 };
 
                 if (_searchSeedCollection.Contains(item)) return;
@@ -1732,10 +1738,13 @@ namespace Amoeba.Windows
 
             try
             {
+                var seed = AmoebaConverter.FromSeedString(_seedTextBox.Text);
+                if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
+                
                 var uitem = new SearchContains<Seed>()
                 {
                     Contains = _seedContainsCheckBox.IsChecked.Value,
-                    Value = AmoebaConverter.FromSeedString(_seedTextBox.Text),
+                    Value = seed,
                 };
 
                 if (_searchSeedCollection.Contains(uitem)) return;
@@ -1744,7 +1753,7 @@ namespace Amoeba.Windows
                 if (item == null) return;
 
                 item.Contains = _seedContainsCheckBox.IsChecked.Value;
-                item.Value = AmoebaConverter.FromSeedString(_seedTextBox.Text);
+                item.Value = seed;
             }
             catch (Exception)
             {

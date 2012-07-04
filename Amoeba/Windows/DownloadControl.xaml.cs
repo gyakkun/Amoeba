@@ -214,7 +214,10 @@ namespace Amoeba.Windows
                                 {
                                     try
                                     {
-                                        _amoebaManager.Download(AmoebaConverter.FromSeedString(item), 3);
+                                        var seed = AmoebaConverter.FromSeedString(item);
+                                        if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
+                                        
+                                        _amoebaManager.Download(seed, 3);
                                     }
                                     catch (Exception)
                                     {

@@ -1537,57 +1537,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_PushSeedsLinkCount
+        public string ConnectionControl_PushBlockLinkCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PushSeedsLinkCount");
+                    return this.Translate("ConnectionControl_PushBlockLinkCount");
                 }
             }
         }
 
-        public string ConnectionControl_PushSeedsRequestCount
+        public string ConnectionControl_PushBlockRequestCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PushSeedsRequestCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_PushSeedCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_PushSeedCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_PushBlocksLinkCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_PushBlocksLinkCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_PushBlocksRequestCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_PushBlocksRequestCount");
+                    return this.Translate("ConnectionControl_PushBlockRequestCount");
                 }
             }
         }
@@ -3587,7 +3554,7 @@ namespace Amoeba.Properties
 
         #endregion
 
-        #region IThisLock メンバ
+        #region IThisLock
 
         public object ThisLock
         {

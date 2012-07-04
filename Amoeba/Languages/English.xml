@@ -134,11 +134,8 @@
   <Translate Key="ConnectionControl_PullBlockCount" Value="PullBlock Count" />
   <Translate Key="ConnectionControl_PushNodesRequestCount" Value="PushNodesRequest Count" />
   <Translate Key="ConnectionControl_PushNodeCount" Value="PushNode Count" />
-  <Translate Key="ConnectionControl_PushSeedsLinkCount" Value="PushSeedsLink Count" />
-  <Translate Key="ConnectionControl_PushSeedsRequestCount" Value="PushSeedsRequest Count" />
-  <Translate Key="ConnectionControl_PushSeedCount" Value="PushSeed Count" />
-  <Translate Key="ConnectionControl_PushBlocksLinkCount" Value="PushBlocksLink Count" />
-  <Translate Key="ConnectionControl_PushBlocksRequestCount" Value="PushBlocksRequest Count" />
+  <Translate Key="ConnectionControl_PushBlockLinkCount" Value="PushBlockLink Count" />
+  <Translate Key="ConnectionControl_PushBlockRequestCount" Value="PushBlockRequest Count" />
   <Translate Key="ConnectionControl_PushBlockCount" Value="PushBlock Count" />
   <Translate Key="ConnectionControl_RelayBlockCount" Value="Relay Block Count" />
   <Translate Key="ConnectionControl_NodeCount" Value="Node Count" />
