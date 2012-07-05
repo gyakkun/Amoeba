@@ -21,8 +21,10 @@
   <Translate Key="MainWindow_KeywordSetting" Value="Keyword Setting" />
   <Translate Key="MainWindow_SignatureSetting" Value="Signature Setting" />
   <Translate Key="MainWindow_ConnectionSetting" Value="Connection Setting" />
+  <Translate Key="MainWindow_UserInterfaceSetting" Value="User Interface Setting" />
   <Translate Key="MainWindow_CheckingBlocks" Value="Checking Blocks" />
   <Translate Key="MainWindow_Help" Value="Help" />
+  <Translate Key="MainWindow_UpdateCheck" Value="Update Check" />
   <Translate Key="MainWindow_VersionInformation" Value="Version Information" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
   <Translate Key="MainWindow_SendSpeed" Value="Send:" />
@@ -31,6 +33,8 @@
   <Translate Key="MainWindow_CheckingBlocks_Message" Value="Checking Blocks" />
   <Translate Key="MainWindow_CheckingBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
   <Translate Key="MainWindow_Copy" Value="Copy" />
+  <Translate Key="MainWindow_UpdateCheck_Message" Value="Update {0}" />
+  <Translate Key="MainWindow_LatestVersion_Message" Value="Latest Version" />
 
   <Translate Key="KeywordWindow_Title" Value="Keyword Setting" />
   <Translate Key="KeywordWindow_Value" Value="Value" />
@@ -88,7 +92,6 @@
   <Translate Key="ConnectionWindow_CacheSize" Value="Cache Size" />
   <Translate Key="ConnectionWindow_CoreSettings" Value="Core Settings" />
   <Translate Key="ConnectionWindow_AutoSettings" Value="Auto Settings" />
-  <Translate Key="ConnectionWindow_SearchFilterSettings" Value="Search Filter Settings" />
   <Translate Key="ConnectionWindow_AutoUpdate" Value="Auto Update" />
   <Translate Key="ConnectionWindow_AutoBaseNodeSetting" Value="Auto Base Node Setting" />
   <Translate Key="ConnectionWindow_UPnP" Value="UPnP" />
@@ -97,19 +100,33 @@
   <Translate Key="ConnectionWindow_Ipv6" Value="Ipv6" />
   <Translate Key="ConnectionWindow_Extends" Value="Extends" />
   <Translate Key="ConnectionWindow_AutoSetting" Value="Auto Setting" />
-  <Translate Key="ConnectionWindow_RelateSettings" Value="Relate Settings" />
-  <Translate Key="ConnectionWindow_RelateBoxFile" Value="Relate Box File" />
   <Translate Key="ConnectionWindow_Copy" Value="Copy" />
   <Translate Key="ConnectionWindow_Paste" Value="Paste" />
-  <Translate Key="ConnectionWindow_Cache" Value="Cache" />
-  <Translate Key="ConnectionWindow_Uploading" Value="Uploading" />
-  <Translate Key="ConnectionWindow_Downloading" Value="Downloading" />
-  <Translate Key="ConnectionWindow_Uploaded" Value="Uploaded" />
-  <Translate Key="ConnectionWindow_Downloaded" Value="Downloaded" />
 
   <Translate Key="ProgressWindow_Title" Value="Progress State" />
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
+
+  <Translate Key="UserInterfaceWindow_Title" Value="User Interface Setting" />
+  <Translate Key="UserInterfaceWindow_Update" Value="Update" />
+  <Translate Key="UserInterfaceWindow_UpdateUrl" Value="Update Url" />
+  <Translate Key="UserInterfaceWindow_ProxyUri" Value="Proxy Uri" />
+  <Translate Key="UserInterfaceWindow_Signature" Value="Signature" />
+  <Translate Key="UserInterfaceWindow_Miscellaneous" Value="Miscellaneous" />
+  <Translate Key="UserInterfaceWindow_SearchFilterSettings" Value="Search Filter Settings" />
+  <Translate Key="UserInterfaceWindow_RelateSettings" Value="Relate Settings" />
+  <Translate Key="UserInterfaceWindow_RelateBoxFile" Value="Relate Box File" />
+  <Translate Key="UserInterfaceWindow_Cache" Value="Cache" />
+  <Translate Key="UserInterfaceWindow_Uploading" Value="Uploading" />
+  <Translate Key="UserInterfaceWindow_Downloading" Value="Downloading" />
+  <Translate Key="UserInterfaceWindow_Uploaded" Value="Uploaded" />
+  <Translate Key="UserInterfaceWindow_Downloaded" Value="Downloaded" />
+  <Translate Key="UserInterfaceWindow_UpdateOption" Value="Update Option" />
+  <Translate Key="UserInterfaceWindow_None" Value="None" />
+  <Translate Key="UserInterfaceWindow_AutoCheck" Value="Auto Check" />
+  <Translate Key="UserInterfaceWindow_AutoUpdate" Value="Auto Update" />
+  <Translate Key="UserInterfaceWindow_Ok" Value="Ok" />
+  <Translate Key="UserInterfaceWindow_Cancel" Value="Cancel" />
 
   <Translate Key="VersionInformationWindow_Title" Value="Version Information" />
   <Translate Key="VersionInformationWindow_License" Value="License" />
@@ -124,15 +141,10 @@
   <Translate Key="ConnectionControl_SentByteCount" Value="Sent Byte Count" />
   <Translate Key="ConnectionControl_Name" Value="Name" />
   <Translate Key="ConnectionControl_Value" Value="Value" />
-  <Translate Key="ConnectionControl_PullNodesRequestCount" Value="PullNodesRequest Count" />
   <Translate Key="ConnectionControl_PullNodeCount" Value="PullNode Count" />
-  <Translate Key="ConnectionControl_PullSeedsLinkCount" Value="PullSeedsLink Count" />
-  <Translate Key="ConnectionControl_PullSeedsRequestCount" Value="PullSeedsRequest Count" />
-  <Translate Key="ConnectionControl_PullSeedCount" Value="PullSeed Count" />
-  <Translate Key="ConnectionControl_PullBlocksLinkCount" Value="PullBlocksLink Count" />
-  <Translate Key="ConnectionControl_PullBlocksRequestCount" Value="PullBlocksRequest Count" />
+  <Translate Key="ConnectionControl_PullBlockLinkCount" Value="PullBlocksLink Count" />
+  <Translate Key="ConnectionControl_PullBlockRequestCount" Value="PullBlocksRequest Count" />
   <Translate Key="ConnectionControl_PullBlockCount" Value="PullBlock Count" />
-  <Translate Key="ConnectionControl_PushNodesRequestCount" Value="PushNodesRequest Count" />
   <Translate Key="ConnectionControl_PushNodeCount" Value="PushNode Count" />
   <Translate Key="ConnectionControl_PushBlockLinkCount" Value="PushBlockLink Count" />
   <Translate Key="ConnectionControl_PushBlockRequestCount" Value="PushBlockRequest Count" />

@@ -572,6 +572,123 @@ namespace Amoeba.Windows
             }
         }
 
+        private void UpdateCheck(bool isShow)
+        {
+            try
+            {
+                var url = Settings.Instance.Global_Update_Url;
+                var proxyUri = Settings.Instance.Global_Update_ProxyUri;
+                var signature = Settings.Instance.Global_Update_Signature;
+
+                HttpWebRequest rq = (HttpWebRequest)HttpWebRequest.Create(url);
+                rq.Method = "GET";
+                rq.UserAgent = "";
+                rq.ReadWriteTimeout = 1000 * 60;
+                rq.Timeout = 1000 * 60;
+                rq.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
+                rq.KeepAlive = true;
+
+                if (!string.IsNullOrWhiteSpace(proxyUri))
+                {
+                    string proxyScheme = null;
+                    string proxyHost = null;
+                    int proxyPort = -1;
+
+                    {
+                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                        var match = regex.Match(proxyUri);
+
+                        if (match.Success)
+                        {
+                            proxyScheme = match.Groups[1].Value;
+                            proxyHost = match.Groups[2].Value;
+                            proxyPort = int.Parse(match.Groups[3].Value);
+                        }
+                        else
+                        {
+                            Regex regex2 = new Regex(@"(.*?):(.*)");
+                            var match2 = regex2.Match(proxyUri);
+
+                            if (match2.Success)
+                            {
+                                proxyScheme = match2.Groups[1].Value;
+                                proxyHost = match2.Groups[2].Value;
+                                proxyPort = 80;
+                            }
+                        }
+                    }
+
+                    rq.Proxy = new WebProxy(proxyHost, proxyPort);
+                }
+
+                Seed seed;
+
+                using (HttpWebResponse rs = (HttpWebResponse)rq.GetResponse())
+                using (Stream stream = rs.GetResponseStream())
+                using (StreamReader r = new StreamReader(stream))
+                {
+                    seed = AmoebaConverter.FromSeedString(r.ReadLine());
+                }
+
+                Regex regex3 = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
+
+                if (seed.Name.StartsWith("Amoeba"))
+                {
+                    var match = regex3.Match(seed.Name);
+
+                    if (match.Success)
+                    {
+                        var tempVersion = new Version(match.Groups[1].Value);
+
+                        if (tempVersion <= App.AmoebaVersion)
+                        {
+                            if (isShow)
+                            {
+                                MessageBox.Show(
+                                    LanguagesManager.Instance.MainWindow_LatestVersion_Message,
+                                    "Update");
+                            }
+
+                            return;
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(signature))
+                {
+                    if (!seed.VerifyCertificate()) throw new Exception("Update VerifyCertificate");
+                    if (MessageConverter.ToSignatureString(seed.Certificate) != signature) throw new Exception("Update Signature");
+                }
+
+                bool flag = true;
+
+                if (Settings.Instance.Global_Update_Option != UpdateOption.AutoUpdate)
+                {
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        if (MessageBox.Show(
+                            string.Format(LanguagesManager.Instance.MainWindow_UpdateCheck_Message, Path.GetFileNameWithoutExtension(seed.Name)),
+                            "Update",
+                            MessageBoxButton.OKCancel) == MessageBoxResult.Cancel)
+                        {
+                            flag = false;
+                        }
+                    }), null);
+                }
+
+                if (flag)
+                {
+                    _amoebaManager.Download(seed, App.DirectoryPaths["Update"], 6);
+
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
         private void ConnectionsInformationShow(object state)
         {
             long sentByteCount = 0;
@@ -639,7 +756,6 @@ namespace Amoeba.Windows
             Stopwatch updateStopwatch = new Stopwatch();
             spaceCheckStopwatch.Start();
             backupStopwatch.Start();
-            updateStopwatch.Start();
 
             for (; ; )
             {
@@ -681,6 +797,25 @@ namespace Amoeba.Windows
                         _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                         _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                         Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+
+
+                if (!updateStopwatch.IsRunning && updateStopwatch.Elapsed > new TimeSpan(3, 0, 0, 0))
+                {
+                    updateStopwatch.Restart();
+
+                    try
+                    {
+                        if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
+                           || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
+                        {
+                            _menuItemUpdateCheck_Click(null, null);
+                        }
                     }
                     catch (Exception)
                     {
@@ -742,6 +877,24 @@ namespace Amoeba.Windows
             {
                 _menuItemStart_Click(null, null);
             }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+            {
+                Thread.Sleep(1000 * 60);
+
+                try
+                {
+                    if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
+                       || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
+                    {
+                        _menuItemUpdateCheck_Click(null, null);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }));
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -871,6 +1024,28 @@ namespace Amoeba.Windows
             ConnectionWindow window = new ConnectionWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
             window.Owner = this;
             window.ShowDialog();
+        }
+
+        private void _menuItemUserInterfaceSetting_Click(object sender, RoutedEventArgs e)
+        {
+            UserInterfaceWindow window = new UserInterfaceWindow();
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
+        private object _updateLockObject = new object();
+
+        private void _menuItemUpdateCheck_Click(object sender, RoutedEventArgs e)
+        {
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                lock (_updateLockObject)
+                {
+                    this.UpdateCheck(sender != null);
+                }
+            }));
         }
 
         private void _menuItemVersionInformation_Click(object sender, RoutedEventArgs e)

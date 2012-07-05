@@ -72,59 +72,6 @@ namespace Amoeba.Windows
             }
 
             _clientFiltersConnectionTypeComboBox.SelectedItem = _clientFiltersConnectionTypeComboBox.Items.GetItemAt(1);
-
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Cache) == SearchState.Cache)
-            {
-                _miscellaneousSearchFilterCacheCheckBox.IsChecked = true;
-            }
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Uploading) == SearchState.Uploading)
-            {
-                _miscellaneousSearchFilterUploadingCheckBox.IsChecked = true;
-            }
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Downloading) == SearchState.Downloading)
-            {
-                _miscellaneousSearchFilterDownloadingCheckBox.IsChecked = true;
-            }
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Uploaded) == SearchState.Uploaded)
-            {
-                _miscellaneousSearchFilterUploadedCheckBox.IsChecked = true;
-            }
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Downloaded) == SearchState.Downloaded)
-            {
-                _miscellaneousSearchFilterDownloadedCheckBox.IsChecked = true;
-            }
-
-            try
-            {
-                string extension = ".box";
-                string commandline = "\"" + Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe") + "\" \"%1\"";
-                string fileType = "Amoeba";
-                string verb = "open";
-
-                using (var regkey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(extension))
-                {
-                    if (fileType != (string)regkey.GetValue("")) throw new Exception();
-                }
-
-                using (var shellkey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileType))
-                {
-                    using (var shellkey2 = shellkey.OpenSubKey("shell\\" + verb))
-                    {
-                        using (var shellkey3 = shellkey2.OpenSubKey("command"))
-                        {
-                            if (commandline != (string)shellkey3.GetValue("")) throw new Exception();
-                        }
-                    }
-                }
-
-                Settings.Instance.Global_RelateBoxFile_IsEnabled = true;
-                _miscellaneousRelateBoxFileCheckBox.IsChecked = true;
-            }
-            catch
-            {
-                Settings.Instance.Global_RelateBoxFile_IsEnabled = false;
-                _miscellaneousRelateBoxFileCheckBox.IsChecked = false;
-            }
         }
 
         #region BaseNode
@@ -500,7 +447,7 @@ namespace Amoeba.Windows
 
             var item = _clientFiltersListView.SelectedItem as ConnectionFilter;
             if (item == null) return;
-            
+
             if (item.ProxyUri != null)
             {
                 _clientFiltersProxyUriTextBox.Text = item.ProxyUri;
@@ -821,7 +768,7 @@ namespace Amoeba.Windows
 
                 return;
             }
-            
+
             var item = _serverListenUrisListView.SelectedItem as string;
             if (item == null) return;
 
@@ -1078,90 +1025,18 @@ namespace Amoeba.Windows
                 _amoebaManager.DownloadDirectory = path;
             }
 
-            Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
-
-            Settings.Instance.Global_SearchFilterSettings_State = 0;
-
-            if (_miscellaneousSearchFilterCacheCheckBox.IsChecked.Value)
+            if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled != _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value)
             {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Cache;
-            }
-            if (_miscellaneousSearchFilterUploadingCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Uploading;
-            }
-            if (_miscellaneousSearchFilterDownloadingCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Downloading;
-            }
-            if (_miscellaneousSearchFilterUploadedCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Uploaded;
-            }
-            if (_miscellaneousSearchFilterDownloadedCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Downloaded;
-            }
-
-            if (Settings.Instance.Global_RelateBoxFile_IsEnabled != _miscellaneousRelateBoxFileCheckBox.IsChecked.Value)
-            {
-                if (_miscellaneousRelateBoxFileCheckBox.IsChecked.Value)
+                if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
                 {
-                    System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
-                    p.UseShellExecute = true;
-                    p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
-                    p.Arguments = "Relate on";
-
-                    OperatingSystem osInfo = Environment.OSVersion;
-
-                    if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
-                    {
-                        p.Verb = "runas";
-                    }
-
-                    try
-                    {
-                        System.Diagnostics.Process.Start(p);
-                    }
-                    catch (System.ComponentModel.Win32Exception)
-                    {
-
-                    }
+                    _autoBaseNodeSettingManager.Start();
                 }
                 else
                 {
-                    System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
-                    p.UseShellExecute = true;
-                    p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
-                    p.Arguments = "Relate off";
-
-                    OperatingSystem osInfo = Environment.OSVersion;
-
-                    if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
-                    {
-                        p.Verb = "runas";
-                    }
-
-                    try
-                    {
-                        System.Diagnostics.Process.Start(p);
-                    }
-                    catch (System.ComponentModel.Win32Exception)
-                    {
-
-                    }
+                    _autoBaseNodeSettingManager.Stop();
                 }
 
-                Settings.Instance.Global_RelateBoxFile_IsEnabled = _miscellaneousRelateBoxFileCheckBox.IsChecked.Value;
-            }
-
-            if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
-            {
-                _autoBaseNodeSettingManager.Start();
-            }
-            else
-            {
-                _autoBaseNodeSettingManager.Stop();
+                Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
             }
         }
 

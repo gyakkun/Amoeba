@@ -208,21 +208,18 @@ namespace Amoeba.Windows
                             using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             using (StreamReader reader = new StreamReader(stream))
                             {
-                                string item;
-
-                                while ((item = reader.ReadLine()) != null)
+                                try
                                 {
-                                    try
-                                    {
-                                        var seed = AmoebaConverter.FromSeedString(item);
-                                        if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
-                                        
-                                        _amoebaManager.Download(seed, 3);
-                                    }
-                                    catch (Exception)
-                                    {
+                                    var seed = AmoebaConverter.FromSeedString(reader.ReadLine());
+                                    if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
 
-                                    }
+                                    var path = reader.ReadLine();
+
+                                    _amoebaManager.Download(seed, path, 3);
+                                }
+                                catch (Exception)
+                                {
+
                                 }
                             }
                         }

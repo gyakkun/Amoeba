@@ -28,6 +28,10 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<SearchState>() { Name = "Global_SearchFilterSettings_State", Value = 0 },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
+                new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_Url", Value = "http://lyrise.web.fc2.com/update/Amoeba" },
+                new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:8118" },
+                new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_Signature", Value = "Lyrise@iMK5aPkz6n_VLfaQWyXisi6C2yo53V" },
+                new Library.Configuration.SettingsContext<UpdateOption>() { Name = "Global_Update_Option", Value = UpdateOption.AutoCheck },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Left", Value = 120 },
@@ -61,6 +65,12 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Client_Filters_UriCondition_Width", Value = 300 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Server_ListenUris_Uri_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Keywords_Keyword_Width", Value = 600 },
+
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "UserInterfaceWindow_WindowState", Value = WindowState.Normal },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
@@ -362,6 +372,82 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_RelateBoxFile_IsEnabled"] = value;
+                }
+            }
+        }
+
+        public string Global_Update_Url
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["Global_Update_Url"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_Update_Url"] = value;
+                }
+            }
+        }
+
+        public string Global_Update_ProxyUri
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["Global_Update_ProxyUri"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_Update_ProxyUri"] = value;
+                }
+            }
+        }
+
+        public string Global_Update_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["Global_Update_Signature"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_Update_Signature"] = value;
+                }
+            }
+        }
+
+        public UpdateOption Global_Update_Option
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (UpdateOption)this["Global_Update_Option"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_Update_Option"] = value;
                 }
             }
         }
@@ -917,6 +1003,102 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ConnectionWindow_Keywords_Keyword_Width"] = value;
+                }
+            }
+        }
+
+
+        public double UserInterfaceWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Top"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Left"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Height"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState UserInterfaceWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["UserInterfaceWindow_WindowState"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_WindowState"] = value;
                 }
             }
         }

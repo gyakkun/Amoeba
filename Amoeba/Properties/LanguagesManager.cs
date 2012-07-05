@@ -354,6 +354,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string MainWindow_UserInterfaceSetting
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_UserInterfaceSetting");
+                }
+            }
+        }
+
         public string MainWindow_CheckingBlocks
         {
             get
@@ -372,6 +383,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Help");
+                }
+            }
+        }
+
+        public string MainWindow_UpdateCheck
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_UpdateCheck");
                 }
             }
         }
@@ -460,6 +482,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Copy");
+                }
+            }
+        }
+
+        public string MainWindow_UpdateCheck_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_UpdateCheck_Message");
+                }
+            }
+        }
+
+        public string MainWindow_LatestVersion_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_LatestVersion_Message");
                 }
             }
         }
@@ -1061,17 +1105,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionWindow_SearchFilterSettings
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_SearchFilterSettings");
-                }
-            }
-        }
-
         public string ConnectionWindow_AutoUpdate
         {
             get
@@ -1160,28 +1193,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionWindow_RelateSettings
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_RelateSettings");
-                }
-            }
-        }
-
-        public string ConnectionWindow_RelateBoxFile
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_RelateBoxFile");
-                }
-            }
-        }
-
         public string ConnectionWindow_Copy
         {
             get
@@ -1200,61 +1211,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionWindow_Paste");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Cache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Cache");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Uploading
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Uploading");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Downloading
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Downloading");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Uploaded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Uploaded");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Downloaded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Downloaded");
                 }
             }
         }
@@ -1289,6 +1245,227 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ProgressWindow_Ok");
+                }
+            }
+        }
+
+
+        public string UserInterfaceWindow_Title
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Title");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Update
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Update");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_UpdateUrl
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_UpdateUrl");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_ProxyUri
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_ProxyUri");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Signature");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Miscellaneous
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Miscellaneous");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_SearchFilterSettings
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_SearchFilterSettings");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_RelateSettings
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_RelateSettings");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_RelateBoxFile
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_RelateBoxFile");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Cache
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Cache");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Uploading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Uploading");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Downloading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Downloading");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Uploaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Uploaded");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Downloaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Downloaded");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_UpdateOption
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_UpdateOption");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_None
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_None");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_AutoCheck
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_AutoCheck");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_AutoUpdate
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_AutoUpdate");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Ok");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Cancel");
                 }
             }
         }
@@ -1427,17 +1604,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_PullNodesRequestCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_PullNodesRequestCount");
-                }
-            }
-        }
-
         public string ConnectionControl_PullNodeCount
         {
             get
@@ -1449,57 +1615,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_PullSeedsLinkCount
+        public string ConnectionControl_PullBlockLinkCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PullSeedsLinkCount");
+                    return this.Translate("ConnectionControl_PullBlockLinkCount");
                 }
             }
         }
 
-        public string ConnectionControl_PullSeedsRequestCount
+        public string ConnectionControl_PullBlockRequestCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PullSeedsRequestCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_PullSeedCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_PullSeedCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_PullBlocksLinkCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_PullBlocksLinkCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_PullBlocksRequestCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_PullBlocksRequestCount");
+                    return this.Translate("ConnectionControl_PullBlockRequestCount");
                 }
             }
         }
@@ -1511,17 +1644,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionControl_PullBlockCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_PushNodesRequestCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_PushNodesRequestCount");
                 }
             }
         }

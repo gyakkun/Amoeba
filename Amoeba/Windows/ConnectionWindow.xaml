@@ -179,20 +179,6 @@
                                 <CheckBox Content="{Binding Path=ConnectionWindow_AutoBaseNodeSetting, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousAutoBaseNodeSettingCheckBox" VerticalAlignment="Top" />
                             </Grid>
                         </Expander>
-                        <Expander Header="{Binding Path=ConnectionWindow_SearchFilterSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0">
-                            <Grid Margin="0,0,0,6">
-                                <CheckBox Content="{Binding Path=ConnectionWindow_Cache, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousSearchFilterCacheCheckBox" VerticalAlignment="Top" />
-                                <CheckBox Content="{Binding Path=ConnectionWindow_Uploading, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,28,0,0" Name="_miscellaneousSearchFilterUploadingCheckBox" VerticalAlignment="Top" />
-                                <CheckBox Content="{Binding Path=ConnectionWindow_Downloading, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,50,0,0" Name="_miscellaneousSearchFilterDownloadingCheckBox" VerticalAlignment="Top" />
-                                <CheckBox Content="{Binding Path=ConnectionWindow_Uploaded, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,72,0,0" Name="_miscellaneousSearchFilterUploadedCheckBox" VerticalAlignment="Top" />
-                                <CheckBox Content="{Binding Path=ConnectionWindow_Downloaded, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,94,0,0" Name="_miscellaneousSearchFilterDownloadedCheckBox" VerticalAlignment="Top" />
-                            </Grid>
-                        </Expander>
-                        <Expander Header="{Binding Path=ConnectionWindow_RelateSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0">
-                            <Grid Margin="0,0,0,6">
-                                <CheckBox Content="{Binding Path=ConnectionWindow_RelateBoxFile, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousRelateBoxFileCheckBox" VerticalAlignment="Top" />
-                            </Grid>
-                        </Expander>
                     </StackPanel>
                 </Grid>
             </TabItem>

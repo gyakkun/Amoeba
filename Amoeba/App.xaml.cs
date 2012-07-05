@@ -36,11 +36,11 @@ namespace Amoeba
 
             App.AmoebaVersion = new Version(0, 1, 12);
 
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+         
             App.DirectoryPaths = new Dictionary<string, string>();
-            App.DirectoryPaths["Base"] = Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
-            App.DirectoryPaths["Core"] = Path.Combine(App.DirectoryPaths["Base"], "Core");
-            Directory.SetCurrentDirectory(App.DirectoryPaths["Core"]);
-
+            App.DirectoryPaths["Base"] = @"..\";
+            App.DirectoryPaths["Core"] = @".\";
             App.DirectoryPaths["Configuration"] = Path.Combine(App.DirectoryPaths["Base"], "Configuration");
             App.DirectoryPaths["Update"] = Path.Combine(App.DirectoryPaths["Base"], "Update");
             App.DirectoryPaths["Log"] = Path.Combine(App.DirectoryPaths["Base"], "Log");
@@ -221,6 +221,28 @@ namespace Amoeba
                     return;
                 }
             }
+            if (e.Args.Length >= 2 && e.Args[0] == "Download")
+            {
+                try
+                {
+                    if (!Directory.Exists(App.DirectoryPaths["Input"]))
+                        Directory.CreateDirectory(App.DirectoryPaths["Input"]);
+
+                    using (FileStream stream = App.GetUniqueFileStream(Path.Combine(App.DirectoryPaths["Input"], "seed.txt")))
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
+                        foreach (var item in e.Args.Skip(1))
+                        {
+                            if (string.IsNullOrWhiteSpace(item)) continue;
+                            writer.WriteLine(item);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
             else if (e.Args.Length == 1 && e.Args[0].EndsWith(".box") && File.Exists(e.Args[0]))
             {
                 try
@@ -231,28 +253,6 @@ namespace Amoeba
                             Directory.CreateDirectory(App.DirectoryPaths["Input"]);
 
                         File.Copy(e.Args[0], App.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["Input"], Path.GetRandomFileName() + "_temp.box")));
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-            else if (e.Args.Length >= 1 && e.Args[0].StartsWith("Seed@"))
-            {
-                try
-                {
-                    if (!Directory.Exists(App.DirectoryPaths["Input"]))
-                        Directory.CreateDirectory(App.DirectoryPaths["Input"]);
-
-                    using (FileStream stream = App.GetUniqueFileStream(Path.Combine(App.DirectoryPaths["Input"], "seed.txt")))
-                    using (StreamWriter writer = new StreamWriter(stream))
-                    {
-                        foreach (var item in e.Args)
-                        {
-                            if (item == null || !item.StartsWith("Seed@")) continue;
-                            writer.WriteLine(item);
-                        }
                     }
                 }
                 catch (Exception)
@@ -372,7 +372,17 @@ namespace Amoeba
                         xml.WriteStartElement("Process");
                         xml.WriteElementString("Path", @"Tor\tor.exe");
                         xml.WriteElementString("Arguments", "-f torrc");
+                        //xml.WriteElementString("Arguments", "-f torrc DataDirectory Tor");
                         xml.WriteElementString("WorkingDirectory", "Tor");
+
+                        xml.WriteEndElement(); //Process
+                    }
+
+                    {
+                        xml.WriteStartElement("Process");
+                        xml.WriteElementString("Path", @"Polipo\polipo.exe");
+                        xml.WriteElementString("Arguments", "-c polipo.conf");
+                        xml.WriteElementString("WorkingDirectory", "Polipo");
 
                         xml.WriteEndElement(); //Process
                     }

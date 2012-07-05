@@ -49,10 +49,15 @@
                 <MenuItem Name="_menuItemKeywordSetting" Header="{Binding Path=MainWindow_KeywordSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemKeywordSetting_Click" />
                 <MenuItem Name="_menuItemSignatureSetting" Header="{Binding Path=MainWindow_SignatureSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemSignatureSetting_Click" />
                 <MenuItem Name="_menuItemConnectionSetting" Header="{Binding Path=MainWindow_ConnectionSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemConnectionSetting_Click" />
+                <Separator />
+                <MenuItem Name="_menuItemUserInterfaceSetting" Header="{Binding Path=MainWindow_UserInterfaceSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemUserInterfaceSetting_Click" />
+                <Separator />
                 <MenuItem Name="_menuItemCheckingBlocks" Header="{Binding Path=MainWindow_CheckingBlocks, Source={StaticResource ResourcesInstance}}" Click="_menuItemCheckingBlocks_Click" />
             </MenuItem>
             <MenuItem Name="_menuItemLanguages" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />
             <MenuItem Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}">
+                <MenuItem Name="_menuItemUpdateCheck" Header="{Binding Path=MainWindow_UpdateCheck, Source={StaticResource ResourcesInstance}}" Click="_menuItemUpdateCheck_Click" />
+                <Separator />
                 <MenuItem Name="_menuItemVersionInformation" Header="{Binding Path=MainWindow_VersionInformation, Source={StaticResource ResourcesInstance}}" Click="_menuItemVersionInformation_Click" />
             </MenuItem>
         </Menu>

@@ -124,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Windows\UserInterfaceWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\KeywordWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -208,6 +212,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Windows\UserInterfaceWindow.xaml.cs">
+      <DependentUpon>UserInterfaceWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\KeywordWindow.xaml.cs">
       <DependentUpon>KeywordWindow.xaml</DependentUpon>
     </Compile>
@@ -285,6 +292,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Polipo\polipo.exe" />
     <Content Include="Tor\tor-resolve.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -343,6 +351,7 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Polipo\polipo.conf" />
     <None Include="Tor\torrc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
