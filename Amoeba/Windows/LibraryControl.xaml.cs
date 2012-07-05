@@ -359,6 +359,7 @@ namespace Amoeba.Windows
                                             if (!LibraryControl.BoxDigitalSignatureCheck(ref box))
                                             {
                                                 if (MessageBox.Show(
+                                                        _mainWindow,
                                                         LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
                                                         "Digital Signature",
                                                         MessageBoxButton.YesNo) == MessageBoxResult.Yes)
@@ -462,6 +463,7 @@ namespace Amoeba.Windows
             if (boxList.Count == 0) return true;
 
             if (MessageBox.Show(
+                    _mainWindow,
                     string.Format("{0}\r\n{1}", builder.ToString(), LanguagesManager.Instance.LibraryControl_DigitalSignatureAnnulled_Message),
                     "Digital Signature",
                     MessageBoxButton.OKCancel) == MessageBoxResult.OK)
@@ -684,6 +686,7 @@ namespace Amoeba.Windows
                             if (!LibraryControl.BoxDigitalSignatureCheck(ref box))
                             {
                                 if (MessageBox.Show(
+                                    _mainWindow,
                                     LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
                                     "Digital Signature",
                                     MessageBoxButton.YesNo) == MessageBoxResult.Yes)
@@ -1426,6 +1429,7 @@ namespace Amoeba.Windows
                                 if (!LibraryControl.BoxDigitalSignatureCheck(ref box))
                                 {
                                     if (MessageBox.Show(
+                                            _mainWindow,
                                             LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
                                             "Digital Signature",
                                             MessageBoxButton.YesNo) == MessageBoxResult.Yes)

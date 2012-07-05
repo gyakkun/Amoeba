@@ -644,9 +644,13 @@ namespace Amoeba.Windows
                         {
                             if (isShow)
                             {
-                                MessageBox.Show(
-                                    LanguagesManager.Instance.MainWindow_LatestVersion_Message,
-                                    "Update");
+                                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                                {
+                                    MessageBox.Show(
+                                        this,
+                                        LanguagesManager.Instance.MainWindow_LatestVersion_Message,
+                                        "Update");
+                                }), null);
                             }
 
                             return;
@@ -667,6 +671,7 @@ namespace Amoeba.Windows
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         if (MessageBox.Show(
+                            this,
                             string.Format(LanguagesManager.Instance.MainWindow_UpdateCheck_Message, Path.GetFileNameWithoutExtension(seed.Name)),
                             "Update",
                             MessageBoxButton.OKCancel) == MessageBoxResult.Cancel)
@@ -1048,11 +1053,14 @@ namespace Amoeba.Windows
             }));
         }
 
-        private void _menuItemVersionInformation_Click(object sender, RoutedEventArgs e)
+        private void _menuItemDeveloperSiteCheck_Click(object sender, RoutedEventArgs e)
         {
-            VersionInformationWindow window = new VersionInformationWindow();
-            window.Owner = this;
-            window.ShowDialog();
+            Process.Start("http://lyrise.i2p.to/projects/trac/");
+        }
+
+        private void _menuItemManualSiteCheck_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://lyrise.web.fc2.com/");
         }
 
         private void _menuItemCheckingBlocks_Click(object sender, RoutedEventArgs e)
@@ -1093,6 +1101,13 @@ namespace Amoeba.Windows
                 }), null);
             }));
 
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
+        private void _menuItemVersionInformation_Click(object sender, RoutedEventArgs e)
+        {
+            VersionInformationWindow window = new VersionInformationWindow();
             window.Owner = this;
             window.ShowDialog();
         }

@@ -24,6 +24,8 @@
   <Translate Key="MainWindow_UserInterfaceSetting" Value="User Interface Setting" />
   <Translate Key="MainWindow_CheckingBlocks" Value="Checking Blocks" />
   <Translate Key="MainWindow_Help" Value="Help" />
+  <Translate Key="MainWindow_DeveloperSite" Value="Developer Site" />
+  <Translate Key="MainWindow_ManualSite" Value="Manual Site" />
   <Translate Key="MainWindow_UpdateCheck" Value="Update Check" />
   <Translate Key="MainWindow_VersionInformation" Value="Version Information" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
