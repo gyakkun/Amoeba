@@ -35,8 +35,8 @@
   <Translate Key="MainWindow_CheckingBlocks_Message" Value="Checking Blocks" />
   <Translate Key="MainWindow_CheckingBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
   <Translate Key="MainWindow_Copy" Value="Copy" />
-  <Translate Key="MainWindow_UpdateCheck_Message" Value="Update {0}" />
-  <Translate Key="MainWindow_LatestVersion_Message" Value="Latest Version" />
+  <Translate Key="MainWindow_UpdateCheck_Message" Value="Do you want to update to &quot;{0}&quot; ?" />
+  <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />
 
   <Translate Key="KeywordWindow_Title" Value="Keyword Setting" />
   <Translate Key="KeywordWindow_Value" Value="Value" />

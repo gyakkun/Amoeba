@@ -47,7 +47,7 @@
             <TabItem Name="_miscellaneousTabItem" Header="{Binding Path=UserInterfaceWindow_Miscellaneous, Source={StaticResource ResourcesInstance}}">
                 <Grid>
                     <StackPanel Name="_miscellaneousStackPanel" PreviewMouseLeftButtonUp="_miscellaneousStackPanel_PreviewMouseLeftButtonUp">
-                        <Expander Header="{Binding Path=UserInterfaceWindow_SearchFilterSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0">
+                        <Expander Header="{Binding Path=UserInterfaceWindow_SearchFilterSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0" IsExpanded="True">
                             <Grid Margin="0,0,0,6">
                                 <CheckBox Content="{Binding Path=UserInterfaceWindow_Cache, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousSearchFilterCacheCheckBox" VerticalAlignment="Top" />
                                 <CheckBox Content="{Binding Path=UserInterfaceWindow_Uploading, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,28,0,0" Name="_miscellaneousSearchFilterUploadingCheckBox" VerticalAlignment="Top" />

@@ -37,7 +37,7 @@ namespace Amoeba
             App.AmoebaVersion = new Version(0, 1, 12);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
-         
+
             App.DirectoryPaths = new Dictionary<string, string>();
             App.DirectoryPaths["Base"] = @"..\";
             App.DirectoryPaths["Core"] = @".\";
@@ -47,6 +47,7 @@ namespace Amoeba
             App.DirectoryPaths["Icons"] = Path.Combine(App.DirectoryPaths["Core"], "Icons");
             App.DirectoryPaths["Languages"] = Path.Combine(App.DirectoryPaths["Core"], "Languages");
             App.DirectoryPaths["Input"] = Path.Combine(App.DirectoryPaths["Base"], "Input");
+            App.DirectoryPaths["Work"] = Path.Combine(App.DirectoryPaths["Base"], "Work");
 
             foreach (var item in App.DirectoryPaths.Values)
             {
@@ -359,6 +360,25 @@ namespace Amoeba
 
         private void Setting()
         {
+            Version version;
+
+            using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+            {
+                version = new Version(reader.ReadLine());
+            }
+
+            if (version <= new Version(0, 1, 11))
+            {
+                try
+                {
+                    File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"));
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
             if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml")))
             {
                 using (XmlTextWriter xml = new XmlTextWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
@@ -369,10 +389,12 @@ namespace Amoeba
                     xml.WriteStartElement("Configuration");
 
                     {
+                        var path = Path.Combine(App.DirectoryPaths["Work"], "Tor");
+                        Directory.CreateDirectory(path);
+
                         xml.WriteStartElement("Process");
                         xml.WriteElementString("Path", @"Tor\tor.exe");
-                        xml.WriteElementString("Arguments", "-f torrc");
-                        //xml.WriteElementString("Arguments", "-f torrc DataDirectory Tor");
+                        xml.WriteElementString("Arguments", "-f torrc DataDirectory " + @"..\..\Work\Tor");
                         xml.WriteElementString("WorkingDirectory", "Tor");
 
                         xml.WriteEndElement(); //Process

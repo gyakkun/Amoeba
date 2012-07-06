@@ -572,125 +572,140 @@ namespace Amoeba.Windows
             }
         }
 
+        private object _updateLockObject = new object();
+
         private void UpdateCheck(bool isShow)
         {
-            try
+            lock (_updateLockObject)
             {
-                var url = Settings.Instance.Global_Update_Url;
-                var proxyUri = Settings.Instance.Global_Update_ProxyUri;
-                var signature = Settings.Instance.Global_Update_Signature;
-
-                HttpWebRequest rq = (HttpWebRequest)HttpWebRequest.Create(url);
-                rq.Method = "GET";
-                rq.UserAgent = "";
-                rq.ReadWriteTimeout = 1000 * 60;
-                rq.Timeout = 1000 * 60;
-                rq.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
-                rq.KeepAlive = true;
-
-                if (!string.IsNullOrWhiteSpace(proxyUri))
+                try
                 {
-                    string proxyScheme = null;
-                    string proxyHost = null;
-                    int proxyPort = -1;
+                    Version updateVersion = new Version();
 
+                    if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update")))
                     {
-                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
-                        var match = regex.Match(proxyUri);
-
-                        if (match.Success)
+                        using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update"), new UTF8Encoding(false)))
                         {
-                            proxyScheme = match.Groups[1].Value;
-                            proxyHost = match.Groups[2].Value;
-                            proxyPort = int.Parse(match.Groups[3].Value);
-                        }
-                        else
-                        {
-                            Regex regex2 = new Regex(@"(.*?):(.*)");
-                            var match2 = regex2.Match(proxyUri);
-
-                            if (match2.Success)
-                            {
-                                proxyScheme = match2.Groups[1].Value;
-                                proxyHost = match2.Groups[2].Value;
-                                proxyPort = 80;
-                            }
+                            updateVersion = new Version(reader.ReadLine());
                         }
                     }
 
-                    rq.Proxy = new WebProxy(proxyHost, proxyPort);
-                }
+                    var url = Settings.Instance.Global_Update_Url;
+                    var proxyUri = Settings.Instance.Global_Update_ProxyUri;
+                    var signature = Settings.Instance.Global_Update_Signature;
 
-                Seed seed;
+                    HttpWebRequest rq = (HttpWebRequest)HttpWebRequest.Create(url);
+                    rq.Method = "GET";
+                    rq.UserAgent = "";
+                    rq.ReadWriteTimeout = 1000 * 60;
+                    rq.Timeout = 1000 * 60;
+                    rq.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
+                    rq.KeepAlive = true;
 
-                using (HttpWebResponse rs = (HttpWebResponse)rq.GetResponse())
-                using (Stream stream = rs.GetResponseStream())
-                using (StreamReader r = new StreamReader(stream))
-                {
-                    seed = AmoebaConverter.FromSeedString(r.ReadLine());
-                }
-
-                Regex regex3 = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
-
-                if (seed.Name.StartsWith("Amoeba"))
-                {
-                    var match = regex3.Match(seed.Name);
-
-                    if (match.Success)
+                    if (!string.IsNullOrWhiteSpace(proxyUri))
                     {
-                        var tempVersion = new Version(match.Groups[1].Value);
+                        string proxyScheme = null;
+                        string proxyHost = null;
+                        int proxyPort = -1;
+
+                        {
+                            Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                            var match = regex.Match(proxyUri);
+
+                            if (match.Success)
+                            {
+                                proxyScheme = match.Groups[1].Value;
+                                proxyHost = match.Groups[2].Value;
+                                proxyPort = int.Parse(match.Groups[3].Value);
+                            }
+                            else
+                            {
+                                Regex regex2 = new Regex(@"(.*?):(.*)");
+                                var match2 = regex2.Match(proxyUri);
+
+                                if (match2.Success)
+                                {
+                                    proxyScheme = match2.Groups[1].Value;
+                                    proxyHost = match2.Groups[2].Value;
+                                    proxyPort = 80;
+                                }
+                            }
+                        }
+
+                        rq.Proxy = new WebProxy(proxyHost, proxyPort);
+                    }
+
+                    Seed seed;
+
+                    using (HttpWebResponse rs = (HttpWebResponse)rq.GetResponse())
+                    using (Stream stream = rs.GetResponseStream())
+                    using (StreamReader r = new StreamReader(stream))
+                    {
+                        seed = AmoebaConverter.FromSeedString(r.ReadLine());
+                    }
+
+                    Regex regex3 = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
+                    var match3 = regex3.Match(seed.Name);
+
+                    if (match3.Success)
+                    {
+                        var tempVersion = new Version(match3.Groups[1].Value);
 
                         if (tempVersion <= App.AmoebaVersion)
                         {
-                            if (isShow)
+                            if (!isShow) return;
+                         
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                            {
+                                MessageBox.Show(
+                                    this,
+                                    LanguagesManager.Instance.MainWindow_LatestVersion_Message,
+                                    "Update");
+                            }), null);
+                        }
+                        else
+                        {
+                            if (!isShow && tempVersion <= updateVersion) return;
+
+                            if (!string.IsNullOrWhiteSpace(signature))
+                            {
+                                if (!seed.VerifyCertificate()) throw new Exception("Update VerifyCertificate");
+                                if (MessageConverter.ToSignatureString(seed.Certificate) != signature) throw new Exception("Update Signature");
+                            }
+
+                            bool flag = true;
+
+                            if (Settings.Instance.Global_Update_Option != UpdateOption.AutoUpdate)
                             {
                                 this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                                 {
-                                    MessageBox.Show(
+                                    if (MessageBox.Show(
                                         this,
-                                        LanguagesManager.Instance.MainWindow_LatestVersion_Message,
-                                        "Update");
+                                        string.Format(LanguagesManager.Instance.MainWindow_UpdateCheck_Message, Path.GetFileNameWithoutExtension(seed.Name)),
+                                        "Update",
+                                        MessageBoxButton.OKCancel) == MessageBoxResult.Cancel)
+                                    {
+                                        flag = false;
+                                    }
                                 }), null);
                             }
 
-                            return;
+                            using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update"), false, new UTF8Encoding(false)))
+                            {
+                                writer.WriteLine(tempVersion.ToString());
+                            }
+
+                            if (flag)
+                            {
+                                _amoebaManager.Download(seed, App.DirectoryPaths["Update"], 6);
+                            }
                         }
                     }
                 }
-
-                if (!string.IsNullOrWhiteSpace(signature))
+                catch (Exception e)
                 {
-                    if (!seed.VerifyCertificate()) throw new Exception("Update VerifyCertificate");
-                    if (MessageConverter.ToSignatureString(seed.Certificate) != signature) throw new Exception("Update Signature");
+                    Log.Error(e);
                 }
-
-                bool flag = true;
-
-                if (Settings.Instance.Global_Update_Option != UpdateOption.AutoUpdate)
-                {
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                    {
-                        if (MessageBox.Show(
-                            this,
-                            string.Format(LanguagesManager.Instance.MainWindow_UpdateCheck_Message, Path.GetFileNameWithoutExtension(seed.Name)),
-                            "Update",
-                            MessageBoxButton.OKCancel) == MessageBoxResult.Cancel)
-                        {
-                            flag = false;
-                        }
-                    }), null);
-                }
-
-                if (flag)
-                {
-                    _amoebaManager.Download(seed, App.DirectoryPaths["Update"], 6);
-
-                    return;
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
             }
         }
 
@@ -1038,18 +1053,13 @@ namespace Amoeba.Windows
             window.ShowDialog();
         }
 
-        private object _updateLockObject = new object();
-
         private void _menuItemUpdateCheck_Click(object sender, RoutedEventArgs e)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
-                lock (_updateLockObject)
-                {
-                    this.UpdateCheck(sender != null);
-                }
+                this.UpdateCheck(sender != null);
             }));
         }
 
