@@ -660,7 +660,9 @@ namespace Amoeba.Windows
                                 MessageBox.Show(
                                     this,
                                     LanguagesManager.Instance.MainWindow_LatestVersion_Message,
-                                    "Update");
+                                    "Update",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Information);
                             }), null);
                         }
                         else
@@ -683,7 +685,8 @@ namespace Amoeba.Windows
                                         this,
                                         string.Format(LanguagesManager.Instance.MainWindow_UpdateCheck_Message, Path.GetFileNameWithoutExtension(seed.Name)),
                                         "Update",
-                                        MessageBoxButton.OKCancel) == MessageBoxResult.Cancel)
+                                        MessageBoxButton.OKCancel,
+                                        MessageBoxImage.Information) == MessageBoxResult.Cancel)
                                     {
                                         flag = false;
                                     }
@@ -1025,20 +1028,6 @@ namespace Amoeba.Windows
             Log.Information("Stop");
         }
 
-        private void _menuItemKeywordSetting_Click(object sender, RoutedEventArgs e)
-        {
-            KeywordWindow window = new KeywordWindow(_bufferManager);
-            window.Owner = this;
-            window.ShowDialog();
-        }
-
-        private void _menuItemSignatureSetting_Click(object sender, RoutedEventArgs e)
-        {
-            SignatureWindow window = new SignatureWindow(_bufferManager);
-            window.Owner = this;
-            window.ShowDialog();
-        }
-
         private void _menuItemConnectionSetting_Click(object sender, RoutedEventArgs e)
         {
             ConnectionWindow window = new ConnectionWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
@@ -1048,7 +1037,7 @@ namespace Amoeba.Windows
 
         private void _menuItemUserInterfaceSetting_Click(object sender, RoutedEventArgs e)
         {
-            UserInterfaceWindow window = new UserInterfaceWindow();
+            UserInterfaceWindow window = new UserInterfaceWindow(_bufferManager);
             window.Owner = this;
             window.ShowDialog();
         }

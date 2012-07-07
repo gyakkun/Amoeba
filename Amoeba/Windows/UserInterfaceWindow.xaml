@@ -21,12 +21,55 @@
         <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
         <local:DateTimeToStringConverter x:Key="_dateTimeToStringConverter" />
 
+        <DataTemplate x:Key="_myTemplate_Keyword">
+            <TextBlock Text="{Binding Mode=OneWay}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Signature">
+            <TextBlock Text="{Binding Path=Text, Mode=OneWay}" />
+        </DataTemplate>
     </Window.Resources>
 
     <Grid>
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=UserInterfaceWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=UserInterfaceWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" />
         <TabControl Margin="0,0,0,41">
+            <TabItem Header="{Binding Path=UserInterfaceWindow_Keyword, Source={StaticResource ResourcesInstance}}" IsSelected="True">
+                <Grid>
+                    <local:ListViewEx x:Name="_keywordListView" SelectionChanged="_keywordListView_SelectionChanged" PreviewMouseLeftButtonDown="_keywordListView_PreviewMouseLeftButtonDown" Margin="0,0,0,64" Grid.ColumnSpan="2">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="False">
+                                <GridViewColumn Header="{Binding Path=UserInterfaceWindow_Value, Source={StaticResource ResourcesInstance}}"  CellTemplate="{StaticResource _myTemplate_Keyword}" 
+                            Width="{Binding Path=UserInterfaceWindow_Keyword_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            </GridView>
+                        </ListView.View>
+                    </local:ListViewEx>
+                    <Button Name="_keywordUpButton" Height="23" Margin="0,0,330,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_keywordUpButton_Click" HorizontalAlignment="Right" Width="75" IsEnabled="False" Grid.Column="1" />
+                    <Button Name="_keywordDownButton" Height="23" Margin="0,0,249,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_keywordDownButton_Click" HorizontalAlignment="Right" Width="75" IsEnabled="False" Grid.Column="1" />
+                    <Button Name="_keywordAddButton" Height="23" Margin="0,0,168,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_keywordAddButton_Click" HorizontalAlignment="Right" Width="75" Grid.Column="1" />
+                    <Button Name="_keywordEditButton" Height="23" Margin="0,0,87,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_keywordEditButton_Click" HorizontalAlignment="Right" Width="75" Grid.Column="1" />
+                    <Button Name="_keywordDeleteButton" Height="23" Margin="0,0,6,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordDeleteButton_Click" HorizontalAlignment="Right" Width="75" Grid.Column="1" />
+                    <TextBox Margin="6,0,6,35" Name="_keywordTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Height="23" Grid.ColumnSpan="2" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="{Binding Path=UserInterfaceWindow_Signature, Source={StaticResource ResourcesInstance}}" IsSelected="True">
+                <Grid>
+                    <local:ListViewEx x:Name="_signatureListView" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" Margin="0,0,0,64">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="False">
+                                <GridViewColumn Header="{Binding Path=UserInterfaceWindow_Value, Source={StaticResource ResourcesInstance}}"  CellTemplate="{StaticResource _myTemplate_Signature}" 
+                                Width="{Binding Path=UserInterfaceWindow_Signature_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            </GridView>
+                        </ListView.View>
+                    </local:ListViewEx>
+                    <Button Content="{Binding Path=UserInterfaceWindow_Import, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Left" Margin="6,0,0,6" Name="_signatureImportButton" VerticalAlignment="Bottom" Width="75" Click="_signatureImportButton_Click"  />
+                    <Button Content="{Binding Path=UserInterfaceWindow_Export, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Left" Margin="87,0,0,6" Name="_signatureExportButton" VerticalAlignment="Bottom" Width="75" Click="_signatureExportButton_Click" />
+                    <Button Name="_signatureUpButton" Height="23" Margin="0,0,249,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_signatureUpButton_Click" HorizontalAlignment="Right" Width="75" IsEnabled="False" />
+                    <Button Name="_signatureDownButton" Height="23" Margin="0,0,168,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_signatureDownButton_Click" HorizontalAlignment="Right" Width="75" IsEnabled="False" />
+                    <Button Name="_signatureAddButton" Height="23" Margin="0,0,87,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_signatureAddButton_Click" HorizontalAlignment="Right" Width="75" />
+                    <Button Name="_signatureDeleteButton" Height="23" Margin="0,0,6,6" VerticalAlignment="Bottom" Content="{Binding Path=UserInterfaceWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureDeleteButton_Click" HorizontalAlignment="Right" Width="75" />
+                    <TextBox Height="23" Margin="6,0,6,35" Name="_signatureTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                </Grid>
+            </TabItem>
             <TabItem Header="{Binding Path=UserInterfaceWindow_Update, Source={StaticResource ResourcesInstance}}" IsSelected="True">
                 <Grid>
                     <Label Content="{Binding Path=UserInterfaceWindow_UpdateUrl, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />

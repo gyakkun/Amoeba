@@ -362,7 +362,8 @@ namespace Amoeba.Windows
                                                         _mainWindow,
                                                         LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
                                                         "Digital Signature",
-                                                        MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                                        MessageBoxButton.OKCancel,
+                                                        MessageBoxImage.Asterisk) == MessageBoxResult.OK)
                                                 {
                                                     _treeViewItem.Value.Boxes.Add(box);
                                                     _treeViewItem.Update();
@@ -466,7 +467,8 @@ namespace Amoeba.Windows
                     _mainWindow,
                     string.Format("{0}\r\n{1}", builder.ToString(), LanguagesManager.Instance.LibraryControl_DigitalSignatureAnnulled_Message),
                     "Digital Signature",
-                    MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Information) == MessageBoxResult.OK)
             {
                 var items = new List<BoxTreeViewItem>();
                 items.Add(_treeViewItem);
@@ -689,7 +691,8 @@ namespace Amoeba.Windows
                                     _mainWindow,
                                     LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
                                     "Digital Signature",
-                                    MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                    MessageBoxButton.OKCancel,
+                                    MessageBoxImage.Asterisk) == MessageBoxResult.OK)
                                 {
                                     selectBoxTreeViewItem.Value.Boxes.Add(box);
                                     selectBoxTreeViewItem.Update();
@@ -1432,7 +1435,8 @@ namespace Amoeba.Windows
                                             _mainWindow,
                                             LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
                                             "Digital Signature",
-                                            MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                                            MessageBoxButton.OKCancel,
+                                            MessageBoxImage.Asterisk) == MessageBoxResult.OK)
                                     {
                                         selectBoxTreeViewItem.Value.Boxes.Add(box);
                                         selectBoxTreeViewItem.Update();

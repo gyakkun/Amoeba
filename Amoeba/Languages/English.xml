@@ -35,30 +35,38 @@
   <Translate Key="MainWindow_CheckingBlocks_Message" Value="Checking Blocks" />
   <Translate Key="MainWindow_CheckingBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
   <Translate Key="MainWindow_Copy" Value="Copy" />
-  <Translate Key="MainWindow_UpdateCheck_Message" Value="Do you want to update to &quot;{0}&quot; ?" />
+  <Translate Key="MainWindow_UpdateCheck_Message" Value="Do you want to update to &quot;{0}&quot;?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />
 
-  <Translate Key="KeywordWindow_Title" Value="Keyword Setting" />
-  <Translate Key="KeywordWindow_Value" Value="Value" />
-  <Translate Key="KeywordWindow_Up" Value="Up" />
-  <Translate Key="KeywordWindow_Down" Value="Down" />
-  <Translate Key="KeywordWindow_Add" Value="Add" />
-  <Translate Key="KeywordWindow_Edit" Value="Edit" />
-  <Translate Key="KeywordWindow_Delete" Value="Delete" />
-  <Translate Key="KeywordWindow_Ok" Value="Ok" />
-  <Translate Key="KeywordWindow_Cancel" Value="Cancel" />
-
-  <Translate Key="SignatureWindow_Title" Value="Signature Setting" />
-  <Translate Key="SignatureWindow_Value" Value="Value" />
-  <Translate Key="SignatureWindow_Up" Value="Up" />
-  <Translate Key="SignatureWindow_Down" Value="Down" />
-  <Translate Key="SignatureWindow_Add" Value="Add" />
-  <Translate Key="SignatureWindow_Edit" Value="Edit" />
-  <Translate Key="SignatureWindow_Delete" Value="Delete" />
-  <Translate Key="SignatureWindow_Ok" Value="Ok" />
-  <Translate Key="SignatureWindow_Cancel" Value="Cancel" />
-  <Translate Key="SignatureWindow_Import" Value="Import" />
-  <Translate Key="SignatureWindow_Export" Value="Export" />
+  <Translate Key="UserInterfaceWindow_Title" Value="User Interface Setting" />
+  <Translate Key="UserInterfaceWindow_Update" Value="Update" />
+  <Translate Key="UserInterfaceWindow_UpdateUrl" Value="Update Url" />
+  <Translate Key="UserInterfaceWindow_ProxyUri" Value="Proxy Uri" />
+  <Translate Key="UserInterfaceWindow_Signature" Value="Signature" />
+  <Translate Key="UserInterfaceWindow_Keyword" Value="Keyword" />
+  <Translate Key="UserInterfaceWindow_Miscellaneous" Value="Miscellaneous" />
+  <Translate Key="UserInterfaceWindow_SearchFilterSettings" Value="Search Filter Settings" />
+  <Translate Key="UserInterfaceWindow_RelateSettings" Value="Relate Settings" />
+  <Translate Key="UserInterfaceWindow_RelateBoxFile" Value="Relate Box File" />
+  <Translate Key="UserInterfaceWindow_Cache" Value="Cache" />
+  <Translate Key="UserInterfaceWindow_Uploading" Value="Uploading" />
+  <Translate Key="UserInterfaceWindow_Downloading" Value="Downloading" />
+  <Translate Key="UserInterfaceWindow_Uploaded" Value="Uploaded" />
+  <Translate Key="UserInterfaceWindow_Downloaded" Value="Downloaded" />
+  <Translate Key="UserInterfaceWindow_UpdateOption" Value="Update Option" />
+  <Translate Key="UserInterfaceWindow_None" Value="None" />
+  <Translate Key="UserInterfaceWindow_AutoCheck" Value="Auto Check" />
+  <Translate Key="UserInterfaceWindow_AutoUpdate" Value="Auto Update" />
+  <Translate Key="UserInterfaceWindow_Value" Value="Value" />
+  <Translate Key="UserInterfaceWindow_Up" Value="Up" />
+  <Translate Key="UserInterfaceWindow_Down" Value="Down" />
+  <Translate Key="UserInterfaceWindow_Add" Value="Add" />
+  <Translate Key="UserInterfaceWindow_Edit" Value="Edit" />
+  <Translate Key="UserInterfaceWindow_Delete" Value="Delete" />
+  <Translate Key="UserInterfaceWindow_Import" Value="Import" />
+  <Translate Key="UserInterfaceWindow_Export" Value="Export" />
+  <Translate Key="UserInterfaceWindow_Ok" Value="Ok" />
+  <Translate Key="UserInterfaceWindow_Cancel" Value="Cancel" />
 
   <Translate Key="ConnectionWindow_Title" Value="Connection Setting" />
   <Translate Key="ConnectionWindow_BaseNode" Value="Base Node" />
@@ -108,27 +116,6 @@
   <Translate Key="ProgressWindow_Title" Value="Progress State" />
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
-
-  <Translate Key="UserInterfaceWindow_Title" Value="User Interface Setting" />
-  <Translate Key="UserInterfaceWindow_Update" Value="Update" />
-  <Translate Key="UserInterfaceWindow_UpdateUrl" Value="Update Url" />
-  <Translate Key="UserInterfaceWindow_ProxyUri" Value="Proxy Uri" />
-  <Translate Key="UserInterfaceWindow_Signature" Value="Signature" />
-  <Translate Key="UserInterfaceWindow_Miscellaneous" Value="Miscellaneous" />
-  <Translate Key="UserInterfaceWindow_SearchFilterSettings" Value="Search Filter Settings" />
-  <Translate Key="UserInterfaceWindow_RelateSettings" Value="Relate Settings" />
-  <Translate Key="UserInterfaceWindow_RelateBoxFile" Value="Relate Box File" />
-  <Translate Key="UserInterfaceWindow_Cache" Value="Cache" />
-  <Translate Key="UserInterfaceWindow_Uploading" Value="Uploading" />
-  <Translate Key="UserInterfaceWindow_Downloading" Value="Downloading" />
-  <Translate Key="UserInterfaceWindow_Uploaded" Value="Uploaded" />
-  <Translate Key="UserInterfaceWindow_Downloaded" Value="Downloaded" />
-  <Translate Key="UserInterfaceWindow_UpdateOption" Value="Update Option" />
-  <Translate Key="UserInterfaceWindow_None" Value="None" />
-  <Translate Key="UserInterfaceWindow_AutoCheck" Value="Auto Check" />
-  <Translate Key="UserInterfaceWindow_AutoUpdate" Value="Auto Update" />
-  <Translate Key="UserInterfaceWindow_Ok" Value="Ok" />
-  <Translate Key="UserInterfaceWindow_Cancel" Value="Cancel" />
 
   <Translate Key="VersionInformationWindow_Title" Value="Version Information" />
   <Translate Key="VersionInformationWindow_License" Value="License" />

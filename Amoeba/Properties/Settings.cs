@@ -39,20 +39,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Maximized },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "KeywordWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "KeywordWindow_GridViewColumn_Value_Width", Value = 600 },
-                 
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_GridViewColumn_Value_Width", Value = 600 },
-                 
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Height", Value = 500 },
@@ -71,6 +57,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Height", Value = 500 },
                 new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "UserInterfaceWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Keyword_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Signature_Value_Width", Value = 600 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
@@ -549,236 +537,6 @@ namespace Amoeba.Properties
         }
 
 
-        public double KeywordWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["KeywordWindow_Top"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["KeywordWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double KeywordWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["KeywordWindow_Left"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["KeywordWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double KeywordWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["KeywordWindow_Height"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["KeywordWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double KeywordWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["KeywordWindow_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["KeywordWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState KeywordWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["KeywordWindow_WindowState"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["KeywordWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double KeywordWindow_GridViewColumn_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["KeywordWindow_GridViewColumn_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["KeywordWindow_GridViewColumn_Value_Width"] = value;
-                }
-            }
-        }
-
-
-        public double SignatureWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Top"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Left"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Height"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState SignatureWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["SignatureWindow_WindowState"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_GridViewColumn_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_GridViewColumn_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_GridViewColumn_Value_Width"] = value;
-                }
-            }
-        }
-
-
         public double ConnectionWindow_Top
         {
             get
@@ -1099,6 +857,44 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["UserInterfaceWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Keyword_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Keyword_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Keyword_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Signature_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Signature_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Signature_Value_Width"] = value;
                 }
             }
         }

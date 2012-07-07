@@ -18,9 +18,6 @@
         <local:NodeToStringConverter x:Key="_nodeToStringConverter"/>
         <local:ConnectionTypeToStringConverter x:Key="_connectionTypeToStringConverter" />
 
-        <DataTemplate x:Key="_myTemplate_Keyword">
-            <TextBlock Text="{Binding Mode=OneWay}" />
-        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Node">
             <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _nodeToStringConverter}}" />
         </DataTemplate>
