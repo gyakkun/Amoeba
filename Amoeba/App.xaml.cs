@@ -39,15 +39,17 @@ namespace Amoeba
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
             App.DirectoryPaths = new Dictionary<string, string>();
+
             App.DirectoryPaths["Base"] = @"..\";
+            App.DirectoryPaths["Configuration"] = Path.Combine(@"..\", "Configuration");
+            App.DirectoryPaths["Update"] = Path.Combine(@"..\", "Update");
+            App.DirectoryPaths["Log"] = Path.Combine(@"..\", "Log");
+            App.DirectoryPaths["Input"] = Path.Combine(@"..\", "Input");
+            App.DirectoryPaths["Work"] = Path.Combine(@"..\", "Work");
+
             App.DirectoryPaths["Core"] = @".\";
-            App.DirectoryPaths["Configuration"] = Path.Combine(App.DirectoryPaths["Base"], "Configuration");
-            App.DirectoryPaths["Update"] = Path.Combine(App.DirectoryPaths["Base"], "Update");
-            App.DirectoryPaths["Log"] = Path.Combine(App.DirectoryPaths["Base"], "Log");
-            App.DirectoryPaths["Icons"] = Path.Combine(App.DirectoryPaths["Core"], "Icons");
-            App.DirectoryPaths["Languages"] = Path.Combine(App.DirectoryPaths["Core"], "Languages");
-            App.DirectoryPaths["Input"] = Path.Combine(App.DirectoryPaths["Base"], "Input");
-            App.DirectoryPaths["Work"] = Path.Combine(App.DirectoryPaths["Base"], "Work");
+            App.DirectoryPaths["Icons"] = "Icons";
+            App.DirectoryPaths["Languages"] = "Languages";
 
             foreach (var item in App.DirectoryPaths.Values)
             {
@@ -163,11 +165,11 @@ namespace Amoeba
                     try
                     {
                         string extension = ".box";
-                        string commandline = "\"" + Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe") + "\" \"%1\"";
+                        string commandline = "\"" + Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe")) + "\" \"%1\"";
                         string fileType = "Amoeba";
                         string description = "Amoeba Box";
                         string verb = "open";
-                        string iconPath = Path.Combine(App.DirectoryPaths["Icons"], "Box.ico");
+                        string iconPath = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Icons"], "Box.ico"));
 
                         using (var regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension))
                         {
