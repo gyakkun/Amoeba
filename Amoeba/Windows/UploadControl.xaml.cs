@@ -491,6 +491,7 @@ namespace Amoeba.Windows
             else if (sortBy == LanguagesManager.Instance.UploadControl_Rate)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Rank", direction));
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_State)
@@ -545,6 +546,8 @@ namespace Amoeba.Windows
                 {
                     int c = ((int)((UploadState)x.Information["State"])).CompareTo((int)((UploadState)y.Information["State"]));
                     if (c != 0) return c;
+                    c = x.Rank.CompareTo(y.Rank);
+                    if (c != 0) return c;
                     c = x.Rate.CompareTo(y.Rate);
                     if (c != 0) return c;
                     c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
@@ -589,6 +592,7 @@ namespace Amoeba.Windows
             }
 
             private Information _information;
+            private int _rank = 0;
             private string _name = null;
             private UploadState _state = 0;
             private long _length = 0;
@@ -611,6 +615,9 @@ namespace Amoeba.Windows
                 set
                 {
                     _information = value;
+
+                    if (_information.Contains("Rank")) this.Rank = (int)_information["Rank"];
+                    else this.Rank = 0;
 
                     if (_information.Contains("Name")) this.Name = (string)_information["Name"];
                     else this.Name = null;
@@ -683,6 +690,21 @@ namespace Amoeba.Windows
 
                     if (_information.Contains("Seed")) this.Value = (Seed)_information["Seed"];
                     else this.Value = null;
+                }
+            }
+
+            public int Rank
+            {
+                get
+                {
+                    return _rank;
+                }
+                set
+                {
+                    if (value != _rank)
+                    {
+                        _rank = value; this.NotifyPropertyChanged("Rank");
+                    }
                 }
             }
 

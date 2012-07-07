@@ -920,16 +920,16 @@ namespace Amoeba.Windows
 
                 foreach (var item in _treeViewItem.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().ToList().Select(n => n.Value))
                 {
-                    baseDirectory += string.Format("{0}/", LibraryControl.GetNormalizedPath(item.Name));
+                    baseDirectory = System.IO.Path.Combine(baseDirectory, LibraryControl.GetNormalizedPath(item.Name));
                 }
 
-                var path = System.IO.Path.Combine(baseDirectory, seed.Name);
+                var path = System.IO.Path.Combine(baseDirectory, LibraryControl.GetNormalizedPath(seed.Name));
 
                 if (File.Exists(System.IO.Path.Combine(_amoebaManager.DownloadDirectory, path))) return;
 
                 if (_amoebaManager.DownloadingInformation.Any(n =>
                     (n.Contains("Path") && ((string)n["Path"]) == baseDirectory)
-                    && (n.Contains("Name") && ((string)n["Name"]) == seed.Name)))
+                    && (n.Contains("Name") && ((string)n["Name"]) == LibraryControl.GetNormalizedPath(seed.Name))))
                 {
                     return;
                 }
@@ -1222,16 +1222,16 @@ namespace Amoeba.Windows
 
                 foreach (var item in LibraryControl.GetBoxLineage(_treeViewItem.Value, seed))
                 {
-                    baseDirectory += string.Format("{0}/", LibraryControl.GetNormalizedPath(item.Name));
+                    baseDirectory = System.IO.Path.Combine(baseDirectory, LibraryControl.GetNormalizedPath(item.Name));
                 }
 
-                var path = System.IO.Path.Combine(baseDirectory, seed.Name);
+                var path = System.IO.Path.Combine(baseDirectory, LibraryControl.GetNormalizedPath(seed.Name));
 
                 if (File.Exists(System.IO.Path.Combine(_amoebaManager.DownloadDirectory, path))) continue;
 
                 if (_amoebaManager.DownloadingInformation.Any(n =>
                     (n.Contains("Path") && ((string)n["Path"]) == baseDirectory)
-                    && (n.Contains("Name") && ((string)n["Name"]) == seed.Name)))
+                    && (n.Contains("Name") && ((string)n["Name"]) == LibraryControl.GetNormalizedPath(seed.Name))))
                 {
                     continue;
                 }
