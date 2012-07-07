@@ -73,7 +73,7 @@ namespace Amoeba.Windows
             try
             {
                 string extension = ".box";
-                string commandline = "\"" + Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe") + "\" \"%1\"";
+                string commandline = "\"" + Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe")) + "\" \"%1\"";
                 string fileType = "Amoeba";
                 string verb = "open";
 
