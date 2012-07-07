@@ -360,11 +360,14 @@ namespace Amoeba
 
         private void Setting()
         {
-            Version version;
+            Version version = new Version();
 
-            using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+            if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
             {
-                version = new Version(reader.ReadLine());
+                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+                {
+                    version = new Version(reader.ReadLine());
+                }
             }
 
             if (version <= new Version(0, 1, 11))
