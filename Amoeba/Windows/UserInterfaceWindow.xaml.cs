@@ -33,7 +33,7 @@ namespace Amoeba.Windows
             _bufferManager = bufferManager;
             _keywords.AddRange(Settings.Instance.Global_SearchKeywords);
             _signatureListViewItemCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n.DeepClone())));
-  
+
             InitializeComponent();
 
             using (FileStream stream = new FileStream(System.IO.Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open))
@@ -44,7 +44,7 @@ namespace Amoeba.Windows
             _keywordListView.ItemsSource = _keywords;
 
             _signatureListView.ItemsSource = _signatureListViewItemCollection;
-            
+
             _updateUrlTextBox.Text = Settings.Instance.Global_Update_Url;
             _updateProxyUriTextBox.Text = Settings.Instance.Global_Update_ProxyUri;
             _updateSignatureTextBox.Text = Settings.Instance.Global_Update_Signature;
@@ -259,7 +259,7 @@ namespace Amoeba.Windows
             _keywordListView.SelectedIndex = selectIndex;
             _keywordListViewUpdate();
         }
-        
+
         #endregion
 
         #region Signature
@@ -433,7 +433,7 @@ namespace Amoeba.Windows
         }
 
         #endregion
-        
+
         #region Miscellaneous
 
         private void _miscellaneousStackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -458,7 +458,7 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_DigitalSignatureCollection.Clear();
             Settings.Instance.Global_DigitalSignatureCollection.AddRange(_signatureListViewItemCollection.Select(n => n.Value));
-   
+
             Settings.Instance.Global_Update_Url = _updateUrlTextBox.Text;
             Settings.Instance.Global_Update_ProxyUri = _updateProxyUriTextBox.Text;
             Settings.Instance.Global_Update_Signature = _updateSignatureTextBox.Text;
@@ -501,7 +501,9 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.Global_RelateBoxFile_IsEnabled != _miscellaneousRelateBoxFileCheckBox.IsChecked.Value)
             {
-                if (_miscellaneousRelateBoxFileCheckBox.IsChecked.Value)
+                Settings.Instance.Global_RelateBoxFile_IsEnabled = _miscellaneousRelateBoxFileCheckBox.IsChecked.Value;
+
+                if (Settings.Instance.Global_RelateBoxFile_IsEnabled)
                 {
                     System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
                     p.UseShellExecute = true;
@@ -547,8 +549,6 @@ namespace Amoeba.Windows
 
                     }
                 }
-
-                Settings.Instance.Global_RelateBoxFile_IsEnabled = _miscellaneousRelateBoxFileCheckBox.IsChecked.Value;
             }
         }
 

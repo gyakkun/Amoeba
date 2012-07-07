@@ -192,15 +192,15 @@ namespace Amoeba
 
                     using (UpnpClient upnpClient = new UpnpClient())
                     {
-                        upnpClient.Connect(new TimeSpan(0, 0, 10));
+                        upnpClient.Connect(new TimeSpan(0, 0, 30));
 
-                        string ip = upnpClient.GetExternalIpAddress(new TimeSpan(0, 0, 10));
+                        string ip = upnpClient.GetExternalIpAddress(new TimeSpan(0, 0, 30));
 
                         if (!string.IsNullOrWhiteSpace(ip))
                         {
-                            upnpClient.ClosePort(UpnpProtocolType.Tcp, port, new TimeSpan(0, 0, 10));
+                            upnpClient.ClosePort(UpnpProtocolType.Tcp, port, new TimeSpan(0, 0, 30));
                             
-                            if (upnpClient.OpenPort(UpnpProtocolType.Tcp, port, port, "Amoeba", new TimeSpan(0, 0, 10)))
+                            if (upnpClient.OpenPort(UpnpProtocolType.Tcp, port, port, "Amoeba", new TimeSpan(0, 0, 30)))
                             {
                                 _settings.UpnpUri = string.Format("tcp:{0}:{1}", ip, port);
 
@@ -230,9 +230,11 @@ namespace Amoeba
                 if (_settings.Ipv6Uri != null) _amoebaManager.BaseNode.Uris.Remove(_settings.Ipv6Uri);
                 _settings.Ipv6Uri = null;
 
-                try
+                if (_settings.UpnpUri != null)
                 {
-                    if (_settings.UpnpUri != null)
+                    _amoebaManager.BaseNode.Uris.Remove(_settings.UpnpUri);
+
+                    try
                     {
                         using (UpnpClient client = new UpnpClient())
                         {
@@ -241,21 +243,17 @@ namespace Amoeba
                             Regex regex = new Regex(@"(.*?)\:(.*)\:(\d*)");
                             var match = regex.Match(_settings.UpnpUri);
                             if (!match.Success) return;
-                            int port = int.Parse(match.Groups[2].Value);
+                            int port = int.Parse(match.Groups[3].Value);
 
                             client.ClosePort(UpnpProtocolType.Tcp, port, new TimeSpan(0, 0, 10));
                         }
                     }
-                }
-                catch (Exception)
-                {
+                    catch (Exception)
+                    {
 
+                    }
                 }
-                finally
-                {
-                    if (_settings.UpnpUri != null) _amoebaManager.BaseNode.Uris.Remove(_settings.UpnpUri);
-                    _settings.UpnpUri = null;
-                }
+                _settings.UpnpUri = null;
             }
         }
 

@@ -1027,6 +1027,8 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled != _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value)
             {
+                Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
+
                 if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
                 {
                     _autoBaseNodeSettingManager.Start();
@@ -1035,8 +1037,6 @@ namespace Amoeba.Windows
                 {
                     _autoBaseNodeSettingManager.Stop();
                 }
-
-                Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
             }
         }
 
