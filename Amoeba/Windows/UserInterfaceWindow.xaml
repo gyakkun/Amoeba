@@ -39,7 +39,7 @@
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=UserInterfaceWindow_Value, Source={StaticResource ResourcesInstance}}"  CellTemplate="{StaticResource _myTemplate_Keyword}" 
-                            Width="{Binding Path=UserInterfaceWindow_Keyword_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=UserInterfaceWindow_Keyword_GridViewColumn_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
                     </local:ListViewEx>
@@ -57,7 +57,7 @@
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=UserInterfaceWindow_Value, Source={StaticResource ResourcesInstance}}"  CellTemplate="{StaticResource _myTemplate_Signature}" 
-                                Width="{Binding Path=UserInterfaceWindow_Signature_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                Width="{Binding Path=UserInterfaceWindow_Signature_GridViewColumn_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
                     </local:ListViewEx>

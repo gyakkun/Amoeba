@@ -45,9 +45,9 @@
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
-                            Width="{Binding Path=ConnectionControl_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=ConnectionControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Value}" 
-                            Width="{Binding Path=ConnectionControl_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=ConnectionControl_GridViewColumn_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
@@ -66,13 +66,13 @@
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Uri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Uri}" 
-                            Width="{Binding Path=ConnectionControl_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=ConnectionControl_GridViewColumn_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
-                            Width="{Binding Path=ConnectionControl_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=ConnectionControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=ConnectionControl_SentByteCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SentByteCount}" 
-                            Width="{Binding Path=ConnectionControl_SentByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=ConnectionControl_GridViewColumn_SentByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=ConnectionControl_ReceivedByteCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ReceivedByteCount}" 
-                            Width="{Binding Path=ConnectionControl_ReceivedByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=ConnectionControl_GridViewColumn_ReceivedByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

@@ -59,7 +59,7 @@
         <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" VerticalContentAlignment="Center" />
 
         <TreeView Name="_treeView" Grid.Row="1" ContextMenuOpening="_treeView_ContextMenuOpening" PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown" SelectedItemChanged="_treeView_SelectedItemChanged" AllowDrop="True" PreviewMouseRightButtonDown="_treeView_PreviewMouseRightButtonDown"
-                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove">
+                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove">
             <local:BoxTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
                 <local:BoxTreeViewItem.ContextMenu>
                     <ContextMenu Name="_treeViewContextMenu" >
@@ -79,7 +79,7 @@
         </TreeView>
         
         <local:ListViewEx x:Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="_listView_PreviewMouseLeftButtonUp" 
-                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove" >
+                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove" >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" IsItemsHost="True"/>

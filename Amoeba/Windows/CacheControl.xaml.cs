@@ -411,433 +411,6 @@ namespace Amoeba.Windows
             }
         }
 
-        #region _listView
-
-        private void _listView_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (_listView.GetCurrentIndex(e.GetPosition) < 0) return;
-
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                _amoebaManager.Download(item.Value, 3);
-            }
-
-            _recache = true;
-        }
-
-        private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            if (_refresh)
-            {
-                _listViewEditMenuItem.IsEnabled = false;
-                _listViewCopyMenuItem.IsEnabled = false;
-                _listViewCopyInfoMenuItem.IsEnabled = false;
-                _listViewDeleteMenuItem.IsEnabled = false;
-                _listViewDownloadHistoryDeleteMenuItem.IsEnabled = false;
-                _listViewUploadHistoryDeleteMenuItem.IsEnabled = false;
-                _listViewFilterNameMenuItem.IsEnabled = false;
-                _listViewFilterSignatureMenuItem.IsEnabled = false;
-                _listViewFilterKeywordMenuItem.IsEnabled = false;
-                _listViewFilterSeedMenuItem.IsEnabled = false;
-                _listViewDownloadMenuItem.IsEnabled = false;
-
-                return;
-            }
-
-            var selectItems = _listView.SelectedItems;
-
-            _listViewEditMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewFilterNameMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewFilterSignatureMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewFilterKeywordMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewFilterSeedMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-
-            if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
-            else _listViewDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Cache));
-            if (!_listViewDownloadHistoryDeleteMenuItem_IsEnabled) _listViewDownloadHistoryDeleteMenuItem.IsEnabled = false;
-            else _listViewDownloadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
-            if (!_listViewUploadHistoryDeleteMenuItem_IsEnabled) _listViewUploadHistoryDeleteMenuItem.IsEnabled = false;
-            else _listViewUploadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploaded));
-        }
-
-        private void _listViewEditMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems.OfType<SearchListViewItem>();
-            if (selectSearchListViewItems == null) return;
-
-            var selectSeeds = new HashSet<Seed>(selectSearchListViewItems.Select(n => n.Value));
-            if (selectSeeds == null) return;
-
-            IList<Seed> seeds = new List<Seed>();
-
-            {
-                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Cache))
-                {
-                    foreach (var seed in _amoebaManager.Seeds)
-                    {
-                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
-                    }
-                }
-
-                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Uploading))
-                {
-                    foreach (var information in _amoebaManager.UploadingInformation)
-                    {
-                        if (information.Contains("Seed") && ((UploadState)information["State"]) != UploadState.Completed)
-                        {
-                            var seed = (Seed)information["Seed"];
-                            if (selectSeeds.Contains(seed)) seeds.Add(seed);
-                        }
-                    }
-                }
-
-                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Downloading))
-                {
-                    foreach (var information in _amoebaManager.DownloadingInformation)
-                    {
-                        if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed)
-                        {
-                            var seed = (Seed)information["Seed"];
-                            if (selectSeeds.Contains(seed)) seeds.Add(seed);
-                        }
-                    }
-                }
-
-                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Uploaded))
-                {
-                    foreach (var seed in _amoebaManager.UploadedSeeds)
-                    {
-                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
-                    }
-                }
-
-                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Downloaded))
-                {
-                    foreach (var seed in _amoebaManager.DownloadedSeeds)
-                    {
-                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
-                    }
-                }
-            }
-
-            SeedEditWindow window = new SeedEditWindow(ref seeds, _amoebaManager);
-            window.Owner = _mainWindow;
-            window.ShowDialog();
-
-            _recache = true;
-
-            this.Update();
-        }
-
-        private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var seeds = _listView.SelectedItems.OfType<SearchListViewItem>().Select(n => n.Value);
-
-            Clipboard.SetSeeds(seeds);
-        }
-
-        private void _listViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            var sb = new StringBuilder();
-
-            foreach (var seed in selectSearchListViewItems.Cast<SearchListViewItem>().Select(n => n.Value))
-            {
-                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
-                sb.AppendLine(MessageConverter.ToInfoMessage(seed));
-                sb.AppendLine();
-            }
-
-            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
-        }
-
-        volatile bool _listViewDeleteMenuItem_IsEnabled = true;
-
-        private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            _listViewDeleteMenuItem_IsEnabled = false;
-
-            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (item.Value == null || !item.State.HasFlag(SearchState.Cache)) continue;
-
-                list.Add(item.Value);
-            }
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                foreach (var item in list)
-                {
-                    _amoebaManager.RemoveSeed(item);
-                }
-
-                foreach (var seed in _amoebaManager.Seeds.ToArray())
-                {
-                    if (list.Contains(seed))
-                    {
-                        _amoebaManager.RemoveSeed(seed);
-                    }
-                }
-
-                _recache = true;
-
-                _listViewDeleteMenuItem_IsEnabled = true;
-
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                {
-                    try
-                    {
-                        this.Update();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }), null);
-            }));
-        }
-
-        volatile bool _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
-
-        private void _listViewDownloadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            _listViewDownloadHistoryDeleteMenuItem_IsEnabled = false;
-
-            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (item.Value == null || !item.State.HasFlag(SearchState.Downloaded)) continue;
-
-                list.Add(item.Value);
-            }
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                foreach (var item in list)
-                {
-                    _amoebaManager.DownloadedSeeds.Remove(item);
-                }
-
-                foreach (var seed in _amoebaManager.DownloadedSeeds.ToArray())
-                {
-                    if (list.Contains(seed))
-                    {
-                        _amoebaManager.DownloadedSeeds.Remove(seed);
-                    }
-                }
-
-                _recache = true;
-
-                _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
-
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                {
-                    try
-                    {
-                        this.Update();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }), null);
-            }));
-        }
-
-        volatile bool _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
-
-        private void _listViewUploadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            _listViewUploadHistoryDeleteMenuItem_IsEnabled = false;
-
-            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (item.Value == null || !item.State.HasFlag(SearchState.Uploaded)) continue;
-
-                list.Add(item.Value);
-            }
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                foreach (var item in list)
-                {
-                    _amoebaManager.UploadedSeeds.Remove(item);
-                }
-
-                foreach (var seed in _amoebaManager.UploadedSeeds.ToArray())
-                {
-                    if (list.Contains(seed))
-                    {
-                        _amoebaManager.UploadedSeeds.Remove(seed);
-                    }
-                }
-
-                _recache = true;
-
-                _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
-
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                {
-                    try
-                    {
-                        this.Update();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }), null);
-            }));
-        }
-
-        private void _listViewDownloadMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                _amoebaManager.Download(item.Value, 3);
-            }
-
-            _recache = true;
-        }
-
-        private void _listViewFilterNameMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-            if (selectSearchTreeViewItem == null) return;
-
-            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (string.IsNullOrWhiteSpace(listItem.Name)) continue;
-
-                var item = new SearchContains<string>()
-                {
-                    Contains = false,
-                    Value = listItem.Name,
-                };
-
-                if (selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Contains(item)) continue;
-                selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Add(item);
-            }
-
-            _recache = true;
-
-            this.Update();
-        }
-
-        private void _listViewFilterSignatureMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-            if (selectSearchTreeViewItem == null) return;
-
-            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (string.IsNullOrWhiteSpace(listItem.Signature)) continue;
-
-                var item = new SearchContains<string>()
-                {
-                    Contains = false,
-                    Value = listItem.Signature,
-                };
-
-                if (selectSearchTreeViewItem.Value.SearchItem.SearchSignatureCollection.Contains(item)) continue;
-                selectSearchTreeViewItem.Value.SearchItem.SearchSignatureCollection.Add(item);
-            }
-
-            this.Update();
-        }
-
-        private void _listViewFilterKeywordMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-            if (selectSearchTreeViewItem == null) return;
-
-            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                foreach (var keyword in listItem.Value.Keywords)
-                {
-                    if (string.IsNullOrWhiteSpace(keyword)) continue;
-
-                    var item = new SearchContains<string>()
-                    {
-                        Contains = false,
-                        Value = keyword,
-                    };
-
-                    if (selectSearchTreeViewItem.Value.SearchItem.SearchKeywordCollection.Contains(item)) continue;
-                    selectSearchTreeViewItem.Value.SearchItem.SearchKeywordCollection.Add(item);
-                }
-            }
-
-            this.Update();
-        }
-
-        private void _listViewFilterSeedMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-            if (selectSearchTreeViewItem == null) return;
-
-            foreach (var listitem in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (listitem.Value == null) continue;
-
-                var item = new SearchContains<Seed>()
-                {
-                    Contains = false,
-                    Value = listitem.Value
-                };
-
-                if (selectSearchTreeViewItem.Value.SearchItem.SearchSeedCollection.Contains(item)) continue;
-                selectSearchTreeViewItem.Value.SearchItem.SearchSeedCollection.Add(item);
-            }
-
-            this.Update();
-        }
-
-        #endregion
-
         #region _treeView
 
         private Point _startPoint = new Point(-1, -1);
@@ -1311,6 +884,433 @@ namespace Amoeba.Windows
             }
         }
         
+        #endregion
+
+        #region _listView
+
+        private void _listView_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (_listView.GetCurrentIndex(e.GetPosition) < 0) return;
+
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                _amoebaManager.Download(item.Value, 3);
+            }
+
+            _recache = true;
+        }
+
+        private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (_refresh)
+            {
+                _listViewEditMenuItem.IsEnabled = false;
+                _listViewCopyMenuItem.IsEnabled = false;
+                _listViewCopyInfoMenuItem.IsEnabled = false;
+                _listViewDeleteMenuItem.IsEnabled = false;
+                _listViewDownloadHistoryDeleteMenuItem.IsEnabled = false;
+                _listViewUploadHistoryDeleteMenuItem.IsEnabled = false;
+                _listViewFilterNameMenuItem.IsEnabled = false;
+                _listViewFilterSignatureMenuItem.IsEnabled = false;
+                _listViewFilterKeywordMenuItem.IsEnabled = false;
+                _listViewFilterSeedMenuItem.IsEnabled = false;
+                _listViewDownloadMenuItem.IsEnabled = false;
+
+                return;
+            }
+
+            var selectItems = _listView.SelectedItems;
+
+            _listViewEditMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterNameMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterSignatureMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterKeywordMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterSeedMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+
+            if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
+            else _listViewDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Cache));
+            if (!_listViewDownloadHistoryDeleteMenuItem_IsEnabled) _listViewDownloadHistoryDeleteMenuItem.IsEnabled = false;
+            else _listViewDownloadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
+            if (!_listViewUploadHistoryDeleteMenuItem_IsEnabled) _listViewUploadHistoryDeleteMenuItem.IsEnabled = false;
+            else _listViewUploadHistoryDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploaded));
+        }
+
+        private void _listViewEditMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems.OfType<SearchListViewItem>();
+            if (selectSearchListViewItems == null) return;
+
+            var selectSeeds = new HashSet<Seed>(selectSearchListViewItems.Select(n => n.Value));
+            if (selectSeeds == null) return;
+
+            IList<Seed> seeds = new List<Seed>();
+
+            {
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Cache))
+                {
+                    foreach (var seed in _amoebaManager.Seeds)
+                    {
+                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                    }
+                }
+
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Uploading))
+                {
+                    foreach (var information in _amoebaManager.UploadingInformation)
+                    {
+                        if (information.Contains("Seed") && ((UploadState)information["State"]) != UploadState.Completed)
+                        {
+                            var seed = (Seed)information["Seed"];
+                            if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                        }
+                    }
+                }
+
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Downloading))
+                {
+                    foreach (var information in _amoebaManager.DownloadingInformation)
+                    {
+                        if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed)
+                        {
+                            var seed = (Seed)information["Seed"];
+                            if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                        }
+                    }
+                }
+
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Uploaded))
+                {
+                    foreach (var seed in _amoebaManager.UploadedSeeds)
+                    {
+                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                    }
+                }
+
+                if (!Settings.Instance.Global_SearchFilterSettings_State.HasFlag(SearchState.Downloaded))
+                {
+                    foreach (var seed in _amoebaManager.DownloadedSeeds)
+                    {
+                        if (selectSeeds.Contains(seed)) seeds.Add(seed);
+                    }
+                }
+            }
+
+            SeedEditWindow window = new SeedEditWindow(ref seeds, _amoebaManager);
+            window.Owner = _mainWindow;
+            window.ShowDialog();
+
+            _recache = true;
+
+            this.Update();
+        }
+
+        private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var seeds = _listView.SelectedItems.OfType<SearchListViewItem>().Select(n => n.Value);
+
+            Clipboard.SetSeeds(seeds);
+        }
+
+        private void _listViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var sb = new StringBuilder();
+
+            foreach (var seed in selectSearchListViewItems.Cast<SearchListViewItem>().Select(n => n.Value))
+            {
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
+                sb.AppendLine(MessageConverter.ToInfoMessage(seed));
+                sb.AppendLine();
+            }
+
+            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
+        }
+
+        volatile bool _listViewDeleteMenuItem_IsEnabled = true;
+
+        private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewDeleteMenuItem_IsEnabled = false;
+
+            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null || !item.State.HasFlag(SearchState.Cache)) continue;
+
+                list.Add(item.Value);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                foreach (var item in list)
+                {
+                    _amoebaManager.RemoveSeed(item);
+                }
+
+                foreach (var seed in _amoebaManager.Seeds.ToArray())
+                {
+                    if (list.Contains(seed))
+                    {
+                        _amoebaManager.RemoveSeed(seed);
+                    }
+                }
+
+                _recache = true;
+
+                _listViewDeleteMenuItem_IsEnabled = true;
+
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                {
+                    try
+                    {
+                        this.Update();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }), null);
+            }));
+        }
+
+        volatile bool _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
+
+        private void _listViewDownloadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewDownloadHistoryDeleteMenuItem_IsEnabled = false;
+
+            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null || !item.State.HasFlag(SearchState.Downloaded)) continue;
+
+                list.Add(item.Value);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                foreach (var item in list)
+                {
+                    _amoebaManager.DownloadedSeeds.Remove(item);
+                }
+
+                foreach (var seed in _amoebaManager.DownloadedSeeds.ToArray())
+                {
+                    if (list.Contains(seed))
+                    {
+                        _amoebaManager.DownloadedSeeds.Remove(seed);
+                    }
+                }
+
+                _recache = true;
+
+                _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
+
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                {
+                    try
+                    {
+                        this.Update();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }), null);
+            }));
+        }
+
+        volatile bool _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
+
+        private void _listViewUploadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewUploadHistoryDeleteMenuItem_IsEnabled = false;
+
+            var list = new HashSet<Seed>(new SeedHashEqualityComparer());
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null || !item.State.HasFlag(SearchState.Uploaded)) continue;
+
+                list.Add(item.Value);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                foreach (var item in list)
+                {
+                    _amoebaManager.UploadedSeeds.Remove(item);
+                }
+
+                foreach (var seed in _amoebaManager.UploadedSeeds.ToArray())
+                {
+                    if (list.Contains(seed))
+                    {
+                        _amoebaManager.UploadedSeeds.Remove(seed);
+                    }
+                }
+
+                _recache = true;
+
+                _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
+
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                {
+                    try
+                    {
+                        this.Update();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }), null);
+            }));
+        }
+
+        private void _listViewDownloadMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                _amoebaManager.Download(item.Value, 3);
+            }
+
+            _recache = true;
+        }
+
+        private void _listViewFilterNameMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectSearchTreeViewItem == null) return;
+
+            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (string.IsNullOrWhiteSpace(listItem.Name)) continue;
+
+                var item = new SearchContains<string>()
+                {
+                    Contains = false,
+                    Value = listItem.Name,
+                };
+
+                if (selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Contains(item)) continue;
+                selectSearchTreeViewItem.Value.SearchItem.SearchNameCollection.Add(item);
+            }
+
+            _recache = true;
+
+            this.Update();
+        }
+
+        private void _listViewFilterSignatureMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectSearchTreeViewItem == null) return;
+
+            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (string.IsNullOrWhiteSpace(listItem.Signature)) continue;
+
+                var item = new SearchContains<string>()
+                {
+                    Contains = false,
+                    Value = listItem.Signature,
+                };
+
+                if (selectSearchTreeViewItem.Value.SearchItem.SearchSignatureCollection.Contains(item)) continue;
+                selectSearchTreeViewItem.Value.SearchItem.SearchSignatureCollection.Add(item);
+            }
+
+            this.Update();
+        }
+
+        private void _listViewFilterKeywordMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectSearchTreeViewItem == null) return;
+
+            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                foreach (var keyword in listItem.Value.Keywords)
+                {
+                    if (string.IsNullOrWhiteSpace(keyword)) continue;
+
+                    var item = new SearchContains<string>()
+                    {
+                        Contains = false,
+                        Value = keyword,
+                    };
+
+                    if (selectSearchTreeViewItem.Value.SearchItem.SearchKeywordCollection.Contains(item)) continue;
+                    selectSearchTreeViewItem.Value.SearchItem.SearchKeywordCollection.Add(item);
+                }
+            }
+
+            this.Update();
+        }
+
+        private void _listViewFilterSeedMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectSearchTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectSearchTreeViewItem == null) return;
+
+            foreach (var listitem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (listitem.Value == null) continue;
+
+                var item = new SearchContains<Seed>()
+                {
+                    Contains = false,
+                    Value = listitem.Value
+                };
+
+                if (selectSearchTreeViewItem.Value.SearchItem.SearchSeedCollection.Contains(item)) continue;
+                selectSearchTreeViewItem.Value.SearchItem.SearchSeedCollection.Add(item);
+            }
+
+            this.Update();
+        }
+
         #endregion
 
         #region Sort

@@ -16,11 +16,6 @@ namespace Amoeba
 {
     static class MessageConverter
     {
-        public static string ToKeywordsString(IEnumerable<string> keywords)
-        {
-            return String.Join(", ", keywords);
-        }
-
         public static string ToSignatureString(DigitalSignature digitalSignature)
         {
             if (digitalSignature == null || digitalSignature.Nickname == null || digitalSignature.PublicKey == null) return null;

@@ -96,11 +96,11 @@
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ConnectionType}" 
-                                            Width="{Binding Path=ConnectionWindow_Client_Filters_ConnectionType_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                            Width="{Binding Path=ConnectionWindow_Client_Filters_GridViewColumn_ConnectionType_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                         <GridViewColumn Header="{Binding Path=ConnectionWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ProxyUri}" 
-                                            Width="{Binding Path=ConnectionWindow_Client_Filters_ProxyUri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                            Width="{Binding Path=ConnectionWindow_Client_Filters_GridViewColumn_ProxyUri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                         <GridViewColumn Header="{Binding Path=ConnectionWindow_UriCondition, Source={StaticResource ResourcesInstance}}"
-                                            Width="{Binding Path=ConnectionWindow_Client_Filters_UriCondition_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" CellTemplate="{StaticResource _myTemplate_UriCondition}" />
+                                            Width="{Binding Path=ConnectionWindow_Client_Filters_GridViewColumn_UriCondition_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" CellTemplate="{StaticResource _myTemplate_UriCondition}" />
                                     </GridView>
                                 </ListView.View>
                             </local:ListViewEx>
@@ -136,7 +136,7 @@
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn Header="{Binding Path=ConnectionWindow_Uri, Source={StaticResource ResourcesInstance}}" 
-                                            Width="{Binding Path=ConnectionWindow_Server_ListenUris_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                            Width="{Binding Path=ConnectionWindow_Server_ListenUris_GridViewColumn_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                     </GridView>
                                 </ListView.View>
                             </local:ListViewEx>
