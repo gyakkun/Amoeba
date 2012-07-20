@@ -132,7 +132,7 @@
   <Translate Key="ConnectionControl_Value" Value="Value" />
   <Translate Key="ConnectionControl_PullNodeCount" Value="PullNode Count" />
   <Translate Key="ConnectionControl_PullBlockLinkCount" Value="PullBlocksLink Count" />
-  <Translate Key="ConnectionControl_PullBlockRequestCount" Value="PullBlocksRequest Count" />
+  <Translate Key="ConnectionControl_PullBlockRequestCount" Value="PullBlockRequest Count" />
   <Translate Key="ConnectionControl_PullBlockCount" Value="PullBlock Count" />
   <Translate Key="ConnectionControl_PushNodeCount" Value="PushNode Count" />
   <Translate Key="ConnectionControl_PushBlockLinkCount" Value="PushBlockLink Count" />
@@ -163,7 +163,6 @@
   <Translate Key="CacheControl_CreationTime" Value="Creation Time" />
   <Translate Key="CacheControl_Length" Value="Length" />
   <Translate Key="CacheControl_Comment" Value="Comment" />
-  <Translate Key="CacheControl_Hash" Value="Hash" />
   <Translate Key="CacheControl_Add" Value="Add" />
   <Translate Key="CacheControl_Edit" Value="Edit" />
   <Translate Key="CacheControl_Delete" Value="Delete" />

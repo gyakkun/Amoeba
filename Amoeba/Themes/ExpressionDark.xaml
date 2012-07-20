@@ -15,7 +15,7 @@
 
     <Color x:Key="MainColor">#FF595959</Color>
     <Color x:Key="HoverColor">#FF393939</Color>
-    <Color x:Key="DefaultColor">#FF9BB1C5</Color>
+    <Color x:Key="DefaultColor">#FF9B9B9B</Color>
     <SolidColorBrush x:Key="LightBrush" Color="#FF333333" />
     <SolidColorBrush x:Key="ShadeBrush" Color="#FF434343" />
 
@@ -1760,6 +1760,7 @@
         <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="#FF000000"/>
     </Style>
+
     <Style TargetType="{x:Type Label}">
         <Setter Property="Template">
             <Setter.Value>
@@ -1800,9 +1801,9 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <DropShadowBitmapEffect x:Key="PopupDropShadow" ShadowDepth="1.5" Softness="0.15" />
-    
+
     <Style TargetType="{x:Type MenuItem}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
@@ -1914,7 +1915,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="{x:Type ContextMenu}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="BorderThickness" Value="1" />
@@ -1950,7 +1951,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="{x:Type TabControl}">
         <Setter Property="Template">
             <Setter.Value>

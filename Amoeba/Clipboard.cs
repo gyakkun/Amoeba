@@ -138,7 +138,7 @@ namespace Amoeba
 
         public static IEnumerable<Box> GetBoxes()
         {
-            return _boxList.Select(n => n.DeepClone());
+            return _boxList.Select(n => n.DeepClone()).ToArray();
         }
 
         public static void SetBoxes(IEnumerable<Box> boxes)
@@ -149,10 +149,10 @@ namespace Amoeba
 
         public static IEnumerable<Windows.SearchTreeItem> GetSearchTreeItems()
         {
-            return _searchTreeItemList.Select(n => n.DeepClone());
+            return _searchTreeItemList.Select(n => n.DeepClone()).ToArray();
         }
 
-        public static void SetSearchTreeItems(List<Windows.SearchTreeItem> searchTreeItems)
+        public static void SetSearchTreeItems(IEnumerable<Windows.SearchTreeItem> searchTreeItems)
         {
             _searchTreeItemList.Clear();
             _searchTreeItemList.AddRange(searchTreeItems.Select(n => n.DeepClone()));

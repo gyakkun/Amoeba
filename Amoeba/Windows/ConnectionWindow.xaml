@@ -71,8 +71,8 @@
                             <local:ListViewEx x:Name="_otherNodesListView" Margin="6" ContextMenuOpening="_otherNodesListView_ContextMenuOpening" PreviewMouseLeftButtonDown="_otherNodesListView_PreviewMouseLeftButtonDown" SelectionChanged="_otherNodesListView_SelectionChanged">
                                 <ListView.ContextMenu>
                                     <ContextMenu Name="_otherNodesContextMenu" >
-                                        <MenuItem Name="_otherNodesCopyContextMenuItem" Header="{Binding Path=ConnectionWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_otherNodesCopyContextMenuItem_Click"/>
-                                        <MenuItem Name="_otherNodesPasteContextMenuItem" Header="{Binding Path=ConnectionWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_otherNodesPasteContextMenuItem_Click"/>
+                                        <MenuItem Name="_otherNodesCopyMenuItem" Header="{Binding Path=ConnectionWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_otherNodesCopyMenuItem_Click"/>
+                                        <MenuItem Name="_otherNodesPasteMenuItem" Header="{Binding Path=ConnectionWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_otherNodesPasteMenuItem_Click"/>
                                     </ContextMenu>
                                 </ListView.ContextMenu>
                                 <ListView.View>

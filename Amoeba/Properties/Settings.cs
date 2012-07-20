@@ -21,6 +21,7 @@ namespace Amoeba.Properties
             : base(new List<Library.Configuration.ISettingsContext>()
             {
                 new Library.Configuration.SettingsContext<List<DigitalSignature>>() { Name = "Global_DigitalSignatureCollection", Value = new List<DigitalSignature>() },
+                new Library.Configuration.SettingsContext<DigitalSignature>() { Name = "Global_UploadDigitalSignature", Value = null },
                 new Library.Configuration.SettingsContext<List<string>>() { Name = "Global_SearchKeywords", Value = new List<string>() },
                 new Library.Configuration.SettingsContext<List<string>>() { Name = "Global_UploadKeywords", Value = new List<string>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_UseLanguage", Value = "English" },
@@ -226,6 +227,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_DigitalSignatureCollection"] = value;
+                }
+            }
+        }
+
+        public DigitalSignature Global_UploadDigitalSignature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (DigitalSignature)this["Global_UploadDigitalSignature"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_UploadDigitalSignature"] = value;
                 }
             }
         }

@@ -51,6 +51,8 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
+            _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
+
             _nameContainsCheckBox.IsChecked = true;
             _nameRegexContainsCheckBox.IsChecked = true;
             _signatureContainsCheckBox.IsChecked = true;
@@ -66,8 +68,6 @@ namespace Amoeba.Windows
             _creationTimeRangeListView.ItemsSource = _searchCreationTimeRangeCollection;
             _lengthRangeListView.ItemsSource = _searchLengthRangeCollection;
             _seedListView.ItemsSource = _searchSeedCollection;
-
-            _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
 
             _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.UtcNow.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
             _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
@@ -214,16 +214,16 @@ namespace Amoeba.Windows
         {
             var selectItems = _nameListView.SelectedItems;
 
-            _nameListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _nameListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
-                _nameListViewPasteContextMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
+                _nameListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
             }
         }
 
-        private void _nameListViewCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _nameListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -235,7 +235,7 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _nameListViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _nameListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Regex regex = new Regex(@"([\+-]) (.*)");
 
@@ -426,16 +426,16 @@ namespace Amoeba.Windows
         {
             var selectItems = _nameRegexListView.SelectedItems;
 
-            _nameRegexListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _nameRegexListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
-                _nameRegexListViewPasteContextMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) ([\+-]) (.*)"));
+                _nameRegexListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) ([\+-]) (.*)"));
             }
         }
 
-        private void _nameRegexListViewCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _nameRegexListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -447,7 +447,7 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _nameRegexListViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _nameRegexListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Regex regex = new Regex(@"([\+-]) ([\+-]) (.*)");
 
@@ -675,16 +675,16 @@ namespace Amoeba.Windows
         {
             var selectItems = _signatureListView.SelectedItems;
 
-            _signatureListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _signatureListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
-                _signatureListViewPasteContextMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
+                _signatureListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
             }
         }
 
-        private void _signatureListViewCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _signatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -696,7 +696,7 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _signatureListViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _signatureListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Regex regex = new Regex(@"([\+-]) (.*)");
 
@@ -889,16 +889,16 @@ namespace Amoeba.Windows
         {
             var selectItems = _keywordListView.SelectedItems;
 
-            _keywordListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _keywordListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
-                _keywordListViewPasteContextMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
+                _keywordListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
             }
         }
 
-        private void _keywordListViewCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _keywordListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -910,7 +910,7 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _keywordListViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _keywordListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Regex regex = new Regex(@"([\+-]) (.*)");
 
@@ -1105,16 +1105,16 @@ namespace Amoeba.Windows
         {
             var selectItems = _creationTimeRangeListView.SelectedItems;
 
-            _creationTimeRangeListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _creationTimeRangeListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
-                _creationTimeRangeListViewPasteContextMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*), (.*)"));
+                _creationTimeRangeListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*), (.*)"));
             }
         }
 
-        private void _creationTimeRangeListViewCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _creationTimeRangeListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -1128,7 +1128,7 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _creationTimeRangeListViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _creationTimeRangeListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Regex regex = new Regex(@"([\+-]) (.*), (.*)");
 
@@ -1351,16 +1351,16 @@ namespace Amoeba.Windows
         {
             var selectItems = _lengthRangeListView.SelectedItems;
 
-            _lengthRangeListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _lengthRangeListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
-                _lengthRangeListViewPasteContextMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*), (.*)"));
+                _lengthRangeListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*), (.*)"));
             }
         }
 
-        private void _lengthRangeListViewCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _lengthRangeListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -1372,7 +1372,7 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _lengthRangeListViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _lengthRangeListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Regex regex = new Regex(@"([\+-]) (.*), (.*)");
 
@@ -1579,7 +1579,6 @@ namespace Amoeba.Windows
             {
                 _seedContainsCheckBox.IsChecked = true;
                 _seedTextBox.Text = "";
-                _seedNameTextBox.Text = "";
                 return;
             }
 
@@ -1588,24 +1587,23 @@ namespace Amoeba.Windows
 
             _seedContainsCheckBox.IsChecked = item.Contains;
             _seedTextBox.Text = AmoebaConverter.ToSeedString(item.Value);
-            _seedNameTextBox.Text = string.Format("{0}, {1:#,0}", item.Value.Name, item.Value.Length);
         }
 
         private void _seedListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _seedListView.SelectedItems;
 
-            _seedListViewCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _seedListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var seeds = Clipboard.GetSeeds();
                 var text = Clipboard.GetText();
 
-                _seedListViewPasteContextMenuItem.IsEnabled = ((seeds.Count() > 0) || (text != null && Regex.IsMatch(text, @"([\+-]) (.*)")));
+                _seedListViewPasteMenuItem.IsEnabled = ((seeds.Count() > 0) || (text != null && Regex.IsMatch(text, @"([\+-]) (.*)")));
             }
         }
 
-        private void _seedListViewCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _seedListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -1617,7 +1615,7 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _seedListViewPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _seedListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             foreach (var seed in Clipboard.GetSeeds())
             {

@@ -1846,17 +1846,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string CacheControl_Hash
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Hash");
-                }
-            }
-        }
-
         public string CacheControl_Add
         {
             get

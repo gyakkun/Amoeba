@@ -20,6 +20,7 @@
         <local:SeedToStringConverter x:Key="_seedToStringConverter" />
         <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
         <local:DateTimeToStringConverter x:Key="_dateTimeToStringConverter" />
+        <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
 
         <DataTemplate x:Key="_myTemplate_SearchContains_Contains">
             <TextBlock Text="{Binding Path=Contains, Mode=OneWay, Converter={StaticResource _boolToStringConverter}}" />
@@ -46,7 +47,7 @@
             <TextBlock Text="{Binding Path=Value.Min, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_SearchContains_Seed_Value">
-            <TextBlock Text="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _seedToStringConverter}}" />
+            <TextBlock Text="{Binding Path=Value.Name, Mode=OneWay}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}"/>
         </DataTemplate>
     </Window.Resources>
 
@@ -68,8 +69,8 @@
                     <local:ListViewEx x:Name="_nameListView" Margin="0,0,0,87" SelectionChanged="_nameListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_nameListView_ContextMenuOpening">
                         <ListView.ContextMenu>
                             <ContextMenu Name="_nameListViewContextMenu" >
-                                <MenuItem Name="_nameListViewCopyContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_nameListViewCopyContextMenuItem_Click"/>
-                                <MenuItem Name="_nameListViewPasteContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_nameListViewPasteContextMenuItem_Click"/>
+                                <MenuItem Name="_nameListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_nameListViewCopyMenuItem_Click"/>
+                                <MenuItem Name="_nameListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_nameListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>
@@ -95,8 +96,8 @@
                     <local:ListViewEx x:Name="_nameRegexListView" Margin="0,0,0,87" SelectionChanged="_nameRegexListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameRegexListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_nameRegexListView_ContextMenuOpening">
                         <ListView.ContextMenu>
                             <ContextMenu Name="_nameRegexListViewContextMenu" >
-                                <MenuItem Name="_nameRegexListViewCopyContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_nameRegexListViewCopyContextMenuItem_Click"/>
-                                <MenuItem Name="_nameRegexListViewPasteContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_nameRegexListViewPasteContextMenuItem_Click"/>
+                                <MenuItem Name="_nameRegexListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_nameRegexListViewCopyMenuItem_Click"/>
+                                <MenuItem Name="_nameRegexListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_nameRegexListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>
@@ -125,8 +126,8 @@
                     <local:ListViewEx x:Name="_signatureListView" Margin="0,0,0,87" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_signatureListView_ContextMenuOpening">
                         <ListView.ContextMenu>
                             <ContextMenu Name="_signatureListViewContextMenu" >
-                                <MenuItem Name="_signatureListViewCopyContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewCopyContextMenuItem_Click"/>
-                                <MenuItem Name="_signatureListViewPasteContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewPasteContextMenuItem_Click"/>
+                                <MenuItem Name="_signatureListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewCopyMenuItem_Click"/>
+                                <MenuItem Name="_signatureListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>
@@ -152,8 +153,8 @@
                     <local:ListViewEx x:Name="_keywordListView" Margin="0,0,0,87" SelectionChanged="_keywordListView_SelectionChanged" PreviewMouseLeftButtonDown="_keywordListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_keywordListView_ContextMenuOpening">
                         <ListView.ContextMenu>
                             <ContextMenu Name="_keywordListViewContextMenu" >
-                                <MenuItem Name="_keywordListViewCopyContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewCopyContextMenuItem_Click"/>
-                                <MenuItem Name="_keywordListViewPasteContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewPasteContextMenuItem_Click"/>
+                                <MenuItem Name="_keywordListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewCopyMenuItem_Click"/>
+                                <MenuItem Name="_keywordListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>
@@ -184,8 +185,8 @@
                     <local:ListViewEx x:Name="_creationTimeRangeListView" Margin="0,0,0,87" SelectionChanged="_creationTimeRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_creationTimeRangeListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_creationTimeRangeListView_ContextMenuOpening"  Grid.ColumnSpan="2">
                         <ListView.ContextMenu>
                             <ContextMenu Name="_creationTimeRangeListViewContextMenu" >
-                                <MenuItem Name="_creationTimeRangeListViewCopyContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeListViewCopyContextMenuItem_Click"/>
-                                <MenuItem Name="_creationTimeRangeListViewPasteContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeListViewPasteContextMenuItem_Click"/>
+                                <MenuItem Name="_creationTimeRangeListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeListViewCopyMenuItem_Click"/>
+                                <MenuItem Name="_creationTimeRangeListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>
@@ -218,8 +219,8 @@
                     <local:ListViewEx x:Name="_lengthRangeListView" Margin="0,0,0,87" SelectionChanged="_lengthRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_lengthRangeListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_lengthRangeListView_ContextMenuOpening" Grid.ColumnSpan="2">
                         <ListView.ContextMenu>
                             <ContextMenu Name="_lengthRangeListViewContextMenu" >
-                                <MenuItem Name="_lengthRangeListViewCopyContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeListViewCopyContextMenuItem_Click"/>
-                                <MenuItem Name="_lengthRangeListViewPasteContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeListViewPasteContextMenuItem_Click"/>
+                                <MenuItem Name="_lengthRangeListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeListViewCopyMenuItem_Click"/>
+                                <MenuItem Name="_lengthRangeListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>
@@ -244,11 +245,11 @@
                     <Button Name="_seedDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_seedDeleteButton_Click" />
                     <TextBox Name="_seedTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
                     <CheckBox Name="_seedContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <local:ListViewEx x:Name="_seedListView" Margin="0,36,0,87" SelectionChanged="_seedListView_SelectionChanged" PreviewMouseLeftButtonDown="_seedListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_seedListView_ContextMenuOpening">
+                    <local:ListViewEx x:Name="_seedListView" Margin="0,0,0,87" SelectionChanged="_seedListView_SelectionChanged" PreviewMouseLeftButtonDown="_seedListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_seedListView_ContextMenuOpening">
                         <ListView.ContextMenu>
                             <ContextMenu Name="_seedListViewContextMenu" >
-                                <MenuItem Name="_seedListViewCopyContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_seedListViewCopyContextMenuItem_Click"/>
-                                <MenuItem Name="_seedListViewPasteContextMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_seedListViewPasteContextMenuItem_Click"/>
+                                <MenuItem Name="_seedListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_seedListViewCopyMenuItem_Click"/>
+                                <MenuItem Name="_seedListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_seedListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>
@@ -260,8 +261,6 @@
                             </GridView>
                         </ListView.View>
                     </local:ListViewEx>
-                    <Label Content="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-                    <TextBox Height="24" Margin="132,6,6,0" Name="_seedNameTextBox" VerticalAlignment="Top" IsReadOnly="True" VerticalContentAlignment="Center" />
                 </Grid>
             </TabItem>
             <TabItem Name="_miscellaneousTabItem" Header="{Binding Path=SearchItemEditWindow_Miscellaneous, Source={StaticResource ResourcesInstance}}">

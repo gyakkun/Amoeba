@@ -67,11 +67,11 @@
                         <MenuItem Name="_treeViewEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewEditMenuItem_Click"/>
                         <MenuItem Name="_treeViewDeleteMenuItem" Header="{Binding Path=CacheControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewDeleteMenuItem_Click"/>
                         <Separator />
-                        <MenuItem Name="_treeViewCutContextMenuItem" Header="{Binding Path=CacheControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewCutContextMenuItem_Click" />
-                        <MenuItem Name="_treeViewCopyContextMenuItem" Header="{Binding Path=CacheControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewCopyContextMenuItem_Click" />
-                        <MenuItem Name="_treeViewPasteContextMenuItem" Header="{Binding Path=CacheControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewPasteContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewCutMenuItem" Header="{Binding Path=CacheControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewCutMenuItem_Click" />
+                        <MenuItem Name="_treeViewCopyMenuItem" Header="{Binding Path=CacheControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewCopyMenuItem_Click" />
+                        <MenuItem Name="_treeViewPasteMenuItem" Header="{Binding Path=CacheControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewPasteMenuItem_Click" />
                         <Separator />
-                        <MenuItem Name="_treeViewExportContextMenuItem" Header="{Binding Path=CacheControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewExportContextMenuItem_Click" />
+                        <MenuItem Name="_treeViewExportMenuItem" Header="{Binding Path=CacheControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewExportMenuItem_Click" />
                     </ContextMenu>
                 </local:SearchTreeViewItem.ContextMenu>
             </local:SearchTreeViewItem>

@@ -351,16 +351,16 @@ namespace Amoeba.Windows
         {
             var selectItems = _otherNodesListView.SelectedItems;
 
-            _otherNodesCopyContextMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _otherNodesCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var nodes = Clipboard.GetNodes();
 
-                _otherNodesPasteContextMenuItem.IsEnabled = (nodes.Count() > 0) ? true : false;
+                _otherNodesPasteMenuItem.IsEnabled = (nodes.Count() > 0) ? true : false;
             }
         }
 
-        private void _otherNodesCopyContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _otherNodesCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -372,7 +372,7 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _otherNodesPasteContextMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _otherNodesPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             foreach (var item in Clipboard.GetNodes())
             {

@@ -35,7 +35,7 @@ namespace Amoeba
                         memoryStream.Seek(0, SeekOrigin.Begin);
 
                         return digitalSignature.Nickname.Replace("@", "_") + "@" + Convert.ToBase64String(sha512.ComputeHash(memoryStream).ToArray())
-                            .Replace('+', '-').Replace('/', '_').Substring(0, 30);
+                            .Replace('+', '-').Replace('/', '_').Substring(0, 64);
                     }
                 }
             }
@@ -64,7 +64,7 @@ namespace Amoeba
                         memoryStream.Seek(0, SeekOrigin.Begin);
 
                         return certificate.Nickname.Replace("@", "_") + "@" + Convert.ToBase64String(sha512.ComputeHash(memoryStream).ToArray())
-                            .Replace('+', '-').Replace('/', '_').Substring(0, 30);
+                            .Replace('+', '-').Replace('/', '_').Substring(0, 64);
                     }
                 }
             }
