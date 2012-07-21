@@ -125,6 +125,7 @@
 
   <Translate Key="ConnectionControl_Uri" Value="Uri" />
   <Translate Key="ConnectionControl_Copy" Value="Copy" />
+  <Translate Key="ConnectionControl_Paste" Value="Paste" />
   <Translate Key="ConnectionControl_Priority" Value="Priority" />
   <Translate Key="ConnectionControl_ReceivedByteCount" Value="Received Byte Count" />
   <Translate Key="ConnectionControl_SentByteCount" Value="Sent Byte Count" />

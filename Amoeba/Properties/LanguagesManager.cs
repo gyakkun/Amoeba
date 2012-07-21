@@ -1448,6 +1448,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string ConnectionControl_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_Paste");
+                }
+            }
+        }
+
         public string ConnectionControl_Priority
         {
             get

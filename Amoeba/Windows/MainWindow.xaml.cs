@@ -572,6 +572,46 @@ namespace Amoeba.Windows
             }
         }
 
+        private WebProxy GetProxy()
+        {
+            var proxyUri = Settings.Instance.Global_Update_ProxyUri;
+
+            if (!string.IsNullOrWhiteSpace(proxyUri))
+            {
+                string proxyScheme = null;
+                string proxyHost = null;
+                int proxyPort = -1;
+
+                {
+                    Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                    var match = regex.Match(proxyUri);
+
+                    if (match.Success)
+                    {
+                        proxyScheme = match.Groups[1].Value;
+                        proxyHost = match.Groups[2].Value;
+                        proxyPort = int.Parse(match.Groups[3].Value);
+                    }
+                    else
+                    {
+                        Regex regex2 = new Regex(@"(.*?):(.*)");
+                        var match2 = regex2.Match(proxyUri);
+
+                        if (match2.Success)
+                        {
+                            proxyScheme = match2.Groups[1].Value;
+                            proxyHost = match2.Groups[2].Value;
+                            proxyPort = 80;
+                        }
+                    }
+                }
+
+                return new WebProxy(proxyHost, proxyPort);
+            }
+
+            return null;
+        }
+
         private object _updateLockObject = new object();
 
         private void UpdateCheck(bool isShow)
@@ -591,49 +631,18 @@ namespace Amoeba.Windows
                     }
 
                     var url = Settings.Instance.Global_Update_Url;
-                    var proxyUri = Settings.Instance.Global_Update_ProxyUri;
                     var signature = Settings.Instance.Global_Update_Signature;
 
                     HttpWebRequest rq = (HttpWebRequest)HttpWebRequest.Create(url);
                     rq.Method = "GET";
+                    rq.ContentType = "text/html; charset=UTF-8";
                     rq.UserAgent = "";
                     rq.ReadWriteTimeout = 1000 * 60;
                     rq.Timeout = 1000 * 60;
                     rq.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
                     rq.KeepAlive = true;
-
-                    if (!string.IsNullOrWhiteSpace(proxyUri))
-                    {
-                        string proxyScheme = null;
-                        string proxyHost = null;
-                        int proxyPort = -1;
-
-                        {
-                            Regex regex = new Regex(@"(.*?):(.*):(\d*)");
-                            var match = regex.Match(proxyUri);
-
-                            if (match.Success)
-                            {
-                                proxyScheme = match.Groups[1].Value;
-                                proxyHost = match.Groups[2].Value;
-                                proxyPort = int.Parse(match.Groups[3].Value);
-                            }
-                            else
-                            {
-                                Regex regex2 = new Regex(@"(.*?):(.*)");
-                                var match2 = regex2.Match(proxyUri);
-
-                                if (match2.Success)
-                                {
-                                    proxyScheme = match2.Groups[1].Value;
-                                    proxyHost = match2.Groups[2].Value;
-                                    proxyPort = 80;
-                                }
-                            }
-                        }
-
-                        rq.Proxy = new WebProxy(proxyHost, proxyPort);
-                    }
+                    rq.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                    rq.Proxy = this.GetProxy();
 
                     Seed seed;
 
@@ -672,7 +681,7 @@ namespace Amoeba.Windows
                             if (!string.IsNullOrWhiteSpace(signature))
                             {
                                 if (!seed.VerifyCertificate()) throw new Exception("Update VerifyCertificate");
-                                if (MessageConverter.ToSignatureString(seed.Certificate) != signature) throw new Exception("Update Signature");
+                                if (!MessageConverter.ToSignatureString(seed.Certificate).StartsWith(signature)) throw new Exception("Update Signature");
                             }
 
                             bool flag = true;

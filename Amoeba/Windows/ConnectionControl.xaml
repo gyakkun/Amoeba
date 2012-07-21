@@ -61,6 +61,7 @@
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=ConnectionControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=ConnectionControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

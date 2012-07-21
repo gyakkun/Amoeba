@@ -1692,7 +1692,7 @@ namespace Amoeba.Windows
             {
                 var w = new WrapPanel();
                 w.Children.Add(new TextBlock() { Text = this.Value.Name });
-                w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) ", this.Value.Seeds.Count) });
+                w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) - ", this.Value.Seeds.Count) });
                 w.Children.Add(new TextBlock()
                 {
                     Text = MessageConverter.ToSignatureString(this.Value.Certificate),

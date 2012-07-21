@@ -36,7 +36,7 @@
         <TabControl Margin="0,0,0,41">
             <TabItem Name="_baseNodeTabItem" Header="{Binding Path=ConnectionWindow_BaseNode, Source={StaticResource ResourcesInstance}}" >
                 <Grid>
-                    <TextBox Name="_baseNodeTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" IsReadOnly="True" VerticalContentAlignment="Center" />
+                    <TextBox Name="_baseNodeTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" IsReadOnly="True" VerticalContentAlignment="Center" PreviewMouseRightButtonDown="_baseNodeTextBox_PreviewMouseRightButtonDown" />
                     <Label Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=ConnectionWindow_Node, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
                     <GroupBox Header="{Binding Path=ConnectionWindow_Uris, Source={StaticResource ResourcesInstance}}" Margin="6,36,6,6">
                         <Grid>
