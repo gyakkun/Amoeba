@@ -16,6 +16,7 @@ using Ionic.Zip;
 using Library;
 using Library.Io;
 using Library.Net.Amoeba;
+using System.ComponentModel;
 
 namespace Amoeba
 {
@@ -421,6 +422,8 @@ namespace Amoeba
                 }
             }
 
+            var runList = new List<dynamic>();
+
             using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
             using (XmlTextReader xml = new XmlTextReader(r))
             {
@@ -477,46 +480,63 @@ namespace Amoeba
                                 }
                             }
 
-                            foreach (var p in Process.GetProcesses())
+                            runList.Add(new
                             {
-                                try
-                                {
-                                    if (p.MainModule.FileName == Path.GetFullPath(path))
-                                    {
-                                        try
-                                        {
-                                            p.Kill();
-                                        }
-                                        catch (Exception)
-                                        {
+                                Path = path,
+                                Arguments = arguments,
+                                WorkingDirectory = workingDirectory
+                            });
 
-                                        }
-                                    }
-                                }
-                                catch (Exception)
-                                {
-
-                                }
-                            }
-
-                            try
-                            {
-                                Process process = new Process();
-                                process.StartInfo.FileName = path;
-                                process.StartInfo.Arguments = arguments;
-                                process.StartInfo.WorkingDirectory = workingDirectory;
-                                process.StartInfo.CreateNoWindow = true;
-                                process.StartInfo.UseShellExecute = false;
-                                process.Start();
-
-                                _processList.Add(process);
-                            }
-                            catch (Exception)
-                            {
-
-                            }
                         }
                     }
+                }
+            }
+
+            foreach (var p in Process.GetProcesses())
+            {
+                try
+                {
+                    var filePath = p.MainModule.FileName;
+
+                    if (runList.Any(n => filePath == Path.GetFullPath(n.Path)))
+                    {
+                        try
+                        {
+                            p.Kill();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+                }
+                catch (Win32Exception)
+                {
+
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            foreach (var item in runList)
+            {
+                try
+                {
+                    Process process = new Process();
+                    process.StartInfo.FileName = item.Path;
+                    process.StartInfo.Arguments = item.Arguments;
+                    process.StartInfo.WorkingDirectory = item.WorkingDirectory;
+                    process.StartInfo.CreateNoWindow = true;
+                    process.StartInfo.UseShellExecute = false;
+                    process.Start();
+
+                    _processList.Add(process);
+                }
+                catch (Exception)
+                {
+
                 }
             }
         }
