@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using Amoeba.Properties;
 using Library;
 using Library.Net.Amoeba;
+using System.Threading;
 
 namespace Amoeba.Windows
 {
@@ -1033,15 +1034,6 @@ namespace Amoeba.Windows
             if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled != _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value)
             {
                 Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
-
-                if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled)
-                {
-                    _autoBaseNodeSettingManager.Start();
-                }
-                else
-                {
-                    _autoBaseNodeSettingManager.Stop();
-                }
             }
         }
 
