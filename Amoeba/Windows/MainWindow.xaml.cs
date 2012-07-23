@@ -205,7 +205,6 @@ namespace Amoeba.Windows
                 }
             }));
             _timerThread.Priority = ThreadPriority.Highest;
-            _timerThread.IsBackground = true;
             _timerThread.Name = "TimerThread";
             _timerThread.Start();
         }
