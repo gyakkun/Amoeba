@@ -57,9 +57,9 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(1000 * 3);
+                    Thread.Sleep(100);
                     if (App.SelectTab != "Download") continue;
-
+                    
                     var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();
 
@@ -178,6 +178,8 @@ namespace Amoeba.Windows
 
                         if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
                     }), null);
+
+                    Thread.Sleep(1000 * 3);
                 }
             }
             catch (Exception)

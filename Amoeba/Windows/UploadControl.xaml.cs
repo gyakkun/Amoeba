@@ -57,7 +57,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(1000 * 3);
+                    Thread.Sleep(100);
                     if (App.SelectTab != "Upload") continue;
 
                     var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
@@ -178,6 +178,8 @@ namespace Amoeba.Windows
 
                         if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
                     }), null);
+
+                    Thread.Sleep(1000 * 3);
                 }
             }
             catch (Exception)
