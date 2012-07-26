@@ -17,6 +17,7 @@ using Library;
 using Library.Io;
 using Library.Net.Amoeba;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Amoeba
 {
@@ -35,7 +36,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 15);
+            App.AmoebaVersion = new Version(0, 1, 16);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -282,7 +283,7 @@ namespace Amoeba
                 {
                     Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
                     Version version = App.AmoebaVersion;
-                    string updatePath = null;
+                    string updateZipPath = null;
 
                     foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
                     {
@@ -299,22 +300,22 @@ namespace Amoeba
                                 if (version < tempVersion)
                                 {
                                     version = tempVersion;
-                                    updatePath = path;
+                                    updateZipPath = path;
                                 }
                             }
                         }
                     }
 
-                    if (updatePath != null)
+                    if (updateZipPath != null)
                     {
-                        var tempPath = Path.Combine(Path.GetTempPath(), "Amoeba_Update");
+                        var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + "-Update");
 
                         if (Directory.Exists(tempPath))
                             Directory.Delete(tempPath, true);
 
                         try
                         {
-                            using (ZipFile zipfile = new ZipFile(updatePath))
+                            using (ZipFile zipfile = new ZipFile(updateZipPath))
                             {
                                 zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
                                 zipfile.UseUnicodeAsNecessary = true;
@@ -327,11 +328,11 @@ namespace Amoeba
                         }
                         finally
                         {
-                            if (File.Exists(updatePath))
-                                File.Delete(updatePath);
+                            if (File.Exists(updateZipPath))
+                                File.Delete(updateZipPath);
                         }
 
-                        var tempUpdateExePath = Path.Combine(Path.GetTempPath(), "Library.Update.exe");
+                        var tempUpdateExePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + "-Library.Update.exe");
 
                         if (File.Exists(tempUpdateExePath))
                             File.Delete(tempUpdateExePath);
@@ -486,42 +487,36 @@ namespace Amoeba
                                 Arguments = arguments,
                                 WorkingDirectory = workingDirectory
                             });
-
                         }
                     }
                 }
             }
 
-            foreach (var p in Process.GetProcesses())
+            Parallel.ForEach(runList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, item =>
             {
-                try
+                foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension((string)item.Path)))
                 {
-                    var filePath = p.MainModule.FileName;
-
-                    if (runList.Any(n => filePath == Path.GetFullPath(n.Path)))
+                    try
                     {
-                        try
+                        if (p.MainModule.FileName == Path.GetFullPath(item.Path))
                         {
-                            p.Kill();
-                        }
-                        catch (Exception)
-                        {
+                            try
+                            {
+                                p.Kill();
+                                p.WaitForExit();
+                            }
+                            catch (Exception)
+                            {
 
+                            }
                         }
                     }
-                }
-                catch (Win32Exception)
-                {
+                    catch (Exception)
+                    {
 
+                    }
                 }
-                catch (Exception)
-                {
 
-                }
-            }
-
-            foreach (var item in runList)
-            {
                 try
                 {
                     Process process = new Process();
@@ -538,7 +533,7 @@ namespace Amoeba
                 {
 
                 }
-            }
+            });
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
@@ -549,17 +544,18 @@ namespace Amoeba
                 _lockStream = null;
             }
 
-            foreach (var p in _processList)
+            Parallel.ForEach(_processList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, p =>
             {
                 try
                 {
                     p.Kill();
+                    p.WaitForExit();
                 }
                 catch (Exception)
                 {
 
                 }
-            }
+            });
         }
     }
 }

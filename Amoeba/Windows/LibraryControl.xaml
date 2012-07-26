@@ -41,6 +41,9 @@
         <DataTemplate x:Key="_myTemplate_State">
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Hash">
+            <TextBlock Text="{Binding Path=Hash, Mode=OneWay}" />
+        </DataTemplate>
     </UserControl.Resources>
 
     <Grid Name="_grid" AllowDrop="True" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
@@ -115,6 +118,8 @@
                             Width="{Binding Path=CacheControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=LibraryControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Hash, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Hash}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Hash_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

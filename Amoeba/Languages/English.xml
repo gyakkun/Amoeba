@@ -164,6 +164,7 @@
   <Translate Key="CacheControl_CreationTime" Value="Creation Time" />
   <Translate Key="CacheControl_Length" Value="Length" />
   <Translate Key="CacheControl_Comment" Value="Comment" />
+  <Translate Key="CacheControl_Hash" Value="Hash" />
   <Translate Key="CacheControl_Add" Value="Add" />
   <Translate Key="CacheControl_Edit" Value="Edit" />
   <Translate Key="CacheControl_Delete" Value="Delete" />
@@ -183,8 +184,8 @@
   <Translate Key="SearchState_Cache" Value="C" />
   <Translate Key="SearchState_Downloading" Value="D" />
   <Translate Key="SearchState_Uploading" Value="U" />
-  <Translate Key="SearchState_Downloaded" Value="HD" />
-  <Translate Key="SearchState_Uploaded" Value="HU" />
+  <Translate Key="SearchState_Downloaded" Value="DH" />
+  <Translate Key="SearchState_Uploaded" Value="UH" />
 
   <Translate Key="SearchItemEditWindow_Title" Value="Search Item Edit" />
   <Translate Key="SearchItemEditWindow_Ok" Value="Ok" />
@@ -194,11 +195,11 @@
   <Translate Key="SearchItemEditWindow_Name" Value="Name" />
   <Translate Key="SearchItemEditWindow_NameRegex" Value="Name Regex" />
   <Translate Key="SearchItemEditWindow_Signature" Value="Signature" />
-  <Translate Key="SearchItemEditWindow_StateFilter" Value="State Filter" />
   <Translate Key="SearchItemEditWindow_Keyword" Value="Keyword" />
   <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="Creation Time Range" />
   <Translate Key="SearchItemEditWindow_LengthRange" Value="Length Range" />
   <Translate Key="SearchItemEditWindow_Seed" Value="Seed" />
+  <Translate Key="SearchItemEditWindow_SearchState" Value="State" />
   <Translate Key="SearchItemEditWindow_Contains" Value="Contains" />
   <Translate Key="SearchItemEditWindow_NotContains" Value="Not Contains" />
   <Translate Key="SearchItemEditWindow_Condition" Value="Condition" />
@@ -299,6 +300,7 @@
   <Translate Key="LibraryControl_Length" Value="Length" />
   <Translate Key="LibraryControl_Comment" Value="Comment" />
   <Translate Key="LibraryControl_State" Value="State" />
+  <Translate Key="LibraryControl_Hash" Value="Hash" />
   <Translate Key="LibraryControl_AddBox" Value="Add Box" />
   <Translate Key="LibraryControl_Edit" Value="Edit" />
   <Translate Key="LibraryControl_NewBox" Value="New Box" />

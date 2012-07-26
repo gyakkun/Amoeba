@@ -26,20 +26,23 @@
         <DataTemplate x:Key="_myTemplate_Signature">
             <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_State">
-            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
+         <DataTemplate x:Key="_myTemplate_Length">
+            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Keywords">
+       <DataTemplate x:Key="_myTemplate_Keywords">
             <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_CreationTime">
             <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Length">
-            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Comment">
             <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+        </DataTemplate>
+         <DataTemplate x:Key="_myTemplate_State">
+            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
+        </DataTemplate>
+       <DataTemplate x:Key="_myTemplate_Hash">
+            <TextBlock Text="{Binding Path=Hash, Mode=OneWay}" />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -119,6 +122,8 @@
                             Width="{Binding Path=CacheControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=CacheControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=CacheControl_Hash, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Hash}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Hash_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

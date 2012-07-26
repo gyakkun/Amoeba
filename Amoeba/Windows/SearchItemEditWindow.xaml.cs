@@ -31,6 +31,7 @@ namespace Amoeba.Windows
         private List<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRangeCollection;
         private List<SearchContains<SearchRange<long>>> _searchLengthRangeCollection;
         private List<SearchContains<Seed>> _searchSeedCollection;
+        private List<SearchContains<SearchState>> _searchStateCollection;
 
         public SearchItemEditWindow(ref SearchItem searchItem)
         {
@@ -43,6 +44,7 @@ namespace Amoeba.Windows
             _searchCreationTimeRangeCollection = _searchItem.SearchCreationTimeRangeCollection.Select(n => n.DeepClone()).ToList();
             _searchLengthRangeCollection = _searchItem.SearchLengthRangeCollection.Select(n => n.DeepClone()).ToList();
             _searchSeedCollection = _searchItem.SearchSeedCollection.Select(n => n.DeepClone()).ToList();
+            _searchStateCollection = _searchItem.SearchStateCollection.Select(n => n.DeepClone()).ToList();
 
             InitializeComponent();
 
@@ -60,6 +62,7 @@ namespace Amoeba.Windows
             _creationTimeRangeContainsCheckBox.IsChecked = true;
             _lengthRangeContainsCheckBox.IsChecked = true;
             _seedContainsCheckBox.IsChecked = true;
+            _searchStateContainsCheckBox.IsChecked = true;
 
             _nameListView.ItemsSource = _searchNameCollection;
             _nameRegexListView.ItemsSource = _searchNameRegexCollection;
@@ -68,30 +71,17 @@ namespace Amoeba.Windows
             _creationTimeRangeListView.ItemsSource = _searchCreationTimeRangeCollection;
             _lengthRangeListView.ItemsSource = _searchLengthRangeCollection;
             _seedListView.ItemsSource = _searchSeedCollection;
+            _searchStateListView.ItemsSource = _searchStateCollection;
 
             _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.UtcNow.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
             _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
 
-            if ((_searchItem.SearchState & SearchState.Cache) == SearchState.Cache)
+            foreach (var item in Enum.GetValues(typeof(SearchState)).Cast<SearchState>())
             {
-                _miscellaneousSearchFilterCacheCheckBox.IsChecked = true;
+                _searchStateComboBox.Items.Add(item);
             }
-            if ((_searchItem.SearchState & SearchState.Uploading) == SearchState.Uploading)
-            {
-                _miscellaneousSearchFilterUploadingCheckBox.IsChecked = true;
-            }
-            if ((_searchItem.SearchState & SearchState.Downloading) == SearchState.Downloading)
-            {
-                _miscellaneousSearchFilterDownloadingCheckBox.IsChecked = true;
-            }
-            if ((_searchItem.SearchState & SearchState.Uploaded) == SearchState.Uploaded)
-            {
-                _miscellaneousSearchFilterUploadedCheckBox.IsChecked = true;
-            }
-            if ((_searchItem.SearchState & SearchState.Downloaded) == SearchState.Downloaded)
-            {
-                _miscellaneousSearchFilterDownloadedCheckBox.IsChecked = true;
-            }
+
+            _searchStateComboBox.SelectedIndex = 0;
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
@@ -114,31 +104,8 @@ namespace Amoeba.Windows
             _searchItem.SearchLengthRangeCollection.AddRange(_searchLengthRangeCollection.Select(n => n.DeepClone()).ToList());
             _searchItem.SearchSeedCollection.Clear();
             _searchItem.SearchSeedCollection.AddRange(_searchSeedCollection.Select(n => n.DeepClone()).ToList());
-
-            SearchState state = 0;
-
-            if (_miscellaneousSearchFilterCacheCheckBox.IsChecked.Value)
-            {
-                state |= SearchState.Cache;
-            }
-            if (_miscellaneousSearchFilterUploadingCheckBox.IsChecked.Value)
-            {
-                state |= SearchState.Uploading;
-            }
-            if (_miscellaneousSearchFilterDownloadingCheckBox.IsChecked.Value)
-            {
-                state |= SearchState.Downloading;
-            }
-            if (_miscellaneousSearchFilterUploadedCheckBox.IsChecked.Value)
-            {
-                state |= SearchState.Uploaded;
-            }
-            if (_miscellaneousSearchFilterDownloadedCheckBox.IsChecked.Value)
-            {
-                state |= SearchState.Downloaded;
-            }
-
-            _searchItem.SearchState = state;
+            _searchItem.SearchStateCollection.Clear();
+            _searchItem.SearchStateCollection.AddRange(_searchStateCollection.Select(n => n.DeepClone()).ToList());
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
@@ -1647,7 +1614,7 @@ namespace Amoeba.Windows
 
                     var seed = AmoebaConverter.FromSeedString(match.Groups[2].Value);
                     if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
-                    
+
                     var item = new SearchContains<Seed>()
                     {
                         Contains = (match.Groups[1].Value == "+") ? true : false,
@@ -1708,7 +1675,7 @@ namespace Amoeba.Windows
             {
                 var seed = AmoebaConverter.FromSeedString(_seedTextBox.Text);
                 if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
-                
+
                 var item = new SearchContains<Seed>()
                 {
                     Contains = _seedContainsCheckBox.IsChecked.Value,
@@ -1738,7 +1705,7 @@ namespace Amoeba.Windows
             {
                 var seed = AmoebaConverter.FromSeedString(_seedTextBox.Text);
                 if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
-                
+
                 var uitem = new SearchContains<Seed>()
                 {
                     Contains = _seedContainsCheckBox.IsChecked.Value,
@@ -1774,6 +1741,216 @@ namespace Amoeba.Windows
             _seedListView.Items.Refresh();
             _seedListView.SelectedIndex = selectIndex;
             _seedListViewUpdate();
+        }
+
+        #endregion
+
+        #region _searchStateListView
+
+        private void _searchStateListViewUpdate()
+        {
+            _searchStateListView_SelectionChanged(this, null);
+        }
+
+        private void _searchStateListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                var selectIndex = _searchStateListView.SelectedIndex;
+
+                if (selectIndex == -1)
+                {
+                    _searchStateUpButton.IsEnabled = false;
+                    _searchStateDownButton.IsEnabled = false;
+                }
+                else
+                {
+                    if (selectIndex == 0)
+                    {
+                        _searchStateUpButton.IsEnabled = false;
+                    }
+                    else
+                    {
+                        _searchStateUpButton.IsEnabled = true;
+                    }
+
+                    if (selectIndex == _searchStateCollection.Count - 1)
+                    {
+                        _searchStateDownButton.IsEnabled = false;
+                    }
+                    else
+                    {
+                        _searchStateDownButton.IsEnabled = true;
+                    }
+                }
+
+                _searchStateListView_PreviewMouseLeftButtonDown(this, null);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void _searchStateListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var selectIndex = _searchStateListView.SelectedIndex;
+            if (selectIndex == -1)
+            {
+                _searchStateContainsCheckBox.IsChecked = true;
+                _searchStateComboBox.SelectedIndex = 0;
+                return;
+            }
+
+            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
+            if (item == null) return;
+
+            _searchStateContainsCheckBox.IsChecked = item.Contains;
+            _searchStateComboBox.SelectedItem = item.Value;
+        }
+
+        private void _searchStateListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _searchStateListView.SelectedItems;
+
+            _searchStateListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+
+            {
+                var text = Clipboard.GetText();
+
+                _searchStateListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
+            }
+        }
+
+        private void _searchStateListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var item in _searchStateListView.SelectedItems.OfType<SearchContains<SearchState>>())
+            {
+                sb.AppendLine(string.Format("{0} {1}", (item.Contains == true) ? "+" : "-", item.Value));
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void _searchStateListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Regex regex = new Regex(@"([\+-]) (.*)");
+
+            foreach (var line in Clipboard.GetText().Split('\r', '\n'))
+            {
+                try
+                {
+                    var match = regex.Match(line);
+                    if (!match.Success) continue;
+
+                    var item = new SearchContains<SearchState>()
+                    {
+                        Contains = (match.Groups[1].Value == "+") ? true : false,
+                        Value = (SearchState)Enum.Parse(typeof(SearchState), match.Groups[2].Value),
+                    };
+
+                    if (_searchStateCollection.Contains(item)) continue;
+                    _searchStateCollection.Add(item);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            _searchStateComboBox.Text = "";
+            _searchStateListView.SelectedIndex = _searchStateCollection.Count - 1;
+
+            _searchStateListView.Items.Refresh();
+            _searchStateListViewUpdate();
+        }
+
+        private void _searchStateUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
+            if (item == null) return;
+
+            var selectIndex = _searchStateListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            _searchStateCollection.Remove(item);
+            _searchStateCollection.Insert(selectIndex - 1, item);
+            _searchStateListView.Items.Refresh();
+
+            _searchStateListViewUpdate();
+        }
+
+        private void _searchStateDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
+            if (item == null) return;
+
+            var selectIndex = _searchStateListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            _searchStateCollection.Remove(item);
+            _searchStateCollection.Insert(selectIndex + 1, item);
+            _searchStateListView.Items.Refresh();
+
+            _searchStateListViewUpdate();
+        }
+
+        private void _searchStateAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_searchStateComboBox.Text == "") return;
+
+            var item = new SearchContains<SearchState>()
+            {
+                Contains = _searchStateContainsCheckBox.IsChecked.Value,
+                Value = (SearchState)_searchStateComboBox.SelectedItem,
+            };
+
+            if (_searchStateCollection.Contains(item)) return;
+            _searchStateCollection.Add(item);
+
+            _searchStateComboBox.Text = "";
+            _searchStateListView.SelectedIndex = _searchStateCollection.Count - 1;
+
+            _searchStateListView.Items.Refresh();
+            _searchStateListViewUpdate();
+        }
+
+        private void _searchStateEditButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_searchStateComboBox.Text == "") return;
+
+            var uitem = new SearchContains<SearchState>()
+            {
+                Contains = _searchStateContainsCheckBox.IsChecked.Value,
+                Value = (SearchState)_searchStateComboBox.SelectedItem,
+            };
+
+            if (_searchStateCollection.Contains(uitem)) return;
+
+            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
+            if (item == null) return;
+
+            item.Contains = _searchStateContainsCheckBox.IsChecked.Value;
+            item.Value = (SearchState)_searchStateComboBox.SelectedItem;
+
+            _searchStateListView.Items.Refresh();
+            _searchStateListViewUpdate();
+        }
+
+        private void _searchStateDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
+            if (item == null) return;
+
+            _searchStateComboBox.Text = "";
+
+            int selectIndex = _searchStateListView.SelectedIndex;
+            _searchStateCollection.Remove(item);
+            _searchStateListView.Items.Refresh();
+            _searchStateListView.SelectedIndex = selectIndex;
+            _searchStateListViewUpdate();
         }
 
         #endregion

@@ -752,25 +752,43 @@ namespace Amoeba.Windows
 
                     var url = Settings.Instance.Global_Update_Url;
                     var signature = Settings.Instance.Global_Update_Signature;
-
-                    HttpWebRequest rq = (HttpWebRequest)HttpWebRequest.Create(url);
-                    rq.Method = "GET";
-                    rq.ContentType = "text/html; charset=UTF-8";
-                    rq.UserAgent = "";
-                    rq.ReadWriteTimeout = 1000 * 60;
-                    rq.Timeout = 1000 * 60;
-                    rq.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
-                    rq.KeepAlive = true;
-                    rq.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
-                    rq.Proxy = this.GetProxy();
-
                     Seed seed;
 
-                    using (HttpWebResponse rs = (HttpWebResponse)rq.GetResponse())
-                    using (Stream stream = rs.GetResponseStream())
-                    using (StreamReader r = new StreamReader(stream))
+                    for (int i = 0; ; i++)
                     {
-                        seed = AmoebaConverter.FromSeedString(r.ReadLine());
+                        try
+                        {
+                            HttpWebRequest rq = (HttpWebRequest)HttpWebRequest.Create(url);
+                            rq.Method = "GET";
+                            rq.ContentType = "text/html; charset=UTF-8";
+                            rq.UserAgent = "";
+                            rq.ReadWriteTimeout = 1000 * 60;
+                            rq.Timeout = 1000 * 60;
+                            rq.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
+                            rq.KeepAlive = true;
+                            rq.Headers.Add(HttpRequestHeader.AcceptCharset, "utf-8");
+                            rq.Proxy = this.GetProxy();
+
+                            using (HttpWebResponse rs = (HttpWebResponse)rq.GetResponse())
+                            using (Stream stream = rs.GetResponseStream())
+                            using (StreamReader r = new StreamReader(stream))
+                            {
+                                seed = AmoebaConverter.FromSeedString(r.ReadLine());
+                            }
+
+                            break;
+                        }
+                        catch (ThreadAbortException e)
+                        {
+                            throw e;
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
+
+                            if (i < 10) continue;
+                            else return;
+                        }
                     }
 
                     Regex regex3 = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");

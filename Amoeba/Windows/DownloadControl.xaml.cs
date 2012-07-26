@@ -646,7 +646,9 @@ namespace Amoeba.Windows
                     {
                         if (_information.Contains("Path"))
                         {
-                            this.Name = System.IO.Path.Combine((string)_information["Path"], (string)_information["Name"]);
+                            this.Name = System.IO.Path.Combine(((string)_information["Path"]), (string)_information["Name"])
+                                .Replace("/", "/ ").Replace("/ / ", "// ")
+                                .Replace(@"\", @"\ ").Replace(@"\ \ ", @"\\ ");
                         }
                         else
                         {

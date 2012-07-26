@@ -1857,6 +1857,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string CacheControl_Hash
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Hash");
+                }
+            }
+        }
+
         public string CacheControl_Add
         {
             get
@@ -2167,17 +2178,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string SearchItemEditWindow_StateFilter
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_StateFilter");
-                }
-            }
-        }
-
         public string SearchItemEditWindow_Keyword
         {
             get
@@ -2218,6 +2218,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchItemEditWindow_Seed");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState");
                 }
             }
         }
@@ -3248,6 +3259,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("LibraryControl_State");
+                }
+            }
+        }
+
+        public string LibraryControl_Hash
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Hash");
                 }
             }
         }

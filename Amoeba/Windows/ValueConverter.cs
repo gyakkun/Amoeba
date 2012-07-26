@@ -400,6 +400,44 @@ namespace Amoeba.Windows
         }
     }
 
+    [ValueConversion(typeof(SearchState), typeof(string))]
+    class SearchStateFlagToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is SearchState)) return null;
+            var item = (SearchState)value;
+
+            if ((item & SearchState.Cache) == SearchState.Cache)
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_Cache;
+            }
+            else if ((item & SearchState.Uploading) == SearchState.Uploading)
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_Uploading;
+            }
+            else if ((item & SearchState.Downloading) == SearchState.Downloading)
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_Downloading;
+            }
+            else if ((item & SearchState.Uploaded) == SearchState.Uploaded)
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_Uploaded;
+            }
+            else if ((item & SearchState.Downloaded) == SearchState.Downloaded)
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_Downloaded;
+            }
+
+            return "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [ValueConversion(typeof(DownloadState), typeof(string))]
     class DownloadStateToStringConverter : IValueConverter
     {

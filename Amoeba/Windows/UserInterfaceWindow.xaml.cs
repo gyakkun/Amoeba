@@ -62,27 +62,6 @@ namespace Amoeba.Windows
                 _updateOptionAutoUpdateRadioButton.IsChecked = true;
             }
 
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Cache) == SearchState.Cache)
-            {
-                _miscellaneousSearchFilterCacheCheckBox.IsChecked = true;
-            }
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Uploading) == SearchState.Uploading)
-            {
-                _miscellaneousSearchFilterUploadingCheckBox.IsChecked = true;
-            }
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Downloading) == SearchState.Downloading)
-            {
-                _miscellaneousSearchFilterDownloadingCheckBox.IsChecked = true;
-            }
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Uploaded) == SearchState.Uploaded)
-            {
-                _miscellaneousSearchFilterUploadedCheckBox.IsChecked = true;
-            }
-            if ((Settings.Instance.Global_SearchFilterSettings_State & SearchState.Downloaded) == SearchState.Downloaded)
-            {
-                _miscellaneousSearchFilterDownloadedCheckBox.IsChecked = true;
-            }
-
             try
             {
                 string extension = ".box";
@@ -474,29 +453,6 @@ namespace Amoeba.Windows
             else if (_updateOptionAutoUpdateRadioButton.IsChecked.Value)
             {
                 Settings.Instance.Global_Update_Option = UpdateOption.AutoUpdate;
-            }
-
-            Settings.Instance.Global_SearchFilterSettings_State = 0;
-
-            if (_miscellaneousSearchFilterCacheCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Cache;
-            }
-            if (_miscellaneousSearchFilterUploadingCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Uploading;
-            }
-            if (_miscellaneousSearchFilterDownloadingCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Downloading;
-            }
-            if (_miscellaneousSearchFilterUploadedCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Uploaded;
-            }
-            if (_miscellaneousSearchFilterDownloadedCheckBox.IsChecked.Value)
-            {
-                Settings.Instance.Global_SearchFilterSettings_State |= SearchState.Downloaded;
             }
 
             if (Settings.Instance.Global_RelateBoxFile_IsEnabled != _miscellaneousRelateBoxFileCheckBox.IsChecked.Value)

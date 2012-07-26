@@ -27,7 +27,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_UseLanguage", Value = "English" },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
-                new Library.Configuration.SettingsContext<SearchState>() { Name = "Global_SearchFilterSettings_State", Value = 0 },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_Url", Value = "http://lyrise.web.fc2.com/update/Amoeba" },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:8118" },
@@ -149,6 +148,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width", Value = 300 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Contains_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Value_Width", Value = 600 },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "LibraryControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "LibraryControl_ListSortDirection", Value = ListSortDirection.Ascending },
@@ -162,6 +163,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Comment_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Key_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Hash_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
@@ -341,25 +343,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_AutoBaseNodeSetting_IsEnabled"] = value;
-                }
-            }
-        }
-
-        public SearchState Global_SearchFilterSettings_State
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (SearchState)this["Global_SearchFilterSettings_State"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["Global_SearchFilterSettings_State"] = value;
                 }
             }
         }
@@ -2465,6 +2448,44 @@ namespace Amoeba.Properties
             }
         }
 
+        public double SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_SearchState_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_SearchState_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_SearchState_Value_Width"] = value;
+                }
+            }
+        }
+
 
         public string LibraryControl_LastHeaderClicked
         {
@@ -2690,6 +2711,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["LibraryControl_GridViewColumn_Key_Width"] = value;
+                }
+            }
+        }
+
+        public double LibraryControl_GridViewColumn_Hash_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["LibraryControl_GridViewColumn_Hash_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_GridViewColumn_Hash_Width"] = value;
                 }
             }
         }

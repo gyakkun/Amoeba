@@ -443,7 +443,9 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
-                    if (_information.Contains("Path")) this.Path = (string)_information["Path"];
+                    if (_information.Contains("Path")) this.Path = ((string)_information["Path"])
+                        .Replace("/", "/ ").Replace("/ / ", "// ")
+                        .Replace(@"\", @"\ ").Replace(@"\ \ ", @"\\ ");
                     else this.Path = null;
 
                     if (_information.Contains("BlockCount")) this.BlockCount = (int)_information["BlockCount"];

@@ -71,6 +71,8 @@ namespace Amoeba.Windows
 
             _commentTextBox.Text = _seeds[0].Comment;
 
+            _signatureComboBox.ItemsSource = digitalSignatureCollection;
+            
             var index = Settings.Instance.Global_DigitalSignatureCollection.IndexOf(Settings.Instance.Global_UploadDigitalSignature);
             _signatureComboBox.SelectedIndex = index + 1;
         }
@@ -90,7 +92,9 @@ namespace Amoeba.Windows
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
             Settings.Instance.Global_UploadDigitalSignature = digitalSignature;
-            
+
+            var now = DateTime.UtcNow;
+
             foreach (var seed in _seeds)
             {
                 lock (seed.ThisLock)
@@ -103,6 +107,7 @@ namespace Amoeba.Windows
                     seed.Keywords.Clear();
                     seed.Keywords.AddRange(keywords);
                     seed.Comment = comment;
+                    seed.CreationTime = now;
 
                     if (digitalSignature == null)
                     {
