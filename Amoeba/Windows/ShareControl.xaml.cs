@@ -230,6 +230,9 @@ namespace Amoeba.Windows
 
             if (!_listViewCheckExistMenuItem_IsEnabled) _listViewCheckExistMenuItem.IsEnabled = false;
             else _listViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
+
+            if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
+            else _listViewDeleteMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
         }
 
         private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
@@ -255,16 +258,41 @@ namespace Amoeba.Windows
                 }
             }
         }
-        
+
+        volatile bool _listViewDeleteMenuItem_IsEnabled = true;
+
         private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var shareItems = _listView.SelectedItems;
-            if (shareItems == null) return;
+            var selectItems = _listView.SelectedItems;
+            if (selectItems == null) return;
 
-            foreach (var item in shareItems.Cast<ShareListViewItem>())
+            _listViewDeleteMenuItem_IsEnabled = false;
+
+             List<int> ids = new List<int>();
+
+           foreach (var item in selectItems.Cast<ShareListViewItem>())
             {
-                _amoebaManager.RemoveShare((int)item.Information["Id"]);
+                ids.Add((int)item.Information["Id"]);
             }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var item in ids)
+                    {
+                        _amoebaManager.RemoveShare(item);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                _listViewDeleteMenuItem_IsEnabled = true;
+            }));
         }
 
         volatile bool _listViewCheckExistMenuItem_IsEnabled = true;
@@ -277,27 +305,34 @@ namespace Amoeba.Windows
             {
                 Thread.CurrentThread.IsBackground = true;
 
-                var shareInformation = _amoebaManager.ShareInformation.ToArray();
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("Share Delete");
-
-                foreach (var item in shareInformation)
+                try
                 {
-                    if (item.Contains("Path") && !File.Exists((string)item["Path"]))
-                    {
-                        try
-                        {
-                            _amoebaManager.RemoveShare((int)item["Id"]);
-                            sb.AppendLine((string)item["Path"]);
-                        }
-                        catch (Exception)
-                        {
+                    var shareInformation = _amoebaManager.ShareInformation.ToArray();
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("Share Delete");
 
+                    foreach (var item in shareInformation)
+                    {
+                        if (item.Contains("Path") && !File.Exists((string)item["Path"]))
+                        {
+                            try
+                            {
+                                _amoebaManager.RemoveShare((int)item["Id"]);
+                                sb.AppendLine((string)item["Path"]);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
                         }
                     }
-                }
 
-                Log.Information(sb.ToString().TrimEnd('\r', '\n'));
+                    Log.Information(sb.ToString().TrimEnd('\r', '\n'));
+                }
+                catch (Exception)
+                {
+
+                }
 
                 _listViewCheckExistMenuItem_IsEnabled = true;
             }));

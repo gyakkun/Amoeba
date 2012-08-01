@@ -61,7 +61,9 @@ namespace Amoeba.Windows
             foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item });
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
-            _signatureComboBox.SelectedIndex = 1;
+
+            var index = Settings.Instance.Global_DigitalSignatureCollection.IndexOf(Settings.Instance.Global_UploadDigitalSignature);
+            _signatureComboBox.SelectedIndex = index + 1;
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
@@ -77,6 +79,8 @@ namespace Amoeba.Windows
             string comment = _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
+
+            Settings.Instance.Global_UploadDigitalSignature = digitalSignature;
 
             if (!_isShare)
             {

@@ -1056,140 +1056,41 @@ namespace Amoeba.Windows
             {
                 Thread.CurrentThread.IsBackground = true;
 
-                foreach (var item in list)
+                try
                 {
-                    _amoebaManager.RemoveSeed(item);
+                    foreach (var item in list)
+                    {
+                        _amoebaManager.RemoveSeed(item);
+                    }
+
+                    foreach (var seed in _amoebaManager.Seeds.ToArray())
+                    {
+                        if (list.Contains(seed))
+                        {
+                            _amoebaManager.RemoveSeed(seed);
+                        }
+                    }
+
+                    _recache = true;
+
+                    _listViewDeleteMenuItem_IsEnabled = true;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            this.Update();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }), null);
                 }
-
-                foreach (var seed in _amoebaManager.Seeds.ToArray())
+                catch (Exception)
                 {
-                    if (list.Contains(seed))
-                    {
-                        _amoebaManager.RemoveSeed(seed);
-                    }
+
                 }
-
-                _recache = true;
-
-                _listViewDeleteMenuItem_IsEnabled = true;
-
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                {
-                    try
-                    {
-                        this.Update();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }), null);
-            }));
-        }
-
-        volatile bool _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
-
-        private void _listViewDownloadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            _listViewDownloadHistoryDeleteMenuItem_IsEnabled = false;
-
-            var list = new HashSet<Seed>();
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (item.Value == null || !item.State.HasFlag(SearchState.Downloaded)) continue;
-
-                list.Add(item.Value);
-            }
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                foreach (var item in list)
-                {
-                    _amoebaManager.DownloadedSeeds.Remove(item);
-                }
-
-                foreach (var seed in _amoebaManager.DownloadedSeeds.ToArray())
-                {
-                    if (list.Contains(seed))
-                    {
-                        _amoebaManager.DownloadedSeeds.Remove(seed);
-                    }
-                }
-
-                _recache = true;
-
-                _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
-
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                {
-                    try
-                    {
-                        this.Update();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }), null);
-            }));
-        }
-
-        volatile bool _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
-
-        private void _listViewUploadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            _listViewUploadHistoryDeleteMenuItem_IsEnabled = false;
-
-            var list = new HashSet<Seed>();
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (item.Value == null || !item.State.HasFlag(SearchState.Uploaded)) continue;
-
-                list.Add(item.Value);
-            }
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                foreach (var item in list)
-                {
-                    _amoebaManager.UploadedSeeds.Remove(item);
-                }
-
-                foreach (var seed in _amoebaManager.UploadedSeeds.ToArray())
-                {
-                    if (list.Contains(seed))
-                    {
-                        _amoebaManager.UploadedSeeds.Remove(seed);
-                    }
-                }
-
-                _recache = true;
-
-                _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
-
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                {
-                    try
-                    {
-                        this.Update();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }), null);
             }));
         }
 
@@ -1309,6 +1210,126 @@ namespace Amoeba.Windows
             }
 
             this.Update();
+        }
+
+        volatile bool _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
+
+        private void _listViewDownloadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewDownloadHistoryDeleteMenuItem_IsEnabled = false;
+
+            var list = new HashSet<Seed>();
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null || !item.State.HasFlag(SearchState.Downloaded)) continue;
+
+                list.Add(item.Value);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var item in list)
+                    {
+                        _amoebaManager.DownloadedSeeds.Remove(item);
+                    }
+
+                    foreach (var seed in _amoebaManager.DownloadedSeeds.ToArray())
+                    {
+                        if (list.Contains(seed))
+                        {
+                            _amoebaManager.DownloadedSeeds.Remove(seed);
+                        }
+                    }
+
+                    _recache = true;
+
+                    _listViewDownloadHistoryDeleteMenuItem_IsEnabled = true;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            this.Update();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }), null);
+                }
+                catch (Exception)
+                {
+
+                }
+            }));
+        }
+
+        volatile bool _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
+
+        private void _listViewUploadHistoryDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewUploadHistoryDeleteMenuItem_IsEnabled = false;
+
+            var list = new HashSet<Seed>();
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null || !item.State.HasFlag(SearchState.Uploaded)) continue;
+
+                list.Add(item.Value);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var item in list)
+                    {
+                        _amoebaManager.UploadedSeeds.Remove(item);
+                    }
+
+                    foreach (var seed in _amoebaManager.UploadedSeeds.ToArray())
+                    {
+                        if (list.Contains(seed))
+                        {
+                            _amoebaManager.UploadedSeeds.Remove(seed);
+                        }
+                    }
+
+                    _recache = true;
+
+                    _listViewUploadHistoryDeleteMenuItem_IsEnabled = true;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            this.Update();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }), null);
+                }
+                catch (Exception)
+                {
+
+                }
+            }));
         }
 
         #endregion

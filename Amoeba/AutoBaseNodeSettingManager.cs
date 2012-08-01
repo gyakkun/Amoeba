@@ -410,7 +410,7 @@ namespace Amoeba
 
                 if (disposing)
                 {
-                    this.Stop();
+
                 }
 
                 _disposed = true;

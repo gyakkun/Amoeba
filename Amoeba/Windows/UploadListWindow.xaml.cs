@@ -70,7 +70,9 @@ namespace Amoeba.Windows
             _listView.ItemsSource = _filePaths;
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
-            _signatureComboBox.SelectedIndex = 1;
+
+            var index = Settings.Instance.Global_DigitalSignatureCollection.IndexOf(Settings.Instance.Global_UploadDigitalSignature);
+            _signatureComboBox.SelectedIndex = index + 1;
         }
 
         private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -95,6 +97,8 @@ namespace Amoeba.Windows
             keywords = new KeywordCollection(new HashSet<string>(keywords));
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
+
+            Settings.Instance.Global_UploadDigitalSignature = digitalSignature;
 
             if (!_isShare)
             {

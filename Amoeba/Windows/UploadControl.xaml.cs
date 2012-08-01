@@ -224,7 +224,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _listView.SelectedItems;
 
-            _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
+            else _listViewDeleteMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
+
             _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewResetMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
@@ -258,22 +260,40 @@ namespace Amoeba.Windows
             }
         }
 
+        volatile bool _listViewDeleteMenuItem_IsEnabled = true;
+
         private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var uploadItems = _listView.SelectedItems;
-            if (uploadItems == null) return;
+            var selectItems = _listView.SelectedItems;
+            if (selectItems == null) return;
 
-            foreach (var item in uploadItems.Cast<UploadListViewItem>())
+            _listViewDeleteMenuItem_IsEnabled = false;
+
+            List<int> ids = new List<int>();
+
+            foreach (var item in selectItems.Cast<UploadListViewItem>())
             {
+                ids.Add((int)item.Information["Id"]);
+            }
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
                 try
                 {
-                    _amoebaManager.RemoveUpload((int)item.Information["Id"]);
+                    foreach (var item in ids)
+                    {
+                        _amoebaManager.RemoveUpload(item);
+                    }
                 }
                 catch (Exception)
                 {
 
                 }
-            }
+
+                _listViewDeleteMenuItem_IsEnabled = true;
+            }));
         }
 
         private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)

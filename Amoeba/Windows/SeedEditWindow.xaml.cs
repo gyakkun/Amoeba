@@ -15,6 +15,7 @@ using Amoeba.Properties;
 using Library.Net;
 using Library.Net.Amoeba;
 using Library.Security;
+using Library;
 
 namespace Amoeba.Windows
 {
