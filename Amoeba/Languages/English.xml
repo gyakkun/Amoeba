@@ -26,7 +26,7 @@
   <Translate Key="MainWindow_Help" Value="Help" />
   <Translate Key="MainWindow_DeveloperSite" Value="Developer Site" />
   <Translate Key="MainWindow_ManualSite" Value="Manual Site" />
-  <Translate Key="MainWindow_UpdateCheck" Value="Update Check" />
+  <Translate Key="MainWindow_CheckUpdate" Value="Check Update" />
   <Translate Key="MainWindow_VersionInformation" Value="Version Information" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
   <Translate Key="MainWindow_SendSpeed" Value="Send:" />
@@ -35,7 +35,7 @@
   <Translate Key="MainWindow_CheckingBlocks_Message" Value="Checking Blocks" />
   <Translate Key="MainWindow_CheckingBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
   <Translate Key="MainWindow_Copy" Value="Copy" />
-  <Translate Key="MainWindow_UpdateCheck_Message" Value="Do you want to update to &quot;{0}&quot;?" />
+  <Translate Key="MainWindow_CheckUpdate_Message" Value="Do you want to update to &quot;{0}&quot;?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />
 
   <Translate Key="UserInterfaceWindow_Title" Value="User Interface Setting" />

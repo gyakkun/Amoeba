@@ -56,7 +56,7 @@
                 <MenuItem Name="_menuItemDeveloperSiteCheck" Header="{Binding Path=MainWindow_DeveloperSite, Source={StaticResource ResourcesInstance}}" Click="_menuItemDeveloperSiteCheck_Click" />
                 <MenuItem Name="_menuItemManualSiteCheck" Header="{Binding Path=MainWindow_ManualSite, Source={StaticResource ResourcesInstance}}" Click="_menuItemManualSiteCheck_Click" />
                 <Separator />
-                <MenuItem Name="_menuItemUpdateCheck" Header="{Binding Path=MainWindow_UpdateCheck, Source={StaticResource ResourcesInstance}}" Click="_menuItemUpdateCheck_Click" />
+                <MenuItem Name="_menuItemCheckUpdate" Header="{Binding Path=MainWindow_CheckUpdate, Source={StaticResource ResourcesInstance}}" Click="_menuItemCheckUpdate_Click" />
                 <Separator />
                 <MenuItem Name="_menuItemVersionInformation" Header="{Binding Path=MainWindow_VersionInformation, Source={StaticResource ResourcesInstance}}" Click="_menuItemVersionInformation_Click" />
             </MenuItem>
