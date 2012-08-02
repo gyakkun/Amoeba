@@ -945,17 +945,56 @@ namespace Amoeba.Windows
 
         private void _miscellaneousConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _miscellaneousConnectionCountTextBox.Text = ConnectionWindow.GetStringToInt(_miscellaneousConnectionCountTextBox.Text).ToString();
+            if (string.IsNullOrWhiteSpace(_miscellaneousConnectionCountTextBox.Text)) return;
+
+            StringBuilder builder = new StringBuilder("");
+
+            foreach (var item in _miscellaneousConnectionCountTextBox.Text)
+            {
+                if (Regex.IsMatch(item.ToString(), "[0-9]"))
+                {
+                    builder.Append(item.ToString());
+                }
+            }
+
+            var value = builder.ToString();
+            if (_miscellaneousConnectionCountTextBox.Text != value) _miscellaneousConnectionCountTextBox.Text = value;
         }
 
         private void _miscellaneousCacheConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _miscellaneousDownloadingConnectionCountTextBox.Text = ConnectionWindow.GetStringToInt(_miscellaneousDownloadingConnectionCountTextBox.Text).ToString();
+            if (string.IsNullOrWhiteSpace(_miscellaneousDownloadingConnectionCountTextBox.Text)) return;
+
+            StringBuilder builder = new StringBuilder("");
+
+            foreach (var item in _miscellaneousDownloadingConnectionCountTextBox.Text)
+            {
+                if (Regex.IsMatch(item.ToString(), "[0-9]"))
+                {
+                    builder.Append(item.ToString());
+                }
+            }
+
+            var value = builder.ToString();
+            if (_miscellaneousDownloadingConnectionCountTextBox.Text != value) _miscellaneousDownloadingConnectionCountTextBox.Text = value;
         }
 
         private void _miscellaneousUploadingConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            _miscellaneousUploadingConnectionCountTextBox.Text = ConnectionWindow.GetStringToInt(_miscellaneousUploadingConnectionCountTextBox.Text).ToString();
+            if (string.IsNullOrWhiteSpace(_miscellaneousUploadingConnectionCountTextBox.Text)) return;
+
+            StringBuilder builder = new StringBuilder("");
+
+            foreach (var item in _miscellaneousUploadingConnectionCountTextBox.Text)
+            {
+                if (Regex.IsMatch(item.ToString(), "[0-9]"))
+                {
+                    builder.Append(item.ToString());
+                }
+            }
+
+            var value = builder.ToString();
+            if (_miscellaneousUploadingConnectionCountTextBox.Text != value) _miscellaneousUploadingConnectionCountTextBox.Text = value;
         }
 
         private void _miscellaneousDownloadDirectoryTextBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -1001,13 +1040,13 @@ namespace Amoeba.Windows
                 _amoebaManager.BaseNode = _baseNode.DeepClone();
                 _amoebaManager.SetOtherNodes(_otherNodes.Where(n => n != null && n.Id != null && n.Uris.Count != 0));
 
-                int count = int.Parse(_miscellaneousConnectionCountTextBox.Text);
+                int count = ConnectionWindow.GetStringToInt(_miscellaneousConnectionCountTextBox.Text);
                 _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 50), 1);
 
-                int scount = int.Parse(_miscellaneousDownloadingConnectionCountTextBox.Text);
+                int scount = ConnectionWindow.GetStringToInt(_miscellaneousDownloadingConnectionCountTextBox.Text);
                 _amoebaManager.DownloadingConnectionCountLowerLimit = Math.Max(Math.Min(scount, 50), 1);
 
-                int ucount = int.Parse(_miscellaneousUploadingConnectionCountTextBox.Text);
+                int ucount = ConnectionWindow.GetStringToInt(_miscellaneousUploadingConnectionCountTextBox.Text);
                 _amoebaManager.UploadingConnectionCountLowerLimit = Math.Max(Math.Min(ucount, 50), 1);
 
                 _amoebaManager.Filters.Clear();
