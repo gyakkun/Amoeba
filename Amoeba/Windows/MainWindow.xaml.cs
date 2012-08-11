@@ -829,6 +829,8 @@ namespace Amoeba.Windows
                             if (flag)
                             {
                                 _amoebaManager.Download(seed, App.DirectoryPaths["Update"], 6);
+
+                                Log.Information(string.Format("Download: {0}", seed.Name));
                             }
                         }
                     }
