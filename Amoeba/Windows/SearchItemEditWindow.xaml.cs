@@ -1355,8 +1355,8 @@ namespace Amoeba.Windows
                         Contains = (match.Groups[1].Value == "+") ? true : false,
                         Value = new SearchRange<long>()
                         {
-                            Max = long.Parse(match.Groups[3].Value),
-                            Min = long.Parse(match.Groups[2].Value),
+                            Max = Math.Max(0, long.Parse(match.Groups[3].Value)),
+                            Min = Math.Max(0, long.Parse(match.Groups[2].Value)),
                         },
                     };
 
@@ -1419,8 +1419,8 @@ namespace Amoeba.Windows
                     Contains = _lengthRangeContainsCheckBox.IsChecked.Value,
                     Value = new SearchRange<long>()
                     {
-                        Max = long.Parse(_lengthRangeMaxTextBox.Text),
-                        Min = long.Parse(_lengthRangeMinTextBox.Text),
+                        Max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text)),
+                        Min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text)),
                     }
                 };
 
@@ -1452,8 +1452,8 @@ namespace Amoeba.Windows
                     Contains = _lengthRangeContainsCheckBox.IsChecked.Value,
                     Value = new SearchRange<long>()
                     {
-                        Max = long.Parse(_lengthRangeMaxTextBox.Text),
-                        Min = long.Parse(_lengthRangeMinTextBox.Text),
+                        Max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text)),
+                        Min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text)),
                     }
                 };
 
@@ -1463,8 +1463,8 @@ namespace Amoeba.Windows
                 if (item == null) return;
 
                 item.Contains = _lengthRangeContainsCheckBox.IsChecked.Value;
-                item.Value.Max = long.Parse(_lengthRangeMaxTextBox.Text);
-                item.Value.Min = long.Parse(_lengthRangeMinTextBox.Text);
+                item.Value.Max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text));
+                item.Value.Min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text));
             }
             catch (Exception)
             {
