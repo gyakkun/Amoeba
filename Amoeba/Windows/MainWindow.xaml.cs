@@ -787,25 +787,55 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    Regex regex3 = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
-                    var match3 = regex3.Match(seed.Name);
+                    Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
+                    var match = regex.Match(seed.Name);
 
-                    if (match3.Success)
+                    if (match.Success)
                     {
-                        var tempVersion = new Version(match3.Groups[1].Value);
+                        var targetVersion = new Version(match.Groups[1].Value);
 
-                        if (tempVersion <= App.AmoebaVersion)
+                        if (targetVersion <= App.AmoebaVersion)
                         {
                             Log.Information(string.Format("Check Update: {0}", LanguagesManager.Instance.MainWindow_LatestVersion_Message));
                         }
                         else
                         {
-                            if (tempVersion <= App.AmoebaVersion) return;
-
                             if (!string.IsNullOrWhiteSpace(signature))
                             {
                                 if (!seed.VerifyCertificate()) throw new Exception("Update VerifyCertificate");
                                 if (!MessageConverter.ToSignatureString(seed.Certificate).StartsWith(signature)) throw new Exception("Update Signature");
+                            }
+
+                            Log.Information(string.Format("Check Update: {0}", seed.Name));
+
+                            {
+                                foreach (var information in _amoebaManager.DownloadingInformation)
+                                {
+                                    if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed
+                                        && information.Contains("Path") && ((string)information["Path"]) == App.DirectoryPaths["Update"])
+                                    {
+                                        var tempSeed = (Seed)information["Seed"];
+
+                                        if (seed == tempSeed) return;
+                                    }
+                                }
+
+                                foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
+                                {
+                                    string name = Path.GetFileName(path);
+
+                                    if (name.StartsWith("Amoeba"))
+                                    {
+                                        var match2 = regex.Match(name);
+
+                                        if (match2.Success)
+                                        {
+                                            var tempVersion = new Version(match2.Groups[1].Value);
+
+                                            if (targetVersion <= tempVersion) return;
+                                        }
+                                    }
+                                }
                             }
 
                             bool flag = true;

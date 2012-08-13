@@ -36,7 +36,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 18);
+            App.AmoebaVersion = new Version(0, 1, 19);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -301,6 +301,11 @@ namespace Amoeba
                                 {
                                     version = tempVersion;
                                     updateZipPath = path;
+                                }
+                                else
+                                {
+                                    if (File.Exists(path))
+                                        File.Delete(path);
                                 }
                             }
                         }
