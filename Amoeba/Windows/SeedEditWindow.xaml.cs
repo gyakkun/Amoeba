@@ -45,32 +45,38 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            _nameTextBox.Text = _seeds[0].Name;
-
-            foreach (var seed in _seeds)
+            lock (_seeds[0].ThisLock)
             {
-                if (_nameTextBox.Text != seed.Name)
+                _nameTextBox.Text = _seeds[0].Name;
+
+                foreach (var seed in _seeds)
                 {
-                    _nameTextBox.Text = "";
-                    _nameTextBox.IsReadOnly = true;
+                    if (_nameTextBox.Text != seed.Name)
+                    {
+                        _nameTextBox.Text = "";
+                        _nameTextBox.IsReadOnly = true;
 
-                    break;
+                        break;
+                    }
                 }
+
+                lock (seeds[0].Keywords.ThisLock)
+                {
+                    if (_seeds[0].Keywords.Count >= 1) _keywordsComboBox1.Text = _seeds[0].Keywords[0];
+                    if (_seeds[0].Keywords.Count >= 2) _keywordsComboBox2.Text = _seeds[0].Keywords[1];
+                    if (_seeds[0].Keywords.Count >= 3) _keywordsComboBox3.Text = _seeds[0].Keywords[2];
+                }
+
+                _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = "" });
+                _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = "" });
+                _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = "" });
+
+                foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = item });
+                foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item });
+                foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item });
+
+                _commentTextBox.Text = _seeds[0].Comment;
             }
-
-            if (_seeds[0].Keywords.Count >= 1) _keywordsComboBox1.Text = _seeds[0].Keywords[0];
-            if (_seeds[0].Keywords.Count >= 2) _keywordsComboBox2.Text = _seeds[0].Keywords[1];
-            if (_seeds[0].Keywords.Count >= 3) _keywordsComboBox3.Text = _seeds[0].Keywords[2];
-
-            _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = "" });
-            _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = "" });
-            _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = "" });
-
-            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = item });
-            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item });
-            foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item });
-
-            _commentTextBox.Text = _seeds[0].Comment;
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
             
@@ -105,8 +111,12 @@ namespace Amoeba.Windows
                         seed.Name = name;
                     }
 
-                    seed.Keywords.Clear();
-                    seed.Keywords.AddRange(keywords);
+                    lock (seed.Keywords.ThisLock)
+                    {
+                        seed.Keywords.Clear();
+                        seed.Keywords.AddRange(keywords);
+                    }
+
                     seed.Comment = comment;
                     seed.CreationTime = now;
 

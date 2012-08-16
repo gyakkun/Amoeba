@@ -41,9 +41,12 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            _nameTextBox.Text = _box.Name;
-            _commentTextBox.Text = _box.Comment;
-           
+            lock (_box.ThisLock)
+            {
+                _nameTextBox.Text = _box.Name;
+                _commentTextBox.Text = _box.Comment;
+            }
+
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
             
             var index = Settings.Instance.Global_DigitalSignatureCollection.IndexOf(Settings.Instance.Global_UploadDigitalSignature);

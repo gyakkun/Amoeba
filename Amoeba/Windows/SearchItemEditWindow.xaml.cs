@@ -12,9 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Amoeba.Properties;
 using Library;
 using Library.Net.Amoeba;
-using Amoeba.Properties;
 
 namespace Amoeba.Windows
 {
@@ -37,15 +37,6 @@ namespace Amoeba.Windows
         {
             _searchItem = searchItem;
 
-            _searchNameCollection = _searchItem.SearchNameCollection.Select(n => n.DeepClone()).ToList();
-            _searchNameRegexCollection = _searchItem.SearchNameRegexCollection.Select(n => n.DeepClone()).ToList();
-            _searchSignatureCollection = _searchItem.SearchSignatureCollection.Select(n => n.DeepClone()).ToList();
-            _searchKeywordCollection = _searchItem.SearchKeywordCollection.Select(n => n.DeepClone()).ToList();
-            _searchCreationTimeRangeCollection = _searchItem.SearchCreationTimeRangeCollection.Select(n => n.DeepClone()).ToList();
-            _searchLengthRangeCollection = _searchItem.SearchLengthRangeCollection.Select(n => n.DeepClone()).ToList();
-            _searchSeedCollection = _searchItem.SearchSeedCollection.Select(n => n.DeepClone()).ToList();
-            _searchStateCollection = _searchItem.SearchStateCollection.Select(n => n.DeepClone()).ToList();
-
             InitializeComponent();
 
             using (FileStream stream = new FileStream(System.IO.Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open))
@@ -53,7 +44,19 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
+            lock (_searchItem.ThisLock)
+            {
+                _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
+
+                _searchNameCollection = _searchItem.SearchNameCollection.Select(n => n.DeepClone()).ToList();
+                _searchNameRegexCollection = _searchItem.SearchNameRegexCollection.Select(n => n.DeepClone()).ToList();
+                _searchSignatureCollection = _searchItem.SearchSignatureCollection.Select(n => n.DeepClone()).ToList();
+                _searchKeywordCollection = _searchItem.SearchKeywordCollection.Select(n => n.DeepClone()).ToList();
+                _searchCreationTimeRangeCollection = _searchItem.SearchCreationTimeRangeCollection.Select(n => n.DeepClone()).ToList();
+                _searchLengthRangeCollection = _searchItem.SearchLengthRangeCollection.Select(n => n.DeepClone()).ToList();
+                _searchSeedCollection = _searchItem.SearchSeedCollection.Select(n => n.DeepClone()).ToList();
+                _searchStateCollection = _searchItem.SearchStateCollection.Select(n => n.DeepClone()).ToList();
+            }
 
             _nameContainsCheckBox.IsChecked = true;
             _nameRegexContainsCheckBox.IsChecked = true;
@@ -82,35 +85,6 @@ namespace Amoeba.Windows
             }
 
             _searchStateComboBox.SelectedIndex = 0;
-        }
-
-        private void _okButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-
-            _searchItem.Name = _searchTreeViewItemNameTextBox.Text;
-
-            _searchItem.SearchNameCollection.Clear();
-            _searchItem.SearchNameCollection.AddRange(_searchNameCollection.Select(n => n.DeepClone()).ToList());
-            _searchItem.SearchNameRegexCollection.Clear();
-            _searchItem.SearchNameRegexCollection.AddRange(_searchNameRegexCollection.Select(n => n.DeepClone()).ToList());
-            _searchItem.SearchSignatureCollection.Clear();
-            _searchItem.SearchSignatureCollection.AddRange(_searchSignatureCollection.Select(n => n.DeepClone()).ToList());
-            _searchItem.SearchKeywordCollection.Clear();
-            _searchItem.SearchKeywordCollection.AddRange(_searchKeywordCollection.Select(n => n.DeepClone()).ToList());
-            _searchItem.SearchCreationTimeRangeCollection.Clear();
-            _searchItem.SearchCreationTimeRangeCollection.AddRange(_searchCreationTimeRangeCollection.Select(n => n.DeepClone()).ToList());
-            _searchItem.SearchLengthRangeCollection.Clear();
-            _searchItem.SearchLengthRangeCollection.AddRange(_searchLengthRangeCollection.Select(n => n.DeepClone()).ToList());
-            _searchItem.SearchSeedCollection.Clear();
-            _searchItem.SearchSeedCollection.AddRange(_searchSeedCollection.Select(n => n.DeepClone()).ToList());
-            _searchItem.SearchStateCollection.Clear();
-            _searchItem.SearchStateCollection.AddRange(_searchStateCollection.Select(n => n.DeepClone()).ToList());
-        }
-
-        private void _cancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = false;
         }
 
         #region _nameListView
@@ -1954,5 +1928,68 @@ namespace Amoeba.Windows
         }
 
         #endregion
+
+        private void _okButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+
+            lock (_searchItem.ThisLock)
+            {
+                _searchItem.Name = _searchTreeViewItemNameTextBox.Text;
+
+                lock (_searchItem.SearchNameCollection.ThisLock)
+                {
+                    _searchItem.SearchNameCollection.Clear();
+                    _searchItem.SearchNameCollection.AddRange(_searchNameCollection.Select(n => n.DeepClone()).ToList());
+                }
+
+                lock (_searchItem.SearchNameRegexCollection.ThisLock)
+                {
+                    _searchItem.SearchNameRegexCollection.Clear();
+                    _searchItem.SearchNameRegexCollection.AddRange(_searchNameRegexCollection.Select(n => n.DeepClone()).ToList());
+                }
+
+                lock (_searchItem.SearchSignatureCollection.ThisLock)
+                {
+                    _searchItem.SearchSignatureCollection.Clear();
+                    _searchItem.SearchSignatureCollection.AddRange(_searchSignatureCollection.Select(n => n.DeepClone()).ToList());
+                }
+
+                lock (_searchItem.SearchKeywordCollection.ThisLock)
+                {
+                    _searchItem.SearchKeywordCollection.Clear();
+                    _searchItem.SearchKeywordCollection.AddRange(_searchKeywordCollection.Select(n => n.DeepClone()).ToList());
+                }
+
+                lock (_searchItem.SearchCreationTimeRangeCollection.ThisLock)
+                {
+                    _searchItem.SearchCreationTimeRangeCollection.Clear();
+                    _searchItem.SearchCreationTimeRangeCollection.AddRange(_searchCreationTimeRangeCollection.Select(n => n.DeepClone()).ToList());
+                }
+
+                lock (_searchItem.SearchLengthRangeCollection.ThisLock)
+                {
+                    _searchItem.SearchLengthRangeCollection.Clear();
+                    _searchItem.SearchLengthRangeCollection.AddRange(_searchLengthRangeCollection.Select(n => n.DeepClone()).ToList());
+                }
+
+                lock (_searchItem.SearchSeedCollection.ThisLock)
+                {
+                    _searchItem.SearchSeedCollection.Clear();
+                    _searchItem.SearchSeedCollection.AddRange(_searchSeedCollection.Select(n => n.DeepClone()).ToList());
+                }
+
+                lock (_searchItem.SearchStateCollection.ThisLock)
+                {
+                    _searchItem.SearchStateCollection.Clear();
+                    _searchItem.SearchStateCollection.AddRange(_searchStateCollection.Select(n => n.DeepClone()).ToList());
+                }
+            }
+        }
+
+        private void _cancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+        }
     }
 }
