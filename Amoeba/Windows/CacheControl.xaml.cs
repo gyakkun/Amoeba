@@ -1990,8 +1990,8 @@ namespace Amoeba.Windows
     [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]
     class SearchContains<T> : IEquatable<SearchContains<T>>, IDeepCloneable<SearchContains<T>>, IThisLock
     {
-        public bool _contains;
-        public T _value;
+        private bool _contains;
+        private T _value;
 
         private object _thisLock = new object();
         private static object _thisStaticLock = new object();

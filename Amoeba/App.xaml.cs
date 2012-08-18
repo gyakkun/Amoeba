@@ -36,7 +36,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 19);
+            App.AmoebaVersion = new Version(0, 1, 20);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -278,6 +278,7 @@ namespace Amoeba
             }
 
             // Update
+            try
             {
                 if (Directory.Exists(App.DirectoryPaths["Update"]))
                 {
@@ -361,13 +362,117 @@ namespace Amoeba
                     }
                 }
             }
+            finally
+            {
+                this.CheckProcess();
+            }
 
-            this.Setting();
+            this.RunProcess();
 
             this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
         }
 
-        private void Setting()
+        private void CheckProcess()
+        {
+            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"))) return;
+
+            var runList = new List<dynamic>();
+
+            using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
+            using (XmlTextReader xml = new XmlTextReader(r))
+            {
+                while (xml.Read())
+                {
+                    if (xml.NodeType == XmlNodeType.Element)
+                    {
+                        if (xml.LocalName == "Process")
+                        {
+                            string path = null;
+                            string arguments = null;
+                            string workingDirectory = null;
+
+                            using (var xmlReader = xml.ReadSubtree())
+                            {
+                                while (xmlReader.Read())
+                                {
+                                    if (xmlReader.NodeType == XmlNodeType.Element)
+                                    {
+                                        if (xmlReader.LocalName == "Path")
+                                        {
+                                            try
+                                            {
+                                                path = xmlReader.ReadString();
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+                                        }
+                                        else if (xml.LocalName == "Arguments")
+                                        {
+                                            try
+                                            {
+                                                arguments = xmlReader.ReadString();
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+                                        }
+                                        else if (xmlReader.LocalName == "WorkingDirectory")
+                                        {
+                                            try
+                                            {
+                                                workingDirectory = xmlReader.ReadString();
+                                            }
+                                            catch (Exception)
+                                            {
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            runList.Add(new
+                            {
+                                Path = path,
+                                Arguments = arguments,
+                                WorkingDirectory = workingDirectory
+                            });
+                        }
+                    }
+                }
+            }
+
+            Parallel.ForEach(runList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, item =>
+            {
+                foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension((string)item.Path)))
+                {
+                    try
+                    {
+                        if (p.MainModule.FileName == Path.GetFullPath(item.Path))
+                        {
+                            try
+                            {
+                                p.Kill();
+                                p.WaitForExit();
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+            });
+        }
+
+        private void RunProcess()
         {
             Version version = new Version();
 
@@ -499,29 +604,6 @@ namespace Amoeba
 
             Parallel.ForEach(runList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, item =>
             {
-                foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension((string)item.Path)))
-                {
-                    try
-                    {
-                        if (p.MainModule.FileName == Path.GetFullPath(item.Path))
-                        {
-                            try
-                            {
-                                p.Kill();
-                                p.WaitForExit();
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-
                 try
                 {
                     Process process = new Process();
