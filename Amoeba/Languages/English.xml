@@ -37,6 +37,7 @@
   <Translate Key="MainWindow_Copy" Value="Copy" />
   <Translate Key="MainWindow_CheckUpdate_Message" Value="Do you want to update to &quot;{0}&quot;?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />
+  <Translate Key="MainWindow_Close_Message" Value="Do you want to quit?" />
 
   <Translate Key="UserInterfaceWindow_Title" Value="User Interface Setting" />
   <Translate Key="UserInterfaceWindow_Update" Value="Update" />
@@ -167,21 +168,23 @@
   <Translate Key="CacheControl_Hash" Value="Hash" />
   <Translate Key="CacheControl_Add" Value="Add" />
   <Translate Key="CacheControl_Edit" Value="Edit" />
-  <Translate Key="CacheControl_Delete" Value="Delete" />
+  <Translate Key="CacheControl_DeleteCache" Value="Delete Cache" />
+  <Translate Key="CacheControl_DeleteShare" Value="Delete Share " />
+  <Translate Key="CacheControl_DeleteDownloadHistory" Value="Delete Download History" />
+  <Translate Key="CacheControl_DeleteUploadHistory" Value="Delete Upload History" />
   <Translate Key="CacheControl_Download" Value="Download" />
   <Translate Key="CacheControl_Copy" Value="Copy" />
   <Translate Key="CacheControl_CopyInfo" Value="Copy Info" />
   <Translate Key="CacheControl_Cut" Value="Cut" />
   <Translate Key="CacheControl_Paste" Value="Paste" />
   <Translate Key="CacheControl_Export" Value="Export" />
-  <Translate Key="CacheControl_DownloadHistoryDelete" Value="Download History Delete" />
-  <Translate Key="CacheControl_UploadHistoryDelete" Value="Upload History Delete" />
   <Translate Key="CacheControl_FilterName" Value="Filter Name" />
   <Translate Key="CacheControl_FilterSignature" Value="Filter Signature" />
   <Translate Key="CacheControl_FilterKeyword" Value="Filter Keyword" />
   <Translate Key="CacheControl_FilterSeed" Value="Filter Seed" />
 
   <Translate Key="SearchState_Cache" Value="C" />
+  <Translate Key="SearchState_Share" Value="S" />
   <Translate Key="SearchState_Downloading" Value="D" />
   <Translate Key="SearchState_Uploading" Value="U" />
   <Translate Key="SearchState_Downloaded" Value="DH" />
@@ -216,10 +219,11 @@
   <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="Ignore Case" />
   <Translate Key="SearchItemEditWindow_Miscellaneous" Value="Miscellaneous" />
   <Translate Key="SearchItemEditWindow_Cache" Value="Cache" />
-  <Translate Key="SearchItemEditWindow_Uploading" Value="Uploading" />
+  <Translate Key="SearchItemEditWindow_Share" Value="Share" />
   <Translate Key="SearchItemEditWindow_Downloading" Value="Downloading" />
-  <Translate Key="SearchItemEditWindow_Uploaded" Value="Uploaded" />
+  <Translate Key="SearchItemEditWindow_Uploading" Value="Uploading" />
   <Translate Key="SearchItemEditWindow_Downloaded" Value="Downloaded" />
+  <Translate Key="SearchItemEditWindow_Uploaded" Value="Uploaded" />
 
   <Translate Key="DownloadControl_Name" Value="Name" />
   <Translate Key="DownloadControl_State" Value="State" />

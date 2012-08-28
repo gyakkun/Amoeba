@@ -373,21 +373,25 @@ namespace Amoeba.Windows
             {
                 text += LanguagesManager.Instance.SearchState_Cache + ", ";
             }
-            if ((item & SearchState.Uploading) == SearchState.Uploading)
+            if ((item & SearchState.Share) == SearchState.Share)
             {
-                text += LanguagesManager.Instance.SearchState_Uploading + ", ";
+                text += LanguagesManager.Instance.SearchState_Share + ", ";
             }
             if ((item & SearchState.Downloading) == SearchState.Downloading)
             {
                 text += LanguagesManager.Instance.SearchState_Downloading + ", ";
             }
-            if ((item & SearchState.Uploaded) == SearchState.Uploaded)
+            if ((item & SearchState.Uploading) == SearchState.Uploading)
             {
-                text += LanguagesManager.Instance.SearchState_Uploaded + ", ";
+                text += LanguagesManager.Instance.SearchState_Uploading + ", ";
             }
             if ((item & SearchState.Downloaded) == SearchState.Downloaded)
             {
                 text += LanguagesManager.Instance.SearchState_Downloaded + ", ";
+            }
+            if ((item & SearchState.Uploaded) == SearchState.Uploaded)
+            {
+                text += LanguagesManager.Instance.SearchState_Uploaded + ", ";
             }
 
             if (text.Length < 2) return "";
@@ -411,6 +415,10 @@ namespace Amoeba.Windows
             if ((item & SearchState.Cache) == SearchState.Cache)
             {
                 return LanguagesManager.Instance.SearchItemEditWindow_Cache;
+            }
+            else if ((item & SearchState.Share) == SearchState.Share)
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_Share;
             }
             else if ((item & SearchState.Uploading) == SearchState.Uploading)
             {

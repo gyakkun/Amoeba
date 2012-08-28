@@ -14,6 +14,7 @@
         WindowState="{Binding Path=MainWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         StateChanged="Window_StateChanged"
         Loaded="Window_Loaded"
+        Closing="Window_Closing"
         Closed="Window_Closed">
     
     <Grid>

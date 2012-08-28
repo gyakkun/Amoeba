@@ -109,9 +109,21 @@ namespace Amoeba.Windows
                         Dictionary<Seed, SearchState> seedsDictionary = new Dictionary<Seed, SearchState>();
 
                         {
-                            foreach (var seed in _amoebaManager.Seeds)
+                            foreach (var seed in _amoebaManager.CacheSeeds)
                             {
                                 seedsDictionary[seed] = SearchState.Cache;
+                            }
+
+                            foreach (var seed in _amoebaManager.ShareSeeds)
+                            {
+                                if (!seedsDictionary.ContainsKey(seed))
+                                {
+                                    seedsDictionary[seed] = SearchState.Share;
+                                }
+                                else
+                                {
+                                    seedsDictionary[seed] |= SearchState.Share;
+                                }
                             }
 
                             foreach (var information in _amoebaManager.UploadingInformation)

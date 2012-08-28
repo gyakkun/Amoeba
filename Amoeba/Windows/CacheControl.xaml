@@ -90,7 +90,10 @@
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=CacheControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteCacheMenuItem" Header="{Binding Path=CacheControl_DeleteCache, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteCacheMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteShareMenuItem" Header="{Binding Path=CacheControl_DeleteShare, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteShareMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteDownloadHistoryMenuItem" Header="{Binding Path=CacheControl_DeleteDownloadHistory, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteDownloadHistoryMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteUploadHistoryMenuItem" Header="{Binding Path=CacheControl_DeleteUploadHistory, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteUploadHistoryMenuItem_Click" />
                     <Separator />
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=CacheControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
                     <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=CacheControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
@@ -101,9 +104,6 @@
                     <MenuItem Name="_listViewFilterSignatureMenuItem" Header="{Binding Path=CacheControl_FilterSignature, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSignatureMenuItem_Click" />
                     <MenuItem Name="_listViewFilterKeywordMenuItem" Header="{Binding Path=CacheControl_FilterKeyword, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterKeywordMenuItem_Click" />
                     <MenuItem Name="_listViewFilterSeedMenuItem" Header="{Binding Path=CacheControl_FilterSeed, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSeedMenuItem_Click" />
-                    <Separator />
-                    <MenuItem Name="_listViewDownloadHistoryDeleteMenuItem" Header="{Binding Path=CacheControl_DownloadHistoryDelete, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadHistoryDeleteMenuItem_Click" />
-                    <MenuItem Name="_listViewUploadHistoryDeleteMenuItem" Header="{Binding Path=CacheControl_UploadHistoryDelete, Source={StaticResource ResourcesInstance}}" Click="_listViewUploadHistoryDeleteMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

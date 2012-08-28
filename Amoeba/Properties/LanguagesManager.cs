@@ -530,6 +530,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string MainWindow_Close_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Close_Message");
+                }
+            }
+        }
+
 
         public string UserInterfaceWindow_Title
         {
@@ -1890,13 +1901,46 @@ namespace Amoeba.Properties
             }
         }
 
-        public string CacheControl_Delete
+        public string CacheControl_DeleteCache
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("CacheControl_Delete");
+                    return this.Translate("CacheControl_DeleteCache");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteShare
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteShare");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteDownloadHistory
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteDownloadHistory");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteUploadHistory
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteUploadHistory");
                 }
             }
         }
@@ -1967,28 +2011,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string CacheControl_DownloadHistoryDelete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DownloadHistoryDelete");
-                }
-            }
-        }
-
-        public string CacheControl_UploadHistoryDelete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_UploadHistoryDelete");
-                }
-            }
-        }
-
         public string CacheControl_FilterName
         {
             get
@@ -2041,6 +2063,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchState_Cache");
+                }
+            }
+        }
+
+        public string SearchState_Share
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Share");
                 }
             }
         }
@@ -2409,13 +2442,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string SearchItemEditWindow_Uploading
+        public string SearchItemEditWindow_Share
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchItemEditWindow_Uploading");
+                    return this.Translate("SearchItemEditWindow_Share");
                 }
             }
         }
@@ -2431,13 +2464,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string SearchItemEditWindow_Uploaded
+        public string SearchItemEditWindow_Uploading
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchItemEditWindow_Uploaded");
+                    return this.Translate("SearchItemEditWindow_Uploading");
                 }
             }
         }
@@ -2449,6 +2482,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchItemEditWindow_Downloaded");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Uploaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Uploaded");
                 }
             }
         }
