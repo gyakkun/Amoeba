@@ -388,7 +388,7 @@ namespace Amoeba.Windows
         {
             List<ConnectionListViewItem> list = new List<ConnectionListViewItem>(collection);
 
-            if (sortBy == LanguagesManager.Instance.ConnectionControl_Name)
+            if (sortBy == LanguagesManager.Instance.ConnectionControl_Uri)
             {
                 list.Sort(delegate(ConnectionListViewItem x, ConnectionListViewItem y)
                 {

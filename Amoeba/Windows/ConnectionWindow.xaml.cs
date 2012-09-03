@@ -1019,6 +1019,8 @@ namespace Amoeba.Windows
         {
             this.DialogResult = true;
 
+            bool flag = false;
+
             lock (_amoebaManager.ThisLock)
             {
                 long size = (long)NetworkConverter.FromSizeString("50 GB");
@@ -1057,7 +1059,7 @@ namespace Amoeba.Windows
                     _amoebaManager.ListenUris.Clear();
                     _amoebaManager.ListenUris.AddRange(_listenUris);
 
-                    _autoBaseNodeSettingManager.Restart();
+                    flag = true;
                 }
 
                 string path = _miscellaneousDownloadDirectoryTextBox.Text;
@@ -1070,10 +1072,15 @@ namespace Amoeba.Windows
                 _amoebaManager.DownloadDirectory = path;
             }
 
-            if (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled != _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value)
+            lock (_autoBaseNodeSettingManager.ThisLock)
             {
-                Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
+                if (flag && _autoBaseNodeSettingManager.State == ManagerState.Start)
+                {
+                    _autoBaseNodeSettingManager.Restart();
+                }
             }
+
+            Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
