@@ -36,6 +36,8 @@ namespace Amoeba.Windows
 
         private ObservableCollection<ShareListViewItem> _listViewItemCollection = new ObservableCollection<ShareListViewItem>();
 
+        private Thread _showShareItemThread;
+
         public ShareControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _mainWindow = mainWindow;
@@ -46,14 +48,15 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.ShareItemShow), this);
+            _showShareItemThread = new Thread(new ThreadStart(ShowShareItem));
+            _showShareItemThread.Priority = ThreadPriority.Highest;
+            _showShareItemThread.IsBackground = true;
+            _showShareItemThread.Name = "ShowShareItemThread";
+            _showShareItemThread.Start();
         }
-
-        private void ShareItemShow(object state)
+    
+        private void ShowShareItem()
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            Thread.CurrentThread.IsBackground = true;
-
             try
             {
                 for (; ; )
@@ -199,18 +202,22 @@ namespace Amoeba.Windows
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            var filePaths = new List<string>();
+            var filePaths = new HashSet<string>();
 
             foreach (var item in ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList())
             {
                 if (File.Exists(item)) filePaths.Add(item);
-                else if (Directory.Exists(item)) filePaths.AddRange(Directory.GetFiles(item));
+                else if (Directory.Exists(item)) filePaths.UnionWith(Directory.GetFiles(item, "*", SearchOption.AllDirectories));
             }
 
+            foreach (var informaiton in _amoebaManager.ShareInformation)
+            {
+                filePaths.Remove((string)informaiton["Path"]);
+            }
 
             if (filePaths.Count == 1)
             {
-                UploadWindow window = new UploadWindow(filePaths[0], true, _amoebaManager);
+                UploadWindow window = new UploadWindow(filePaths.First(), true, _amoebaManager);
                 window.Owner = _mainWindow;
                 window.ShowDialog();
             }
@@ -242,17 +249,22 @@ namespace Amoeba.Windows
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                var uploadFilePaths = dialog.FileNames.ToList();
+                var filePaths = new HashSet<string>(dialog.FileNames);
 
-                if (uploadFilePaths.Count == 1)
+                foreach (var informaiton in _amoebaManager.ShareInformation)
                 {
-                    UploadWindow window = new UploadWindow(uploadFilePaths[0], true, _amoebaManager);
+                    filePaths.Remove((string)informaiton["Path"]);
+                }
+
+                if (filePaths.Count == 1)
+                {
+                    UploadWindow window = new UploadWindow(filePaths.First(), true, _amoebaManager);
                     window.Owner = _mainWindow;
                     window.ShowDialog();
                 }
-                else if (uploadFilePaths.Count > 1)
+                else if (filePaths.Count > 1)
                 {
-                    UploadListWindow window = new UploadListWindow(uploadFilePaths, true, _amoebaManager);
+                    UploadListWindow window = new UploadListWindow(filePaths, true, _amoebaManager);
                     window.Owner = _mainWindow;
                     window.ShowDialog();
                 }
@@ -268,9 +280,9 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-             List<int> ids = new List<int>();
+            List<int> ids = new List<int>();
 
-           foreach (var item in selectItems.Cast<ShareListViewItem>())
+            foreach (var item in selectItems.Cast<ShareListViewItem>())
             {
                 ids.Add((int)item.Information["Id"]);
             }

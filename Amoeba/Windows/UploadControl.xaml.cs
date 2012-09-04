@@ -36,6 +36,8 @@ namespace Amoeba.Windows
 
         private ObservableCollection<UploadListViewItem> _listViewItemCollection = new ObservableCollection<UploadListViewItem>();
 
+        private Thread _showUploadItemThread;
+
         public UploadControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _mainWindow = mainWindow;
@@ -45,14 +47,16 @@ namespace Amoeba.Windows
             InitializeComponent();
 
             _listView.ItemsSource = _listViewItemCollection;
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.UploadItemShow), this);
+
+            _showUploadItemThread = new Thread(new ThreadStart(ShowUploadItem));
+            _showUploadItemThread.Priority = ThreadPriority.Highest;
+            _showUploadItemThread.IsBackground = true;
+            _showUploadItemThread.Name = "ShowUploadItemThread";
+            _showUploadItemThread.Start();
         }
 
-        private void UploadItemShow(object state)
+        private void ShowUploadItem()
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            Thread.CurrentThread.IsBackground = true;
-
             try
             {
                 for (; ; )
@@ -198,17 +202,17 @@ namespace Amoeba.Windows
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
 
-            var filePaths = new List<string>();
+            var filePaths = new HashSet<string>();
 
-            foreach (var item in ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList())
+            foreach (var item in (string[])e.Data.GetData(DataFormats.FileDrop))
             {
                 if (File.Exists(item)) filePaths.Add(item);
-                else if (Directory.Exists(item)) filePaths.AddRange(Directory.GetFiles(item));
+                else if (Directory.Exists(item)) filePaths.UnionWith(Directory.GetFiles(item, "*", SearchOption.AllDirectories));
             }
 
             if (filePaths.Count == 1)
             {
-                UploadWindow window = new UploadWindow(filePaths[0], false, _amoebaManager);
+                UploadWindow window = new UploadWindow(filePaths.First(), false, _amoebaManager);
                 window.Owner = _mainWindow;
                 window.ShowDialog();
             }
@@ -243,17 +247,17 @@ namespace Amoeba.Windows
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                var uploadFilePaths = dialog.FileNames.ToList();
+                var filePaths = new HashSet<string>(dialog.FileNames);
 
-                if (uploadFilePaths.Count == 1)
+                if (filePaths.Count == 1)
                 {
-                    UploadWindow window = new UploadWindow(uploadFilePaths[0], false, _amoebaManager);
+                    UploadWindow window = new UploadWindow(filePaths.First(), false, _amoebaManager);
                     window.Owner = _mainWindow;
                     window.ShowDialog();
                 }
-                else if (uploadFilePaths.Count > 1)
+                else if (filePaths.Count > 1)
                 {
-                    UploadListWindow window = new UploadListWindow(uploadFilePaths, false, _amoebaManager);
+                    UploadListWindow window = new UploadListWindow(filePaths, false, _amoebaManager);
                     window.Owner = _mainWindow;
                     window.ShowDialog();
                 }

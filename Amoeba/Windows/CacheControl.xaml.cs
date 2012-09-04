@@ -38,12 +38,13 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private Thread _searchThread = null;
         private volatile bool _refresh = false;
         private volatile bool _recache = false;
 
         private volatile List<SearchListViewItem> _searchingCache = new List<SearchListViewItem>();
         private Stopwatch _updateStopwatch = new Stopwatch();
+
+        private Thread _searchThread = null;
 
         public CacheControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
@@ -74,121 +75,123 @@ namespace Amoeba.Windows
                     _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewItem.Value.SearchItem.Name);
             };
 
-            _searchThread = new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    for (; ; )
-                    {
-                        Thread.Sleep(100);
-                        if (!_refresh) continue;
-
-                        SearchTreeViewItem selectTreeViewItem = null;
-
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                        {
-                            selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-                        }), null);
-
-                        if (selectTreeViewItem == null) continue;
-
-                        HashSet<SearchListViewItem> newList = new HashSet<SearchListViewItem>(this.GetSearchListViewItems());
-                        List<SearchTreeViewItem> searchTreeViewItems = new List<SearchTreeViewItem>();
-
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                        {
-                            searchTreeViewItems.AddRange(_treeViewItem.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>());
-                        }), null);
-
-                        foreach (var searchTreeViewItem in searchTreeViewItems)
-                        {
-                            CacheControl.Filter(ref newList, searchTreeViewItem.Value.SearchItem);
-
-                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                            {
-                                searchTreeViewItem.Hit = newList.Count;
-                                searchTreeViewItem.Update();
-                            }), null);
-                        }
-
-                        HashSet<SearchListViewItem> oldList = null;
-
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                        {
-                            oldList = new HashSet<SearchListViewItem>(_listView.Items.OfType<SearchListViewItem>().ToArray());
-                        }), null);
-
-                        var removeList = new List<SearchListViewItem>();
-                        var addList = new List<SearchListViewItem>();
-
-                        foreach (var item in oldList)
-                        {
-                            if (!newList.Contains(item))
-                            {
-                                removeList.Add(item);
-                            }
-                        }
-
-                        foreach (var item in newList)
-                        {
-                            if (!oldList.Contains(item))
-                            {
-                                addList.Add(item);
-                            }
-                        }
-
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                        {
-                            if (selectTreeViewItem != _treeView.SelectedItem) return;
-                            _refresh = false;
-
-                            _listView.SelectedItems.Clear();
-
-                            bool sortFlag = false;
-
-                            if (removeList.Count > 100)
-                            {
-                                sortFlag = true;
-
-                                _listView.Items.Clear();
-
-                                foreach (var item in newList)
-                                {
-                                    _listView.Items.Add(item);
-                                }
-                            }
-                            else
-                            {
-                                if (addList.Count != 0) sortFlag = true;
-                                if (removeList.Count != 0) sortFlag = true;
-
-                                foreach (var item in addList)
-                                {
-                                    _listView.Items.Add(item);
-                                }
-
-                                foreach (var item in removeList)
-                                {
-                                    _listView.Items.Remove(item);
-                                }
-                            }
-
-                            if (sortFlag) this.Sort();
-
-                            if (App.SelectTab == "Search")
-                                _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewItem.Value.SearchItem.Name);
-                        }), null);
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-            }));
+            _searchThread = new Thread(new ThreadStart(this.Search));
             _searchThread.Priority = ThreadPriority.Highest;
             _searchThread.IsBackground = true;
             _searchThread.Name = "SearchThread";
             _searchThread.Start();
+        }
+
+        private void Search()
+        {
+            try
+            {
+                for (; ; )
+                {
+                    Thread.Sleep(100);
+                    if (!_refresh) continue;
+
+                    SearchTreeViewItem selectTreeViewItem = null;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+                    }), null);
+
+                    if (selectTreeViewItem == null) continue;
+
+                    HashSet<SearchListViewItem> newList = new HashSet<SearchListViewItem>(this.GetSearchListViewItems());
+                    List<SearchTreeViewItem> searchTreeViewItems = new List<SearchTreeViewItem>();
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        searchTreeViewItems.AddRange(_treeViewItem.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>());
+                    }), null);
+
+                    foreach (var searchTreeViewItem in searchTreeViewItems)
+                    {
+                        CacheControl.Filter(ref newList, searchTreeViewItem.Value.SearchItem);
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        {
+                            searchTreeViewItem.Hit = newList.Count;
+                            searchTreeViewItem.Update();
+                        }), null);
+                    }
+
+                    HashSet<SearchListViewItem> oldList = null;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        oldList = new HashSet<SearchListViewItem>(_listView.Items.OfType<SearchListViewItem>().ToArray());
+                    }), null);
+
+                    var removeList = new List<SearchListViewItem>();
+                    var addList = new List<SearchListViewItem>();
+
+                    foreach (var item in oldList)
+                    {
+                        if (!newList.Contains(item))
+                        {
+                            removeList.Add(item);
+                        }
+                    }
+
+                    foreach (var item in newList)
+                    {
+                        if (!oldList.Contains(item))
+                        {
+                            addList.Add(item);
+                        }
+                    }
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        if (selectTreeViewItem != _treeView.SelectedItem) return;
+                        _refresh = false;
+
+                        _listView.SelectedItems.Clear();
+
+                        bool sortFlag = false;
+
+                        if (removeList.Count > 100)
+                        {
+                            sortFlag = true;
+
+                            _listView.Items.Clear();
+
+                            foreach (var item in newList)
+                            {
+                                _listView.Items.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            if (addList.Count != 0) sortFlag = true;
+                            if (removeList.Count != 0) sortFlag = true;
+
+                            foreach (var item in addList)
+                            {
+                                _listView.Items.Add(item);
+                            }
+
+                            foreach (var item in removeList)
+                            {
+                                _listView.Items.Remove(item);
+                            }
+                        }
+
+                        if (sortFlag) this.Sort();
+
+                        if (App.SelectTab == "Search")
+                            _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewItem.Value.SearchItem.Name);
+                    }), null);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private static void Filter(ref HashSet<SearchListViewItem> items, SearchItem searchItem)

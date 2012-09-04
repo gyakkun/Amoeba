@@ -33,6 +33,9 @@ namespace Amoeba.Windows
         private ObservableCollection<AmoebaInfomationListViewItem> _infomationListViewItemCollection = new ObservableCollection<AmoebaInfomationListViewItem>();
         private ObservableCollection<ConnectionListViewItem> _listViewItemCollection = new ObservableCollection<ConnectionListViewItem>();
 
+        private Thread _showAmoebaInfomationThread;
+        private Thread _showConnectionInfomationwThread;
+
         public ConnectionControl(AmoebaManager amoebaManager)
         {
             _amoebaManager = amoebaManager;
@@ -47,9 +50,12 @@ namespace Amoeba.Windows
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_CreateConnectionCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_AcceptConnectionCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_SurroundingNodeCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_RelayBlockCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
- 
+
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_NodeCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_SeedCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_BlockCount" });
@@ -71,15 +77,21 @@ namespace Amoeba.Windows
 
             _infomationListView.ItemsSource = _infomationListViewItemCollection;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.AmoebaInfomationShow), this);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.ConnectionInfomationShow), this);
+            _showAmoebaInfomationThread = new Thread(new ThreadStart(this.ShowAmoebaInfomation));
+            _showAmoebaInfomationThread.Priority = ThreadPriority.Highest;
+            _showAmoebaInfomationThread.IsBackground = true;
+            _showAmoebaInfomationThread.Name = "ShowAmoebaInfomation";
+            _showAmoebaInfomationThread.Start();
+
+            _showConnectionInfomationwThread = new Thread(new ThreadStart(this.ShowConnectionInfomation));
+            _showConnectionInfomationwThread.Priority = ThreadPriority.Highest;
+            _showConnectionInfomationwThread.IsBackground = true;
+            _showConnectionInfomationwThread.Name = "ShowConnectionInfomation";
+            _showConnectionInfomationwThread.Start();
         }
 
-        private void AmoebaInfomationShow(object state)
+        private void ShowAmoebaInfomation()
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            Thread.CurrentThread.IsBackground = true;
-            
             try
             {
                 for (; ; )
@@ -104,6 +116,7 @@ namespace Amoeba.Windows
                     dic["ConnectionControl_PushBlockCount"] = ((int)information["PushBlockCount"]).ToString();
 
                     dic["ConnectionControl_RelayBlockCount"] = ((int)information["RelayBlockCount"]).ToString();
+                    dic["ConnectionControl_SurroundingNodeCount"] = ((int)information["SurroundingNodeCount"]).ToString();
 
                     dic["ConnectionControl_NodeCount"] = ((int)information["OtherNodeCount"]).ToString();
                     dic["ConnectionControl_SeedCount"] = ((int)information["SeedCount"]).ToString();
@@ -130,11 +143,8 @@ namespace Amoeba.Windows
             }
         }
 
-        private void ConnectionInfomationShow(object state)
+        private void ShowConnectionInfomation()
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            Thread.CurrentThread.IsBackground = true;
-
             try
             {
                 for (; ; )

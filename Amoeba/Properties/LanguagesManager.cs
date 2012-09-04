@@ -1624,6 +1624,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string ConnectionControl_SurroundingNodeCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_SurroundingNodeCount");
+                }
+            }
+        }
+
         public string ConnectionControl_NodeCount
         {
             get

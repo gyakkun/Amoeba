@@ -141,6 +141,7 @@
   <Translate Key="ConnectionControl_PushBlockRequestCount" Value="PushBlockRequest Count" />
   <Translate Key="ConnectionControl_PushBlockCount" Value="PushBlock Count" />
   <Translate Key="ConnectionControl_RelayBlockCount" Value="Relay Block Count" />
+  <Translate Key="ConnectionControl_SurroundingNodeCount" Value="Surrounding Node Count" />
   <Translate Key="ConnectionControl_NodeCount" Value="Node Count" />
   <Translate Key="ConnectionControl_SeedCount" Value="Seed Count" />
   <Translate Key="ConnectionControl_CacheSeedCount" Value="Cache Seed Count" />

@@ -92,121 +92,124 @@ namespace Amoeba.Windows
                 _notifyIcon.Visible = false;
             };
 
-            _timerThread = new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    Stopwatch spaceCheckStopwatch = new Stopwatch();
-                    Stopwatch backupStopwatch = new Stopwatch();
-                    Stopwatch updateStopwatch = new Stopwatch();
-                    spaceCheckStopwatch.Start();
-                    backupStopwatch.Start();
-
-                    for (; ; )
-                    {
-                        Thread.Sleep(1000);
-                        if (!_isRun) return;
-
-                        {
-                            if (_autoBaseNodeSettingManager.State == ManagerState.Stop
-                                && (Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
-                            {
-                                _autoBaseNodeSettingManager.Start();
-                            }
-                            else if (_autoBaseNodeSettingManager.State == ManagerState.Start
-                                && (!Settings.Instance.Global_IsStart || !Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
-                            {
-                                _autoBaseNodeSettingManager.Stop();
-                            }
-
-                            if (_amoebaManager.State == ManagerState.Stop
-                                && Settings.Instance.Global_IsStart)
-                            {
-                                _amoebaManager.Start();
-
-                                Log.Information("Start");
-                            }
-                            else if (_amoebaManager.State == ManagerState.Start
-                                && !Settings.Instance.Global_IsStart)
-                            {
-                                _amoebaManager.Stop();
-
-                                Log.Information("Stop");
-                            }
-                        }
-
-                        if (spaceCheckStopwatch.Elapsed > new TimeSpan(0, 1, 0))
-                        {
-                            spaceCheckStopwatch.Restart();
-
-                            try
-                            {
-                                DriveInfo drive = new DriveInfo(Directory.GetCurrentDirectory());
-
-                                if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
-                                {
-                                    if (_amoebaManager.State == ManagerState.Start)
-                                    {
-                                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                                        {
-                                            _menuItemStop_Click(null, null);
-                                        }), null);
-
-                                        Log.Warning(LanguagesManager.Instance.MainWindow_SpaceNotFound);
-                                    }
-                                }
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-
-                        if (backupStopwatch.Elapsed > new TimeSpan(0, 5, 0))
-                        {
-                            backupStopwatch.Restart();
-
-                            try
-                            {
-                                _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
-                                _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-                                Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-
-
-                        if (!updateStopwatch.IsRunning && updateStopwatch.Elapsed > new TimeSpan(3, 0, 0, 0))
-                        {
-                            updateStopwatch.Restart();
-
-                            try
-                            {
-                                if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
-                                   || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
-                                {
-                                    _menuItemCheckUpdate_Click(null, null);
-                                }
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-            }));
+            _timerThread = new Thread(new ThreadStart(this.Timer));
             _timerThread.Priority = ThreadPriority.Highest;
+            _timerThread.IsBackground = true;
             _timerThread.Name = "TimerThread";
             _timerThread.Start();
+        }
+
+        private void Timer()
+        {
+            try
+            {
+                Stopwatch spaceCheckStopwatch = new Stopwatch();
+                Stopwatch backupStopwatch = new Stopwatch();
+                Stopwatch updateStopwatch = new Stopwatch();
+                spaceCheckStopwatch.Start();
+                backupStopwatch.Start();
+                updateStopwatch.Start();
+
+                for (; ; )
+                {
+                    Thread.Sleep(1000);
+                    if (!_isRun) return;
+
+                    {
+                        if (_autoBaseNodeSettingManager.State == ManagerState.Stop
+                            && (Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
+                        {
+                            _autoBaseNodeSettingManager.Start();
+                        }
+                        else if (_autoBaseNodeSettingManager.State == ManagerState.Start
+                            && (!Settings.Instance.Global_IsStart || !Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
+                        {
+                            _autoBaseNodeSettingManager.Stop();
+                        }
+
+                        if (_amoebaManager.State == ManagerState.Stop
+                            && Settings.Instance.Global_IsStart)
+                        {
+                            _amoebaManager.Start();
+
+                            Log.Information("Start");
+                        }
+                        else if (_amoebaManager.State == ManagerState.Start
+                            && !Settings.Instance.Global_IsStart)
+                        {
+                            _amoebaManager.Stop();
+
+                            Log.Information("Stop");
+                        }
+                    }
+
+                    if (spaceCheckStopwatch.Elapsed > new TimeSpan(0, 1, 0))
+                    {
+                        spaceCheckStopwatch.Restart();
+
+                        try
+                        {
+                            DriveInfo drive = new DriveInfo(Directory.GetCurrentDirectory());
+
+                            if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
+                            {
+                                if (_amoebaManager.State == ManagerState.Start)
+                                {
+                                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                                    {
+                                        _menuItemStop_Click(null, null);
+                                    }), null);
+
+                                    Log.Warning(LanguagesManager.Instance.MainWindow_SpaceNotFound);
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+                    if (backupStopwatch.Elapsed > new TimeSpan(0, 5, 0))
+                    {
+                        backupStopwatch.Restart();
+
+                        try
+                        {
+                            _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+                            _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
+                            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+
+                    if (updateStopwatch.Elapsed > new TimeSpan(1, 0, 0, 0))
+                    {
+                        updateStopwatch.Restart();
+
+                        try
+                        {
+                            if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
+                               || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
+                            {
+                                _menuItemCheckUpdate_Click(null, null);
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private static string GetMachineInfomation()

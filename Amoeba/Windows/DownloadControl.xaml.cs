@@ -35,6 +35,9 @@ namespace Amoeba.Windows
         private ObservableCollection<DownloadListViewItem> _listViewItemCollection = new ObservableCollection<DownloadListViewItem>();
         private object _listLock = new object();
 
+        private Thread _showDownloadItemThread;
+        private Thread _watchThread;
+
         public DownloadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _amoebaManager = amoebaManager;
@@ -44,15 +47,21 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.DownloadItemShow), this);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.Watch), this);
+            _showDownloadItemThread = new Thread(new ThreadStart(this.ShowDownloadItem));
+            _showDownloadItemThread.Priority = ThreadPriority.Highest;
+            _showDownloadItemThread.IsBackground = true;
+            _showDownloadItemThread.Name = "ShowDownloadItemThread";
+            _showDownloadItemThread.Start();
+
+            _watchThread = new Thread(new ThreadStart(this.Watch));
+            _watchThread.Priority = ThreadPriority.Highest;
+            _watchThread.IsBackground = true;
+            _watchThread.Name = "WatchThread";
+            _watchThread.Start();
         }
 
-        private void DownloadItemShow(object state)
+        private void ShowDownloadItem()
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            Thread.CurrentThread.IsBackground = true;
-
             try
             {
                 for (; ; )
@@ -188,11 +197,8 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Watch(object state)
+        private void Watch()
         {
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            Thread.CurrentThread.IsBackground = true;
-
             try
             {
                 for (; ; )
