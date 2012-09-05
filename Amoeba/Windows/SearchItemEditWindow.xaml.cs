@@ -648,8 +648,6 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    if (!Regex.IsMatch(match.Groups[2].Value, @"^[a-zA-Z0-9\-_]*$")) continue;
-
                     var item = new SearchContains<string>()
                     {
                         Contains = (match.Groups[1].Value == "+") ? true : false,
@@ -705,7 +703,6 @@ namespace Amoeba.Windows
         private void _signatureAddButton_Click(object sender, RoutedEventArgs e)
         {
             if (_signatureTextBox.Text == "") return;
-            if (!Regex.IsMatch(_signatureTextBox.Text, @"^[a-zA-Z0-9\-_]*$")) return;
 
             var item = new SearchContains<string>()
             {
@@ -726,7 +723,6 @@ namespace Amoeba.Windows
         private void _signatureEditButton_Click(object sender, RoutedEventArgs e)
         {
             if (_signatureTextBox.Text == "") return;
-            if (!Regex.IsMatch(_signatureTextBox.Text, @"^[a-zA-Z0-9\-_]*$")) return;
 
             var uitem = new SearchContains<string>()
             {

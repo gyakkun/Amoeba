@@ -127,23 +127,5 @@ namespace Amoeba.Windows
                 }
             }
         }
-
-        protected override void OnPreviewMouseRightButtonUp(MouseButtonEventArgs e)
-        {
-            base.OnPreviewMouseRightButtonUp(e);
-
-            var posithonIndex = this.GetCurrentIndex(e.GetPosition);
-
-            if (posithonIndex != -1 && this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
-            {
-                var posithonItem = this.Items[posithonIndex];
-
-                if (this.SelectedItems.OfType<object>().Any(n => object.ReferenceEquals(n, posithonItem)))
-                {
-                    this.SelectedItems.Remove(posithonItem);
-                    this.SelectedItems.Insert(0, posithonItem);
-                }
-            }
-        }
     }
 }

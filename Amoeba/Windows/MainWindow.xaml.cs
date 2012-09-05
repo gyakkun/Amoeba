@@ -806,7 +806,7 @@ namespace Amoeba.Windows
                             if (!string.IsNullOrWhiteSpace(signature))
                             {
                                 if (!seed.VerifyCertificate()) throw new Exception("Update VerifyCertificate");
-                                if (!MessageConverter.ToSignatureString(seed.Certificate).StartsWith(signature)) throw new Exception("Update Signature");
+                                if (MessageConverter.ToSignatureString(seed.Certificate) != signature) throw new Exception("Update Signature");
                             }
 
                             Log.Information(string.Format("Check Update: {0}", seed.Name));

@@ -394,10 +394,17 @@ namespace Amoeba.Windows
         {
             if (string.IsNullOrWhiteSpace(_signatureTextBox.Text)) return;
 
-            _signatureListViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(_signatureTextBox.Text, DigitalSignatureAlgorithm.Rsa2048_Sha512)));
+            try
+            {
+                _signatureListViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(_signatureTextBox.Text, DigitalSignatureAlgorithm.Rsa2048_Sha512)));
 
-            _signatureListView.SelectedIndex = _signatureListViewItemCollection.Count - 1;
-            _signatureListView.Items.Refresh();
+                _signatureListView.SelectedIndex = _signatureListViewItemCollection.Count - 1;
+                _signatureListView.Items.Refresh();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private void _signatureDeleteButton_Click(object sender, RoutedEventArgs e)
