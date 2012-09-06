@@ -89,6 +89,14 @@ namespace Amoeba.Windows
 
         #region _nameListView
 
+        private void _nameTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _nameAddButton_Click(null, null);
+            }
+        }
+        
         private void _nameListViewUpdate()
         {
             _nameListView_SelectionChanged(this, null);
@@ -155,13 +163,20 @@ namespace Amoeba.Windows
         {
             var selectItems = _nameListView.SelectedItems;
 
+            _nameListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _nameListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _nameListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
                 _nameListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
             }
+        }
+
+        private void _nameListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _nameDeleteButton_Click(null, null);
         }
 
         private void _nameListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -174,6 +189,12 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString());
+        }
+
+        private void _nameListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _nameListViewCopyMenuItem_Click(null, null);
+            _nameDeleteButton_Click(null, null);
         }
 
         private void _nameListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -283,13 +304,16 @@ namespace Amoeba.Windows
 
         private void _nameDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _nameListView.SelectedItem as SearchContains<string>;
-            if (item == null) return;
+            int selectIndex = _nameListView.SelectedIndex;
+            if (selectIndex == -1) return;
 
             _nameTextBox.Text = "";
 
-            int selectIndex = _nameListView.SelectedIndex;
-            _searchNameCollection.Remove(item);
+            foreach (var item in _nameListView.SelectedItems.OfType<SearchContains<string>>().ToArray())
+            {
+                _searchNameCollection.Remove(item);
+            }
+
             _nameListView.Items.Refresh();
             _nameListView.SelectedIndex = selectIndex;
             _nameListViewUpdate();
@@ -299,6 +323,14 @@ namespace Amoeba.Windows
 
         #region _nameRegexListView
 
+        private void _nameRegexTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _nameRegexAddButton_Click(null, null);
+            }
+        }
+        
         private void _nameRegexListViewUpdate()
         {
             _nameRegexListView_SelectionChanged(this, null);
@@ -367,13 +399,20 @@ namespace Amoeba.Windows
         {
             var selectItems = _nameRegexListView.SelectedItems;
 
+            _nameRegexListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _nameRegexListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _nameRegexListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
                 _nameRegexListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) ([\+-]) (.*)"));
             }
+        }
+
+        private void _nameRegexListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _nameRegexDeleteButton_Click(null, null);
         }
 
         private void _nameRegexListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -386,6 +425,12 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString());
+        }
+
+        private void _nameRegexListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _nameRegexListViewCopyMenuItem_Click(null, null);
+            _nameRegexDeleteButton_Click(null, null);
         }
 
         private void _nameRegexListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -534,13 +579,16 @@ namespace Amoeba.Windows
 
         private void _nameRegexDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _nameRegexListView.SelectedItem as SearchContains<SearchRegex>;
-            if (item == null) return;
+            int selectIndex = _nameRegexListView.SelectedIndex;
+            if (selectIndex == -1) return;
 
             _nameRegexTextBox.Text = "";
 
-            int selectIndex = _nameRegexListView.SelectedIndex;
-            _searchNameRegexCollection.Remove(item);
+            foreach (var item in _nameRegexListView.SelectedItems.OfType<SearchContains<SearchRegex>>().ToArray())
+            {
+                _searchNameRegexCollection.Remove(item);
+            }
+
             _nameRegexListView.Items.Refresh();
             _nameRegexListView.SelectedIndex = selectIndex;
             _nameRegexListViewUpdate();
@@ -550,6 +598,14 @@ namespace Amoeba.Windows
 
         #region _signatureListView
 
+        private void _signatureTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _signatureAddButton_Click(null, null);
+            }
+        }
+        
         private void _signatureListViewUpdate()
         {
             _signatureListView_SelectionChanged(this, null);
@@ -616,13 +672,20 @@ namespace Amoeba.Windows
         {
             var selectItems = _signatureListView.SelectedItems;
 
+            _signatureListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _signatureListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _signatureListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
                 _signatureListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
             }
+        }
+
+        private void _signatureListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _signatureDeleteButton_Click(null, null);
         }
 
         private void _signatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -635,6 +698,12 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString());
+        }
+
+        private void _signatureListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _signatureListViewCopyMenuItem_Click(null, null);
+            _signatureDeleteButton_Click(null, null);
         }
 
         private void _signatureListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -744,13 +813,16 @@ namespace Amoeba.Windows
 
         private void _signatureDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _signatureListView.SelectedItem as SearchContains<string>;
-            if (item == null) return;
+            int selectIndex = _signatureListView.SelectedIndex;
+            if (selectIndex == -1) return;
 
             _signatureTextBox.Text = "";
 
-            int selectIndex = _signatureListView.SelectedIndex;
-            _searchSignatureCollection.Remove(item);
+            foreach (var item in _signatureListView.SelectedItems.OfType<SearchContains<string>>().ToArray())
+            {
+                _searchSignatureCollection.Remove(item);
+            }
+
             _signatureListView.Items.Refresh();
             _signatureListView.SelectedIndex = selectIndex;
             _signatureListViewUpdate();
@@ -760,6 +832,14 @@ namespace Amoeba.Windows
 
         #region _keywordListView
 
+        private void _keywordTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _keywordAddButton_Click(null, null);
+            }
+        }
+        
         private void _keywordListViewUpdate()
         {
             _keywordListView_SelectionChanged(this, null);
@@ -826,13 +906,20 @@ namespace Amoeba.Windows
         {
             var selectItems = _keywordListView.SelectedItems;
 
+            _keywordListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _keywordListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _keywordListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
                 _keywordListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
             }
+        }
+
+        private void _keywordListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _keywordDeleteButton_Click(null, null);
         }
 
         private void _keywordListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -847,6 +934,12 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
+        private void _keywordListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _keywordListViewCopyMenuItem_Click(null, null);
+            _keywordDeleteButton_Click(null, null);
+        }
+
         private void _keywordListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Regex regex = new Regex(@"([\+-]) (.*)");
@@ -857,8 +950,6 @@ namespace Amoeba.Windows
                 {
                     var match = regex.Match(line);
                     if (!match.Success) continue;
-
-                    if (!Regex.IsMatch(match.Groups[2].Value, "^[a-z0-9_]*$")) continue;
 
                     var item = new SearchContains<string>()
                     {
@@ -915,7 +1006,6 @@ namespace Amoeba.Windows
         private void _keywordAddButton_Click(object sender, RoutedEventArgs e)
         {
             if (_keywordTextBox.Text == "") return;
-            if (!Regex.IsMatch(_keywordTextBox.Text, "^[a-z0-9_]*$")) return;
 
             var item = new SearchContains<string>()
             {
@@ -936,7 +1026,6 @@ namespace Amoeba.Windows
         private void _keywordEditButton_Click(object sender, RoutedEventArgs e)
         {
             if (_keywordTextBox.Text == "") return;
-            if (!Regex.IsMatch(_keywordTextBox.Text, "^[a-z0-9_]*$")) return;
 
             var uitem = new SearchContains<string>()
             {
@@ -958,13 +1047,16 @@ namespace Amoeba.Windows
 
         private void _keywordDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _keywordListView.SelectedItem as SearchContains<string>;
-            if (item == null) return;
+            int selectIndex = _keywordListView.SelectedIndex;
+            if (selectIndex == -1) return;
 
             _keywordTextBox.Text = "";
 
-            int selectIndex = _keywordListView.SelectedIndex;
-            _searchKeywordCollection.Remove(item);
+            foreach (var item in _keywordListView.SelectedItems.OfType<SearchContains<string>>().ToArray())
+            {
+                _searchKeywordCollection.Remove(item);
+            }
+
             _keywordListView.Items.Refresh();
             _keywordListView.SelectedIndex = selectIndex;
             _keywordListViewUpdate();
@@ -973,6 +1065,23 @@ namespace Amoeba.Windows
         #endregion
 
         #region _creationTimeRangeListView
+
+        private void _creationTimeRangeMinTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _creationTimeRangeMaxTextBox.Focus();
+            }
+        }
+
+        private void _creationTimeRangeMaxTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _creationTimeRangeAddButton_Click(null, null);
+                _creationTimeRangeMinTextBox.Focus();
+            }
+        }
 
         private void _creationTimeRangeListViewUpdate()
         {
@@ -1042,13 +1151,20 @@ namespace Amoeba.Windows
         {
             var selectItems = _creationTimeRangeListView.SelectedItems;
 
+            _creationTimeRangeListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _creationTimeRangeListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _creationTimeRangeListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
                 _creationTimeRangeListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*), (.*)"));
             }
+        }
+
+        private void _creationTimeRangeListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _creationTimeRangeDeleteButton_Click(null, null);
         }
 
         private void _creationTimeRangeListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1063,6 +1179,12 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString());
+        }
+
+        private void _creationTimeRangeListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _creationTimeRangeListViewCopyMenuItem_Click(null, null);
+            _creationTimeRangeDeleteButton_Click(null, null);
         }
 
         private void _creationTimeRangeListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1203,14 +1325,17 @@ namespace Amoeba.Windows
 
         private void _creationTimeRangeDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _creationTimeRangeListView.SelectedItem as SearchContains<SearchRange<DateTime>>;
-            if (item == null) return;
+            int selectIndex = _creationTimeRangeListView.SelectedIndex;
+            if (selectIndex == -1) return;
 
             _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.UtcNow.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
             _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
 
-            int selectIndex = _creationTimeRangeListView.SelectedIndex;
-            _searchCreationTimeRangeCollection.Remove(item);
+            foreach (var item in _creationTimeRangeListView.SelectedItems.OfType<SearchContains<SearchRange<DateTime>>>().ToArray())
+            {
+                _searchCreationTimeRangeCollection.Remove(item);
+            }
+
             _creationTimeRangeListView.Items.Refresh();
             _creationTimeRangeListView.SelectedIndex = selectIndex;
             _creationTimeRangeListViewUpdate();
@@ -1220,6 +1345,23 @@ namespace Amoeba.Windows
 
         #region _lengthRangeListView
 
+        private void _lengthRangeMinTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _lengthRangeMaxTextBox.Focus();
+            }
+        }
+
+        private void _lengthRangeMaxTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _lengthRangeAddButton_Click(null, null);
+                _lengthRangeMinTextBox.Focus();
+            }
+        }
+        
         private void _lengthRangeListViewUpdate()
         {
             _lengthRangeListView_SelectionChanged(this, null);
@@ -1288,13 +1430,20 @@ namespace Amoeba.Windows
         {
             var selectItems = _lengthRangeListView.SelectedItems;
 
+            _lengthRangeListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _lengthRangeListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _lengthRangeListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
                 _lengthRangeListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*), (.*)"));
             }
+        }
+
+        private void _lengthRangeListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _lengthRangeDeleteButton_Click(null, null);
         }
 
         private void _lengthRangeListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1307,6 +1456,12 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString());
+        }
+
+        private void _lengthRangeListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _lengthRangeListViewCopyMenuItem_Click(null, null);
+            _lengthRangeDeleteButton_Click(null, null);
         }
 
         private void _lengthRangeListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1447,14 +1602,17 @@ namespace Amoeba.Windows
 
         private void _lengthRangeDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _lengthRangeListView.SelectedItem as SearchContains<SearchRange<long>>;
-            if (item == null) return;
+            int selectIndex = _lengthRangeListView.SelectedIndex;
+            if (selectIndex == -1) return;
 
             _lengthRangeMinTextBox.Text = "";
             _lengthRangeMaxTextBox.Text = "";
 
-            int selectIndex = _lengthRangeListView.SelectedIndex;
-            _searchLengthRangeCollection.Remove(item);
+            foreach (var item in _lengthRangeListView.SelectedItems.OfType<SearchContains<SearchRange<long>>>().ToArray())
+            {
+                _searchLengthRangeCollection.Remove(item);
+            }
+
             _lengthRangeListView.Items.Refresh();
             _lengthRangeListView.SelectedIndex = selectIndex;
             _lengthRangeListViewUpdate();
@@ -1464,6 +1622,14 @@ namespace Amoeba.Windows
 
         #region _seedListView
 
+        private void _seedTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _seedAddButton_Click(null, null);
+            }
+        }
+        
         private void _seedListViewUpdate()
         {
             _seedListView_SelectionChanged(this, null);
@@ -1530,7 +1696,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _seedListView.SelectedItems;
 
+            _seedListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _seedListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _seedListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var seeds = Clipboard.GetSeeds();
@@ -1538,6 +1706,11 @@ namespace Amoeba.Windows
 
                 _seedListViewPasteMenuItem.IsEnabled = ((seeds.Count() > 0) || (text != null && Regex.IsMatch(text, @"([\+-]) (.*)")));
             }
+        }
+
+        private void _seedListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _seedDeleteButton_Click(null, null);
         }
 
         private void _seedListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1550,6 +1723,12 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString());
+        }
+
+        private void _seedListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _seedListViewCopyMenuItem_Click(null, null);
+            _seedDeleteButton_Click(null, null);
         }
 
         private void _seedListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1701,13 +1880,16 @@ namespace Amoeba.Windows
 
         private void _seedDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _seedListView.SelectedItem as SearchContains<Seed>;
-            if (item == null) return;
+            int selectIndex = _seedListView.SelectedIndex;
+            if (selectIndex == -1) return;
 
             _seedTextBox.Text = "";
 
-            int selectIndex = _seedListView.SelectedIndex;
-            _searchSeedCollection.Remove(item);
+            foreach (var item in _seedListView.SelectedItems.OfType<SearchContains<Seed>>().ToArray())
+            {
+                _searchSeedCollection.Remove(item);
+            }
+
             _seedListView.Items.Refresh();
             _seedListView.SelectedIndex = selectIndex;
             _seedListViewUpdate();
@@ -1717,6 +1899,14 @@ namespace Amoeba.Windows
 
         #region _searchStateListView
 
+        private void _searchStateComboBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _searchStateAddButton_Click(null, null);
+            }
+        }
+        
         private void _searchStateListViewUpdate()
         {
             _searchStateListView_SelectionChanged(this, null);
@@ -1783,13 +1973,20 @@ namespace Amoeba.Windows
         {
             var selectItems = _searchStateListView.SelectedItems;
 
+            _searchStateListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _searchStateListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _searchStateListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 var text = Clipboard.GetText();
 
                 _searchStateListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
             }
+        }
+
+        private void _searchStateListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _searchStateDeleteButton_Click(null, null);
         }
 
         private void _searchStateListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1802,6 +1999,12 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString());
+        }
+
+        private void _searchStateListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _searchStateListViewCopyMenuItem_Click(null, null);
+            _searchStateDeleteButton_Click(null, null);
         }
 
         private void _searchStateListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1911,13 +2114,16 @@ namespace Amoeba.Windows
 
         private void _searchStateDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
-            if (item == null) return;
-
-            _searchStateComboBox.Text = "";
-
             int selectIndex = _searchStateListView.SelectedIndex;
-            _searchStateCollection.Remove(item);
+            if (selectIndex == -1) return;
+
+            _searchStateComboBox.SelectedIndex = 0;
+
+            foreach (var item in _searchStateListView.SelectedItems.OfType<SearchContains<SearchState>>().ToArray())
+            {
+                _searchStateCollection.Remove(item);
+            }
+
             _searchStateListView.Items.Refresh();
             _searchStateListView.SelectedIndex = selectIndex;
             _searchStateListViewUpdate();
@@ -1986,6 +2192,150 @@ namespace Amoeba.Windows
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
+        }
+
+        private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_nameTabItem.IsSelected)
+            {
+                _nameListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_nameRegexTabItem.IsSelected)
+            {
+                _nameRegexListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_signatureTabItem.IsSelected)
+            {
+                _signatureListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_keywordTabItem.IsSelected)
+            {
+                _keywordListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_creationTimeRangeTabItem.IsSelected)
+            {
+                _creationTimeRangeListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_lengthRangeTabItem.IsSelected)
+            {
+                _lengthRangeListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_seedTabItem.IsSelected)
+            {
+                _seedListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_searchStateTabItem.IsSelected)
+            {
+                _searchStateListViewDeleteMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_nameTabItem.IsSelected)
+            {
+                _nameListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_nameRegexTabItem.IsSelected)
+            {
+                _nameRegexListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_signatureTabItem.IsSelected)
+            {
+                _signatureListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_keywordTabItem.IsSelected)
+            {
+                _keywordListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_creationTimeRangeTabItem.IsSelected)
+            {
+                _creationTimeRangeListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_lengthRangeTabItem.IsSelected)
+            {
+                _lengthRangeListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_seedTabItem.IsSelected)
+            {
+                _seedListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_searchStateTabItem.IsSelected)
+            {
+                _searchStateListViewCopyMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Cut(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_nameTabItem.IsSelected)
+            {
+                _nameListViewCutMenuItem_Click(null, null);
+            }
+            else if (_nameRegexTabItem.IsSelected)
+            {
+                _nameRegexListViewCutMenuItem_Click(null, null);
+            }
+            else if (_signatureTabItem.IsSelected)
+            {
+                _signatureListViewCutMenuItem_Click(null, null);
+            }
+            else if (_keywordTabItem.IsSelected)
+            {
+                _keywordListViewCutMenuItem_Click(null, null);
+            }
+            else if (_creationTimeRangeTabItem.IsSelected)
+            {
+                _creationTimeRangeListViewCutMenuItem_Click(null, null);
+            }
+            else if (_lengthRangeTabItem.IsSelected)
+            {
+                _lengthRangeListViewCutMenuItem_Click(null, null);
+            }
+            else if (_seedTabItem.IsSelected)
+            {
+                _seedListViewCutMenuItem_Click(null, null);
+            }
+            else if (_searchStateTabItem.IsSelected)
+            {
+                _searchStateListViewCutMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_nameTabItem.IsSelected)
+            {
+                _nameListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_nameRegexTabItem.IsSelected)
+            {
+                _nameRegexListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_signatureTabItem.IsSelected)
+            {
+                _signatureListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_keywordTabItem.IsSelected)
+            {
+                _keywordListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_creationTimeRangeTabItem.IsSelected)
+            {
+                _creationTimeRangeListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_lengthRangeTabItem.IsSelected)
+            {
+                _lengthRangeListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_seedTabItem.IsSelected)
+            {
+                _seedListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_searchStateTabItem.IsSelected)
+            {
+                _searchStateListViewPasteMenuItem_Click(null, null);
+            }
         }
     }
 }

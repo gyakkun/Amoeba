@@ -7,10 +7,11 @@
         FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
         FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}"
         Background="{DynamicResource WindowBackgroundBrush}"
-        Title="{Binding Path=ProgressWindow_Title, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Center"
+        Title="{Binding Path=ProgressWindow_Title, Source={StaticResource ResourcesInstance}}"
+        VerticalAlignment="Center"
         Width="600" 
         SizeToContent="Height"
-        ResizeMode="NoResize" 
+        ResizeMode="CanMinimize" 
         WindowStartupLocation="CenterOwner"
         Closing="Window_Closing">
     
@@ -18,6 +19,6 @@
         <Label Height="24" Margin="12,12,12,0" Name="_label1" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
         <Label Height="24" Margin="12,42,12,0" Name="_label2" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
         <ProgressBar Height="24" Name="_progressBar" VerticalAlignment="Top" Margin="12,72,12,0" />
-        <Button Content="" HorizontalAlignment="Center" Margin="0,102,0,12" Name="_button" Width="75" Click="_button_Click" Height="23" VerticalAlignment="Top" />
+        <Button Content="" HorizontalAlignment="Center" Margin="0,102,0,12" Name="_button" Width="75" Click="_button_Click" Height="23" VerticalAlignment="Top" IsDefault="True" />
     </Grid>
 </Window>

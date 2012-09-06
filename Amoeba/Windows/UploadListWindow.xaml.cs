@@ -77,10 +77,12 @@ namespace Amoeba.Windows
 
         private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var uploadItems = _listView.SelectedItems;
-            if (uploadItems == null) return;
+            var selectItems = _listView.SelectedItems;
+            if (selectItems == null || selectItems.Count == 0) return;
 
-            foreach (var item in uploadItems.Cast<UploadListViewItem>().ToArray())
+            if (MessageBox.Show(this, LanguagesManager.Instance.MainWindow_Delete_Message, "Upload", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+            
+            foreach (var item in selectItems.Cast<UploadListViewItem>().ToArray())
             {
                 _filePaths.Remove(item);
             }
@@ -163,6 +165,11 @@ namespace Amoeba.Windows
                     return _name;
                 }
             }
+        }
+
+        private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
+        {
+            _listViewDeleteMenuItem_Click(null, null);
         }
     }
 }

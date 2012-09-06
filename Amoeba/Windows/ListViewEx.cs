@@ -43,35 +43,14 @@ namespace Amoeba.Windows
             {
                 return;
             }
-            
+
             var posithonIndex = this.GetCurrentIndex(e.GetPosition);
 
             if (posithonIndex == -1 || lposition.Y < 25)
             {
-                if (this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
-                {
-                    try
-                    {
-                        this.SelectedItems.Clear();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-
                 try
                 {
-                    this.SelectedItem = null;
-                }
-                catch (Exception)
-                {
-
-                }
-
-                try
-                {
-                    this.SelectedIndex = -1;
+                    this.UnselectAll();
                 }
                 catch (Exception)
                 {
@@ -96,30 +75,9 @@ namespace Amoeba.Windows
 
             if (posithonIndex == -1 || lposition.Y < 25)
             {
-                if (this.SelectionMode != System.Windows.Controls.SelectionMode.Single)
-                {
-                    try
-                    {
-                        this.SelectedItems.Clear();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-
                 try
                 {
-                    this.SelectedItem = null;
-                }
-                catch (Exception)
-                {
-
-                }
-
-                try
-                {
-                    this.SelectedIndex = -1;
+                    this.UnselectAll();
                 }
                 catch (Exception)
                 {

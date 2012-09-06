@@ -29,6 +29,7 @@ namespace Amoeba.Windows
     /// </summary>
     partial class DownloadControl : UserControl
     {
+        private MainWindow _mainWindow;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -38,8 +39,9 @@ namespace Amoeba.Windows
         private Thread _showDownloadItemThread;
         private Thread _watchThread;
 
-        public DownloadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
+        public DownloadControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
+            _mainWindow = mainWindow;
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
 
@@ -284,8 +286,10 @@ namespace Amoeba.Windows
         private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectItems = _listView.SelectedItems;
-            if (selectItems == null) return;
+            if (selectItems == null || selectItems.Count == 0) return;
 
+            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Download", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+            
             _listViewDeleteMenuItem_IsEnabled = false;
 
             List<int> ids = new List<int>();
@@ -855,6 +859,21 @@ namespace Amoeba.Windows
                     }
                 }
             }
+        }
+
+        private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
+        {
+            _listViewDeleteMenuItem_Click(null, null);
+        }
+
+        private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
+        {
+            _listViewCopyMenuItem_Click(null, null);
+        }
+
+        private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
+        {
+            _listViewPasteMenuItem_Click(null, null);
         }
     }
 }

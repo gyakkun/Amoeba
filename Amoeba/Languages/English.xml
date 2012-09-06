@@ -38,6 +38,7 @@
   <Translate Key="MainWindow_CheckUpdate_Message" Value="Do you want to update to &quot;{0}&quot;?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />
   <Translate Key="MainWindow_Close_Message" Value="Do you want to quit?" />
+  <Translate Key="MainWindow_Delete_Message" Value="Are you sure you want to Delete?" />
 
   <Translate Key="UserInterfaceWindow_Title" Value="User Interface Setting" />
   <Translate Key="UserInterfaceWindow_Update" Value="Update" />
@@ -62,6 +63,9 @@
   <Translate Key="UserInterfaceWindow_Up" Value="Up" />
   <Translate Key="UserInterfaceWindow_Down" Value="Down" />
   <Translate Key="UserInterfaceWindow_Add" Value="Add" />
+  <Translate Key="UserInterfaceWindow_Copy" Value="Copy" />
+  <Translate Key="UserInterfaceWindow_Cut" Value="Cut" />
+  <Translate Key="UserInterfaceWindow_Paste" Value="Paste" />
   <Translate Key="UserInterfaceWindow_Edit" Value="Edit" />
   <Translate Key="UserInterfaceWindow_Delete" Value="Delete" />
   <Translate Key="UserInterfaceWindow_Import" Value="Import" />
@@ -112,6 +116,7 @@
   <Translate Key="ConnectionWindow_Extends" Value="Extends" />
   <Translate Key="ConnectionWindow_AutoSetting" Value="Auto Setting" />
   <Translate Key="ConnectionWindow_Copy" Value="Copy" />
+  <Translate Key="ConnectionWindow_Cut" Value="Cut" />
   <Translate Key="ConnectionWindow_Paste" Value="Paste" />
 
   <Translate Key="ProgressWindow_Title" Value="Progress State" />
@@ -154,10 +159,10 @@
 
   <Translate Key="ConnectionType_None" Value="None" />
   <Translate Key="ConnectionType_Tcp" Value="Tcp" />
-  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4Proxy" />
-  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4aProxy" />
-  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5Proxy" />
-  <Translate Key="ConnectionType_HttpProxy" Value="HttpProxy" />
+  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 Proxy" />
+  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a Proxy" />
+  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 Proxy" />
+  <Translate Key="ConnectionType_HttpProxy" Value="Http Proxy" />
 
   <Translate Key="CacheControl_Name" Value="Name" />
   <Translate Key="CacheControl_Signature" Value="Signature" />
@@ -169,6 +174,7 @@
   <Translate Key="CacheControl_Hash" Value="Hash" />
   <Translate Key="CacheControl_Add" Value="Add" />
   <Translate Key="CacheControl_Edit" Value="Edit" />
+  <Translate Key="CacheControl_Delete" Value="Delete" />
   <Translate Key="CacheControl_DeleteCache" Value="Delete Cache" />
   <Translate Key="CacheControl_DeleteShare" Value="Delete Share " />
   <Translate Key="CacheControl_DeleteDownloadHistory" Value="Delete Download History" />
@@ -195,6 +201,7 @@
   <Translate Key="SearchItemEditWindow_Ok" Value="Ok" />
   <Translate Key="SearchItemEditWindow_Cancel" Value="Cancel" />
   <Translate Key="SearchItemEditWindow_Copy" Value="Copy" />
+  <Translate Key="SearchItemEditWindow_Cut" Value="Cut" />
   <Translate Key="SearchItemEditWindow_Paste" Value="Paste" />
   <Translate Key="SearchItemEditWindow_Name" Value="Name" />
   <Translate Key="SearchItemEditWindow_NameRegex" Value="Name Regex" />

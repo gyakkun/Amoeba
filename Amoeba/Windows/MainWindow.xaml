@@ -42,24 +42,24 @@
             </TabItem>
         </TabControl>
         <Menu Name="_menu" Height="24" VerticalAlignment="Top">
-            <MenuItem Header="{Binding Path=MainWindow_Connections, Source={StaticResource ResourcesInstance}}">
-                <MenuItem Name="_menuItemStart" Header="{Binding Path=MainWindow_Start, Source={StaticResource ResourcesInstance}}" Click="_menuItemStart_Click" />
-                <MenuItem Name="_menuItemStop" Header="{Binding Path=MainWindow_Stop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_menuItemStop_Click" />
+            <MenuItem Name="_connectionsMenuItem" Header="{Binding Path=MainWindow_Connections, Source={StaticResource ResourcesInstance}}">
+                <MenuItem Name="_startMenuItem" Header="{Binding Path=MainWindow_Start, Source={StaticResource ResourcesInstance}}" Click="_startMenuItem_Click" />
+                <MenuItem Name="_stopMenuItem" Header="{Binding Path=MainWindow_Stop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_stopMenuItem_Click" />
             </MenuItem>
-            <MenuItem Header="{Binding Path=MainWindow_Settings, Source={StaticResource ResourcesInstance}}">
-                <MenuItem Name="_menuItemUserInterfaceSetting" Header="{Binding Path=MainWindow_UserInterfaceSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemUserInterfaceSetting_Click" />
+            <MenuItem Name="_settingsMenuItem" Header="{Binding Path=MainWindow_Settings, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_settingsMenuItem_SubmenuOpened">
+                <MenuItem Name="_userInterfaceSettingMenuItem" Header="{Binding Path=MainWindow_UserInterfaceSetting, Source={StaticResource ResourcesInstance}}" Click="_userInterfaceSettingMenuItem_Click" />
                 <Separator />
-                <MenuItem Name="_menuItemConnectionSetting" Header="{Binding Path=MainWindow_ConnectionSetting, Source={StaticResource ResourcesInstance}}" Click="_menuItemConnectionSetting_Click" />
-                <MenuItem Name="_menuItemCheckingBlocks" Header="{Binding Path=MainWindow_CheckingBlocks, Source={StaticResource ResourcesInstance}}" Click="_menuItemCheckingBlocks_Click" />
+                <MenuItem Name="_connectionSettingMenuItem" Header="{Binding Path=MainWindow_ConnectionSetting, Source={StaticResource ResourcesInstance}}" Click="_connectionSettingMenuItem_Click" />
+                <MenuItem Name="_checkingBlocksMenuItem" Header="{Binding Path=MainWindow_CheckingBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkingBlocksMenuItem_Click" />
             </MenuItem>
-            <MenuItem Name="_menuItemLanguages" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />
-            <MenuItem Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}">
-                <MenuItem Name="_menuItemDeveloperSiteCheck" Header="{Binding Path=MainWindow_DeveloperSite, Source={StaticResource ResourcesInstance}}" Click="_menuItemDeveloperSiteCheck_Click" />
-                <MenuItem Name="_menuItemManualSiteCheck" Header="{Binding Path=MainWindow_ManualSite, Source={StaticResource ResourcesInstance}}" Click="_menuItemManualSiteCheck_Click" />
+            <MenuItem Name="_languagesMenuItem" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />
+            <MenuItem Name="_helpMenuItem" Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_helpMenuItem_SubmenuOpened">
+                <MenuItem Name="_developerSiteMenuItem" Header="{Binding Path=MainWindow_DeveloperSite, Source={StaticResource ResourcesInstance}}" Click="_developerSiteMenuItem_Click" />
+                <MenuItem Name="_manualSiteMenuItem" Header="{Binding Path=MainWindow_ManualSite, Source={StaticResource ResourcesInstance}}" Click="_manualSiteMenuItem_Click" />
                 <Separator />
-                <MenuItem Name="_menuItemCheckUpdate" Header="{Binding Path=MainWindow_CheckUpdate, Source={StaticResource ResourcesInstance}}" Click="_menuItemCheckUpdate_Click" />
+                <MenuItem Name="_checkUpdateMenuItem" Header="{Binding Path=MainWindow_CheckUpdate, Source={StaticResource ResourcesInstance}}" Click="_checkUpdateMenuItem_Click" />
                 <Separator />
-                <MenuItem Name="_menuItemVersionInformation" Header="{Binding Path=MainWindow_VersionInformation, Source={StaticResource ResourcesInstance}}" Click="_menuItemVersionInformation_Click" />
+                <MenuItem Name="_versionInformationMenuItem" Header="{Binding Path=MainWindow_VersionInformation, Source={StaticResource ResourcesInstance}}" Click="_versionInformationMenuItem_Click" />
             </MenuItem>
         </Menu>
         <StatusBar Grid.Row="1" 

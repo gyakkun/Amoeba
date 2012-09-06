@@ -157,7 +157,7 @@ namespace Amoeba.Windows
                                 {
                                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                                     {
-                                        _menuItemStop_Click(null, null);
+                                        _stopMenuItem_Click(null, null);
                                     }), null);
 
                                     Log.Warning(LanguagesManager.Instance.MainWindow_SpaceNotFound);
@@ -196,7 +196,7 @@ namespace Amoeba.Windows
                             if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
                                || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
                             {
-                                _menuItemCheckUpdate_Click(null, null);
+                                _checkUpdateMenuItem_Click(null, null);
                             }
                         }
                         catch (Exception)
@@ -413,7 +413,7 @@ namespace Amoeba.Windows
 
                 menuItem.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
                 {
-                    foreach (var item3 in _menuItemLanguages.Items.Cast<MenuItem>())
+                    foreach (var item3 in _languagesMenuItem.Items.Cast<MenuItem>())
                     {
                         item3.IsChecked = false;
                     }
@@ -427,10 +427,10 @@ namespace Amoeba.Windows
                     LanguagesManager.ChangeLanguage((string)menuItem.Header);
                 });
 
-                _menuItemLanguages.Items.Add(menuItem);
+                _languagesMenuItem.Items.Add(menuItem);
             }
 
-            var menuItem2 = _menuItemLanguages.Items.Cast<MenuItem>().FirstOrDefault(n => (string)n.Header == Settings.Instance.Global_UseLanguage);
+            var menuItem2 = _languagesMenuItem.Items.Cast<MenuItem>().FirstOrDefault(n => (string)n.Header == Settings.Instance.Global_UseLanguage);
             if (menuItem2 != null) menuItem2.IsChecked = true;
         }
 
@@ -960,7 +960,7 @@ namespace Amoeba.Windows
             _connectionControl.Width = Double.NaN;
             _connectionTabItem.Content = _connectionControl;
 
-            DownloadControl _downloadControl = new DownloadControl(_amoebaManager, _bufferManager);
+            DownloadControl _downloadControl = new DownloadControl(this, _amoebaManager, _bufferManager);
             _downloadControl.Height = Double.NaN;
             _downloadControl.Width = Double.NaN;
             _downloadTabItem.Content = _downloadControl;
@@ -984,13 +984,13 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.Global_IsStart)
             {
-                _menuItemStart_Click(null, null);
+                _startMenuItem_Click(null, null);
             }
 
             if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
                || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
             {
-                _menuItemCheckUpdate_Click(null, null);
+                _checkUpdateMenuItem_Click(null, null);
             }
         }
 
@@ -1086,74 +1086,48 @@ namespace Amoeba.Windows
             this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
 
-        private void _menuItemStart_Click(object sender, RoutedEventArgs e)
+        private void _startMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _menuItemStart.IsEnabled = false;
-            _menuItemStop.IsEnabled = true;
+            _startMenuItem.IsEnabled = false;
+            _stopMenuItem.IsEnabled = true;
 
             Settings.Instance.Global_IsStart = true;
         }
 
-        private void _menuItemStop_Click(object sender, RoutedEventArgs e)
+        private void _stopMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _menuItemStart.IsEnabled = true;
-            _menuItemStop.IsEnabled = false;
+            _startMenuItem.IsEnabled = true;
+            _stopMenuItem.IsEnabled = false;
 
             Settings.Instance.Global_IsStart = false;
         }
 
-        private void _menuItemConnectionSetting_Click(object sender, RoutedEventArgs e)
+        private void _settingsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            _checkingBlocksMenuItem.IsEnabled = _checkingBlocksMenuItem_IsEnabled;
+        }
+
+        private void _connectionSettingMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ConnectionWindow window = new ConnectionWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
             window.Owner = this;
             window.ShowDialog();
         }
 
-        private void _menuItemUserInterfaceSetting_Click(object sender, RoutedEventArgs e)
+        private void _userInterfaceSettingMenuItem_Click(object sender, RoutedEventArgs e)
         {
             UserInterfaceWindow window = new UserInterfaceWindow(_bufferManager);
             window.Owner = this;
             window.ShowDialog();
         }
 
-        private volatile bool _updateCheckIsRunning = false;
+        volatile bool _checkingBlocksMenuItem_IsEnabled = true;
 
-        private void _menuItemCheckUpdate_Click(object sender, RoutedEventArgs e)
+        private void _checkingBlocksMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (_updateCheckIsRunning) return;
-            _updateCheckIsRunning = true;
+            if (!_checkingBlocksMenuItem_IsEnabled) return;
+            _checkingBlocksMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                try
-                {
-                    this.CheckUpdate();
-                }
-                catch (Exception)
-                {
-
-                }
-                finally
-                {
-                    _updateCheckIsRunning = false;
-                }
-            }));
-        }
-
-        private void _menuItemDeveloperSiteCheck_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("http://lyrise.i2p.to/projects/trac/");
-        }
-
-        private void _menuItemManualSiteCheck_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("http://lyrise.web.fc2.com/");
-        }
-
-        private void _menuItemCheckingBlocks_Click(object sender, RoutedEventArgs e)
-        {
             var window = new ProgressWindow(true);
             window.Owner = this;
             window.Message1 = LanguagesManager.Instance.MainWindow_CheckingBlocks_Message;
@@ -1190,11 +1164,57 @@ namespace Amoeba.Windows
                 }), null);
             }));
 
+            window.Closed += (object sender2, EventArgs e2) =>
+            {
+                _checkingBlocksMenuItem_IsEnabled = true;
+            };
+
             window.Owner = this;
-            window.ShowDialog();
+            window.Show();
         }
 
-        private void _menuItemVersionInformation_Click(object sender, RoutedEventArgs e)
+        private void _helpMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            _checkUpdateMenuItem.IsEnabled = _checkUpdateMenuItem_IsEnabled;
+        }
+        
+        private void _developerSiteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://lyrise.i2p.to/projects/trac/");
+        }
+
+        private void _manualSiteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://lyrise.web.fc2.com/");
+        }
+
+        volatile bool _checkUpdateMenuItem_IsEnabled = true;
+
+        private void _checkUpdateMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_checkUpdateMenuItem_IsEnabled) return;
+            _checkUpdateMenuItem_IsEnabled = false;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    this.CheckUpdate();
+                }
+                catch (Exception)
+                {
+
+                }
+                finally
+                {
+                    _checkUpdateMenuItem_IsEnabled = true;
+                }
+            }));
+        }
+
+        private void _versionInformationMenuItem_Click(object sender, RoutedEventArgs e)
         {
             VersionInformationWindow window = new VersionInformationWindow();
             window.Owner = this;

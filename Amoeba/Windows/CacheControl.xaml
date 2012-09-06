@@ -46,6 +46,22 @@
         </DataTemplate>
     </UserControl.Resources>
 
+    <UserControl.CommandBindings>
+        <CommandBinding Command="New" Executed="Execute_New" />
+        <CommandBinding Command="Delete" Executed="Execute_Delete" />
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
+        <CommandBinding Command="Cut" Executed="Execute_Cut" />
+        <CommandBinding Command="Paste" Executed="Execute_Paste" />
+    </UserControl.CommandBindings>
+
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="CTRL+N" Command="New" />
+        <KeyBinding Gesture="Delete" Command="Delete" />
+        <KeyBinding Gesture="CTRL+C" Command="Copy" />
+        <KeyBinding Gesture="CTRL+X" Command="Cut" />
+        <KeyBinding Gesture="CTRL+V" Command="Paste" />
+    </UserControl.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
@@ -90,6 +106,8 @@
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=CacheControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
+                    <Separator />
                     <MenuItem Name="_listViewDeleteCacheMenuItem" Header="{Binding Path=CacheControl_DeleteCache, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteCacheMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteShareMenuItem" Header="{Binding Path=CacheControl_DeleteShare, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteShareMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteDownloadHistoryMenuItem" Header="{Binding Path=CacheControl_DeleteDownloadHistory, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteDownloadHistoryMenuItem_Click" />

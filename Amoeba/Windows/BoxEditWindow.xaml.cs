@@ -24,11 +24,11 @@ namespace Amoeba.Windows
     /// </summary>
     partial class BoxEditWindow : Window
     {
-        private Box _box;
+        private List<Box> _boxs;
 
-        public BoxEditWindow(ref Box box)
+        public BoxEditWindow(params Box[] boxs)
         {
-            _box = box;
+            _boxs = boxs.ToList();
 
             var digitalSignatureCollection = new List<object>();
             digitalSignatureCollection.Add(new ComboBoxItem() { Content = "" });
@@ -41,10 +41,20 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            lock (_box.ThisLock)
+            lock (_boxs[0].ThisLock)
             {
-                _nameTextBox.Text = _box.Name;
-                _commentTextBox.Text = _box.Comment;
+                foreach (var box in _boxs)
+                {
+                    if (_nameTextBox.Text != box.Name)
+                    {
+                        _nameTextBox.Text = "";
+                        _nameTextBox.IsReadOnly = true;
+
+                        break;
+                    }
+                }
+
+                _commentTextBox.Text = _boxs[0].Comment;
             }
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
@@ -63,20 +73,29 @@ namespace Amoeba.Windows
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
             Settings.Instance.Global_UploadDigitalSignature = digitalSignature;
-            
-            lock (_box.ThisLock)
-            {
-                _box.Name = name;
-                _box.Comment = comment;
-                _box.CreationTime = DateTime.UtcNow;
 
-                if (digitalSignature == null)
+            var now = DateTime.UtcNow;
+
+            foreach (var box in _boxs)
+            {
+                lock (box.ThisLock)
                 {
-                    _box.CreateCertificate(null);
-                }
-                else
-                {
-                    _box.CreateCertificate(digitalSignature);
+                    if (!_nameTextBox.IsReadOnly)
+                    {
+                        box.Name = name;
+                    }
+
+                    box.Comment = comment;
+                    box.CreationTime = now;
+
+                    if (digitalSignature == null)
+                    {
+                        box.CreateCertificate(null);
+                    }
+                    else
+                    {
+                        box.CreateCertificate(digitalSignature);
+                    }
                 }
             }
         }

@@ -14,6 +14,14 @@
         Width="{Binding Path=UploadWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}">
 
+    <Window.CommandBindings>
+        <CommandBinding Command="Delete" Executed="Execute_Delete" />
+    </Window.CommandBindings>
+  
+    <Window.InputBindings>
+        <KeyBinding Gesture="Delete" Command="Delete" />
+    </Window.InputBindings>
+
     <Grid>
         <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
         <Grid Height="24" Margin="138,12,12,0" Name="grid1" VerticalAlignment="Top">
@@ -52,7 +60,7 @@
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
-        <Button Name="_cancelButton" Grid.Row="2" Height="23" Margin="0,0,12,12"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Content="{Binding Path=UploadWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" />
-        <Button Name="_okButton" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" VerticalAlignment="Bottom" Width="75" Grid.Row="2" Content="{Binding Path=UploadWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" />
+        <Button Name="_cancelButton" Grid.Row="2" Height="23" Margin="0,0,12,12"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Content="{Binding Path=UploadWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" IsCancel="True" />
+        <Button Name="_okButton" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" VerticalAlignment="Bottom" Width="75" Grid.Row="2" Content="{Binding Path=UploadWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" IsDefault="True" />
     </Grid>
 </Window>

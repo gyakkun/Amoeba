@@ -95,7 +95,298 @@ namespace Amoeba.Windows
             }
         }
 
+        #region Signature
+
+        private void _signatureTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _signatureAddButton_Click(null, null);
+            }
+        }
+
+        private void _signatureListView_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effects = DragDropEffects.All;
+                e.Handled = true;
+            }
+        }
+
+        private void _signatureListView_PreviewDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                foreach (string filePath in ((string[])e.Data.GetData(DataFormats.FileDrop)).Where(item => File.Exists(item)))
+                {
+                    using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                    {
+                        try
+                        {
+                            var signature = AmoebaConverter.FromSignatureStream(stream);
+                            if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
+
+                            _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+                }
+
+                _signatureListView.Items.Refresh();
+            }
+        }
+
+        private void _signatureListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _signatureListView.SelectedItems;
+
+            _signatureListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+        }
+
+        private void _signatureListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _signatureDeleteButton_Click(null, null);
+        }
+
+        private void _signatureListViewUpdate()
+        {
+            _signatureListView_SelectionChanged(this, null);
+        }
+
+        private void _signatureListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                var selectIndex = _signatureListView.SelectedIndex;
+
+                if (selectIndex == -1)
+                {
+                    _signatureUpButton.IsEnabled = false;
+                    _signatureDownButton.IsEnabled = false;
+                }
+                else
+                {
+                    if (selectIndex == 0)
+                    {
+                        _signatureUpButton.IsEnabled = false;
+                    }
+                    else
+                    {
+                        _signatureUpButton.IsEnabled = true;
+                    }
+
+                    if (selectIndex == _signatureListViewItemCollection.Count - 1)
+                    {
+                        _signatureDownButton.IsEnabled = false;
+                    }
+                    else
+                    {
+                        _signatureDownButton.IsEnabled = true;
+                    }
+                }
+
+                _signatureListView_PreviewMouseLeftButtonDown(this, null);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void _signatureListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void _signatureImportButton_Click(object sender, RoutedEventArgs e)
+        {
+            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Multiselect = true;
+                dialog.DefaultExt = ".signature";
+                dialog.Filter = "Signature (*.signature)|*.signature";
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    foreach (var filePath in dialog.FileNames)
+                    {
+                        using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                        {
+                            try
+                            {
+                                var signature = AmoebaConverter.FromSignatureStream(stream);
+                                if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
+
+                                _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+
+                    _signatureListView.Items.Refresh();
+                }
+            }
+        }
+
+        private void _signatureExportButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            if (item == null) return;
+
+            var signature = item.Value;
+
+            using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
+            {
+                dialog.FileName = MessageConverter.ToSignatureString(signature);
+                dialog.DefaultExt = ".signature";
+                dialog.Filter = "Signature (*.signature)|*.signature";
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var fileName = dialog.FileName;
+
+                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
+                    using (Stream signatureStream = AmoebaConverter.ToSignatureStream(signature))
+                    {
+                        int i = -1;
+                        byte[] buffer = _bufferManager.TakeBuffer(1024);
+
+                        while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            stream.Write(buffer, 0, i);
+                        }
+
+                        _bufferManager.ReturnBuffer(buffer);
+                    }
+                }
+            }
+        }
+
+        private void _signatureUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            if (item == null) return;
+
+            var selectIndex = _signatureListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            _signatureListViewItemCollection.Remove(item);
+            _signatureListViewItemCollection.Insert(selectIndex - 1, item);
+            _signatureListView.Items.Refresh();
+
+            _signatureListViewUpdate();
+        }
+
+        private void _signatureDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            if (item == null) return;
+
+            var selectIndex = _signatureListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            _signatureListViewItemCollection.Remove(item);
+            _signatureListViewItemCollection.Insert(selectIndex + 1, item);
+            _signatureListView.Items.Refresh();
+
+            _signatureListViewUpdate();
+        }
+
+        private void _signatureAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(_signatureTextBox.Text)) return;
+
+            try
+            {
+                _signatureListViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(_signatureTextBox.Text, DigitalSignatureAlgorithm.Rsa2048_Sha512)));
+
+                _signatureListView.SelectedIndex = _signatureListViewItemCollection.Count - 1;
+                _signatureListView.Items.Refresh();
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void _signatureDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _signatureListView.SelectedItem as SignatureListViewItem;
+            if (item == null) return;
+
+            int selectIndex = _signatureListView.SelectedIndex;
+            _signatureListViewItemCollection.Remove(item);
+            _signatureListView.Items.Refresh();
+            _signatureListView.SelectedIndex = selectIndex;
+        }
+
+        #endregion
+
         #region Keyword
+
+        private void _keywordTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _keywordAddButton_Click(null, null);
+            }
+        }
+
+        private void _keywordListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _keywordListView.SelectedItems;
+
+            _keywordListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _keywordListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _keywordListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+
+            _keywordListViewPasteMenuItem.IsEnabled = !string.IsNullOrWhiteSpace(Clipboard.GetText());
+        }
+
+        private void _keywordListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _keywordDeleteButton_Click(null, null);
+        }
+
+        private void _keywordListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var item in _keywordListView.SelectedItems.OfType<string>())
+            {
+                sb.AppendLine(item);
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void _keywordListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _keywordListViewCopyMenuItem_Click(null, null);
+            _keywordDeleteButton_Click(null, null);
+        }
+
+        private void _keywordListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var keyword in Clipboard.GetText().Split('\r', '\n'))
+            {
+                if (string.IsNullOrWhiteSpace(keyword) || _keywords.Contains(keyword)) continue;
+                _keywords.Add(keyword);
+            }
+
+            _keywordTextBox.Text = "";
+            _keywordListView.SelectedIndex = _keywords.Count - 1;
+
+            _keywordListView.Items.Refresh();
+            _keywordListViewUpdate();
+        }
 
         private void _keywordListViewUpdate()
         {
@@ -241,185 +532,6 @@ namespace Amoeba.Windows
 
         #endregion
 
-        #region Signature
-
-        private void _signatureListViewUpdate()
-        {
-            _signatureListView_SelectionChanged(this, null);
-        }
-
-        private void _signatureListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                var selectIndex = _signatureListView.SelectedIndex;
-
-                if (selectIndex == -1)
-                {
-                    _signatureUpButton.IsEnabled = false;
-                    _signatureDownButton.IsEnabled = false;
-                }
-                else
-                {
-                    if (selectIndex == 0)
-                    {
-                        _signatureUpButton.IsEnabled = false;
-                    }
-                    else
-                    {
-                        _signatureUpButton.IsEnabled = true;
-                    }
-
-                    if (selectIndex == _signatureListViewItemCollection.Count - 1)
-                    {
-                        _signatureDownButton.IsEnabled = false;
-                    }
-                    else
-                    {
-                        _signatureDownButton.IsEnabled = true;
-                    }
-                }
-
-                _signatureListView_PreviewMouseLeftButtonDown(this, null);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        private void _signatureListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
-        private void _signatureImportButton_Click(object sender, RoutedEventArgs e)
-        {
-            using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
-            {
-                dialog.Multiselect = true;
-                dialog.DefaultExt = ".signature";
-                dialog.Filter = "Signature (*.signature)|*.signature";
-
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    foreach (var fileName in dialog.FileNames)
-                    {
-                        using (FileStream stream = new FileStream(fileName, FileMode.Open))
-                        {
-                            try
-                            {
-                                var signature = AmoebaConverter.FromSignatureStream(stream);
-                                if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
-
-                                _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
-
-                                _signatureListView.Items.Refresh();
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void _signatureExportButton_Click(object sender, RoutedEventArgs e)
-        {
-            var item = _signatureListView.SelectedItem as SignatureListViewItem;
-            if (item == null) return;
-
-            var signature = item.Value;
-
-            using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
-            {
-                dialog.FileName = MessageConverter.ToSignatureString(signature);
-                dialog.DefaultExt = ".signature";
-                dialog.Filter = "Signature (*.signature)|*.signature";
-
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    var fileName = dialog.FileName;
-
-                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                    using (Stream signatureStream = AmoebaConverter.ToSignatureStream(signature))
-                    {
-                        int i = -1;
-                        byte[] buffer = _bufferManager.TakeBuffer(1024);
-
-                        while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            stream.Write(buffer, 0, i);
-                        }
-
-                        _bufferManager.ReturnBuffer(buffer);
-                    }
-                }
-            }
-        }
-
-        private void _signatureUpButton_Click(object sender, RoutedEventArgs e)
-        {
-            var item = _signatureListView.SelectedItem as SignatureListViewItem;
-            if (item == null) return;
-
-            var selectIndex = _signatureListView.SelectedIndex;
-            if (selectIndex == -1) return;
-
-            _signatureListViewItemCollection.Remove(item);
-            _signatureListViewItemCollection.Insert(selectIndex - 1, item);
-            _signatureListView.Items.Refresh();
-
-            _signatureListViewUpdate();
-        }
-
-        private void _signatureDownButton_Click(object sender, RoutedEventArgs e)
-        {
-            var item = _signatureListView.SelectedItem as SignatureListViewItem;
-            if (item == null) return;
-
-            var selectIndex = _signatureListView.SelectedIndex;
-            if (selectIndex == -1) return;
-
-            _signatureListViewItemCollection.Remove(item);
-            _signatureListViewItemCollection.Insert(selectIndex + 1, item);
-            _signatureListView.Items.Refresh();
-
-            _signatureListViewUpdate();
-        }
-
-        private void _signatureAddButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(_signatureTextBox.Text)) return;
-
-            try
-            {
-                _signatureListViewItemCollection.Add(new SignatureListViewItem(new DigitalSignature(_signatureTextBox.Text, DigitalSignatureAlgorithm.Rsa2048_Sha512)));
-
-                _signatureListView.SelectedIndex = _signatureListViewItemCollection.Count - 1;
-                _signatureListView.Items.Refresh();
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        private void _signatureDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            var item = _signatureListView.SelectedItem as SignatureListViewItem;
-            if (item == null) return;
-
-            int selectIndex = _signatureListView.SelectedIndex;
-            _signatureListViewItemCollection.Remove(item);
-            _signatureListView.Items.Refresh();
-            _signatureListView.SelectedIndex = selectIndex;
-        }
-
-        #endregion
-
         #region Miscellaneous
 
         private void _miscellaneousStackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -555,6 +667,55 @@ namespace Amoeba.Windows
                 {
                     return _text;
                 }
+            }
+        }
+
+
+        private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_signatureTabItem.IsSelected)
+            {
+                _signatureListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_keywordTabItem.IsSelected)
+            {
+                _keywordListViewDeleteMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_signatureTabItem.IsSelected)
+            {
+
+            }
+            else if (_keywordTabItem.IsSelected)
+            {
+                _keywordListViewCopyMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Cut(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_signatureTabItem.IsSelected)
+            {
+
+            }
+            else if (_keywordTabItem.IsSelected)
+            {
+                _keywordListViewCutMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_signatureTabItem.IsSelected)
+            {
+
+            }
+            else if (_keywordTabItem.IsSelected)
+            {
+                _keywordListViewPasteMenuItem_Click(null, null);
             }
         }
     }

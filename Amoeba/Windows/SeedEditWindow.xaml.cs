@@ -24,15 +24,13 @@ namespace Amoeba.Windows
     /// </summary>
     partial class SeedEditWindow : Window
     {
-        private IList<Seed> _seeds;
-        private AmoebaManager _amoebaManager;
+        private List<Seed> _seeds;
 
-        public SeedEditWindow(ref IList<Seed> seeds, AmoebaManager amoebaManager)
+        public SeedEditWindow(params Seed[] seeds)
         {
-            if (seeds.Count == 0) throw new ArgumentOutOfRangeException("seeds");
+            if (seeds.Count() == 0) throw new ArgumentOutOfRangeException("seeds");
 
-            _seeds = seeds;
-            _amoebaManager = amoebaManager;
+            _seeds = seeds.ToList();
 
             var digitalSignatureCollection = new List<object>();
             digitalSignatureCollection.Add(new ComboBoxItem() { Content = "" });
@@ -60,7 +58,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                lock (seeds[0].Keywords.ThisLock)
+                lock (_seeds[0].Keywords.ThisLock)
                 {
                     if (_seeds[0].Keywords.Count >= 1) _keywordsComboBox1.Text = _seeds[0].Keywords[0];
                     if (_seeds[0].Keywords.Count >= 2) _keywordsComboBox2.Text = _seeds[0].Keywords[1];

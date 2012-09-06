@@ -77,6 +77,86 @@ namespace Amoeba.Windows
 
         #region BaseNode
 
+        private void _baseNodeUriTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _baseNodeUriAddButton_Click(null, null);
+            }
+        }
+
+        private void _baseNodeUrisListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _baseNodeUrisListView.SelectedItems;
+
+            _baseNodeUrisListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _baseNodeUrisListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _baseNodeUrisListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+
+            {
+                var line = Clipboard.GetText().Split('\r', '\n');
+
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex(@"(.+?):(.+)");
+
+                    _baseNodeUrisListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
+            }
+        }
+
+        private void _baseNodeUrisListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _baseNodeUriDeleteButton_Click(null, null);
+        }
+
+        private void _baseNodeUrisListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var item in _baseNodeUrisListView.SelectedItems.OfType<string>())
+            {
+                sb.AppendLine(item);
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void _baseNodeUrisListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _baseNodeUrisListViewCopyMenuItem_Click(null, null);
+            _baseNodeUriDeleteButton_Click(null, null);
+        }
+
+        private void _baseNodeUrisListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var uri in Clipboard.GetText().Split('\r', '\n'))
+            {
+                try
+                {
+                    if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _baseNode.Uris.Any(n => n == uri)) continue;
+                    _baseNode.Uris.Add(uri);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            _baseNodeUriTextBox.Text = "";
+            _baseNodeUrisListView.SelectedIndex = _baseNode.Uris.Count - 1;
+
+            _baseNodeUrisListView.Items.Refresh();
+            _baseNodeUrisListView_SelectionChanged(this, null);
+
+            var random = new RNGCryptoServiceProvider();
+            byte[] buffer = new byte[64];
+            random.GetBytes(buffer);
+            _baseNode.Id = buffer;
+
+            _baseNodeTextBoxUpdate();
+        }
+
         private void _baseNodeTextBoxUpdate()
         {
             if (_baseNode.Uris.Count > 0)
@@ -154,7 +234,7 @@ namespace Amoeba.Windows
             {
                 _baseNodeUriTextBox.Text = item;
 
-                Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                Regex regex = new Regex(@"^(.+?):(.*)$");
                 Match match = regex.Match(item);
 
                 if (match.Success)
@@ -194,7 +274,7 @@ namespace Amoeba.Windows
             try
             {
                 string scheme = (string)((ComboBoxItem)_baseNodeUriSchemeComboBox.SelectedItem).Content;
-                Regex regex = new Regex(@"(.*?):(.*)");
+                Regex regex = new Regex(@"^(.+?):(.*)$");
                 Match match = regex.Match(_baseNodeUriTextBox.Text);
 
                 if (!match.Success)
@@ -247,13 +327,12 @@ namespace Amoeba.Windows
             if (_baseNodeUriTextBox.Text == "") return;
 
             var uri = _baseNodeUriTextBox.Text;
-            if (!Regex.IsMatch(uri, @"(.*?):(.+)")
-                || _baseNode.Uris.Any(n => n == uri)) return;
 
-            _baseNodeUriTextBox.Text = "";
-
+            if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _baseNode.Uris.Any(n => n == uri)) return;
             _baseNode.Uris.Add(uri);
+
             _baseNodeUrisListView.SelectedIndex = _baseNode.Uris.Count - 1;
+
             _baseNodeUrisListView.Items.Refresh();
             _baseNodeUrisListView_SelectionChanged(this, null);
 
@@ -273,8 +352,8 @@ namespace Amoeba.Windows
             if (_baseNodeUriTextBox.Text == "") return;
 
             var uri = _baseNodeUriTextBox.Text;
-            if (!Regex.IsMatch(uri, @"(.*?):(.+)")
-                || _baseNode.Uris.Any(n => n == uri)) return;
+
+            if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _baseNode.Uris.Any(n => n == uri)) return;
 
             var item = _baseNodeUrisListView.SelectedItem as string;
             if (item == null) return;
@@ -320,39 +399,6 @@ namespace Amoeba.Windows
 
         #region OtherNodes
 
-        private void _otherNodesUrisTextBoxUpdate()
-        {
-            var node = _otherNodesListView.SelectedItem as Node;
-            if (node == null) return;
-
-            _otherNodesListView_SelectionChanged(this, null);
-        }
-
-        private void _otherNodesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            _otherNodesListView_PreviewMouseLeftButtonDown(this, null);
-        }
-
-        private void _otherNodesListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var node = _otherNodesListView.SelectedItem as Node;
-            if (node == null)
-            {
-                _otherNodesUrisTextBox.Text = "";
-                return;
-            }
-
-            StringBuilder builder = new StringBuilder();
-
-            foreach (var item in node.Uris)
-            {
-                builder.Append(item + ", ");
-            }
-
-            if (builder.Length <= 2) _otherNodesUrisTextBox.Text = "";
-            else _otherNodesUrisTextBox.Text = builder.ToString().Remove(builder.Length - 2);
-        }
-
         private void _otherNodesListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _otherNodesListView.SelectedItems;
@@ -390,9 +436,154 @@ namespace Amoeba.Windows
             _otherNodesListView.Items.Refresh();
         }
 
+        private void _otherNodesUrisTextBoxUpdate()
+        {
+            var node = _otherNodesListView.SelectedItem as Node;
+            if (node == null) return;
+
+            _otherNodesListView_SelectionChanged(this, null);
+        }
+
+        private void _otherNodesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _otherNodesListView_PreviewMouseLeftButtonDown(this, null);
+        }
+
+        private void _otherNodesListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var node = _otherNodesListView.SelectedItem as Node;
+            if (node == null)
+            {
+                _otherNodesUrisTextBox.Text = "";
+                return;
+            }
+
+            StringBuilder builder = new StringBuilder();
+
+            foreach (var item in node.Uris)
+            {
+                builder.Append(item + ", ");
+            }
+
+            if (builder.Length <= 2) _otherNodesUrisTextBox.Text = "";
+            else _otherNodesUrisTextBox.Text = builder.ToString().Remove(builder.Length - 2);
+        }
+
         #endregion
 
         #region Client
+
+        private void _clientFiltersProxyUriTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _clientFilterAddButton_Click(null, null);
+            }
+        }
+
+        private void _clientFiltersConditionTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _clientFilterAddButton_Click(null, null);
+            }
+        }
+
+        private void _clientFiltersListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _clientFiltersListView.SelectedItems;
+
+            _clientFiltersListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _clientFiltersListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _clientFiltersListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+
+            {
+                var line = Clipboard.GetText().Split('\r', '\n');
+
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex("^(.*?),\"(.*)\",\"(.*)\"$");
+
+                    _clientFiltersListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
+            }
+        }
+
+        private void _clientFiltersListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _clientFilterDeleteButton_Click(null, null);
+        }
+
+        private void _clientFiltersListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var item in _clientFiltersListView.SelectedItems.OfType<ConnectionFilter>())
+            {
+                sb.AppendLine(string.Format("{0},\"{1}\",\"{2}\"", item.ConnectionType, item.ProxyUri, item.UriCondition.Value));
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void _clientFiltersListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _clientFiltersListViewCopyMenuItem_Click(null, null);
+            _clientFilterDeleteButton_Click(null, null);
+        }
+
+        private void _clientFiltersListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Regex regex = new Regex("^(.*?),\"(.*)\",\"(.*)\"$");
+
+            foreach (var line in Clipboard.GetText().Split('\r', '\n'))
+            {
+                try
+                {
+                    var match = regex.Match(line);
+                    if (!match.Success) continue;
+
+                    var connectionType = (ConnectionType)Enum.Parse(typeof(ConnectionType), match.Groups[1].Value);
+                    var uriCondition = new UriCondition() { Value = match.Groups[3].Value };
+
+                    string proxyUri = null;
+
+                    if (!string.IsNullOrWhiteSpace(match.Groups[2].Value))
+                    {
+                        proxyUri = match.Groups[2].Value;
+                        if (!Regex.IsMatch(proxyUri, @"^(.+?):(.+)$")) continue;
+                    }
+
+                    if (connectionType == ConnectionType.Socks4Proxy
+                        || connectionType == ConnectionType.Socks4aProxy
+                        || connectionType == ConnectionType.Socks5Proxy
+                        || connectionType == ConnectionType.HttpProxy)
+                    {
+                        if (proxyUri == null) return;
+                    }
+
+                    var connectionFilter = new ConnectionFilter()
+                    {
+                        ConnectionType = connectionType,
+                        ProxyUri = proxyUri,
+                        UriCondition = uriCondition,
+                    };
+
+                    if (_clientFilters.Any(n => n == connectionFilter)) continue;
+                    _clientFilters.Add(connectionFilter);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }
+
+            _clientFiltersConditionTextBox.Text = "";
+            _clientFiltersListView.SelectedIndex = _clientFilters.Count - 1;
+
+            _clientFiltersListView.Items.Refresh();
+            _clientFiltersListViewUpdate();
+        }
 
         private void _clientFiltersListViewUpdate()
         {
@@ -446,8 +637,8 @@ namespace Amoeba.Windows
             {
                 _clientFiltersProxyUriTextBox.Text = "";
                 _clientFiltersConditionTextBox.Text = "tcp:.*";
-                ((ComboBoxItem)_clientFiltersConnectionTypeComboBox.Items[1]).IsSelected = true;
-                ((ComboBoxItem)_clientFiltersConditionSchemeComboBox.Items[0]).IsSelected = true;
+                _clientFiltersConnectionTypeComboBox.SelectedIndex = 1;
+                _clientFiltersConditionSchemeComboBox.SelectedIndex = 0;
                 return;
             }
 
@@ -467,7 +658,7 @@ namespace Amoeba.Windows
             {
                 _clientFiltersConditionTextBox.Text = item.UriCondition.Value;
 
-                Regex regex = new Regex(@"(.*?):(.*)");
+                Regex regex = new Regex(@"(.+?):(.*)");
                 Match match = regex.Match(item.UriCondition.Value);
 
                 if (match.Success)
@@ -487,7 +678,7 @@ namespace Amoeba.Windows
             }
 
             var connectionTypeConboboxItem = _clientFiltersConnectionTypeComboBox.Items.Cast<ComboBoxItem>()
-                .FirstOrDefault(n => (string)n.Content == item.ConnectionType.ToString());
+                .FirstOrDefault(n => (string)n.Content == LanguagesManager.Instance.Translate("ConnectionType_" + item.ConnectionType.ToString()));
 
             if (connectionTypeConboboxItem != null)
             {
@@ -518,7 +709,7 @@ namespace Amoeba.Windows
 
                 string scheme = null;
                 int port = 0;
-                Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                Regex regex = new Regex(@"(.+?):(.+):(\d*)");
                 Match match = regex.Match(_clientFiltersProxyUriTextBox.Text);
 
                 if (connectionType == ConnectionType.Socks4Proxy
@@ -553,7 +744,7 @@ namespace Amoeba.Windows
         private void _clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             string scheme = Regex.Escape((string)((ComboBoxItem)_clientFiltersConditionSchemeComboBox.SelectedItem).Content);
-            Regex regex = new Regex(@"(.*?):(.*)");
+            Regex regex = new Regex(@"(.+?):(.+)");
             Match match = regex.Match(_clientFiltersConditionTextBox.Text);
 
             if (!match.Success)
@@ -611,6 +802,7 @@ namespace Amoeba.Windows
                 if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text))
                 {
                     proxyUri = _clientFiltersProxyUriTextBox.Text;
+                    if (!Regex.IsMatch(proxyUri, @"^(.*?):(.+)$")) return;
                 }
 
                 if (connectionType == ConnectionType.Socks4Proxy
@@ -631,7 +823,6 @@ namespace Amoeba.Windows
                 if (_clientFilters.Any(n => n == connectionFilter)) return;
                 _clientFilters.Add(connectionFilter);
 
-                _clientFiltersConditionTextBox.Text = "";
                 _clientFiltersListView.SelectedIndex = _clientFilters.Count - 1;
             }
             catch (Exception)
@@ -719,6 +910,74 @@ namespace Amoeba.Windows
 
         #region Server
 
+        private void _serverListenUriTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Return)
+            {
+                _serverListenUriAddButton_Click(null, null);
+            }
+        }
+
+        private void _serverListenUrisListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _serverListenUrisListView.SelectedItems;
+
+            _serverListenUrisListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _serverListenUrisListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _serverListenUrisListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+
+            {
+                var line = Clipboard.GetText().Split('\r', '\n');
+
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex(@"(.+?):(.+)");
+
+                    _serverListenUrisListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
+            }
+        }
+
+        private void _serverListenUrisListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _serverListenUriDeleteButton_Click(null, null);
+        }
+
+        private void _serverListenUrisListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var item in _serverListenUrisListView.SelectedItems.OfType<string>())
+            {
+                sb.AppendLine(item);
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void _serverListenUrisListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _serverListenUrisListViewCopyMenuItem_Click(null, null);
+            _serverListenUriDeleteButton_Click(null, null);
+        }
+
+        private void _serverListenUrisListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Regex regex = new Regex(@"([\+-]) (.*)");
+
+            foreach (var uri in Clipboard.GetText().Split('\r', '\n'))
+            {
+                if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _listenUris.Any(n => n == uri)) continue;
+                _listenUris.Add(uri);
+            }
+
+            _serverListenUriTextBox.Text = "";
+            _serverListenUrisListView.SelectedIndex = _listenUris.Count - 1;
+
+            _serverListenUrisListView.Items.Refresh();
+            _serverListenUrisListViewUpdate();
+        }
+
         private void _serverListenUrisListViewUpdate()
         {
             _serverListenUrisListView_SelectionChanged(this, null);
@@ -780,7 +1039,7 @@ namespace Amoeba.Windows
 
             _serverListenUriTextBox.Text = item;
 
-            Regex regex = new Regex(@"(.*?):(.*)");
+            Regex regex = new Regex(@"(.+?):(.*)");
             Match match = regex.Match(item);
 
             if (match.Success)
@@ -806,7 +1065,7 @@ namespace Amoeba.Windows
             if (item == null) return;
 
             string scheme = (string)((ComboBoxItem)_serverListenUriSchemeComboBox.SelectedItem).Content;
-            Regex regex = new Regex(@"(.*?):(.*)");
+            Regex regex = new Regex(@"(.+?):(.*)");
             Match match = regex.Match(_serverListenUriTextBox.Text);
 
             if (!match.Success)
@@ -854,10 +1113,10 @@ namespace Amoeba.Windows
             if (_serverListenUriTextBox.Text == "") return;
 
             var uri = _serverListenUriTextBox.Text;
-            if (_listenUris.Any(n => n == uri)) return;
+
+            if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _listenUris.Any(n => n == uri)) return;
             _listenUris.Add(uri);
 
-            _serverListenUriTextBox.Text = "";
             _serverListenUrisListView.SelectedIndex = _listenUris.Count - 1;
 
             _serverListenUrisListView.Items.Refresh();
@@ -872,7 +1131,8 @@ namespace Amoeba.Windows
             if (selectIndex == -1) return;
 
             var uri = _serverListenUriTextBox.Text;
-            if (_listenUris.Any(n => n == uri)) return;
+
+            if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _listenUris.Any(n => n == uri)) return;
 
             var item = _serverListenUrisListView.SelectedItem as string;
             if (item == null) return;
@@ -1086,6 +1346,86 @@ namespace Amoeba.Windows
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
+        }
+
+        private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_baseNodeTabItem.IsSelected)
+            {
+                _baseNodeUrisListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_otherNodesTabItem.IsSelected)
+            {
+
+            }
+            else if (_clientTabItem.IsSelected)
+            {
+                _clientFiltersListViewDeleteMenuItem_Click(null, null);
+            }
+            else if (_serverTabItem.IsSelected)
+            {
+                _serverListenUrisListViewDeleteMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_baseNodeTabItem.IsSelected)
+            {
+                _baseNodeUrisListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_otherNodesTabItem.IsSelected)
+            {
+                _otherNodesCopyMenuItem_Click(null, null);
+            }
+            else if (_clientTabItem.IsSelected)
+            {
+                _clientFiltersListViewCopyMenuItem_Click(null, null);
+            }
+            else if (_serverTabItem.IsSelected)
+            {
+                _serverListenUrisListViewCopyMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Cut(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_baseNodeTabItem.IsSelected)
+            {
+                _baseNodeUrisListViewCutMenuItem_Click(null, null);
+            }
+            else if (_otherNodesTabItem.IsSelected)
+            {
+
+            }
+            else if (_clientTabItem.IsSelected)
+            {
+                _clientFiltersListViewCutMenuItem_Click(null, null);
+            }
+            else if (_serverTabItem.IsSelected)
+            {
+                _serverListenUrisListViewCutMenuItem_Click(null, null);
+            }
+        }
+
+        private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_baseNodeTabItem.IsSelected)
+            {
+                _baseNodeUrisListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_otherNodesTabItem.IsSelected)
+            {
+                _otherNodesPasteMenuItem_Click(null, null);
+            }
+            else if (_clientTabItem.IsSelected)
+            {
+                _clientFiltersListViewPasteMenuItem_Click(null, null);
+            }
+            else if (_serverTabItem.IsSelected)
+            {
+                _serverListenUrisListViewPasteMenuItem_Click(null, null);
+            }
         }
     }
 }

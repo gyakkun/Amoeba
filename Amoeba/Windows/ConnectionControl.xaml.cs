@@ -634,5 +634,15 @@ namespace Amoeba.Windows
                 }
             }
         }
+       
+        private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
+        {
+            _listViewCopyMenuItem_Click(null, null);
+        }
+
+        private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
+        {
+            _listViewPasteMenuItem_Click(null, null);
+        }
     }
 }

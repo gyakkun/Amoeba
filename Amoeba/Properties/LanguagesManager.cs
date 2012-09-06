@@ -541,6 +541,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string MainWindow_Delete_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Delete_Message");
+                }
+            }
+        }
+
 
         public string UserInterfaceWindow_Title
         {
@@ -791,6 +802,39 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("UserInterfaceWindow_Add");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Copy");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Cut");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Paste");
                 }
             }
         }
@@ -1331,6 +1375,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionWindow_Copy");
+                }
+            }
+        }
+
+        public string ConnectionWindow_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionWindow_Cut");
                 }
             }
         }
@@ -1912,6 +1967,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string CacheControl_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Delete");
+                }
+            }
+        }
+
         public string CacheControl_DeleteCache
         {
             get
@@ -2174,6 +2240,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchItemEditWindow_Copy");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Cut");
                 }
             }
         }
