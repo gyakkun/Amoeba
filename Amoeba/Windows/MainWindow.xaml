@@ -49,8 +49,9 @@
             <MenuItem Name="_settingsMenuItem" Header="{Binding Path=MainWindow_Settings, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_settingsMenuItem_SubmenuOpened">
                 <MenuItem Name="_userInterfaceSettingMenuItem" Header="{Binding Path=MainWindow_UserInterfaceSetting, Source={StaticResource ResourcesInstance}}" Click="_userInterfaceSettingMenuItem_Click" />
                 <Separator />
+                <MenuItem Name="_checkSeedsMenuItem" Header="{Binding Path=MainWindow_CheckSeeds, Source={StaticResource ResourcesInstance}}" Click="_checkSeedsMenuItem_Click" />
+                <MenuItem Name="_checkBlocksMenuItem" Header="{Binding Path=MainWindow_CheckBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkBlocksMenuItem_Click" />
                 <MenuItem Name="_connectionSettingMenuItem" Header="{Binding Path=MainWindow_ConnectionSetting, Source={StaticResource ResourcesInstance}}" Click="_connectionSettingMenuItem_Click" />
-                <MenuItem Name="_checkingBlocksMenuItem" Header="{Binding Path=MainWindow_CheckingBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkingBlocksMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_languagesMenuItem" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />
             <MenuItem Name="_helpMenuItem" Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_helpMenuItem_SubmenuOpened">

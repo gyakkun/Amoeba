@@ -79,9 +79,11 @@ namespace Amoeba.Windows
 
         private void _baseNodeUriTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _baseNodeUriAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
 
@@ -475,17 +477,21 @@ namespace Amoeba.Windows
 
         private void _clientFiltersProxyUriTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _clientFilterAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
 
         private void _clientFiltersConditionTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _clientFilterAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
 
@@ -912,9 +918,11 @@ namespace Amoeba.Windows
 
         private void _serverListenUriTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _serverListenUriAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
 

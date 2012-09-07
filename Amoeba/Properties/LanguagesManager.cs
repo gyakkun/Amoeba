@@ -365,13 +365,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_CheckingBlocks
+        public string MainWindow_CheckSeeds
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_CheckingBlocks");
+                    return this.Translate("MainWindow_CheckSeeds");
+                }
+            }
+        }
+
+        public string MainWindow_CheckBlocks
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_CheckBlocks");
                 }
             }
         }
@@ -475,24 +486,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_CheckingBlocks_Message
+        public string MainWindow_CheckBlocks_Message
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_CheckingBlocks_Message");
+                    return this.Translate("MainWindow_CheckBlocks_Message");
                 }
             }
         }
 
-        public string MainWindow_CheckingBlocks_State
+        public string MainWindow_CheckBlocks_State
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_CheckingBlocks_State");
+                    return this.Translate("MainWindow_CheckBlocks_State");
                 }
             }
         }

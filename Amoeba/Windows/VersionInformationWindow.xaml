@@ -38,6 +38,6 @@
             </ListView.View>
         </local:ListViewEx>
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_licenseButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_License, Source={StaticResource ResourcesInstance}}" Click="_licenseButton_Click" />
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_closeButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_Close, Source={StaticResource ResourcesInstance}}" Click="_closeButton_Click" />
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_closeButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_Close, Source={StaticResource ResourcesInstance}}" Click="_closeButton_Click" IsDefault="True" IsCancel="True" />
     </Grid>
 </Window>

@@ -91,9 +91,11 @@ namespace Amoeba.Windows
 
         private void _nameTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _nameAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
         
@@ -325,9 +327,11 @@ namespace Amoeba.Windows
 
         private void _nameRegexTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _nameRegexAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
         
@@ -600,9 +604,11 @@ namespace Amoeba.Windows
 
         private void _signatureTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _signatureAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
         
@@ -834,9 +840,11 @@ namespace Amoeba.Windows
 
         private void _keywordTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _keywordAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
         
@@ -1068,18 +1076,22 @@ namespace Amoeba.Windows
 
         private void _creationTimeRangeMinTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _creationTimeRangeMaxTextBox.Focus();
+
+                e.Handled = true;
             }
         }
 
         private void _creationTimeRangeMaxTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _creationTimeRangeAddButton_Click(null, null);
                 _creationTimeRangeMinTextBox.Focus();
+
+                e.Handled = true;
             }
         }
 
@@ -1347,18 +1359,22 @@ namespace Amoeba.Windows
 
         private void _lengthRangeMinTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _lengthRangeMaxTextBox.Focus();
+
+                e.Handled = true;
             }
         }
 
         private void _lengthRangeMaxTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _lengthRangeAddButton_Click(null, null);
                 _lengthRangeMinTextBox.Focus();
+
+                e.Handled = true;
             }
         }
         
@@ -1624,9 +1640,11 @@ namespace Amoeba.Windows
 
         private void _seedTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _seedAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
         
@@ -1901,9 +1919,11 @@ namespace Amoeba.Windows
 
         private void _searchStateComboBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _searchStateAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
         

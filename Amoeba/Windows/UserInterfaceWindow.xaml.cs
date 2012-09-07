@@ -99,9 +99,11 @@ namespace Amoeba.Windows
 
         private void _signatureTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _signatureAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
 
@@ -333,9 +335,11 @@ namespace Amoeba.Windows
 
         private void _keywordTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Return)
+            if (e.Key == System.Windows.Input.Key.Enter)
             {
                 _keywordAddButton_Click(null, null);
+
+                e.Handled = true;
             }
         }
 

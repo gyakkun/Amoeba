@@ -24,11 +24,11 @@ namespace Amoeba.Windows
     /// </summary>
     partial class BoxEditWindow : Window
     {
-        private List<Box> _boxs;
+        private List<Box> _boxes;
 
-        public BoxEditWindow(params Box[] boxs)
+        public BoxEditWindow(params Box[] boxes)
         {
-            _boxs = boxs.ToList();
+            _boxes = boxes.ToList();
 
             var digitalSignatureCollection = new List<object>();
             digitalSignatureCollection.Add(new ComboBoxItem() { Content = "" });
@@ -41,9 +41,11 @@ namespace Amoeba.Windows
                 this.Icon = BitmapFrame.Create(stream);
             }
 
-            lock (_boxs[0].ThisLock)
+            lock (_boxes[0].ThisLock)
             {
-                foreach (var box in _boxs)
+                _nameTextBox.Text = _boxes[0].Name;
+
+                foreach (var box in _boxes)
                 {
                     if (_nameTextBox.Text != box.Name)
                     {
@@ -54,7 +56,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _commentTextBox.Text = _boxs[0].Comment;
+                _commentTextBox.Text = _boxes[0].Comment;
             }
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
@@ -76,7 +78,7 @@ namespace Amoeba.Windows
 
             var now = DateTime.UtcNow;
 
-            foreach (var box in _boxs)
+            foreach (var box in _boxes)
             {
                 lock (box.ThisLock)
                 {

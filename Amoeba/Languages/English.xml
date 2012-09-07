@@ -22,7 +22,8 @@
   <Translate Key="MainWindow_SignatureSetting" Value="Signature Setting" />
   <Translate Key="MainWindow_ConnectionSetting" Value="Connection Setting" />
   <Translate Key="MainWindow_UserInterfaceSetting" Value="User Interface Setting" />
-  <Translate Key="MainWindow_CheckingBlocks" Value="Checking Blocks" />
+  <Translate Key="MainWindow_CheckSeeds" Value="Check Seeds" />
+  <Translate Key="MainWindow_CheckBlocks" Value="Check Blocks" />
   <Translate Key="MainWindow_Help" Value="Help" />
   <Translate Key="MainWindow_DeveloperSite" Value="Developer Site" />
   <Translate Key="MainWindow_ManualSite" Value="Manual Site" />
@@ -32,8 +33,8 @@
   <Translate Key="MainWindow_SendSpeed" Value="Send:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="Receive:" />
   <Translate Key="MainWindow_SpaceNotFound" Value="Space Not Found" />
-  <Translate Key="MainWindow_CheckingBlocks_Message" Value="Checking Blocks" />
-  <Translate Key="MainWindow_CheckingBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
+  <Translate Key="MainWindow_CheckBlocks_Message" Value="Check Blocks" />
+  <Translate Key="MainWindow_CheckBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
   <Translate Key="MainWindow_Copy" Value="Copy" />
   <Translate Key="MainWindow_CheckUpdate_Message" Value="Do you want to update to &quot;{0}&quot;?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />

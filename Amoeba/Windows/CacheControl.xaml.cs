@@ -750,6 +750,8 @@ namespace Amoeba.Windows
                 selectTreeViewItem.Update();
 
                 _textBox.Text = "";
+
+                e.Handled = true;
             }
         }
 
@@ -947,7 +949,6 @@ namespace Amoeba.Windows
             {
                 selectTreeViewItem.Value.Items.Add(searchTreeitem);
             }
-            Clipboard.SetSearchTreeItems(new SearchTreeItem[0]);
 
             selectTreeViewItem.Update();
 

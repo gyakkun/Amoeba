@@ -1104,7 +1104,8 @@ namespace Amoeba.Windows
 
         private void _settingsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            _checkingBlocksMenuItem.IsEnabled = _checkingBlocksMenuItem_IsEnabled;
+            _checkSeedsMenuItem.IsEnabled = _checkSeedsMenuItem_IsEnabled;
+            _checkBlocksMenuItem.IsEnabled = _checkBlocksMenuItem_IsEnabled;
         }
 
         private void _connectionSettingMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1121,17 +1122,32 @@ namespace Amoeba.Windows
             window.ShowDialog();
         }
 
-        volatile bool _checkingBlocksMenuItem_IsEnabled = true;
+        volatile bool _checkSeedsMenuItem_IsEnabled = true;
 
-        private void _checkingBlocksMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _checkSeedsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (!_checkingBlocksMenuItem_IsEnabled) return;
-            _checkingBlocksMenuItem_IsEnabled = false;
+            if (!_checkSeedsMenuItem_IsEnabled) return;
+            _checkSeedsMenuItem_IsEnabled = false;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                _amoebaManager.CheckSeeds();
+
+                _checkSeedsMenuItem_IsEnabled = true;
+            }));
+        }
+        
+        volatile bool _checkBlocksMenuItem_IsEnabled = true;
+
+        private void _checkBlocksMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_checkBlocksMenuItem_IsEnabled) return;
+            _checkBlocksMenuItem_IsEnabled = false;
 
             var window = new ProgressWindow(true);
             window.Owner = this;
-            window.Message1 = LanguagesManager.Instance.MainWindow_CheckingBlocks_Message;
-            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckingBlocks_State, 0, 0, 0);
+            window.Message1 = LanguagesManager.Instance.MainWindow_CheckBlocks_Message;
+            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
             window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
@@ -1151,7 +1167,7 @@ namespace Amoeba.Windows
 
                         }
 
-                        window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckingBlocks_State, badBlockCount, checkedBlockCount, blockCount);
+                        window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, badBlockCount, checkedBlockCount, blockCount);
                         if (window.DialogResult == true) flag = true;
                     }), null);
 
@@ -1166,7 +1182,7 @@ namespace Amoeba.Windows
 
             window.Closed += (object sender2, EventArgs e2) =>
             {
-                _checkingBlocksMenuItem_IsEnabled = true;
+                _checkBlocksMenuItem_IsEnabled = true;
             };
 
             window.Owner = this;
