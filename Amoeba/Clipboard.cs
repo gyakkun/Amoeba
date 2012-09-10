@@ -313,8 +313,15 @@ namespace Amoeba
 
                 protected override void Dispose(bool disposing)
                 {
-                    ChangeClipboardChain(this.Handle, nextHandle);
-                    base.Dispose(disposing);
+                    try
+                    {
+                        ChangeClipboardChain(this.Handle, nextHandle);
+                        base.Dispose(disposing);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
             }
         }

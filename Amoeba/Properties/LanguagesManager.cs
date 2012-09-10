@@ -2011,6 +2011,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string CacheControl_DeleteDownload
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteDownload");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteUpload
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteUpload");
+                }
+            }
+        }
+
         public string CacheControl_DeleteDownloadHistory
         {
             get

@@ -674,7 +674,6 @@ namespace Amoeba.Windows
             }
         }
 
-
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
             if (_signatureTabItem.IsSelected)

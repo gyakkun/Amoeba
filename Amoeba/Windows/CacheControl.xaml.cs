@@ -80,6 +80,8 @@ namespace Amoeba.Windows
             _searchThread.IsBackground = true;
             _searchThread.Name = "SearchThread";
             _searchThread.Start();
+
+            _searchRowDefinition.Height = new GridLength(0);
         }
 
         private void Search()
@@ -117,6 +119,31 @@ namespace Amoeba.Windows
                             searchTreeViewItem.Hit = newList.Count;
                             searchTreeViewItem.Update();
                         }), null);
+                    }
+
+                    {
+                        string searchText = null;
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        {
+                            searchText = _searchTextBox.Text.ToLower();
+                        }), null);
+
+                        if (!string.IsNullOrWhiteSpace(searchText))
+                        {
+                            List<SearchListViewItem> list = new List<SearchListViewItem>();
+
+                            foreach (var item in newList)
+                            {
+                                if (item.Name.ToLower().Contains(searchText))
+                                {
+                                    list.Add(item);
+                                }
+                            }
+
+                            newList.Clear();
+                            newList.UnionWith(list);
+                        }
                     }
 
                     HashSet<SearchListViewItem> oldList = null;
@@ -535,12 +562,22 @@ namespace Amoeba.Windows
                             {
                                 item.State |= SearchState.Uploading;
                                 item.Seeds.Add(seed);
+
+                                if (item.UploadIds == null)
+                                    item.UploadIds = new List<int>();
+
+                                item.UploadIds.Add((int)information["Id"]);
                             }
                             else
                             {
                                 item = new SeedsAndSearchState();
                                 item.State = SearchState.Uploading;
                                 item.Seeds.Add(seed);
+
+                                if (item.UploadIds == null)
+                                    item.UploadIds = new List<int>();
+
+                                item.UploadIds.Add((int)information["Id"]);
 
                                 seedsDictionary.Add(seed, item);
                             }
@@ -558,12 +595,22 @@ namespace Amoeba.Windows
                             {
                                 item.State |= SearchState.Downloading;
                                 item.Seeds.Add(seed);
+
+                                if (item.DownloadIds == null)
+                                    item.DownloadIds = new List<int>();
+
+                                item.DownloadIds.Add((int)information["Id"]);
                             }
                             else
                             {
                                 item = new SeedsAndSearchState();
                                 item.State = SearchState.Downloading;
                                 item.Seeds.Add(seed);
+
+                                if (item.DownloadIds == null)
+                                    item.DownloadIds = new List<int>();
+
+                                item.DownloadIds.Add((int)information["Id"]);
 
                                 seedsDictionary.Add(seed, item);
                             }
@@ -626,6 +673,8 @@ namespace Amoeba.Windows
                         searchItem.Value = seed;
                         searchItem.Seeds = seedsDictionary[seed].Seeds;
                         searchItem.State = seedsDictionary[seed].State;
+                        searchItem.UploadIds = seedsDictionary[seed].UploadIds;
+                        searchItem.DownloadIds = seedsDictionary[seed].DownloadIds;
 
                         using (BufferStream stream = new BufferStream(_bufferManager))
                         {
@@ -668,8 +717,11 @@ namespace Amoeba.Windows
         {
             private List<Seed> _seeds = new List<Seed>();
 
-            public List<Seed> Seeds { get { return _seeds; } }
             public SearchState State { get; set; }
+            public List<Seed> Seeds { get { return _seeds; } }
+
+            public List<int> DownloadIds { get; set; }
+            public List<int> UploadIds { get; set; }
         }
 
         class SeedHashEqualityComparer : IEqualityComparer<Seed>
@@ -739,11 +791,6 @@ namespace Amoeba.Windows
                 var searchTreeItem = new SearchTreeItem();
                 searchTreeItem.SearchItem = new SearchItem();
                 searchTreeItem.SearchItem.Name = _textBox.Text;
-                searchTreeItem.SearchItem.SearchNameCollection.Add(new SearchContains<string>()
-                {
-                    Contains = true,
-                    Value = _textBox.Text
-                });
 
                 selectTreeViewItem.Value.Items.Add(searchTreeItem);
 
@@ -901,10 +948,10 @@ namespace Amoeba.Windows
         private void _treeViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-            if (selectTreeViewItem == null) return;
+            if (selectTreeViewItem == null || selectTreeViewItem == _treeViewItem) return;
 
-            if (selectTreeViewItem == _treeViewItem) return;
-
+            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+            
             var list = _treeViewItem.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>().ToList();
 
             list[list.Count - 2].IsSelected = true;
@@ -918,8 +965,8 @@ namespace Amoeba.Windows
         private void _treeViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-            if (selectTreeViewItem == null) return;
-
+            if (selectTreeViewItem == null || selectTreeViewItem == _treeViewItem) return;
+            
             Clipboard.SetSearchTreeItems(new List<SearchTreeItem>() { selectTreeViewItem.Value });
 
             var list = _treeViewItem.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>().ToList();
@@ -1055,7 +1102,7 @@ namespace Amoeba.Windows
             _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
-            else _listViewDeleteMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Cache) | n.State.HasFlag(SearchState.Share) | n.State.HasFlag(SearchState.Downloaded) | n.State.HasFlag(SearchState.Uploaded));
+            else _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             if (_listViewDeleteMenuItem.IsEnabled)
             {
@@ -1063,6 +1110,10 @@ namespace Amoeba.Windows
                 else _listViewDeleteCacheMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Cache));
                 if (!_listViewDeleteShareMenuItem_IsEnabled) _listViewDeleteShareMenuItem.IsEnabled = false;
                 else _listViewDeleteShareMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Share));
+                if (!_listViewDeleteDownloadMenuItem_IsEnabled) _listViewDeleteDownloadMenuItem.IsEnabled = false;
+                else _listViewDeleteDownloadMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloading));
+                if (!_listViewDeleteUploadMenuItem_IsEnabled) _listViewDeleteUploadMenuItem.IsEnabled = false;
+                else _listViewDeleteUploadMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploading));
                 if (!_listViewDeleteDownloadHistoryMenuItem_IsEnabled) _listViewDeleteDownloadHistoryMenuItem.IsEnabled = false;
                 else _listViewDeleteDownloadHistoryMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
                 if (!_listViewDeleteUploadHistoryMenuItem_IsEnabled) _listViewDeleteUploadHistoryMenuItem.IsEnabled = false;
@@ -1072,6 +1123,8 @@ namespace Amoeba.Windows
             {
                 _listViewDeleteCacheMenuItem.IsEnabled = false;
                 _listViewDeleteShareMenuItem.IsEnabled = false;
+                _listViewDeleteDownloadMenuItem.IsEnabled = false;
+                _listViewDeleteUploadMenuItem.IsEnabled = false;
                 _listViewDeleteDownloadHistoryMenuItem.IsEnabled = false;
                 _listViewDeleteUploadHistoryMenuItem.IsEnabled = false;
             }
@@ -1137,18 +1190,20 @@ namespace Amoeba.Windows
             _listViewDeleteMenuItem_IsEnabled = false;
 
             var list = new HashSet<Seed>();
+            var dlist = new HashSet<int>();
+            var ulist = new HashSet<int>();
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
                 if (item.Value == null) continue;
 
-                if (item.State.HasFlag(SearchState.Cache) || item.State.HasFlag(SearchState.Share) || item.State.HasFlag(SearchState.Downloaded) || item.State.HasFlag(SearchState.Uploaded))
-                {
-                    list.Add(item.Value);
-                }
+                list.Add(item.Value);
+
+                if (item.DownloadIds != null) dlist.UnionWith(item.DownloadIds);
+                if (item.UploadIds != null) dlist.UnionWith(item.UploadIds);
             }
 
-            if (list.Count == 0) return;
+            if ((list.Count + dlist.Count + ulist.Count) == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
@@ -1181,6 +1236,16 @@ namespace Amoeba.Windows
                         {
                             _amoebaManager.RemoveShareSeed(seed);
                         }
+                    }
+                    
+                    foreach (var item in dlist)
+                    {
+                        _amoebaManager.RemoveDownload(item);
+                    }
+
+                    foreach (var item in ulist)
+                    {
+                        _amoebaManager.RemoveUpload(item);
                     }
 
                     foreach (var item in list)
@@ -1338,6 +1403,116 @@ namespace Amoeba.Windows
                     _recache = true;
 
                     _listViewDeleteShareMenuItem_IsEnabled = true;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            this.Update();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }), null);
+                }
+                catch (Exception)
+                {
+
+                }
+            }));
+        }
+
+        volatile bool _listViewDeleteDownloadMenuItem_IsEnabled = true;
+
+        private void _listViewDeleteDownloadMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewDeleteDownloadMenuItem_IsEnabled = false;
+
+            var list = new HashSet<int>();
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.DownloadIds == null || !item.State.HasFlag(SearchState.Downloading)) continue;
+
+                list.UnionWith(item.DownloadIds);
+            }
+
+            if (list.Count == 0) return;
+            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var item in list)
+                    {
+                        _amoebaManager.RemoveDownload(item);
+                    }
+
+                    _recache = true;
+
+                    _listViewDeleteDownloadMenuItem_IsEnabled = true;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            this.Update();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }), null);
+                }
+                catch (Exception)
+                {
+
+                }
+            }));
+        }
+
+        volatile bool _listViewDeleteUploadMenuItem_IsEnabled = true;
+
+        private void _listViewDeleteUploadMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            _listViewDeleteUploadMenuItem_IsEnabled = false;
+
+            var list = new HashSet<int>();
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.UploadIds == null || !item.State.HasFlag(SearchState.Uploading)) continue;
+
+                list.UnionWith(item.UploadIds);
+            }
+
+            if (list.Count == 0) return;
+            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var item in list)
+                    {
+                        _amoebaManager.RemoveUpload(item);
+                    }
+
+                    _recache = true;
+
+                    _listViewDeleteUploadMenuItem_IsEnabled = true;
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -1613,6 +1788,22 @@ namespace Amoeba.Windows
 
         #endregion
 
+        private void _serachCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
+
+            this.Update();
+        }
+
+        private void _searchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                this.Update();
+            }
+        }
+   
         #region Sort
 
         private void Sort()
@@ -1717,6 +1908,8 @@ namespace Amoeba.Windows
             public Seed Value { get; set; }
             public List<Seed> Seeds { get; set; }
             public SearchState State { get; set; }
+            public List<int> DownloadIds { get; set; }
+            public List<int> UploadIds { get; set; }
 
             public override int GetHashCode()
             {
@@ -1794,6 +1987,12 @@ namespace Amoeba.Windows
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
             _treeViewPasteMenuItem_Click(null, null);
+        }
+
+        private void Execute_Search(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(24);
+            _searchTextBox.Focus();
         }
     }
 
@@ -2443,15 +2642,8 @@ namespace Amoeba.Windows
                 var o = RegexOptions.Compiled | RegexOptions.Singleline;
                 if (_isIgnoreCase) o |= RegexOptions.IgnoreCase;
 
-                try
-                {
-                    if (_value != null) _regex = new Regex(_value, o);
-                    else _regex = null;
-                }
-                catch (Exception)
-                {
-                    _regex = null;
-                }
+                if (_value != null) _regex = new Regex(_value, o);
+                else _regex = null;
             }
         }
 

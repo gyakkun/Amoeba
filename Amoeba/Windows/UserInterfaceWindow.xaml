@@ -44,8 +44,8 @@
     </Window.InputBindings>
 
     <Grid>
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=UserInterfaceWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" />
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=UserInterfaceWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" />
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=UserInterfaceWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" IsDefault="True" />
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=UserInterfaceWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" IsCancel="True" />
         <TabControl Margin="0,0,0,41">
             <TabItem Name="_signatureTabItem" Header="{Binding Path=UserInterfaceWindow_Signature, Source={StaticResource ResourcesInstance}}">
                 <Grid FocusManager.FocusedElement="{Binding ElementName=_signatureTextBox}">

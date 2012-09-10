@@ -178,6 +178,8 @@
   <Translate Key="CacheControl_Delete" Value="Delete" />
   <Translate Key="CacheControl_DeleteCache" Value="Delete Cache" />
   <Translate Key="CacheControl_DeleteShare" Value="Delete Share " />
+  <Translate Key="CacheControl_DeleteDownload" Value="Delete Download " />
+  <Translate Key="CacheControl_DeleteUpload" Value="Delete Upload " />
   <Translate Key="CacheControl_DeleteDownloadHistory" Value="Delete Download History" />
   <Translate Key="CacheControl_DeleteUploadHistory" Value="Delete Upload History" />
   <Translate Key="CacheControl_Download" Value="Download" />

@@ -53,6 +53,9 @@
         <DataTemplate x:Key="_myTemplate_SearchContains_SearchState_Value">
             <TextBlock Text="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _searchStateFlagToStringConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_SearchState">
+            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _searchStateFlagToStringConverter}}" />
+        </DataTemplate>
     </Window.Resources>
 
     <Window.CommandBindings>
@@ -309,7 +312,7 @@
                     <Button Name="_searchStateAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_searchStateAddButton_Click" />
                     <Button Name="_searchStateEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_searchStateEditButton_Click" />
                     <Button Name="_searchStateDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_searchStateDeleteButton_Click" />
-                    <ComboBox Name="_searchStateComboBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_searchStateComboBox_KeyDown" />
+                    <ComboBox Name="_searchStateComboBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_searchStateComboBox_KeyDown" ItemTemplate="{StaticResource _myTemplate_SearchState}" />
                     <CheckBox Name="_searchStateContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_searchStateListView" Margin="0,0,0,87" SelectionChanged="_searchStateListView_SelectionChanged" PreviewMouseLeftButtonDown="_searchStateListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_searchStateListView_ContextMenuOpening">
                         <ListView.ContextMenu>

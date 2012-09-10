@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,7 +16,6 @@ using System.Windows.Media.Imaging;
 using Amoeba.Properties;
 using Library;
 using Library.Net.Amoeba;
-using System.Threading;
 
 namespace Amoeba.Windows
 {
@@ -67,12 +67,12 @@ namespace Amoeba.Windows
             _miscellaneousCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size);
             _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
 
-            foreach (var item in Enum.GetValues(typeof(ConnectionType)))
+            foreach (var item in Enum.GetValues(typeof(ConnectionType)).Cast<ConnectionType>())
             {
-                _clientFiltersConnectionTypeComboBox.Items.Add(new ComboBoxItem() { Content = new ConnectionTypeToStringConverter().Convert(item, typeof(ConnectionType), null, null) });
+                _clientFiltersConnectionTypeComboBox.Items.Add(item);
             }
 
-            _clientFiltersConnectionTypeComboBox.SelectedItem = _clientFiltersConnectionTypeComboBox.Items.GetItemAt(1);
+            _clientFiltersConnectionTypeComboBox.SelectedItem = ConnectionType.Tcp;
         }
 
         #region BaseNode
@@ -508,7 +508,7 @@ namespace Amoeba.Windows
 
                 if (line.Length != 0)
                 {
-                    Regex regex = new Regex("^(.*?),\"(.*)\",\"(.*)\"$");
+                    Regex regex = new Regex("^(.+?) \"(.*?)\" \"(.+)\"$");
 
                     _clientFiltersListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
                 }
@@ -526,7 +526,7 @@ namespace Amoeba.Windows
 
             foreach (var item in _clientFiltersListView.SelectedItems.OfType<ConnectionFilter>())
             {
-                sb.AppendLine(string.Format("{0},\"{1}\",\"{2}\"", item.ConnectionType, item.ProxyUri, item.UriCondition.Value));
+                sb.AppendLine(string.Format("{0} \"{1}\" \"{2}\"", item.ConnectionType, item.ProxyUri, item.UriCondition.Value));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -540,7 +540,7 @@ namespace Amoeba.Windows
 
         private void _clientFiltersListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex("^(.*?),\"(.*)\",\"(.*)\"$");
+            Regex regex = new Regex("^(.+?) \"(.*?)\" \"(.+)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -643,7 +643,7 @@ namespace Amoeba.Windows
             {
                 _clientFiltersProxyUriTextBox.Text = "";
                 _clientFiltersConditionTextBox.Text = "tcp:.*";
-                _clientFiltersConnectionTypeComboBox.SelectedIndex = 1;
+                _clientFiltersConnectionTypeComboBox.SelectedItem = ConnectionType.Tcp;
                 _clientFiltersConditionSchemeComboBox.SelectedIndex = 0;
                 return;
             }
@@ -683,13 +683,7 @@ namespace Amoeba.Windows
                 _clientFiltersConditionTextBox.Text = "";
             }
 
-            var connectionTypeConboboxItem = _clientFiltersConnectionTypeComboBox.Items.Cast<ComboBoxItem>()
-                .FirstOrDefault(n => (string)n.Content == LanguagesManager.Instance.Translate("ConnectionType_" + item.ConnectionType.ToString()));
-
-            if (connectionTypeConboboxItem != null)
-            {
-                connectionTypeConboboxItem.IsSelected = true;
-            }
+            _clientFiltersConnectionTypeComboBox.SelectedItem = item.ConnectionType;
         }
 
         private void _clientFiltersConnectionTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -699,8 +693,7 @@ namespace Amoeba.Windows
 
         private void _clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var connectionTypeText = (string)((ComboBoxItem)_clientFiltersConnectionTypeComboBox.SelectedItem).Content;
-            var connectionType = (ConnectionType)new ConnectionTypeToStringConverter().ConvertBack(connectionTypeText, typeof(string), null, null);
+            var connectionType = (ConnectionType)_clientFiltersConnectionTypeComboBox.SelectedItem;
 
             if (connectionType == ConnectionType.None || connectionType == ConnectionType.Tcp)
             {
@@ -799,8 +792,7 @@ namespace Amoeba.Windows
 
             try
             {
-                var connectionTypeText = (string)((ComboBoxItem)_clientFiltersConnectionTypeComboBox.SelectedItem).Content;
-                var connectionType = (ConnectionType)new ConnectionTypeToStringConverter().ConvertBack(connectionTypeText, typeof(string), null, null);
+                var connectionType = (ConnectionType)_clientFiltersConnectionTypeComboBox.SelectedItem;
 
                 var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };
                 string proxyUri = null;
@@ -808,7 +800,7 @@ namespace Amoeba.Windows
                 if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text))
                 {
                     proxyUri = _clientFiltersProxyUriTextBox.Text;
-                    if (!Regex.IsMatch(proxyUri, @"^(.*?):(.+)$")) return;
+                    if (!Regex.IsMatch(proxyUri, @"^(.+?):(.+)$")) return;
                 }
 
                 if (connectionType == ConnectionType.Socks4Proxy
@@ -852,8 +844,7 @@ namespace Amoeba.Windows
 
             try
             {
-                var connectionTypeText = (string)((ComboBoxItem)_clientFiltersConnectionTypeComboBox.SelectedItem).Content;
-                var connectionType = (ConnectionType)new ConnectionTypeToStringConverter().ConvertBack(connectionTypeText, typeof(string), null, null);
+                var connectionType = (ConnectionType)_clientFiltersConnectionTypeComboBox.SelectedItem;
 
                 string proxyUri = null;
                 var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };

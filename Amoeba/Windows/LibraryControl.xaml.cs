@@ -79,6 +79,8 @@ namespace Amoeba.Windows
             _watchThread.IsBackground = true;
             _watchThread.Name = "WatchThread";
             _watchThread.Start();
+
+            _searchRowDefinition.Height = new GridLength(0);
         }
 
         private void Search()
@@ -102,13 +104,19 @@ namespace Amoeba.Windows
                     HashSet<object> newList = new HashSet<object>(new ReferenceEqualityComparer());
                     HashSet<object> oldList = new HashSet<object>(new ReferenceEqualityComparer());
 
+                    string searchText = null;
+                    
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         oldList.UnionWith(_listView.Items.OfType<object>());
+
+                        searchText = _searchTextBox.Text.ToLower();
                     }), null);
 
                     foreach (var box in selectTreeViewItem.Value.Boxes)
                     {
+                        if (!box.Name.ToLower().Contains(searchText)) continue;
+
                         var boxesListViewItem = new BoxListViewItem();
                         boxesListViewItem.Index = newList.Count;
                         boxesListViewItem.Name = box.Name;
@@ -202,6 +210,8 @@ namespace Amoeba.Windows
 
                     foreach (var seed in selectTreeViewItem.Value.Seeds)
                     {
+                        if (!seed.Name.ToLower().Contains(searchText)) continue;
+                        
                         var seedListViewItem = new SeedListViewItem();
                         seedListViewItem.Index = newList.Count;
                         seedListViewItem.Name = seed.Name;
@@ -1474,6 +1484,22 @@ namespace Amoeba.Windows
 
         #endregion
 
+        private void _serachCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
+
+            this.Update();
+        }
+
+        private void _searchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                this.Update();
+            }
+        }
+   
         #region Sort
 
         private void Sort()
@@ -1702,6 +1728,12 @@ namespace Amoeba.Windows
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
             _treeViewPasteMenuItem_Click(null, null);
+        }
+
+        private void Execute_Search(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(24);
+            _searchTextBox.Focus();
         }
     }
 

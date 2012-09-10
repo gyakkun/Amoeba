@@ -13,7 +13,7 @@
         Height="{Binding Path=ConnectionWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Width="{Binding Path=ConnectionWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=ConnectionWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" >
-  
+
     <Window.Resources>
         <local:NodeToStringConverter x:Key="_nodeToStringConverter"/>
         <local:ConnectionTypeToStringConverter x:Key="_connectionTypeToStringConverter" />
@@ -21,14 +21,17 @@
         <DataTemplate x:Key="_myTemplate_Node">
             <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _nodeToStringConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_ConnectionType">
+        <DataTemplate x:Key="_myTemplate_ConnectionFilter_ConnectionType">
             <TextBlock Text="{Binding Path=ConnectionType, Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_ProxyUri">
+        <DataTemplate x:Key="_myTemplate_ConnectionFilter_ProxyUri">
             <TextBlock Text="{Binding Path=ProxyUri, Mode=OneWay}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_UriCondition">
+        <DataTemplate x:Key="_myTemplate_ConnectionFilter_UriCondition_Value">
             <TextBlock Text="{Binding Path=UriCondition.Value, Mode=OneWay}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_ConnectionFilter">
+            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
         </DataTemplate>
     </Window.Resources>
 
@@ -127,19 +130,19 @@
                                 </ListView.ContextMenu>
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
-                                        <GridViewColumn Header="{Binding Path=ConnectionWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ConnectionType}" 
+                                        <GridViewColumn Header="{Binding Path=ConnectionWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ConnectionFilter_ConnectionType}" 
                                             Width="{Binding Path=ConnectionWindow_Client_Filters_GridViewColumn_ConnectionType_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                                        <GridViewColumn Header="{Binding Path=ConnectionWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ProxyUri}" 
+                                        <GridViewColumn Header="{Binding Path=ConnectionWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ConnectionFilter_ProxyUri}" 
                                             Width="{Binding Path=ConnectionWindow_Client_Filters_GridViewColumn_ProxyUri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                         <GridViewColumn Header="{Binding Path=ConnectionWindow_UriCondition, Source={StaticResource ResourcesInstance}}"
-                                            Width="{Binding Path=ConnectionWindow_Client_Filters_GridViewColumn_UriCondition_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" CellTemplate="{StaticResource _myTemplate_UriCondition}" />
+                                            Width="{Binding Path=ConnectionWindow_Client_Filters_GridViewColumn_UriCondition_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" CellTemplate="{StaticResource _myTemplate_ConnectionFilter_UriCondition_Value}" />
                                     </GridView>
                                 </ListView.View>
                             </local:ListViewEx>
                             <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" Width="119" Content="{Binding Path=ConnectionWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
                             <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="131,0,6,139" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_clientFiltersProxyUriTextBox_KeyDown" />
                             <Label Margin="6,0,0,169" HorizontalAlignment="Left" Width="119" Content="{Binding Path=ConnectionWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
-                            <ComboBox Margin="131,0,6,169" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" VerticalContentAlignment="Center" />
+                            <ComboBox Margin="131,0,6,169" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" VerticalContentAlignment="Center" ItemTemplate="{StaticResource _myTemplate_ConnectionFilter}"/>
                             <GroupBox Header="{Binding Path=ConnectionWindow_UriCondition, Source={StaticResource ResourcesInstance}}" Margin="6,0,6,35" Name="groupBox2" Height="98" VerticalAlignment="Bottom">
                                 <Grid>
                                     <Label HorizontalAlignment="Left" Margin="6,6,0,0" Width="120" Height="24" VerticalAlignment="Top" Content="{Binding Path=ConnectionWindow_Type, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />

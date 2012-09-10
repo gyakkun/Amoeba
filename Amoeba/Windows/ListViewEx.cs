@@ -56,6 +56,8 @@ namespace Amoeba.Windows
                 {
 
                 }
+
+                base.Focus();
             }
         }
 
@@ -83,6 +85,8 @@ namespace Amoeba.Windows
                 {
 
                 }
+
+                base.Focus();
             }
         }
     }

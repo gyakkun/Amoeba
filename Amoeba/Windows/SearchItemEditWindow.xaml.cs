@@ -84,7 +84,7 @@ namespace Amoeba.Windows
                 _searchStateComboBox.Items.Add(item);
             }
 
-            _searchStateComboBox.SelectedIndex = 0;
+            _searchStateComboBox.SelectedIndex = -1;
         }
 
         #region _nameListView
@@ -170,9 +170,14 @@ namespace Amoeba.Windows
             _nameListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var text = Clipboard.GetText();
+                var line = Clipboard.GetText().Split('\r', '\n');
 
-                _nameListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex("^([\\+-]) \"(.*)\"$");
+
+                    _nameListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
             }
         }
 
@@ -187,7 +192,7 @@ namespace Amoeba.Windows
 
             foreach (var item in _nameListView.SelectedItems.OfType<SearchContains<string>>())
             {
-                sb.AppendLine(string.Format("{0} {1}", (item.Contains == true) ? "+" : "-", item.Value));
+                sb.AppendLine(string.Format("{0} \"{1}\"", (item.Contains == true) ? "+" : "-", item.Value));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -201,7 +206,7 @@ namespace Amoeba.Windows
 
         private void _nameListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"([\+-]) (.*)");
+            Regex regex = new Regex("^([\\+-]) \"(.*)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -408,9 +413,14 @@ namespace Amoeba.Windows
             _nameRegexListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var text = Clipboard.GetText();
+                var line = Clipboard.GetText().Split('\r', '\n');
 
-                _nameRegexListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) ([\+-]) (.*)"));
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex("^([\\+-]) ([\\+-]) \"(.*)\"$");
+
+                    _nameRegexListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
             }
         }
 
@@ -425,7 +435,7 @@ namespace Amoeba.Windows
 
             foreach (var item in _nameRegexListView.SelectedItems.OfType<SearchContains<SearchRegex>>())
             {
-                sb.AppendLine(string.Format("{0} {1} {2}", (item.Contains == true) ? "+" : "-", (item.Value.IsIgnoreCase == true) ? "+" : "-", item.Value.Value));
+                sb.AppendLine(string.Format("{0} {1} \"{2}\"", (item.Contains == true) ? "+" : "-", (item.Value.IsIgnoreCase == true) ? "+" : "-", item.Value.Value));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -439,7 +449,7 @@ namespace Amoeba.Windows
 
         private void _nameRegexListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"([\+-]) ([\+-]) (.*)");
+            Regex regex = new Regex("^([\\+-]) ([\\+-]) \"(.*)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -519,25 +529,23 @@ namespace Amoeba.Windows
 
             try
             {
-                new Regex(_nameRegexTextBox.Text);
+                var item = new SearchContains<SearchRegex>()
+                {
+                    Contains = _nameRegexContainsCheckBox.IsChecked.Value,
+                    Value = new SearchRegex()
+                    {
+                        IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value,
+                        Value = _nameRegexTextBox.Text
+                    },
+                };
+
+                if (_searchNameRegexCollection.Contains(item)) return;
+                _searchNameRegexCollection.Add(item);
             }
             catch (Exception)
             {
                 return;
             }
-
-            var item = new SearchContains<SearchRegex>()
-            {
-                Contains = _nameRegexContainsCheckBox.IsChecked.Value,
-                Value = new SearchRegex()
-                {
-                    IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value,
-                    Value = _nameRegexTextBox.Text
-                },
-            };
-
-            if (_searchNameRegexCollection.Contains(item)) return;
-            _searchNameRegexCollection.Add(item);
 
             _nameRegexTextBox.Text = "";
             _nameRegexListView.SelectedIndex = _searchNameRegexCollection.Count - 1;
@@ -552,30 +560,29 @@ namespace Amoeba.Windows
 
             try
             {
-                new Regex(_nameRegexTextBox.Text);
+
+                var uitem = new SearchContains<SearchRegex>()
+                {
+                    Contains = _nameRegexContainsCheckBox.IsChecked.Value,
+                    Value = new SearchRegex()
+                    {
+                        IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value,
+                        Value = _nameRegexTextBox.Text
+                    },
+                };
+
+                if (_searchNameRegexCollection.Contains(uitem)) return;
+
+                var item = _nameRegexListView.SelectedItem as SearchContains<SearchRegex>;
+                if (item == null) return;
+
+                item.Contains = _nameRegexContainsCheckBox.IsChecked.Value;
+                item.Value = new SearchRegex() { IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value, Value = _nameRegexTextBox.Text };
             }
             catch (Exception)
             {
                 return;
             }
-
-            var uitem = new SearchContains<SearchRegex>()
-            {
-                Contains = _nameRegexContainsCheckBox.IsChecked.Value,
-                Value = new SearchRegex()
-                {
-                    IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value,
-                    Value = _nameRegexTextBox.Text
-                },
-            };
-
-            if (_searchNameRegexCollection.Contains(uitem)) return;
-
-            var item = _nameRegexListView.SelectedItem as SearchContains<SearchRegex>;
-            if (item == null) return;
-
-            item.Contains = _nameRegexContainsCheckBox.IsChecked.Value;
-            item.Value = new SearchRegex() { IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value, Value = _nameRegexTextBox.Text };
 
             _nameRegexListView.Items.Refresh();
             _nameRegexListViewUpdate();
@@ -683,9 +690,14 @@ namespace Amoeba.Windows
             _signatureListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var text = Clipboard.GetText();
+                var line = Clipboard.GetText().Split('\r', '\n');
 
-                _signatureListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex(@"^([\+-]) (.*)$");
+
+                    _signatureListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
             }
         }
 
@@ -714,7 +726,7 @@ namespace Amoeba.Windows
 
         private void _signatureListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"([\+-]) (.*)");
+            Regex regex = new Regex(@"^([\+-]) (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -919,9 +931,14 @@ namespace Amoeba.Windows
             _keywordListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var text = Clipboard.GetText();
+                var line = Clipboard.GetText().Split('\r', '\n');
 
-                _keywordListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex("^([\\+-]) \"(.*)\"$");
+
+                    _keywordListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
             }
         }
 
@@ -936,7 +953,7 @@ namespace Amoeba.Windows
 
             foreach (var item in _keywordListView.SelectedItems.OfType<SearchContains<string>>())
             {
-                sb.AppendLine(string.Format("{0} {1}", (item.Contains == true) ? "+" : "-", item.Value));
+                sb.AppendLine(string.Format("{0} \"{1}\"", (item.Contains == true) ? "+" : "-", item.Value));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -950,7 +967,7 @@ namespace Amoeba.Windows
 
         private void _keywordListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"([\+-]) (.*)");
+            Regex regex = new Regex("^([\\+-]) \"(.*)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1168,9 +1185,14 @@ namespace Amoeba.Windows
             _creationTimeRangeListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var text = Clipboard.GetText();
+                var line = Clipboard.GetText().Split('\r', '\n');
 
-                _creationTimeRangeListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*), (.*)"));
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex(@"^([\+-]) (.*), (.*)$");
+
+                    _creationTimeRangeListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
             }
         }
 
@@ -1201,7 +1223,7 @@ namespace Amoeba.Windows
 
         private void _creationTimeRangeListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"([\+-]) (.*), (.*)");
+            Regex regex = new Regex(@"^([\+-]) (.*), (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1286,15 +1308,15 @@ namespace Amoeba.Windows
 
                 if (_searchCreationTimeRangeCollection.Contains(item)) return;
                 _searchCreationTimeRangeCollection.Add(item);
-
-                _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.UtcNow.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                _creationTimeRangeListView.SelectedIndex = _searchCreationTimeRangeCollection.Count - 1;
             }
             catch (Exception)
             {
                 return;
             }
+
+            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.UtcNow.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeMaxTextBox.Text = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 0, 0, 0, DateTimeKind.Utc).ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            _creationTimeRangeListView.SelectedIndex = _searchCreationTimeRangeCollection.Count - 1;
 
             _creationTimeRangeListView.Items.Refresh();
             _creationTimeRangeListViewUpdate();
@@ -1451,9 +1473,14 @@ namespace Amoeba.Windows
             _lengthRangeListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var text = Clipboard.GetText();
+                var line = Clipboard.GetText().Split('\r', '\n');
 
-                _lengthRangeListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*), (.*)"));
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex(@"^([\+-]) (.*), (.*)$");
+
+                    _lengthRangeListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
             }
         }
 
@@ -1482,7 +1509,7 @@ namespace Amoeba.Windows
 
         private void _lengthRangeListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"([\+-]) (.*), (.*)");
+            Regex regex = new Regex(@"^([\+-]) (.*), (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1567,15 +1594,15 @@ namespace Amoeba.Windows
 
                 if (_searchLengthRangeCollection.Contains(item)) return;
                 _searchLengthRangeCollection.Add(item);
-
-                _lengthRangeMinTextBox.Text = "";
-                _lengthRangeMaxTextBox.Text = "";
-                _lengthRangeListView.SelectedIndex = _searchLengthRangeCollection.Count - 1;
             }
             catch (Exception)
             {
                 return;
             }
+
+            _lengthRangeMinTextBox.Text = "";
+            _lengthRangeMaxTextBox.Text = "";
+            _lengthRangeListView.SelectedIndex = _searchLengthRangeCollection.Count - 1;
 
             _lengthRangeListView.Items.Refresh();
             _lengthRangeListViewUpdate();
@@ -1720,9 +1747,22 @@ namespace Amoeba.Windows
 
             {
                 var seeds = Clipboard.GetSeeds();
-                var text = Clipboard.GetText();
 
-                _seedListViewPasteMenuItem.IsEnabled = ((seeds.Count() > 0) || (text != null && Regex.IsMatch(text, @"([\+-]) (.*)")));
+                if (seeds.Count() > 0)
+                {
+                    _seedListViewPasteMenuItem.IsEnabled = true;
+                }
+                else
+                {
+                    var line = Clipboard.GetText().Split('\r', '\n');
+
+                    if (line.Length != 0)
+                    {
+                        Regex regex = new Regex(@"^([\+-]) (.*)$");
+
+                        _seedListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                    }
+                }
             }
         }
 
@@ -1770,7 +1810,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            Regex regex = new Regex(@"([\+-]) (.*)");
+            Regex regex = new Regex(@"^([\+-]) (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1851,14 +1891,14 @@ namespace Amoeba.Windows
 
                 if (_searchSeedCollection.Contains(item)) return;
                 _searchSeedCollection.Add(item);
-
-                _seedTextBox.Text = "";
-                _seedListView.SelectedIndex = _searchSeedCollection.Count - 1;
             }
             catch (Exception)
             {
                 return;
             }
+
+            _seedTextBox.Text = "";
+            _seedListView.SelectedIndex = _searchSeedCollection.Count - 1;
 
             _seedListView.Items.Refresh();
             _seedListViewUpdate();
@@ -1978,7 +2018,7 @@ namespace Amoeba.Windows
             if (selectIndex == -1)
             {
                 _searchStateContainsCheckBox.IsChecked = true;
-                _searchStateComboBox.SelectedIndex = 0;
+                _searchStateComboBox.SelectedIndex = -1;
                 return;
             }
 
@@ -1998,9 +2038,14 @@ namespace Amoeba.Windows
             _searchStateListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var text = Clipboard.GetText();
+                var line = Clipboard.GetText().Split('\r', '\n');
 
-                _searchStateListViewPasteMenuItem.IsEnabled = (text != null && Regex.IsMatch(text, @"([\+-]) (.*)"));
+                if (line.Length != 0)
+                {
+                    Regex regex = new Regex(@"^([\+-]) (.*)$");
+
+                    _searchStateListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                }
             }
         }
 
@@ -2029,7 +2074,7 @@ namespace Amoeba.Windows
 
         private void _searchStateListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"([\+-]) (.*)");
+            Regex regex = new Regex(@"^([\+-]) (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -2092,7 +2137,7 @@ namespace Amoeba.Windows
 
         private void _searchStateAddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_searchStateComboBox.Text == "") return;
+            if (_searchStateComboBox.SelectedIndex == -1) return;
 
             var item = new SearchContains<SearchState>()
             {
@@ -2112,7 +2157,7 @@ namespace Amoeba.Windows
 
         private void _searchStateEditButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_searchStateComboBox.Text == "") return;
+            if (_searchStateComboBox.SelectedIndex == -1) return;
 
             var uitem = new SearchContains<SearchState>()
             {

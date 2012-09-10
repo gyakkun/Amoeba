@@ -52,6 +52,7 @@
         <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Cut" Executed="Execute_Cut" />
         <CommandBinding Command="Paste" Executed="Execute_Paste" />
+        <CommandBinding Command="Search"  Executed="Execute_Search" />
     </UserControl.CommandBindings>
     
     <UserControl.InputBindings>
@@ -60,12 +61,14 @@
         <KeyBinding Gesture="CTRL+C" Command="Copy" />
         <KeyBinding Gesture="CTRL+X" Command="Cut" />
         <KeyBinding Gesture="CTRL+V" Command="Paste" />
+        <KeyBinding Gesture="CTRL+F" Command="Search" />
     </UserControl.InputBindings>
 
     <Grid Name="_grid" AllowDrop="True" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
             <RowDefinition Height="*" />
+            <RowDefinition Name="_searchRowDefinition" Height="24" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding Path=CacheControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
@@ -73,12 +76,12 @@
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
-        <GridSplitter Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" />
+        <GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
 
         <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" VerticalContentAlignment="Center" />
 
         <TreeView Name="_treeView" Grid.Row="1" ContextMenuOpening="_treeView_ContextMenuOpening" PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown" SelectedItemChanged="_treeView_SelectedItemChanged" AllowDrop="True" PreviewMouseRightButtonDown="_treeView_PreviewMouseRightButtonDown"
-                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove">
+                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove" Grid.RowSpan="2">
             <local:BoxTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
                 <local:BoxTreeViewItem.ContextMenu>
                     <ContextMenu Name="_treeViewContextMenu" >
@@ -139,5 +142,8 @@
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
+        
+        <TextBox Grid.Column="2" Grid.Row="2" Margin="24,0,0,0" Name="_searchTextBox" KeyDown="_searchTextBox_KeyDown" />
+        <Button Content="×" Grid.Column="2" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Click="_serachCloseButton_Click" />
     </Grid>
 </UserControl>
