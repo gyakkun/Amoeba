@@ -1152,23 +1152,26 @@ namespace Amoeba.Windows
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
+                bool flag = false;
+
+                window.Closed += (object sender2, EventArgs e2) =>
+                {
+                    flag = true;
+                };
+
                 _amoebaManager.CheckBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
-                    bool flag = false;
-
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         try
                         {
                             window.Value = 100 * ((double)checkedBlockCount / (double)blockCount);
+                            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, badBlockCount, checkedBlockCount, blockCount);
                         }
                         catch (Exception)
                         {
 
                         }
-
-                        window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, badBlockCount, checkedBlockCount, blockCount);
-                        if (window.DialogResult == true) flag = true;
                     }), null);
 
                     isStop = flag;
@@ -1176,7 +1179,14 @@ namespace Amoeba.Windows
 
                 this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                 {
-                    window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Ok;
+                    try
+                    {
+                        window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Ok;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }), null);
             }));
 
