@@ -9,7 +9,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Library.Net.Amoeba;
 using Amoeba.Properties;
 using System.IO;
@@ -36,9 +35,15 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            using (FileStream stream = new FileStream(System.IO.Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open))
             {
-                this.Icon = BitmapFrame.Create(stream);
+                var icon = new BitmapImage();
+
+                icon.BeginInit();
+                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                icon.EndInit();
+                if (icon.CanFreeze) icon.Freeze();
+
+                this.Icon = icon;
             }
 
             lock (_boxes[0].ThisLock)

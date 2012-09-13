@@ -11,7 +11,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Amoeba.Properties;
 using Library.Net.Amoeba;
 using Library.Net;
@@ -50,9 +49,15 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            using (FileStream stream = new FileStream(System.IO.Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open))
             {
-                this.Icon = BitmapFrame.Create(stream);
+                var icon = new BitmapImage();
+
+                icon.BeginInit();
+                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                icon.EndInit();
+                if (icon.CanFreeze) icon.Freeze();
+
+                this.Icon = icon;
             }
 
             if (Settings.Instance.Global_UploadKeywords.Count >= 1) _keywordsComboBox1.Text = Settings.Instance.Global_UploadKeywords[0];

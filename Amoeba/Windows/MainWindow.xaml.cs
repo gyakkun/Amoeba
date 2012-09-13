@@ -69,9 +69,15 @@ namespace Amoeba.Windows
 
             this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
 
-            using (FileStream stream = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open))
             {
-                this.Icon = BitmapFrame.Create(stream);
+                var icon = new BitmapImage();
+
+                icon.BeginInit();
+                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                icon.EndInit();
+                if (icon.CanFreeze) icon.Freeze();
+
+                this.Icon = icon;
             }
 
             this.Setting_Languages();
