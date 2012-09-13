@@ -1190,8 +1190,8 @@ namespace Amoeba.Windows
             _listViewDeleteMenuItem_IsEnabled = false;
 
             var list = new HashSet<Seed>();
-            var dlist = new HashSet<int>();
-            var ulist = new HashSet<int>();
+            var downloadList = new HashSet<int>();
+            var uploadList = new HashSet<int>();
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
@@ -1199,11 +1199,11 @@ namespace Amoeba.Windows
 
                 list.Add(item.Value);
 
-                if (item.DownloadIds != null) dlist.UnionWith(item.DownloadIds);
-                if (item.UploadIds != null) dlist.UnionWith(item.UploadIds);
+                if (item.DownloadIds != null) downloadList.UnionWith(item.DownloadIds);
+                if (item.UploadIds != null) uploadList.UnionWith(item.UploadIds);
             }
 
-            if ((list.Count + dlist.Count + ulist.Count) == 0) return;
+            if ((list.Count + downloadList.Count + uploadList.Count) == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
@@ -1217,66 +1217,38 @@ namespace Amoeba.Windows
                         _amoebaManager.RemoveCacheSeed(item);
                     }
 
-                    foreach (var seed in _amoebaManager.CacheSeeds.ToArray())
-                    {
-                        if (list.Contains(seed))
-                        {
-                            _amoebaManager.RemoveCacheSeed(seed);
-                        }
-                    }
-
                     foreach (var item in list)
                     {
                         _amoebaManager.RemoveShareSeed(item);
                     }
 
-                    foreach (var seed in _amoebaManager.ShareSeeds.ToArray())
-                    {
-                        if (list.Contains(seed))
-                        {
-                            _amoebaManager.RemoveShareSeed(seed);
-                        }
-                    }
-                    
-                    foreach (var item in dlist)
+                    foreach (var item in downloadList)
                     {
                         _amoebaManager.RemoveDownload(item);
                     }
 
-                    foreach (var item in ulist)
+                    foreach (var item in uploadList)
                     {
                         _amoebaManager.RemoveUpload(item);
                     }
 
                     foreach (var item in list)
                     {
-                        _amoebaManager.DownloadedSeeds.Remove(item);
-                    }
-
-                    foreach (var seed in _amoebaManager.DownloadedSeeds.ToArray())
-                    {
-                        if (list.Contains(seed))
+                        for (; ; )
                         {
-                            _amoebaManager.DownloadedSeeds.Remove(seed);
+                            if (!_amoebaManager.DownloadedSeeds.Remove(item)) break;
                         }
                     }
 
                     foreach (var item in list)
                     {
-                        _amoebaManager.UploadedSeeds.Remove(item);
-                    }
-
-                    foreach (var seed in _amoebaManager.UploadedSeeds.ToArray())
-                    {
-                        if (list.Contains(seed))
+                        for (; ; )
                         {
-                            _amoebaManager.UploadedSeeds.Remove(seed);
+                            if (!_amoebaManager.UploadedSeeds.Remove(item)) break;
                         }
                     }
 
                     _recache = true;
-
-                    _listViewDeleteMenuItem_IsEnabled = true;
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -1293,6 +1265,10 @@ namespace Amoeba.Windows
                 catch (Exception)
                 {
 
+                }
+                finally
+                {
+                    _listViewDeleteMenuItem_IsEnabled = true;
                 }
             }));
         }
@@ -1329,17 +1305,7 @@ namespace Amoeba.Windows
                         _amoebaManager.RemoveCacheSeed(item);
                     }
 
-                    foreach (var seed in _amoebaManager.CacheSeeds.ToArray())
-                    {
-                        if (list.Contains(seed))
-                        {
-                            _amoebaManager.RemoveCacheSeed(seed);
-                        }
-                    }
-
                     _recache = true;
-
-                    _listViewDeleteCacheMenuItem_IsEnabled = true;
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -1356,6 +1322,10 @@ namespace Amoeba.Windows
                 catch (Exception)
                 {
 
+                }
+                finally
+                {
+                    _listViewDeleteCacheMenuItem_IsEnabled = true;
                 }
             }));
         }
@@ -1392,17 +1362,7 @@ namespace Amoeba.Windows
                         _amoebaManager.RemoveShareSeed(item);
                     }
 
-                    foreach (var seed in _amoebaManager.ShareSeeds.ToArray())
-                    {
-                        if (list.Contains(seed))
-                        {
-                            _amoebaManager.RemoveShareSeed(seed);
-                        }
-                    }
-
                     _recache = true;
-
-                    _listViewDeleteShareMenuItem_IsEnabled = true;
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -1419,6 +1379,10 @@ namespace Amoeba.Windows
                 catch (Exception)
                 {
 
+                }
+                finally
+                {
+                    _listViewDeleteShareMenuItem_IsEnabled = true;
                 }
             }));
         }
@@ -1457,8 +1421,6 @@ namespace Amoeba.Windows
 
                     _recache = true;
 
-                    _listViewDeleteDownloadMenuItem_IsEnabled = true;
-
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         try
@@ -1474,6 +1436,10 @@ namespace Amoeba.Windows
                 catch (Exception)
                 {
 
+                }
+                finally
+                {
+                    _listViewDeleteDownloadMenuItem_IsEnabled = true;
                 }
             }));
         }
@@ -1512,8 +1478,6 @@ namespace Amoeba.Windows
 
                     _recache = true;
 
-                    _listViewDeleteUploadMenuItem_IsEnabled = true;
-
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
                         try
@@ -1529,6 +1493,10 @@ namespace Amoeba.Windows
                 catch (Exception)
                 {
 
+                }
+                finally
+                {
+                    _listViewDeleteUploadMenuItem_IsEnabled = true;
                 }
             }));
         }
@@ -1562,20 +1530,13 @@ namespace Amoeba.Windows
                 {
                     foreach (var item in list)
                     {
-                        _amoebaManager.DownloadedSeeds.Remove(item);
-                    }
-
-                    foreach (var seed in _amoebaManager.DownloadedSeeds.ToArray())
-                    {
-                        if (list.Contains(seed))
+                        for (; ; )
                         {
-                            _amoebaManager.DownloadedSeeds.Remove(seed);
+                            if (!_amoebaManager.DownloadedSeeds.Remove(item)) break;
                         }
                     }
 
                     _recache = true;
-
-                    _listViewDeleteDownloadHistoryMenuItem_IsEnabled = true;
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -1592,6 +1553,10 @@ namespace Amoeba.Windows
                 catch (Exception)
                 {
 
+                }
+                finally
+                {
+                    _listViewDeleteDownloadHistoryMenuItem_IsEnabled = true;
                 }
             }));
         }
@@ -1625,20 +1590,13 @@ namespace Amoeba.Windows
                 {
                     foreach (var item in list)
                     {
-                        _amoebaManager.UploadedSeeds.Remove(item);
-                    }
-
-                    foreach (var seed in _amoebaManager.UploadedSeeds.ToArray())
-                    {
-                        if (list.Contains(seed))
+                        for (; ; )
                         {
-                            _amoebaManager.UploadedSeeds.Remove(seed);
+                            if (!_amoebaManager.UploadedSeeds.Remove(item)) break;
                         }
                     }
 
                     _recache = true;
-
-                    _listViewDeleteUploadHistoryMenuItem_IsEnabled = true;
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -1655,6 +1613,10 @@ namespace Amoeba.Windows
                 catch (Exception)
                 {
 
+                }
+                finally
+                {
+                    _listViewDeleteUploadHistoryMenuItem_IsEnabled = true;
                 }
             }));
         }

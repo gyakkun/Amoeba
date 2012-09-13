@@ -98,7 +98,10 @@ namespace Amoeba.Windows
                 if (value is Seed)
                 {
                     Seed seed = (Seed)value;
+                    if (string.IsNullOrWhiteSpace(seed.Name)) return null;
+
                     var ext = Path.GetExtension(seed.Name);
+                    if (string.IsNullOrWhiteSpace(ext)) return null;
 
                     if (!_icon.ContainsKey(ext))
                     {
