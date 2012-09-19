@@ -37,15 +37,15 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
-        <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Cut" Executed="Execute_Cut" />
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Paste" Executed="Execute_Paste" />
     </Window.CommandBindings>
 
     <Window.InputBindings>
         <KeyBinding Gesture="Delete" Command="Delete" />
-        <KeyBinding Gesture="CTRL+C" Command="Copy" />
         <KeyBinding Gesture="CTRL+X" Command="Cut" />
+        <KeyBinding Gesture="CTRL+C" Command="Copy" />
         <KeyBinding Gesture="CTRL+V" Command="Paste" />
     </Window.InputBindings>
 
@@ -62,8 +62,8 @@
                                     <ContextMenu Name="_baseNodeUrisListViewContextMenu" >
                                         <MenuItem Name="_baseNodeUrisListViewDeleteMenuItem" Header="{Binding Path=ConnectionWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_baseNodeUrisListViewDeleteMenuItem_Click"/>
                                         <Separator />
-                                        <MenuItem Name="_baseNodeUrisListViewCopyMenuItem" Header="{Binding Path=ConnectionWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_baseNodeUrisListViewCopyMenuItem_Click"/>
                                         <MenuItem Name="_baseNodeUrisListViewCutMenuItem" Header="{Binding Path=ConnectionWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_baseNodeUrisListViewCutMenuItem_Click"/>
+                                        <MenuItem Name="_baseNodeUrisListViewCopyMenuItem" Header="{Binding Path=ConnectionWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_baseNodeUrisListViewCopyMenuItem_Click"/>
                                         <MenuItem Name="_baseNodeUrisListViewPasteMenuItem" Header="{Binding Path=ConnectionWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_baseNodeUrisListViewPasteMenuItem_Click"/>
                                     </ContextMenu>
                                 </ListView.ContextMenu>
@@ -123,8 +123,8 @@
                                     <ContextMenu Name="_clientFiltersListViewContextMenu" >
                                         <MenuItem Name="_clientFiltersListViewDeleteMenuItem" Header="{Binding Path=ConnectionWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewDeleteMenuItem_Click"/>
                                         <Separator />
-                                        <MenuItem Name="_clientFiltersListViewCopyMenuItem" Header="{Binding Path=ConnectionWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewCopyMenuItem_Click"/>
                                         <MenuItem Name="_clientFiltersListViewCutMenuItem" Header="{Binding Path=ConnectionWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewCutMenuItem_Click"/>
+                                        <MenuItem Name="_clientFiltersListViewCopyMenuItem" Header="{Binding Path=ConnectionWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewCopyMenuItem_Click"/>
                                         <MenuItem Name="_clientFiltersListViewPasteMenuItem" Header="{Binding Path=ConnectionWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewPasteMenuItem_Click"/>
                                     </ContextMenu>
                                 </ListView.ContextMenu>
@@ -172,8 +172,8 @@
                                     <ContextMenu Name="_serverListenUrisListViewContextMenu" >
                                         <MenuItem Name="_serverListenUrisListViewDeleteMenuItem" Header="{Binding Path=ConnectionWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_serverListenUrisListViewDeleteMenuItem_Click"/>
                                         <Separator />
-                                        <MenuItem Name="_serverListenUrisListViewCopyMenuItem" Header="{Binding Path=ConnectionWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_serverListenUrisListViewCopyMenuItem_Click"/>
                                         <MenuItem Name="_serverListenUrisListViewCutMenuItem" Header="{Binding Path=ConnectionWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_serverListenUrisListViewCutMenuItem_Click"/>
+                                        <MenuItem Name="_serverListenUrisListViewCopyMenuItem" Header="{Binding Path=ConnectionWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_serverListenUrisListViewCopyMenuItem_Click"/>
                                         <MenuItem Name="_serverListenUrisListViewPasteMenuItem" Header="{Binding Path=ConnectionWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_serverListenUrisListViewPasteMenuItem_Click"/>
                                     </ContextMenu>
                                 </ListView.ContextMenu>
@@ -203,16 +203,16 @@
                     <StackPanel Name="_miscellaneousStackPanel" PreviewMouseLeftButtonUp="_miscellaneousStackPanel_PreviewMouseLeftButtonUp">
                         <Expander Header="{Binding Path=ConnectionWindow_CoreSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0" IsExpanded="True">
                             <Grid Margin="0,0,0,6">
-                                <Label Content="{Binding Path=ConnectionWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-                                <TextBox Name="_miscellaneousDownloadDirectoryTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" PreviewMouseDoubleClick="_miscellaneousDownloadDirectoryTextBox_PreviewMouseDoubleClick" VerticalContentAlignment="Center" />
-                                <Label Content="{Binding Path=ConnectionWindow_ConnectionCount, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-                                <TextBox Height="24" Margin="132,36,6,0" Name="_miscellaneousConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
-                                <Label Content="{Binding Path=ConnectionWindow_DownloadingLowerLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-                                <TextBox Height="24" Margin="132,66,6,0" Name="_miscellaneousDownloadingConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousCacheConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
-                                <Label Content="{Binding Path=ConnectionWindow_UploadingLowerLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,96,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-                                <TextBox Height="24" Margin="132,96,6,0" Name="_miscellaneousUploadingConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousUploadingConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
-                                <Label Content="{Binding Path=ConnectionWindow_CacheSize, Source={StaticResource ResourcesInstance}}" Height="22" HorizontalAlignment="Left" Margin="6,126,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-                                <TextBox Height="24" Margin="132,126,6,0" Name="_miscellaneousCacheSizeTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,96,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
+                                <TextBox Name="_miscellaneousDownloadDirectoryTextBox" Height="24" Margin="252,96,6,0" VerticalAlignment="Top" PreviewMouseDoubleClick="_miscellaneousDownloadDirectoryTextBox_PreviewMouseDoubleClick" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionWindow_ConnectionCount, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
+                                <TextBox Height="24" Margin="252,6,6,0" Name="_miscellaneousConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionWindow_DownloadingLowerLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
+                                <TextBox Height="24" Margin="252,36,6,0" Name="_miscellaneousDownloadingConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousCacheConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionWindow_UploadingLowerLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
+                                <TextBox Height="24" Margin="252,66,6,0" Name="_miscellaneousUploadingConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_miscellaneousUploadingConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
+                                <Label Content="{Binding Path=ConnectionWindow_CacheSize, Source={StaticResource ResourcesInstance}}" Height="22" HorizontalAlignment="Left" Margin="6,126,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
+                                <TextBox Height="24" Margin="252,126,6,0" Name="_miscellaneousCacheSizeTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
                             </Grid>
                         </Expander>
                         <Expander Header="{Binding Path=ConnectionWindow_AutoSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0">

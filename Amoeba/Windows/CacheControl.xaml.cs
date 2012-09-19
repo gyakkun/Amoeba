@@ -90,7 +90,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                     if (!_refresh) continue;
 
                     SearchTreeViewItem selectTreeViewItem = null;
@@ -908,7 +908,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _treeViewAddMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _treeViewNewMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null) return;
@@ -1907,7 +1907,7 @@ namespace Amoeba.Windows
 
         private void Execute_New(object sender, ExecutedRoutedEventArgs e)
         {
-            _treeViewAddMenuItem_Click(null, null);
+            _treeViewNewMenuItem_Click(null, null);
         }
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)

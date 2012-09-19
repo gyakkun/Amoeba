@@ -6,9 +6,12 @@ using System.IO;
 using System.Xml;
 using System.Windows.Data;
 using Library;
+using System.Globalization;
 
 namespace Amoeba.Properties
 {
+    public delegate void UsingLanguageChangedEventHandler(object sender);
+
     class LanguagesManager : IThisLock
     {
         private static LanguagesManager _defaultInstance = new LanguagesManager();
@@ -16,6 +19,16 @@ namespace Amoeba.Properties
         private static string _usingLanguage = null;
         private static ObjectDataProvider provider;
         private object _thisLock = new object();
+
+        public static UsingLanguageChangedEventHandler UsingLanguageChangedEvent;
+
+        protected static void OnUsingLanguageChangedEvent()
+        {
+            if (LanguagesManager.UsingLanguageChangedEvent != null)
+            {
+                LanguagesManager.UsingLanguageChangedEvent(_defaultInstance);
+            }
+        }
 
         static LanguagesManager()
         {
@@ -30,8 +43,7 @@ namespace Amoeba.Properties
 
         private static void Load(string directoryPath)
         {
-            if (!Directory.Exists(directoryPath))
-                return;
+            if (!Directory.Exists(directoryPath)) return;
 
             _dic.Clear();
 
@@ -41,9 +53,6 @@ namespace Amoeba.Properties
 
                 using (XmlTextReader xml = new XmlTextReader(path))
                 {
-                    string key = "";
-                    string value = "";
-
                     try
                     {
                         while (xml.Read())
@@ -52,9 +61,7 @@ namespace Amoeba.Properties
                             {
                                 if (xml.LocalName == "Translate")
                                 {
-                                    key = xml.GetAttribute("Key");
-                                    value = xml.GetAttribute("Value");
-                                    dic.Add(key, value);
+                                    dic.Add(xml.GetAttribute("Key"), xml.GetAttribute("Value"));
                                 }
                             }
                         }
@@ -68,7 +75,11 @@ namespace Amoeba.Properties
                 _dic[Path.GetFileNameWithoutExtension(path)] = dic;
             }
 
-            if (_dic.Keys.Any(n => n == "English"))
+            if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Any(n => n == "Japanese"))
+            {
+                _usingLanguage = "Japanese";
+            }
+            else if (_dic.Keys.Any(n => n == "English"))
             {
                 _usingLanguage = "English";
             }
@@ -96,7 +107,9 @@ namespace Amoeba.Properties
             if (!_dic.ContainsKey(language)) throw new ArgumentException();
 
             _usingLanguage = language;
-            ResourceProvider.Refresh();
+            LanguagesManager.ResourceProvider.Refresh();
+
+            LanguagesManager.OnUsingLanguageChangedEvent();
         }
 
         /// <summary>
@@ -178,27 +191,140 @@ namespace Amoeba.Properties
         }
 
 
-        public string MainWindow_Starting
+        public string Languages_English
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Starting");
+                    return this.Translate("Languages_English");
                 }
             }
         }
 
-        public string MainWindow_Stopping
+        public string Languages_Japanese
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Stopping");
+                    return this.Translate("Languages_Japanese");
                 }
             }
         }
+
+
+        public string Seed_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Seed_Name");
+                }
+            }
+        }
+
+        public string Seed_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Seed_Signature");
+                }
+            }
+        }
+
+        public string Seed_Length
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Seed_Length");
+                }
+            }
+        }
+
+        public string Seed_Keywords
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Seed_Keywords");
+                }
+            }
+        }
+
+        public string Seed_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Seed_CreationTime");
+                }
+            }
+        }
+
+        public string Seed_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Seed_Comment");
+                }
+            }
+        }
+
+
+        public string Box_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Box_Name");
+                }
+            }
+        }
+
+        public string Box_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Box_Signature");
+                }
+            }
+        }
+
+        public string Box_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Box_CreationTime");
+                }
+            }
+        }
+
+        public string Box_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Box_Comment");
+                }
+            }
+        }
+
 
         public string MainWindow_Connection
         {
@@ -207,28 +333,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Connection");
-                }
-            }
-        }
-
-        public string MainWindow_Cache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Cache");
-                }
-            }
-        }
-
-        public string MainWindow_Library
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Library");
                 }
             }
         }
@@ -262,6 +366,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Share");
+                }
+            }
+        }
+
+        public string MainWindow_Cache
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Cache");
+                }
+            }
+        }
+
+        public string MainWindow_Library
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Library");
                 }
             }
         }
@@ -321,39 +447,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_KeywordSetting
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_KeywordSetting");
-                }
-            }
-        }
-
-        public string MainWindow_SignatureSetting
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_SignatureSetting");
-                }
-            }
-        }
-
-        public string MainWindow_ConnectionSetting
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_ConnectionSetting");
-                }
-            }
-        }
-
         public string MainWindow_UserInterfaceSetting
         {
             get
@@ -383,6 +476,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_CheckBlocks");
+                }
+            }
+        }
+
+        public string MainWindow_ConnectionSetting
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_ConnectionSetting");
+                }
+            }
+        }
+
+        public string MainWindow_Languages
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Languages");
                 }
             }
         }
@@ -442,17 +557,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_Languages
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Languages");
-                }
-            }
-        }
-
         public string MainWindow_SendSpeed
         {
             get
@@ -475,13 +579,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_SpaceNotFound
+        public string MainWindow_SpaceNotFound_Message
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_SpaceNotFound");
+                    return this.Translate("MainWindow_SpaceNotFound_Message");
                 }
             }
         }
@@ -504,17 +608,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_CheckBlocks_State");
-                }
-            }
-        }
-
-        public string MainWindow_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Copy");
                 }
             }
         }
@@ -641,17 +734,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UserInterfaceWindow_SearchFilterSettings
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_SearchFilterSettings");
-                }
-            }
-        }
-
         public string UserInterfaceWindow_RelateSettings
         {
             get
@@ -670,61 +752,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("UserInterfaceWindow_RelateBoxFile");
-                }
-            }
-        }
-
-        public string UserInterfaceWindow_Cache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Cache");
-                }
-            }
-        }
-
-        public string UserInterfaceWindow_Uploading
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Uploading");
-                }
-            }
-        }
-
-        public string UserInterfaceWindow_Downloading
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Downloading");
-                }
-            }
-        }
-
-        public string UserInterfaceWindow_Uploaded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Uploaded");
-                }
-            }
-        }
-
-        public string UserInterfaceWindow_Downloaded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Downloaded");
                 }
             }
         }
@@ -784,6 +811,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string UserInterfaceWindow_Import
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Import");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Export
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Export");
+                }
+            }
+        }
+
         public string UserInterfaceWindow_Up
         {
             get
@@ -817,39 +866,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UserInterfaceWindow_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Copy");
-                }
-            }
-        }
-
-        public string UserInterfaceWindow_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Cut");
-                }
-            }
-        }
-
-        public string UserInterfaceWindow_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Paste");
-                }
-            }
-        }
-
         public string UserInterfaceWindow_Edit
         {
             get
@@ -872,28 +888,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UserInterfaceWindow_Import
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Import");
-                }
-            }
-        }
-
-        public string UserInterfaceWindow_Export
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UserInterfaceWindow_Export");
-                }
-            }
-        }
-
         public string UserInterfaceWindow_Ok
         {
             get
@@ -912,6 +906,39 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("UserInterfaceWindow_Cancel");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Cut");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Copy");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Paste");
                 }
             }
         }
@@ -961,57 +988,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionWindow_Up
+        public string ConnectionWindow_Uri
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionWindow_Up");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Down
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Down");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Add
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Add");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Edit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Edit");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Delete");
+                    return this.Translate("ConnectionWindow_Uri");
                 }
             }
         }
@@ -1093,17 +1076,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionWindow_Condition
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Condition");
-                }
-            }
-        }
-
         public string ConnectionWindow_Type
         {
             get
@@ -1148,61 +1120,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionWindow_Ok
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Ok");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Cancel
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Cancel");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Uri
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Uri");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Keyword
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Keyword");
-                }
-            }
-        }
-
-        public string ConnectionWindow_Keywords
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_Keywords");
-                }
-            }
-        }
-
         public string ConnectionWindow_Miscellaneous
         {
             get
@@ -1214,13 +1131,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionWindow_DownloadDirectory
+        public string ConnectionWindow_CoreSettings
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionWindow_DownloadDirectory");
+                    return this.Translate("ConnectionWindow_CoreSettings");
                 }
             }
         }
@@ -1258,6 +1175,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string ConnectionWindow_DownloadDirectory
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionWindow_DownloadDirectory");
+                }
+            }
+        }
+
         public string ConnectionWindow_CacheSize
         {
             get
@@ -1265,17 +1193,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionWindow_CacheSize");
-                }
-            }
-        }
-
-        public string ConnectionWindow_CoreSettings
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_CoreSettings");
                 }
             }
         }
@@ -1291,17 +1208,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionWindow_AutoUpdate
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_AutoUpdate");
-                }
-            }
-        }
-
         public string ConnectionWindow_AutoBaseNodeSetting
         {
             get
@@ -1309,17 +1215,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionWindow_AutoBaseNodeSetting");
-                }
-            }
-        }
-
-        public string ConnectionWindow_UPnP
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionWindow_UPnP");
                 }
             }
         }
@@ -1357,35 +1252,79 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionWindow_Extends
+        public string ConnectionWindow_Up
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionWindow_Extends");
+                    return this.Translate("ConnectionWindow_Up");
                 }
             }
         }
 
-        public string ConnectionWindow_AutoSetting
+        public string ConnectionWindow_Down
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionWindow_AutoSetting");
+                    return this.Translate("ConnectionWindow_Down");
                 }
             }
         }
 
-        public string ConnectionWindow_Copy
+        public string ConnectionWindow_Add
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionWindow_Copy");
+                    return this.Translate("ConnectionWindow_Add");
+                }
+            }
+        }
+
+        public string ConnectionWindow_Edit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionWindow_Edit");
+                }
+            }
+        }
+
+        public string ConnectionWindow_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionWindow_Delete");
+                }
+            }
+        }
+
+        public string ConnectionWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionWindow_Ok");
+                }
+            }
+        }
+
+        public string ConnectionWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionWindow_Cancel");
                 }
             }
         }
@@ -1397,6 +1336,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionWindow_Cut");
+                }
+            }
+        }
+
+        public string ConnectionWindow_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionWindow_Copy");
                 }
             }
         }
@@ -1458,28 +1408,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string VersionInformationWindow_License
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("VersionInformationWindow_License");
-                }
-            }
-        }
-
-        public string VersionInformationWindow_Close
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("VersionInformationWindow_Close");
-                }
-            }
-        }
-
         public string VersionInformationWindow_FileName
         {
             get
@@ -1502,6 +1430,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string VersionInformationWindow_License
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("VersionInformationWindow_License");
+                }
+            }
+        }
+
+        public string VersionInformationWindow_Close
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("VersionInformationWindow_Close");
+                }
+            }
+        }
+
 
         public string ConnectionControl_Uri
         {
@@ -1510,28 +1460,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionControl_Uri");
-                }
-            }
-        }
-
-        public string ConnectionControl_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_Copy");
-                }
-            }
-        }
-
-        public string ConnectionControl_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_Paste");
                 }
             }
         }
@@ -1547,17 +1475,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_ReceivedByteCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_ReceivedByteCount");
-                }
-            }
-        }
-
         public string ConnectionControl_SentByteCount
         {
             get
@@ -1565,6 +1482,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionControl_SentByteCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_ReceivedByteCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_ReceivedByteCount");
                 }
             }
         }
@@ -1591,46 +1519,112 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_PullNodeCount
+        public string ConnectionControl_CreateConnectionCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PullNodeCount");
+                    return this.Translate("ConnectionControl_CreateConnectionCount");
                 }
             }
         }
 
-        public string ConnectionControl_PullBlockLinkCount
+        public string ConnectionControl_AcceptConnectionCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PullBlockLinkCount");
+                    return this.Translate("ConnectionControl_AcceptConnectionCount");
                 }
             }
         }
 
-        public string ConnectionControl_PullBlockRequestCount
+        public string ConnectionControl_SurroundingNodeCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PullBlockRequestCount");
+                    return this.Translate("ConnectionControl_SurroundingNodeCount");
                 }
             }
         }
 
-        public string ConnectionControl_PullBlockCount
+        public string ConnectionControl_RelayBlockCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_PullBlockCount");
+                    return this.Translate("ConnectionControl_RelayBlockCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_NodeCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_NodeCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_SeedCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_SeedCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_BlockCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_BlockCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_DownloadCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_DownloadCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_UploadCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_UploadCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_ShareCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_ShareCount");
                 }
             }
         }
@@ -1679,123 +1673,68 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_RelayBlockCount
+        public string ConnectionControl_PullNodeCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_RelayBlockCount");
+                    return this.Translate("ConnectionControl_PullNodeCount");
                 }
             }
         }
 
-        public string ConnectionControl_SurroundingNodeCount
+        public string ConnectionControl_PullBlockLinkCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_SurroundingNodeCount");
+                    return this.Translate("ConnectionControl_PullBlockLinkCount");
                 }
             }
         }
 
-        public string ConnectionControl_NodeCount
+        public string ConnectionControl_PullBlockRequestCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_NodeCount");
+                    return this.Translate("ConnectionControl_PullBlockRequestCount");
                 }
             }
         }
 
-        public string ConnectionControl_SeedCount
+        public string ConnectionControl_PullBlockCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_SeedCount");
+                    return this.Translate("ConnectionControl_PullBlockCount");
                 }
             }
         }
 
-        public string ConnectionControl_CacheSeedCount
+        public string ConnectionControl_Copy
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_CacheSeedCount");
+                    return this.Translate("ConnectionControl_Copy");
                 }
             }
         }
 
-        public string ConnectionControl_CreateConnectionCount
+        public string ConnectionControl_Paste
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_CreateConnectionCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_AcceptConnectionCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_AcceptConnectionCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_DownloadCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_DownloadCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_UploadCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_UploadCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_BlockCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_BlockCount");
-                }
-            }
-        }
-
-        public string ConnectionControl_ShareCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionControl_ShareCount");
+                    return this.Translate("ConnectionControl_Paste");
                 }
             }
         }
@@ -1868,757 +1807,6 @@ namespace Amoeba.Properties
         }
 
 
-        public string CacheControl_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Name");
-                }
-            }
-        }
-
-        public string CacheControl_Signature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Signature");
-                }
-            }
-        }
-
-        public string CacheControl_State
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_State");
-                }
-            }
-        }
-
-        public string CacheControl_Keywords
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Keywords");
-                }
-            }
-        }
-
-        public string CacheControl_CreationTime
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_CreationTime");
-                }
-            }
-        }
-
-        public string CacheControl_Length
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Length");
-                }
-            }
-        }
-
-        public string CacheControl_Comment
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Comment");
-                }
-            }
-        }
-
-        public string CacheControl_Hash
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Hash");
-                }
-            }
-        }
-
-        public string CacheControl_Add
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Add");
-                }
-            }
-        }
-
-        public string CacheControl_Edit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Edit");
-                }
-            }
-        }
-
-        public string CacheControl_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Delete");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteCache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteCache");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteShare
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteShare");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteDownload
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteDownload");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteUpload
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteUpload");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteDownloadHistory
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteDownloadHistory");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteUploadHistory
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteUploadHistory");
-                }
-            }
-        }
-
-        public string CacheControl_Download
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Download");
-                }
-            }
-        }
-
-        public string CacheControl_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Copy");
-                }
-            }
-        }
-
-        public string CacheControl_CopyInfo
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_CopyInfo");
-                }
-            }
-        }
-
-        public string CacheControl_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Cut");
-                }
-            }
-        }
-
-        public string CacheControl_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Paste");
-                }
-            }
-        }
-
-        public string CacheControl_Export
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Export");
-                }
-            }
-        }
-
-        public string CacheControl_FilterName
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterName");
-                }
-            }
-        }
-
-        public string CacheControl_FilterSignature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterSignature");
-                }
-            }
-        }
-
-        public string CacheControl_FilterKeyword
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterKeyword");
-                }
-            }
-        }
-
-        public string CacheControl_FilterSeed
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterSeed");
-                }
-            }
-        }
-
-
-        public string SearchState_Cache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Cache");
-                }
-            }
-        }
-
-        public string SearchState_Share
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Share");
-                }
-            }
-        }
-
-        public string SearchState_Downloading
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Downloading");
-                }
-            }
-        }
-
-        public string SearchState_Uploading
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Uploading");
-                }
-            }
-        }
-
-        public string SearchState_Downloaded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Downloaded");
-                }
-            }
-        }
-
-        public string SearchState_Uploaded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Uploaded");
-                }
-            }
-        }
-
-
-        public string SearchItemEditWindow_Title
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Title");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Ok
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Ok");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Cancel
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Cancel");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Copy");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Cut");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Paste");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Name");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_NameRegex
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_NameRegex");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Signature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Signature");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Keyword
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Keyword");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_CreationTimeRange
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_CreationTimeRange");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_LengthRange
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_LengthRange");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Seed
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Seed");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_SearchState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_SearchState");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Contains
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Contains");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_NotContains
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_NotContains");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Condition
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Condition");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_SearchCondition_And
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_SearchCondition_And");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_SearchCondition_Or
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_SearchCondition_Or");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Up
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Up");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Down
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Down");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Add
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Add");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Edit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Edit");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Delete");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Value
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Value");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Max
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Max");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Min
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Min");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_IsIgnoreCase
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_IsIgnoreCase");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Miscellaneous
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Miscellaneous");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Cache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Cache");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Share
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Share");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Downloading
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Downloading");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Uploading
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Uploading");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Downloaded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Downloaded");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_Uploaded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_Uploaded");
-                }
-            }
-        }
-
-
         public string DownloadControl_Name
         {
             get
@@ -2626,17 +1814,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("DownloadControl_Name");
-                }
-            }
-        }
-
-        public string DownloadControl_State
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("DownloadControl_State");
                 }
             }
         }
@@ -2681,6 +1858,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("DownloadControl_Rate");
+                }
+            }
+        }
+
+        public string DownloadControl_State
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("DownloadControl_State");
                 }
             }
         }
@@ -2828,13 +2016,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string DownloadControl_CompleteDelete
+        public string DownloadControl_DeleteComplete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("DownloadControl_CompleteDelete");
+                    return this.Translate("DownloadControl_DeleteComplete");
                 }
             }
         }
@@ -2896,17 +2084,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UploadControl_State
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UploadControl_State");
-                }
-            }
-        }
-
         public string UploadControl_Length
         {
             get
@@ -2951,13 +2128,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UploadControl_Seed
+        public string UploadControl_State
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("UploadControl_Seed");
+                    return this.Translate("UploadControl_State");
                 }
             }
         }
@@ -3094,13 +2271,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UploadControl_CompleteDelete
+        public string UploadControl_DeleteComplete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("UploadControl_CompleteDelete");
+                    return this.Translate("UploadControl_DeleteComplete");
                 }
             }
         }
@@ -3173,6 +2350,28 @@ namespace Amoeba.Properties
         }
 
 
+        public string ShareControl_Path
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_Path");
+                }
+            }
+        }
+
+        public string ShareControl_BlockCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_BlockCount");
+                }
+            }
+        }
+
         public string ShareControl_Add
         {
             get
@@ -3202,50 +2401,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ShareControl_CheckExist");
-                }
-            }
-        }
-
-        public string ShareControl_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Name");
-                }
-            }
-        }
-
-        public string ShareControl_Path
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Path");
-                }
-            }
-        }
-
-        public string ShareControl_Length
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Length");
-                }
-            }
-        }
-
-        public string ShareControl_BlockCount
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_BlockCount");
                 }
             }
         }
@@ -3328,6 +2483,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string UploadWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UploadWindow_Ok");
+                }
+            }
+        }
+
         public string UploadWindow_Cancel
         {
             get
@@ -3339,13 +2505,698 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UploadWindow_Ok
+
+        public string CacheControl_Name
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("UploadWindow_Ok");
+                    return this.Translate("CacheControl_Name");
+                }
+            }
+        }
+
+        public string CacheControl_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Signature");
+                }
+            }
+        }
+
+        public string CacheControl_Length
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Length");
+                }
+            }
+        }
+
+        public string CacheControl_Keywords
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Keywords");
+                }
+            }
+        }
+
+        public string CacheControl_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_CreationTime");
+                }
+            }
+        }
+
+        public string CacheControl_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Comment");
+                }
+            }
+        }
+
+        public string CacheControl_State
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_State");
+                }
+            }
+        }
+
+        public string CacheControl_Hash
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Hash");
+                }
+            }
+        }
+
+        public string CacheControl_New
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_New");
+                }
+            }
+        }
+
+        public string CacheControl_Edit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Edit");
+                }
+            }
+        }
+
+        public string CacheControl_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Delete");
+                }
+            }
+        }
+
+        public string CacheControl_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Cut");
+                }
+            }
+        }
+
+        public string CacheControl_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Copy");
+                }
+            }
+        }
+
+        public string CacheControl_CopyInfo
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_CopyInfo");
+                }
+            }
+        }
+
+        public string CacheControl_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Paste");
+                }
+            }
+        }
+
+        public string CacheControl_Export
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Export");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteCache
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteCache");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteShare
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteShare");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteDownload
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteDownload");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteUpload
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteUpload");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteDownloadHistory
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteDownloadHistory");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteUploadHistory
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteUploadHistory");
+                }
+            }
+        }
+
+        public string CacheControl_Download
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Download");
+                }
+            }
+        }
+
+        public string CacheControl_FilterName
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterName");
+                }
+            }
+        }
+
+        public string CacheControl_FilterSignature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterSignature");
+                }
+            }
+        }
+
+        public string CacheControl_FilterKeyword
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterKeyword");
+                }
+            }
+        }
+
+        public string CacheControl_FilterSeed
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterSeed");
+                }
+            }
+        }
+
+
+        public string SearchState_Cache
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Cache");
+                }
+            }
+        }
+
+        public string SearchState_Share
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Share");
+                }
+            }
+        }
+
+        public string SearchState_Downloading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Downloading");
+                }
+            }
+        }
+
+        public string SearchState_Uploading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Uploading");
+                }
+            }
+        }
+
+        public string SearchState_Downloaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Downloaded");
+                }
+            }
+        }
+
+        public string SearchState_Uploaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Uploaded");
+                }
+            }
+        }
+
+
+        public string SearchItemEditWindow_Title
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Title");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Name");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_NameRegex
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_NameRegex");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Signature");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Keyword
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Keyword");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_CreationTimeRange
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_CreationTimeRange");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_LengthRange
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_LengthRange");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Seed
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Seed");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Contains
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Contains");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_IsIgnoreCase
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_IsIgnoreCase");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Value
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Value");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Min
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Min");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Max
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Max");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Up
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Up");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Down
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Down");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Add
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Add");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Edit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Edit");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Delete");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Ok");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Cancel");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Cut");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Copy");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_Paste");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState_Cache
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState_Cache");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState_Share
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState_Share");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState_Downloading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState_Downloading");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState_Uploading
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState_Uploading");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState_Downloaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState_Downloaded");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState_Uploaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState_Uploaded");
                 }
             }
         }
@@ -3373,6 +3224,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string LibraryControl_Length
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Length");
+                }
+            }
+        }
+
         public string LibraryControl_Keywords
         {
             get
@@ -3391,17 +3253,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("LibraryControl_CreationTime");
-                }
-            }
-        }
-
-        public string LibraryControl_Length
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LibraryControl_Length");
                 }
             }
         }
@@ -3439,13 +3290,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LibraryControl_AddBox
+        public string LibraryControl_New
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_AddBox");
+                    return this.Translate("LibraryControl_New");
                 }
             }
         }
@@ -3461,17 +3312,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LibraryControl_NewBox
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LibraryControl_NewBox");
-                }
-            }
-        }
-
         public string LibraryControl_Delete
         {
             get
@@ -3483,24 +3323,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LibraryControl_SeedUpload
+        public string LibraryControl_Cut
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_SeedUpload");
-                }
-            }
-        }
-
-        public string LibraryControl_Download
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LibraryControl_Download");
+                    return this.Translate("LibraryControl_Cut");
                 }
             }
         }
@@ -3512,28 +3341,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("LibraryControl_Copy");
-                }
-            }
-        }
-
-        public string LibraryControl_CopyInfo
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LibraryControl_CopyInfo");
-                }
-            }
-        }
-
-        public string LibraryControl_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LibraryControl_Cut");
                 }
             }
         }
@@ -3571,13 +3378,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LibraryControl_Seed
+        public string LibraryControl_CopyInfo
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Seed");
+                    return this.Translate("LibraryControl_CopyInfo");
+                }
+            }
+        }
+
+        public string LibraryControl_Download
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Download");
                 }
             }
         }
@@ -3600,17 +3418,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("LibraryControl_DigitalSignatureError_Message");
-                }
-            }
-        }
-
-        public string LibraryControl_SeedUpload_Message
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LibraryControl_SeedUpload_Message");
                 }
             }
         }
@@ -3671,17 +3478,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string SeedEditWindow_Cancel
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SeedEditWindow_Cancel");
-                }
-            }
-        }
-
         public string SeedEditWindow_Ok
         {
             get
@@ -3689,6 +3485,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SeedEditWindow_Ok");
+                }
+            }
+        }
+
+        public string SeedEditWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedEditWindow_Cancel");
                 }
             }
         }
@@ -3738,17 +3545,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string BoxEditWindow_Cancel
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxEditWindow_Cancel");
-                }
-            }
-        }
-
         public string BoxEditWindow_Ok
         {
             get
@@ -3756,6 +3552,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("BoxEditWindow_Ok");
+                }
+            }
+        }
+
+        public string BoxEditWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("BoxEditWindow_Cancel");
                 }
             }
         }

@@ -31,8 +31,8 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
-        <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Cut" Executed="Execute_Cut" />
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Paste" Executed="Execute_Paste" />
     </Window.CommandBindings>
 
@@ -78,8 +78,8 @@
                             <ContextMenu Name="_keywordListViewContextMenu" >
                                 <MenuItem Name="_keywordListViewDeleteMenuItem" Header="{Binding Path=UserInterfaceWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewDeleteMenuItem_Click"/>
                                 <Separator />
-                                <MenuItem Name="_keywordListViewCopyMenuItem" Header="{Binding Path=UserInterfaceWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewCopyMenuItem_Click"/>
                                 <MenuItem Name="_keywordListViewCutMenuItem" Header="{Binding Path=UserInterfaceWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewCutMenuItem_Click"/>
+                                <MenuItem Name="_keywordListViewCopyMenuItem" Header="{Binding Path=UserInterfaceWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewCopyMenuItem_Click"/>
                                 <MenuItem Name="_keywordListViewPasteMenuItem" Header="{Binding Path=UserInterfaceWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>

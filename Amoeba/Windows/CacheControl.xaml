@@ -49,8 +49,8 @@
     <UserControl.CommandBindings>
         <CommandBinding Command="New" Executed="Execute_New" />
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
-        <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Cut" Executed="Execute_Cut" />
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Paste" Executed="Execute_Paste" />
         <CommandBinding Command="Search"  Executed="Execute_Search" />
     </UserControl.CommandBindings>
@@ -58,8 +58,8 @@
     <UserControl.InputBindings>
         <KeyBinding Gesture="CTRL+N" Command="New" />
         <KeyBinding Gesture="Delete" Command="Delete" />
-        <KeyBinding Gesture="CTRL+C" Command="Copy" />
         <KeyBinding Gesture="CTRL+X" Command="Cut" />
+        <KeyBinding Gesture="CTRL+C" Command="Copy" />
         <KeyBinding Gesture="CTRL+V" Command="Paste" />
         <KeyBinding Gesture="CTRL+F" Command="Search" />
     </UserControl.InputBindings>
@@ -85,7 +85,7 @@
             <local:SearchTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
                 <local:SearchTreeViewItem.ContextMenu>
                     <ContextMenu Name="_treeViewContextMenu">
-                        <MenuItem Name="_treeViewAddMenuItem" Header="{Binding Path=CacheControl_Add, Source={StaticResource ResourcesInstance}}" Click="_treeViewAddMenuItem_Click"/>
+                        <MenuItem Name="_treeViewNewMenuItem" Header="{Binding Path=CacheControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewNewMenuItem_Click"/>
                         <MenuItem Name="_treeViewEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewEditMenuItem_Click"/>
                         <MenuItem Name="_treeViewDeleteMenuItem" Header="{Binding Path=CacheControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewDeleteMenuItem_Click"/>
                         <Separator />

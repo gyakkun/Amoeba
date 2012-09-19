@@ -480,27 +480,27 @@ namespace Amoeba.Windows
 
             if ((item & SearchState.Cache) == SearchState.Cache)
             {
-                return LanguagesManager.Instance.SearchItemEditWindow_Cache;
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Cache;
             }
             else if ((item & SearchState.Share) == SearchState.Share)
             {
-                return LanguagesManager.Instance.SearchItemEditWindow_Share;
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Share;
             }
             else if ((item & SearchState.Uploading) == SearchState.Uploading)
             {
-                return LanguagesManager.Instance.SearchItemEditWindow_Uploading;
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Uploading;
             }
             else if ((item & SearchState.Downloading) == SearchState.Downloading)
             {
-                return LanguagesManager.Instance.SearchItemEditWindow_Downloading;
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Downloading;
             }
             else if ((item & SearchState.Uploaded) == SearchState.Uploaded)
             {
-                return LanguagesManager.Instance.SearchItemEditWindow_Uploaded;
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Uploaded;
             }
             else if ((item & SearchState.Downloaded) == SearchState.Downloaded)
             {
-                return LanguagesManager.Instance.SearchItemEditWindow_Downloaded;
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Downloaded;
             }
 
             return "";

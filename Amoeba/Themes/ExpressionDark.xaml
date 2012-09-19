@@ -1518,8 +1518,8 @@
     </Style>
 
     <ContextMenu x:Key="TextBoxContextMenu">
-        <MenuItem Command="ApplicationCommands.Copy" />
         <MenuItem Command="ApplicationCommands.Cut" />
+        <MenuItem Command="ApplicationCommands.Copy" />
         <MenuItem Command="ApplicationCommands.Paste" />
     </ContextMenu>
 

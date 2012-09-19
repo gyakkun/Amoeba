@@ -166,7 +166,7 @@ namespace Amoeba.Windows
                                         _stopMenuItem_Click(null, null);
                                     }), null);
 
-                                    Log.Warning(LanguagesManager.Instance.MainWindow_SpaceNotFound);
+                                    Log.Warning(LanguagesManager.Instance.MainWindow_SpaceNotFound_Message);
                                 }
                             }
                         }
@@ -415,11 +415,11 @@ namespace Amoeba.Windows
         {
             foreach (var item in LanguagesManager.Instance.Languages)
             {
-                var menuItem = new MenuItem() { IsCheckable = true, Header = item };
+                var menuItem = new LanguageMenuItem() { IsCheckable = true, Value = item };
 
                 menuItem.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
                 {
-                    foreach (var item3 in _languagesMenuItem.Items.Cast<MenuItem>())
+                    foreach (var item3 in _languagesMenuItem.Items.Cast<LanguageMenuItem>())
                     {
                         item3.IsChecked = false;
                     }
@@ -429,14 +429,14 @@ namespace Amoeba.Windows
 
                 menuItem.Checked += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
                 {
-                    Settings.Instance.Global_UseLanguage = (string)menuItem.Header;
-                    LanguagesManager.ChangeLanguage((string)menuItem.Header);
+                    Settings.Instance.Global_UseLanguage = (string)menuItem.Value;
+                    LanguagesManager.ChangeLanguage((string)menuItem.Value);
                 });
 
                 _languagesMenuItem.Items.Add(menuItem);
             }
 
-            var menuItem2 = _languagesMenuItem.Items.Cast<MenuItem>().FirstOrDefault(n => (string)n.Header == Settings.Instance.Global_UseLanguage);
+            var menuItem2 = _languagesMenuItem.Items.Cast<LanguageMenuItem>().FirstOrDefault(n => n.Value == Settings.Instance.Global_UseLanguage);
             if (menuItem2 != null) menuItem2.IsChecked = true;
         }
 
@@ -921,11 +921,11 @@ namespace Amoeba.Windows
                         {
                             if (_amoebaManager.State == ManagerState.Start)
                             {
-                                _stateTextBlock.Text = "Start";
+                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Start; 
                             }
                             else
                             {
-                                _stateTextBlock.Text = "Stop";
+                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Stop;
                             }
                         }
                         catch (Exception)
@@ -1251,6 +1251,40 @@ namespace Amoeba.Windows
             VersionInformationWindow window = new VersionInformationWindow();
             window.Owner = this;
             window.ShowDialog();
+        }
+    }
+
+    class LanguageMenuItem : MenuItem
+    {
+        private string _value;
+
+        public LanguageMenuItem()
+        {
+            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+        }
+
+        void LanguagesManager_UsingLanguageChangedEvent(object sender)
+        {
+            this.Update();
+        }
+
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value;
+
+                this.Update();
+            }
+        }
+
+        private void Update()
+        {
+            base.Header = LanguagesManager.Instance.Translate("Languages_" + _value) ?? _value;
         }
     }
 }

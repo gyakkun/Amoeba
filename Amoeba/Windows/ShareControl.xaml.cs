@@ -61,7 +61,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                     if (App.SelectTab != "Share") continue;
 
                     var shareInformation = _amoebaManager.ShareInformation.ToArray();

@@ -39,6 +39,17 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Maximized },
 
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "UserInterfaceWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Keyword_GridViewColumn_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Signature_GridViewColumn_Value_Width", Value = 600 },
+
+                new Library.Configuration.SettingsContext<double>() { Name = "ProgressWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "ProgressWindow_WindowState", Value = WindowState.Normal },
+
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Height", Value = 500 },
@@ -50,14 +61,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Client_Filters_GridViewColumn_ProxyUri_Width", Value = 200 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Client_Filters_GridViewColumn_UriCondition_Width", Value = 300 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionWindow_Server_ListenUris_GridViewColumn_Uri_Width", Value = 600 },
-
-                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "UserInterfaceWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Keyword_GridViewColumn_Value_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UserInterfaceWindow_Signature_GridViewColumn_Value_Width", Value = 600 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
@@ -539,6 +542,179 @@ namespace Amoeba.Properties
         }
 
 
+        public double UserInterfaceWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Top"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Left"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Height"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState UserInterfaceWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["UserInterfaceWindow_WindowState"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Keyword_GridViewColumn_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Keyword_GridViewColumn_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Keyword_GridViewColumn_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double UserInterfaceWindow_Signature_GridViewColumn_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UserInterfaceWindow_Signature_GridViewColumn_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UserInterfaceWindow_Signature_GridViewColumn_Value_Width"] = value;
+                }
+            }
+        }
+
+
+        public double ProgressWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ProgressWindow_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ProgressWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState ProgressWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["ProgressWindow_WindowState"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ProgressWindow_WindowState"] = value;
+                }
+            }
+        }
+
+
         public double ConnectionWindow_Top
         {
             get
@@ -744,140 +920,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ConnectionWindow_Server_ListenUris_GridViewColumn_Uri_Width"] = value;
-                }
-            }
-        }
-
-
-        public double UserInterfaceWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UserInterfaceWindow_Top"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UserInterfaceWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double UserInterfaceWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UserInterfaceWindow_Left"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UserInterfaceWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double UserInterfaceWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UserInterfaceWindow_Height"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UserInterfaceWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double UserInterfaceWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UserInterfaceWindow_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UserInterfaceWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState UserInterfaceWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["UserInterfaceWindow_WindowState"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UserInterfaceWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double UserInterfaceWindow_Keyword_GridViewColumn_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UserInterfaceWindow_Keyword_GridViewColumn_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UserInterfaceWindow_Keyword_GridViewColumn_Value_Width"] = value;
-                }
-            }
-        }
-
-        public double UserInterfaceWindow_Signature_GridViewColumn_Value_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UserInterfaceWindow_Signature_GridViewColumn_Value_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UserInterfaceWindow_Signature_GridViewColumn_Value_Width"] = value;
                 }
             }
         }

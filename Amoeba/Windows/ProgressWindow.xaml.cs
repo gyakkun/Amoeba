@@ -40,6 +40,12 @@ namespace Amoeba.Windows
             _button.IsEnabled = _closeIsEnabled;
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.MaxHeight = this.RenderSize.Height;
+            this.MinHeight = this.RenderSize.Height;
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = !_closeIsEnabled;

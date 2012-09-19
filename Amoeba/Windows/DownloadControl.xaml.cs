@@ -68,7 +68,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                     if (App.SelectTab != "Download") continue;
                     
                     var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
@@ -271,8 +271,8 @@ namespace Amoeba.Windows
             _listViewResetMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewPriorityMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             
-            if (!_listViewCompleteDeleteMenuItem_IsEnabled) _listViewCompleteDeleteMenuItem.IsEnabled = false;
-            else _listViewCompleteDeleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => (DownloadState)n.Information["State"] == DownloadState.Completed);
+            if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
+            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => (DownloadState)n.Information["State"] == DownloadState.Completed);
 
             {
                 var seeds = Clipboard.GetSeeds();
@@ -438,11 +438,11 @@ namespace Amoeba.Windows
             }
         }
 
-        volatile bool _listViewCompleteDeleteMenuItem_IsEnabled = true;
+        volatile bool _listViewDeleteCompleteMenuItem_IsEnabled = true;
 
-        private void _listViewCompleteDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewDeleteCompleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _listViewCompleteDeleteMenuItem_IsEnabled = false;
+            _listViewDeleteCompleteMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -465,7 +465,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _listViewCompleteDeleteMenuItem_IsEnabled = true;
+                _listViewDeleteCompleteMenuItem_IsEnabled = true;
             }));
         }
 

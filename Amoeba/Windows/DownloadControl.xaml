@@ -70,7 +70,7 @@
                         <MenuItem Name="_listViewPriority6MenuItem" Header="{Binding Path=DownloadControl_Priority6, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority6MenuItem_Click"/>
                     </MenuItem>
                     <MenuItem Name="_listViewResetMenuItem" Header="{Binding Path=DownloadControl_Reset, Source={StaticResource ResourcesInstance}}" Click="_listViewResetMenuItem_Click"/>
-                    <MenuItem Name="_listViewCompleteDeleteMenuItem" Header="{Binding Path=DownloadControl_CompleteDelete, Source={StaticResource ResourcesInstance}}" Click="_listViewCompleteDeleteMenuItem_Click"/>
+                    <MenuItem Name="_listViewDeleteCompleteMenuItem" Header="{Binding Path=DownloadControl_DeleteComplete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteCompleteMenuItem_Click"/>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
