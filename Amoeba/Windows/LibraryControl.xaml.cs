@@ -89,7 +89,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                     if (!_refresh) continue;
 
                     BoxTreeViewItem selectTreeViewItem = null;
@@ -1184,7 +1184,7 @@ namespace Amoeba.Windows
 
             if (_refresh)
             {
-                _listViewAddBoxMenuItem.IsEnabled = false;
+                _listViewNewMenuItem.IsEnabled = false;
                 _listViewEditMenuItem.IsEnabled = false;
                 _listViewDeleteMenuItem.IsEnabled = false;
                 _listViewCutMenuItem.IsEnabled = false;
@@ -1213,7 +1213,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _listViewAddBoxMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewNewMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as BoxTreeViewItem;
             if (selectTreeViewItem == null) return;

@@ -109,7 +109,7 @@
             </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
-                    <MenuItem Name="_listViewAddBoxMenuItem" Header="{Binding Path=LibraryControl_AddBox, Source={StaticResource ResourcesInstance}}" Click="_listViewAddBoxMenuItem_Click" />
+                    <MenuItem Name="_listViewNewMenuItem" Header="{Binding Path=LibraryControl_New, Source={StaticResource ResourcesInstance}}" Click="_listViewNewMenuItem_Click" />
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />

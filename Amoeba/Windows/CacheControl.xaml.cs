@@ -90,7 +90,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                     if (!_refresh) continue;
 
                     SearchTreeViewItem selectTreeViewItem = null;

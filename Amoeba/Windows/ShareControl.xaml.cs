@@ -61,7 +61,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                     if (App.SelectTab != "Share") continue;
 
                     var shareInformation = _amoebaManager.ShareInformation.ToArray();
@@ -78,7 +78,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            dic2[(int)item.Information["Id"]] = item;
+                            dic2[item.Id] = item;
                         }
                     }), null);
 
@@ -88,7 +88,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            if (!dic.ContainsKey((int)item.Information["Id"]))
+                            if (!dic.ContainsKey(item.Id))
                             {
                                 removeList.Add(item);
                             }
@@ -115,12 +115,12 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<ShareListViewItem>().Select(n => (int)n.Information["Id"]));
+                            hid.UnionWith(_listView.SelectedItems.OfType<ShareListViewItem>().Select(n => n.Id));
                         }), null);
 
                         foreach (var item in newList)
                         {
-                            if (hid.Contains((int)item.Information["Id"]))
+                            if (hid.Contains(item.Id))
                             {
                                 selectItems.Add(item);
                             }
@@ -286,7 +286,7 @@ namespace Amoeba.Windows
 
             foreach (var item in selectItems.Cast<ShareListViewItem>())
             {
-                ids.Add((int)item.Information["Id"]);
+                ids.Add(item.Id);
             }
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
@@ -394,6 +394,8 @@ namespace Amoeba.Windows
             }
             else
             {
+                _listView.Items.SortDescriptions.Clear();
+                
                 if (Settings.Instance.ShareControl_LastHeaderClicked != null)
                 {
                     var list = Sort(_listViewItemCollection, Settings.Instance.ShareControl_LastHeaderClicked, Settings.Instance.ShareControl_ListSortDirection).ToList();
@@ -432,7 +434,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Path.CompareTo(y.Path);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -444,7 +446,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.BlockCount.CompareTo(y.BlockCount);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -473,6 +475,7 @@ namespace Amoeba.Windows
                 }
             }
 
+            private int _id;
             private Information _information;
             private string _path = null;
             private int _blockCount = 0;
@@ -480,6 +483,16 @@ namespace Amoeba.Windows
             public ShareListViewItem(Information information)
             {
                 this.Information = information;
+
+                _id = (int)this.Information["Id"];
+            }
+
+            public int Id
+            {
+                get
+                {
+                    return _id;
+                }
             }
 
             public Information Information

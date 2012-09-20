@@ -68,7 +68,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                     if (App.SelectTab != "Download") continue;
                     
                     var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
@@ -85,7 +85,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            dic2[(int)item.Information["Id"]] = item;
+                            dic2[item.Id] = item;
                         }
                     }), null);
 
@@ -95,7 +95,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            if (!dic.ContainsKey((int)item.Information["Id"]))
+                            if (!dic.ContainsKey(item.Id))
                             {
                                 removeList.Add(item);
                             }
@@ -122,12 +122,12 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<DownloadListViewItem>().Select(n => (int)n.Information["Id"]));
+                            hid.UnionWith(_listView.SelectedItems.OfType<DownloadListViewItem>().Select(n => n.Id));
                         }), null);
 
                         foreach (var item in newList)
                         {
-                            if (hid.Contains((int)item.Information["Id"]))
+                            if (hid.Contains(item.Id))
                             {
                                 selectItems.Add(item);
                             }
@@ -272,7 +272,7 @@ namespace Amoeba.Windows
             _listViewPriorityMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             
             if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
-            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => (DownloadState)n.Information["State"] == DownloadState.Completed);
+            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => n.State == DownloadState.Completed);
 
             {
                 var seeds = Clipboard.GetSeeds();
@@ -296,7 +296,7 @@ namespace Amoeba.Windows
 
             foreach (var item in selectItems.Cast<DownloadListViewItem>())
             {
-                ids.Add((int)item.Information["Id"]);
+                ids.Add(item.Id);
             }
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
@@ -372,7 +372,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _amoebaManager.SetDownloadPriority((int)item.Information["Id"], i);
+                    _amoebaManager.SetDownloadPriority(item.Id, i);
                 }
                 catch (Exception)
                 {
@@ -429,7 +429,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _amoebaManager.ResetDownload((int)item.Information["Id"]);
+                    _amoebaManager.ResetDownload(item.Id);
                 }
                 catch (Exception)
                 {
@@ -511,6 +511,8 @@ namespace Amoeba.Windows
             }
             else
             {
+                _listView.Items.SortDescriptions.Clear();
+                
                 if (Settings.Instance.DownloadControl_LastHeaderClicked != null)
                 {
                     var list = Sort(_listViewItemCollection, Settings.Instance.DownloadControl_LastHeaderClicked, Settings.Instance.DownloadControl_ListSortDirection).ToList();
@@ -563,7 +565,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -575,7 +577,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Length.CompareTo(y.Length);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -587,7 +589,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Priority.CompareTo(y.Priority);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -597,13 +599,13 @@ namespace Amoeba.Windows
             {
                 list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
                 {
-                    int c = ((int)((DownloadState)x.Information["State"])).CompareTo((int)((DownloadState)y.Information["State"]));
+                    int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
                     c = x.Rank.CompareTo(y.Rank);
                     if (c != 0) return c;
                     c = x.Rate.CompareTo(y.Rate);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -613,9 +615,9 @@ namespace Amoeba.Windows
             {
                 list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
                 {
-                    int c = ((int)((DownloadState)x.Information["State"])).CompareTo((int)((DownloadState)y.Information["State"]));
+                    int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -644,6 +646,7 @@ namespace Amoeba.Windows
                 }
             }
 
+            private int _id;
             private Information _information;
             private int _rank = 0;
             private string _name = null;
@@ -657,6 +660,16 @@ namespace Amoeba.Windows
             public DownloadListViewItem(Information information)
             {
                 this.Information = information;
+
+                _id = (int)this.Information["Id"];
+            }
+
+            public int Id
+            {
+                get
+                {
+                    return _id;
+                }
             }
 
             public Information Information

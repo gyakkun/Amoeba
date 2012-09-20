@@ -61,7 +61,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                     if (App.SelectTab != "Upload") continue;
 
                     var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
@@ -78,7 +78,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            dic2[(int)item.Information["Id"]] = item;
+                            dic2[item.Id] = item;
                         }
                     }), null);
 
@@ -88,7 +88,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            if (!dic.ContainsKey((int)item.Information["Id"]))
+                            if (!dic.ContainsKey(item.Id))
                             {
                                 removeList.Add(item);
                             }
@@ -115,12 +115,12 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<UploadListViewItem>().Select(n => (int)n.Information["Id"]));
+                            hid.UnionWith(_listView.SelectedItems.OfType<UploadListViewItem>().Select(n => n.Id));
                         }), null);
 
                         foreach (var item in newList)
                         {
-                            if (hid.Contains((int)item.Information["Id"]))
+                            if (hid.Contains(item.Id))
                             {
                                 selectItems.Add(item);
                             }
@@ -237,7 +237,7 @@ namespace Amoeba.Windows
             _listViewPriorityMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
          
             if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
-            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => (UploadState)n.Information["State"] == UploadState.Completed);
+            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => n.State == UploadState.Completed);
         }
 
         private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
@@ -279,7 +279,7 @@ namespace Amoeba.Windows
 
             foreach (var item in selectItems.Cast<UploadListViewItem>())
             {
-                ids.Add((int)item.Information["Id"]);
+                ids.Add(item.Id);
             }
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
@@ -347,7 +347,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _amoebaManager.SetUploadPriority((int)item.Information["Id"], i);
+                    _amoebaManager.SetUploadPriority(item.Id, i);
                 }
                 catch (Exception)
                 {
@@ -404,7 +404,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _amoebaManager.ResetUpload((int)item.Information["Id"]);
+                    _amoebaManager.ResetUpload(item.Id);
                 }
                 catch (Exception)
                 {
@@ -486,6 +486,8 @@ namespace Amoeba.Windows
             }
             else
             {
+                _listView.Items.SortDescriptions.Clear();
+
                 if (Settings.Instance.UploadControl_LastHeaderClicked != null)
                 {
                     var list = Sort(_listViewItemCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
@@ -538,7 +540,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -550,7 +552,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Length.CompareTo(y.Length);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -562,7 +564,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Priority.CompareTo(y.Priority);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -572,13 +574,13 @@ namespace Amoeba.Windows
             {
                 list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
                 {
-                    int c = ((int)((UploadState)x.Information["State"])).CompareTo((int)((UploadState)y.Information["State"]));
+                    int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
                     c = x.Rank.CompareTo(y.Rank);
                     if (c != 0) return c;
                     c = x.Rate.CompareTo(y.Rate);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -588,9 +590,9 @@ namespace Amoeba.Windows
             {
                 list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
                 {
-                    int c = ((int)((UploadState)x.Information["State"])).CompareTo((int)((UploadState)y.Information["State"]));
+                    int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -619,6 +621,7 @@ namespace Amoeba.Windows
                 }
             }
 
+            private int _id;
             private Information _information;
             private int _rank = 0;
             private string _name = null;
@@ -632,6 +635,16 @@ namespace Amoeba.Windows
             public UploadListViewItem(Information information)
             {
                 this.Information = information;
+
+                _id = (int)this.Information["Id"];
+            }
+
+            public int Id
+            {
+                get
+                {
+                    return _id;
+                }
             }
 
             public Information Information

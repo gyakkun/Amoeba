@@ -149,7 +149,7 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
                     if (App.SelectTab != "Connection") continue;
                     
                     var connectionInformation = _amoebaManager.ConnectionInformation.ToArray();
@@ -166,7 +166,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            dic2[(int)item.Information["Id"]] = item;
+                            dic2[item.Id] = item;
                         }
                     }), null);
 
@@ -176,7 +176,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            if (!dic.ContainsKey((int)item.Information["Id"]))
+                            if (!dic.ContainsKey(item.Id))
                             {
                                 removeList.Add(item);
                             }
@@ -203,12 +203,12 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<ConnectionListViewItem>().Select(n => (int)n.Information["Id"]));
+                            hid.UnionWith(_listView.SelectedItems.OfType<ConnectionListViewItem>().Select(n => n.Id));
                         }), null);
 
                         foreach (var item in newList)
                         {
-                            if (hid.Contains((int)item.Information["Id"]))
+                            if (hid.Contains(item.Id))
                             {
                                 selectItems.Add(item);
                             }
@@ -358,6 +358,8 @@ namespace Amoeba.Windows
             }
             else
             {
+                _listView.Items.SortDescriptions.Clear();
+                
                 if (Settings.Instance.ConnectionControl_LastHeaderClicked != null)
                 {
                     var list = Sort(_listViewItemCollection, Settings.Instance.ConnectionControl_LastHeaderClicked, Settings.Instance.ConnectionControl_ListSortDirection).ToList();
@@ -404,7 +406,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Uri.CompareTo(y.Uri);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -416,7 +418,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Priority.CompareTo(y.Priority);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -426,9 +428,9 @@ namespace Amoeba.Windows
             {
                 list.Sort(delegate(ConnectionListViewItem x, ConnectionListViewItem y)
                 {
-                    int c = ((long)x.Information["ReceivedByteCount"]).CompareTo((long)y.Information["ReceivedByteCount"]);
+                    int c = x.ReceivedByteCount.CompareTo(y.ReceivedByteCount);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -438,9 +440,9 @@ namespace Amoeba.Windows
             {
                 list.Sort(delegate(ConnectionListViewItem x, ConnectionListViewItem y)
                 {
-                    int c = ((long)x.Information["SentByteCount"]).CompareTo((long)y.Information["SentByteCount"]);
+                    int c = x.SentByteCount.CompareTo(y.SentByteCount);
                     if (c != 0) return c;
-                    c = ((int)x.Information["Id"]).CompareTo((int)y.Information["Id"]);
+                    c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
                     return 0;
@@ -541,6 +543,7 @@ namespace Amoeba.Windows
                 }
             }
 
+            private int _id;
             private Information _information;
             private string _uri = null;
             private int _priority = 0;
@@ -550,8 +553,18 @@ namespace Amoeba.Windows
             public ConnectionListViewItem(Information information)
             {
                 this.Information = information;
+
+                _id = (int)this.Information["Id"];
             }
 
+            public int Id
+            {
+                get
+                {
+                    return _id;
+                }
+            }
+            
             public Information Information
             {
                 get

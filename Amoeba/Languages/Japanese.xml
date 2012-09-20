@@ -11,7 +11,7 @@
   <Translate Key="Seed_Name" Value="名前" />
   <Translate Key="Seed_Signature" Value="署名" />
   <Translate Key="Seed_Length" Value="サイズ" />
-  <Translate Key="Seed_Keywords" Value="キー単語" />
+  <Translate Key="Seed_Keywords" Value="キーワード" />
   <Translate Key="Seed_CreationTime" Value="作成日" />
   <Translate Key="Seed_Comment" Value="コメント" />
 
@@ -122,7 +122,7 @@
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
 
   <Translate Key="VersionInformationWindow_Title" Value="バージョン情報" />
-  <Translate Key="VersionInformationWindow_FileName" Value="名前" />
+  <Translate Key="VersionInformationWindow_FileName" Value="ファイル名" />
   <Translate Key="VersionInformationWindow_Version" Value="バージョン" />
   <Translate Key="VersionInformationWindow_License" Value="ライセンス" />
   <Translate Key="VersionInformationWindow_Close" Value="閉じる" />
@@ -207,9 +207,9 @@
   <Translate Key="UploadControl_Reset" Value="リセット" />
   <Translate Key="UploadControl_DeleteComplete" Value="完了状態のファイルの削除" />
 
-  <Translate Key="UploadState_ComputeHash" Value="ハッシュの算出" />
+  <Translate Key="UploadState_ComputeHash" Value="ハッシュの計算" />
   <Translate Key="UploadState_Encoding" Value="エンコード" />
-  <Translate Key="UploadState_ComputeCorrection" Value="パリティブロックの算出" />
+  <Translate Key="UploadState_ComputeCorrection" Value="パリティブロックの計算" />
   <Translate Key="UploadState_Uploading" Value="アップロード" />
   <Translate Key="UploadState_Completed" Value="完了" />
   <Translate Key="UploadState_Error" Value="エラー" />
@@ -314,8 +314,8 @@
   <Translate Key="LibraryControl_Export" Value="Export" />
   <Translate Key="LibraryControl_CopyInfo" Value="コピー  (詳細情報)" />
   <Translate Key="LibraryControl_Download" Value="Download" />
-  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="The signature is annulled. Is it good?" />
-  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="Digital signature error" />
+  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="署名が解除されますがよろしいですか?" />
+  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="署名エラー" />
 
   <Translate Key="SeedEditWindow_Title" Value="シード編集" />
   <Translate Key="SeedEditWindow_Name" Value="名前" />
