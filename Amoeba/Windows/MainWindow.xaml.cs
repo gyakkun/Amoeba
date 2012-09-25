@@ -80,13 +80,12 @@ namespace Amoeba.Windows
                 this.Icon = icon;
             }
 
-            this.Setting_Languages();
-
             System.Drawing.Icon myIcon = new System.Drawing.Icon(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"));
             _notifyIcon.Icon = new System.Drawing.Icon(myIcon, new System.Drawing.Size(16, 16));
             _notifyIcon.Visible = true;
 
             this.Setting_Init();
+            this.Setting_Languages();
 
             _notifyIcon.Visible = false;
             _notifyIcon.Click += (object sender2, EventArgs e2) =>
@@ -170,9 +169,9 @@ namespace Amoeba.Windows
                                 }
                             }
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
-
+                            Log.Warning(e);
                         }
                     }
 
@@ -186,9 +185,9 @@ namespace Amoeba.Windows
                             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                             Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
-
+                            Log.Warning(e);
                         }
                     }
 
@@ -205,9 +204,9 @@ namespace Amoeba.Windows
                                 _checkUpdateMenuItem_Click(null, null);
                             }
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
-
+                            Log.Warning(e);
                         }
                     }
                 }
@@ -650,6 +649,15 @@ namespace Amoeba.Windows
                     _amoebaManager.Filters.Add(tcpConnectionFilter);
                     _amoebaManager.Filters.Add(torConnectionFilter);
                     _amoebaManager.Filters.Add(i2pConnectionFilter);
+
+                    if (CultureInfo.CurrentUICulture.Name == "ja-JP")
+                    {
+                        Settings.Instance.Global_UseLanguage = "Japanese";
+                    }
+                    else
+                    {
+                        Settings.Instance.Global_UseLanguage = "English";
+                    }
                 }
                 else
                 {

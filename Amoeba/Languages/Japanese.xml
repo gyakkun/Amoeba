@@ -180,7 +180,7 @@
   <Translate Key="DownloadControl_Priority5" Value="5" />
   <Translate Key="DownloadControl_Priority6" Value="6 (高)" />
   <Translate Key="DownloadControl_Reset" Value="リセット" />
-  <Translate Key="DownloadControl_DeleteComplete" Value="完了状態のファイルの削除" />
+  <Translate Key="DownloadControl_DeleteComplete" Value="完了状態のキューの削除" />
 
   <Translate Key="DownloadState_Downloading" Value="ダウンロード" />
   <Translate Key="DownloadState_Decoding" Value="デコード" />
@@ -205,7 +205,7 @@
   <Translate Key="UploadControl_Priority5" Value="5" />
   <Translate Key="UploadControl_Priority6" Value="6 (高)" />
   <Translate Key="UploadControl_Reset" Value="リセット" />
-  <Translate Key="UploadControl_DeleteComplete" Value="完了状態のファイルの削除" />
+  <Translate Key="UploadControl_DeleteComplete" Value="完了状態のキューの削除" />
 
   <Translate Key="UploadState_ComputeHash" Value="ハッシュの計算" />
   <Translate Key="UploadState_Encoding" Value="エンコード" />
