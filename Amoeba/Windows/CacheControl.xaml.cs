@@ -215,9 +215,9 @@ namespace Amoeba.Windows
                     }), null);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
@@ -705,9 +705,9 @@ namespace Amoeba.Windows
 
                 return _searchingCache;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Log.Error(ex);
+                Log.Error(e);
             }
 
             return new SearchListViewItem[0];

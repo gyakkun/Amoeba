@@ -751,7 +751,7 @@ namespace Amoeba.Windows
 
         private object _updateLockObject = new object();
 
-        private void CheckUpdate()
+        private void CheckUpdate(bool isLogFlag)
         {
             lock (_updateLockObject)
             {
@@ -813,7 +813,10 @@ namespace Amoeba.Windows
 
                         if (targetVersion <= App.AmoebaVersion)
                         {
-                            Log.Information(string.Format("Check Update: {0}", LanguagesManager.Instance.MainWindow_LatestVersion_Message));
+                            if (isLogFlag)
+                            {
+                                Log.Information(string.Format("Check Update: {0}", LanguagesManager.Instance.MainWindow_LatestVersion_Message));
+                            }
                         }
                         else
                         {
@@ -929,7 +932,7 @@ namespace Amoeba.Windows
                         {
                             if (_amoebaManager.State == ManagerState.Start)
                             {
-                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Start; 
+                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Start;
                             }
                             else
                             {
@@ -1241,7 +1244,7 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    this.CheckUpdate();
+                    this.CheckUpdate(sender != null);
                 }
                 catch (Exception)
                 {
