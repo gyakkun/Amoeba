@@ -657,4 +657,19 @@ namespace Amoeba.Windows
             return 0;
         }
     }
+
+    [ValueConversion(typeof(int), typeof(bool))]
+    class ExpanderToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((string)value == (string)parameter);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (System.Convert.ToBoolean(value)) return (string)parameter;
+            return null;
+        }
+    }
 }

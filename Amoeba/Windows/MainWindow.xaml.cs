@@ -29,6 +29,7 @@ using Library.Net.Connection;
 using Library.Net.Proxy;
 using Library.Net.Upnp;
 using Library.Security;
+using System.Runtime.InteropServices;
 
 namespace Amoeba.Windows
 {
@@ -500,8 +501,6 @@ namespace Amoeba.Windows
                     _amoebaManager.DownloadDirectory = Path.Combine(@"..\", "Download");
 
                     _amoebaManager.ConnectionCountLimit = 12;
-                    _amoebaManager.DownloadingConnectionCountLowerLimit = 3;
-                    _amoebaManager.UploadingConnectionCountLowerLimit = 3;
 
                     Settings.Instance.Global_UploadKeywords.Clear();
                     Settings.Instance.Global_UploadKeywords.Add("Document");

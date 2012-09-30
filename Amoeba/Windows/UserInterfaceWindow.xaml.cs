@@ -36,6 +36,8 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
+            _miscellaneousStackPanel.DataContext = new ExpanderListViewModel();
+
             {
                 var icon = new BitmapImage();
 
@@ -726,6 +728,16 @@ namespace Amoeba.Windows
             {
                 _keywordListViewPasteMenuItem_Click(null, null);
             }
+        }
+
+        public class ExpanderListViewModel
+        {
+            public ExpanderListViewModel()
+            {
+                this.SelectedExpander = "1";
+            }
+
+            public string SelectedExpander { get; set; }
         }
     }
 
