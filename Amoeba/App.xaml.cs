@@ -277,11 +277,50 @@ namespace Amoeba
                 return;
             }
 
+            try
+            {
+                if (File.Exists("update"))
+                {
+                    using (FileStream stream = new FileStream("update", FileMode.Open))
+                    using (StreamReader r = new StreamReader(stream))
+                    {
+                        var text = r.ReadLine();
+
+                        foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(text)))
+                        {
+                            try
+                            {
+                                if (Path.GetFileName(p.MainModule.FileName) == text)
+                                {
+                                    this.Shutdown();
+
+                                    return;
+                                }
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+
+                    File.Delete("update");
+                }
+            }
+            catch (Exception)
+            {
+                this.Shutdown();
+
+                return;
+            }
+
             // Update
             try
             {
                 if (Directory.Exists(App.DirectoryPaths["Update"]))
                 {
+                Restart: ;
+
                     Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
                     Version version = App.AmoebaVersion;
                     string updateZipPath = null;
@@ -333,10 +372,30 @@ namespace Amoeba
                             if (File.Exists(updateZipPath))
                                 File.Delete(updateZipPath);
 
-                            return;
+                            goto Restart;
                         }
 
-                        var tempUpdateExePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + "-Library.Update.exe");
+                        try
+                        {
+                            File.Move(updateZipPath, Path.Combine(App.DirectoryPaths["Base"], Path.GetFileName(updateZipPath)));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        try
+                        {
+                            File.Delete(updateZipPath);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        updateZipPath = Path.Combine(App.DirectoryPaths["Base"], Path.GetFileName(updateZipPath));
+
+                        var tempUpdateExePath = Path.Combine(Path.GetTempPath(), "-" + Path.GetRandomFileName() + "-Library.Update.exe");
 
                         if (File.Exists(tempUpdateExePath))
                             File.Delete(tempUpdateExePath);
@@ -353,7 +412,13 @@ namespace Amoeba
                             Path.GetFullPath(updateZipPath));
                         startInfo.WorkingDirectory = Path.GetDirectoryName(startInfo.FileName);
 
-                        Process.Start(startInfo);
+                        var process = Process.Start(startInfo);
+
+                        using (FileStream stream = new FileStream("update", FileMode.Create))
+                        using (StreamWriter w = new StreamWriter(stream))
+                        {
+                            w.WriteLine(Path.GetFileName(tempUpdateExePath));
+                        }
 
                         this.Shutdown();
 
