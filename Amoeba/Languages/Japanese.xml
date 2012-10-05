@@ -310,8 +310,8 @@
   <Translate Key="LibraryControl_Cut" Value="切り取り" />
   <Translate Key="LibraryControl_Copy" Value="コピー" />
   <Translate Key="LibraryControl_Paste" Value="貼り付け" />
-  <Translate Key="LibraryControl_Import" Value="Import" />
-  <Translate Key="LibraryControl_Export" Value="Export" />
+  <Translate Key="LibraryControl_Import" Value="インポート" />
+  <Translate Key="LibraryControl_Export" Value="エクスポート" />
   <Translate Key="LibraryControl_CopyInfo" Value="コピー  (詳細情報)" />
   <Translate Key="LibraryControl_Download" Value="Download" />
   <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="署名が解除されますがよろしいですか?" />
