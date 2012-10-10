@@ -1873,17 +1873,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string DownloadControl_Seed
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("DownloadControl_Seed");
-                }
-            }
-        }
-
         public string DownloadControl_Delete
         {
             get
@@ -2759,6 +2748,61 @@ namespace Amoeba.Properties
             }
         }
 
+        public string CacheControl_Search
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Search");
+                }
+            }
+        }
+
+        public string CacheControl_SearchSignature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_SearchSignature");
+                }
+            }
+        }
+
+        public string CacheControl_SearchKeyword
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_SearchKeyword");
+                }
+            }
+        }
+
+        public string CacheControl_SearchCreationTimeRange
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_SearchCreationTimeRange");
+                }
+            }
+        }
+
+        public string CacheControl_Filter
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Filter");
+                }
+            }
+        }
+
         public string CacheControl_FilterName
         {
             get
@@ -2788,6 +2832,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("CacheControl_FilterKeyword");
+                }
+            }
+        }
+
+        public string CacheControl_FilterCreationTimeRange
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterCreationTimeRange");
                 }
             }
         }

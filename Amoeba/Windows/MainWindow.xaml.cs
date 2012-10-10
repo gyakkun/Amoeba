@@ -507,7 +507,7 @@ namespace Amoeba.Windows
 
                     SearchItem pictureSearchItem = new SearchItem()
                     {
-                        Name = "Picture"
+                        Name = "Keyword - \"Picture\""
                     };
                     pictureSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
@@ -517,7 +517,7 @@ namespace Amoeba.Windows
 
                     SearchItem movieSearchItem = new SearchItem()
                     {
-                        Name = "Movie"
+                        Name = "Keyword - \"Movie\""
                     };
                     movieSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
@@ -527,7 +527,7 @@ namespace Amoeba.Windows
 
                     SearchItem musicSearchItem = new SearchItem()
                     {
-                        Name = "Music"
+                        Name = "Keyword - \"Music\""
                     };
                     musicSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
@@ -537,7 +537,7 @@ namespace Amoeba.Windows
 
                     SearchItem archiveSearchItem = new SearchItem()
                     {
-                        Name = "Archive"
+                        Name = "Keyword - \"Archive\""
                     };
                     archiveSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
@@ -547,7 +547,7 @@ namespace Amoeba.Windows
 
                     SearchItem documentSearchItem = new SearchItem()
                     {
-                        Name = "Document"
+                        Name = "Keyword - \"Document\""
                     };
                     documentSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {
@@ -557,7 +557,7 @@ namespace Amoeba.Windows
 
                     SearchItem ExecutableSearchItem = new SearchItem()
                     {
-                        Name = "Executable"
+                        Name = "Keyword - \"Executable\""
                     };
                     ExecutableSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
                     {

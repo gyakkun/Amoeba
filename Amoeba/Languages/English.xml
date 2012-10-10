@@ -167,7 +167,6 @@
   <Translate Key="DownloadControl_Rank" Value="Rank" />
   <Translate Key="DownloadControl_Rate" Value="Rate" />
   <Translate Key="DownloadControl_State" Value="State" />
-  <Translate Key="DownloadControl_Seed" Value="Seed" />
   <Translate Key="DownloadControl_Delete" Value="Delete" />
   <Translate Key="DownloadControl_Copy" Value="Copy" />
   <Translate Key="DownloadControl_CopyInfo" Value="Copy info" />
@@ -250,12 +249,18 @@
   <Translate Key="CacheControl_DeleteShare" Value="Delete share " />
   <Translate Key="CacheControl_DeleteDownload" Value="Delete download " />
   <Translate Key="CacheControl_DeleteUpload" Value="Delete upload " />
-  <Translate Key="CacheControl_DeleteDownloadHistory" Valueu="Delete download history" />
+  <Translate Key="CacheControl_DeleteDownloadHistory" Value="Delete download history" />
   <Translate Key="CacheControl_DeleteUploadHistory" Value="Delete upload history" />
   <Translate Key="CacheControl_Download" Value="Download" />
+  <Translate Key="CacheControl_Search" Value="Search" />
+  <Translate Key="CacheControl_SearchSignature" Value="Search signature" />
+  <Translate Key="CacheControl_SearchKeyword" Value="Search keyword" />
+  <Translate Key="CacheControl_SearchCreationTimeRange" Value="Search creation time range" />
+  <Translate Key="CacheControl_Filter" Value="Filter" />
   <Translate Key="CacheControl_FilterName" Value="Filter name" />
   <Translate Key="CacheControl_FilterSignature" Value="Filter signature" />
   <Translate Key="CacheControl_FilterKeyword" Value="Filter keyword" />
+  <Translate Key="CacheControl_FilterCreationTimeRange" Value="Filter creation time range" />
   <Translate Key="CacheControl_FilterSeed" Value="Filter seed" />
 
   <Translate Key="SearchState_Cache" Value="C" />
@@ -314,7 +319,7 @@
   <Translate Key="LibraryControl_Export" Value="Export" />
   <Translate Key="LibraryControl_CopyInfo" Value="Copy info" />
   <Translate Key="LibraryControl_Download" Value="Download" />
-  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="The signature is annulled. Is it good?" />
+  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
   <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="Digital signature error" />
 
   <Translate Key="SeedEditWindow_Title" Value="Seed edit" />

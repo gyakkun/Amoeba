@@ -9,14 +9,14 @@
   <Translate Key="Languages_Japanese" Value="日本語" />
 
   <Translate Key="Seed_Name" Value="名前" />
-  <Translate Key="Seed_Signature" Value="署名" />
+  <Translate Key="Seed_Signature" Value="サイン" />
   <Translate Key="Seed_Length" Value="サイズ" />
   <Translate Key="Seed_Keywords" Value="キーワード" />
   <Translate Key="Seed_CreationTime" Value="作成日" />
   <Translate Key="Seed_Comment" Value="コメント" />
 
   <Translate Key="Box_Name" Value="名前" />
-  <Translate Key="Box_Signature" Value="署名" />
+  <Translate Key="Box_Signature" Value="サイン" />
   <Translate Key="Box_CreationTime" Value="作成日" />
   <Translate Key="Box_Comment" Value="コメント" />
 
@@ -45,7 +45,7 @@
   <Translate Key="MainWindow_ReceiveSpeed" Value="受信:" />
   <Translate Key="MainWindow_SpaceNotFound_Message" Value="空き容量がありません。" />
   <Translate Key="MainWindow_CheckBlocks_Message" Value="ブロックの破損チェック" />
-  <Translate Key="MainWindow_CheckBlocks_State" Value="チェック済みブロック数:{1} 破損ブロック数:{0} ブロック数:{2}" />
+  <Translate Key="MainWindow_CheckBlocks_State" Value="チェック済み:{1} 破損:{0} 総ブロック数:{2}" />
   <Translate Key="MainWindow_CheckUpdate_Message" Value="&quot;{0}&quot; へ更新しますか?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="最新のバージョンです。" />
   <Translate Key="MainWindow_Close_Message" Value="終了しますか？" />
@@ -55,7 +55,7 @@
   <Translate Key="UserInterfaceWindow_Update" Value="更新" />
   <Translate Key="UserInterfaceWindow_UpdateUrl" Value="更新 Url" />
   <Translate Key="UserInterfaceWindow_ProxyUri" Value="プロキシ Uri" />
-  <Translate Key="UserInterfaceWindow_Signature" Value="署名" />
+  <Translate Key="UserInterfaceWindow_Signature" Value="サイン" />
   <Translate Key="UserInterfaceWindow_Keyword" Value="キーワード" />
   <Translate Key="UserInterfaceWindow_Miscellaneous" Value="その他" />
   <Translate Key="UserInterfaceWindow_RelateSettings" Value="関連付け設定" />
@@ -156,10 +156,10 @@
 
   <Translate Key="ConnectionType_None" Value="None" />
   <Translate Key="ConnectionType_Tcp" Value="Tcp" />
-  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 Proxy" />
-  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a Proxy" />
-  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 Proxy" />
-  <Translate Key="ConnectionType_HttpProxy" Value="Http Proxy" />
+  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 プロキシ" />
+  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a プロキシ" />
+  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 プロキシ" />
+  <Translate Key="ConnectionType_HttpProxy" Value="Http プロキシ" />
 
   <Translate Key="DownloadControl_Name" Value="名前" />
   <Translate Key="DownloadControl_Length" Value="サイズ" />
@@ -167,7 +167,6 @@
   <Translate Key="DownloadControl_Rank" Value="Rank" />
   <Translate Key="DownloadControl_Rate" Value="率" />
   <Translate Key="DownloadControl_State" Value="状態" />
-  <Translate Key="DownloadControl_Seed" Value="Seed" />
   <Translate Key="DownloadControl_Delete" Value="削除" />
   <Translate Key="DownloadControl_Copy" Value="コピー" />
   <Translate Key="DownloadControl_CopyInfo" Value="コピー  (詳細情報)" />
@@ -231,7 +230,7 @@
   <Translate Key="UploadWindow_Cancel" Value="キャンセル" />
 
   <Translate Key="CacheControl_Name" Value="名前" />
-  <Translate Key="CacheControl_Signature" Value="署名" />
+  <Translate Key="CacheControl_Signature" Value="サイン" />
   <Translate Key="CacheControl_Length" Value="サイズ" />
   <Translate Key="CacheControl_Keywords" Value="キーワード" />
   <Translate Key="CacheControl_CreationTime" Value="作成日" />
@@ -253,10 +252,16 @@
   <Translate Key="CacheControl_DeleteDownloadHistory" Value="ダウンロード履歴削除" />
   <Translate Key="CacheControl_DeleteUploadHistory" Value="アップロード履歴削除" />
   <Translate Key="CacheControl_Download" Value="ダウンロード" />
-  <Translate Key="CacheControl_FilterName" Value="名前でフィルタ" />
-  <Translate Key="CacheControl_FilterSignature" Value="署名でフィルタ" />
-  <Translate Key="CacheControl_FilterKeyword" Value="キーワードでフィルタ" />
-  <Translate Key="CacheControl_FilterSeed" Value="シードでフィルタ" />
+  <Translate Key="CacheControl_Search" Value="検索" />
+  <Translate Key="CacheControl_SearchSignature" Value="このサインで検索" />
+  <Translate Key="CacheControl_SearchKeyword" Value="このキーワードで検索" />
+  <Translate Key="CacheControl_SearchCreationTimeRange" Value="この作成日で検索" />
+  <Translate Key="CacheControl_Filter" Value="フィルタ" />
+  <Translate Key="CacheControl_FilterName" Value="この名前でフィルタ" />
+  <Translate Key="CacheControl_FilterSignature" Value="このサインでフィルタ" />
+  <Translate Key="CacheControl_FilterKeyword" Value="このキーワードでフィルタ" />
+  <Translate Key="CacheControl_FilterCreationTimeRange" Value="この作成日でフィルタ" />
+  <Translate Key="CacheControl_FilterSeed" Value="このシードでフィルタ" />
 
   <Translate Key="SearchState_Cache" Value="C" />
   <Translate Key="SearchState_Share" Value="S" />
@@ -268,7 +273,7 @@
   <Translate Key="SearchItemEditWindow_Title" Value="検索アイテム編集" />
   <Translate Key="SearchItemEditWindow_Name" Value="名前" />
   <Translate Key="SearchItemEditWindow_NameRegex" Value="正規表現" />
-  <Translate Key="SearchItemEditWindow_Signature" Value="署名" />
+  <Translate Key="SearchItemEditWindow_Signature" Value="サイン" />
   <Translate Key="SearchItemEditWindow_Keyword" Value="キーワード" />
   <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="作成日 範囲" />
   <Translate Key="SearchItemEditWindow_LengthRange" Value="サイズ 範囲" />
@@ -297,7 +302,7 @@
   <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="アップロード済み" />
 
   <Translate Key="LibraryControl_Name" Value="名前" />
-  <Translate Key="LibraryControl_Signature" Value="署名" />
+  <Translate Key="LibraryControl_Signature" Value="サイン" />
   <Translate Key="LibraryControl_Length" Value="サイズ" />
   <Translate Key="LibraryControl_Keywords" Value="キーワード" />
   <Translate Key="LibraryControl_CreationTime" Value="作成日" />
@@ -313,9 +318,9 @@
   <Translate Key="LibraryControl_Import" Value="インポート" />
   <Translate Key="LibraryControl_Export" Value="エクスポート" />
   <Translate Key="LibraryControl_CopyInfo" Value="コピー  (詳細情報)" />
-  <Translate Key="LibraryControl_Download" Value="Download" />
-  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="署名が解除されますがよろしいですか?" />
-  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="署名エラー" />
+  <Translate Key="LibraryControl_Download" Value="ダウンロード" />
+  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="ボックスのサインが解除されますがよろしいですか?" />
+  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="サインエラー" />
 
   <Translate Key="SeedEditWindow_Title" Value="シード編集" />
   <Translate Key="SeedEditWindow_Name" Value="名前" />

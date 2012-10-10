@@ -121,12 +121,20 @@
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=CacheControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
                     <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=CacheControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=CacheControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
+                    <MenuItem Name="_listViewSearchMenuItem" Header="{Binding Path=CacheControl_Search, Source={StaticResource ResourcesInstance}}" >
+                        <MenuItem Name="_listViewSearchSignatureMenuItem" Header="{Binding Path=CacheControl_SearchSignature, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchSignatureMenuItem_Click" />
+                        <MenuItem Name="_listViewSearchKeywordMenuItem" Header="{Binding Path=CacheControl_SearchKeyword, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchKeywordMenuItem_Click" />
+                        <MenuItem Name="_listViewSearchCreationTimeRangeMenuItem" Header="{Binding Path=CacheControl_SearchCreationTimeRange, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchCreationTimeRangeMenuItem_Click" />
+                    </MenuItem>
+                    <MenuItem Name="_listViewFilterMenuItem" Header="{Binding Path=CacheControl_Filter, Source={StaticResource ResourcesInstance}}" >
+                        <MenuItem Name="_listViewFilterNameMenuItem" Header="{Binding Path=CacheControl_FilterName, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterNameMenuItem_Click" />
+                        <MenuItem Name="_listViewFilterSignatureMenuItem" Header="{Binding Path=CacheControl_FilterSignature, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSignatureMenuItem_Click" />
+                        <MenuItem Name="_listViewFilterKeywordMenuItem" Header="{Binding Path=CacheControl_FilterKeyword, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterKeywordMenuItem_Click" />
+                        <MenuItem Name="_listViewFilterCreationTimeRangeMenuItem" Header="{Binding Path=CacheControl_FilterCreationTimeRange, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterCreationTimeRangeMenuItem_Click" />
+                        <MenuItem Name="_listViewFilterSeedMenuItem" Header="{Binding Path=CacheControl_FilterSeed, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSeedMenuItem_Click" />
+                    </MenuItem>
                     <Separator />
-                    <MenuItem Name="_listViewFilterNameMenuItem" Header="{Binding Path=CacheControl_FilterName, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterNameMenuItem_Click" />
-                    <MenuItem Name="_listViewFilterSignatureMenuItem" Header="{Binding Path=CacheControl_FilterSignature, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSignatureMenuItem_Click" />
-                    <MenuItem Name="_listViewFilterKeywordMenuItem" Header="{Binding Path=CacheControl_FilterKeyword, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterKeywordMenuItem_Click" />
-                    <MenuItem Name="_listViewFilterSeedMenuItem" Header="{Binding Path=CacheControl_FilterSeed, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSeedMenuItem_Click" />
+                    <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=CacheControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

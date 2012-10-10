@@ -24,8 +24,8 @@ using System.Xml;
 using Amoeba.Properties;
 using Library;
 using Library.Collections;
-using Library.Net.Amoeba;
 using Library.Io;
+using Library.Net.Amoeba;
 
 namespace Amoeba.Windows
 {
@@ -790,7 +790,12 @@ namespace Amoeba.Windows
 
                 var searchTreeItem = new SearchTreeItem();
                 searchTreeItem.SearchItem = new SearchItem();
-                searchTreeItem.SearchItem.Name = _textBox.Text;
+                searchTreeItem.SearchItem.Name = string.Format("Name - \"{0}\"", _textBox.Text);
+                searchTreeItem.SearchItem.SearchNameCollection.Add(new SearchContains<string>()
+                {
+                    Contains = true,
+                    Value = _textBox.Text
+                });
 
                 selectTreeViewItem.Value.Items.Add(searchTreeItem);
 
@@ -1081,10 +1086,8 @@ namespace Amoeba.Windows
                 _listViewDeleteShareMenuItem.IsEnabled = false;
                 _listViewDeleteDownloadHistoryMenuItem.IsEnabled = false;
                 _listViewDeleteUploadHistoryMenuItem.IsEnabled = false;
-                _listViewFilterNameMenuItem.IsEnabled = false;
-                _listViewFilterSignatureMenuItem.IsEnabled = false;
-                _listViewFilterKeywordMenuItem.IsEnabled = false;
-                _listViewFilterSeedMenuItem.IsEnabled = false;
+                _listViewFilterMenuItem.IsEnabled = false;
+                _listViewSearchMenuItem.IsEnabled = false;
                 _listViewDownloadMenuItem.IsEnabled = false;
 
                 return;
@@ -1095,10 +1098,8 @@ namespace Amoeba.Windows
             _listViewEditMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewFilterNameMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewFilterSignatureMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewFilterKeywordMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewFilterSeedMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewFilterMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewSearchMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
@@ -1634,6 +1635,104 @@ namespace Amoeba.Windows
             _recache = true;
         }
 
+        private void _listViewSearchSignatureMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectTreeViewItem == null) return;
+
+            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                var searchTreeItem = new SearchTreeItem();
+                searchTreeItem.SearchItem = new SearchItem();
+
+                var signature = !string.IsNullOrWhiteSpace(listItem.Signature) ? listItem.Signature : "Anonymous";
+
+                var item = new SearchContains<string>()
+                {
+                    Contains = true,
+                    Value = signature,
+                };
+
+                searchTreeItem.SearchItem.Name = string.Format("Signature - \"{0}\"", signature);
+                searchTreeItem.SearchItem.SearchSignatureCollection.Add(item);
+
+                if (selectTreeViewItem.Value.Items.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
+                selectTreeViewItem.Value.Items.Add(searchTreeItem);
+
+                selectTreeViewItem.Update();
+            }
+
+            this.Update();
+        }
+
+        private void _listViewSearchKeywordMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectTreeViewItem == null) return;
+
+            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                foreach (var keyword in listItem.Value.Keywords)
+                {
+                    var searchTreeItem = new SearchTreeItem();
+                    searchTreeItem.SearchItem = new SearchItem();
+
+                    var item = new SearchContains<string>()
+                    {
+                        Contains = true,
+                        Value = keyword,
+                    };
+
+                    searchTreeItem.SearchItem.Name = string.Format("Keyword - \"{0}\"", keyword);
+                    searchTreeItem.SearchItem.SearchKeywordCollection.Add(item);
+
+                    if (selectTreeViewItem.Value.Items.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
+                    selectTreeViewItem.Value.Items.Add(searchTreeItem);
+
+                    selectTreeViewItem.Update();
+                }
+            }
+
+            this.Update();
+        }
+
+        private void _listViewSearchCreationTimeRangeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectTreeViewItem == null) return;
+
+            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                var searchTreeItem = new SearchTreeItem();
+                searchTreeItem.SearchItem = new SearchItem();
+
+                var item = new SearchContains<SearchRange<DateTime>>()
+                {
+                    Contains = true,
+                    Value = new SearchRange<DateTime>() { Min = listItem.Value.CreationTime },
+                };
+
+                searchTreeItem.SearchItem.Name = string.Format("CreationTime - \"{0}\"", listItem.Value.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo));
+                searchTreeItem.SearchItem.SearchCreationTimeRangeCollection.Add(item);
+
+                if (selectTreeViewItem.Value.Items.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
+                selectTreeViewItem.Value.Items.Add(searchTreeItem);
+
+                selectTreeViewItem.Update();
+            }
+
+            this.Update();
+        }
+        
         private void _listViewFilterNameMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectSearchListViewItems = _listView.SelectedItems;
@@ -1714,6 +1813,32 @@ namespace Amoeba.Windows
                         if (selectTreeViewItem.Value.SearchItem.SearchKeywordCollection.Contains(item)) continue;
                         selectTreeViewItem.Value.SearchItem.SearchKeywordCollection.Add(item);
                     }
+                }
+            }
+
+            this.Update();
+        }
+
+        private void _listViewFilterCreationTimeRangeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectTreeViewItem == null) return;
+
+            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                var item = new SearchContains<SearchRange<DateTime>>()
+                {
+                    Contains = false,
+                    Value = new SearchRange<DateTime>() { Min = listItem.Value.CreationTime },
+                };
+
+                lock (selectTreeViewItem.Value.SearchItem.ThisLock)
+                {
+                    if (selectTreeViewItem.Value.SearchItem.SearchCreationTimeRangeCollection.Contains(item)) continue;
+                    selectTreeViewItem.Value.SearchItem.SearchCreationTimeRangeCollection.Add(item);
                 }
             }
 
