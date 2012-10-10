@@ -26,13 +26,13 @@ namespace Amoeba.Windows
         {
             var ext = ".box";
 
-            var icon = IconUnit.FileAssociatedImage(ext, false, false);
+            var icon = IconUtilities.FileAssociatedImage(ext, false, false);
             if (icon.CanFreeze) icon.Freeze();
 
             _boxIcon = icon;
         }
 
-        public class IconUnit
+        public class IconUtilities
         {
             [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
             struct SHFILEINFO
@@ -105,7 +105,7 @@ namespace Amoeba.Windows
 
                     if (!_icon.ContainsKey(ext))
                     {
-                        var icon = IconUnit.FileAssociatedImage(ext, false, false);
+                        var icon = IconUtilities.FileAssociatedImage(ext, false, false);
                         if (icon.CanFreeze) icon.Freeze();
 
                         _icon[ext] = icon;
