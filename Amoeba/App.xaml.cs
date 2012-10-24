@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
@@ -16,8 +18,6 @@ using Ionic.Zip;
 using Library;
 using Library.Io;
 using Library.Net.Amoeba;
-using System.ComponentModel;
-using System.Threading.Tasks;
 
 namespace Amoeba
 {
@@ -36,7 +36,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 37);
+            App.AmoebaVersion = new Version(0, 1, 38);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 

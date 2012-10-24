@@ -9,6 +9,7 @@ using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -29,7 +30,6 @@ using Library.Net.Connection;
 using Library.Net.Proxy;
 using Library.Net.Upnp;
 using Library.Security;
-using System.Runtime.InteropServices;
 
 namespace Amoeba.Windows
 {
@@ -103,6 +103,25 @@ namespace Amoeba.Windows
             _timerThread.IsBackground = true;
             _timerThread.Name = "TimerThread";
             _timerThread.Start();
+        }
+
+        public static void CopyDirectory(string sourceDirectoryPath, string destDirectoryPath)
+        {
+            if (!Directory.Exists(destDirectoryPath))
+            {
+                Directory.CreateDirectory(destDirectoryPath);
+                File.SetAttributes(destDirectoryPath, File.GetAttributes(sourceDirectoryPath));
+            }
+
+            foreach (string file in Directory.GetFiles(sourceDirectoryPath))
+            {
+                File.Copy(file, Path.Combine(destDirectoryPath, Path.GetFileName(file)), true);
+            }
+
+            foreach (string dir in Directory.GetDirectories(sourceDirectoryPath))
+            {
+                CopyDirectory(dir, Path.Combine(destDirectoryPath, Path.GetFileName(dir)));
+            }
         }
 
         private void Timer()
@@ -704,6 +723,34 @@ namespace Amoeba.Windows
                     _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                     _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                     Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                }
+
+                {
+                    var amoebaPath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba");
+                    var libraryPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library");
+
+                    try
+                    {
+                        if (Directory.Exists(amoebaPath))
+                        {
+                            if (Directory.Exists(amoebaPath + ".old"))
+                                Directory.Delete(amoebaPath + ".old", true);
+
+                            MainWindow.CopyDirectory(amoebaPath, amoebaPath + ".old");
+                        }
+
+                        if (Directory.Exists(libraryPath))
+                        {
+                            if (Directory.Exists(libraryPath + ".old"))
+                                Directory.Delete(libraryPath + ".old", true);
+
+                            MainWindow.CopyDirectory(libraryPath, libraryPath + ".old");
+                        }
+                    }
+                    catch (Exception e2)
+                    {
+                        Log.Warning(e2);
+                    }
                 }
             }
         }

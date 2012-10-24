@@ -134,7 +134,7 @@ namespace Amoeba.Windows
                     {
                         try
                         {
-                            var signature = AmoebaConverter.FromSignatureStream(stream);
+                            var signature = DigitalSignatureConverter.FromSignatureStream(stream);
                             if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
 
                             _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
@@ -228,7 +228,7 @@ namespace Amoeba.Windows
                         {
                             try
                             {
-                                var signature = AmoebaConverter.FromSignatureStream(stream);
+                                var signature = DigitalSignatureConverter.FromSignatureStream(stream);
                                 if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
 
                                 _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
@@ -263,7 +263,7 @@ namespace Amoeba.Windows
                     var fileName = dialog.FileName;
 
                     using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                    using (Stream signatureStream = AmoebaConverter.ToSignatureStream(signature))
+                    using (Stream signatureStream = DigitalSignatureConverter.ToSignatureStream(signature))
                     {
                         int i = -1;
                         byte[] buffer = _bufferManager.TakeBuffer(1024);
