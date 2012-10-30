@@ -1,3 +1,5 @@
 set BATDIR=%~dp0
 cd %BATDIR%
-call "..\Library\Library.Tool\bin\Debug\Library.Tool.exe" "increment" %1 %2
+
+set TOOL="..\Library\Library.Tool\bin\Debug\Library.Tool.exe"
+IF EXIST TOOL call TOOL "increment" %1 %2
