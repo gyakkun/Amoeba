@@ -129,7 +129,7 @@ namespace Amoeba.Windows
                         newList.Add(boxesListViewItem);
                     }
 
-                    Dictionary<Seed, SearchState> seedsDictionary = new Dictionary<Seed, SearchState>();
+                    Dictionary<Seed, SearchState> seedsDictionary = new Dictionary<Seed, SearchState>(new SeedHashEqualityComparer());
 
                     {
                         foreach (var seed in _amoebaManager.CacheSeeds)
@@ -326,6 +326,58 @@ namespace Amoeba.Windows
             }
         }
 
+        class SeedHashEqualityComparer : IEqualityComparer<Seed>
+        {
+            public bool Equals(Seed x, Seed y)
+            {
+                if (x == null && y == null) return true;
+                if ((x == null) != (y == null)) return false;
+                if (object.ReferenceEquals(x, y)) return true;
+
+                if (x.Name != y.Name
+                    || x.Length != y.Length
+                    //|| x.CreationTime != y.CreationTime
+                    //|| x.Comment != y.Comment
+                    || x.Rank != y.Rank
+                    || x.Key != y.Key
+
+                    //|| (x.Keywords == null) != (y.Keywords == null)
+
+                    || x.CompressionAlgorithm != y.CompressionAlgorithm
+
+                    || x.CryptoAlgorithm != y.CryptoAlgorithm
+                    || (x.CryptoKey == null) != (y.CryptoKey == null))
+
+                //|| x.Certificate != y.Certificate)
+                {
+                    return false;
+                }
+
+                //if (x.Keywords != null && y.Keywords != null)
+                //{
+                //    if (x.Keywords.Count != y.Keywords.Count) return false;
+
+                //    for (int i = 0; i < x.Keywords.Count; i++) if (x.Keywords[i] != y.Keywords[i]) return false;
+                //}
+
+                if (x.CryptoKey != null && y.CryptoKey != null)
+                {
+                    if (x.CryptoKey.Length != y.CryptoKey.Length) return false;
+
+                    for (int i = 0; i < x.CryptoKey.Length; i++) if (x.CryptoKey[i] != y.CryptoKey[i]) return false;
+                }
+
+                return true;
+            }
+
+            public int GetHashCode(Seed obj)
+            {
+                if (obj == null) return 0;
+                else if (obj.Key == null) return 0;
+                else return obj.Key.GetHashCode();
+            }
+        }
+        
         private void Watch()
         {
             try
