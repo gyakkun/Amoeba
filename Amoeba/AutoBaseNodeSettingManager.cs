@@ -292,10 +292,12 @@ namespace Amoeba
                 }
                 catch (Exception)
                 {
-                    _amoebaManager.BaseNode.Uris.Remove(_settings.UpnpUri);
+                    if (_settings.UpnpUri != null)
+                    {
+                        _amoebaManager.BaseNode.Uris.Remove(_settings.UpnpUri);
 
-                    Log.Information(string.Format("Remove Node Uri: {0}", _settings.UpnpUri));
-
+                        Log.Information(string.Format("Remove Node Uri: {0}", _settings.UpnpUri));
+                    }
                     _settings.UpnpUri = null;
                 }
             }
