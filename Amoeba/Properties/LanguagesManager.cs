@@ -34,6 +34,9 @@ namespace Amoeba.Properties
         {
 #if DEBUG
             string path = @"C:\Core\Project\Amoeba\Amoeba\bin\Debug\Core\Languages";
+
+            if (!Directory.Exists(path))
+                path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
 #else
             string path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
 #endif
