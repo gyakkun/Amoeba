@@ -52,6 +52,9 @@ namespace Amoeba.Windows
         
         private Thread _timerThread = null;
 
+        private volatile bool _diskSpaceNotFoundException = false;
+        private volatile bool _cacheSpaceNotFoundException = false;
+
         public MainWindow()
         {
             _bufferManager = new BufferManager();
@@ -143,6 +146,14 @@ namespace Amoeba.Windows
                     if (!_isRun) return;
 
                     {
+                        if (_diskSpaceNotFoundException || _cacheSpaceNotFoundException)
+                        {
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                            {
+                                _stopMenuItem_Click(null, null);
+                            }), null);
+                        }
+
                         if (_autoBaseNodeSettingManager.State == ManagerState.Stop
                             && (Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
                         {
@@ -168,6 +179,40 @@ namespace Amoeba.Windows
 
                             Log.Information("Stop");
                         }
+
+                        if (_diskSpaceNotFoundException)
+                        {
+                            Log.Warning(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
+
+                            this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                            {
+                                MessageBox.Show(
+                                    this,
+                                    LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message,
+                                    "Warning",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                            }), null);
+
+                            _diskSpaceNotFoundException = false;
+                        }
+
+                        if (_cacheSpaceNotFoundException)
+                        {
+                            Log.Warning(LanguagesManager.Instance.MainWindow_CacheSpaceNotFound_Message);
+
+                            this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                            {
+                                MessageBox.Show(
+                                    this,
+                                    LanguagesManager.Instance.MainWindow_CacheSpaceNotFound_Message,
+                                    "Warning",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                            }), null);
+
+                            _cacheSpaceNotFoundException = false;
+                        }
                     }
 
                     if (spaceCheckStopwatch.Elapsed > new TimeSpan(0, 1, 0))
@@ -180,15 +225,7 @@ namespace Amoeba.Windows
 
                             if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
                             {
-                                if (_amoebaManager.State == ManagerState.Start)
-                                {
-                                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                                    {
-                                        _stopMenuItem_Click(null, null);
-                                    }), null);
-
-                                    Log.Warning(LanguagesManager.Instance.MainWindow_SpaceNotFound_Message);
-                                }
+                                _diskSpaceNotFoundException = true;
                             }
                         }
                         catch (Exception e)
@@ -372,6 +409,11 @@ namespace Amoeba.Windows
 
             Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
             {
+                if (e.Exception != null && e.Exception.GetType().ToString() == "Library.Net.Amoeba.SpaceNotFoundException")
+                {
+                    _cacheSpaceNotFoundException = true;
+                }
+
                 try
                 {
                     this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)

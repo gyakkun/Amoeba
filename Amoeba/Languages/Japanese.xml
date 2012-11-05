@@ -43,7 +43,8 @@
   <Translate Key="MainWindow_VersionInformation" Value="バージョン情報" />
   <Translate Key="MainWindow_SendSpeed" Value="送信:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="受信:" />
-  <Translate Key="MainWindow_SpaceNotFound_Message" Value="空き容量がありません。" />
+  <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
+  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
   <Translate Key="MainWindow_CheckBlocks_Message" Value="ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="チェック済み:{1} 破損:{0} 総ブロック数:{2}" />
   <Translate Key="MainWindow_CheckUpdate_Message" Value="&quot;{0}&quot; へ更新しますか?" />
