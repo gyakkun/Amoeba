@@ -130,19 +130,19 @@ namespace Amoeba.Windows
             {
                 foreach (string filePath in ((string[])e.Data.GetData(DataFormats.FileDrop)).Where(item => File.Exists(item)))
                 {
-                    using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                    try
                     {
-                        try
+                        using (FileStream stream = new FileStream(filePath, FileMode.Open))
                         {
                             var signature = DigitalSignatureConverter.FromSignatureStream(stream);
                             if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
 
                             _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
                         }
-                        catch (Exception)
-                        {
+                    }
+                    catch (Exception)
+                    {
 
-                        }
                     }
                 }
 
@@ -224,19 +224,19 @@ namespace Amoeba.Windows
                 {
                     foreach (var filePath in dialog.FileNames)
                     {
-                        using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                        try
                         {
-                            try
+                            using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             {
                                 var signature = DigitalSignatureConverter.FromSignatureStream(stream);
                                 if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
 
                                 _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
                             }
-                            catch (Exception)
-                            {
+                        }
+                        catch (Exception)
+                        {
 
-                            }
                         }
                     }
 
@@ -262,18 +262,25 @@ namespace Amoeba.Windows
                 {
                     var fileName = dialog.FileName;
 
-                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                    using (Stream signatureStream = DigitalSignatureConverter.ToSignatureStream(signature))
+                    try
                     {
-                        int i = -1;
-                        byte[] buffer = _bufferManager.TakeBuffer(1024);
-
-                        while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                        using (FileStream stream = new FileStream(fileName, FileMode.Create))
+                        using (Stream signatureStream = DigitalSignatureConverter.ToSignatureStream(signature))
                         {
-                            stream.Write(buffer, 0, i);
-                        }
+                            int i = -1;
+                            byte[] buffer = _bufferManager.TakeBuffer(1024);
 
-                        _bufferManager.ReturnBuffer(buffer);
+                            while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                stream.Write(buffer, 0, i);
+                            }
+
+                            _bufferManager.ReturnBuffer(buffer);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
                     }
                 }
             }

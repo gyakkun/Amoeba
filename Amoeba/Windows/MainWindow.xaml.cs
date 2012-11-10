@@ -30,6 +30,7 @@ using Library.Net.Connection;
 using Library.Net.Proxy;
 using Library.Net.Upnp;
 using Library.Security;
+using Library.Collections;
 
 namespace Amoeba.Windows
 {
@@ -49,8 +50,9 @@ namespace Amoeba.Windows
         private string _logPath = null;
 
         private bool _isRun = true;
-        
+
         private Thread _timerThread = null;
+        private Thread _showThread = null;
 
         private volatile bool _diskSpaceNotFoundException = false;
         private volatile bool _cacheSpaceNotFoundException = false;
@@ -94,11 +96,18 @@ namespace Amoeba.Windows
             _notifyIcon.Visible = false;
             _notifyIcon.Click += (object sender2, EventArgs e2) =>
             {
-                this.Show();
-                this.Activate();
-                this.WindowState = _windowState;
+                try
+                {
+                    this.Show();
+                    this.Activate();
+                    this.WindowState = _windowState;
 
-                _notifyIcon.Visible = false;
+                    _notifyIcon.Visible = false;
+                }
+                catch (Exception)
+                {
+
+                }
             };
 
             _timerThread = new Thread(new ThreadStart(this.Timer));
@@ -106,6 +115,12 @@ namespace Amoeba.Windows
             _timerThread.IsBackground = true;
             _timerThread.Name = "TimerThread";
             _timerThread.Start();
+
+            _showThread = new Thread(new ThreadStart(this.ConnectionsInformationShow));
+            _showThread.Priority = ThreadPriority.Highest;
+            _showThread.IsBackground = true;
+            _showThread.Name = "ShowThread";
+            _showThread.Start();
         }
 
         public static void CopyDirectory(string sourceDirectoryPath, string destDirectoryPath)
@@ -930,8 +945,6 @@ namespace Amoeba.Windows
                                 if (MessageConverter.ToSignatureString(seed.Certificate) != signature) throw new Exception("Update Signature");
                             }
 
-                            Log.Information(string.Format("Check Update: {0}", seed.Name));
-
                             {
                                 foreach (var information in _amoebaManager.DownloadingInformation)
                                 {
@@ -961,6 +974,8 @@ namespace Amoeba.Windows
                                     }
                                 }
                             }
+
+                            Log.Information(string.Format("Check Update: {0}", seed.Name));
 
                             bool flag = true;
 
@@ -996,12 +1011,12 @@ namespace Amoeba.Windows
             }
         }
 
-        private void ConnectionsInformationShow(object state)
+        private void ConnectionsInformationShow()
         {
             long sentByteCount = 0;
             long receivedByteCount = 0;
-            List<long> sentByteCountList = new List<long>(new long[3]);
-            List<long> receivedByteCountList = new List<long>(new long[3]);
+            LockedList<long> sentByteCountList = new LockedList<long>(new long[3]);
+            LockedList<long> receivedByteCountList = new LockedList<long>(new long[3]);
             int count = 0;
 
             for (; ; )
@@ -1017,7 +1032,7 @@ namespace Amoeba.Windows
                     count++;
                     if (count >= sentByteCountList.Count) count = 0;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
                     {
                         try
                         {
@@ -1028,10 +1043,7 @@ namespace Amoeba.Windows
                         {
 
                         }
-                    }), null);
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
-                    {
                         try
                         {
                             if (_amoebaManager.State == ManagerState.Start)
@@ -1100,8 +1112,6 @@ namespace Amoeba.Windows
             _libraryControl.Height = Double.NaN;
             _libraryControl.Width = Double.NaN;
             _libraryTabItem.Content = _libraryControl;
-
-            ThreadPool.QueueUserWorkItem(new WaitCallback(this.ConnectionsInformationShow), this);
 
             if (Settings.Instance.Global_IsStart)
             {

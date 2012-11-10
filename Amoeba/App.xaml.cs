@@ -36,7 +36,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 43);
+            App.AmoebaVersion = new Version(0, 1, 44);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -413,6 +413,7 @@ namespace Amoeba
                         startInfo.WorkingDirectory = Path.GetDirectoryName(startInfo.FileName);
 
                         var process = Process.Start(startInfo);
+                        process.WaitForInputIdle();
 
                         using (FileStream stream = new FileStream("update", FileMode.Create))
                         using (StreamWriter w = new StreamWriter(stream))

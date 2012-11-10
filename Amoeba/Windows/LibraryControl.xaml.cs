@@ -1054,9 +1054,9 @@ namespace Amoeba.Windows
                 {
                     foreach (var filePath in dialog.FileNames)
                     {
-                        using (FileStream stream = new FileStream(filePath, FileMode.Open))
+                        try
                         {
-                            try
+                            using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             {
                                 var box = AmoebaConverter.FromBoxStream(stream);
 
@@ -1078,10 +1078,10 @@ namespace Amoeba.Windows
                                     selectTreeViewItem.Value.CreationTime = DateTime.UtcNow;
                                 }
                             }
-                            catch (Exception)
-                            {
+                        }
+                        catch (Exception)
+                        {
 
-                            }
                         }
                     }
 
