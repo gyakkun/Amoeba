@@ -121,8 +121,14 @@
                         <StackPanel.Resources>
                             <local:ExpanderToBooleanConverter x:Key="_expanderToBooleanConverter" />
                         </StackPanel.Resources>
-                        <Expander Header="{Binding Path=UserInterfaceWindow_RelateSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0"
+                        <Expander Header="{Binding Path=UserInterfaceWindow_Event, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0"
                                     IsExpanded="{Binding SelectedExpander, Mode=TwoWay, Converter={StaticResource _expanderToBooleanConverter}, ConverterParameter=1}">
+                            <Grid Margin="0,0,0,6">
+                                <CheckBox Content="{Binding Path=UserInterfaceWindow_OpenBox, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousOpenBoxCheckBox" VerticalAlignment="Top" />
+                            </Grid>
+                        </Expander>
+                        <Expander Header="{Binding Path=UserInterfaceWindow_RelateSettings, Source={StaticResource ResourcesInstance}}" VerticalAlignment="Top" Margin="6,6,6,0"
+                                    IsExpanded="{Binding SelectedExpander, Mode=TwoWay, Converter={StaticResource _expanderToBooleanConverter}, ConverterParameter=2}">
                             <Grid Margin="0,0,0,6">
                                 <CheckBox Content="{Binding Path=UserInterfaceWindow_RelateBoxFile, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_miscellaneousRelateBoxFileCheckBox" VerticalAlignment="Top" />
                             </Grid>

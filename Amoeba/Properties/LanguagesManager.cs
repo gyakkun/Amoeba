@@ -770,6 +770,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string UserInterfaceWindow_Event
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_Event");
+                }
+            }
+        }
+
+        public string UserInterfaceWindow_OpenBox
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UserInterfaceWindow_OpenBox");
+                }
+            }
+        }
+
         public string UserInterfaceWindow_UpdateOption
         {
             get

@@ -61,6 +61,8 @@
   <Translate Key="UserInterfaceWindow_Miscellaneous" Value="その他" />
   <Translate Key="UserInterfaceWindow_RelateSettings" Value="関連付け設定" />
   <Translate Key="UserInterfaceWindow_RelateBoxFile" Value=".box" />
+  <Translate Key="UserInterfaceWindow_Event" Value="イベント" />
+  <Translate Key="UserInterfaceWindow_OpenBox" Value="ダウンロードされた.boxファイルを展開する" />
   <Translate Key="UserInterfaceWindow_UpdateOption" Value="更新オプション" />
   <Translate Key="UserInterfaceWindow_None" Value="無し" />
   <Translate Key="UserInterfaceWindow_AutoCheck" Value="自動チェック" />

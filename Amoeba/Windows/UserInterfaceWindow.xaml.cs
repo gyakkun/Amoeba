@@ -101,6 +101,8 @@ namespace Amoeba.Windows
                 Settings.Instance.Global_RelateBoxFile_IsEnabled = false;
                 _miscellaneousRelateBoxFileCheckBox.IsChecked = false;
             }
+
+            _miscellaneousOpenBoxCheckBox.IsChecked = Settings.Instance.Global_OpenBox_IsEnabled;
         }
 
         #region Signature
@@ -644,6 +646,8 @@ namespace Amoeba.Windows
                     }
                 }
             }
+
+            Settings.Instance.Global_OpenBox_IsEnabled = _miscellaneousOpenBoxCheckBox.IsChecked.Value;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

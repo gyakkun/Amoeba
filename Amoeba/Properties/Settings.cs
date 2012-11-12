@@ -27,6 +27,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_UseLanguage", Value = "English" },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
+                new Library.Configuration.SettingsContext<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_Url", Value = "http://lyrise.web.fc2.com/update/Amoeba" },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:8118" },
@@ -346,6 +347,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_AutoBaseNodeSetting_IsEnabled"] = value;
+                }
+            }
+        }
+
+        public bool Global_OpenBox_IsEnabled
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (bool)this["Global_OpenBox_IsEnabled"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_OpenBox_IsEnabled"] = value;
                 }
             }
         }

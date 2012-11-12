@@ -126,19 +126,29 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                         {
-                            searchText = _searchTextBox.Text.ToLower();
+                            searchText = _searchTextBox.Text;
                         }), null);
 
                         if (!string.IsNullOrWhiteSpace(searchText))
                         {
+                            var words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
                             List<SearchListViewItem> list = new List<SearchListViewItem>();
 
                             foreach (var item in newList)
                             {
-                                if (item.Name.ToLower().Contains(searchText))
+                                var text = (item.Name ?? "").ToLower();
+
+                                foreach (var word in words)
                                 {
-                                    list.Add(item);
+                                    if (!text.Contains(word))
+                                    {
+                                        goto End;
+                                    }
                                 }
+
+                                list.Add(item);
+
+                            End: ;
                             }
 
                             newList.Clear();
@@ -866,7 +876,7 @@ namespace Amoeba.Windows
         private void _treeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _treeView.GetCurrentItem(e.GetPosition) as SearchTreeViewItem;
-            if (item == null)
+            if (item == null || e.OriginalSource.GetType() == typeof(ScrollViewer))
             {
                 _startPoint = new Point(-1, -1);
 
@@ -2171,7 +2181,7 @@ namespace Amoeba.Windows
                 c = x.Hit.CompareTo(y.Hit);
                 if (c != 0) return c;
 
-                return x.Value.GetHashCode().CompareTo(y.Value.GetHashCode());
+                return x.GetHashCode().CompareTo(y.GetHashCode());
             });
 
             for (int i = 0; i < list.Count; i++)

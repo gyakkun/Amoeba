@@ -61,6 +61,8 @@
   <Translate Key="UserInterfaceWindow_Miscellaneous" Value="Miscellaneous" />
   <Translate Key="UserInterfaceWindow_RelateSettings" Value="Relate settings" />
   <Translate Key="UserInterfaceWindow_RelateBoxFile" Value=".box" />
+  <Translate Key="UserInterfaceWindow_Event" Value="Event" />
+  <Translate Key="UserInterfaceWindow_OpenBox" Value="Open a box file that downloaded." />
   <Translate Key="UserInterfaceWindow_UpdateOption" Value="Update option" />
   <Translate Key="UserInterfaceWindow_None" Value="None" />
   <Translate Key="UserInterfaceWindow_AutoCheck" Value="Auto check" />

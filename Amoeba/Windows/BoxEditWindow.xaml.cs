@@ -35,6 +35,9 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
+            _nameTextBox.MaxLength = Box.MaxNameLength;
+            _commentTextBox.MaxLength = Box.MaxCommentLength;
+
             {
                 var icon = new BitmapImage();
 
