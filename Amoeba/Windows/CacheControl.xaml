@@ -80,7 +80,7 @@
         
         <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" VerticalContentAlignment="Center" />
 
-        <TreeView Grid.Row="1" Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" SelectedItemChanged="_treeView_SelectedItemChanged" PreviewMouseMove="_treeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_treeView_PreviewDrop" PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_treeView_PreviewMouseRightButtonDown" 
+        <TreeView Grid.Row="1" Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" SelectedItemChanged="_treeView_SelectedItemChanged" PreviewMouseMove="_treeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_treeView_PreviewDrop" PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="_treeView_PreviewMouseRightButtonDown" PreviewDragOver="_treeView_PreviewDragOver"
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" Grid.RowSpan="2">
             <local:SearchTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
                 <local:SearchTreeViewItem.ContextMenu>

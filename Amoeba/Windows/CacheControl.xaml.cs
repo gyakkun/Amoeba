@@ -26,6 +26,8 @@ using Library;
 using Library.Collections;
 using Library.Io;
 using Library.Net.Amoeba;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 
 namespace Amoeba.Windows
 {
@@ -55,7 +57,7 @@ namespace Amoeba.Windows
             InitializeComponent();
 
             _treeViewItem.Value = Settings.Instance.CacheControl_SearchTreeItem;
-
+            _treeViewItem.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(_treeViewItem_PreviewMouseLeftButtonDown);
             try
             {
                 _treeViewItem.IsSelected = true;
@@ -821,6 +823,40 @@ namespace Amoeba.Windows
 
         private Point _startPoint = new Point(-1, -1);
 
+        private void _treeView_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            Point position = MouseUtilities.GetMousePosition(_treeView);
+
+            if (position.Y < 50)
+            {
+                var peer = ItemsControlAutomationPeer.CreatePeerForElement(_treeView);
+                var scrollProvider = peer.GetPattern(PatternInterface.Scroll) as IScrollProvider;
+
+                try
+                {
+                    scrollProvider.Scroll(System.Windows.Automation.ScrollAmount.NoAmount, System.Windows.Automation.ScrollAmount.SmallDecrement);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else if ((_treeView.ActualHeight - position.Y) < 50)
+            {
+                var peer = ItemsControlAutomationPeer.CreatePeerForElement(_treeView);
+                var scrollProvider = peer.GetPattern(PatternInterface.Scroll) as IScrollProvider;
+
+                try
+                {
+                    scrollProvider.Scroll(System.Windows.Automation.ScrollAmount.NoAmount, System.Windows.Automation.ScrollAmount.SmallIncrement);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+
         private void _treeView_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
@@ -873,20 +909,26 @@ namespace Amoeba.Windows
 
         }
 
-        private void _treeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        void _treeViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _treeView.GetCurrentItem(e.GetPosition) as SearchTreeViewItem;
-            if (item == null || e.OriginalSource.GetType() == typeof(ScrollViewer))
+            if (item == null)
             {
                 _startPoint = new Point(-1, -1);
 
                 return;
             }
 
-            _startPoint = e.GetPosition(null);
-
             if (item.IsSelected == true)
+            {
+                _startPoint = e.GetPosition(null);
                 _treeView_SelectedItemChanged(null, null);
+            }
+        }
+
+        private void _treeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _startPoint = new Point(-1, -1);
         }
 
         private void _treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

@@ -24,6 +24,8 @@ using Library.Net;
 using Library.Net.Amoeba;
 using Library.Security;
 using Library.Io;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 
 namespace Amoeba.Windows
 {
@@ -50,6 +52,7 @@ namespace Amoeba.Windows
             InitializeComponent();
 
             _treeViewItem.Value = Settings.Instance.LibraryControl_Box;
+            _treeViewItem.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(_treeViewItem_PreviewMouseLeftButtonDown);
 
             try
             {
@@ -930,25 +933,65 @@ namespace Amoeba.Windows
 
         #region _treeView
 
+        private void _treeView_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            Point position = MouseUtilities.GetMousePosition(_treeView);
+
+            if (position.Y < 50)
+            {
+                var peer = ItemsControlAutomationPeer.CreatePeerForElement(_treeView);
+                var scrollProvider = peer.GetPattern(PatternInterface.Scroll) as IScrollProvider;
+
+                try
+                {
+                    scrollProvider.Scroll(System.Windows.Automation.ScrollAmount.NoAmount, System.Windows.Automation.ScrollAmount.SmallDecrement);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else if ((_treeView.ActualHeight - position.Y) < 50)
+            {
+                var peer = ItemsControlAutomationPeer.CreatePeerForElement(_treeView);
+                var scrollProvider = peer.GetPattern(PatternInterface.Scroll) as IScrollProvider;
+
+                try
+                {
+                    scrollProvider.Scroll(System.Windows.Automation.ScrollAmount.NoAmount, System.Windows.Automation.ScrollAmount.SmallIncrement);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+        
         private void _treeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
 
         }
 
-        private void _treeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void _treeViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var item = _treeView.GetCurrentItem(e.GetPosition) as BoxTreeViewItem;
-            if (item == null || e.OriginalSource.GetType() == typeof(ScrollViewer))
+            if (item == null)
             {
                 _startPoint = new Point(-1, -1);
 
                 return;
             }
 
-            _startPoint = e.GetPosition(null);
-
             if (item.IsSelected == true)
+            {
+                _startPoint = e.GetPosition(null);
                 _treeView_SelectedItemChanged(null, null);
+            }
+        }
+
+        private void _treeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            _startPoint = new Point(-1, -1);
         }
 
         private void _treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -1182,6 +1225,40 @@ namespace Amoeba.Windows
         #endregion
 
         #region _listView
+
+        private void _listView_PreviewDragOver(object sender, DragEventArgs e)
+        {
+            Point position = MouseUtilities.GetMousePosition(_listView);
+
+            if (position.Y < 50)
+            {
+                var peer = ItemsControlAutomationPeer.CreatePeerForElement(_listView);
+                var scrollProvider = peer.GetPattern(PatternInterface.Scroll) as IScrollProvider;
+
+                try
+                {
+                    scrollProvider.Scroll(System.Windows.Automation.ScrollAmount.NoAmount, System.Windows.Automation.ScrollAmount.SmallDecrement);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            else if ((_listView.ActualHeight - position.Y) < 50)
+            {
+                var peer = ItemsControlAutomationPeer.CreatePeerForElement(_listView);
+                var scrollProvider = peer.GetPattern(PatternInterface.Scroll) as IScrollProvider;
+
+                try
+                {
+                    scrollProvider.Scroll(System.Windows.Automation.ScrollAmount.NoAmount, System.Windows.Automation.ScrollAmount.SmallIncrement);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
 
         private void _listView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
