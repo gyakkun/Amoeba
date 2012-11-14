@@ -60,6 +60,13 @@ namespace Amoeba.Windows
             _watchThread.IsBackground = true;
             _watchThread.Name = "WatchThread";
             _watchThread.Start();
+
+            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+        }
+
+        private void LanguagesManager_UsingLanguageChangedEvent(object sender)
+        {
+            _listView.Items.Refresh();
         }
 
         private void ShowDownloadItem()

@@ -53,6 +53,13 @@ namespace Amoeba.Windows
             _showUploadItemThread.IsBackground = true;
             _showUploadItemThread.Name = "ShowUploadItemThread";
             _showUploadItemThread.Start();
+
+            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+        }
+
+        private void LanguagesManager_UsingLanguageChangedEvent(object sender)
+        {
+            _listView.Items.Refresh();
         }
 
         private void ShowUploadItem()

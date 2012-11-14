@@ -84,6 +84,13 @@ namespace Amoeba.Windows
             _searchThread.Start();
 
             _searchRowDefinition.Height = new GridLength(0);
+
+            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+        }
+
+        private void LanguagesManager_UsingLanguageChangedEvent(object sender)
+        {
+            _listView.Items.Refresh();
         }
 
         private void Search()
