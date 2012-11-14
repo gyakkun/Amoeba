@@ -1898,6 +1898,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string DownloadControl_Path
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("DownloadControl_Path");
+                }
+            }
+        }
+
         public string DownloadControl_State
         {
             get
@@ -2153,6 +2164,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string UploadControl_Path
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UploadControl_Path");
+                }
+            }
+        }
+
         public string UploadControl_State
         {
             get
@@ -2374,6 +2396,17 @@ namespace Amoeba.Properties
             }
         }
 
+
+        public string ShareControl_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ShareControl_Name");
+                }
+            }
+        }
 
         public string ShareControl_Path
         {

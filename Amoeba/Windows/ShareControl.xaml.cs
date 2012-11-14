@@ -414,7 +414,11 @@ namespace Amoeba.Windows
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.ShareControl_Path)
+            if (sortBy == LanguagesManager.Instance.ShareControl_Name)
+            {
+                _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
+            }
+            else if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
             }
@@ -428,7 +432,19 @@ namespace Amoeba.Windows
         {
             List<ShareListViewItem> list = new List<ShareListViewItem>(collection);
 
-            if (sortBy == LanguagesManager.Instance.ShareControl_Path)
+            if (sortBy == LanguagesManager.Instance.ShareControl_Name)
+            {
+                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                {
+                    int c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+                    c = x.Id.CompareTo(y.Id);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
                 list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
                 {
@@ -477,6 +493,7 @@ namespace Amoeba.Windows
 
             private int _id;
             private Information _information;
+            private string _name = null;
             private string _path = null;
             private int _blockCount = 0;
 
@@ -505,13 +522,37 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
-                    if (_information.Contains("Path")) this.Path = ((string)_information["Path"])
-                        .Replace("/", "/ ").Replace("/ / ", "// ")
-                        .Replace(@"\", @"\ ").Replace(@"\ \ ", @"\\ ");
+                    if (_information.Contains("Path"))
+                    {
+                        var fullPath = (string)_information["Path"];
+
+                        if (fullPath != null)
+                        {
+                            this.Path = System.IO.Path.GetDirectoryName(fullPath);
+                            this.Name = System.IO.Path.GetFileName(fullPath);
+                        }
+                    }
                     else this.Path = null;
 
                     if (_information.Contains("BlockCount")) this.BlockCount = (int)_information["BlockCount"];
                     else this.BlockCount = 0;
+                }
+            }
+
+            public string Name
+            {
+                get
+                {
+                    return _name;
+                }
+                set
+                {
+                    if (value != _name)
+                    {
+                        _name = value;
+
+                        this.NotifyPropertyChanged("Name");
+                    }
                 }
             }
 

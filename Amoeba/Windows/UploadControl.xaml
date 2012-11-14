@@ -15,6 +15,9 @@
         <DataTemplate x:Key="_myTemplate_Name">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Path">
+            <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_State">
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _uploadStateToStringConverter}}" />
         </DataTemplate>
@@ -83,6 +86,8 @@
                             Width="{Binding Path=DownloadControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=UploadControl_Rate, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Rate}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Rate_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=UploadControl_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=UploadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>

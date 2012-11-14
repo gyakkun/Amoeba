@@ -524,6 +524,10 @@ namespace Amoeba.Windows
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rank", direction));
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
             }
+            else  if (sortBy == LanguagesManager.Instance.UploadControl_Path)
+            {
+                _listView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
+            }
             else if (sortBy == LanguagesManager.Instance.UploadControl_State)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
@@ -586,6 +590,18 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Path)
+            {
+                list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
+                {
+                    int c = x.Path.CompareTo(y.Path);
+                    if (c != 0) return c;
+                    c = x.Id.CompareTo(y.Id);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
             else if (sortBy == LanguagesManager.Instance.UploadControl_State)
             {
                 list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
@@ -625,6 +641,7 @@ namespace Amoeba.Windows
             private Information _information;
             private int _rank = 0;
             private string _name = null;
+            private string _path = null;
             private UploadState _state = 0;
             private long _length = 0;
             private int _priority = 0;
@@ -663,6 +680,9 @@ namespace Amoeba.Windows
                     if (_information.Contains("Name")) this.Name = (string)_information["Name"];
                     else this.Name = null;
 
+                    if (_information.Contains("Path")) this.Path = (string)_information["Path"];
+                    else this.Path = null;
+                    
                     if (_information.Contains("State")) this.State = (UploadState)_information["State"];
                     else this.State = 0;
 
@@ -762,6 +782,21 @@ namespace Amoeba.Windows
                         _name = value;
 
                         this.NotifyPropertyChanged("Name");
+                    }
+                }
+            }
+
+            public string Path
+            {
+                get
+                {
+                    return _path;
+                }
+                set
+                {
+                    if (value != _path)
+                    {
+                        _path = value; this.NotifyPropertyChanged("Path");
                     }
                 }
             }

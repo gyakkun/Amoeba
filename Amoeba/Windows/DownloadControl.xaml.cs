@@ -549,6 +549,10 @@ namespace Amoeba.Windows
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rank", direction));
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
             }
+            else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
+            {
+                _listView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
+            }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_State)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
@@ -611,6 +615,18 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
+            else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
+            {
+                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                {
+                    int c = x.Path.CompareTo(y.Path);
+                    if (c != 0) return c;
+                    c = x.Id.CompareTo(y.Id);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_State)
             {
                 list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
@@ -650,6 +666,7 @@ namespace Amoeba.Windows
             private Information _information;
             private int _rank = 0;
             private string _name = null;
+            private string _path = null;
             private DownloadState _state = 0;
             private long _length = 0;
             private int _priority = 0;
@@ -685,20 +702,11 @@ namespace Amoeba.Windows
                     if (_information.Contains("Rank")) this.Rank = (int)_information["Rank"];
                     else this.Rank = 0;
 
-                    if (_information.Contains("Name"))
-                    {
-                        if (_information.Contains("Path"))
-                        {
-                            this.Name = System.IO.Path.Combine(((string)_information["Path"]), (string)_information["Name"])
-                                .Replace("/", "/ ").Replace("/ / ", "// ")
-                                .Replace(@"\", @"\ ").Replace(@"\ \ ", @"\\ ");
-                        }
-                        else
-                        {
-                            this.Name = (string)_information["Name"];
-                        }
-                    }
+                    if (_information.Contains("Name")) this.Name = (string)_information["Name"];
                     else this.Name = null;
+
+                    if (_information.Contains("Path")) this.Path = (string)_information["Path"];
+                    else this.Path = null;
 
                     if (_information.Contains("Length")) this.Length = (long)_information["Length"];
                     else this.Length = 0;
@@ -779,6 +787,21 @@ namespace Amoeba.Windows
                     if (value != _name)
                     {
                         _name = value; this.NotifyPropertyChanged("Name");
+                    }
+                }
+            }
+
+            public string Path
+            {
+                get
+                {
+                    return _path;
+                }
+                set
+                {
+                    if (value != _path)
+                    {
+                        _path = value; this.NotifyPropertyChanged("Path");
                     }
                 }
             }

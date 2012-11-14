@@ -169,6 +169,7 @@
   <Translate Key="DownloadControl_Priority" Value="優先度" />
   <Translate Key="DownloadControl_Rank" Value="Rank" />
   <Translate Key="DownloadControl_Rate" Value="率" />
+  <Translate Key="DownloadControl_Path" Value="パス" />
   <Translate Key="DownloadControl_State" Value="状態" />
   <Translate Key="DownloadControl_Delete" Value="削除" />
   <Translate Key="DownloadControl_Copy" Value="コピー" />
@@ -194,6 +195,7 @@
   <Translate Key="UploadControl_Priority" Value="優先度" />
   <Translate Key="UploadControl_Rank" Value="Rank" />
   <Translate Key="UploadControl_Rate" Value="率" />
+  <Translate Key="UploadControl_Path" Value="パス" />
   <Translate Key="UploadControl_State" Value="状態" />
   <Translate Key="UploadControl_Add" Value="追加" />
   <Translate Key="UploadControl_Delete" Value="削除" />
@@ -216,6 +218,7 @@
   <Translate Key="UploadState_Completed" Value="完了" />
   <Translate Key="UploadState_Error" Value="エラー" />
 
+  <Translate Key="ShareControl_Name" Value="名前" />
   <Translate Key="ShareControl_Path" Value="パス" />
   <Translate Key="ShareControl_BlockCount" Value="ブロック数" />
   <Translate Key="ShareControl_Add" Value="追加" />

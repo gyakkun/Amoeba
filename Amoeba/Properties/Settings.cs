@@ -90,7 +90,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Rank_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Rate_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Path_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Key_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "UploadControl_LastHeaderClicked", Value = "Rate" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "UploadControl_ListSortDirection", Value = ListSortDirection.Descending },
@@ -100,13 +99,11 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Priority_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rank_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rate_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Key_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "ShareControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "ShareControl_ListSortDirection", Value = ListSortDirection.Ascending },
                 new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Name_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
     
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Top", Value = 120 },
@@ -1422,25 +1419,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public double DownloadControl_GridViewColumn_Key_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["DownloadControl_GridViewColumn_Key_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["DownloadControl_GridViewColumn_Key_Width"] = value;
-                }
-            }
-        }
-
 
         public string UploadControl_LastHeaderClicked
         {
@@ -1594,25 +1572,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public double UploadControl_GridViewColumn_Key_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["UploadControl_GridViewColumn_Key_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["UploadControl_GridViewColumn_Key_Width"] = value;
-                }
-            }
-        }
-
 
         public string ShareControl_LastHeaderClicked
         {
@@ -1686,25 +1645,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ShareControl_GridViewColumn_BlockCount_Width"] = value;
-                }
-            }
-        }
-
-        public double ShareControl_GridViewColumn_Length_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ShareControl_GridViewColumn_Length_Width"];
-                }
-            }
-
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ShareControl_GridViewColumn_Length_Width"] = value;
                 }
             }
         }

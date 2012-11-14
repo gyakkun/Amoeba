@@ -57,6 +57,8 @@ namespace Amoeba.Windows
         private volatile bool _diskSpaceNotFoundException = false;
         private volatile bool _cacheSpaceNotFoundException = false;
 
+        private string _cacheBlocksPath = null;
+
         public MainWindow()
         {
             _bufferManager = new BufferManager();
@@ -230,7 +232,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (spaceCheckStopwatch.Elapsed > new TimeSpan(0, 1, 0))
+                    if (Settings.Instance.Global_IsStart && spaceCheckStopwatch.Elapsed > new TimeSpan(0, 1, 0))
                     {
                         spaceCheckStopwatch.Restart();
 
@@ -241,6 +243,20 @@ namespace Amoeba.Windows
                             if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
                             {
                                 _diskSpaceNotFoundException = true;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Warning(e);
+                        }
+
+                        try
+                        {
+                            DriveInfo drive = new DriveInfo(_cacheBlocksPath);
+
+                            if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
+                            {
+                                _cacheSpaceNotFoundException = true;
                             }
                         }
                         catch (Exception e)
@@ -539,7 +555,19 @@ namespace Amoeba.Windows
             {
                 bool initFlag = false;
 
-                _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.blocks"), _bufferManager);
+                if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path")))
+                {
+                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"), new UTF8Encoding(false)))
+                    {
+                        _cacheBlocksPath = reader.ReadLine();
+                    }
+                }
+                else
+                {
+                    _cacheBlocksPath = Path.Combine(App.DirectoryPaths["Configuration"], "Cache.blocks");
+                }
+
+                _amoebaManager = new AmoebaManager(_cacheBlocksPath, _bufferManager);
                 _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
 
                 if (_amoebaManager.BaseNode == null || _amoebaManager.BaseNode.Id == null)
