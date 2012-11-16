@@ -274,6 +274,8 @@ namespace Amoeba.Windows
                             _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                             Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+
+                            GC.Collect();
                         }
                         catch (Exception e)
                         {
