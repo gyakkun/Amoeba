@@ -252,11 +252,14 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            DriveInfo drive = new DriveInfo(_cacheBlocksPath);
-
-                            if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
+                            if (!string.IsNullOrWhiteSpace(_cacheBlocksPath))
                             {
-                                _cacheSpaceNotFoundException = true;
+                                DriveInfo drive = new DriveInfo(Path.GetDirectoryName(_cacheBlocksPath));
+
+                                if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
+                                {
+                                    _cacheSpaceNotFoundException = true;
+                                }
                             }
                         }
                         catch (Exception e)
