@@ -254,7 +254,7 @@ namespace Amoeba.Windows
                         {
                             if (!string.IsNullOrWhiteSpace(_cacheBlocksPath))
                             {
-                                DriveInfo drive = new DriveInfo(Path.GetDirectoryName(_cacheBlocksPath));
+                                DriveInfo drive = new DriveInfo(Path.GetDirectoryName(Path.GetFullPath(_cacheBlocksPath)));
 
                                 if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
                                 {
