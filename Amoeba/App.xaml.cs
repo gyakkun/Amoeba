@@ -36,7 +36,7 @@ namespace Amoeba
         {
             //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
 
-            App.AmoebaVersion = new Version(0, 1, 46);
+            App.AmoebaVersion = new Version(0, 1, 47);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -44,7 +44,7 @@ namespace Amoeba
 
             App.DirectoryPaths["Base"] = @"..\";
             App.DirectoryPaths["Configuration"] = Path.Combine(@"..\", "Configuration");
-            App.DirectoryPaths["Update"] = Path.Combine(@"..\", "Update");
+            App.DirectoryPaths["Update"] = Path.GetFullPath(Path.Combine(@"..\", "Update"));
             App.DirectoryPaths["Log"] = Path.Combine(@"..\", "Log");
             App.DirectoryPaths["Input"] = Path.Combine(@"..\", "Input");
             App.DirectoryPaths["Work"] = Path.Combine(@"..\", "Work");
