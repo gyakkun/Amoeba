@@ -1151,6 +1151,7 @@ namespace Amoeba.Windows
             using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
             {
                 dialog.Multiselect = true;
+                dialog.RestoreDirectory = true;
                 dialog.DefaultExt = ".box";
                 dialog.Filter = "Box (*.box)|*.box";
 
@@ -1202,6 +1203,7 @@ namespace Amoeba.Windows
 
             using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
+                dialog.RestoreDirectory = true;
                 dialog.FileName = selectTreeViewItem.Value.Name;
                 dialog.DefaultExt = ".box";
                 dialog.Filter = "Box (*.box)|*.box";

@@ -219,6 +219,7 @@ namespace Amoeba.Windows
             using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
             {
                 dialog.Multiselect = true;
+                dialog.RestoreDirectory = true;
                 dialog.DefaultExt = ".signature";
                 dialog.Filter = "Signature (*.signature)|*.signature";
 
@@ -256,6 +257,7 @@ namespace Amoeba.Windows
 
             using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
+                dialog.RestoreDirectory = true;
                 dialog.FileName = MessageConverter.ToSignatureString(signature);
                 dialog.DefaultExt = ".signature";
                 dialog.Filter = "Signature (*.signature)|*.signature";

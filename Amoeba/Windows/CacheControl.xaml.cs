@@ -1088,6 +1088,7 @@ namespace Amoeba.Windows
 
             using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
+                dialog.RestoreDirectory = true;
                 dialog.FileName = box.Name;
                 dialog.DefaultExt = ".box";
                 dialog.Filter = "Box (*.box)|*.box";

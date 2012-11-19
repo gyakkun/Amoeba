@@ -251,6 +251,7 @@ namespace Amoeba.Windows
         {
             System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
             dialog.Multiselect = true;
+            dialog.RestoreDirectory = true;
 
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
