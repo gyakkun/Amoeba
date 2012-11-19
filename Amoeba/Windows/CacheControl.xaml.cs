@@ -2160,7 +2160,6 @@ namespace Amoeba.Windows
                 },
             };
 
-            base.IsExpanded = true;
             base.ItemsSource = _listViewItemCollection;
 
             base.RequestBringIntoView += (object sender, RequestBringIntoViewEventArgs e) =>
@@ -2174,7 +2173,6 @@ namespace Amoeba.Windows
         {
             this.Value = searchTreeItem;
 
-            base.IsExpanded = true;
             base.ItemsSource = _listViewItemCollection;
 
             base.RequestBringIntoView += (object sender, RequestBringIntoViewEventArgs e) =>
@@ -2190,9 +2188,25 @@ namespace Amoeba.Windows
             e.Handled = true;
         }
 
+        protected override void OnExpanded(RoutedEventArgs e)
+        {
+            base.OnExpanded(e);
+
+            this.Value.IsExpanded = true;
+        }
+
+        protected override void OnCollapsed(RoutedEventArgs e)
+        {
+            base.OnCollapsed(e);
+
+            this.Value.IsExpanded = false;
+        }
+
         public void Update()
         {
             base.Header = string.Format("{0} ({1})", _value.SearchItem.Name, _hit);
+
+            base.IsExpanded = this.Value.IsExpanded;
 
             List<SearchTreeViewItem> list = new List<SearchTreeViewItem>();
 
@@ -2281,6 +2295,7 @@ namespace Amoeba.Windows
     {
         private SearchItem _searchItem;
         private List<SearchTreeItem> _items;
+        private bool _isExpanded = true;
 
         private object _thisLock = new object();
         private static object _thisStaticLock = new object();
@@ -2315,6 +2330,25 @@ namespace Amoeba.Windows
                         _items = new List<SearchTreeItem>();
 
                     return _items;
+                }
+            }
+        }
+
+        [DataMember(Name = "IsExpanded")]
+        public bool IsExpanded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return _isExpanded;
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    _isExpanded = value;
                 }
             }
         }
