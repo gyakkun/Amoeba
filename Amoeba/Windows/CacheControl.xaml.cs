@@ -1248,8 +1248,6 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewDeleteMenuItem_IsEnabled = false;
-
             var list = new HashSet<Seed>();
             var downloadList = new HashSet<int>();
             var uploadList = new HashSet<int>();
@@ -1266,6 +1264,8 @@ namespace Amoeba.Windows
 
             if ((list.Count + downloadList.Count + uploadList.Count) == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            _listViewDeleteMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -1341,8 +1341,6 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewDeleteCacheMenuItem_IsEnabled = false;
-
             var list = new HashSet<Seed>();
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
@@ -1354,6 +1352,8 @@ namespace Amoeba.Windows
 
             if (list.Count == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            _listViewDeleteCacheMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -1398,8 +1398,6 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewDeleteShareMenuItem_IsEnabled = false;
-
             var list = new HashSet<Seed>();
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
@@ -1411,6 +1409,8 @@ namespace Amoeba.Windows
 
             if (list.Count == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            _listViewDeleteShareMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -1455,8 +1455,6 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewDeleteDownloadMenuItem_IsEnabled = false;
-
             var list = new HashSet<int>();
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
@@ -1468,6 +1466,8 @@ namespace Amoeba.Windows
 
             if (list.Count == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            _listViewDeleteDownloadMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -1512,8 +1512,6 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewDeleteUploadMenuItem_IsEnabled = false;
-
             var list = new HashSet<int>();
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
@@ -1525,6 +1523,8 @@ namespace Amoeba.Windows
 
             if (list.Count == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            _listViewDeleteUploadMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -1569,8 +1569,6 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewDeleteDownloadHistoryMenuItem_IsEnabled = false;
-
             var list = new HashSet<Seed>();
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
@@ -1582,6 +1580,8 @@ namespace Amoeba.Windows
 
             if (list.Count == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            _listViewDeleteDownloadHistoryMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {
@@ -1629,8 +1629,6 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
-            _listViewDeleteUploadHistoryMenuItem_IsEnabled = false;
-
             var list = new HashSet<Seed>();
 
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
@@ -1642,6 +1640,8 @@ namespace Amoeba.Windows
 
             if (list.Count == 0) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            _listViewDeleteUploadHistoryMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {

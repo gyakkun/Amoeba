@@ -140,6 +140,9 @@
   <Translate Key="ConnectionControl_AcceptConnectionCount" Value="Accept connection count" />
   <Translate Key="ConnectionControl_SurroundingNodeCount" Value="Surrounding node count" />
   <Translate Key="ConnectionControl_RelayBlockCount" Value="Relay block count" />
+  <Translate Key="ConnectionControl_FreeSpace" Value="Free Space" />
+  <Translate Key="ConnectionControl_LockSpace" Value="Lock Space" />
+  <Translate Key="ConnectionControl_UsingSpace" Value="Using Space" />
   <Translate Key="ConnectionControl_NodeCount" Value="Node count" />
   <Translate Key="ConnectionControl_SeedCount" Value="Seed Count" />
   <Translate Key="ConnectionControl_BlockCount" Value="Block count" />

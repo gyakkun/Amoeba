@@ -296,8 +296,6 @@ namespace Amoeba.Windows
             if (selectItems == null || selectItems.Count == 0) return;
 
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Download", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
-            
-            _listViewDeleteMenuItem_IsEnabled = false;
 
             List<int> ids = new List<int>();
 
@@ -305,6 +303,8 @@ namespace Amoeba.Windows
             {
                 ids.Add(item.Id);
             }
+            
+            _listViewDeleteMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {

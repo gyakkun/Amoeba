@@ -1599,6 +1599,39 @@ namespace Amoeba.Properties
             }
         }
 
+        public string ConnectionControl_FreeSpace
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_FreeSpace");
+                }
+            }
+        }
+
+        public string ConnectionControl_LockSpace
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_LockSpace");
+                }
+            }
+        }
+
+        public string ConnectionControl_UsingSpace
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_UsingSpace");
+                }
+            }
+        }
+
         public string ConnectionControl_NodeCount
         {
             get

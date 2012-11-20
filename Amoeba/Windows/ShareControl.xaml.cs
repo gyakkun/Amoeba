@@ -281,14 +281,14 @@ namespace Amoeba.Windows
 
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Share", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
-            _listViewDeleteMenuItem_IsEnabled = false;
-
             List<int> ids = new List<int>();
 
             foreach (var item in selectItems.Cast<ShareListViewItem>())
             {
                 ids.Add(item.Id);
             }
+
+            _listViewDeleteMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
             {

@@ -140,6 +140,9 @@
   <Translate Key="ConnectionControl_AcceptConnectionCount" Value="成功した接続受信数" />
   <Translate Key="ConnectionControl_SurroundingNodeCount" Value="確認できる周辺ノード数" />
   <Translate Key="ConnectionControl_RelayBlockCount" Value="中継ブロック数" />
+  <Translate Key="ConnectionControl_FreeSpace" Value="空き領域" />
+  <Translate Key="ConnectionControl_LockSpace" Value="保護領域" />
+  <Translate Key="ConnectionControl_UsingSpace" Value="使用領域" />
   <Translate Key="ConnectionControl_NodeCount" Value="保持ノード情報数" />
   <Translate Key="ConnectionControl_SeedCount" Value="保持シード情報数" />
   <Translate Key="ConnectionControl_BlockCount" Value="保持ブロック情報数" />
