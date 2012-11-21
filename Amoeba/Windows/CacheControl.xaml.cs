@@ -248,7 +248,7 @@ namespace Amoeba.Windows
                 {
                     bool flag;
 
-                    lock (searchItem.SearchStateCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchStateCollection.Any(n => n.Contains == true))
                         {
@@ -262,7 +262,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchLengthRangeCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchLengthRangeCollection.Any(n => n.Contains == true))
                         {
@@ -276,7 +276,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchCreationTimeRangeCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchCreationTimeRangeCollection.Any(n => n.Contains == true))
                         {
@@ -290,7 +290,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchKeywordCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchKeywordCollection.Any(n => n.Contains == true))
                         {
@@ -304,7 +304,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchSignatureCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchSignatureCollection.Any(n => n.Contains == true))
                         {
@@ -328,7 +328,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchNameCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchNameCollection.Any(n => n.Contains == true))
                         {
@@ -346,7 +346,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchNameRegexCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchNameRegexCollection.Any(n => n.Contains == true))
                         {
@@ -360,7 +360,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchSeedCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchSeedCollection.Any(n => n.Contains == true))
                         {
@@ -383,7 +383,7 @@ namespace Amoeba.Windows
                 {
                     bool flag;
 
-                    lock (searchItem.SearchStateCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchStateCollection.Any(n => n.Contains == false))
                         {
@@ -397,7 +397,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchLengthRangeCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchLengthRangeCollection.Any(n => n.Contains == false))
                         {
@@ -411,7 +411,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchCreationTimeRangeCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchCreationTimeRangeCollection.Any(n => n.Contains == false))
                         {
@@ -425,7 +425,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchKeywordCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchKeywordCollection.Any(n => n.Contains == false))
                         {
@@ -439,7 +439,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchSignatureCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchSignatureCollection.Any(n => n.Contains == false))
                         {
@@ -463,7 +463,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchNameCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchNameCollection.Any(n => n.Contains == false))
                         {
@@ -481,7 +481,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchNameRegexCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchNameRegexCollection.Any(n => n.Contains == false))
                         {
@@ -495,7 +495,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    lock (searchItem.SearchSeedCollection.ThisLock)
+                    lock (searchItem.ThisLock)
                     {
                         if (searchItem.SearchSeedCollection.Any(n => n.Contains == false))
                         {
