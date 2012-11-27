@@ -7,11 +7,6 @@
         Height="300" Width="569">
     
     <UserControl.Resources>
-        <local:NodeToStringConverter x:Key="_nodeToStringConverter"/>
-        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
-        <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
-        <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
-
         <DataTemplate x:Key="_myTemplate_Uri">
             <TextBlock Text="{Binding Path=Uri, Mode=OneWay}" />
         </DataTemplate>

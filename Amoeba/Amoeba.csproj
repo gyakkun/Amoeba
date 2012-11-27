@@ -115,7 +115,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\ConnectionWindow.xaml">
+    <Page Include="Windows\ConnectionsSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
@@ -127,7 +127,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\UserInterfaceWindow.xaml">
+    <Page Include="Windows\ViewSettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -205,8 +205,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windows\UserInterfaceWindow.xaml.cs">
-      <DependentUpon>UserInterfaceWindow.xaml</DependentUpon>
+    <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
+      <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ListViewEx.cs" />
     <Compile Include="Windows\UploadListWindow.xaml.cs">
@@ -222,8 +222,8 @@
     <Compile Include="Windows\ConnectionControl.xaml.cs">
       <DependentUpon>ConnectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ConnectionWindow.xaml.cs">
-      <DependentUpon>ConnectionWindow.xaml</DependentUpon>
+    <Compile Include="Windows\ConnectionsSettingsWindow.xaml.cs">
+      <DependentUpon>ConnectionsSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\BoxEditWindow.xaml.cs">
       <DependentUpon>BoxEditWindow.xaml</DependentUpon>

@@ -7,19 +7,9 @@
         Height="500" Width="800">
 
     <UserControl.Resources>
-        <local:StringsToStringConverter x:Key="_stringsToStringConverter"/>
-        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
-        <local:SearchStateToStringConverter x:Key="_searchStateToStringConverter"/>
-        <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
-        <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
-        <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
-        <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
-        <local:ObjectToImageConverter x:Key="_itemToIconConverter" />
-        <local:DateTimeToStringConverter x:Key="_dateTimeToStringConverter" />
-
         <DataTemplate x:Key="_myTemplate_Name">
             <Grid>
-                <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _itemToIconConverter}}" HorizontalAlignment="Left" />
+                <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
                 <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
             </Grid>
         </DataTemplate>

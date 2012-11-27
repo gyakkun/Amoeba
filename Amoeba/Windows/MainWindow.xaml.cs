@@ -751,7 +751,7 @@ namespace Amoeba.Windows
                     var torConnectionFilter = new ConnectionFilter()
                     {
                         ConnectionType = ConnectionType.Socks5Proxy,
-                        ProxyUri = "tcp:127.0.0.1:9050",
+                        ProxyUri = "tcp:127.0.0.1:19050",
                         UriCondition = new UriCondition()
                         {
                             Value = @"tor:.*",
@@ -790,6 +790,24 @@ namespace Amoeba.Windows
                     using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
                     {
                         version = new Version(reader.ReadLine());
+                    }
+
+                    if (version <= new Version(0, 1, 49))
+                    {
+                        if (Settings.Instance.Global_Update_ProxyUri == "tcp:127.0.0.1:8118")
+                            Settings.Instance.Global_Update_ProxyUri = "tcp:127.0.0.1:18118";
+
+                        var torConnectionFilter = new ConnectionFilter()
+                        {
+                            ConnectionType = ConnectionType.Socks5Proxy,
+                            ProxyUri = "tcp:127.0.0.1:19050",
+                            UriCondition = new UriCondition()
+                            {
+                                Value = @"tor:.*",
+                            },
+                        };
+
+                        _amoebaManager.Filters.Add(torConnectionFilter);
                     }
                 }
 
@@ -902,6 +920,7 @@ namespace Amoeba.Windows
         }
 
         private object _updateLockObject = new object();
+        private Version _updateCancelVersion = null;
 
         private void CheckUpdate(bool isLogFlag)
         {
@@ -972,6 +991,8 @@ namespace Amoeba.Windows
                         }
                         else
                         {
+                            if (!isLogFlag && targetVersion == _updateCancelVersion) return;
+
                             if (!string.IsNullOrWhiteSpace(signature))
                             {
                                 if (!seed.VerifyCertificate()) throw new Exception("Update VerifyCertificate");
@@ -1033,6 +1054,10 @@ namespace Amoeba.Windows
                                 _amoebaManager.Download(seed, App.DirectoryPaths["Update"], 6);
 
                                 Log.Information(string.Format("Download: {0}", seed.Name));
+                            }
+                            else
+                            {
+                                _updateCancelVersion = targetVersion;
                             }
                         }
                     }
@@ -1250,6 +1275,12 @@ namespace Amoeba.Windows
             this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
 
+        private void _connectionsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            _checkSeedsMenuItem.IsEnabled = _checkSeedsMenuItem_IsEnabled;
+            _checkBlocksMenuItem.IsEnabled = _checkBlocksMenuItem_IsEnabled;
+        }
+
         private void _startMenuItem_Click(object sender, RoutedEventArgs e)
         {
             _startMenuItem.IsEnabled = false;
@@ -1264,26 +1295,6 @@ namespace Amoeba.Windows
             _stopMenuItem.IsEnabled = false;
 
             Settings.Instance.Global_IsStart = false;
-        }
-
-        private void _settingsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
-        {
-            _checkSeedsMenuItem.IsEnabled = _checkSeedsMenuItem_IsEnabled;
-            _checkBlocksMenuItem.IsEnabled = _checkBlocksMenuItem_IsEnabled;
-        }
-
-        private void _connectionSettingMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            ConnectionWindow window = new ConnectionWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
-            window.Owner = this;
-            window.ShowDialog();
-        }
-
-        private void _userInterfaceSettingMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            UserInterfaceWindow window = new UserInterfaceWindow(_bufferManager);
-            window.Owner = this;
-            window.ShowDialog();
         }
 
         volatile bool _checkSeedsMenuItem_IsEnabled = true;
@@ -1361,6 +1372,20 @@ namespace Amoeba.Windows
 
             window.Owner = this;
             window.Show();
+        }
+
+        private void _connectionsSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectionsSettingsWindow window = new ConnectionsSettingsWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
+        private void _viewSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ViewSettingsWindow window = new ViewSettingsWindow(_bufferManager);
+            window.Owner = this;
+            window.ShowDialog();
         }
 
         private void _helpMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)

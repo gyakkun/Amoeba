@@ -21,10 +21,28 @@
             <Style TargetType="{x:Type local:DigitalSignatureComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}" />
             <Style TargetType="{x:Type local:LanguageMenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}" />
 
+            <local:ObjectToImageConverter x:Key="_objectToImageConverter"/>
+            <local:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter"/>
+            <local:StringRegularizationConverter x:Key="_stringRegularizationConverter"/>
+            <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter"/>
             <local:TopRelativeDoubleConverter x:Key="_topRelativeDoubleConverter"/>
             <local:LeftRelativeDoubleConverter x:Key="_leftRelativeDoubleConverter"/>
+            <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter"/>
+            <local:NodeToStringConverter x:Key="_nodeToStringConverter"/>
+            <local:SeedToStringConverter x:Key="_seedToStringConverter"/>
+            <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter"/>
+            <local:StringsToStringConverter x:Key="_stringsToStringConverter"/>
+            <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
+            <local:BoolToStringConverter x:Key="_boolToStringConverter"/>
+            <local:DateTimeToStringConverter x:Key="_dateTimeToStringConverter"/>
             <local:StringToFontFamilyConverter x:Key="_stringToFontFamilyConverter"/>
             <local:StringToDoubleConverter x:Key="_stringToDoubleConverter"/>
+            <local:SearchStateToStringConverter x:Key="_searchStateToStringConverter"/>
+            <local:SearchStateFlagToStringConverter x:Key="_searchStateFlagToStringConverter"/>
+            <local:DownloadStateToStringConverter x:Key="_downloadStateToStringConverter"/>
+            <local:UploadStateToStringConverter x:Key="_uploadStateToStringConverter"/>
+            <local:ConnectionTypeToStringConverter x:Key="_connectionTypeToStringConverter"/>
+            <local:ExpanderToBooleanConverter x:Key="_expanderToBooleanConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

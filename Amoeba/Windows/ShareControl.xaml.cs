@@ -415,7 +415,11 @@ namespace Amoeba.Windows
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.ShareControl_Name)
+            if (sortBy == LanguagesManager.Instance.ShareControl_Index)
+            {
+                _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
+            }
+            else  if (sortBy == LanguagesManager.Instance.ShareControl_Name)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             }
@@ -433,7 +437,19 @@ namespace Amoeba.Windows
         {
             List<ShareListViewItem> list = new List<ShareListViewItem>(collection);
 
-            if (sortBy == LanguagesManager.Instance.ShareControl_Name)
+            if (sortBy == LanguagesManager.Instance.ShareControl_Index)
+            {
+                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                {
+                    int c = x.Index.CompareTo(y.Index);
+                    if (c != 0) return c;
+                    c = x.Id.CompareTo(y.Id);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (sortBy == LanguagesManager.Instance.ShareControl_Name)
             {
                 list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
                 {
@@ -493,6 +509,7 @@ namespace Amoeba.Windows
             }
 
             private int _id;
+            private int _index;
             private Information _information;
             private string _name = null;
             private string _path = null;
@@ -523,6 +540,9 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
+                    if (_information.Contains("Index")) this.Index = (int)_information["Index"];
+                    else this.Index = 0;
+                    
                     if (_information.Contains("Path"))
                     {
                         var fullPath = (string)_information["Path"];
@@ -537,6 +557,23 @@ namespace Amoeba.Windows
 
                     if (_information.Contains("BlockCount")) this.BlockCount = (int)_information["BlockCount"];
                     else this.BlockCount = 0;
+                }
+            }
+
+            public int Index
+            {
+                get
+                {
+                    return _index;
+                }
+                set
+                {
+                    if (value != _index)
+                    {
+                        _index = value;
+                        
+                        this.NotifyPropertyChanged("Index");
+                    }
                 }
             }
 

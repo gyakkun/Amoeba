@@ -20,9 +20,9 @@ using Library.Net.Amoeba;
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// ConnectionWindow.xaml の相互作用ロジック
+    /// ConnectionsSettingsWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class ConnectionWindow : Window
+    partial class ConnectionsSettingsWindow : Window
     {
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
@@ -33,7 +33,7 @@ namespace Amoeba.Windows
         private ConnectionFilterCollection _clientFilters = new ConnectionFilterCollection();
         private UriCollection _listenUris = new UriCollection();
 
-        public ConnectionWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, BufferManager bufferManager)
+        public ConnectionsSettingsWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, BufferManager bufferManager)
         {
             _amoebaManager = amoebaManager;
             _autoBaseNodeSettingManager = autoBaseNodeSettingManager;
@@ -48,8 +48,6 @@ namespace Amoeba.Windows
             }
 
             InitializeComponent();
-
-            _miscellaneousStackPanel.DataContext = new ExpanderListViewModel();
 
             {
                 var icon = new BitmapImage();
@@ -68,10 +66,10 @@ namespace Amoeba.Windows
             _otherNodesListView.ItemsSource = _otherNodes;
             _clientFiltersListView.ItemsSource = _clientFilters;
             _serverListenUrisListView.ItemsSource = _listenUris;
-            _miscellaneousDownloadDirectoryTextBox.Text = _amoebaManager.DownloadDirectory;
-            _miscellaneousConnectionCountTextBox.Text = _amoebaManager.ConnectionCountLimit.ToString();
-            _miscellaneousCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size);
-            _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
+            _dataDownloadDirectoryTextBox.Text = _amoebaManager.DownloadDirectory;
+            _bandwidthConnectionCountTextBox.Text = _amoebaManager.ConnectionCountLimit.ToString();
+            _dataCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size);
+            _eventAutoBaseNodeSettingCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
 
             foreach (var item in Enum.GetValues(typeof(ConnectionType)).Cast<ConnectionType>())
             {
@@ -79,6 +77,11 @@ namespace Amoeba.Windows
             }
 
             _clientFiltersConnectionTypeComboBox.SelectedItem = ConnectionType.Tcp;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            _baseNodeTreeViewItem.IsSelected = true;
         }
 
         #region BaseNode
@@ -1169,7 +1172,27 @@ namespace Amoeba.Windows
 
         #endregion
 
-        #region Miscellaneous
+        #region Data
+
+        private void _dataDownloadDirectoryTextBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            using (System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
+                dialog.SelectedPath = _dataDownloadDirectoryTextBox.Text;
+                dialog.ShowNewFolderButton = true;
+                dialog.Description = LanguagesManager.Instance.ConnectionsSettingsWindow_DownloadDirectory;
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    _dataDownloadDirectoryTextBox.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Bandwidth
 
         private static int GetStringToInt(string value)
         {
@@ -1197,13 +1220,13 @@ namespace Amoeba.Windows
             return count;
         }
 
-        private void _miscellaneousConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void _bandwidthConnectionCountTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(_miscellaneousConnectionCountTextBox.Text)) return;
+            if (string.IsNullOrWhiteSpace(_bandwidthConnectionCountTextBox.Text)) return;
 
             StringBuilder builder = new StringBuilder("");
 
-            foreach (var item in _miscellaneousConnectionCountTextBox.Text)
+            foreach (var item in _bandwidthConnectionCountTextBox.Text)
             {
                 if (Regex.IsMatch(item.ToString(), "[0-9]"))
                 {
@@ -1212,23 +1235,7 @@ namespace Amoeba.Windows
             }
 
             var value = builder.ToString();
-            if (_miscellaneousConnectionCountTextBox.Text != value) _miscellaneousConnectionCountTextBox.Text = value;
-        }
-
-        private void _miscellaneousDownloadDirectoryTextBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            using (System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog())
-            {
-                dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
-                dialog.SelectedPath = _miscellaneousDownloadDirectoryTextBox.Text;
-                dialog.ShowNewFolderButton = true;
-                dialog.Description = LanguagesManager.Instance.ConnectionWindow_DownloadDirectory;
-
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    _miscellaneousDownloadDirectoryTextBox.Text = dialog.SelectedPath;
-                }
-            }
+            if (_bandwidthConnectionCountTextBox.Text != value) _bandwidthConnectionCountTextBox.Text = value;
         }
 
         #endregion
@@ -1245,7 +1252,7 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    size = Math.Abs((long)NetworkConverter.FromSizeString(_miscellaneousCacheSizeTextBox.Text));
+                    size = Math.Abs((long)NetworkConverter.FromSizeString(_dataCacheSizeTextBox.Text));
                 }
                 catch (Exception)
                 {
@@ -1260,7 +1267,7 @@ namespace Amoeba.Windows
                 _amoebaManager.BaseNode = _baseNode.DeepClone();
                 _amoebaManager.SetOtherNodes(_otherNodes.Where(n => n != null && n.Id != null && n.Uris.Count != 0));
 
-                int count = ConnectionWindow.GetStringToInt(_miscellaneousConnectionCountTextBox.Text);
+                int count = ConnectionsSettingsWindow.GetStringToInt(_bandwidthConnectionCountTextBox.Text);
                 _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 50), 1);
 
                 _amoebaManager.Filters.Clear();
@@ -1274,7 +1281,7 @@ namespace Amoeba.Windows
                     flag = true;
                 }
 
-                string path = _miscellaneousDownloadDirectoryTextBox.Text;
+                string path = _dataDownloadDirectoryTextBox.Text;
 
                 foreach (var item in System.IO.Path.GetInvalidPathChars())
                 {
@@ -1284,7 +1291,7 @@ namespace Amoeba.Windows
                 _amoebaManager.DownloadDirectory = path;
             }
 
-            if (flag && _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value
+            if (flag && _eventAutoBaseNodeSettingCheckBox.IsChecked.Value
                 && _autoBaseNodeSettingManager.State == ManagerState.Start)
             {
                 ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
@@ -1293,7 +1300,7 @@ namespace Amoeba.Windows
                 }));
             }
 
-            Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _miscellaneousAutoBaseNodeSettingCheckBox.IsChecked.Value;
+            Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _eventAutoBaseNodeSettingCheckBox.IsChecked.Value;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
@@ -1303,19 +1310,19 @@ namespace Amoeba.Windows
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_baseNodeTabItem.IsSelected)
+            if (_baseNodeTreeViewItem.IsSelected)
             {
                 _baseNodeUrisListViewDeleteMenuItem_Click(null, null);
             }
-            else if (_otherNodesTabItem.IsSelected)
+            else if (_otherNodesTreeViewItem.IsSelected)
             {
 
             }
-            else if (_clientTabItem.IsSelected)
+            else if (_clientTreeViewItem.IsSelected)
             {
                 _clientFiltersListViewDeleteMenuItem_Click(null, null);
             }
-            else if (_serverTabItem.IsSelected)
+            else if (_serverTreeViewItem.IsSelected)
             {
                 _serverListenUrisListViewDeleteMenuItem_Click(null, null);
             }
@@ -1323,19 +1330,19 @@ namespace Amoeba.Windows
 
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_baseNodeTabItem.IsSelected)
+            if (_baseNodeTreeViewItem.IsSelected)
             {
                 _baseNodeUrisListViewCopyMenuItem_Click(null, null);
             }
-            else if (_otherNodesTabItem.IsSelected)
+            else if (_otherNodesTreeViewItem.IsSelected)
             {
                 _otherNodesCopyMenuItem_Click(null, null);
             }
-            else if (_clientTabItem.IsSelected)
+            else if (_clientTreeViewItem.IsSelected)
             {
                 _clientFiltersListViewCopyMenuItem_Click(null, null);
             }
-            else if (_serverTabItem.IsSelected)
+            else if (_serverTreeViewItem.IsSelected)
             {
                 _serverListenUrisListViewCopyMenuItem_Click(null, null);
             }
@@ -1343,19 +1350,19 @@ namespace Amoeba.Windows
 
         private void Execute_Cut(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_baseNodeTabItem.IsSelected)
+            if (_baseNodeTreeViewItem.IsSelected)
             {
                 _baseNodeUrisListViewCutMenuItem_Click(null, null);
             }
-            else if (_otherNodesTabItem.IsSelected)
+            else if (_otherNodesTreeViewItem.IsSelected)
             {
 
             }
-            else if (_clientTabItem.IsSelected)
+            else if (_clientTreeViewItem.IsSelected)
             {
                 _clientFiltersListViewCutMenuItem_Click(null, null);
             }
-            else if (_serverTabItem.IsSelected)
+            else if (_serverTreeViewItem.IsSelected)
             {
                 _serverListenUrisListViewCutMenuItem_Click(null, null);
             }
@@ -1363,32 +1370,22 @@ namespace Amoeba.Windows
 
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_baseNodeTabItem.IsSelected)
+            if (_baseNodeTreeViewItem.IsSelected)
             {
                 _baseNodeUrisListViewPasteMenuItem_Click(null, null);
             }
-            else if (_otherNodesTabItem.IsSelected)
+            else if (_otherNodesTreeViewItem.IsSelected)
             {
                 _otherNodesPasteMenuItem_Click(null, null);
             }
-            else if (_clientTabItem.IsSelected)
+            else if (_clientTreeViewItem.IsSelected)
             {
                 _clientFiltersListViewPasteMenuItem_Click(null, null);
             }
-            else if (_serverTabItem.IsSelected)
+            else if (_serverTreeViewItem.IsSelected)
             {
                 _serverListenUrisListViewPasteMenuItem_Click(null, null);
             }
-        }
-
-        public class ExpanderListViewModel
-        {
-            public ExpanderListViewModel()
-            {
-                this.SelectedExpander = "1";
-            }
-
-            public string SelectedExpander { get; set; }
         }
     }
 }

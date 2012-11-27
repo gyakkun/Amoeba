@@ -15,14 +15,6 @@
         WindowState="{Binding Path=SearchItemEditWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}">
    
     <Window.Resources>
-        <local:BoolToStringConverter x:Key="_boolToStringConverter"/>
-        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
-        <local:SeedToStringConverter x:Key="_seedToStringConverter" />
-        <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
-        <local:DateTimeToStringConverter x:Key="_dateTimeToStringConverter" />
-        <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
-        <local:SearchStateFlagToStringConverter x:Key="_searchStateFlagToStringConverter" />
-
         <DataTemplate x:Key="_myTemplate_SearchContains_Contains">
             <TextBlock Text="{Binding Path=Contains, Mode=OneWay, Converter={StaticResource _boolToStringConverter}}" />
         </DataTemplate>

@@ -670,6 +670,7 @@ namespace Amoeba.Windows
             }
 
             private int _id;
+            private int _index;
             private Information _information;
             private int _rank = 0;
             private string _name = null;
@@ -705,6 +706,9 @@ namespace Amoeba.Windows
                 set
                 {
                     _information = value;
+
+                    if (_information.Contains("Index")) this.Index = (int)_information["Index"];
+                    else this.Index = 0;
 
                     if (_information.Contains("Rank")) this.Rank = (int)_information["Rank"];
                     else this.Rank = 0;
@@ -768,6 +772,23 @@ namespace Amoeba.Windows
                 }
             }
 
+            public int Index
+            {
+                get
+                {
+                    return _index;
+                }
+                set
+                {
+                    if (value != _index)
+                    {
+                        _index = value; 
+                        
+                        this.NotifyPropertyChanged("Index");
+                    }
+                }
+            }
+
             public int Rank
             {
                 get
@@ -778,7 +799,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _rank)
                     {
-                        _rank = value; this.NotifyPropertyChanged("Rank");
+                        _rank = value; 
+                        
+                        this.NotifyPropertyChanged("Rank");
                     }
                 }
             }
@@ -793,7 +816,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _name)
                     {
-                        _name = value; this.NotifyPropertyChanged("Name");
+                        _name = value; 
+                        
+                        this.NotifyPropertyChanged("Name");
                     }
                 }
             }
@@ -808,7 +833,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _path)
                     {
-                        _path = value; this.NotifyPropertyChanged("Path");
+                        _path = value; 
+                        
+                        this.NotifyPropertyChanged("Path");
                     }
                 }
             }
@@ -823,7 +850,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _state)
                     {
-                        _state = value; this.NotifyPropertyChanged("State");
+                        _state = value;
+                        
+                        this.NotifyPropertyChanged("State");
                     }
                 }
             }
@@ -838,7 +867,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _length)
                     {
-                        _length = value; this.NotifyPropertyChanged("Length");
+                        _length = value; 
+                        
+                        this.NotifyPropertyChanged("Length");
                     }
                 }
             }
@@ -853,7 +884,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _priority)
                     {
-                        _priority = value; this.NotifyPropertyChanged("Priority");
+                        _priority = value;
+                        
+                        this.NotifyPropertyChanged("Priority");
                     }
                 }
             }
@@ -868,7 +901,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _rate)
                     {
-                        _rate = value; this.NotifyPropertyChanged("Rate");
+                        _rate = value;
+                        
+                        this.NotifyPropertyChanged("Rate");
                     }
                 }
             }
@@ -883,7 +918,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _rateText)
                     {
-                        _rateText = value; this.NotifyPropertyChanged("RateText");
+                        _rateText = value; 
+                        
+                        this.NotifyPropertyChanged("RateText");
                     }
                 }
             }
@@ -898,7 +935,9 @@ namespace Amoeba.Windows
                 {
                     if (value != _value)
                     {
-                        _value = value; this.NotifyPropertyChanged("Value");
+                        _value = value; 
+                        
+                        this.NotifyPropertyChanged("Value");
                     }
                 }
             }

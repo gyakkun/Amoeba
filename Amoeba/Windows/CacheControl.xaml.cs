@@ -246,7 +246,7 @@ namespace Amoeba.Windows
             {
                 items.IntersectWith(items.ToArray().Where(item =>
                 {
-                    bool flag;
+                    bool flag = true;
 
                     lock (searchItem.ThisLock)
                     {
@@ -258,7 +258,7 @@ namespace Amoeba.Windows
 
                                 return false;
                             });
-                            if (!flag) return false;
+                            if (flag) return true;
                         }
                     }
 
@@ -272,7 +272,7 @@ namespace Amoeba.Windows
 
                                 return false;
                             });
-                            if (!flag) return false;
+                            if (flag) return true;
                         }
                     }
 
@@ -286,7 +286,7 @@ namespace Amoeba.Windows
 
                                 return false;
                             });
-                            if (!flag) return false;
+                            if (flag) return true;
                         }
                     }
 
@@ -300,7 +300,7 @@ namespace Amoeba.Windows
 
                                 return false;
                             });
-                            if (!flag) return false;
+                            if (flag) return true;
                         }
                     }
 
@@ -324,7 +324,7 @@ namespace Amoeba.Windows
 
                                 return false;
                             });
-                            if (!flag) return false;
+                            if (flag) return true;
                         }
                     }
 
@@ -342,7 +342,7 @@ namespace Amoeba.Windows
 
                                 return false;
                             });
-                            if (!flag) return false;
+                            if (flag) return true;
                         }
                     }
 
@@ -356,7 +356,7 @@ namespace Amoeba.Windows
 
                                 return false;
                             });
-                            if (!flag) return false;
+                            if (flag) return true;
                         }
                     }
 
@@ -372,16 +372,16 @@ namespace Amoeba.Windows
 
                                 return false;
                             });
-                            if (!flag) return false;
+                            if (flag) return true;
                         }
                     }
 
-                    return true;
+                    return flag;
                 }));
 
                 items.ExceptWith(items.ToArray().Where(item =>
                 {
-                    bool flag;
+                    bool flag = false;
 
                     lock (searchItem.ThisLock)
                     {
@@ -511,7 +511,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    return false;
+                    return flag;
                 }));
             }
         }
@@ -2053,8 +2053,9 @@ namespace Amoeba.Windows
             public string Comment { get; set; }
             public string Hash { get; set; }
             public Seed Value { get; set; }
-            public List<Seed> Seeds { get; set; }
             public SearchState State { get; set; }
+
+            public List<Seed> Seeds { get; set; }
             public List<int> DownloadIds { get; set; }
             public List<int> UploadIds { get; set; }
 
@@ -2081,10 +2082,18 @@ namespace Amoeba.Windows
                     || this.Comment != other.Comment
                     || this.Hash != other.Hash
                     || this.Value != other.Value
-                    || this.State != other.State)
+                    || this.State != other.State
+
+                    || (this.Seeds == null) != (other.Seeds == null)
+                    || (this.DownloadIds == null) != (other.DownloadIds == null)
+                    || (this.UploadIds == null) != (other.UploadIds == null))
                 {
                     return false;
                 }
+
+                if (this.Seeds != null && other.Seeds != null && !Collection.Equals(this.Seeds, other.Seeds)) return false;
+                if (this.DownloadIds != null && other.DownloadIds != null && !Collection.Equals(this.DownloadIds, other.DownloadIds)) return false;
+                if (this.UploadIds != null && other.UploadIds != null && !Collection.Equals(this.UploadIds, other.UploadIds)) return false;
 
                 return true;
             }

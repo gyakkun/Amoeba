@@ -30,11 +30,11 @@
   <Translate Key="MainWindow_Connections" Value="Connections" />
   <Translate Key="MainWindow_Start" Value="Start" />
   <Translate Key="MainWindow_Stop" Value="Stop" />
-  <Translate Key="MainWindow_Settings" Value="Settings" />
-  <Translate Key="MainWindow_UserInterfaceSetting" Value="User interface setting" />
   <Translate Key="MainWindow_CheckSeeds" Value="Check seeds" />
   <Translate Key="MainWindow_CheckBlocks" Value="Check blocks" />
-  <Translate Key="MainWindow_ConnectionSetting" Value="Connection setting" />
+  <Translate Key="MainWindow_ConnectionsSettings" Value="Connections settings" />
+  <Translate Key="MainWindow_View" Value="View" />
+  <Translate Key="MainWindow_ViewSettings" Value="View settings" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
   <Translate Key="MainWindow_Help" Value="Help" />
   <Translate Key="MainWindow_DeveloperSite" Value="Developer site" />
@@ -52,77 +52,80 @@
   <Translate Key="MainWindow_Close_Message" Value="Do you want to quit?" />
   <Translate Key="MainWindow_Delete_Message" Value="Are you sure you want to Delete?" />
 
-  <Translate Key="UserInterfaceWindow_Title" Value="User interface setting" />
-  <Translate Key="UserInterfaceWindow_Update" Value="Update" />
-  <Translate Key="UserInterfaceWindow_UpdateUrl" Value="Update url" />
-  <Translate Key="UserInterfaceWindow_ProxyUri" Value="Proxy uri" />
-  <Translate Key="UserInterfaceWindow_Signature" Value="Signature" />
-  <Translate Key="UserInterfaceWindow_Keyword" Value="Keyword" />
-  <Translate Key="UserInterfaceWindow_Miscellaneous" Value="Miscellaneous" />
-  <Translate Key="UserInterfaceWindow_RelateSettings" Value="Relate settings" />
-  <Translate Key="UserInterfaceWindow_RelateBoxFile" Value=".box" />
-  <Translate Key="UserInterfaceWindow_Event" Value="Event" />
-  <Translate Key="UserInterfaceWindow_OpenBox" Value="Open a box file that downloaded." />
-  <Translate Key="UserInterfaceWindow_UpdateOption" Value="Update option" />
-  <Translate Key="UserInterfaceWindow_None" Value="None" />
-  <Translate Key="UserInterfaceWindow_AutoCheck" Value="Auto check" />
-  <Translate Key="UserInterfaceWindow_AutoUpdate" Value="Auto update" />
-  <Translate Key="UserInterfaceWindow_Value" Value="Value" />
-  <Translate Key="UserInterfaceWindow_Import" Value="Import" />
-  <Translate Key="UserInterfaceWindow_Export" Value="Export" />
-  <Translate Key="UserInterfaceWindow_Up" Value="Up" />
-  <Translate Key="UserInterfaceWindow_Down" Value="Down" />
-  <Translate Key="UserInterfaceWindow_Add" Value="Add" />
-  <Translate Key="UserInterfaceWindow_Edit" Value="Edit" />
-  <Translate Key="UserInterfaceWindow_Delete" Value="Delete" />
-  <Translate Key="UserInterfaceWindow_Ok" Value="Ok" />
-  <Translate Key="UserInterfaceWindow_Cancel" Value="Cancel" />
-  <Translate Key="UserInterfaceWindow_Cut" Value="Cut" />
-  <Translate Key="UserInterfaceWindow_Copy" Value="Copy" />
-  <Translate Key="UserInterfaceWindow_Paste" Value="Paste" />
-
-  <Translate Key="ConnectionWindow_Title" Value="Connection setting" />
-  <Translate Key="ConnectionWindow_BaseNode" Value="Base node" />
-  <Translate Key="ConnectionWindow_Node" Value="Node" />
-  <Translate Key="ConnectionWindow_Uris" Value="Uris" />
-  <Translate Key="ConnectionWindow_Uri" Value="Uri" />
-  <Translate Key="ConnectionWindow_OtherNodes" Value="Other nodes" />
-  <Translate Key="ConnectionWindow_Nodes" Value="Nodes" />
-  <Translate Key="ConnectionWindow_Client" Value="Client" />
-  <Translate Key="ConnectionWindow_Filters" Value="Filters" />
-  <Translate Key="ConnectionWindow_ConnectionType" Value="Connection type" />
-  <Translate Key="ConnectionWindow_ProxyUri" Value="Proxy uri" />
-  <Translate Key="ConnectionWindow_UriCondition" Value="Uri condition" />
-  <Translate Key="ConnectionWindow_Type" Value="Type" />
-  <Translate Key="ConnectionWindow_Host" Value="Host" />
-  <Translate Key="ConnectionWindow_Server" Value="Server" />
-  <Translate Key="ConnectionWindow_ListenUris" Value="Listen uris" />
-  <Translate Key="ConnectionWindow_Miscellaneous" Value="Miscellaneous" />
-  <Translate Key="ConnectionWindow_CoreSettings" Value="Core settings" />
-  <Translate Key="ConnectionWindow_ConnectionCount" Value="Connection count" />
-  <Translate Key="ConnectionWindow_DownloadingLowerLimit" Value="Connection count which start download" />
-  <Translate Key="ConnectionWindow_UploadingLowerLimit" Value="Connection count which start upload" />
-  <Translate Key="ConnectionWindow_DownloadDirectory" Value="Download directory" />
-  <Translate Key="ConnectionWindow_CacheSize" Value="Cache size" />
-  <Translate Key="ConnectionWindow_AutoSettings" Value="Auto settings" />
-  <Translate Key="ConnectionWindow_AutoBaseNodeSetting" Value="Auto base node setting" />
-  <Translate Key="ConnectionWindow_Tor" Value="Tor" />
-  <Translate Key="ConnectionWindow_Ipv4" Value="Ipv4" />
-  <Translate Key="ConnectionWindow_Ipv6" Value="Ipv6" />
-  <Translate Key="ConnectionWindow_Up" Value="Up" />
-  <Translate Key="ConnectionWindow_Down" Value="Down" />
-  <Translate Key="ConnectionWindow_Add" Value="Add" />
-  <Translate Key="ConnectionWindow_Edit" Value="Edit" />
-  <Translate Key="ConnectionWindow_Delete" Value="Delete" />
-  <Translate Key="ConnectionWindow_Ok" Value="Ok" />
-  <Translate Key="ConnectionWindow_Cancel" Value="Cancel" />
-  <Translate Key="ConnectionWindow_Cut" Value="Cut" />
-  <Translate Key="ConnectionWindow_Copy" Value="Copy" />
-  <Translate Key="ConnectionWindow_Paste" Value="Paste" />
+  <Translate Key="ConnectionsSettingsWindow_Title" Value="Connection setting" />
+  <Translate Key="ConnectionsSettingsWindow_BaseNode" Value="Base node" />
+  <Translate Key="ConnectionsSettingsWindow_Node" Value="Node" />
+  <Translate Key="ConnectionsSettingsWindow_Uris" Value="Uris" />
+  <Translate Key="ConnectionsSettingsWindow_Uri" Value="Uri" />
+  <Translate Key="ConnectionsSettingsWindow_OtherNodes" Value="Other nodes" />
+  <Translate Key="ConnectionsSettingsWindow_Nodes" Value="Nodes" />
+  <Translate Key="ConnectionsSettingsWindow_Client" Value="Client" />
+  <Translate Key="ConnectionsSettingsWindow_Filters" Value="Filters" />
+  <Translate Key="ConnectionsSettingsWindow_ConnectionType" Value="Connection type" />
+  <Translate Key="ConnectionsSettingsWindow_ProxyUri" Value="Proxy uri" />
+  <Translate Key="ConnectionsSettingsWindow_UriCondition" Value="Uri condition" />
+  <Translate Key="ConnectionsSettingsWindow_Type" Value="Type" />
+  <Translate Key="ConnectionsSettingsWindow_Host" Value="Host" />
+  <Translate Key="ConnectionsSettingsWindow_Server" Value="Server" />
+  <Translate Key="ConnectionsSettingsWindow_ListenUris" Value="Listen uris" />
+  <Translate Key="ConnectionsSettingsWindow_Events" Value="Events" />
+  <Translate Key="ConnectionsSettingsWindow_Data" Value="Data" />
+  <Translate Key="ConnectionsSettingsWindow_Bandwidth" Value="Bandwidth" />
+  <Translate Key="ConnectionsSettingsWindow_CoreSettings" Value="Core settings" />
+  <Translate Key="ConnectionsSettingsWindow_ConnectionCount" Value="Connection count" />
+  <Translate Key="ConnectionsSettingsWindow_DownloadingLowerLimit" Value="Connection count which start download" />
+  <Translate Key="ConnectionsSettingsWindow_UploadingLowerLimit" Value="Connection count which start upload" />
+  <Translate Key="ConnectionsSettingsWindow_DownloadDirectory" Value="Download directory" />
+  <Translate Key="ConnectionsSettingsWindow_CacheSize" Value="Cache size" />
+  <Translate Key="ConnectionsSettingsWindow_AutoSettings" Value="Auto settings" />
+  <Translate Key="ConnectionsSettingsWindow_AutoBaseNodeSetting" Value="Auto base node setting" />
+  <Translate Key="ConnectionsSettingsWindow_Tor" Value="Tor" />
+  <Translate Key="ConnectionsSettingsWindow_Ipv4" Value="Ipv4" />
+  <Translate Key="ConnectionsSettingsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="ConnectionsSettingsWindow_Up" Value="Up" />
+  <Translate Key="ConnectionsSettingsWindow_Down" Value="Down" />
+  <Translate Key="ConnectionsSettingsWindow_Add" Value="Add" />
+  <Translate Key="ConnectionsSettingsWindow_Edit" Value="Edit" />
+  <Translate Key="ConnectionsSettingsWindow_Delete" Value="Delete" />
+  <Translate Key="ConnectionsSettingsWindow_Ok" Value="Ok" />
+  <Translate Key="ConnectionsSettingsWindow_Cancel" Value="Cancel" />
+  <Translate Key="ConnectionsSettingsWindow_Cut" Value="Cut" />
+  <Translate Key="ConnectionsSettingsWindow_Copy" Value="Copy" />
+  <Translate Key="ConnectionsSettingsWindow_Paste" Value="Paste" />
 
   <Translate Key="ProgressWindow_Title" Value="Progress state" />
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
+
+  <Translate Key="ViewSettingsWindow_Title" Value="User interface setting" />
+  <Translate Key="ViewSettingsWindow_Update" Value="Update" />
+  <Translate Key="ViewSettingsWindow_UpdateUrl" Value="Update url" />
+  <Translate Key="ViewSettingsWindow_ProxyUri" Value="Proxy uri" />
+  <Translate Key="ViewSettingsWindow_Signature" Value="Signature" />
+  <Translate Key="ViewSettingsWindow_Signatures" Value="Signatures" />
+  <Translate Key="ViewSettingsWindow_Keywords" Value="Keywords" />
+  <Translate Key="ViewSettingsWindow_Miscellaneous" Value="Miscellaneous" />
+  <Translate Key="ViewSettingsWindow_Relates" Value="Relates" />
+  <Translate Key="ViewSettingsWindow_RelateBoxFile" Value=".box" />
+  <Translate Key="ViewSettingsWindow_Events" Value="Events" />
+  <Translate Key="ViewSettingsWindow_OpenBox" Value="Open a box file that downloaded." />
+  <Translate Key="ViewSettingsWindow_UpdateOption" Value="Update option" />
+  <Translate Key="ViewSettingsWindow_None" Value="None" />
+  <Translate Key="ViewSettingsWindow_AutoCheck" Value="Auto check" />
+  <Translate Key="ViewSettingsWindow_AutoUpdate" Value="Auto update" />
+  <Translate Key="ViewSettingsWindow_Value" Value="Value" />
+  <Translate Key="ViewSettingsWindow_Import" Value="Import" />
+  <Translate Key="ViewSettingsWindow_Export" Value="Export" />
+  <Translate Key="ViewSettingsWindow_Up" Value="Up" />
+  <Translate Key="ViewSettingsWindow_Down" Value="Down" />
+  <Translate Key="ViewSettingsWindow_Add" Value="Add" />
+  <Translate Key="ViewSettingsWindow_Edit" Value="Edit" />
+  <Translate Key="ViewSettingsWindow_Delete" Value="Delete" />
+  <Translate Key="ViewSettingsWindow_Ok" Value="Ok" />
+  <Translate Key="ViewSettingsWindow_Cancel" Value="Cancel" />
+  <Translate Key="ViewSettingsWindow_Cut" Value="Cut" />
+  <Translate Key="ViewSettingsWindow_Copy" Value="Copy" />
+  <Translate Key="ViewSettingsWindow_Paste" Value="Paste" />
 
   <Translate Key="VersionInformationWindow_Title" Value="Version information" />
   <Translate Key="VersionInformationWindow_FileName" Value="File name" />
@@ -167,6 +170,7 @@
   <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 proxy" />
   <Translate Key="ConnectionType_HttpProxy" Value="Http proxy" />
 
+  <Translate Key="DownloadControl_Index" Value="Index" />
   <Translate Key="DownloadControl_Name" Value="Name" />
   <Translate Key="DownloadControl_Length" Value="Length" />
   <Translate Key="DownloadControl_Priority" Value="Priority" />
@@ -193,6 +197,7 @@
   <Translate Key="DownloadState_Completed" Value="Completed" />
   <Translate Key="DownloadState_Error" Value="Error" />
 
+  <Translate Key="UploadControl_Index" Value="Index" />
   <Translate Key="UploadControl_Name" Value="Name" />
   <Translate Key="UploadControl_Length" Value="Length" />
   <Translate Key="UploadControl_Priority" Value="Priority" />
@@ -221,6 +226,7 @@
   <Translate Key="UploadState_Completed" Value="Completed" />
   <Translate Key="UploadState_Error" Value="Error" />
 
+  <Translate Key="ShareControl_Index" Value="Index" />
   <Translate Key="ShareControl_Name" Value="Name" />
   <Translate Key="ShareControl_Path" Value="Path" />
   <Translate Key="ShareControl_BlockCount" Value="Block count" />

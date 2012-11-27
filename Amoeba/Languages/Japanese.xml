@@ -30,11 +30,11 @@
   <Translate Key="MainWindow_Connections" Value="接続" />
   <Translate Key="MainWindow_Start" Value="開始" />
   <Translate Key="MainWindow_Stop" Value="停止" />
-  <Translate Key="MainWindow_Settings" Value="設定" />
-  <Translate Key="MainWindow_UserInterfaceSetting" Value="ユーザーインターフェイス設定" />
   <Translate Key="MainWindow_CheckSeeds" Value="シードのデコード可能性チェック" />
   <Translate Key="MainWindow_CheckBlocks" Value="ブロックの破損チェック" />
-  <Translate Key="MainWindow_ConnectionSetting" Value="接続設定" />
+  <Translate Key="MainWindow_ConnectionsSettings" Value="接続設定" />
+  <Translate Key="MainWindow_View" Value="表示" />
+  <Translate Key="MainWindow_ViewSettings" Value="表示設定" />
   <Translate Key="MainWindow_Languages" Value="言語" />
   <Translate Key="MainWindow_Help" Value="ヘルプ" />
   <Translate Key="MainWindow_DeveloperSite" Value="デベロッパーサイト" />
@@ -52,77 +52,80 @@
   <Translate Key="MainWindow_Close_Message" Value="終了しますか？" />
   <Translate Key="MainWindow_Delete_Message" Value="本当に削除しますか？" />
 
-  <Translate Key="UserInterfaceWindow_Title" Value="ユーザーインターフェイス設定" />
-  <Translate Key="UserInterfaceWindow_Update" Value="更新" />
-  <Translate Key="UserInterfaceWindow_UpdateUrl" Value="更新 Url" />
-  <Translate Key="UserInterfaceWindow_ProxyUri" Value="プロキシ Uri" />
-  <Translate Key="UserInterfaceWindow_Signature" Value="サイン" />
-  <Translate Key="UserInterfaceWindow_Keyword" Value="キーワード" />
-  <Translate Key="UserInterfaceWindow_Miscellaneous" Value="その他" />
-  <Translate Key="UserInterfaceWindow_RelateSettings" Value="関連付け設定" />
-  <Translate Key="UserInterfaceWindow_RelateBoxFile" Value=".box" />
-  <Translate Key="UserInterfaceWindow_Event" Value="イベント" />
-  <Translate Key="UserInterfaceWindow_OpenBox" Value="ダウンロードされた.boxファイルを展開する" />
-  <Translate Key="UserInterfaceWindow_UpdateOption" Value="更新オプション" />
-  <Translate Key="UserInterfaceWindow_None" Value="無し" />
-  <Translate Key="UserInterfaceWindow_AutoCheck" Value="自動チェック" />
-  <Translate Key="UserInterfaceWindow_AutoUpdate" Value="自動更新" />
-  <Translate Key="UserInterfaceWindow_Value" Value="値" />
-  <Translate Key="UserInterfaceWindow_Import" Value="インポート" />
-  <Translate Key="UserInterfaceWindow_Export" Value="エクスポート" />
-  <Translate Key="UserInterfaceWindow_Up" Value="上へ" />
-  <Translate Key="UserInterfaceWindow_Down" Value="下へ" />
-  <Translate Key="UserInterfaceWindow_Add" Value="追加" />
-  <Translate Key="UserInterfaceWindow_Edit" Value="編集" />
-  <Translate Key="UserInterfaceWindow_Delete" Value="削除" />
-  <Translate Key="UserInterfaceWindow_Ok" Value="Ok" />
-  <Translate Key="UserInterfaceWindow_Cancel" Value="キャンセル" />
-  <Translate Key="UserInterfaceWindow_Cut" Value="切り取り" />
-  <Translate Key="UserInterfaceWindow_Copy" Value="コピー" />
-  <Translate Key="UserInterfaceWindow_Paste" Value="貼り付け" />
+  <Translate Key="ConnectionsSettingsWindow_Title" Value="接続設定" />
+  <Translate Key="ConnectionsSettingsWindow_BaseNode" Value="基礎ノード" />
+  <Translate Key="ConnectionsSettingsWindow_Node" Value="ノード" />
+  <Translate Key="ConnectionsSettingsWindow_Uris" Value="Uris" />
+  <Translate Key="ConnectionsSettingsWindow_Uri" Value="Uri" />
+  <Translate Key="ConnectionsSettingsWindow_OtherNodes" Value="周辺ノード" />
+  <Translate Key="ConnectionsSettingsWindow_Nodes" Value="ノードリスト" />
+  <Translate Key="ConnectionsSettingsWindow_Client" Value="クライアント" />
+  <Translate Key="ConnectionsSettingsWindow_Filters" Value="フィルタ" />
+  <Translate Key="ConnectionsSettingsWindow_ConnectionType" Value="接続タイプ" />
+  <Translate Key="ConnectionsSettingsWindow_ProxyUri" Value="プロキシ Uri" />
+  <Translate Key="ConnectionsSettingsWindow_UriCondition" Value="正規表現" />
+  <Translate Key="ConnectionsSettingsWindow_Type" Value="Uri タイプ" />
+  <Translate Key="ConnectionsSettingsWindow_Host" Value="ホスト" />
+  <Translate Key="ConnectionsSettingsWindow_Server" Value="サーバー" />
+  <Translate Key="ConnectionsSettingsWindow_ListenUris" Value="受信 Uris" />
+  <Translate Key="ConnectionsSettingsWindow_Events" Value="イベント" />
+  <Translate Key="ConnectionsSettingsWindow_Data" Value="データ" />
+  <Translate Key="ConnectionsSettingsWindow_Bandwidth" Value="帯域幅" />
+  <Translate Key="ConnectionsSettingsWindow_CoreSettings" Value="基本設定" />
+  <Translate Key="ConnectionsSettingsWindow_ConnectionCount" Value="接続数上限" />
+  <Translate Key="ConnectionsSettingsWindow_DownloadingLowerLimit" Value="ダウンロード開始接続数" />
+  <Translate Key="ConnectionsSettingsWindow_UploadingLowerLimit" Value="アップロード開始接続数" />
+  <Translate Key="ConnectionsSettingsWindow_DownloadDirectory" Value="ダウンロードディレクトリ" />
+  <Translate Key="ConnectionsSettingsWindow_CacheSize" Value="キャッシュサイズ" />
+  <Translate Key="ConnectionsSettingsWindow_AutoSettings" Value="自動設定" />
+  <Translate Key="ConnectionsSettingsWindow_AutoBaseNodeSetting" Value="基礎ノードを自動で設定する" />
+  <Translate Key="ConnectionsSettingsWindow_Tor" Value="Tor" />
+  <Translate Key="ConnectionsSettingsWindow_Ipv4" Value="Ipv4" />
+  <Translate Key="ConnectionsSettingsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="ConnectionsSettingsWindow_Up" Value="上へ" />
+  <Translate Key="ConnectionsSettingsWindow_Down" Value="下へ" />
+  <Translate Key="ConnectionsSettingsWindow_Add" Value="追加" />
+  <Translate Key="ConnectionsSettingsWindow_Edit" Value="編集" />
+  <Translate Key="ConnectionsSettingsWindow_Delete" Value="削除" />
+  <Translate Key="ConnectionsSettingsWindow_Ok" Value="Ok" />
+  <Translate Key="ConnectionsSettingsWindow_Cancel" Value="キャンセル" />
+  <Translate Key="ConnectionsSettingsWindow_Cut" Value="切り取り" />
+  <Translate Key="ConnectionsSettingsWindow_Copy" Value="コピー" />
+  <Translate Key="ConnectionsSettingsWindow_Paste" Value="貼り付け" />
 
-  <Translate Key="ConnectionWindow_Title" Value="接続設定" />
-  <Translate Key="ConnectionWindow_BaseNode" Value="基礎ノード" />
-  <Translate Key="ConnectionWindow_Node" Value="ノード" />
-  <Translate Key="ConnectionWindow_Uris" Value="Uris" />
-  <Translate Key="ConnectionWindow_Uri" Value="Uri" />
-  <Translate Key="ConnectionWindow_OtherNodes" Value="周辺ノード" />
-  <Translate Key="ConnectionWindow_Nodes" Value="ノードリスト" />
-  <Translate Key="ConnectionWindow_Client" Value="クライアント" />
-  <Translate Key="ConnectionWindow_Filters" Value="フィルタ" />
-  <Translate Key="ConnectionWindow_ConnectionType" Value="接続タイプ" />
-  <Translate Key="ConnectionWindow_ProxyUri" Value="プロキシ Uri" />
-  <Translate Key="ConnectionWindow_UriCondition" Value="正規表現" />
-  <Translate Key="ConnectionWindow_Type" Value="Uri タイプ" />
-  <Translate Key="ConnectionWindow_Host" Value="ホスト" />
-  <Translate Key="ConnectionWindow_Server" Value="サーバー" />
-  <Translate Key="ConnectionWindow_ListenUris" Value="受信 Uris" />
-  <Translate Key="ConnectionWindow_Miscellaneous" Value="その他" />
-  <Translate Key="ConnectionWindow_CoreSettings" Value="基本設定" />
-  <Translate Key="ConnectionWindow_ConnectionCount" Value="接続数上限" />
-  <Translate Key="ConnectionWindow_DownloadingLowerLimit" Value="ダウンロード開始接続数" />
-  <Translate Key="ConnectionWindow_UploadingLowerLimit" Value="アップロード開始接続数" />
-  <Translate Key="ConnectionWindow_DownloadDirectory" Value="ダウンロードディレクトリ" />
-  <Translate Key="ConnectionWindow_CacheSize" Value="キャッシュサイズ" />
-  <Translate Key="ConnectionWindow_AutoSettings" Value="自動設定" />
-  <Translate Key="ConnectionWindow_AutoBaseNodeSetting" Value="自動基礎ノード設定" />
-  <Translate Key="ConnectionWindow_Tor" Value="Tor" />
-  <Translate Key="ConnectionWindow_Ipv4" Value="Ipv4" />
-  <Translate Key="ConnectionWindow_Ipv6" Value="Ipv6" />
-  <Translate Key="ConnectionWindow_Up" Value="上へ" />
-  <Translate Key="ConnectionWindow_Down" Value="下へ" />
-  <Translate Key="ConnectionWindow_Add" Value="追加" />
-  <Translate Key="ConnectionWindow_Edit" Value="編集" />
-  <Translate Key="ConnectionWindow_Delete" Value="削除" />
-  <Translate Key="ConnectionWindow_Ok" Value="Ok" />
-  <Translate Key="ConnectionWindow_Cancel" Value="キャンセル" />
-  <Translate Key="ConnectionWindow_Cut" Value="切り取り" />
-  <Translate Key="ConnectionWindow_Copy" Value="コピー" />
-  <Translate Key="ConnectionWindow_Paste" Value="貼り付け" />
-
-  <Translate Key="ProgressWindow_Title" Value="進行状況" />
-  <Translate Key="ProgressWindow_Cancel" Value="キャンセル" />
+  <Translate Key="ProgressWindow_Title" Value="Progress state" />
+  <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
+
+  <Translate Key="ViewSettingsWindow_Title" Value="表示設定" />
+  <Translate Key="ViewSettingsWindow_Update" Value="アップデート" />
+  <Translate Key="ViewSettingsWindow_UpdateUrl" Value="アップデート Url" />
+  <Translate Key="ViewSettingsWindow_ProxyUri" Value="プロキシ Uri" />
+  <Translate Key="ViewSettingsWindow_Signature" Value="サイン" />
+  <Translate Key="ViewSettingsWindow_Signatures" Value="サイン" />
+  <Translate Key="ViewSettingsWindow_Keywords" Value="キーワード" />
+  <Translate Key="ViewSettingsWindow_Miscellaneous" Value="その他" />
+  <Translate Key="ViewSettingsWindow_Relates" Value="関連付け" />
+  <Translate Key="ViewSettingsWindow_RelateBoxFile" Value=".box" />
+  <Translate Key="ViewSettingsWindow_Events" Value="イベント" />
+  <Translate Key="ViewSettingsWindow_OpenBox" Value="ダウンロードされた.boxファイルを展開する" />
+  <Translate Key="ViewSettingsWindow_UpdateOption" Value="アップデートオプション" />
+  <Translate Key="ViewSettingsWindow_None" Value="無し" />
+  <Translate Key="ViewSettingsWindow_AutoCheck" Value="自動でチェックする" />
+  <Translate Key="ViewSettingsWindow_AutoUpdate" Value="自動でアップデートする" />
+  <Translate Key="ViewSettingsWindow_Value" Value="値" />
+  <Translate Key="ViewSettingsWindow_Import" Value="インポート" />
+  <Translate Key="ViewSettingsWindow_Export" Value="エクスポート" />
+  <Translate Key="ViewSettingsWindow_Up" Value="上へ" />
+  <Translate Key="ViewSettingsWindow_Down" Value="下へ" />
+  <Translate Key="ViewSettingsWindow_Add" Value="追加" />
+  <Translate Key="ViewSettingsWindow_Edit" Value="編集" />
+  <Translate Key="ViewSettingsWindow_Delete" Value="削除" />
+  <Translate Key="ViewSettingsWindow_Ok" Value="Ok" />
+  <Translate Key="ViewSettingsWindow_Cancel" Value="キャンセル" />
+  <Translate Key="ViewSettingsWindow_Cut" Value="切り取り" />
+  <Translate Key="ViewSettingsWindow_Copy" Value="コピー" />
+  <Translate Key="ViewSettingsWindow_Paste" Value="貼り付け" />
 
   <Translate Key="VersionInformationWindow_Title" Value="バージョン情報" />
   <Translate Key="VersionInformationWindow_FileName" Value="ファイル名" />
@@ -167,6 +170,7 @@
   <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 プロキシ" />
   <Translate Key="ConnectionType_HttpProxy" Value="Http プロキシ" />
 
+  <Translate Key="DownloadControl_Index" Value="インデックス" />
   <Translate Key="DownloadControl_Name" Value="名前" />
   <Translate Key="DownloadControl_Length" Value="サイズ" />
   <Translate Key="DownloadControl_Priority" Value="優先度" />
@@ -193,6 +197,7 @@
   <Translate Key="DownloadState_Completed" Value="完了" />
   <Translate Key="DownloadState_Error" Value="エラー" />
 
+  <Translate Key="UploadControl_Index" Value="インデックス" />
   <Translate Key="UploadControl_Name" Value="名前" />
   <Translate Key="UploadControl_Length" Value="サイズ" />
   <Translate Key="UploadControl_Priority" Value="優先度" />
@@ -221,6 +226,7 @@
   <Translate Key="UploadState_Completed" Value="完了" />
   <Translate Key="UploadState_Error" Value="エラー" />
 
+  <Translate Key="ShareControl_Index" Value="インデックス" />
   <Translate Key="ShareControl_Name" Value="名前" />
   <Translate Key="ShareControl_Path" Value="パス" />
   <Translate Key="ShareControl_BlockCount" Value="ブロック数" />

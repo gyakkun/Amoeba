@@ -20,23 +20,21 @@ using Library.Security;
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// UserInterfaceWindow.xaml の相互作用ロジック
+    /// ViewSettingsWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class UserInterfaceWindow : Window
+    partial class ViewSettingsWindow : Window
     {
         private BufferManager _bufferManager = new BufferManager();
         private KeywordCollection _keywords = new KeywordCollection();
         private List<SignatureListViewItem> _signatureListViewItemCollection = new List<SignatureListViewItem>();
 
-        public UserInterfaceWindow(BufferManager bufferManager)
+        public ViewSettingsWindow(BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _keywords.AddRange(Settings.Instance.Global_SearchKeywords);
             _signatureListViewItemCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n.DeepClone())));
 
             InitializeComponent();
-
-            _miscellaneousStackPanel.DataContext = new ExpanderListViewModel();
 
             {
                 var icon = new BitmapImage();
@@ -103,6 +101,11 @@ namespace Amoeba.Windows
             }
 
             _miscellaneousOpenBoxCheckBox.IsChecked = Settings.Instance.Global_OpenBox_IsEnabled;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            _updateTreeViewItem.IsSelected = true;
         }
 
         #region Signature
@@ -557,17 +560,6 @@ namespace Amoeba.Windows
 
         #region Miscellaneous
 
-        private void _miscellaneousStackPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            Expander expander = e.Source as Expander;
-            if (expander == null) return;
-
-            foreach (var item in _miscellaneousStackPanel.Children.OfType<Expander>())
-            {
-                if (expander != item) item.IsExpanded = false;
-            }
-        }
-
         #endregion
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
@@ -697,11 +689,11 @@ namespace Amoeba.Windows
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_signatureTabItem.IsSelected)
+            if (_signaturesTreeViewItem.IsSelected)
             {
                 _signatureListViewDeleteMenuItem_Click(null, null);
             }
-            else if (_keywordTabItem.IsSelected)
+            else if (_keywordsTreeViewItem.IsSelected)
             {
                 _keywordListViewDeleteMenuItem_Click(null, null);
             }
@@ -709,11 +701,11 @@ namespace Amoeba.Windows
 
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_signatureTabItem.IsSelected)
+            if (_signaturesTreeViewItem.IsSelected)
             {
 
             }
-            else if (_keywordTabItem.IsSelected)
+            else if (_keywordsTreeViewItem.IsSelected)
             {
                 _keywordListViewCopyMenuItem_Click(null, null);
             }
@@ -721,11 +713,11 @@ namespace Amoeba.Windows
 
         private void Execute_Cut(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_signatureTabItem.IsSelected)
+            if (_signaturesTreeViewItem.IsSelected)
             {
 
             }
-            else if (_keywordTabItem.IsSelected)
+            else if (_keywordsTreeViewItem.IsSelected)
             {
                 _keywordListViewCutMenuItem_Click(null, null);
             }
@@ -733,24 +725,14 @@ namespace Amoeba.Windows
 
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_signatureTabItem.IsSelected)
+            if (_signaturesTreeViewItem.IsSelected)
             {
 
             }
-            else if (_keywordTabItem.IsSelected)
+            else if (_keywordsTreeViewItem.IsSelected)
             {
                 _keywordListViewPasteMenuItem_Click(null, null);
             }
-        }
-
-        public class ExpanderListViewModel
-        {
-            public ExpanderListViewModel()
-            {
-                this.SelectedExpander = "1";
-            }
-
-            public string SelectedExpander { get; set; }
         }
     }
 

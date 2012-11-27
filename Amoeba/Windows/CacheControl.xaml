@@ -7,29 +7,19 @@
         Height="500" Width="800">
    
     <UserControl.Resources>
-        <local:StringsToStringConverter x:Key="_stringsToStringConverter"/>
-        <local:LongToSizeStringConverter x:Key="_longToSizeStringConverter"/>
-        <local:SearchStateToStringConverter x:Key="_searchStateToStringConverter"/>
-        <local:ObjectToInfoStringConverter x:Key="_objectToInfoStringConverter" />
-        <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter" />
-        <local:StringRegularizationConverter x:Key="_stringRegularizationConverter" />
-        <local:BytesToHexStringConverter x:Key="_bytesToHexStringConverter" />
-        <local:ObjectToImageConverter x:Key="_itemToIconConverter" />
-        <local:DateTimeToStringConverter x:Key="_dateTimeToStringConverter" />
-
         <DataTemplate x:Key="_myTemplate_Name">
             <Grid>
-                <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _itemToIconConverter}}" HorizontalAlignment="Left" />
+                <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
                 <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
             </Grid>
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Signature">
             <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
-         <DataTemplate x:Key="_myTemplate_Length">
+        <DataTemplate x:Key="_myTemplate_Length">
             <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
         </DataTemplate>
-       <DataTemplate x:Key="_myTemplate_Keywords">
+        <DataTemplate x:Key="_myTemplate_Keywords">
             <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_CreationTime">
@@ -38,10 +28,10 @@
         <DataTemplate x:Key="_myTemplate_Comment">
             <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
-         <DataTemplate x:Key="_myTemplate_State">
+        <DataTemplate x:Key="_myTemplate_State">
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
-       <DataTemplate x:Key="_myTemplate_Hash">
+        <DataTemplate x:Key="_myTemplate_Hash">
             <TextBlock Text="{Binding Path=Hash, Mode=OneWay}" />
         </DataTemplate>
     </UserControl.Resources>
