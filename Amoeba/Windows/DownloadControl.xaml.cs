@@ -538,7 +538,11 @@ namespace Amoeba.Windows
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
+            if (sortBy == LanguagesManager.Instance.DownloadControl_Index)
+            {
+                _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
+            }
+            else if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             }
@@ -570,7 +574,19 @@ namespace Amoeba.Windows
         {
             List<DownloadListViewItem> list = new List<DownloadListViewItem>(collection);
 
-            if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
+            if (sortBy == LanguagesManager.Instance.DownloadControl_Index)
+            {
+                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                {
+                    int c = x.Index.CompareTo(y.Index);
+                    if (c != 0) return c;
+                    c = x.Id.CompareTo(y.Id);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
             {
                 list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
                 {
