@@ -414,7 +414,6 @@ namespace Amoeba.Windows
         private void Sort(string sortBy, ListSortDirection direction)
         {
             _listView.Items.SortDescriptions.Clear();
-            _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
 
             if (sortBy == LanguagesManager.Instance.ShareControl_Name)
             {
@@ -428,6 +427,8 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("BlockCount", direction));
             }
+
+            _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
         private IEnumerable<ShareListViewItem> Sort(IEnumerable<ShareListViewItem> collection, string sortBy, ListSortDirection direction)

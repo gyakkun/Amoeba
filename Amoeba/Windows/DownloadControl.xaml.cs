@@ -537,7 +537,6 @@ namespace Amoeba.Windows
         private void Sort(string sortBy, ListSortDirection direction)
         {
             _listView.Items.SortDescriptions.Clear();
-            _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
 
             if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
             {
@@ -565,6 +564,8 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
             }
+
+            _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
         private IEnumerable<DownloadListViewItem> Sort(IEnumerable<DownloadListViewItem> collection, string sortBy, ListSortDirection direction)
