@@ -537,12 +537,9 @@ namespace Amoeba.Windows
         private void Sort(string sortBy, ListSortDirection direction)
         {
             _listView.Items.SortDescriptions.Clear();
+            _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
 
-            if (sortBy == LanguagesManager.Instance.DownloadControl_Index)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
+            if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             }
@@ -574,19 +571,7 @@ namespace Amoeba.Windows
         {
             List<DownloadListViewItem> list = new List<DownloadListViewItem>(collection);
 
-            if (sortBy == LanguagesManager.Instance.DownloadControl_Index)
-            {
-                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
-                {
-                    int c = x.Index.CompareTo(y.Index);
-                    if (c != 0) return c;
-                    c = x.Id.CompareTo(y.Id);
-                    if (c != 0) return c;
-
-                    return 0;
-                });
-            }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
+            if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
             {
                 list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
                 {
@@ -686,7 +671,6 @@ namespace Amoeba.Windows
             }
 
             private int _id;
-            private int _index;
             private Information _information;
             private int _rank = 0;
             private string _name = null;
@@ -722,9 +706,6 @@ namespace Amoeba.Windows
                 set
                 {
                     _information = value;
-
-                    if (_information.Contains("Index")) this.Index = (int)_information["Index"];
-                    else this.Index = 0;
 
                     if (_information.Contains("Rank")) this.Rank = (int)_information["Rank"];
                     else this.Rank = 0;
@@ -785,23 +766,6 @@ namespace Amoeba.Windows
 
                     if (_information.Contains("Seed")) this.Value = (Seed)_information["Seed"];
                     else this.Value = null;
-                }
-            }
-
-            public int Index
-            {
-                get
-                {
-                    return _index;
-                }
-                set
-                {
-                    if (value != _index)
-                    {
-                        _index = value; 
-                        
-                        this.NotifyPropertyChanged("Index");
-                    }
                 }
             }
 

@@ -170,7 +170,6 @@
   <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 proxy" />
   <Translate Key="ConnectionType_HttpProxy" Value="Http proxy" />
 
-  <Translate Key="DownloadControl_Index" Value="Index" />
   <Translate Key="DownloadControl_Name" Value="Name" />
   <Translate Key="DownloadControl_Length" Value="Length" />
   <Translate Key="DownloadControl_Priority" Value="Priority" />
@@ -197,7 +196,6 @@
   <Translate Key="DownloadState_Completed" Value="Completed" />
   <Translate Key="DownloadState_Error" Value="Error" />
 
-  <Translate Key="UploadControl_Index" Value="Index" />
   <Translate Key="UploadControl_Name" Value="Name" />
   <Translate Key="UploadControl_Length" Value="Length" />
   <Translate Key="UploadControl_Priority" Value="Priority" />
@@ -226,7 +224,6 @@
   <Translate Key="UploadState_Completed" Value="Completed" />
   <Translate Key="UploadState_Error" Value="Error" />
 
-  <Translate Key="ShareControl_Index" Value="Index" />
   <Translate Key="ShareControl_Name" Value="Name" />
   <Translate Key="ShareControl_Path" Value="Path" />
   <Translate Key="ShareControl_BlockCount" Value="Block count" />

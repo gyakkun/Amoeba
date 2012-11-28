@@ -7,9 +7,6 @@
         Height="300" Width="300">
 
     <UserControl.Resources>
-        <DataTemplate x:Key="_myTemplate_Index">
-            <TextBlock Text="{Binding Path=Index, Mode=OneWay}"/>
-        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Name">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
         </DataTemplate>
@@ -76,8 +73,6 @@
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=UploadControl_Index, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Index}" 
-                            Width="{Binding Path=DownloadControl_GridViewColumn_Index_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=UploadControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=UploadControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 

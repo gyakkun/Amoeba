@@ -170,7 +170,6 @@
   <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 プロキシ" />
   <Translate Key="ConnectionType_HttpProxy" Value="Http プロキシ" />
 
-  <Translate Key="DownloadControl_Index" Value="インデックス" />
   <Translate Key="DownloadControl_Name" Value="名前" />
   <Translate Key="DownloadControl_Length" Value="サイズ" />
   <Translate Key="DownloadControl_Priority" Value="優先度" />
@@ -197,7 +196,6 @@
   <Translate Key="DownloadState_Completed" Value="完了" />
   <Translate Key="DownloadState_Error" Value="エラー" />
 
-  <Translate Key="UploadControl_Index" Value="インデックス" />
   <Translate Key="UploadControl_Name" Value="名前" />
   <Translate Key="UploadControl_Length" Value="サイズ" />
   <Translate Key="UploadControl_Priority" Value="優先度" />
@@ -226,7 +224,6 @@
   <Translate Key="UploadState_Completed" Value="完了" />
   <Translate Key="UploadState_Error" Value="エラー" />
 
-  <Translate Key="ShareControl_Index" Value="インデックス" />
   <Translate Key="ShareControl_Name" Value="名前" />
   <Translate Key="ShareControl_Path" Value="パス" />
   <Translate Key="ShareControl_BlockCount" Value="ブロック数" />

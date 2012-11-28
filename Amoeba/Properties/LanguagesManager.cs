@@ -1909,17 +1909,6 @@ namespace Amoeba.Properties
         }
 
 
-        public string DownloadControl_Index
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("DownloadControl_Index");
-                }
-            }
-        }
-
         public string DownloadControl_Name
         {
             get
@@ -2185,17 +2174,6 @@ namespace Amoeba.Properties
             }
         }
 
-
-        public string UploadControl_Index
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("UploadControl_Index");
-                }
-            }
-        }
 
         public string UploadControl_Name
         {
@@ -2484,17 +2462,6 @@ namespace Amoeba.Properties
             }
         }
 
-
-        public string ShareControl_Index
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ShareControl_Index");
-                }
-            }
-        }
 
         public string ShareControl_Name
         {
