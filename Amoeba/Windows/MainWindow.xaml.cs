@@ -447,7 +447,8 @@ namespace Amoeba.Windows
             {
                 if (e.Exception != null && e.Exception.GetType().ToString() == "Library.Net.Amoeba.SpaceNotFoundException")
                 {
-                    _cacheSpaceNotFoundException = true;
+                    if (Settings.Instance.Global_IsStart)
+                        _cacheSpaceNotFoundException = true;
                 }
 
                 try
