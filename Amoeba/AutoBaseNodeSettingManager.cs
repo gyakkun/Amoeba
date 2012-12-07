@@ -229,7 +229,7 @@ namespace Amoeba
 
                     using (UpnpClient client = new UpnpClient())
                     {
-                        client.Connect(new TimeSpan(0, 0, 10));
+                        client.Connect(new TimeSpan(0, 0, 30));
 
                         string ip = client.GetExternalIpAddress(new TimeSpan(0, 0, 10));
 
@@ -315,24 +315,10 @@ namespace Amoeba
             }
         }
 
-        public override void Start()
+        private void Shutdown()
         {
             lock (this.ThisLock)
             {
-                if (this.State == ManagerState.Start) return;
-                _state = ManagerState.Start;
-
-                this.Update();
-            }
-        }
-
-        public override void Stop()
-        {
-            lock (this.ThisLock)
-            {
-                if (this.State == ManagerState.Stop) return;
-                _state = ManagerState.Stop;
-
                 if (_settings.Ipv4Uri != null)
                 {
                     _amoebaManager.BaseNode.Uris.Remove(_settings.Ipv4Uri);
@@ -359,7 +345,7 @@ namespace Amoeba
                     {
                         using (UpnpClient client = new UpnpClient())
                         {
-                            client.Connect(new TimeSpan(0, 0, 10));
+                            client.Connect(new TimeSpan(0, 0, 30));
 
                             Regex regex = new Regex(@"(.*?):(.*):(\d*)");
                             var match = regex.Match(_settings.UpnpUri);
@@ -380,6 +366,28 @@ namespace Amoeba
             }
         }
 
+        public override void Start()
+        {
+            lock (this.ThisLock)
+            {
+                if (this.State == ManagerState.Start) return;
+                _state = ManagerState.Start;
+
+                this.Update();
+            }
+        }
+
+        public override void Stop()
+        {
+            lock (this.ThisLock)
+            {
+                if (this.State == ManagerState.Stop) return;
+                _state = ManagerState.Stop;
+
+                this.Shutdown();
+            }
+        }
+
         #region ISettings
 
         public void Load(string directoryPath)
@@ -387,6 +395,8 @@ namespace Amoeba
             lock (this.ThisLock)
             {
                 _settings.Load(directoryPath);
+
+                this.Shutdown();
             }
         }
 

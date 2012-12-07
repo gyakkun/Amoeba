@@ -30,6 +30,7 @@
   <Translate Key="MainWindow_Connections" Value="接続" />
   <Translate Key="MainWindow_Start" Value="開始" />
   <Translate Key="MainWindow_Stop" Value="停止" />
+  <Translate Key="MainWindow_UpdateBaseNode" Value="基礎ノードUriの更新" />
   <Translate Key="MainWindow_CheckSeeds" Value="シードのデコード可能性チェック" />
   <Translate Key="MainWindow_CheckBlocks" Value="ブロックの破損チェック" />
   <Translate Key="MainWindow_ConnectionsSettings" Value="接続設定" />

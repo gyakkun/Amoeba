@@ -51,8 +51,9 @@ namespace Amoeba.Windows
 
         private bool _isRun = true;
 
+        System.Timers.Timer _refreshTimer = new System.Timers.Timer();
         private Thread _timerThread = null;
-        private Thread _showThread = null;
+        private Thread _timer2Thread = null;
 
         private volatile bool _diskSpaceNotFoundException = false;
         private volatile bool _cacheSpaceNotFoundException = false;
@@ -112,17 +113,23 @@ namespace Amoeba.Windows
                 }
             };
 
+            _refreshTimer = new System.Timers.Timer();
+            _refreshTimer.Elapsed += new System.Timers.ElapsedEventHandler(_refreshTimer_Elapsed);
+            _refreshTimer.Interval = 1000;
+            _refreshTimer.AutoReset = true;
+            _refreshTimer.Start();
+
             _timerThread = new Thread(new ThreadStart(this.Timer));
             _timerThread.Priority = ThreadPriority.Highest;
             _timerThread.IsBackground = true;
             _timerThread.Name = "TimerThread";
             _timerThread.Start();
 
-            _showThread = new Thread(new ThreadStart(this.ConnectionsInformationShow));
-            _showThread.Priority = ThreadPriority.Highest;
-            _showThread.IsBackground = true;
-            _showThread.Name = "ShowThread";
-            _showThread.Start();
+            _timer2Thread = new Thread(new ThreadStart(this.Timer2));
+            _timer2Thread.Priority = ThreadPriority.Highest;
+            _timer2Thread.IsBackground = true;
+            _timer2Thread.Name = "Timer2Thread";
+            _timer2Thread.Start();
         }
 
         public static void CopyDirectory(string sourceDirectoryPath, string destDirectoryPath)
@@ -323,6 +330,101 @@ namespace Amoeba.Windows
             catch (Exception)
             {
 
+            }
+        }
+
+        private void Timer2()
+        {
+            try
+            {
+
+                for (; ; )
+                {
+                    Thread.Sleep(1000);
+                    if (!_isRun) return;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            _sendSpeedTextBlock.Text = NetworkConverter.ToSizeString(_ci.SentByteCountList.ToArray().Sum(n => n) / 3) + "/s";
+                            _receiveSpeedTextBlock.Text = NetworkConverter.ToSizeString(_ci.ReceivedByteCountList.ToArray().Sum(n => n) / 3) + "/s";
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        try
+                        {
+                            if (_amoebaManager.State == ManagerState.Start)
+                            {
+                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Start;
+                            }
+                            else
+                            {
+                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Stop;
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }), null);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private ConnectionInformation _ci = new ConnectionInformation();
+
+        void _refreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            try
+            {
+                var sentByteCount = _amoebaManager.SentByteCount;
+                var receivedByteCount = _amoebaManager.ReceivedByteCount;
+
+                _ci.SentByteCountList[_ci.Count] = sentByteCount - _ci.SentByteCount;
+                _ci.SentByteCount = sentByteCount;
+                _ci.ReceivedByteCountList[_ci.Count] = receivedByteCount - _ci.ReceivedByteCount;
+                _ci.ReceivedByteCount = receivedByteCount;
+                _ci.Count++;
+
+                if (_ci.Count >= _ci.SentByteCountList.Count) _ci.Count = 0;
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private class ConnectionInformation
+        {
+            private LockedList<long> _sentByteCountList = new LockedList<long>(new long[3]);
+            private LockedList<long> _receivedByteCountList = new LockedList<long>(new long[3]);
+
+            public long SentByteCount { get; set; }
+            public long ReceivedByteCount { get; set; }
+            public int Count { get; set; }
+
+            public LockedList<long> SentByteCountList
+            {
+                get
+                {
+                    return _sentByteCountList;
+                }
+            }
+
+            public LockedList<long> ReceivedByteCountList
+            {
+                get
+                {
+                    return _receivedByteCountList;
+                }
             }
         }
 
@@ -1070,63 +1172,6 @@ namespace Amoeba.Windows
             }
         }
 
-        private void ConnectionsInformationShow()
-        {
-            long sentByteCount = 0;
-            long receivedByteCount = 0;
-            LockedList<long> sentByteCountList = new LockedList<long>(new long[3]);
-            LockedList<long> receivedByteCountList = new LockedList<long>(new long[3]);
-            int count = 0;
-
-            for (; ; )
-            {
-                Thread.Sleep(1000);
-
-                try
-                {
-                    sentByteCountList[count] = _amoebaManager.SentByteCount - sentByteCount;
-                    sentByteCount = _amoebaManager.SentByteCount;
-                    receivedByteCountList[count] = _amoebaManager.ReceivedByteCount - receivedByteCount;
-                    receivedByteCount = _amoebaManager.ReceivedByteCount;
-                    count++;
-                    if (count >= sentByteCountList.Count) count = 0;
-
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
-                    {
-                        try
-                        {
-                            _sendSpeedTextBlock.Text = NetworkConverter.ToSizeString(sentByteCountList.Sum(n => n) / 3) + "/s";
-                            _receiveSpeedTextBlock.Text = NetworkConverter.ToSizeString(receivedByteCountList.Sum(n => n) / 3) + "/s";
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-
-                        try
-                        {
-                            if (_amoebaManager.State == ManagerState.Start)
-                            {
-                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Start;
-                            }
-                            else
-                            {
-                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Stop;
-                            }
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }), null);
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
@@ -1205,18 +1250,34 @@ namespace Amoeba.Windows
 
             _isRun = false;
 
-            _timerThread.Join();
-            _timerThread = null;
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = false;
+                Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
-            _autoBaseNodeSettingManager.Stop();
-            _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
-            _autoBaseNodeSettingManager.Dispose();
+                try
+                {
+                    _timerThread.Join();
+                    _timerThread = null;
 
-            _amoebaManager.Stop();
-            _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-            _amoebaManager.Dispose();
+                    _timer2Thread.Join();
+                    _timer2Thread = null;
 
-            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                    _autoBaseNodeSettingManager.Stop();
+                    _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+                    _autoBaseNodeSettingManager.Dispose();
+
+                    _amoebaManager.Stop();
+                    _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
+                    _amoebaManager.Dispose();
+
+                    Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+            }));
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
@@ -1278,6 +1339,7 @@ namespace Amoeba.Windows
 
         private void _connectionsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
+            _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled && _updateBaseNodeMenuItem_IsEnabled;
             _checkSeedsMenuItem.IsEnabled = _checkSeedsMenuItem_IsEnabled;
             _checkBlocksMenuItem.IsEnabled = _checkBlocksMenuItem_IsEnabled;
         }
@@ -1296,6 +1358,42 @@ namespace Amoeba.Windows
             _stopMenuItem.IsEnabled = false;
 
             Settings.Instance.Global_IsStart = false;
+        }
+
+        volatile bool _updateBaseNodeMenuItem_IsEnabled = true;
+
+        private void _updateBaseNodeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_updateBaseNodeMenuItem_IsEnabled) return;
+            _updateBaseNodeMenuItem_IsEnabled = false;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+#if DEBUG
+                    Stopwatch sw = new Stopwatch();
+                    sw.Start();
+#endif
+
+                    _autoBaseNodeSettingManager.Update();
+
+#if DEBUG
+                    sw.Stop();
+                    Debug.WriteLine(sw.Elapsed.ToString());
+#endif
+                }
+                catch (Exception)
+                {
+
+                }
+                finally
+                {
+                    _updateBaseNodeMenuItem_IsEnabled = true;
+                }
+            }));
         }
 
         volatile bool _checkSeedsMenuItem_IsEnabled = true;

@@ -1261,7 +1261,7 @@ namespace Amoeba.Windows
 
                 if (_amoebaManager.Size != size)
                 {
-                    _amoebaManager.Resize(size);
+                    _amoebaManager.Resize(Math.Max((long)NetworkConverter.FromSizeString("50 GB"), size));
                 }
 
                 _amoebaManager.BaseNode = _baseNode.DeepClone();

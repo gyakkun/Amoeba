@@ -30,6 +30,7 @@
   <Translate Key="MainWindow_Connections" Value="Connections" />
   <Translate Key="MainWindow_Start" Value="Start" />
   <Translate Key="MainWindow_Stop" Value="Stop" />
+  <Translate Key="MainWindow_UpdateBaseNode" Value="Update Base Node Uri" />
   <Translate Key="MainWindow_CheckSeeds" Value="Check seeds" />
   <Translate Key="MainWindow_CheckBlocks" Value="Check blocks" />
   <Translate Key="MainWindow_ConnectionsSettings" Value="Connections settings" />
