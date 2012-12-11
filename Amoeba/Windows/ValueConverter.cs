@@ -689,4 +689,38 @@ namespace Amoeba.Windows
             return null;
         }
     }
+
+    [ValueConversion(typeof(TransferLimitType), typeof(string))]
+    class TransferLimitTypeToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is TransferLimitType)) return null;
+            var item = (TransferLimitType)value;
+
+            if (item == TransferLimitType.None)
+            {
+                return LanguagesManager.Instance.TransferLimitType_None;
+            }
+            else if (item == TransferLimitType.Downloads)
+            {
+                return LanguagesManager.Instance.TransferLimitType_Downloads;
+            }
+            else if (item == TransferLimitType.Uploads)
+            {
+                return LanguagesManager.Instance.TransferLimitType_Uploads;
+            }
+            else if (item == TransferLimitType.Total)
+            {
+                return LanguagesManager.Instance.TransferLimitType_Total;
+            }
+
+            return "";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

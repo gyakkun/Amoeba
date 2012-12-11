@@ -51,7 +51,7 @@ namespace Amoeba.Windows
             _showShareItemThread = new Thread(new ThreadStart(ShowShareItem));
             _showShareItemThread.Priority = ThreadPriority.Highest;
             _showShareItemThread.IsBackground = true;
-            _showShareItemThread.Name = "ShowShareItemThread";
+            _showShareItemThread.Name = "ShareControl_ShowShareItemThread";
             _showShareItemThread.Start();
         }
 

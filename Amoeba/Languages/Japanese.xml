@@ -72,13 +72,19 @@
   <Translate Key="ConnectionsSettingsWindow_Events" Value="イベント" />
   <Translate Key="ConnectionsSettingsWindow_Data" Value="データ" />
   <Translate Key="ConnectionsSettingsWindow_Bandwidth" Value="帯域幅" />
-  <Translate Key="ConnectionsSettingsWindow_CoreSettings" Value="基本設定" />
+  <Translate Key="ConnectionsSettingsWindow_BandwidthLimit" Value="帯域幅制限 [0 Byte: 無制限]" />
+  <Translate Key="ConnectionsSettingsWindow_Transfer" Value="転送量" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitType" Value="制限タイプ" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitSpan" Value="期間 (日)" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitSize" Value="転送量" />
+  <Translate Key="ConnectionsSettingsWindow_TransferInformation" Value="転送量情報" />
+  <Translate Key="ConnectionsSettingsWindow_Downloaded" Value="ダウンロード" />
+  <Translate Key="ConnectionsSettingsWindow_Uploaded" Value="アップロード" />
+  <Translate Key="ConnectionsSettingsWindow_Total" Value="トータル" />
+  <Translate Key="ConnectionsSettingsWindow_Reset" Value="リセット" />
   <Translate Key="ConnectionsSettingsWindow_ConnectionCount" Value="接続数上限" />
-  <Translate Key="ConnectionsSettingsWindow_DownloadingLowerLimit" Value="ダウンロード開始接続数" />
-  <Translate Key="ConnectionsSettingsWindow_UploadingLowerLimit" Value="アップロード開始接続数" />
   <Translate Key="ConnectionsSettingsWindow_DownloadDirectory" Value="ダウンロードディレクトリ" />
   <Translate Key="ConnectionsSettingsWindow_CacheSize" Value="キャッシュサイズ" />
-  <Translate Key="ConnectionsSettingsWindow_AutoSettings" Value="自動設定" />
   <Translate Key="ConnectionsSettingsWindow_AutoBaseNodeSetting" Value="基礎ノードを自動で設定する" />
   <Translate Key="ConnectionsSettingsWindow_Tor" Value="Tor" />
   <Translate Key="ConnectionsSettingsWindow_Ipv4" Value="Ipv4" />
@@ -93,6 +99,18 @@
   <Translate Key="ConnectionsSettingsWindow_Cut" Value="切り取り" />
   <Translate Key="ConnectionsSettingsWindow_Copy" Value="コピー" />
   <Translate Key="ConnectionsSettingsWindow_Paste" Value="貼り付け" />
+
+  <Translate Key="ConnectionType_None" Value="None" />
+  <Translate Key="ConnectionType_Tcp" Value="Tcp" />
+  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 プロキシ" />
+  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a プロキシ" />
+  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 プロキシ" />
+  <Translate Key="ConnectionType_HttpProxy" Value="Http プロキシ" />
+
+  <Translate Key="TransferLimitType_None" Value="無効" />
+  <Translate Key="TransferLimitType_Downloads" Value="ダウンロード" />
+  <Translate Key="TransferLimitType_Uploads" Value="アップロード" />
+  <Translate Key="TransferLimitType_Total" Value="トータル" />
 
   <Translate Key="ProgressWindow_Title" Value="Progress state" />
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
@@ -163,13 +181,6 @@
   <Translate Key="ConnectionControl_PullBlockCount" Value="受信ブロック情報数" />
   <Translate Key="ConnectionControl_Copy" Value="コピー" />
   <Translate Key="ConnectionControl_Paste" Value="貼り付け" />
-
-  <Translate Key="ConnectionType_None" Value="None" />
-  <Translate Key="ConnectionType_Tcp" Value="Tcp" />
-  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 プロキシ" />
-  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a プロキシ" />
-  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 プロキシ" />
-  <Translate Key="ConnectionType_HttpProxy" Value="Http プロキシ" />
 
   <Translate Key="DownloadControl_Name" Value="名前" />
   <Translate Key="DownloadControl_Length" Value="サイズ" />

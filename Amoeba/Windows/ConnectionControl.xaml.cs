@@ -85,13 +85,13 @@ namespace Amoeba.Windows
             _showAmoebaInfomationThread = new Thread(new ThreadStart(this.ShowAmoebaInfomation));
             _showAmoebaInfomationThread.Priority = ThreadPriority.Highest;
             _showAmoebaInfomationThread.IsBackground = true;
-            _showAmoebaInfomationThread.Name = "ShowAmoebaInfomation";
+            _showAmoebaInfomationThread.Name = "ConnectionControl_ShowAmoebaInfomationThread";
             _showAmoebaInfomationThread.Start();
 
             _showConnectionInfomationwThread = new Thread(new ThreadStart(this.ShowConnectionInfomation));
             _showConnectionInfomationwThread.Priority = ThreadPriority.Highest;
             _showConnectionInfomationwThread.IsBackground = true;
-            _showConnectionInfomationwThread.Name = "ShowConnectionInfomation";
+            _showConnectionInfomationwThread.Name = "ConnectionControl_ShowConnectionInfomationThread";
             _showConnectionInfomationwThread.Start();
         }
 

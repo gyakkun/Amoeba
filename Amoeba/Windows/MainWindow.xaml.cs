@@ -42,8 +42,9 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
         private AutoBaseNodeSettingManager _autoBaseNodeSettingManager;
+        private TransfarLimitManager _transferLimitManager;
 
-        System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
+        private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
         private WindowState _windowState;
 
         private Dictionary<string, string> _configrationDirectoryPaths = new Dictionary<string, string>();
@@ -51,7 +52,7 @@ namespace Amoeba.Windows
 
         private bool _isRun = true;
 
-        System.Timers.Timer _refreshTimer = new System.Timers.Timer();
+        private System.Timers.Timer _refreshTimer = new System.Timers.Timer();
         private Thread _timerThread = null;
         private Thread _timer2Thread = null;
 
@@ -67,8 +68,9 @@ namespace Amoeba.Windows
             this.Setting_Log();
 
             _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
-            _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
             _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
+            _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
+            _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
 
             Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
 
@@ -122,13 +124,13 @@ namespace Amoeba.Windows
             _timerThread = new Thread(new ThreadStart(this.Timer));
             _timerThread.Priority = ThreadPriority.Highest;
             _timerThread.IsBackground = true;
-            _timerThread.Name = "TimerThread";
+            _timerThread.Name = "MainWindow_TimerThread";
             _timerThread.Start();
 
             _timer2Thread = new Thread(new ThreadStart(this.Timer2));
             _timer2Thread.Priority = ThreadPriority.Highest;
             _timer2Thread.IsBackground = true;
-            _timer2Thread.Name = "Timer2Thread";
+            _timer2Thread.Name = "MainWindow_Timer2Thread";
             _timer2Thread.Start();
         }
 
@@ -281,6 +283,7 @@ namespace Amoeba.Windows
 
                         try
                         {
+                            _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                             _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                             Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
@@ -945,8 +948,12 @@ namespace Amoeba.Windows
                 _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
                 _autoBaseNodeSettingManager.Load(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
 
+                _transferLimitManager = new TransfarLimitManager(_amoebaManager);
+                _transferLimitManager.Load(_configrationDirectoryPaths["TransfarLimitManager"]);
+
                 if (initFlag)
                 {
+                    _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                     _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                     _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                     Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
@@ -1263,6 +1270,9 @@ namespace Amoeba.Windows
                     _timer2Thread.Join();
                     _timer2Thread = null;
 
+                    _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
+                    _transferLimitManager.Dispose();
+
                     _autoBaseNodeSettingManager.Stop();
                     _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                     _autoBaseNodeSettingManager.Dispose();
@@ -1475,7 +1485,7 @@ namespace Amoeba.Windows
 
         private void _connectionsSettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ConnectionsSettingsWindow window = new ConnectionsSettingsWindow(_amoebaManager, _autoBaseNodeSettingManager, _bufferManager);
+            ConnectionsSettingsWindow window = new ConnectionsSettingsWindow(_amoebaManager, _autoBaseNodeSettingManager, _transferLimitManager, _bufferManager);
             window.Owner = this;
             window.ShowDialog();
         }

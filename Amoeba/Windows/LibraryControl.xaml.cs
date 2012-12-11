@@ -74,13 +74,13 @@ namespace Amoeba.Windows
             _searchThread = new Thread(new ThreadStart(this.Search));
             _searchThread.Priority = ThreadPriority.Highest;
             _searchThread.IsBackground = true;
-            _searchThread.Name = "SearchThread";
+            _searchThread.Name = "LibraryControl_SearchThread";
             _searchThread.Start();
 
             _watchThread = new Thread(new ThreadStart(this.Watch));
             _watchThread.Priority = ThreadPriority.Highest;
             _watchThread.IsBackground = true;
-            _watchThread.Name = "WatchThread";
+            _watchThread.Name = "LibraryControl_WatchThread";
             _watchThread.Start();
 
             _searchRowDefinition.Height = new GridLength(0);

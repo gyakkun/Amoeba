@@ -51,7 +51,7 @@ namespace Amoeba.Windows
             _showUploadItemThread = new Thread(new ThreadStart(ShowUploadItem));
             _showUploadItemThread.Priority = ThreadPriority.Highest;
             _showUploadItemThread.IsBackground = true;
-            _showUploadItemThread.Name = "ShowUploadItemThread";
+            _showUploadItemThread.Name = "UploadControl_ShowUploadItemThread";
             _showUploadItemThread.Start();
 
             LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);

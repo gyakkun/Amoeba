@@ -31,6 +31,9 @@
         <DataTemplate x:Key="_myTemplate_ConnectionFilter">
             <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_TransferLimitType">
+            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _transferLimitTypeToStringConverter}}" />
+        </DataTemplate>
     </Window.Resources>
 
     <Window.CommandBindings>
@@ -61,7 +64,8 @@
                 <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Client, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_serverTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Server, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_dataTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Data, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
-                <TreeViewItem Name="_bandwidthTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Bandwidth, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
+                <TreeViewItem Name="_bandwidthTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Bandwidth, Source={StaticResource ResourcesInstance}}" IsSelected="True" />
+                <TreeViewItem Name="_transferTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Transfer, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_eventsTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Events, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
             </TreeView>
 
@@ -220,6 +224,28 @@
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_bandwidthTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
                 <Label Content="{Binding Path=ConnectionsSettingsWindow_ConnectionCount, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="360" VerticalContentAlignment="Center" />
                 <TextBox Height="24" Margin="372,6,6,0" Name="_bandwidthConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_bandwidthConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=ConnectionsSettingsWindow_BandwidthLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="360" />
+                <TextBox Height="24" Margin="372,36,6,0" Name="_bandwidthLimitTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+            </Grid>
+
+            <Grid Grid.Column="2" Visibility="{Binding ElementName=_transferTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
+                <Label Content="{Binding Path=ConnectionsSettingsWindow_TransferLimitType, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+                <ComboBox Height="23" Margin="132,7,6,0" Name="_transferLimitTypeComboBox" VerticalAlignment="Top" ItemTemplate="{StaticResource _myTemplate_TransferLimitType}" SelectionChanged="_transferLimitTypeComboBox_SelectionChanged" />
+                <Label Content="{Binding Path=ConnectionsSettingsWindow_TransferLimitSpan, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+                <TextBox Height="23" Margin="132,38,6,0" Name="_transferLimitSpanTextBox" VerticalAlignment="Top" TextChanged="_transferLimitSpanTextBox_TextChanged" />
+                <Label Content="{Binding Path=ConnectionsSettingsWindow_TransferLimitSize, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+                <TextBox Height="23" Margin="132,68,6,0" Name="_transferLimitSizeTextBox" VerticalAlignment="Top" />
+                <GroupBox Header="{Binding Path=ConnectionsSettingsWindow_TransferInformation, Source={StaticResource ResourcesInstance}}" Margin="6,97,6,0" Height="156" VerticalAlignment="Top">
+                    <Grid>
+                        <Label Content="{Binding Path=ConnectionsSettingsWindow_Uploaded, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+                        <Label Content="{Binding Path=ConnectionsSettingsWindow_Downloaded, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+                        <Label Content="{Binding Path=ConnectionsSettingsWindow_Total, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+                        <Label Height="24" Margin="132,6,6,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Name="_transferInfoUploaded" />
+                        <Label Height="24" Margin="132,36,6,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Name="_transferInfoDownloaded" />
+                        <Label Height="24" Margin="132,66,6,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Name="_transferInfoTotal" />
+                        <Button Content="{Binding Path=ConnectionsSettingsWindow_Reset, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,96,6,0" Name="_resetButton" VerticalAlignment="Top" Width="75" Click="_resetButton_Click" />
+                    </Grid>
+                </GroupBox>
             </Grid>
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_eventsTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">

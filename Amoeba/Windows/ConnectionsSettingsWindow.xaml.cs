@@ -27,16 +27,18 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
         private AutoBaseNodeSettingManager _autoBaseNodeSettingManager;
+        private TransfarLimitManager _transferLimitManager;
 
         private Node _baseNode;
         private NodeCollection _otherNodes = new NodeCollection();
         private ConnectionFilterCollection _clientFilters = new ConnectionFilterCollection();
         private UriCollection _listenUris = new UriCollection();
 
-        public ConnectionsSettingsWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, BufferManager bufferManager)
+        public ConnectionsSettingsWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
         {
             _amoebaManager = amoebaManager;
             _autoBaseNodeSettingManager = autoBaseNodeSettingManager;
+            _transferLimitManager = transfarLimitManager;
             _bufferManager = bufferManager;
 
             lock (_amoebaManager.ThisLock)
@@ -68,6 +70,9 @@ namespace Amoeba.Windows
             _serverListenUrisListView.ItemsSource = _listenUris;
             _dataDownloadDirectoryTextBox.Text = _amoebaManager.DownloadDirectory;
             _bandwidthConnectionCountTextBox.Text = _amoebaManager.ConnectionCountLimit.ToString();
+            _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.BandWidthLimit);
+            _transferLimitSpanTextBox.Text = _transferLimitManager.TransferLimit.Span.ToString();
+            _transferLimitSizeTextBox.Text = NetworkConverter.ToSizeString(_transferLimitManager.TransferLimit.Size);
             _dataCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size);
             _eventAutoBaseNodeSettingCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
 
@@ -77,6 +82,17 @@ namespace Amoeba.Windows
             }
 
             _clientFiltersConnectionTypeComboBox.SelectedItem = ConnectionType.Tcp;
+
+            foreach (var item in Enum.GetValues(typeof(TransferLimitType)).Cast<TransferLimitType>())
+            {
+                _transferLimitTypeComboBox.Items.Add(item);
+            }
+
+            _transferLimitTypeComboBox.SelectedItem = _transferLimitManager.TransferLimit.Type;
+
+            _transferInfoUploaded.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize);
+            _transferInfoDownloaded.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalDownloadSize);
+            _transferInfoTotal.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize + _transferLimitManager.TotalDownloadSize);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -1240,6 +1256,43 @@ namespace Amoeba.Windows
 
         #endregion
 
+        #region Transfer
+
+        private void _transferLimitTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _transferLimitSpanTextBox.IsEnabled = (TransferLimitType)_transferLimitTypeComboBox.SelectedItem != TransferLimitType.None;
+            _transferLimitSizeTextBox.IsEnabled = (TransferLimitType)_transferLimitTypeComboBox.SelectedItem != TransferLimitType.None;
+        }
+
+        private void _transferLimitSpanTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(_transferLimitSpanTextBox.Text)) return;
+
+            StringBuilder builder = new StringBuilder("");
+
+            foreach (var item in _transferLimitSpanTextBox.Text)
+            {
+                if (Regex.IsMatch(item.ToString(), "[0-9]"))
+                {
+                    builder.Append(item.ToString());
+                }
+            }
+
+            var value = builder.ToString();
+            if (_transferLimitSpanTextBox.Text != value) _transferLimitSpanTextBox.Text = value;
+        }
+
+        private void _resetButton_Click(object sender, RoutedEventArgs e)
+        {
+            _transferLimitManager.Reset();
+
+            _transferInfoUploaded.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize);
+            _transferInfoDownloaded.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalDownloadSize);
+            _transferInfoTotal.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize + _transferLimitManager.TotalDownloadSize);
+        }
+
+        #endregion
+
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
@@ -1270,6 +1323,19 @@ namespace Amoeba.Windows
                 int count = ConnectionsSettingsWindow.GetStringToInt(_bandwidthConnectionCountTextBox.Text);
                 _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 50), 1);
 
+                long bandwidthLimit = (long)NetworkConverter.FromSizeString("0");
+
+                try
+                {
+                    bandwidthLimit = (long)NetworkConverter.FromSizeString(_bandwidthLimitTextBox.Text);
+                }
+                catch (Exception)
+                {
+
+                }
+
+                _amoebaManager.BandWidthLimit = bandwidthLimit;
+               
                 _amoebaManager.Filters.Clear();
                 _amoebaManager.Filters.AddRange(_clientFilters.Select(n => n.DeepClone()));
 
@@ -1289,6 +1355,30 @@ namespace Amoeba.Windows
                 }
 
                 _amoebaManager.DownloadDirectory = path;
+            }
+
+            lock (_transferLimitManager.ThisLock)
+            {
+                lock (_transferLimitManager.TransferLimit.ThisLock)
+                {
+                    _transferLimitManager.TransferLimit.Type = (TransferLimitType)_transferLimitTypeComboBox.SelectedItem;
+
+                    int day = ConnectionsSettingsWindow.GetStringToInt(_transferLimitSpanTextBox.Text);
+                    _transferLimitManager.TransferLimit.Span = Math.Max(Math.Min(day, 31), 1);
+
+                    long size = (long)NetworkConverter.FromSizeString("256 KB");
+
+                    try
+                    {
+                        size = Math.Abs((long)NetworkConverter.FromSizeString(_transferLimitSizeTextBox.Text));
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    _transferLimitManager.TransferLimit.Size = Math.Max((long)NetworkConverter.FromSizeString("1 KB"), size);
+                }
             }
 
             if (flag && _eventAutoBaseNodeSettingCheckBox.IsChecked.Value

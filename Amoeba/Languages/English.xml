@@ -72,13 +72,19 @@
   <Translate Key="ConnectionsSettingsWindow_Events" Value="Events" />
   <Translate Key="ConnectionsSettingsWindow_Data" Value="Data" />
   <Translate Key="ConnectionsSettingsWindow_Bandwidth" Value="Bandwidth" />
-  <Translate Key="ConnectionsSettingsWindow_CoreSettings" Value="Core settings" />
+  <Translate Key="ConnectionsSettingsWindow_BandwidthLimit" Value="Bandwidth Limit [0 Byte: unlimited]" />
+  <Translate Key="ConnectionsSettingsWindow_Transfer" Value="Transfer" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitType" Value="Limit Type" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitSpan" Value="Limit Span (day)" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitSize" Value="Limit Size" />
+  <Translate Key="ConnectionsSettingsWindow_TransferInformation" Value="Transfer Information" />
+  <Translate Key="ConnectionsSettingsWindow_Downloaded" Value="Downloaded" />
+  <Translate Key="ConnectionsSettingsWindow_Uploaded" Value="Uploaded" />
+  <Translate Key="ConnectionsSettingsWindow_Total" Value="Total" />
+  <Translate Key="ConnectionsSettingsWindow_Reset" Value="Reset" />
   <Translate Key="ConnectionsSettingsWindow_ConnectionCount" Value="Connection count" />
-  <Translate Key="ConnectionsSettingsWindow_DownloadingLowerLimit" Value="Connection count which start download" />
-  <Translate Key="ConnectionsSettingsWindow_UploadingLowerLimit" Value="Connection count which start upload" />
   <Translate Key="ConnectionsSettingsWindow_DownloadDirectory" Value="Download directory" />
   <Translate Key="ConnectionsSettingsWindow_CacheSize" Value="Cache size" />
-  <Translate Key="ConnectionsSettingsWindow_AutoSettings" Value="Auto settings" />
   <Translate Key="ConnectionsSettingsWindow_AutoBaseNodeSetting" Value="Auto base node setting" />
   <Translate Key="ConnectionsSettingsWindow_Tor" Value="Tor" />
   <Translate Key="ConnectionsSettingsWindow_Ipv4" Value="Ipv4" />
@@ -93,6 +99,18 @@
   <Translate Key="ConnectionsSettingsWindow_Cut" Value="Cut" />
   <Translate Key="ConnectionsSettingsWindow_Copy" Value="Copy" />
   <Translate Key="ConnectionsSettingsWindow_Paste" Value="Paste" />
+
+  <Translate Key="ConnectionType_None" Value="None" />
+  <Translate Key="ConnectionType_Tcp" Value="Tcp" />
+  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 proxy" />
+  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a proxy" />
+  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 proxy" />
+  <Translate Key="ConnectionType_HttpProxy" Value="Http proxy" />
+
+  <Translate Key="TransferLimitType_None" Value="None" />
+  <Translate Key="TransferLimitType_Downloads" Value="Downloads" />
+  <Translate Key="TransferLimitType_Uploads" Value="Uploads" />
+  <Translate Key="TransferLimitType_Total" Value="Total" />
 
   <Translate Key="ProgressWindow_Title" Value="Progress state" />
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
@@ -163,13 +181,6 @@
   <Translate Key="ConnectionControl_PullBlockCount" Value="PullBlock count" />
   <Translate Key="ConnectionControl_Copy" Value="Copy" />
   <Translate Key="ConnectionControl_Paste" Value="Paste" />
-
-  <Translate Key="ConnectionType_None" Value="None" />
-  <Translate Key="ConnectionType_Tcp" Value="Tcp" />
-  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 proxy" />
-  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a proxy" />
-  <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 proxy" />
-  <Translate Key="ConnectionType_HttpProxy" Value="Http proxy" />
 
   <Translate Key="DownloadControl_Name" Value="Name" />
   <Translate Key="DownloadControl_Length" Value="Length" />

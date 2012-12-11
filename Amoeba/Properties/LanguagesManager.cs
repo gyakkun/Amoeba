@@ -891,13 +891,112 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionsSettingsWindow_CoreSettings
+        public string ConnectionsSettingsWindow_BandwidthLimit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_CoreSettings");
+                    return this.Translate("ConnectionsSettingsWindow_BandwidthLimit");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_Transfer
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_Transfer");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_TransferLimitType
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_TransferLimitType");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_TransferLimitSpan
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_TransferLimitSpan");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_TransferLimitSize
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_TransferLimitSize");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_TransferInformation
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_TransferInformation");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_Downloaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_Downloaded");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_Uploaded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_Uploaded");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_Total
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_Total");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_Reset
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_Reset");
                 }
             }
         }
@@ -909,28 +1008,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsSettingsWindow_ConnectionCount");
-                }
-            }
-        }
-
-        public string ConnectionsSettingsWindow_DownloadingLowerLimit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionsSettingsWindow_DownloadingLowerLimit");
-                }
-            }
-        }
-
-        public string ConnectionsSettingsWindow_UploadingLowerLimit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionsSettingsWindow_UploadingLowerLimit");
                 }
             }
         }
@@ -953,17 +1030,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsSettingsWindow_CacheSize");
-                }
-            }
-        }
-
-        public string ConnectionsSettingsWindow_AutoSettings
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionsSettingsWindow_AutoSettings");
                 }
             }
         }
@@ -1118,6 +1184,118 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsSettingsWindow_Paste");
+                }
+            }
+        }
+
+
+        public string ConnectionType_None
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionType_None");
+                }
+            }
+        }
+
+        public string ConnectionType_Tcp
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionType_Tcp");
+                }
+            }
+        }
+
+        public string ConnectionType_Socks4Proxy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionType_Socks4Proxy");
+                }
+            }
+        }
+
+        public string ConnectionType_Socks4aProxy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionType_Socks4aProxy");
+                }
+            }
+        }
+
+        public string ConnectionType_Socks5Proxy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionType_Socks5Proxy");
+                }
+            }
+        }
+
+        public string ConnectionType_HttpProxy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionType_HttpProxy");
+                }
+            }
+        }
+
+
+        public string TransferLimitType_None
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("TransferLimitType_None");
+                }
+            }
+        }
+
+        public string TransferLimitType_Downloads
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("TransferLimitType_Downloads");
+                }
+            }
+        }
+
+        public string TransferLimitType_Uploads
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("TransferLimitType_Uploads");
+                }
+            }
+        }
+
+        public string TransferLimitType_Total
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("TransferLimitType_Total");
                 }
             }
         }
@@ -1848,73 +2026,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionControl_Paste");
-                }
-            }
-        }
-
-
-        public string ConnectionType_None
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionType_None");
-                }
-            }
-        }
-
-        public string ConnectionType_Tcp
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionType_Tcp");
-                }
-            }
-        }
-
-        public string ConnectionType_Socks4Proxy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionType_Socks4Proxy");
-                }
-            }
-        }
-
-        public string ConnectionType_Socks4aProxy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionType_Socks4aProxy");
-                }
-            }
-        }
-
-        public string ConnectionType_Socks5Proxy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionType_Socks5Proxy");
-                }
-            }
-        }
-
-        public string ConnectionType_HttpProxy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionType_HttpProxy");
                 }
             }
         }

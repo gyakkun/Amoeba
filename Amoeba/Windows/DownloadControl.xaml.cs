@@ -52,13 +52,13 @@ namespace Amoeba.Windows
             _showDownloadItemThread = new Thread(new ThreadStart(this.ShowDownloadItem));
             _showDownloadItemThread.Priority = ThreadPriority.Highest;
             _showDownloadItemThread.IsBackground = true;
-            _showDownloadItemThread.Name = "ShowDownloadItemThread";
+            _showDownloadItemThread.Name = "DownloadControl_ShowDownloadItemThread";
             _showDownloadItemThread.Start();
 
             _watchThread = new Thread(new ThreadStart(this.Watch));
             _watchThread.Priority = ThreadPriority.Highest;
             _watchThread.IsBackground = true;
-            _watchThread.Name = "WatchThread";
+            _watchThread.Name = "DownloadControl_WatchThread";
             _watchThread.Start();
 
             LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
