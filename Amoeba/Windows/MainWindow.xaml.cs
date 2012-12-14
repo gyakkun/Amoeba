@@ -51,6 +51,7 @@ namespace Amoeba.Windows
         private string _logPath = null;
 
         private bool _isRun = true;
+        private bool _autoStop = false;
 
         private System.Timers.Timer _refreshTimer = new System.Timers.Timer();
         private Thread _timerThread = null;
@@ -132,6 +133,30 @@ namespace Amoeba.Windows
             _timer2Thread.IsBackground = true;
             _timer2Thread.Name = "MainWindow_Timer2Thread";
             _timer2Thread.Start();
+
+            _transferLimitManager.StartEvent += new EventHandler(_transferLimitManager_StartEvent);
+            _transferLimitManager.StopEvent += new EventHandler(_transferLimitManager_StopEvent);
+        }
+
+        void _transferLimitManager_StartEvent(object sender, EventArgs e)
+        {
+            if (_autoStop && !Settings.Instance.Global_IsStart)
+            {
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                {
+                    _startMenuItem_Click(sender, null);
+                }), null);
+            }
+        }
+
+        void _transferLimitManager_StopEvent(object sender, EventArgs e)
+        {
+            Log.Information(LanguagesManager.Instance.MainWindow_TransferLimit_Message);
+
+            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+            {
+                _stopMenuItem_Click(sender, null);
+            }), null);
         }
 
         public static void CopyDirectory(string sourceDirectoryPath, string destDirectoryPath)
@@ -343,7 +368,9 @@ namespace Amoeba.Windows
                     Thread.Sleep(1000);
                     if (!_isRun) return;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new Action<object>(delegate(object state2)
+                    var state = _amoebaManager.State;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action<object>(delegate(object state2)
                     {
                         try
                         {
@@ -357,7 +384,7 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            if (_amoebaManager.State == ManagerState.Start)
+                            if (state == ManagerState.Start)
                             {
                                 _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Start;
                             }
@@ -380,9 +407,13 @@ namespace Amoeba.Windows
         }
 
         private ConnectionInformation _ci = new ConnectionInformation();
+        private bool _refreshTimer_Running = false;
 
         void _refreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            if (_refreshTimer_Running) return;
+            _refreshTimer_Running = true;
+
             try
             {
                 var sentByteCount = _amoebaManager.SentByteCount;
@@ -399,6 +430,10 @@ namespace Amoeba.Windows
             catch (Exception)
             {
 
+            }
+            finally
+            {
+                _refreshTimer_Running = false;
             }
         }
 

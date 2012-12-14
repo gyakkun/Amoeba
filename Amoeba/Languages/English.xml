@@ -52,6 +52,7 @@
   <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />
   <Translate Key="MainWindow_Close_Message" Value="Do you want to quit?" />
   <Translate Key="MainWindow_Delete_Message" Value="Are you sure you want to Delete?" />
+  <Translate Key="MainWindow_TransferLimit_Message" Value="Transfer limit" />
 
   <Translate Key="ConnectionsSettingsWindow_Title" Value="Connection setting" />
   <Translate Key="ConnectionsSettingsWindow_BaseNode" Value="Base node" />
@@ -72,7 +73,7 @@
   <Translate Key="ConnectionsSettingsWindow_Events" Value="Events" />
   <Translate Key="ConnectionsSettingsWindow_Data" Value="Data" />
   <Translate Key="ConnectionsSettingsWindow_Bandwidth" Value="Bandwidth" />
-  <Translate Key="ConnectionsSettingsWindow_BandwidthLimit" Value="Bandwidth Limit [0 Byte: unlimited]" />
+  <Translate Key="ConnectionsSettingsWindow_BandwidthLimit" Value="Bandwidth Limit (*/s) [0 Byte: unlimited]" />
   <Translate Key="ConnectionsSettingsWindow_Transfer" Value="Transfer" />
   <Translate Key="ConnectionsSettingsWindow_TransferLimitType" Value="Limit Type" />
   <Translate Key="ConnectionsSettingsWindow_TransferLimitSpan" Value="Limit Span (day)" />

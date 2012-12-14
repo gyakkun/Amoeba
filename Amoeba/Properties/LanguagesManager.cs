@@ -681,6 +681,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string MainWindow_TransferLimit_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_TransferLimit_Message");
+                }
+            }
+        }
+
 
         public string ConnectionsSettingsWindow_Title
         {
