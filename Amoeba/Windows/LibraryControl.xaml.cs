@@ -1748,7 +1748,7 @@ namespace Amoeba.Windows
 
             if (sortBy == LanguagesManager.Instance.LibraryControl_Name)
             {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
+
             }
             else if (sortBy == LanguagesManager.Instance.LibraryControl_Signature)
             {
@@ -1779,6 +1779,7 @@ namespace Amoeba.Windows
                 _listView.Items.SortDescriptions.Add(new SortDescription("Hash", direction));
             }
 
+            _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
         }
 
