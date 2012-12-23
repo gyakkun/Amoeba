@@ -73,12 +73,12 @@
   <Translate Key="ConnectionsSettingsWindow_Events" Value="Events" />
   <Translate Key="ConnectionsSettingsWindow_Data" Value="Data" />
   <Translate Key="ConnectionsSettingsWindow_Bandwidth" Value="Bandwidth" />
-  <Translate Key="ConnectionsSettingsWindow_BandwidthLimit" Value="Bandwidth Limit (*/s) [0 Byte: unlimited]" />
+  <Translate Key="ConnectionsSettingsWindow_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
   <Translate Key="ConnectionsSettingsWindow_Transfer" Value="Transfer" />
-  <Translate Key="ConnectionsSettingsWindow_TransferLimitType" Value="Limit Type" />
-  <Translate Key="ConnectionsSettingsWindow_TransferLimitSpan" Value="Limit Span (day)" />
-  <Translate Key="ConnectionsSettingsWindow_TransferLimitSize" Value="Limit Size" />
-  <Translate Key="ConnectionsSettingsWindow_TransferInformation" Value="Transfer Information" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitType" Value="Limit type" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitSpan" Value="Limit span (day)" />
+  <Translate Key="ConnectionsSettingsWindow_TransferLimitSize" Value="Limit size" />
+  <Translate Key="ConnectionsSettingsWindow_TransferInformation" Value="Transfer information" />
   <Translate Key="ConnectionsSettingsWindow_Downloaded" Value="Downloaded" />
   <Translate Key="ConnectionsSettingsWindow_Uploaded" Value="Uploaded" />
   <Translate Key="ConnectionsSettingsWindow_Total" Value="Total" />
@@ -163,11 +163,11 @@
   <Translate Key="ConnectionControl_AcceptConnectionCount" Value="Accept connection count" />
   <Translate Key="ConnectionControl_SurroundingNodeCount" Value="Surrounding node count" />
   <Translate Key="ConnectionControl_RelayBlockCount" Value="Relay block count" />
-  <Translate Key="ConnectionControl_FreeSpace" Value="Free Space" />
-  <Translate Key="ConnectionControl_LockSpace" Value="Lock Space" />
-  <Translate Key="ConnectionControl_UsingSpace" Value="Using Space" />
+  <Translate Key="ConnectionControl_FreeSpace" Value="Free space" />
+  <Translate Key="ConnectionControl_LockSpace" Value="Lock space" />
+  <Translate Key="ConnectionControl_UsingSpace" Value="Using space" />
   <Translate Key="ConnectionControl_NodeCount" Value="Node count" />
-  <Translate Key="ConnectionControl_SeedCount" Value="Seed Count" />
+  <Translate Key="ConnectionControl_SeedCount" Value="Seed count" />
   <Translate Key="ConnectionControl_BlockCount" Value="Block count" />
   <Translate Key="ConnectionControl_DownloadCount" Value="Download count" />
   <Translate Key="ConnectionControl_UploadCount" Value="Upload count" />
