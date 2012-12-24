@@ -64,102 +64,111 @@ namespace Amoeba.Windows
 
         public MainWindow()
         {
-            _bufferManager = new BufferManager();
-
-            this.Setting_Log();
-
-            _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
-            _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
-            _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
-            _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
-
-            Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
-
+            try
             {
-                bool flag = false;
+                _bufferManager = new BufferManager();
 
-                double top = Settings.Instance.MainWindow_Top + (Settings.Instance.MainWindow_Height / 2);
-                double left = Settings.Instance.MainWindow_Left + (Settings.Instance.MainWindow_Width / 2);
+                this.Setting_Log();
 
-                foreach (var s in System.Windows.Forms.Screen.AllScreens)
+                _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
+                _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
+                _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
+                _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
+
+                Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
+
                 {
-                    if (top > s.WorkingArea.Top && top < s.WorkingArea.Bottom
-                        && left > s.WorkingArea.Left && left < s.WorkingArea.Right)
-                    {
-                        flag = true;
+                    bool flag = false;
 
-                        break;
+                    double top = Settings.Instance.MainWindow_Top + (Settings.Instance.MainWindow_Height / 2);
+                    double left = Settings.Instance.MainWindow_Left + (Settings.Instance.MainWindow_Width / 2);
+
+                    foreach (var s in System.Windows.Forms.Screen.AllScreens)
+                    {
+                        if (top > s.WorkingArea.Top && top < s.WorkingArea.Bottom
+                            && left > s.WorkingArea.Left && left < s.WorkingArea.Right)
+                        {
+                            flag = true;
+
+                            break;
+                        }
+                    }
+
+                    if (!flag)
+                    {
+                        Settings.Instance.MainWindow_Top = 0;
+                        Settings.Instance.MainWindow_Left = 0;
                     }
                 }
 
-                if (!flag)
+                InitializeComponent();
+
+                _windowState = this.WindowState;
+
+                this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
+
                 {
-                    Settings.Instance.MainWindow_Top = 0;
-                    Settings.Instance.MainWindow_Left = 0;
+                    var icon = new BitmapImage();
+
+                    icon.BeginInit();
+                    icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                    icon.EndInit();
+                    if (icon.CanFreeze) icon.Freeze();
+
+                    this.Icon = icon;
                 }
+
+                System.Drawing.Icon myIcon = new System.Drawing.Icon(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"));
+                _notifyIcon.Icon = new System.Drawing.Icon(myIcon, new System.Drawing.Size(16, 16));
+                _notifyIcon.Visible = true;
+
+                this.Setting_Init();
+                this.Setting_Languages();
+
+                _notifyIcon.Visible = false;
+                _notifyIcon.Click += (object sender2, EventArgs e2) =>
+                {
+                    try
+                    {
+                        this.Show();
+                        this.Activate();
+                        this.WindowState = _windowState;
+
+                        _notifyIcon.Visible = false;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                };
+
+                _refreshTimer = new System.Timers.Timer();
+                _refreshTimer.Elapsed += new System.Timers.ElapsedEventHandler(_refreshTimer_Elapsed);
+                _refreshTimer.Interval = 1000;
+                _refreshTimer.AutoReset = true;
+                _refreshTimer.Start();
+
+                _timerThread = new Thread(new ThreadStart(this.Timer));
+                _timerThread.Priority = ThreadPriority.Highest;
+                _timerThread.IsBackground = true;
+                _timerThread.Name = "MainWindow_TimerThread";
+                _timerThread.Start();
+
+                _timer2Thread = new Thread(new ThreadStart(this.Timer2));
+                _timer2Thread.Priority = ThreadPriority.Highest;
+                _timer2Thread.IsBackground = true;
+                _timer2Thread.Name = "MainWindow_Timer2Thread";
+                _timer2Thread.Start();
+
+                _transferLimitManager.StartEvent += new EventHandler(_transferLimitManager_StartEvent);
+                _transferLimitManager.StopEvent += new EventHandler(_transferLimitManager_StopEvent);
             }
-
-            InitializeComponent();
-
-            _windowState = this.WindowState;
-
-            this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
-
+            catch (Exception e)
             {
-                var icon = new BitmapImage();
+                Log.Error(e);
 
-                icon.BeginInit();
-                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
-                icon.EndInit();
-                if (icon.CanFreeze) icon.Freeze();
-
-                this.Icon = icon;
+                throw;
             }
-
-            System.Drawing.Icon myIcon = new System.Drawing.Icon(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"));
-            _notifyIcon.Icon = new System.Drawing.Icon(myIcon, new System.Drawing.Size(16, 16));
-            _notifyIcon.Visible = true;
-
-            this.Setting_Init();
-            this.Setting_Languages();
-
-            _notifyIcon.Visible = false;
-            _notifyIcon.Click += (object sender2, EventArgs e2) =>
-            {
-                try
-                {
-                    this.Show();
-                    this.Activate();
-                    this.WindowState = _windowState;
-
-                    _notifyIcon.Visible = false;
-                }
-                catch (Exception)
-                {
-
-                }
-            };
-
-            _refreshTimer = new System.Timers.Timer();
-            _refreshTimer.Elapsed += new System.Timers.ElapsedEventHandler(_refreshTimer_Elapsed);
-            _refreshTimer.Interval = 1000;
-            _refreshTimer.AutoReset = true;
-            _refreshTimer.Start();
-
-            _timerThread = new Thread(new ThreadStart(this.Timer));
-            _timerThread.Priority = ThreadPriority.Highest;
-            _timerThread.IsBackground = true;
-            _timerThread.Name = "MainWindow_TimerThread";
-            _timerThread.Start();
-
-            _timer2Thread = new Thread(new ThreadStart(this.Timer2));
-            _timer2Thread.Priority = ThreadPriority.Highest;
-            _timer2Thread.IsBackground = true;
-            _timer2Thread.Name = "MainWindow_Timer2Thread";
-            _timer2Thread.Start();
-
-            _transferLimitManager.StartEvent += new EventHandler(_transferLimitManager_StartEvent);
-            _transferLimitManager.StopEvent += new EventHandler(_transferLimitManager_StopEvent);
         }
 
         void _transferLimitManager_StartEvent(object sender, EventArgs e)

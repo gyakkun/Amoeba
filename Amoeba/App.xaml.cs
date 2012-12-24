@@ -34,8 +34,6 @@ namespace Amoeba
 
         public App()
         {
-            //System.Windows.Media.RenderOptions.ProcessRenderMode = System.Windows.Interop.RenderMode.SoftwareOnly;
-
             App.AmoebaVersion = new Version(0, 1, 55);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
@@ -266,15 +264,41 @@ namespace Amoeba
                 }
             }
 
-            try
             {
-                _lockStream = new FileStream(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.lock"), FileMode.Create);
-            }
-            catch (IOException)
-            {
-                this.Shutdown();
+                try
+                {
+                    _lockStream = new FileStream(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.lock"), FileMode.Create);
+                }
+                catch (IOException)
+                {
+                    this.Shutdown();
 
-                return;
+                    return;
+                }
+
+                int count = 0;
+
+                foreach (var p in Process.GetProcessesByName("Amoeba"))
+                {
+                    try
+                    {
+                        if (p.MainModule.FileName == Path.GetFullPath(Assembly.GetEntryAssembly().Location))
+                        {
+                            count++;
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+
+                if (count == 2)
+                {
+                    this.Shutdown();
+
+                    return;
+                }
             }
 
             try
@@ -690,12 +714,6 @@ namespace Amoeba
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            if (_lockStream != null)
-            {
-                _lockStream.Close();
-                _lockStream = null;
-            }
-
             Parallel.ForEach(_processList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, p =>
             {
                 try
@@ -708,6 +726,12 @@ namespace Amoeba
 
                 }
             });
+
+            if (_lockStream != null)
+            {
+                _lockStream.Close();
+                _lockStream = null;
+            }
         }
     }
 }
