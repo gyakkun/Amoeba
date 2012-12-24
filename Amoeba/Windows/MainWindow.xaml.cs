@@ -75,6 +75,30 @@ namespace Amoeba.Windows
 
             Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
 
+            {
+                bool flag = false;
+
+                double top = Settings.Instance.MainWindow_Top + (Settings.Instance.MainWindow_Height / 2);
+                double left = Settings.Instance.MainWindow_Left + (Settings.Instance.MainWindow_Width / 2);
+
+                foreach (var s in System.Windows.Forms.Screen.AllScreens)
+                {
+                    if (top > s.WorkingArea.Top && top < s.WorkingArea.Bottom
+                        && left > s.WorkingArea.Left && left < s.WorkingArea.Right)
+                    {
+                        flag = true;
+
+                        break;
+                    }
+                }
+
+                if (!flag)
+                {
+                    Settings.Instance.MainWindow_Top = 0;
+                    Settings.Instance.MainWindow_Left = 0;
+                }
+            }
+
             InitializeComponent();
 
             _windowState = this.WindowState;
