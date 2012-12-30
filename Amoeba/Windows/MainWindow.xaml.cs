@@ -150,13 +150,11 @@ namespace Amoeba.Windows
 
                 _timerThread = new Thread(new ThreadStart(this.Timer));
                 _timerThread.Priority = ThreadPriority.Highest;
-                _timerThread.IsBackground = true;
                 _timerThread.Name = "MainWindow_TimerThread";
                 _timerThread.Start();
 
                 _timer2Thread = new Thread(new ThreadStart(this.Timer2));
                 _timer2Thread.Priority = ThreadPriority.Highest;
-                _timer2Thread.IsBackground = true;
                 _timer2Thread.Name = "MainWindow_Timer2Thread";
                 _timer2Thread.Start();
 
@@ -980,6 +978,11 @@ namespace Amoeba.Windows
 
                         _amoebaManager.Filters.Add(torConnectionFilter);
                     }
+
+                    if (version <= new Version(0, 1, 55))
+                    {
+                        _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 50), 6);
+                    }
                 }
 
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
@@ -1322,11 +1325,8 @@ namespace Amoeba.Windows
 
             _isRun = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            var thread = new Thread(new ThreadStart(() =>
             {
-                Thread.CurrentThread.IsBackground = false;
-                Thread.CurrentThread.Priority = ThreadPriority.Highest;
-
                 try
                 {
                     _timerThread.Join();
@@ -1353,6 +1353,9 @@ namespace Amoeba.Windows
                     Log.Error(ex);
                 }
             }));
+            thread.Priority = ThreadPriority.Highest;
+            thread.Name = "MainWindow_CloseThread";
+            thread.Start();
         }
 
         private void Window_StateChanged(object sender, EventArgs e)
