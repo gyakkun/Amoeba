@@ -737,6 +737,7 @@ namespace Amoeba.Windows
         {
             if (e.LeftButton == MouseButtonState.Pressed && e.RightButton == MouseButtonState.Released)
             {
+                if (_listView.ContextMenu.IsVisible) return;
                 if (_startPoint.X == -1 && _startPoint.Y == -1) return;
 
                 Point position = e.GetPosition(null);

@@ -981,7 +981,7 @@ namespace Amoeba.Windows
 
                     if (version <= new Version(0, 1, 55))
                     {
-                        _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 50), 6);
+                        _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 50), 12);
                     }
                 }
 
