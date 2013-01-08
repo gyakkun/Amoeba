@@ -333,7 +333,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (backupStopwatch.Elapsed > new TimeSpan(0, 5, 0))
+                    if (backupStopwatch.Elapsed > new TimeSpan(0, 30, 0))
                     {
                         backupStopwatch.Restart();
 
