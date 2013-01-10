@@ -983,6 +983,14 @@ namespace Amoeba.Windows
                     {
                         _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 50), 12);
                     }
+
+                    if (version <= new Version(0, 1, 61))
+                    {
+                        if (Settings.Instance.Global_Update_Signature == "Lyrise@iMK5aPkz6n_VLfaQWyXisi6C2yo53VbhMGTwJ4N2yGDTMXZwIdcZb8ayuGIOg-1V")
+                        {
+                            Settings.Instance.Global_Update_Signature = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr";
+                        }
+                    }
                 }
 
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
@@ -1133,10 +1141,6 @@ namespace Amoeba.Windows
                             }
 
                             break;
-                        }
-                        catch (ThreadAbortException e)
-                        {
-                            throw e;
                         }
                         catch (Exception e)
                         {
@@ -1329,6 +1333,8 @@ namespace Amoeba.Windows
             {
                 try
                 {
+                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+
                     _timerThread.Join();
                     _timerThread = null;
 

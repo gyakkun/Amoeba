@@ -22,27 +22,31 @@ namespace Amoeba
 
             try
             {
-                using (var sha512 = new SHA512Managed())
+                if (digitalSignature.DigitalSignatureAlgorithm == DigitalSignatureAlgorithm.ECDsaP521_Sha512
+                    || digitalSignature.DigitalSignatureAlgorithm == DigitalSignatureAlgorithm.Rsa2048_Sha512)
                 {
-                    using (MemoryStream memoryStream = new MemoryStream())
+                    using (var sha512 = new SHA512Managed())
                     {
-                        using (StreamWriter writer = new StreamWriter(new RangeStream(memoryStream, true), new UTF8Encoding(false)))
+                        using (MemoryStream memoryStream = new MemoryStream())
                         {
-                            writer.Write(digitalSignature.Nickname);
+                            var nicknameBuffer = new UTF8Encoding(false).GetBytes(digitalSignature.Nickname);
+
+                            memoryStream.Write(nicknameBuffer, 0, nicknameBuffer.Length);
+                            memoryStream.Write(digitalSignature.PublicKey, 0, digitalSignature.PublicKey.Length);
+                            memoryStream.Seek(0, SeekOrigin.Begin);
+
+                            return digitalSignature.Nickname.Replace("@", "_") + "@" + Convert.ToBase64String(sha512.ComputeHash(memoryStream).ToArray())
+                                .Replace('+', '-').Replace('/', '_').TrimEnd('=').Substring(0, 64);
                         }
-
-                        memoryStream.Write(digitalSignature.PublicKey, 0, digitalSignature.PublicKey.Length);
-                        memoryStream.Seek(0, SeekOrigin.Begin);
-
-                        return digitalSignature.Nickname.Replace("@", "_") + "@" + Convert.ToBase64String(sha512.ComputeHash(memoryStream).ToArray())
-                            .Replace('+', '-').Replace('/', '_').Substring(0, 64);
                     }
                 }
             }
             catch (Exception e)
             {
-                throw new ArgumentException("ArgumentException", e);
+                return null;
             }
+
+            return null;
         }
 
         public static string ToSignatureString(Certificate certificate)
@@ -51,27 +55,31 @@ namespace Amoeba
 
             try
             {
-                using (var sha512 = new SHA512Managed())
+                if (certificate.DigitalSignatureAlgorithm == DigitalSignatureAlgorithm.ECDsaP521_Sha512
+                    || certificate.DigitalSignatureAlgorithm == DigitalSignatureAlgorithm.Rsa2048_Sha512)
                 {
-                    using (MemoryStream memoryStream = new MemoryStream())
+                    using (var sha512 = new SHA512Managed())
                     {
-                        using (StreamWriter writer = new StreamWriter(new RangeStream(memoryStream, true), new UTF8Encoding(false)))
+                        using (MemoryStream memoryStream = new MemoryStream())
                         {
-                            writer.Write(certificate.Nickname);
+                            var nicknameBuffer = new UTF8Encoding(false).GetBytes(certificate.Nickname);
+
+                            memoryStream.Write(nicknameBuffer, 0, nicknameBuffer.Length);
+                            memoryStream.Write(certificate.PublicKey, 0, certificate.PublicKey.Length);
+                            memoryStream.Seek(0, SeekOrigin.Begin);
+
+                            return certificate.Nickname.Replace("@", "_") + "@" + Convert.ToBase64String(sha512.ComputeHash(memoryStream).ToArray())
+                                .Replace('+', '-').Replace('/', '_').TrimEnd('=').Substring(0, 64);
                         }
-
-                        memoryStream.Write(certificate.PublicKey, 0, certificate.PublicKey.Length);
-                        memoryStream.Seek(0, SeekOrigin.Begin);
-
-                        return certificate.Nickname.Replace("@", "_") + "@" + Convert.ToBase64String(sha512.ComputeHash(memoryStream).ToArray())
-                            .Replace('+', '-').Replace('/', '_').Substring(0, 64);
                     }
                 }
             }
             catch (Exception e)
             {
-                throw new ArgumentException("ArgumentException", e);
+                return null;
             }
+
+            return null;
         }
 
         public static string ToInfoMessage(Library.Net.Amoeba.Seed seed)
