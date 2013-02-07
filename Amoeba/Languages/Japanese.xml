@@ -25,14 +25,15 @@
   <Translate Key="MainWindow_Upload" Value="アップロード" />
   <Translate Key="MainWindow_Share" Value="シェア" />
   <Translate Key="MainWindow_Cache" Value="キャッシュ" />
-  <Translate Key="MainWindow_Library" Value="ライブラリ" />
+  <Translate Key="MainWindow_Box" Value="ボックス" />
   <Translate Key="MainWindow_Log" Value="ログ" />
   <Translate Key="MainWindow_Connections" Value="接続" />
   <Translate Key="MainWindow_Start" Value="開始" />
   <Translate Key="MainWindow_Stop" Value="停止" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="基礎ノードUriの更新" />
   <Translate Key="MainWindow_CheckSeeds" Value="シードのデコード可能性チェック" />
-  <Translate Key="MainWindow_CheckBlocks" Value="ブロックの破損チェック" />
+  <Translate Key="MainWindow_CheckInternalBlocks" Value="内部ブロックの破損チェック" />
+  <Translate Key="MainWindow_CheckExternalBlocks" Value="外部ブロックの破損チェック" />
   <Translate Key="MainWindow_ConnectionsSettings" Value="接続設定" />
   <Translate Key="MainWindow_View" Value="表示" />
   <Translate Key="MainWindow_ViewSettings" Value="表示設定" />
@@ -46,7 +47,8 @@
   <Translate Key="MainWindow_ReceiveSpeed" Value="受信:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
-  <Translate Key="MainWindow_CheckBlocks_Message" Value="ブロックの破損チェック" />
+  <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="内部ブロックの破損チェック" />
+  <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="外部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="チェック済み:{1} 破損:{0} 総ブロック数:{2}" />
   <Translate Key="MainWindow_CheckUpdate_Message" Value="&quot;{0}&quot; へ更新しますか?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="最新のバージョンです。" />
@@ -66,6 +68,7 @@
   <Translate Key="ConnectionsSettingsWindow_ConnectionType" Value="接続タイプ" />
   <Translate Key="ConnectionsSettingsWindow_ProxyUri" Value="プロキシ Uri" />
   <Translate Key="ConnectionsSettingsWindow_UriCondition" Value="正規表現" />
+  <Translate Key="ConnectionsSettingsWindow_Option" Value="オプション" />
   <Translate Key="ConnectionsSettingsWindow_Type" Value="Uri タイプ" />
   <Translate Key="ConnectionsSettingsWindow_Host" Value="ホスト" />
   <Translate Key="ConnectionsSettingsWindow_Server" Value="サーバー" />
@@ -206,6 +209,7 @@
 
   <Translate Key="DownloadState_Downloading" Value="ダウンロード" />
   <Translate Key="DownloadState_Decoding" Value="デコード" />
+  <Translate Key="DownloadState_ParityDecoding" Value="パリティデコード" />
   <Translate Key="DownloadState_Completed" Value="完了" />
   <Translate Key="DownloadState_Error" Value="エラー" />
 
@@ -232,7 +236,7 @@
 
   <Translate Key="UploadState_ComputeHash" Value="ハッシュの計算" />
   <Translate Key="UploadState_Encoding" Value="エンコード" />
-  <Translate Key="UploadState_ComputeCorrection" Value="パリティブロックの計算" />
+  <Translate Key="UploadState_ParityEncoding" Value="パリティエンコード" />
   <Translate Key="UploadState_Uploading" Value="アップロード" />
   <Translate Key="UploadState_Completed" Value="完了" />
   <Translate Key="UploadState_Error" Value="エラー" />
@@ -326,26 +330,26 @@
   <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="ダウンロード済み" />
   <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="アップロード済み" />
 
-  <Translate Key="LibraryControl_Name" Value="名前" />
-  <Translate Key="LibraryControl_Signature" Value="サイン" />
-  <Translate Key="LibraryControl_Length" Value="サイズ" />
-  <Translate Key="LibraryControl_Keywords" Value="キーワード" />
-  <Translate Key="LibraryControl_CreationTime" Value="作成日" />
-  <Translate Key="LibraryControl_Comment" Value="コメント" />
-  <Translate Key="LibraryControl_State" Value="状態" />
-  <Translate Key="LibraryControl_Hash" Value="ハッシュ" />
-  <Translate Key="LibraryControl_New" Value="新規" />
-  <Translate Key="LibraryControl_Edit" Value="編集" />
-  <Translate Key="LibraryControl_Delete" Value="削除" />
-  <Translate Key="LibraryControl_Cut" Value="切り取り" />
-  <Translate Key="LibraryControl_Copy" Value="コピー" />
-  <Translate Key="LibraryControl_Paste" Value="貼り付け" />
-  <Translate Key="LibraryControl_Import" Value="インポート" />
-  <Translate Key="LibraryControl_Export" Value="エクスポート" />
-  <Translate Key="LibraryControl_CopyInfo" Value="コピー  (詳細情報)" />
-  <Translate Key="LibraryControl_Download" Value="ダウンロード" />
-  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="ボックスのサインが解除されますがよろしいですか?" />
-  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="サインエラー" />
+  <Translate Key="BoxControl_Name" Value="名前" />
+  <Translate Key="BoxControl_Signature" Value="サイン" />
+  <Translate Key="BoxControl_Length" Value="サイズ" />
+  <Translate Key="BoxControl_Keywords" Value="キーワード" />
+  <Translate Key="BoxControl_CreationTime" Value="作成日" />
+  <Translate Key="BoxControl_Comment" Value="コメント" />
+  <Translate Key="BoxControl_State" Value="状態" />
+  <Translate Key="BoxControl_Hash" Value="ハッシュ" />
+  <Translate Key="BoxControl_New" Value="新規" />
+  <Translate Key="BoxControl_Edit" Value="編集" />
+  <Translate Key="BoxControl_Delete" Value="削除" />
+  <Translate Key="BoxControl_Cut" Value="切り取り" />
+  <Translate Key="BoxControl_Copy" Value="コピー" />
+  <Translate Key="BoxControl_Paste" Value="貼り付け" />
+  <Translate Key="BoxControl_Import" Value="インポート" />
+  <Translate Key="BoxControl_Export" Value="エクスポート" />
+  <Translate Key="BoxControl_CopyInfo" Value="コピー  (詳細情報)" />
+  <Translate Key="BoxControl_Download" Value="ダウンロード" />
+  <Translate Key="BoxControl_DigitalSignatureAnnulled_Message" Value="ボックスのサインが解除されますがよろしいですか?" />
+  <Translate Key="BoxControl_DigitalSignatureError_Message" Value="サインエラー" />
 
   <Translate Key="SeedEditWindow_Title" Value="シード編集" />
   <Translate Key="SeedEditWindow_Name" Value="名前" />

@@ -28,6 +28,9 @@
         <DataTemplate x:Key="_myTemplate_ConnectionFilter_UriCondition_Value">
             <TextBlock Text="{Binding Path=UriCondition.Value, Mode=OneWay}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_ConnectionFilter_Option">
+            <TextBlock Text="{Binding Path=Option, Mode=OneWay}" />
+        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_ConnectionFilter">
             <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
         </DataTemplate>
@@ -61,10 +64,10 @@
             <TreeView HorizontalAlignment="Stretch" Name="_treeView" VerticalAlignment="Stretch">
                 <TreeViewItem Name="_baseNodeTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_BaseNode, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_otherNodesTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_OtherNodes, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
-                <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Client, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
+                <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Client, Source={StaticResource ResourcesInstance}}" IsSelected="True" />
                 <TreeViewItem Name="_serverTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Server, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_dataTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Data, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
-                <TreeViewItem Name="_bandwidthTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Bandwidth, Source={StaticResource ResourcesInstance}}" IsSelected="True" />
+                <TreeViewItem Name="_bandwidthTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Bandwidth, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_transferTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Transfer, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_eventsTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Events, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
             </TreeView>
@@ -135,7 +138,7 @@
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_clientFiltersConditionTextBox}" Visibility="{Binding ElementName=_clientTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
                 <GroupBox Header="{Binding Path=ConnectionsSettingsWindow_Filters, Source={StaticResource ResourcesInstance}}">
                     <Grid>
-                        <local:ListViewEx Margin="6,6,6,199" x:Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" ContextMenuOpening="_clientFiltersListView_ContextMenuOpening">
+                        <local:ListViewEx Margin="6,6,6,229" x:Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" ContextMenuOpening="_clientFiltersListView_ContextMenuOpening">
                             <ListView.ContextMenu>
                                 <ContextMenu Name="_clientFiltersListViewContextMenu" >
                                     <MenuItem Name="_clientFiltersListViewDeleteMenuItem" Header="{Binding Path=ConnectionsSettingsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewDeleteMenuItem_Click"/>
@@ -153,14 +156,18 @@
                                         Width="{Binding Path=ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ProxyUri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                                     <GridViewColumn Header="{Binding Path=ConnectionsSettingsWindow_UriCondition, Source={StaticResource ResourcesInstance}}"
                                         Width="{Binding Path=ConnectionsSettingsWindow_Client_Filters_GridViewColumn_UriCondition_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" CellTemplate="{StaticResource _myTemplate_ConnectionFilter_UriCondition_Value}" />
+                                    <GridViewColumn Header="{Binding Path=ConnectionsSettingsWindow_Option, Source={StaticResource ResourcesInstance}}"
+                                        Width="{Binding Path=ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" CellTemplate="{StaticResource _myTemplate_ConnectionFilter_Option}" />
                                 </GridView>
                             </ListView.View>
                         </local:ListViewEx>
-                        <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" Width="119" Content="{Binding Path=ConnectionsSettingsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
-                        <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="131,0,6,139" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_clientFiltersProxyUriTextBox_KeyDown" />
-                        <Label Margin="6,0,0,169" HorizontalAlignment="Left" Width="119" Content="{Binding Path=ConnectionsSettingsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
-                        <ComboBox Margin="131,0,6,169" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" VerticalContentAlignment="Center" ItemTemplate="{StaticResource _myTemplate_ConnectionFilter}"/>
-                        <GroupBox Header="{Binding Path=ConnectionsSettingsWindow_UriCondition, Source={StaticResource ResourcesInstance}}" Margin="6,0,6,35" Name="groupBox2" Height="98" VerticalAlignment="Bottom">
+                        <Label Margin="6,0,0,199" HorizontalAlignment="Left" Width="119" Content="{Binding Path=ConnectionsSettingsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                        <ComboBox Margin="131,0,6,199" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" VerticalContentAlignment="Center" ItemTemplate="{StaticResource _myTemplate_ConnectionFilter}"/>
+                        <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,169" VerticalAlignment="Bottom" Width="119" Content="{Binding Path=ConnectionsSettingsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+                        <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="131,0,6,169" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_clientFiltersProxyUriTextBox_KeyDown" />
+                        <Label Content="{Binding Path=ConnectionsSettingsWindow_Option, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Width="119" />
+                        <TextBox Height="24" Margin="131,0,6,139" Name="_clientFiltersOptionTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                        <GroupBox Header="{Binding Path=ConnectionsSettingsWindow_UriCondition, Source={StaticResource ResourcesInstance}}" Margin="6,0,6,35" Height="98" VerticalAlignment="Bottom">
                             <Grid>
                                 <Label HorizontalAlignment="Left" Margin="6,6,0,0" Width="120" Height="24" VerticalAlignment="Top" Content="{Binding Path=ConnectionsSettingsWindow_Type, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
                                 <TextBox Margin="6,36,6,0" Name="_clientFiltersConditionTextBox" Height="24" VerticalAlignment="Top" VerticalContentAlignment="Center" KeyDown="_clientFiltersConditionTextBox_KeyDown" />

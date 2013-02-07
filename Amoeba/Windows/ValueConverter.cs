@@ -545,6 +545,10 @@ namespace Amoeba.Windows
             {
                 return LanguagesManager.Instance.DownloadState_Decoding;
             }
+            else if (item.Value == DownloadState.ParityDecoding)
+            {
+                return LanguagesManager.Instance.DownloadState_ParityDecoding;
+            }
             else if (item.Value == DownloadState.Completed)
             {
                 return LanguagesManager.Instance.DownloadState_Completed;
@@ -579,9 +583,9 @@ namespace Amoeba.Windows
             {
                 return LanguagesManager.Instance.UploadState_Encoding;
             }
-            else if (item.Value == UploadState.ComputeCorrection)
+            else if (item.Value == UploadState.ParityEncoding)
             {
-                return LanguagesManager.Instance.UploadState_ComputeCorrection;
+                return LanguagesManager.Instance.UploadState_ParityEncoding;
             }
             else if (item.Value == UploadState.Uploading)
             {

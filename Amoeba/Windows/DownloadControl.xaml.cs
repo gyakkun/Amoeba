@@ -726,43 +726,71 @@ namespace Amoeba.Windows
                     if (_information.Contains("Priority")) this.Priority = (int)_information["Priority"];
                     else this.Priority = 0;
 
-                    if (_information.Contains("DownloadBlockCount") && _information.Contains("BlockCount")
-                        && _information.Contains("ParityBlockCount"))
+                    if (_information.Contains("State"))
                     {
-                        this.Rate = Math.Round(((double)(int)_information["DownloadBlockCount"] / (double)((int)_information["BlockCount"] - (int)_information["ParityBlockCount"])) * 100, 2);
+                        if (_information.Contains("DownloadBlockCount") && _information.Contains("BlockCount") && _information.Contains("ParityBlockCount")
+                            && ((DownloadState)_information["State"] == DownloadState.Downloading || (DownloadState)_information["State"] == DownloadState.Completed || (DownloadState)_information["State"] == DownloadState.Error))
+                        {
+                            this.Rate = Math.Round(((double)(int)_information["DownloadBlockCount"] / (double)((int)_information["BlockCount"] - (int)_information["ParityBlockCount"])) * 100, 2);
+                        }
+                        else if (_information.Contains("DecodeBytes") && _information.Contains("DecodingBytes")
+                            && ((DownloadState)_information["State"] == DownloadState.ParityDecoding || (DownloadState)_information["State"] == DownloadState.Decoding)
+                            && (long)_information["DecodingBytes"] != 0)
+                        {
+                            this.Rate = Math.Round(((double)(long)_information["DecodingBytes"] / (double)(long)_information["DecodeBytes"]) * 100, 2);
+                        }
+                        else
+                        {
+                            this.Rate = 0;
+                        }
                     }
                     else
                     {
                         this.Rate = 0;
                     }
 
-                    if (_information.Contains("DownloadBlockCount") && _information.Contains("BlockCount")
-                        && _information.Contains("ParityBlockCount") && _information.Contains("Rank")
-                        && _information.Contains("Seed"))
+                    if (_information.Contains("State"))
                     {
-                        if (0 == (int)_information["ParityBlockCount"])
+                        if (_information.Contains("DownloadBlockCount") && _information.Contains("BlockCount") && _information.Contains("ParityBlockCount") && _information.Contains("Rank") && _information.Contains("Seed")
+                            && ((DownloadState)_information["State"] == DownloadState.Downloading || (DownloadState)_information["State"] == DownloadState.Completed || (DownloadState)_information["State"] == DownloadState.Error))
                         {
-                            this.RateText = string.Format("{0}% {1}/{2} [{3}/{4}]",
+                            if (0 == (int)_information["ParityBlockCount"])
+                            {
+                                this.RateText = string.Format("{0}% {1}/{2} [{3}/{4}]",
+                                    this.Rate,
+                                    (int)_information["DownloadBlockCount"],
+                                    ((int)_information["BlockCount"] - (int)_information["ParityBlockCount"]),
+                                    (int)_information["Rank"],
+                                    ((Seed)_information["Seed"]).Rank);
+                            }
+                            else
+                            {
+                                this.RateText = string.Format("{0}% {1}/{2}({3}) [{4}/{5}]",
+                                    this.Rate,
+                                    (int)_information["DownloadBlockCount"],
+                                    ((int)_information["BlockCount"] - (int)_information["ParityBlockCount"]),
+                                    (int)_information["BlockCount"],
+                                    (int)_information["Rank"],
+                                    ((Seed)_information["Seed"]).Rank);
+                            }
+                        }
+                        else if (_information.Contains("DecodeBytes") && _information.Contains("DecodingBytes") && _information.Contains("Rank")
+                            && ((DownloadState)_information["State"] == DownloadState.ParityDecoding || (DownloadState)_information["State"] == DownloadState.Decoding))
+                        {
+                            this.RateText = string.Format("{0}% {1}/{2} [{3}]",
                                 this.Rate,
-                                (int)_information["DownloadBlockCount"],
-                                ((int)_information["BlockCount"] - (int)_information["ParityBlockCount"]),
-                                (int)_information["Rank"],
-                                ((Seed)_information["Seed"]).Rank);
+                                NetworkConverter.ToSizeString((long)_information["DecodingBytes"]),
+                                NetworkConverter.ToSizeString((long)_information["DecodeBytes"]),
+                                (int)_information["Rank"]);
                         }
                         else
                         {
-                            this.RateText = string.Format("{0}% {1}/{2}({3}) [{4}/{5}]",
-                                this.Rate,
-                                (int)_information["DownloadBlockCount"],
-                                ((int)_information["BlockCount"] - (int)_information["ParityBlockCount"]),
-                                (int)_information["BlockCount"],
-                                (int)_information["Rank"],
-                                ((Seed)_information["Seed"]).Rank);
+                            this.RateText = null;
                         }
                     }
                     else
                     {
-                        this.RateText = "";
+                        this.RateText = null;
                     }
 
                     if (_information.Contains("Seed")) this.Value = (Seed)_information["Seed"];

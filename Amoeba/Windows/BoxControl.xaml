@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Amoeba.Windows.LibraryControl"
+﻿<UserControl x:Class="Amoeba.Windows.BoxControl"
         x:ClassModifier="internal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -75,16 +75,16 @@
             <local:BoxTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
                 <local:BoxTreeViewItem.ContextMenu>
                     <ContextMenu Name="_treeViewContextMenu" >
-                        <MenuItem Name="_treeViewNewMenuItem" Header="{Binding Path=LibraryControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewNewMenuItem_Click" />
-                        <MenuItem Name="_treeViewEditMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewEditMenuItem_Click" />
-                        <MenuItem Name="_treeViewDeleteMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewDeleteMenuItem_Click" />
+                        <MenuItem Name="_treeViewNewMenuItem" Header="{Binding Path=BoxControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewNewMenuItem_Click" />
+                        <MenuItem Name="_treeViewEditMenuItem" Header="{Binding Path=BoxControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewEditMenuItem_Click" />
+                        <MenuItem Name="_treeViewDeleteMenuItem" Header="{Binding Path=BoxControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewDeleteMenuItem_Click" />
                         <Separator />
-                        <MenuItem Name="_treeViewCutMenuItem" Header="{Binding Path=LibraryControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewCutMenuItem_Click" />
-                        <MenuItem Name="_treeViewCopyMenuItem" Header="{Binding Path=LibraryControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewCopyMenuItem_Click" />
-                        <MenuItem Name="_treeViewPasteMenuItem" Header="{Binding Path=LibraryControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewPasteMenuItem_Click" />
+                        <MenuItem Name="_treeViewCutMenuItem" Header="{Binding Path=BoxControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewCutMenuItem_Click" />
+                        <MenuItem Name="_treeViewCopyMenuItem" Header="{Binding Path=BoxControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewCopyMenuItem_Click" />
+                        <MenuItem Name="_treeViewPasteMenuItem" Header="{Binding Path=BoxControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewPasteMenuItem_Click" />
                         <Separator />
-                        <MenuItem Name="_treeViewImportMenuItem" Header="{Binding Path=LibraryControl_Import, Source={StaticResource ResourcesInstance}}" Click="_treeViewImportMenuItem_Click" />
-                        <MenuItem Name="_treeViewExportMenuItem" Header="{Binding Path=LibraryControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewExportMenuItem_Click" />
+                        <MenuItem Name="_treeViewImportMenuItem" Header="{Binding Path=BoxControl_Import, Source={StaticResource ResourcesInstance}}" Click="_treeViewImportMenuItem_Click" />
+                        <MenuItem Name="_treeViewExportMenuItem" Header="{Binding Path=BoxControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewExportMenuItem_Click" />
                     </ContextMenu>
                 </local:BoxTreeViewItem.ContextMenu>
             </local:BoxTreeViewItem>
@@ -99,35 +99,35 @@
             </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
-                    <MenuItem Name="_listViewNewMenuItem" Header="{Binding Path=LibraryControl_New, Source={StaticResource ResourcesInstance}}" Click="_listViewNewMenuItem_Click" />
-                    <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
+                    <MenuItem Name="_listViewNewMenuItem" Header="{Binding Path=BoxControl_New, Source={StaticResource ResourcesInstance}}" Click="_listViewNewMenuItem_Click" />
+                    <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=BoxControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=BoxControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewCutMenuItem" Header="{Binding Path=LibraryControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_listViewCutMenuItem_Click" />
-                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=LibraryControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
-                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=LibraryControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
-                    <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=LibraryControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
+                    <MenuItem Name="_listViewCutMenuItem" Header="{Binding Path=BoxControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_listViewCutMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=BoxControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=BoxControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
+                    <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=BoxControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=LibraryControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
+                    <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=BoxControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                    <GridViewColumn Header="{Binding Path=BoxControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Signature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Signature}" 
+                    <GridViewColumn Header="{Binding Path=BoxControl_Signature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Signature}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_Signature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
+                    <GridViewColumn Header="{Binding Path=BoxControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Keywords, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keywords}" 
+                    <GridViewColumn Header="{Binding Path=BoxControl_Keywords, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keywords}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
+                    <GridViewColumn Header="{Binding Path=BoxControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
+                    <GridViewColumn Header="{Binding Path=BoxControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
+                    <GridViewColumn Header="{Binding Path=BoxControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Hash, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Hash}" 
+                    <GridViewColumn Header="{Binding Path=BoxControl_Hash, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Hash}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_Hash_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

@@ -156,11 +156,14 @@
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
                                     Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Signature_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_String_Value}" 
-                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Signature_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_IsIgnoreCase, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRegex_IsIgnoreCase}" 
+                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SearchContains_SearchRegex_Value}" 
+                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
                     </local:ListViewEx>
+                    <CheckBox Content="{Binding Path=SearchItemEditWindow_IsIgnoreCase, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="138,0,0,65" Name="_signatureIsIgnoreCaseCheckBox" VerticalAlignment="Bottom" Width="240" />
                 </Grid>
             </TabItem>
             <TabItem Header="{Binding Path=SearchItemEditWindow_Keyword, Source={StaticResource ResourcesInstance}}" Name="_keywordTabItem">

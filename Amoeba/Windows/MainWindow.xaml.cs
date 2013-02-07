@@ -1178,7 +1178,7 @@ namespace Amoeba.Windows
                             if (!string.IsNullOrWhiteSpace(signature))
                             {
                                 if (!seed.VerifyCertificate()) throw new Exception("Update VerifyCertificate");
-                                if (MessageConverter.ToSignatureString(seed.Certificate) != signature) throw new Exception("Update Signature");
+                                if (seed.Certificate.ToString() != signature) throw new Exception("Update Signature");
                             }
 
                             {
@@ -1291,7 +1291,7 @@ namespace Amoeba.Windows
             _shareControl.Width = Double.NaN;
             _shareTabItem.Content = _shareControl;
 
-            LibraryControl _libraryControl = new LibraryControl(this, _amoebaManager, _bufferManager);
+            BoxControl _libraryControl = new BoxControl(this, _amoebaManager, _bufferManager);
             _libraryControl.Height = Double.NaN;
             _libraryControl.Width = Double.NaN;
             _libraryTabItem.Content = _libraryControl;
@@ -1404,7 +1404,7 @@ namespace Amoeba.Windows
             {
                 App.SelectTab = "Share";
             }
-            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Library)
+            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Box)
             {
                 App.SelectTab = "Library";
             }
@@ -1425,7 +1425,8 @@ namespace Amoeba.Windows
         {
             _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled && _updateBaseNodeMenuItem_IsEnabled;
             _checkSeedsMenuItem.IsEnabled = _checkSeedsMenuItem_IsEnabled;
-            _checkBlocksMenuItem.IsEnabled = _checkBlocksMenuItem_IsEnabled;
+            _checkInternalBlocksMenuItem.IsEnabled = _checkInternalBlocksMenuItem_IsEnabled;
+            _checkExternalBlocksMenuItem.IsEnabled = _checkExternalBlocksMenuItem_IsEnabled;
         }
 
         private void _startMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1496,17 +1497,17 @@ namespace Amoeba.Windows
                 _checkSeedsMenuItem_IsEnabled = true;
             }));
         }
-        
-        volatile bool _checkBlocksMenuItem_IsEnabled = true;
 
-        private void _checkBlocksMenuItem_Click(object sender, RoutedEventArgs e)
+        volatile bool _checkInternalBlocksMenuItem_IsEnabled = true;
+
+        private void _checkInternalBlocksMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (!_checkBlocksMenuItem_IsEnabled) return;
-            _checkBlocksMenuItem_IsEnabled = false;
+            if (!_checkInternalBlocksMenuItem_IsEnabled) return;
+            _checkInternalBlocksMenuItem_IsEnabled = false;
 
             var window = new ProgressWindow(true);
             window.Owner = this;
-            window.Message1 = LanguagesManager.Instance.MainWindow_CheckBlocks_Message;
+            window.Message1 = LanguagesManager.Instance.MainWindow_CheckInternalBlocks_Message;
             window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
             window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
 
@@ -1519,7 +1520,7 @@ namespace Amoeba.Windows
                     flag = true;
                 };
 
-                _amoebaManager.CheckBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
+                _amoebaManager.CheckInternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
                     {
@@ -1552,7 +1553,69 @@ namespace Amoeba.Windows
 
             window.Closed += (object sender2, EventArgs e2) =>
             {
-                _checkBlocksMenuItem_IsEnabled = true;
+                _checkInternalBlocksMenuItem_IsEnabled = true;
+            };
+
+            window.Owner = this;
+            window.Show();
+        }
+
+        volatile bool _checkExternalBlocksMenuItem_IsEnabled = true;
+
+        private void _checkExternalBlocksMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_checkExternalBlocksMenuItem_IsEnabled) return;
+            _checkExternalBlocksMenuItem_IsEnabled = false;
+
+            var window = new ProgressWindow(true);
+            window.Owner = this;
+            window.Message1 = LanguagesManager.Instance.MainWindow_CheckExternalBlocks_Message;
+            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
+            window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            {
+                bool flag = false;
+
+                window.Closed += (object sender2, EventArgs e2) =>
+                {
+                    flag = true;
+                };
+
+                _amoebaManager.CheckExternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
+                {
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    {
+                        try
+                        {
+                            window.Value = 100 * ((double)checkedBlockCount / (double)blockCount);
+                            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, badBlockCount, checkedBlockCount, blockCount);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }), null);
+
+                    isStop = flag;
+                });
+
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                {
+                    try
+                    {
+                        window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Ok;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }), null);
+            }));
+
+            window.Closed += (object sender2, EventArgs e2) =>
+            {
+                _checkExternalBlocksMenuItem_IsEnabled = true;
             };
 
             window.Owner = this;

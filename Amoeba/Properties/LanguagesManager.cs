@@ -384,13 +384,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_Library
+        public string MainWindow_Box
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Library");
+                    return this.Translate("MainWindow_Box");
                 }
             }
         }
@@ -461,13 +461,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_CheckBlocks
+        public string MainWindow_CheckInternalBlocks
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_CheckBlocks");
+                    return this.Translate("MainWindow_CheckInternalBlocks");
+                }
+            }
+        }
+
+        public string MainWindow_CheckExternalBlocks
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_CheckExternalBlocks");
                 }
             }
         }
@@ -615,13 +626,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_CheckBlocks_Message
+        public string MainWindow_CheckInternalBlocks_Message
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_CheckBlocks_Message");
+                    return this.Translate("MainWindow_CheckInternalBlocks_Message");
+                }
+            }
+        }
+
+        public string MainWindow_CheckExternalBlocks_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_CheckExternalBlocks_Message");
                 }
             }
         }
@@ -821,6 +843,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsSettingsWindow_UriCondition");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_Option
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_Option");
                 }
             }
         }
@@ -2285,6 +2318,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string DownloadState_ParityDecoding
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("DownloadState_ParityDecoding");
+                }
+            }
+        }
+
         public string DownloadState_Completed
         {
             get
@@ -2551,13 +2595,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string UploadState_ComputeCorrection
+        public string UploadState_ParityEncoding
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("UploadState_ComputeCorrection");
+                    return this.Translate("UploadState_ParityEncoding");
                 }
             }
         }
@@ -3525,222 +3569,222 @@ namespace Amoeba.Properties
         }
 
 
-        public string LibraryControl_Name
+        public string BoxControl_Name
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Name");
+                    return this.Translate("BoxControl_Name");
                 }
             }
         }
 
-        public string LibraryControl_Signature
+        public string BoxControl_Signature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Signature");
+                    return this.Translate("BoxControl_Signature");
                 }
             }
         }
 
-        public string LibraryControl_Length
+        public string BoxControl_Length
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Length");
+                    return this.Translate("BoxControl_Length");
                 }
             }
         }
 
-        public string LibraryControl_Keywords
+        public string BoxControl_Keywords
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Keywords");
+                    return this.Translate("BoxControl_Keywords");
                 }
             }
         }
 
-        public string LibraryControl_CreationTime
+        public string BoxControl_CreationTime
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_CreationTime");
+                    return this.Translate("BoxControl_CreationTime");
                 }
             }
         }
 
-        public string LibraryControl_Comment
+        public string BoxControl_Comment
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Comment");
+                    return this.Translate("BoxControl_Comment");
                 }
             }
         }
 
-        public string LibraryControl_State
+        public string BoxControl_State
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_State");
+                    return this.Translate("BoxControl_State");
                 }
             }
         }
 
-        public string LibraryControl_Hash
+        public string BoxControl_Hash
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Hash");
+                    return this.Translate("BoxControl_Hash");
                 }
             }
         }
 
-        public string LibraryControl_New
+        public string BoxControl_New
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_New");
+                    return this.Translate("BoxControl_New");
                 }
             }
         }
 
-        public string LibraryControl_Edit
+        public string BoxControl_Edit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Edit");
+                    return this.Translate("BoxControl_Edit");
                 }
             }
         }
 
-        public string LibraryControl_Delete
+        public string BoxControl_Delete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Delete");
+                    return this.Translate("BoxControl_Delete");
                 }
             }
         }
 
-        public string LibraryControl_Cut
+        public string BoxControl_Cut
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Cut");
+                    return this.Translate("BoxControl_Cut");
                 }
             }
         }
 
-        public string LibraryControl_Copy
+        public string BoxControl_Copy
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Copy");
+                    return this.Translate("BoxControl_Copy");
                 }
             }
         }
 
-        public string LibraryControl_Paste
+        public string BoxControl_Paste
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Paste");
+                    return this.Translate("BoxControl_Paste");
                 }
             }
         }
 
-        public string LibraryControl_Import
+        public string BoxControl_Import
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Import");
+                    return this.Translate("BoxControl_Import");
                 }
             }
         }
 
-        public string LibraryControl_Export
+        public string BoxControl_Export
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Export");
+                    return this.Translate("BoxControl_Export");
                 }
             }
         }
 
-        public string LibraryControl_CopyInfo
+        public string BoxControl_CopyInfo
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_CopyInfo");
+                    return this.Translate("BoxControl_CopyInfo");
                 }
             }
         }
 
-        public string LibraryControl_Download
+        public string BoxControl_Download
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_Download");
+                    return this.Translate("BoxControl_Download");
                 }
             }
         }
 
-        public string LibraryControl_DigitalSignatureAnnulled_Message
+        public string BoxControl_DigitalSignatureAnnulled_Message
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_DigitalSignatureAnnulled_Message");
+                    return this.Translate("BoxControl_DigitalSignatureAnnulled_Message");
                 }
             }
         }
 
-        public string LibraryControl_DigitalSignatureError_Message
+        public string BoxControl_DigitalSignatureError_Message
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LibraryControl_DigitalSignatureError_Message");
+                    return this.Translate("BoxControl_DigitalSignatureError_Message");
                 }
             }
         }

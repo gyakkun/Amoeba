@@ -163,7 +163,7 @@ namespace Amoeba.Windows
 
         public void Update()
         {
-            this.Content = MessageConverter.ToSignatureString(this.Value);
+            this.Content = this.Value.ToString();
         }
 
         public DigitalSignature Value

@@ -28,7 +28,7 @@
             <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource ResourcesInstance}}" Name="_uploadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" Name="_cacheTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Library, Source={StaticResource ResourcesInstance}}" Name="_libraryTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Box, Source={StaticResource ResourcesInstance}}" Name="_libraryTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem" >
                 <RichTextBox Name="_logRichTextBox" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True">
                     <RichTextBox.Document>
@@ -49,7 +49,8 @@
                 <MenuItem Name="_updateBaseNodeMenuItem" Header="{Binding Path=MainWindow_UpdateBaseNode, Source={StaticResource ResourcesInstance}}" Click="_updateBaseNodeMenuItem_Click" />
                 <Separator />
                 <MenuItem Name="_checkSeedsMenuItem" Header="{Binding Path=MainWindow_CheckSeeds, Source={StaticResource ResourcesInstance}}" Click="_checkSeedsMenuItem_Click" />
-                <MenuItem Name="_checkBlocksMenuItem" Header="{Binding Path=MainWindow_CheckBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkBlocksMenuItem_Click" />
+                <MenuItem Name="_checkInternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckInternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkInternalBlocksMenuItem_Click" />
+                <MenuItem Name="_checkExternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckExternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkExternalBlocksMenuItem_Click" />
                 <Separator />
                 <MenuItem Name="_connectionsSettingsMenuItem" Header="{Binding Path=MainWindow_ConnectionsSettings, Source={StaticResource ResourcesInstance}}" Click="_connectionsSettingsMenuItem_Click" />
             </MenuItem>

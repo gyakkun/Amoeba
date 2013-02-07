@@ -30,9 +30,9 @@ using System.Windows.Automation.Provider;
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// LibraryControl.xaml の相互作用ロジック
+    /// BoxControl.xaml の相互作用ロジック
     /// </summary>
-    partial class LibraryControl : UserControl
+    partial class BoxControl : UserControl
     {
         private MainWindow _mainWindow;
         private BufferManager _bufferManager;
@@ -43,7 +43,7 @@ namespace Amoeba.Windows
         private Thread _searchThread = null;
         private Thread _watchThread;
 
-        public LibraryControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
+        public BoxControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _mainWindow = mainWindow;
             _amoebaManager = amoebaManager;
@@ -51,7 +51,7 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _treeViewItem.Value = Settings.Instance.LibraryControl_Box;
+            _treeViewItem.Value = Settings.Instance.BoxControl_Box;
             _treeViewItem.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(_treeViewItem_PreviewMouseLeftButtonDown);
 
             try
@@ -74,13 +74,13 @@ namespace Amoeba.Windows
             _searchThread = new Thread(new ThreadStart(this.Search));
             _searchThread.Priority = ThreadPriority.Highest;
             _searchThread.IsBackground = true;
-            _searchThread.Name = "LibraryControl_SearchThread";
+            _searchThread.Name = "BoxControl_SearchThread";
             _searchThread.Start();
 
             _watchThread = new Thread(new ThreadStart(this.Watch));
             _watchThread.Priority = ThreadPriority.Highest;
             _watchThread.IsBackground = true;
-            _watchThread.Name = "LibraryControl_WatchThread";
+            _watchThread.Name = "BoxControl_WatchThread";
             _watchThread.Start();
 
             _searchRowDefinition.Height = new GridLength(0);
@@ -143,9 +143,9 @@ namespace Amoeba.Windows
                         var boxesListViewItem = new BoxListViewItem();
                         boxesListViewItem.Index = newList.Count;
                         boxesListViewItem.Name = box.Name;
-                        boxesListViewItem.Signature = MessageConverter.ToSignatureString(box.Certificate);
+                        boxesListViewItem.Signature = box.Certificate.ToString();
                         boxesListViewItem.CreationTime = box.CreationTime;
-                        boxesListViewItem.Length = LibraryControl.GetBoxLength(box);
+                        boxesListViewItem.Length = BoxControl.GetBoxLength(box);
                         boxesListViewItem.Comment = box.Comment;
                         boxesListViewItem.Value = box;
 
@@ -248,7 +248,7 @@ namespace Amoeba.Windows
                         var seedListViewItem = new SeedListViewItem();
                         seedListViewItem.Index = newList.Count;
                         seedListViewItem.Name = seed.Name;
-                        seedListViewItem.Signature = MessageConverter.ToSignatureString(seed.Certificate);
+                        seedListViewItem.Signature = seed.Certificate.ToString();
                         seedListViewItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                         seedListViewItem.CreationTime = seed.CreationTime;
                         seedListViewItem.Length = seed.Length;
@@ -472,11 +472,11 @@ namespace Amoeba.Windows
                             {
                                 try
                                 {
-                                    if (!LibraryControl.BoxDigitalSignatureCheck(ref box))
+                                    if (!BoxControl.BoxDigitalSignatureCheck(ref box))
                                     {
                                         if (MessageBox.Show(
                                                 _mainWindow,
-                                                LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
+                                                LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message,
                                                 "Libary",
                                                 MessageBoxButton.OKCancel,
                                                 MessageBoxImage.Asterisk) == MessageBoxResult.OK)
@@ -577,7 +577,7 @@ namespace Amoeba.Windows
 
             if (MessageBox.Show(
                     _mainWindow,
-                    string.Format("{0}\r\n{1}", builder.ToString(), LanguagesManager.Instance.LibraryControl_DigitalSignatureAnnulled_Message),
+                    string.Format("{0}\r\n{1}", builder.ToString(), LanguagesManager.Instance.BoxControl_DigitalSignatureAnnulled_Message),
                     "Library",
                     MessageBoxButton.OKCancel,
                     MessageBoxImage.Information) == MessageBoxResult.OK)
@@ -620,7 +620,7 @@ namespace Amoeba.Windows
 
             foreach (var item in box.Boxes)
             {
-                length += LibraryControl.GetBoxLength(item);
+                length += BoxControl.GetBoxLength(item);
             }
 
             return length;
@@ -681,7 +681,7 @@ namespace Amoeba.Windows
 
         private void Update()
         {
-            Settings.Instance.LibraryControl_Box = _treeViewItem.Value;
+            Settings.Instance.BoxControl_Box = _treeViewItem.Value;
 
             _treeView_SelectedItemChanged(this, null);
             _treeViewItem.Sort();
@@ -798,11 +798,11 @@ namespace Amoeba.Windows
                         {
                             var box = AmoebaConverter.FromBoxStream(stream);
 
-                            if (!LibraryControl.BoxDigitalSignatureCheck(ref box))
+                            if (!BoxControl.BoxDigitalSignatureCheck(ref box))
                             {
                                 if (MessageBox.Show(
                                     _mainWindow,
-                                    LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
+                                    LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message,
                                     "Library",
                                     MessageBoxButton.OKCancel,
                                     MessageBoxImage.Asterisk) == MessageBoxResult.OK)
@@ -1166,11 +1166,11 @@ namespace Amoeba.Windows
                             {
                                 var box = AmoebaConverter.FromBoxStream(stream);
 
-                                if (!LibraryControl.BoxDigitalSignatureCheck(ref box))
+                                if (!BoxControl.BoxDigitalSignatureCheck(ref box))
                                 {
                                     if (MessageBox.Show(
                                             _mainWindow,
-                                            LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message,
+                                            LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message,
                                             "Library",
                                             MessageBoxButton.OKCancel,
                                             MessageBoxImage.Asterisk) == MessageBoxResult.OK)
@@ -1362,10 +1362,10 @@ namespace Amoeba.Windows
 
                 foreach (var item in _treeViewItem.GetLineage(selectTreeViewItem).OfType<BoxTreeViewItem>().ToList().Select(n => n.Value))
                 {
-                    baseDirectory = System.IO.Path.Combine(baseDirectory, LibraryControl.GetNormalizedPath(item.Name));
+                    baseDirectory = System.IO.Path.Combine(baseDirectory, BoxControl.GetNormalizedPath(item.Name));
                 }
 
-                var path = System.IO.Path.Combine(baseDirectory, LibraryControl.GetNormalizedPath(seed.Name));
+                var path = System.IO.Path.Combine(baseDirectory, BoxControl.GetNormalizedPath(seed.Name));
 
                 _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
             }
@@ -1664,12 +1664,12 @@ namespace Amoeba.Windows
             {
                 string baseDirectory = "";
 
-                foreach (var item in LibraryControl.GetBoxLineage(_treeViewItem.Value, seed))
+                foreach (var item in BoxControl.GetBoxLineage(_treeViewItem.Value, seed))
                 {
-                    baseDirectory = System.IO.Path.Combine(baseDirectory, LibraryControl.GetNormalizedPath(item.Name));
+                    baseDirectory = System.IO.Path.Combine(baseDirectory, BoxControl.GetNormalizedPath(item.Name));
                 }
 
-                var path = System.IO.Path.Combine(baseDirectory, LibraryControl.GetNormalizedPath(seed.Name));
+                var path = System.IO.Path.Combine(baseDirectory, BoxControl.GetNormalizedPath(seed.Name));
 
                 _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
             }
@@ -1712,13 +1712,13 @@ namespace Amoeba.Windows
 
                 ListSortDirection direction;
 
-                if (headerClicked != Settings.Instance.LibraryControl_LastHeaderClicked)
+                if (headerClicked != Settings.Instance.BoxControl_LastHeaderClicked)
                 {
                     direction = ListSortDirection.Ascending;
                 }
                 else
                 {
-                    if (Settings.Instance.LibraryControl_ListSortDirection == ListSortDirection.Ascending)
+                    if (Settings.Instance.BoxControl_ListSortDirection == ListSortDirection.Ascending)
                     {
                         direction = ListSortDirection.Descending;
                     }
@@ -1730,14 +1730,14 @@ namespace Amoeba.Windows
 
                 Sort(headerClicked, direction);
 
-                Settings.Instance.LibraryControl_LastHeaderClicked = headerClicked;
-                Settings.Instance.LibraryControl_ListSortDirection = direction;
+                Settings.Instance.BoxControl_LastHeaderClicked = headerClicked;
+                Settings.Instance.BoxControl_ListSortDirection = direction;
             }
             else
             {
-                if (Settings.Instance.LibraryControl_LastHeaderClicked != null)
+                if (Settings.Instance.BoxControl_LastHeaderClicked != null)
                 {
-                    Sort(Settings.Instance.LibraryControl_LastHeaderClicked, Settings.Instance.LibraryControl_ListSortDirection);
+                    Sort(Settings.Instance.BoxControl_LastHeaderClicked, Settings.Instance.BoxControl_ListSortDirection);
                 }
             }
         }
@@ -1747,11 +1747,11 @@ namespace Amoeba.Windows
             _listView.Items.SortDescriptions.Clear();
             _listView.Items.SortDescriptions.Add(new SortDescription("Type", direction));
 
-            if (sortBy == LanguagesManager.Instance.LibraryControl_Name)
+            if (sortBy == LanguagesManager.Instance.BoxControl_Name)
             {
 
             }
-            else if (sortBy == LanguagesManager.Instance.LibraryControl_Signature)
+            else if (sortBy == LanguagesManager.Instance.BoxControl_Signature)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Signature", direction));
             }
@@ -1763,19 +1763,19 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Keywords", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.LibraryControl_CreationTime)
+            else if (sortBy == LanguagesManager.Instance.BoxControl_CreationTime)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("CreationTime", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.LibraryControl_Comment)
+            else if (sortBy == LanguagesManager.Instance.BoxControl_Comment)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Comment", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.LibraryControl_State)
+            else if (sortBy == LanguagesManager.Instance.BoxControl_State)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.LibraryControl_Hash)
+            else if (sortBy == LanguagesManager.Instance.BoxControl_Hash)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Hash", direction));
             }
@@ -1975,7 +1975,7 @@ namespace Amoeba.Windows
                 w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) - ", this.Value.Seeds.Count) });
                 w.Children.Add(new TextBlock()
                 {
-                    Text = MessageConverter.ToSignatureString(this.Value.Certificate),
+                    Text = this.Value.Certificate.ToString(),
                     //Foreground = new SolidColorBrush(Color.FromRgb(64, 255, 0))
                     //FontWeight = FontWeight.FromOpenTypeWeight(800),
                 });

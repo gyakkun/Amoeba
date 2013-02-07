@@ -139,7 +139,7 @@ namespace Amoeba.Windows
                     {
                         using (FileStream stream = new FileStream(filePath, FileMode.Open))
                         {
-                            var signature = DigitalSignatureConverter.FromSignatureStream(stream);
+                            var signature = DigitalSignatureConverter.FromDigitalSignatureStream(stream);
                             if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
 
                             _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
@@ -234,7 +234,7 @@ namespace Amoeba.Windows
                         {
                             using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             {
-                                var signature = DigitalSignatureConverter.FromSignatureStream(stream);
+                                var signature = DigitalSignatureConverter.FromDigitalSignatureStream(stream);
                                 if (_signatureListViewItemCollection.Any(n => n.Value == signature)) continue;
 
                                 _signatureListViewItemCollection.Add(new SignatureListViewItem(signature));
@@ -261,7 +261,7 @@ namespace Amoeba.Windows
             using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
                 dialog.RestoreDirectory = true;
-                dialog.FileName = MessageConverter.ToSignatureString(signature);
+                dialog.FileName = signature.ToString();
                 dialog.DefaultExt = ".signature";
                 dialog.Filter = "Signature (*.signature)|*.signature";
 
@@ -272,7 +272,7 @@ namespace Amoeba.Windows
                     try
                     {
                         using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                        using (Stream signatureStream = DigitalSignatureConverter.ToSignatureStream(signature))
+                        using (Stream signatureStream = DigitalSignatureConverter.ToDigitalSignatureStream(signature))
                         {
                             int i = -1;
                             byte[] buffer = _bufferManager.TakeBuffer(1024);
@@ -661,7 +661,7 @@ namespace Amoeba.Windows
 
             public void Update()
             {
-                _text = MessageConverter.ToSignatureString(_value);
+                _text = _value.ToString();
             }
 
             public DigitalSignature Value

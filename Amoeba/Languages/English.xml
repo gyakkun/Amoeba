@@ -21,18 +21,21 @@
   <Translate Key="Box_Comment" Value="Comment" />
 
   <Translate Key="MainWindow_Connection" Value="Connection" />
+  <Translate Key="MainWindow_Search" Value="Search" />
   <Translate Key="MainWindow_Download" Value="Download" />
   <Translate Key="MainWindow_Upload" Value="Upload" />
   <Translate Key="MainWindow_Share" Value="Share" />
   <Translate Key="MainWindow_Cache" Value="Cache" />
-  <Translate Key="MainWindow_Library" Value="Library" />
+  <Translate Key="MainWindow_Store" Value="Store" />
+  <Translate Key="MainWindow_Box" Value="Box" />
   <Translate Key="MainWindow_Log" Value="Log" />
   <Translate Key="MainWindow_Connections" Value="Connections" />
   <Translate Key="MainWindow_Start" Value="Start" />
   <Translate Key="MainWindow_Stop" Value="Stop" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="Update Base Node Uri" />
   <Translate Key="MainWindow_CheckSeeds" Value="Check seeds" />
-  <Translate Key="MainWindow_CheckBlocks" Value="Check blocks" />
+  <Translate Key="MainWindow_CheckInternalBlocks" Value="Check internal blocks" />
+  <Translate Key="MainWindow_CheckExternalBlocks" Value="Check external blocks" />
   <Translate Key="MainWindow_ConnectionsSettings" Value="Connections settings" />
   <Translate Key="MainWindow_View" Value="View" />
   <Translate Key="MainWindow_ViewSettings" Value="View settings" />
@@ -46,7 +49,8 @@
   <Translate Key="MainWindow_ReceiveSpeed" Value="Receive:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Space of cache not found." />
-  <Translate Key="MainWindow_CheckBlocks_Message" Value="Check blocks" />
+  <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Check internal blocks" />
+  <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="Check external blocks" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
   <Translate Key="MainWindow_CheckUpdate_Message" Value="Do you want to update to &quot;{0}&quot;?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />
@@ -66,6 +70,7 @@
   <Translate Key="ConnectionsSettingsWindow_ConnectionType" Value="Connection type" />
   <Translate Key="ConnectionsSettingsWindow_ProxyUri" Value="Proxy uri" />
   <Translate Key="ConnectionsSettingsWindow_UriCondition" Value="Uri condition" />
+  <Translate Key="ConnectionsSettingsWindow_Option" Value="Option" />
   <Translate Key="ConnectionsSettingsWindow_Type" Value="Type" />
   <Translate Key="ConnectionsSettingsWindow_Host" Value="Host" />
   <Translate Key="ConnectionsSettingsWindow_Server" Value="Server" />
@@ -206,6 +211,7 @@
 
   <Translate Key="DownloadState_Downloading" Value="Downloading" />
   <Translate Key="DownloadState_Decoding" Value="Decoding" />
+  <Translate Key="DownloadState_ParityDecoding" Value="Parity Decoding" />
   <Translate Key="DownloadState_Completed" Value="Completed" />
   <Translate Key="DownloadState_Error" Value="Error" />
 
@@ -232,7 +238,7 @@
 
   <Translate Key="UploadState_ComputeHash" Value="Compute hash" />
   <Translate Key="UploadState_Encoding" Value="Encoding" />
-  <Translate Key="UploadState_ComputeCorrection" Value="Compute correction" />
+  <Translate Key="UploadState_ParityEncoding" Value="Parity Encoding" />
   <Translate Key="UploadState_Uploading" Value="Uploading" />
   <Translate Key="UploadState_Completed" Value="Completed" />
   <Translate Key="UploadState_Error" Value="Error" />
@@ -326,26 +332,26 @@
   <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="Downloaded" />
   <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="Uploaded" />
 
-  <Translate Key="LibraryControl_Name" Value="Name" />
-  <Translate Key="LibraryControl_Signature" Value="Signature" />
-  <Translate Key="LibraryControl_Length" Value="Length" />
-  <Translate Key="LibraryControl_Keywords" Value="Keywords" />
-  <Translate Key="LibraryControl_CreationTime" Value="Creation time" />
-  <Translate Key="LibraryControl_Comment" Value="Comment" />
-  <Translate Key="LibraryControl_State" Value="State" />
-  <Translate Key="LibraryControl_Hash" Value="Hash" />
-  <Translate Key="LibraryControl_New" Value="New" />
-  <Translate Key="LibraryControl_Edit" Value="Edit" />
-  <Translate Key="LibraryControl_Delete" Value="Delete" />
-  <Translate Key="LibraryControl_Cut" Value="Cut" />
-  <Translate Key="LibraryControl_Copy" Value="Copy" />
-  <Translate Key="LibraryControl_Paste" Value="Paste" />
-  <Translate Key="LibraryControl_Import" Value="Import" />
-  <Translate Key="LibraryControl_Export" Value="Export" />
-  <Translate Key="LibraryControl_CopyInfo" Value="Copy info" />
-  <Translate Key="LibraryControl_Download" Value="Download" />
-  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
-  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="Digital signature error" />
+  <Translate Key="BoxControl_Name" Value="Name" />
+  <Translate Key="BoxControl_Signature" Value="Signature" />
+  <Translate Key="BoxControl_Length" Value="Length" />
+  <Translate Key="BoxControl_Keywords" Value="Keywords" />
+  <Translate Key="BoxControl_CreationTime" Value="Creation time" />
+  <Translate Key="BoxControl_Comment" Value="Comment" />
+  <Translate Key="BoxControl_State" Value="State" />
+  <Translate Key="BoxControl_Hash" Value="Hash" />
+  <Translate Key="BoxControl_New" Value="New" />
+  <Translate Key="BoxControl_Edit" Value="Edit" />
+  <Translate Key="BoxControl_Delete" Value="Delete" />
+  <Translate Key="BoxControl_Cut" Value="Cut" />
+  <Translate Key="BoxControl_Copy" Value="Copy" />
+  <Translate Key="BoxControl_Paste" Value="Paste" />
+  <Translate Key="BoxControl_Import" Value="Import" />
+  <Translate Key="BoxControl_Export" Value="Export" />
+  <Translate Key="BoxControl_CopyInfo" Value="Copy info" />
+  <Translate Key="BoxControl_Download" Value="Download" />
+  <Translate Key="BoxControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
+  <Translate Key="BoxControl_DigitalSignatureError_Message" Value="Digital signature error" />
 
   <Translate Key="SeedEditWindow_Title" Value="Seed edit" />
   <Translate Key="SeedEditWindow_Name" Value="Name" />

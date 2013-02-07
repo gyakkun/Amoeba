@@ -127,6 +127,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Windows\StoreControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ViewSettingsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -147,7 +151,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\LibraryControl.xaml">
+    <Page Include="Windows\BoxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <Generator>MSBuild:Compile</Generator>
@@ -206,6 +210,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TransfarLimitManager.cs" />
+    <Compile Include="Windows\StoreControl.xaml.cs">
+      <DependentUpon>StoreControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
       <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -236,8 +243,8 @@
     <Compile Include="Windows\SeedEditWindow.xaml.cs">
       <DependentUpon>SeedEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\LibraryControl.xaml.cs">
-      <DependentUpon>LibraryControl.xaml</DependentUpon>
+    <Compile Include="Windows\BoxControl.xaml.cs">
+      <DependentUpon>BoxControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
@@ -282,6 +289,7 @@
     </Content>
     <Content Include="Languages\Japanese.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Polipo\libgnurx-0.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

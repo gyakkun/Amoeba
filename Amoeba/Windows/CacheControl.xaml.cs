@@ -312,13 +312,13 @@ namespace Amoeba.Windows
                             {
                                 if (searchContains.Contains)
                                 {
-                                    if (searchContains.Value == "Anonymous")
+                                    if (item.Signature == null)
                                     {
-                                        return item.Signature == null;
+                                        return searchContains.Value.IsMatch("Anonymous");
                                     }
                                     else
                                     {
-                                        return item.Signature == searchContains.Value;
+                                        return searchContains.Value.IsMatch(item.Signature);
                                     }
                                 }
 
@@ -447,13 +447,13 @@ namespace Amoeba.Windows
                             {
                                 if (!searchContains.Contains)
                                 {
-                                    if (searchContains.Value == "Anonymous")
+                                    if (item.Signature == null)
                                     {
-                                        return item.Signature == null;
+                                        return searchContains.Value.IsMatch("Anonymous");
                                     }
                                     else
                                     {
-                                        return item.Signature == searchContains.Value;
+                                        return searchContains.Value.IsMatch(item.Signature);
                                     }
                                 }
 
@@ -684,7 +684,7 @@ namespace Amoeba.Windows
                     lock (seed.ThisLock)
                     {
                         searchItem.Name = seed.Name;
-                        searchItem.Signature = MessageConverter.ToSignatureString(seed.Certificate);
+                        searchItem.Signature = seed.Certificate.ToString();
                         searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                         searchItem.CreationTime = seed.CreationTime;
                         searchItem.Length = seed.Length;
@@ -1710,10 +1710,14 @@ namespace Amoeba.Windows
 
                 var signature = !string.IsNullOrWhiteSpace(listItem.Signature) ? listItem.Signature : "Anonymous";
 
-                var item = new SearchContains<string>()
+                var item = new SearchContains<SearchRegex>()
                 {
                     Contains = true,
-                    Value = signature,
+                    Value = new SearchRegex()
+                    {
+                        IsIgnoreCase = false,
+                        Value = Regex.Escape(signature),
+                    },
                 };
 
                 searchTreeItem.SearchItem.Name = string.Format("Signature - \"{0}\"", signature);
@@ -1832,10 +1836,14 @@ namespace Amoeba.Windows
             {
                 var signature = !string.IsNullOrWhiteSpace(listItem.Signature) ? listItem.Signature : "Anonymous";
 
-                var item = new SearchContains<string>()
+                var item = new SearchContains<SearchRegex>()
                 {
                     Contains = false,
-                    Value = signature,
+                    Value = new SearchRegex()
+                    {
+                        IsIgnoreCase = false,
+                        Value = Regex.Escape(signature),
+                    },
                 };
 
                 if (selectTreeViewItem.Value.SearchItem.SearchSignatureCollection.Contains(item)) continue;
@@ -2403,7 +2411,7 @@ namespace Amoeba.Windows
         private string _name;
         private LockedList<SearchContains<string>> _searchNameCollection;
         private LockedList<SearchContains<SearchRegex>> _searchNameRegexCollection;
-        private LockedList<SearchContains<string>> _searchSignatureCollection;
+        private LockedList<SearchContains<SearchRegex>> _searchSignatureCollection;
         private LockedList<SearchContains<string>> _searchKeywordCollection;
         private LockedList<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRangeCollection;
         private LockedList<SearchContains<SearchRange<long>>> _searchLengthRangeCollection;
@@ -2462,15 +2470,15 @@ namespace Amoeba.Windows
             }
         }
 
-        [DataMember(Name = "SearchSignatureCollection")]
-        public LockedList<SearchContains<string>> SearchSignatureCollection
+        [DataMember(Name = "SearchSignatureCollection 2")]
+        public LockedList<SearchContains<SearchRegex>> SearchSignatureCollection
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_searchSignatureCollection == null)
-                        _searchSignatureCollection = new LockedList<SearchContains<string>>();
+                        _searchSignatureCollection = new LockedList<SearchContains<SearchRegex>>();
 
                     return _searchSignatureCollection;
                 }

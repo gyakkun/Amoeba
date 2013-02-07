@@ -53,7 +53,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_OtherNodes_Node_Width", Value = 400 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ConnectionType_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ProxyUri_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_UriCondition_Width", Value = 150 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_UriCondition_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width", Value = 200 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Server_ListenUris_GridViewColumn_Uri_Width", Value = 400 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
 
@@ -142,9 +143,10 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Value_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width", Value = 400 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_Width", Value = 600 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width", Value = 400 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Value_Width", Value = 600 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width", Value = -1 },
@@ -158,19 +160,19 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Value_Width", Value = 600 },
 
-                new Library.Configuration.SettingsContext<string>() { Name = "LibraryControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "LibraryControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_Grid_ColumnDefinitions_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Signature_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_State_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Keywords_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_CreationTime_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Length_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Comment_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Key_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LibraryControl_GridViewColumn_Hash_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<string>() { Name = "BoxControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "BoxControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = new Box() { Name = "Library" } },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_Grid_ColumnDefinitions_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_Signature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_Keywords_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_Comment_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_Key_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "BoxControl_GridViewColumn_Hash_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
@@ -790,6 +792,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_UriCondition_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width"] = value;
                 }
             }
         }
@@ -2342,13 +2363,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public double SearchItemEditWindow_GridViewColumn_Signature_Value_Width
+        public double SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_Width"];
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width"];
                 }
             }
 
@@ -2356,7 +2377,26 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchItemEditWindow_GridViewColumn_Signature_Value_Width"] = value;
+                    this["SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width"] = value;
+                }
+            }
+        }
+
+        public double SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width"] = value;
                 }
             }
         }
@@ -2590,13 +2630,13 @@ namespace Amoeba.Properties
         }
 
 
-        public string LibraryControl_LastHeaderClicked
+        public string BoxControl_LastHeaderClicked
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["LibraryControl_LastHeaderClicked"];
+                   return (string)this["BoxControl_LastHeaderClicked"];
                 }
             }
 
@@ -2604,18 +2644,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_LastHeaderClicked"] = value;
+                    this["BoxControl_LastHeaderClicked"] = value;
                 }
             }
         }
 
-        public ListSortDirection LibraryControl_ListSortDirection
+        public ListSortDirection BoxControl_ListSortDirection
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["LibraryControl_ListSortDirection"];
+                   return (ListSortDirection)this["BoxControl_ListSortDirection"];
                 }
             }
 
@@ -2623,18 +2663,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_ListSortDirection"] = value;
+                    this["BoxControl_ListSortDirection"] = value;
                 }
             }
         }
 
-        public Box LibraryControl_Box
+        public Box BoxControl_Box
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (Box)this["LibraryControl_Box"];
+                   return (Box)this["BoxControl_Box"];
                 }
             }
 
@@ -2642,18 +2682,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_Box"] = value;
+                    this["BoxControl_Box"] = value;
                 }
             }
         }
 
-        public double LibraryControl_Grid_ColumnDefinitions_Width
+        public double BoxControl_Grid_ColumnDefinitions_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_Grid_ColumnDefinitions_Width"];
+                   return (double)this["BoxControl_Grid_ColumnDefinitions_Width"];
                 }
             }
 
@@ -2661,18 +2701,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_Grid_ColumnDefinitions_Width"] = value;
+                    this["BoxControl_Grid_ColumnDefinitions_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_Name_Width
+        public double BoxControl_GridViewColumn_Name_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_Name_Width"];
+                   return (double)this["BoxControl_GridViewColumn_Name_Width"];
                 }
             }
 
@@ -2680,18 +2720,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_Name_Width"] = value;
+                    this["BoxControl_GridViewColumn_Name_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_Signature_Width
+        public double BoxControl_GridViewColumn_Signature_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_Signature_Width"];
+                   return (double)this["BoxControl_GridViewColumn_Signature_Width"];
                 }
             }
 
@@ -2699,18 +2739,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_Signature_Width"] = value;
+                    this["BoxControl_GridViewColumn_Signature_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_State_Width
+        public double BoxControl_GridViewColumn_State_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_State_Width"];
+                   return (double)this["BoxControl_GridViewColumn_State_Width"];
                 }
             }
 
@@ -2718,18 +2758,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_State_Width"] = value;
+                    this["BoxControl_GridViewColumn_State_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_Keywords_Width
+        public double BoxControl_GridViewColumn_Keywords_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_Keywords_Width"];
+                   return (double)this["BoxControl_GridViewColumn_Keywords_Width"];
                 }
             }
 
@@ -2737,18 +2777,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_Keywords_Width"] = value;
+                    this["BoxControl_GridViewColumn_Keywords_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_CreationTime_Width
+        public double BoxControl_GridViewColumn_CreationTime_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_CreationTime_Width"];
+                   return (double)this["BoxControl_GridViewColumn_CreationTime_Width"];
                 }
             }
 
@@ -2756,18 +2796,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_CreationTime_Width"] = value;
+                    this["BoxControl_GridViewColumn_CreationTime_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_Length_Width
+        public double BoxControl_GridViewColumn_Length_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_Length_Width"];
+                   return (double)this["BoxControl_GridViewColumn_Length_Width"];
                 }
             }
 
@@ -2775,18 +2815,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_Length_Width"] = value;
+                    this["BoxControl_GridViewColumn_Length_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_Comment_Width
+        public double BoxControl_GridViewColumn_Comment_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_Comment_Width"];
+                   return (double)this["BoxControl_GridViewColumn_Comment_Width"];
                 }
             }
 
@@ -2794,18 +2834,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_Comment_Width"] = value;
+                    this["BoxControl_GridViewColumn_Comment_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_Key_Width
+        public double BoxControl_GridViewColumn_Key_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_Key_Width"];
+                   return (double)this["BoxControl_GridViewColumn_Key_Width"];
                 }
             }
 
@@ -2813,18 +2853,18 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_Key_Width"] = value;
+                    this["BoxControl_GridViewColumn_Key_Width"] = value;
                 }
             }
         }
 
-        public double LibraryControl_GridViewColumn_Hash_Width
+        public double BoxControl_GridViewColumn_Hash_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LibraryControl_GridViewColumn_Hash_Width"];
+                   return (double)this["BoxControl_GridViewColumn_Hash_Width"];
                 }
             }
 
@@ -2832,7 +2872,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_GridViewColumn_Hash_Width"] = value;
+                    this["BoxControl_GridViewColumn_Hash_Width"] = value;
                 }
             }
         }
