@@ -991,6 +991,11 @@ namespace Amoeba.Windows
                     {
                         Settings.Instance.Global_Update_Signature = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A";
                     }
+
+                    if (version < new Version(1, 0, 1))
+                    {
+                        Settings.Instance.BoxControl_Box = Settings.Instance.LibraryControl_Box;
+                    }
                 }
 
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))

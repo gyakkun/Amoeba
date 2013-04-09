@@ -176,7 +176,8 @@ namespace Amoeba.Properties
 
                 new Library.Configuration.SettingsContext<string>() { Name = "BoxControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "BoxControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = null },
+                new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = new Box() { Name = "Box" } },
+                new Library.Configuration.SettingsContext<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
@@ -2899,6 +2900,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["BoxControl_Box"] = value;
+                }
+            }
+        }
+
+        public Box LibraryControl_Box
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (Box)this["LibraryControl_Box"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_Box"] = value;
                 }
             }
         }
