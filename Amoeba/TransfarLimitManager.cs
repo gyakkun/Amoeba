@@ -34,7 +34,7 @@ namespace Amoeba
 
             _settings = new Settings();
 
-            _timerThread = new Thread(new ThreadStart(this.Timer));
+            _timerThread = new Thread(this.Timer);
             _timerThread.Priority = ThreadPriority.Highest;
             _timerThread.IsBackground = true;
             _timerThread.Name = "TransfarLimitManager_TimerThread";

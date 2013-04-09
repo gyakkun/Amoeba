@@ -450,35 +450,39 @@ namespace Amoeba.Windows
             if (!(value is SearchState)) return null;
             var item = (SearchState)value;
 
-            string text = "";
+            List<string> list = new List<string>();
 
-            if ((item & SearchState.Cache) == SearchState.Cache)
+            if (item.HasFlag(SearchState.Cache))
             {
-                text += LanguagesManager.Instance.SearchState_Cache + ", ";
+                list.Add(LanguagesManager.Instance.SearchState_Cache);
             }
-            if ((item & SearchState.Share) == SearchState.Share)
+            if (item.HasFlag(SearchState.Share))
             {
-                text += LanguagesManager.Instance.SearchState_Share + ", ";
+                list.Add(LanguagesManager.Instance.SearchState_Share);
             }
-            if ((item & SearchState.Downloading) == SearchState.Downloading)
+            if (item.HasFlag(SearchState.Box))
             {
-                text += LanguagesManager.Instance.SearchState_Downloading + ", ";
+                list.Add(LanguagesManager.Instance.SearchState_Box);
             }
-            if ((item & SearchState.Uploading) == SearchState.Uploading)
+            if (item.HasFlag(SearchState.Downloading))
             {
-                text += LanguagesManager.Instance.SearchState_Uploading + ", ";
+                list.Add(LanguagesManager.Instance.SearchState_Downloading);
             }
-            if ((item & SearchState.Downloaded) == SearchState.Downloaded)
+            if (item.HasFlag(SearchState.Uploading))
             {
-                text += LanguagesManager.Instance.SearchState_Downloaded + ", ";
+                list.Add(LanguagesManager.Instance.SearchState_Uploading);
             }
-            if ((item & SearchState.Uploaded) == SearchState.Uploaded)
+            if (item.HasFlag(SearchState.Downloaded))
             {
-                text += LanguagesManager.Instance.SearchState_Uploaded + ", ";
+                list.Add(LanguagesManager.Instance.SearchState_Downloaded);
+            }
+            if (item.HasFlag(SearchState.Uploaded))
+            {
+                list.Add(LanguagesManager.Instance.SearchState_Uploaded);
             }
 
-            if (text.Length < 2) return "";
-            return text.Remove(text.Length - 2);
+            if (list.Count == 0) return "";
+            else return string.Join(" ", list);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -495,29 +499,33 @@ namespace Amoeba.Windows
             if (!(value is SearchState)) return null;
             var item = (SearchState)value;
 
-            if ((item & SearchState.Cache) == SearchState.Cache)
+            if (item.HasFlag(SearchState.Cache))
             {
                 return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Cache;
             }
-            else if ((item & SearchState.Share) == SearchState.Share)
+            else if (item.HasFlag(SearchState.Share))
             {
                 return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Share;
             }
-            else if ((item & SearchState.Uploading) == SearchState.Uploading)
-            {
-                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Uploading;
-            }
-            else if ((item & SearchState.Downloading) == SearchState.Downloading)
+            else if (item.HasFlag(SearchState.Downloading))
             {
                 return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Downloading;
             }
-            else if ((item & SearchState.Uploaded) == SearchState.Uploaded)
+            else if (item.HasFlag(SearchState.Uploading))
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Uploading;
+            }
+            else if (item.HasFlag(SearchState.Downloaded))
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Downloaded;
+            }
+            else if (item.HasFlag(SearchState.Uploaded))
             {
                 return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Uploaded;
             }
-            else if ((item & SearchState.Downloaded) == SearchState.Downloaded)
+            else if (item.HasFlag(SearchState.Box))
             {
-                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Downloaded;
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Box;
             }
 
             return "";

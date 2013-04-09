@@ -55,14 +55,17 @@ namespace Amoeba.Windows
             {
                 _nameTextBox.Text = _seeds[0].Name;
 
-                foreach (var seed in _seeds)
+                if (_seeds.Count != 1)
                 {
-                    if (_nameTextBox.Text != seed.Name)
+                    foreach (var seed in _seeds)
                     {
-                        _nameTextBox.Text = "";
-                        _nameTextBox.IsReadOnly = true;
+                        if (_nameTextBox.Text != seed.Name)
+                        {
+                            _nameTextBox.Text = "";
+                            _nameTextBox.IsReadOnly = true;
 
-                        break;
+                            break;
+                        }
                     }
                 }
 
@@ -85,9 +88,34 @@ namespace Amoeba.Windows
             }
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
-            
-            var index = Settings.Instance.Global_DigitalSignatureCollection.IndexOf(Settings.Instance.Global_UploadDigitalSignature);
-            _signatureComboBox.SelectedIndex = index + 1;
+
+            for (int index = 0; index < Settings.Instance.Global_DigitalSignatureCollection.Count; index++)
+            {
+                if (Settings.Instance.Global_DigitalSignatureCollection[index].ToString() == Settings.Instance.Global_UploadDigitalSignature)
+                {
+                    _signatureComboBox.SelectedIndex = index + 1;
+
+                    break;
+                }
+            }
+
+            _nameTextBox.TextChanged +=new TextChangedEventHandler(_nameTextBox_TextChanged);
+            _nameTextBox_TextChanged(null, null);
+        }
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            WindowPosition.Move(this);
+
+            base.OnInitialized(e);
+        }
+
+        private void _nameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_nameTextBox.IsReadOnly == false)
+            {
+                _okButton.IsEnabled = !string.IsNullOrWhiteSpace(_nameTextBox.Text);
+            }
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
@@ -100,11 +128,11 @@ namespace Amoeba.Windows
             if (!string.IsNullOrWhiteSpace(_keywordsComboBox2.Text)) keywords.Add(_keywordsComboBox2.Text);
             if (!string.IsNullOrWhiteSpace(_keywordsComboBox3.Text)) keywords.Add(_keywordsComboBox3.Text);
             keywords = new KeywordCollection(new HashSet<string>(keywords));
-            string comment = _commentTextBox.Text;
+            string comment = string.IsNullOrWhiteSpace(_commentTextBox.Text) ? null : _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
-            Settings.Instance.Global_UploadDigitalSignature = digitalSignature;
+            Settings.Instance.Global_UploadDigitalSignature = (digitalSignature == null) ? null : digitalSignature.ToString();
 
             var now = DateTime.UtcNow;
 

@@ -115,7 +115,7 @@ namespace Amoeba
                     }
                 }
 
-                return list;
+                return list.Where(n => n != null);
             }
         }
 
@@ -169,6 +169,8 @@ namespace Amoeba
                     try
                     {
                         var seed = AmoebaConverter.FromSeedString(item);
+                        if (seed == null) continue;
+
                         if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
 
                         list.Add(seed);

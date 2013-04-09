@@ -95,6 +95,13 @@ namespace Amoeba.Windows
             _transferInfoTotal.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize + _transferLimitManager.TotalDownloadSize);
         }
 
+        protected override void OnInitialized(EventArgs e)
+        {
+            WindowPosition.Move(this);
+
+            base.OnInitialized(e);
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             _baseNodeTreeViewItem.IsSelected = true;
@@ -1327,6 +1334,7 @@ namespace Amoeba.Windows
 
             lock (_amoebaManager.ThisLock)
             {
+
                 long size = (long)NetworkConverter.FromSizeString("50 GB");
 
                 try
@@ -1338,9 +1346,20 @@ namespace Amoeba.Windows
 
                 }
 
-                if (_amoebaManager.Size != size)
+#if !DEBUG
+                size = Math.Max((long)NetworkConverter.FromSizeString("50 GB"), size);
+#endif
+
+                if (_amoebaManager.Size > size)
                 {
-                    _amoebaManager.Resize(Math.Max((long)NetworkConverter.FromSizeString("50 GB"), size));
+                    if (MessageBox.Show(this, LanguagesManager.Instance.MainWindow_CacheResize_Message, "Connections Settings", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
+                    {
+                        _amoebaManager.Resize(size);
+                    }
+                }
+                else if (_amoebaManager.Size < size)
+                {
+                    _amoebaManager.Resize(size);
                 }
 
                 _amoebaManager.BaseNode = _baseNode.DeepClone();

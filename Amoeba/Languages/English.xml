@@ -3,7 +3,7 @@
 
   <Translate Key="FontFamily" Value="Segoe UI, Meiryo UI, Verdana" />
   <Translate Key="FontSize" Value="12" />
-  <Translate Key="DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
+  <Translate Key="DateTime_StringFormat" Value="yyyy/MM/dd&#x00A0;HH:mm:ss" />
 
   <Translate Key="Languages_English" Value="English" />
   <Translate Key="Languages_Japanese" Value="Japanese" />
@@ -48,17 +48,19 @@
   <Translate Key="MainWindow_SendSpeed" Value="Send:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="Receive:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
-  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Space of cache not found." />
+  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="cache need a free space of at least 1/3" />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Check internal blocks" />
   <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="Check external blocks" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />
   <Translate Key="MainWindow_CheckUpdate_Message" Value="Do you want to update to &quot;{0}&quot;?" />
   <Translate Key="MainWindow_LatestVersion_Message" Value="It is the latest version." />
   <Translate Key="MainWindow_Close_Message" Value="Do you want to quit?" />
-  <Translate Key="MainWindow_Delete_Message" Value="Are you sure you want to Delete?" />
+  <Translate Key="MainWindow_Delete_Message" Value="Are you sure you want to delete?" />
   <Translate Key="MainWindow_TransferLimit_Message" Value="Transfer limit" />
+  <Translate Key="MainWindow_Upload_Message" Value="Do you want to upload?" />
+  <Translate Key="MainWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
 
-  <Translate Key="ConnectionsSettingsWindow_Title" Value="Connection setting" />
+  <Translate Key="ConnectionsSettingsWindow_Title" Value="Connections settings" />
   <Translate Key="ConnectionsSettingsWindow_BaseNode" Value="Base node" />
   <Translate Key="ConnectionsSettingsWindow_Node" Value="Node" />
   <Translate Key="ConnectionsSettingsWindow_Uris" Value="Uris" />
@@ -122,6 +124,11 @@
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
 
+  <Translate Key="SignatureWindow_Title" Value="Signature setting" />
+  <Translate Key="SignatureWindow_Signature" Value="Signature" />
+  <Translate Key="SignatureWindow_Ok" Value="Ok" />
+  <Translate Key="SignatureWindow_Cancel" Value="Cancel" />
+
   <Translate Key="ViewSettingsWindow_Title" Value="User interface setting" />
   <Translate Key="ViewSettingsWindow_Update" Value="Update" />
   <Translate Key="ViewSettingsWindow_UpdateUrl" Value="Update url" />
@@ -130,10 +137,11 @@
   <Translate Key="ViewSettingsWindow_Signatures" Value="Signatures" />
   <Translate Key="ViewSettingsWindow_Keywords" Value="Keywords" />
   <Translate Key="ViewSettingsWindow_Miscellaneous" Value="Miscellaneous" />
-  <Translate Key="ViewSettingsWindow_Relates" Value="Relates" />
-  <Translate Key="ViewSettingsWindow_RelateBoxFile" Value=".box" />
+  <Translate Key="ViewSettingsWindow_Box" Value="Box" />
+  <Translate Key="ViewSettingsWindow_RelateBoxFile" Value="Box file is related." />
   <Translate Key="ViewSettingsWindow_Events" Value="Events" />
   <Translate Key="ViewSettingsWindow_OpenBox" Value="Open a box file that downloaded." />
+  <Translate Key="ViewSettingsWindow_ExtractTo" Value="Extract to path" />
   <Translate Key="ViewSettingsWindow_UpdateOption" Value="Update option" />
   <Translate Key="ViewSettingsWindow_None" Value="None" />
   <Translate Key="ViewSettingsWindow_AutoCheck" Value="Auto check" />
@@ -181,12 +189,35 @@
   <Translate Key="ConnectionControl_PushBlockLinkCount" Value="PushBlockLink count" />
   <Translate Key="ConnectionControl_PushBlockRequestCount" Value="PushBlockRequest count" />
   <Translate Key="ConnectionControl_PushBlockCount" Value="PushBlock count" />
+  <Translate Key="ConnectionControl_PushSeedRequestCount" Value="PushSeedRequest count" />
+  <Translate Key="ConnectionControl_PushSeedCount" Value="PushSeed count" />
   <Translate Key="ConnectionControl_PullNodeCount" Value="PullNode count" />
   <Translate Key="ConnectionControl_PullBlockLinkCount" Value="PullBlocksLink count" />
   <Translate Key="ConnectionControl_PullBlockRequestCount" Value="PullBlockRequest count" />
   <Translate Key="ConnectionControl_PullBlockCount" Value="PullBlock count" />
+  <Translate Key="ConnectionControl_PullSeedRequestCount" Value="PullSeedRequest count" />
+  <Translate Key="ConnectionControl_PullSeedCount" Value="PullSeed count" />
   <Translate Key="ConnectionControl_Copy" Value="Copy" />
   <Translate Key="ConnectionControl_Paste" Value="Paste" />
+
+  <Translate Key="SearchControl_Name" Value="Name" />
+  <Translate Key="SearchControl_Signature" Value="Signature" />
+  <Translate Key="SearchControl_Length" Value="Length" />
+  <Translate Key="SearchControl_Keywords" Value="Keywords" />
+  <Translate Key="SearchControl_CreationTime" Value="Creation time" />
+  <Translate Key="SearchControl_Comment" Value="Comment" />
+  <Translate Key="SearchControl_State" Value="State" />
+  <Translate Key="SearchControl_Hash" Value="Hash" />
+  <Translate Key="SearchControl_Upload" Value="Upload" />
+  <Translate Key="SearchControl_Delete" Value="Delete" />
+  <Translate Key="SearchControl_Copy" Value="Copy" />
+  <Translate Key="SearchControl_Paste" Value="Paste" />
+  <Translate Key="SearchControl_Export" Value="Export" />
+  <Translate Key="SearchControl_CopyInfo" Value="Copy info" />
+  <Translate Key="SearchControl_Download" Value="Download" />
+  <Translate Key="SearchControl_Reset" Value="Reset" />
+  <Translate Key="SearchControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
+  <Translate Key="SearchControl_DigitalSignatureError_Message" Value="Digital signature error" />
 
   <Translate Key="DownloadControl_Name" Value="Name" />
   <Translate Key="DownloadControl_Length" Value="Length" />
@@ -300,8 +331,9 @@
   <Translate Key="SearchState_Uploading" Value="U" />
   <Translate Key="SearchState_Downloaded" Value="DH" />
   <Translate Key="SearchState_Uploaded" Value="UH" />
+  <Translate Key="SearchState_Box" Value="B" />
 
-  <Translate Key="SearchItemEditWindow_Title" Value="Search item edit" />
+  <Translate Key="SearchItemEditWindow_Title" Value="Category edit" />
   <Translate Key="SearchItemEditWindow_Name" Value="Name" />
   <Translate Key="SearchItemEditWindow_NameRegex" Value="Name regex" />
   <Translate Key="SearchItemEditWindow_Signature" Value="Signature" />
@@ -331,6 +363,29 @@
   <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="Uploading" />
   <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="Downloaded" />
   <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="Uploaded" />
+  <Translate Key="SearchItemEditWindow_SearchState_Box" Value="Box" />
+
+  <Translate Key="StoreControl_Name" Value="Name" />
+  <Translate Key="StoreControl_Signature" Value="Signature" />
+  <Translate Key="StoreControl_Length" Value="Length" />
+  <Translate Key="StoreControl_Keywords" Value="Keywords" />
+  <Translate Key="StoreControl_CreationTime" Value="Creation time" />
+  <Translate Key="StoreControl_Comment" Value="Comment" />
+  <Translate Key="StoreControl_State" Value="State" />
+  <Translate Key="StoreControl_Hash" Value="Hash" />
+  <Translate Key="StoreControl_Upload" Value="Upload" />
+  <Translate Key="StoreControl_New" Value="New" />
+  <Translate Key="StoreControl_Edit" Value="Edit" />
+  <Translate Key="StoreControl_Delete" Value="Delete" />
+  <Translate Key="StoreControl_Cut" Value="Cut" />
+  <Translate Key="StoreControl_Copy" Value="Copy" />
+  <Translate Key="StoreControl_Paste" Value="Paste" />
+  <Translate Key="StoreControl_Import" Value="Import" />
+  <Translate Key="StoreControl_Export" Value="Export" />
+  <Translate Key="StoreControl_CopyInfo" Value="Copy info" />
+  <Translate Key="StoreControl_Download" Value="Download" />
+  <Translate Key="StoreControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
+  <Translate Key="StoreControl_DigitalSignatureError_Message" Value="Digital signature error" />
 
   <Translate Key="BoxControl_Name" Value="Name" />
   <Translate Key="BoxControl_Signature" Value="Signature" />

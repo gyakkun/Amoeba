@@ -73,12 +73,16 @@ namespace Amoeba.Windows
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushBlockLinkCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushBlockRequestCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushBlockCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushSeedRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PushSeedCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullNodeCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullBlockLinkCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullBlockRequestCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullBlockCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullSeedRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_PullSeedCount" });
 
             _infomationListView.ItemsSource = _infomationListViewItemCollection;
 
@@ -104,50 +108,54 @@ namespace Amoeba.Windows
                     var information = _amoebaManager.Information;
                     Dictionary<string, string> dic = new Dictionary<string, string>();
 
-                    dic["ConnectionControl_CreateConnectionCount"] = ((int)information["CreateConnectionCount"]).ToString();
-                    dic["ConnectionControl_AcceptConnectionCount"] = ((int)information["AcceptConnectionCount"]).ToString();
-
                     dic["ConnectionControl_SentByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.SentByteCount);
                     dic["ConnectionControl_ReceivedByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.ReceivedByteCount);
 
-                    dic["ConnectionControl_PullNodeCount"] = ((int)information["PullNodeCount"]).ToString();
-                    dic["ConnectionControl_PullBlockLinkCount"] = ((int)information["PullBlockLinkCount"]).ToString();
-                    dic["ConnectionControl_PullBlockRequestCount"] = ((int)information["PullBlockRequestCount"]).ToString();
-                    dic["ConnectionControl_PullBlockCount"] = ((int)information["PullBlockCount"]).ToString();
+                    dic["ConnectionControl_CreateConnectionCount"] = ((int)information["CreateConnectionCount"]).ToString();
+                    dic["ConnectionControl_AcceptConnectionCount"] = ((int)information["AcceptConnectionCount"]).ToString();
+
+                    dic["ConnectionControl_SurroundingNodeCount"] = ((int)information["SurroundingNodeCount"]).ToString();
+                    dic["ConnectionControl_RelayBlockCount"] = ((int)information["RelayBlockCount"]).ToString();
+
+                    dic["ConnectionControl_LockSpace"] = NetworkConverter.ToSizeString(((long)information["LockSpace"])).ToString();
+                    dic["ConnectionControl_FreeSpace"] = NetworkConverter.ToSizeString(((long)information["FreeSpace"])).ToString();
+                    dic["ConnectionControl_UsingSpace"] = NetworkConverter.ToSizeString(((long)information["UsingSpace"])).ToString();
+
+                    dic["ConnectionControl_NodeCount"] = ((int)information["OtherNodeCount"]).ToString();
+                    dic["ConnectionControl_SeedCount"] = ((int)information["SeedCount"]).ToString();
+                    dic["ConnectionControl_BlockCount"] = ((int)information["BlockCount"]).ToString();
+                    dic["ConnectionControl_DownloadCount"] = ((int)information["DownloadingCount"]).ToString();
+                    dic["ConnectionControl_UploadCount"] = ((int)information["UploadingCount"]).ToString();
+                    dic["ConnectionControl_ShareCount"] = ((int)information["ShareCount"]).ToString();
 
                     dic["ConnectionControl_PushNodeCount"] = ((int)information["PushNodeCount"]).ToString();
                     dic["ConnectionControl_PushBlockLinkCount"] = ((int)information["PushBlockLinkCount"]).ToString();
                     dic["ConnectionControl_PushBlockRequestCount"] = ((int)information["PushBlockRequestCount"]).ToString();
                     dic["ConnectionControl_PushBlockCount"] = ((int)information["PushBlockCount"]).ToString();
+                    dic["ConnectionControl_PushSeedRequestCount"] = ((int)information["PushSeedRequestCount"]).ToString();
+                    dic["ConnectionControl_PushSeedCount"] = ((int)information["PushSeedCount"]).ToString();
 
-                    dic["ConnectionControl_FreeSpace"] = NetworkConverter.ToSizeString(((long)information["FreeSpace"])).ToString();
-                    dic["ConnectionControl_UsingSpace"] = NetworkConverter.ToSizeString(((long)information["UsingSpace"])).ToString();
-                    dic["ConnectionControl_LockSpace"] = NetworkConverter.ToSizeString(((long)information["LockSpace"])).ToString();
-                    dic["ConnectionControl_RelayBlockCount"] = ((int)information["RelayBlockCount"]).ToString();
-                    dic["ConnectionControl_SurroundingNodeCount"] = ((int)information["SurroundingNodeCount"]).ToString();
+                    dic["ConnectionControl_PullNodeCount"] = ((int)information["PullNodeCount"]).ToString();
+                    dic["ConnectionControl_PullBlockLinkCount"] = ((int)information["PullBlockLinkCount"]).ToString();
+                    dic["ConnectionControl_PullBlockRequestCount"] = ((int)information["PullBlockRequestCount"]).ToString();
+                    dic["ConnectionControl_PullBlockCount"] = ((int)information["PullBlockCount"]).ToString();
+                    dic["ConnectionControl_PullSeedRequestCount"] = ((int)information["PullSeedRequestCount"]).ToString();
+                    dic["ConnectionControl_PullSeedCount"] = ((int)information["PullSeedCount"]).ToString();
 
-                    dic["ConnectionControl_NodeCount"] = ((int)information["OtherNodeCount"]).ToString();
-                    dic["ConnectionControl_SeedCount"] = ((int)information["SeedCount"]).ToString();
-
-                    dic["ConnectionControl_DownloadCount"] = ((int)information["DownloadingCount"]).ToString();
-                    dic["ConnectionControl_UploadCount"] = ((int)information["UploadingCount"]).ToString();
-                    dic["ConnectionControl_ShareCount"] = ((int)information["ShareCount"]).ToString();
-                    dic["ConnectionControl_BlockCount"] = ((int)information["BlockCount"]).ToString();
-
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in dic)
                         {
                             _infomationListViewItemCollection.First(n => n.Id == item.Key).Value = item.Value;
                         }
-                    }), null);
+                    }));
 
                     Thread.Sleep(1000 * 10);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
@@ -158,8 +166,8 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (App.SelectTab != "Connection") continue;
-                    
+                    if (App.SelectTab != TabItemType.Connection) continue;
+
                     var connectionInformation = _amoebaManager.ConnectionInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();
 
@@ -170,17 +178,17 @@ namespace Amoeba.Windows
 
                     Dictionary<int, ConnectionListViewItem> dic2 = new Dictionary<int, ConnectionListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
                             dic2[item.Id] = item;
                         }
-                    }), null);
+                    }));
 
                     List<ConnectionListViewItem> removeList = new List<ConnectionListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
@@ -189,7 +197,7 @@ namespace Amoeba.Windows
                                 removeList.Add(item);
                             }
                         }
-                    }), null);
+                    }));
 
                     List<ConnectionListViewItem> newList = new List<ConnectionListViewItem>();
                     Dictionary<ConnectionListViewItem, Information> updateDic = new Dictionary<ConnectionListViewItem, Information>();
@@ -209,10 +217,10 @@ namespace Amoeba.Windows
 
                         HashSet<int> hid = new HashSet<int>();
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
                             hid.UnionWith(_listView.SelectedItems.OfType<ConnectionListViewItem>().Select(n => n.Id));
-                        }), null);
+                        }));
 
                         foreach (var item in newList)
                         {
@@ -245,7 +253,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         bool sortFlag = false;
 
@@ -277,14 +285,14 @@ namespace Amoeba.Windows
                         }
 
                         if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
-                    }), null);
+                    }));
 
                     Thread.Sleep(1000 * 3);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
@@ -367,7 +375,7 @@ namespace Amoeba.Windows
             else
             {
                 _listView.Items.SortDescriptions.Clear();
-                
+
                 if (Settings.Instance.ConnectionControl_LastHeaderClicked != null)
                 {
                     var list = Sort(_listViewItemCollection, Settings.Instance.ConnectionControl_LastHeaderClicked, Settings.Instance.ConnectionControl_ListSortDirection).ToList();
@@ -410,7 +418,7 @@ namespace Amoeba.Windows
 
             if (sortBy == LanguagesManager.Instance.ConnectionControl_Uri)
             {
-                list.Sort(delegate(ConnectionListViewItem x, ConnectionListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Uri.CompareTo(y.Uri);
                     if (c != 0) return c;
@@ -422,7 +430,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.ConnectionControl_Priority)
             {
-                list.Sort(delegate(ConnectionListViewItem x, ConnectionListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Priority.CompareTo(y.Priority);
                     if (c != 0) return c;
@@ -434,7 +442,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.ConnectionControl_ReceivedByteCount)
             {
-                list.Sort(delegate(ConnectionListViewItem x, ConnectionListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.ReceivedByteCount.CompareTo(y.ReceivedByteCount);
                     if (c != 0) return c;
@@ -446,7 +454,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.ConnectionControl_SentByteCount)
             {
-                list.Sort(delegate(ConnectionListViewItem x, ConnectionListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.SentByteCount.CompareTo(y.SentByteCount);
                     if (c != 0) return c;
@@ -572,7 +580,7 @@ namespace Amoeba.Windows
                     return _id;
                 }
             }
-            
+
             public Information Information
             {
                 get
@@ -665,7 +673,7 @@ namespace Amoeba.Windows
                 }
             }
         }
-       
+
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
             _listViewCopyMenuItem_Click(null, null);

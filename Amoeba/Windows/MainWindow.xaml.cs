@@ -66,7 +66,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                _bufferManager = new BufferManager();
+                _bufferManager = BufferManager.Instance;
 
                 this.Setting_Log();
 
@@ -76,30 +76,6 @@ namespace Amoeba.Windows
                 _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
 
                 Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
-
-                {
-                    bool flag = false;
-
-                    double top = Settings.Instance.MainWindow_Top + (Settings.Instance.MainWindow_Height / 2);
-                    double left = Settings.Instance.MainWindow_Left + (Settings.Instance.MainWindow_Width / 2);
-
-                    foreach (var s in System.Windows.Forms.Screen.AllScreens)
-                    {
-                        if (top > s.WorkingArea.Top && top < s.WorkingArea.Bottom
-                            && left > s.WorkingArea.Left && left < s.WorkingArea.Right)
-                        {
-                            flag = true;
-
-                            break;
-                        }
-                    }
-
-                    if (!flag)
-                    {
-                        Settings.Instance.MainWindow_Top = 0;
-                        Settings.Instance.MainWindow_Left = 0;
-                    }
-                }
 
                 InitializeComponent();
 
@@ -169,14 +145,21 @@ namespace Amoeba.Windows
             }
         }
 
+        protected override void OnInitialized(EventArgs e)
+        {
+            WindowPosition.Move(this);
+
+            base.OnInitialized(e);
+        }
+
         void _transferLimitManager_StartEvent(object sender, EventArgs e)
         {
             if (_autoStop && !Settings.Instance.Global_IsStart)
             {
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                 {
                     _startMenuItem_Click(sender, null);
-                }), null);
+                }));
             }
         }
 
@@ -184,10 +167,10 @@ namespace Amoeba.Windows
         {
             Log.Information(LanguagesManager.Instance.MainWindow_TransferLimit_Message);
 
-            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
             {
                 _stopMenuItem_Click(sender, null);
-            }), null);
+            }));
         }
 
         public static void CopyDirectory(string sourceDirectoryPath, string destDirectoryPath)
@@ -230,10 +213,10 @@ namespace Amoeba.Windows
                     {
                         if (_diskSpaceNotFoundException || _cacheSpaceNotFoundException)
                         {
-                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
                                 _stopMenuItem_Click(null, null);
-                            }), null);
+                            }));
                         }
 
                         if (_autoBaseNodeSettingManager.State == ManagerState.Stop
@@ -266,7 +249,7 @@ namespace Amoeba.Windows
                         {
                             Log.Warning(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
 
-                            this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                            this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
                                 MessageBox.Show(
                                     this,
@@ -274,7 +257,7 @@ namespace Amoeba.Windows
                                     "Warning",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Warning);
-                            }), null);
+                            }));
 
                             _diskSpaceNotFoundException = false;
                         }
@@ -283,7 +266,7 @@ namespace Amoeba.Windows
                         {
                             Log.Warning(LanguagesManager.Instance.MainWindow_CacheSpaceNotFound_Message);
 
-                            this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                            this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
                                 MessageBox.Show(
                                     this,
@@ -291,7 +274,7 @@ namespace Amoeba.Windows
                                     "Warning",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Warning);
-                            }), null);
+                            }));
 
                             _cacheSpaceNotFoundException = false;
                         }
@@ -323,13 +306,20 @@ namespace Amoeba.Windows
 
                                 if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
                                 {
-                                    _cacheSpaceNotFoundException = true;
+                                    _diskSpaceNotFoundException = true;
                                 }
                             }
                         }
                         catch (Exception e)
                         {
                             Log.Warning(e);
+                        }
+
+                        {
+                            if (((long)_amoebaManager.Information["FreeSpace"]) < (_amoebaManager.Size / 3))
+                            {
+                                _cacheSpaceNotFoundException = true;
+                            }
                         }
                     }
 
@@ -401,7 +391,7 @@ namespace Amoeba.Windows
 
                     var state = _amoebaManager.State;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action(() =>
                     {
                         try
                         {
@@ -428,7 +418,7 @@ namespace Amoeba.Windows
                         {
 
                         }
-                    }), null);
+                    }));
                 }
             }
             catch (Exception)
@@ -621,7 +611,7 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         try
                         {
@@ -638,7 +628,7 @@ namespace Amoeba.Windows
                         {
 
                         }
-                    }), null);
+                    }));
                 }
                 catch (Exception)
                 {
@@ -667,7 +657,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         try
                         {
@@ -684,7 +674,7 @@ namespace Amoeba.Windows
                         {
 
                         }
-                    }), null);
+                    }));
                 }
                 catch (Exception)
                 {
@@ -951,6 +941,19 @@ namespace Amoeba.Windows
                     {
                         Settings.Instance.Global_UseLanguage = "English";
                     }
+
+                    {
+                        Box tempBox = new Box();
+                        tempBox.Name = "Temp";
+                        tempBox.CreationTime = DateTime.UtcNow;
+
+                        Box box = new Box();
+                        box.Name = "Box";
+                        box.Boxes.Add(tempBox);
+                        box.CreationTime = DateTime.UtcNow;
+
+                        Settings.Instance.BoxControl_Box = box;
+                    }
                 }
                 else
                 {
@@ -984,12 +987,9 @@ namespace Amoeba.Windows
                         _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 50), 12);
                     }
 
-                    if (version <= new Version(0, 1, 61))
+                    if (version < new Version(1, 0, 0))
                     {
-                        if (Settings.Instance.Global_Update_Signature == "Lyrise@iMK5aPkz6n_VLfaQWyXisi6C2yo53VbhMGTwJ4N2yGDTMXZwIdcZb8ayuGIOg-1V")
-                        {
-                            Settings.Instance.Global_Update_Signature = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr";
-                        }
+                        Settings.Instance.Global_Update_Signature = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A";
                     }
                 }
 
@@ -1217,7 +1217,7 @@ namespace Amoeba.Windows
 
                             if (Settings.Instance.Global_Update_Option != UpdateOption.AutoUpdate)
                             {
-                                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                                 {
                                     if (MessageBox.Show(
                                         this,
@@ -1228,7 +1228,7 @@ namespace Amoeba.Windows
                                     {
                                         flag = false;
                                     }
-                                }), null);
+                                }));
                             }
 
                             if (flag)
@@ -1266,6 +1266,11 @@ namespace Amoeba.Windows
                 return this.PointToScreen(new Point(0, 0)).X;
             };
 
+            SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
+            _searchControl.Height = Double.NaN;
+            _searchControl.Width = Double.NaN;
+            _searchTabItem.Content = _searchControl;
+
             CacheControl _cacheControl = new CacheControl(this, _amoebaManager, _bufferManager);
             _cacheControl.Height = Double.NaN;
             _cacheControl.Width = Double.NaN;
@@ -1291,10 +1296,15 @@ namespace Amoeba.Windows
             _shareControl.Width = Double.NaN;
             _shareTabItem.Content = _shareControl;
 
-            BoxControl _libraryControl = new BoxControl(this, _amoebaManager, _bufferManager);
-            _libraryControl.Height = Double.NaN;
-            _libraryControl.Width = Double.NaN;
-            _libraryTabItem.Content = _libraryControl;
+            StoreControl _storeControl = new StoreControl(this, _amoebaManager, _bufferManager);
+            _storeControl.Height = Double.NaN;
+            _storeControl.Width = Double.NaN;
+            _storeTabItem.Content = _storeControl;
+
+            BoxControl _boxControl = new BoxControl(this, _amoebaManager, _bufferManager);
+            _boxControl.Height = Double.NaN;
+            _boxControl.Width = Double.NaN;
+            _boxTabItem.Content = _boxControl;
 
             if (Settings.Instance.Global_IsStart)
             {
@@ -1382,42 +1392,50 @@ namespace Amoeba.Windows
 
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var tabItem = _tabControl.SelectedItem as TabItem;
+            if (_tabControl.SelectedItem == _connectionTabItem)
+            {
+                App.SelectTab = TabItemType.Connection;
+            }
+            else if (_tabControl.SelectedItem == _searchTabItem)
+            {
+                App.SelectTab = TabItemType.Search;
+            }
+            else if (_tabControl.SelectedItem == _downloadTabItem)
+            {
+                App.SelectTab = TabItemType.Download;
+            }
+            else if (_tabControl.SelectedItem == _uploadTabItem)
+            {
+                App.SelectTab = TabItemType.Upload;
+            }
+            else if (_tabControl.SelectedItem == _shareTabItem)
+            {
+                App.SelectTab = TabItemType.Share;
+            }
+            else if (_tabControl.SelectedItem == _cacheTabItem)
+            {
+                App.SelectTab = TabItemType.Cache;
+            }
+            else if (_tabControl.SelectedItem == _storeTabItem)
+            {
+                App.SelectTab = TabItemType.Store;
+            }
+            else if (_tabControl.SelectedItem == _boxTabItem)
+            {
+                App.SelectTab = TabItemType.Box;
+            }
+            else if (_tabControl.SelectedItem == _logTabItem)
+            {
+                App.SelectTab = TabItemType.Log;
 
-            if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Connection)
-            {
-                App.SelectTab = "Connection";
-            }
-            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Cache)
-            {
-                App.SelectTab = "Search";
-            }
-            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Download)
-            {
-                App.SelectTab = "Download";
-            }
-            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Upload)
-            {
-                App.SelectTab = "Upload";
-            }
-            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Share)
-            {
-                App.SelectTab = "Share";
-            }
-            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Box)
-            {
-                App.SelectTab = "Library";
-            }
-            else if ((string)tabItem.Header == LanguagesManager.Instance.MainWindow_Log)
-            {
-                App.SelectTab = "Log";
+                _logRichTextBox.UpdateLayout();
+                _logRichTextBox.ScrollToEnd();
             }
             else
             {
-                App.SelectTab = "";
+                App.SelectTab = 0;
             }
 
-            _logRichTextBox.ScrollToEnd();
             this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
 
@@ -1522,7 +1540,7 @@ namespace Amoeba.Windows
 
                 _amoebaManager.CheckInternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         try
                         {
@@ -1533,12 +1551,12 @@ namespace Amoeba.Windows
                         {
 
                         }
-                    }), null);
+                    }));
 
                     isStop = flag;
                 });
 
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                 {
                     try
                     {
@@ -1548,7 +1566,7 @@ namespace Amoeba.Windows
                     {
 
                     }
-                }), null);
+                }));
             }));
 
             window.Closed += (object sender2, EventArgs e2) =>
@@ -1584,7 +1602,7 @@ namespace Amoeba.Windows
 
                 _amoebaManager.CheckExternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         try
                         {
@@ -1595,12 +1613,12 @@ namespace Amoeba.Windows
                         {
 
                         }
-                    }), null);
+                    }));
 
                     isStop = flag;
                 });
 
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                 {
                     try
                     {
@@ -1610,7 +1628,7 @@ namespace Amoeba.Windows
                     {
 
                     }
-                }), null);
+                }));
             }));
 
             window.Closed += (object sender2, EventArgs e2) =>
@@ -1640,7 +1658,7 @@ namespace Amoeba.Windows
         {
             _checkUpdateMenuItem.IsEnabled = _checkUpdateMenuItem_IsEnabled;
         }
-        
+
         private void _developerSiteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("http://lyrise.i2p.to/projects/trac/");

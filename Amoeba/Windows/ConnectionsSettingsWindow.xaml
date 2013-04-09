@@ -64,7 +64,7 @@
             <TreeView HorizontalAlignment="Stretch" Name="_treeView" VerticalAlignment="Stretch">
                 <TreeViewItem Name="_baseNodeTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_BaseNode, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_otherNodesTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_OtherNodes, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
-                <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Client, Source={StaticResource ResourcesInstance}}" IsSelected="True" />
+                <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Client, Source={StaticResource ResourcesInstance}}" />
                 <TreeViewItem Name="_serverTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Server, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_dataTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Data, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_bandwidthTreeViewItem" Header="{Binding Path=ConnectionsSettingsWindow_Bandwidth, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
@@ -224,8 +224,8 @@
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_dataTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
                 <Label Content="{Binding Path=ConnectionsSettingsWindow_CacheSize, Source={StaticResource ResourcesInstance}}" Height="22" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="360" VerticalContentAlignment="Center" />
                 <TextBox Height="24" Margin="372,36,6,0" Name="_dataCacheSizeTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <Label Content="{Binding Path=ConnectionsSettingsWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="360" VerticalContentAlignment="Center" />
-                <TextBox Name="_dataDownloadDirectoryTextBox" Height="24" Margin="372,6,6,0" VerticalAlignment="Top" PreviewMouseDoubleClick="_dataDownloadDirectoryTextBox_PreviewMouseDoubleClick" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=ConnectionsSettingsWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
+                <TextBox Name="_dataDownloadDirectoryTextBox" Height="24" Margin="252,6,6,0" VerticalAlignment="Top" PreviewMouseDoubleClick="_dataDownloadDirectoryTextBox_PreviewMouseDoubleClick" VerticalContentAlignment="Center" />
             </Grid>
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_bandwidthTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">

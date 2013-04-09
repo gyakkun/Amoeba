@@ -62,7 +62,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (App.SelectTab != "Share") continue;
+                    if (App.SelectTab != TabItemType.Share) continue;
 
                     var shareInformation = _amoebaManager.ShareInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();
@@ -74,17 +74,17 @@ namespace Amoeba.Windows
 
                     Dictionary<int, ShareListViewItem> dic2 = new Dictionary<int, ShareListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
                             dic2[item.Id] = item;
                         }
-                    }), null);
+                    }));
 
                     List<ShareListViewItem> removeList = new List<ShareListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
@@ -93,7 +93,7 @@ namespace Amoeba.Windows
                                 removeList.Add(item);
                             }
                         }
-                    }), null);
+                    }));
 
                     List<ShareListViewItem> newList = new List<ShareListViewItem>();
                     Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
@@ -113,10 +113,10 @@ namespace Amoeba.Windows
 
                         HashSet<int> hid = new HashSet<int>();
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
                             hid.UnionWith(_listView.SelectedItems.OfType<ShareListViewItem>().Select(n => n.Id));
-                        }), null);
+                        }));
 
                         foreach (var item in newList)
                         {
@@ -149,7 +149,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         bool sortFlag = false;
 
@@ -181,14 +181,14 @@ namespace Amoeba.Windows
                         }
 
                         if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
-                    }), null);
+                    }));
 
                     Thread.Sleep(1000 * 3);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
@@ -396,7 +396,7 @@ namespace Amoeba.Windows
             else
             {
                 _listView.Items.SortDescriptions.Clear();
-                
+
                 if (Settings.Instance.ShareControl_LastHeaderClicked != null)
                 {
                     var list = Sort(_listViewItemCollection, Settings.Instance.ShareControl_LastHeaderClicked, Settings.Instance.ShareControl_ListSortDirection).ToList();
@@ -437,7 +437,7 @@ namespace Amoeba.Windows
 
             if (sortBy == LanguagesManager.Instance.ShareControl_Name)
             {
-                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
@@ -449,7 +449,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
-                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Path.CompareTo(y.Path);
                     if (c != 0) return c;
@@ -461,7 +461,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.ShareControl_BlockCount)
             {
-                list.Sort(delegate(ShareListViewItem x, ShareListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.BlockCount.CompareTo(y.BlockCount);
                     if (c != 0) return c;

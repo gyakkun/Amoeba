@@ -35,13 +35,20 @@ namespace Amoeba.Windows
             }
         }
 
+        protected override void OnInitialized(EventArgs e)
+        {
+            WindowPosition.Move(this);
+
+            base.OnInitialized(e);
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             List<VersionListViewItem> items = new List<VersionListViewItem>();
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll", SearchOption.TopDirectoryOnly));
             files.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "*.exe", SearchOption.TopDirectoryOnly));
-            files.Sort(delegate(string x, string y)
+            files.Sort((x, y) =>
             {
                 return System.IO.Path.GetFileName(x).CompareTo(System.IO.Path.GetFileName(y));
             });

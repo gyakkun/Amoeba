@@ -76,8 +76,8 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (App.SelectTab != "Download") continue;
-                    
+                    if (App.SelectTab != TabItemType.Download) continue;
+
                     var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();
 
@@ -88,17 +88,17 @@ namespace Amoeba.Windows
 
                     Dictionary<int, DownloadListViewItem> dic2 = new Dictionary<int, DownloadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
                             dic2[item.Id] = item;
                         }
-                    }), null);
+                    }));
 
                     List<DownloadListViewItem> removeList = new List<DownloadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
@@ -107,7 +107,7 @@ namespace Amoeba.Windows
                                 removeList.Add(item);
                             }
                         }
-                    }), null);
+                    }));
 
                     List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
                     Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
@@ -127,10 +127,10 @@ namespace Amoeba.Windows
 
                         HashSet<int> hid = new HashSet<int>();
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
                             hid.UnionWith(_listView.SelectedItems.OfType<DownloadListViewItem>().Select(n => n.Id));
-                        }), null);
+                        }));
 
                         foreach (var item in newList)
                         {
@@ -163,7 +163,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         bool sortFlag = false;
 
@@ -195,14 +195,14 @@ namespace Amoeba.Windows
                         }
 
                         if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
-                    }), null);
+                    }));
 
                     Thread.Sleep(1000 * 3);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
@@ -260,9 +260,9 @@ namespace Amoeba.Windows
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
@@ -277,7 +277,7 @@ namespace Amoeba.Windows
             _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewResetMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewPriorityMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            
+
             if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
             else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => n.State == DownloadState.Completed);
 
@@ -303,7 +303,7 @@ namespace Amoeba.Windows
             {
                 ids.Add(item.Id);
             }
-            
+
             _listViewDeleteMenuItem_IsEnabled = false;
 
             ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
@@ -350,7 +350,7 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var seed in selectItems.Cast<DownloadListViewItem>().Select(n=>n.Value))
+            foreach (var seed in selectItems.Cast<DownloadListViewItem>().Select(n => n.Value))
             {
                 if (seed == null) continue;
 
@@ -519,7 +519,7 @@ namespace Amoeba.Windows
             else
             {
                 _listView.Items.SortDescriptions.Clear();
-                
+
                 if (Settings.Instance.DownloadControl_LastHeaderClicked != null)
                 {
                     var list = Sort(_listViewItemCollection, Settings.Instance.DownloadControl_LastHeaderClicked, Settings.Instance.DownloadControl_ListSortDirection).ToList();
@@ -574,7 +574,7 @@ namespace Amoeba.Windows
 
             if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
             {
-                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
@@ -586,7 +586,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Length)
             {
-                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Length.CompareTo(y.Length);
                     if (c != 0) return c;
@@ -598,7 +598,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Priority)
             {
-                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Priority.CompareTo(y.Priority);
                     if (c != 0) return c;
@@ -610,7 +610,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Rate)
             {
-                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
@@ -626,7 +626,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
             {
-                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Path.CompareTo(y.Path);
                     if (c != 0) return c;
@@ -638,7 +638,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_State)
             {
-                list.Sort(delegate(DownloadListViewItem x, DownloadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
@@ -808,8 +808,8 @@ namespace Amoeba.Windows
                 {
                     if (value != _rank)
                     {
-                        _rank = value; 
-                        
+                        _rank = value;
+
                         this.NotifyPropertyChanged("Rank");
                     }
                 }
@@ -825,8 +825,8 @@ namespace Amoeba.Windows
                 {
                     if (value != _name)
                     {
-                        _name = value; 
-                        
+                        _name = value;
+
                         this.NotifyPropertyChanged("Name");
                     }
                 }
@@ -842,8 +842,8 @@ namespace Amoeba.Windows
                 {
                     if (value != _path)
                     {
-                        _path = value; 
-                        
+                        _path = value;
+
                         this.NotifyPropertyChanged("Path");
                     }
                 }
@@ -860,7 +860,7 @@ namespace Amoeba.Windows
                     if (value != _state)
                     {
                         _state = value;
-                        
+
                         this.NotifyPropertyChanged("State");
                     }
                 }
@@ -876,8 +876,8 @@ namespace Amoeba.Windows
                 {
                     if (value != _length)
                     {
-                        _length = value; 
-                        
+                        _length = value;
+
                         this.NotifyPropertyChanged("Length");
                     }
                 }
@@ -894,7 +894,7 @@ namespace Amoeba.Windows
                     if (value != _priority)
                     {
                         _priority = value;
-                        
+
                         this.NotifyPropertyChanged("Priority");
                     }
                 }
@@ -911,7 +911,7 @@ namespace Amoeba.Windows
                     if (value != _rate)
                     {
                         _rate = value;
-                        
+
                         this.NotifyPropertyChanged("Rate");
                     }
                 }
@@ -927,8 +927,8 @@ namespace Amoeba.Windows
                 {
                     if (value != _rateText)
                     {
-                        _rateText = value; 
-                        
+                        _rateText = value;
+
                         this.NotifyPropertyChanged("RateText");
                     }
                 }
@@ -944,8 +944,8 @@ namespace Amoeba.Windows
                 {
                     if (value != _value)
                     {
-                        _value = value; 
-                        
+                        _value = value;
+
                         this.NotifyPropertyChanged("Value");
                     }
                 }

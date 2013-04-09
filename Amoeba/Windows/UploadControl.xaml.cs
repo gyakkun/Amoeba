@@ -69,7 +69,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (App.SelectTab != "Upload") continue;
+                    if (App.SelectTab != TabItemType.Upload) continue;
 
                     var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();
@@ -81,17 +81,17 @@ namespace Amoeba.Windows
 
                     Dictionary<int, UploadListViewItem> dic2 = new Dictionary<int, UploadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
                             dic2[item.Id] = item;
                         }
-                    }), null);
+                    }));
 
                     List<UploadListViewItem> removeList = new List<UploadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
@@ -100,7 +100,7 @@ namespace Amoeba.Windows
                                 removeList.Add(item);
                             }
                         }
-                    }), null);
+                    }));
 
                     List<UploadListViewItem> newList = new List<UploadListViewItem>();
                     Dictionary<UploadListViewItem, Information> updateDic = new Dictionary<UploadListViewItem, Information>();
@@ -120,10 +120,10 @@ namespace Amoeba.Windows
 
                         HashSet<int> hid = new HashSet<int>();
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
                             hid.UnionWith(_listView.SelectedItems.OfType<UploadListViewItem>().Select(n => n.Id));
-                        }), null);
+                        }));
 
                         foreach (var item in newList)
                         {
@@ -156,7 +156,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action<object>(delegate(object state2)
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         bool sortFlag = false;
 
@@ -188,14 +188,14 @@ namespace Amoeba.Windows
                         }
 
                         if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
-                    }), null);
+                    }));
 
                     Thread.Sleep(1000 * 3);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
@@ -242,7 +242,7 @@ namespace Amoeba.Windows
             _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewResetMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             _listViewPriorityMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-         
+
             if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
             else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => n.State == UploadState.Completed);
         }
@@ -550,7 +550,7 @@ namespace Amoeba.Windows
 
             if (sortBy == LanguagesManager.Instance.UploadControl_Name)
             {
-                list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
@@ -562,7 +562,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_Length)
             {
-                list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Length.CompareTo(y.Length);
                     if (c != 0) return c;
@@ -574,7 +574,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_Priority)
             {
-                list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Priority.CompareTo(y.Priority);
                     if (c != 0) return c;
@@ -586,7 +586,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_Rate)
             {
-                list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
@@ -602,7 +602,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_Path)
             {
-                list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.Path.CompareTo(y.Path);
                     if (c != 0) return c;
@@ -614,7 +614,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_State)
             {
-                list.Sort(delegate(UploadListViewItem x, UploadListViewItem y)
+                list.Sort((x, y) =>
                 {
                     int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
@@ -632,7 +632,7 @@ namespace Amoeba.Windows
 
             return list;
         }
-        
+
         #endregion
 
         private class UploadListViewItem : INotifyPropertyChanged
@@ -774,8 +774,8 @@ namespace Amoeba.Windows
                 {
                     if (value != _rank)
                     {
-                        _rank = value; 
-                        
+                        _rank = value;
+
                         this.NotifyPropertyChanged("Rank");
                     }
                 }

@@ -2625,7 +2625,7 @@
                             </Trigger.EnterActions>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="#ADADAD" />
+                            <!--<Setter Property="Foreground" Value="#ADADAD" />-->
                             <Setter Property="Background" TargetName="Border" Value="{DynamicResource DisabledBackgroundBrush}"/>
                             <Setter Property="BorderBrush" TargetName="Border" Value="{DynamicResource DisabledBorderBrush}"/>
                             <Setter Property="Opacity" TargetName="grid" Value="0.5"/>

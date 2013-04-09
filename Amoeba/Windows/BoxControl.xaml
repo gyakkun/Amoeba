@@ -56,7 +56,6 @@
 
     <Grid Name="_grid" AllowDrop="True" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
         <Grid.RowDefinitions>
-            <RowDefinition Height="24" />
             <RowDefinition Height="*" />
             <RowDefinition Name="_searchRowDefinition" Height="24" />
         </Grid.RowDefinitions>
@@ -67,10 +66,8 @@
         </Grid.ColumnDefinitions>
 
         <GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
-
-        <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" VerticalContentAlignment="Center" />
-
-        <TreeView Name="_treeView" Grid.Row="1" ContextMenuOpening="_treeView_ContextMenuOpening" PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown" SelectedItemChanged="_treeView_SelectedItemChanged" AllowDrop="True" PreviewMouseRightButtonDown="_treeView_PreviewMouseRightButtonDown" PreviewDragOver="_treeView_PreviewDragOver"
+        
+        <TreeView Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" SelectedItemChanged="_treeView_SelectedItemChanged" AllowDrop="True" PreviewDragOver="_treeView_PreviewDragOver"
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove" Grid.RowSpan="2">
             <local:BoxTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
                 <local:BoxTreeViewItem.ContextMenu>

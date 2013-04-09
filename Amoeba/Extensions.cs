@@ -145,6 +145,42 @@ namespace Amoeba
             Point mousePos = MouseUtilities.GetMousePosition(target);
             return bounds.Contains(mousePos);
         }
+
+        public static IEnumerable<TreeViewItem> GetLineage(this TreeView parentView, TreeViewItem childItem)
+        {
+            var list = new List<TreeViewItem>();
+            list.AddRange(parentView.Items.Cast<TreeViewItem>());
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                foreach (TreeViewItem item in list[i].Items)
+                {
+                    list.Add(item);
+                }
+            }
+
+            var targetList = new List<TreeViewItem>();
+            targetList.Add(childItem);
+
+            try
+            {
+                for (; ; )
+                {
+                    var item = targetList.Last();
+                    if (parentView.Items.Contains(item)) break;
+
+                    targetList.Add(list.First(n => n.Items.Contains(item)));
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            targetList.Reverse();
+
+            return targetList;
+        }
     }
 
     static class TreeViewItemExtensions

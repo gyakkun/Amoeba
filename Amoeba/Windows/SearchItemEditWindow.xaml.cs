@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,14 +24,14 @@ namespace Amoeba.Windows
     partial class SearchItemEditWindow : Window
     {
         private SearchItem _searchItem;
-        private List<SearchContains<string>> _searchNameCollection;
-        private List<SearchContains<SearchRegex>> _searchNameRegexCollection;
-        private List<SearchContains<SearchRegex>> _searchSignatureCollection;
-        private List<SearchContains<string>> _searchKeywordCollection;
-        private List<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRangeCollection;
-        private List<SearchContains<SearchRange<long>>> _searchLengthRangeCollection;
-        private List<SearchContains<Seed>> _searchSeedCollection;
-        private List<SearchContains<SearchState>> _searchStateCollection;
+        private ObservableCollection<SearchContains<string>> _searchNameCollection;
+        private ObservableCollection<SearchContains<SearchRegex>> _searchNameRegexCollection;
+        private ObservableCollection<SearchContains<SearchRegex>> _searchSignatureCollection;
+        private ObservableCollection<SearchContains<string>> _searchKeywordCollection;
+        private ObservableCollection<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRangeCollection;
+        private ObservableCollection<SearchContains<SearchRange<long>>> _searchLengthRangeCollection;
+        private ObservableCollection<SearchContains<Seed>> _searchSeedCollection;
+        private ObservableCollection<SearchContains<SearchState>> _searchStateCollection;
 
         public SearchItemEditWindow(ref SearchItem searchItem)
         {
@@ -53,14 +54,14 @@ namespace Amoeba.Windows
             {
                 _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
 
-                _searchNameCollection = _searchItem.SearchNameCollection.Select(n => n.DeepClone()).ToList();
-                _searchNameRegexCollection = _searchItem.SearchNameRegexCollection.Select(n => n.DeepClone()).ToList();
-                _searchSignatureCollection = _searchItem.SearchSignatureCollection.Select(n => n.DeepClone()).ToList();
-                _searchKeywordCollection = _searchItem.SearchKeywordCollection.Select(n => n.DeepClone()).ToList();
-                _searchCreationTimeRangeCollection = _searchItem.SearchCreationTimeRangeCollection.Select(n => n.DeepClone()).ToList();
-                _searchLengthRangeCollection = _searchItem.SearchLengthRangeCollection.Select(n => n.DeepClone()).ToList();
-                _searchSeedCollection = _searchItem.SearchSeedCollection.Select(n => n.DeepClone()).ToList();
-                _searchStateCollection = _searchItem.SearchStateCollection.Select(n => n.DeepClone()).ToList();
+                _searchNameCollection = new ObservableCollection<SearchContains<string>>(_searchItem.SearchNameCollection.Select(n => n.DeepClone()));
+                _searchNameRegexCollection = new ObservableCollection<SearchContains<SearchRegex>>(_searchItem.SearchNameRegexCollection.Select(n => n.DeepClone()));
+                _searchSignatureCollection = new ObservableCollection<SearchContains<SearchRegex>>(_searchItem.SearchSignatureCollection.Select(n => n.DeepClone()));
+                _searchKeywordCollection = new ObservableCollection<SearchContains<string>>(_searchItem.SearchKeywordCollection.Select(n => n.DeepClone()));
+                _searchCreationTimeRangeCollection = new ObservableCollection<SearchContains<SearchRange<DateTime>>>(_searchItem.SearchCreationTimeRangeCollection.Select(n => n.DeepClone()));
+                _searchLengthRangeCollection = new ObservableCollection<SearchContains<SearchRange<long>>>(_searchItem.SearchLengthRangeCollection.Select(n => n.DeepClone()));
+                _searchSeedCollection = new ObservableCollection<SearchContains<Seed>>(_searchItem.SearchSeedCollection.Select(n => n.DeepClone()));
+                _searchStateCollection = new ObservableCollection<SearchContains<SearchState>>(_searchItem.SearchStateCollection.Select(n => n.DeepClone()));
             }
 
             _nameContainsCheckBox.IsChecked = true;
@@ -92,6 +93,20 @@ namespace Amoeba.Windows
             }
 
             _searchStateComboBox.SelectedIndex = -1;
+
+            _searchTreeViewItemNameTextBox_TextChanged(null, null);
+        }
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            WindowPosition.Move(this);
+
+            base.OnInitialized(e);
+        }
+
+        private void _searchTreeViewItemNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _okButton.IsEnabled = !string.IsNullOrWhiteSpace(_searchTreeViewItemNameTextBox.Text);
         }
 
         #region _nameListView
@@ -105,7 +120,7 @@ namespace Amoeba.Windows
                 e.Handled = true;
             }
         }
-        
+
         private void _nameListViewUpdate()
         {
             _nameListView_SelectionChanged(this, null);
@@ -193,6 +208,12 @@ namespace Amoeba.Windows
             _nameDeleteButton_Click(null, null);
         }
 
+        private void _nameListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _nameListViewCopyMenuItem_Click(null, null);
+            _nameDeleteButton_Click(null, null);
+        }
+
         private void _nameListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
@@ -203,12 +224,6 @@ namespace Amoeba.Windows
             }
 
             Clipboard.SetText(sb.ToString());
-        }
-
-        private void _nameListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            _nameListViewCopyMenuItem_Click(null, null);
-            _nameDeleteButton_Click(null, null);
         }
 
         private void _nameListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -252,9 +267,7 @@ namespace Amoeba.Windows
             var selectIndex = _nameListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchNameCollection.Remove(item);
-            _searchNameCollection.Insert(selectIndex - 1, item);
-            _nameListView.Items.Refresh();
+            _searchNameCollection.Move(selectIndex, selectIndex - 1);
 
             _nameListViewUpdate();
         }
@@ -267,9 +280,7 @@ namespace Amoeba.Windows
             var selectIndex = _nameListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchNameCollection.Remove(item);
-            _searchNameCollection.Insert(selectIndex + 1, item);
-            _nameListView.Items.Refresh();
+            _searchNameCollection.Move(selectIndex, selectIndex + 1);
 
             _nameListViewUpdate();
         }
@@ -508,9 +519,7 @@ namespace Amoeba.Windows
             var selectIndex = _nameRegexListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchNameRegexCollection.Remove(item);
-            _searchNameRegexCollection.Insert(selectIndex - 1, item);
-            _nameRegexListView.Items.Refresh();
+            _searchNameRegexCollection.Move(selectIndex, selectIndex - 1);
 
             _nameRegexListViewUpdate();
         }
@@ -523,9 +532,7 @@ namespace Amoeba.Windows
             var selectIndex = _nameRegexListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchNameRegexCollection.Remove(item);
-            _searchNameRegexCollection.Insert(selectIndex + 1, item);
-            _nameRegexListView.Items.Refresh();
+            _searchNameRegexCollection.Move(selectIndex, selectIndex + 1);
 
             _nameRegexListViewUpdate();
         }
@@ -787,9 +794,7 @@ namespace Amoeba.Windows
             var selectIndex = _signatureListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchSignatureCollection.Remove(item);
-            _searchSignatureCollection.Insert(selectIndex - 1, item);
-            _signatureListView.Items.Refresh();
+            _searchSignatureCollection.Move(selectIndex, selectIndex - 1);
 
             _signatureListViewUpdate();
         }
@@ -802,9 +807,7 @@ namespace Amoeba.Windows
             var selectIndex = _signatureListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchSignatureCollection.Remove(item);
-            _searchSignatureCollection.Insert(selectIndex + 1, item);
-            _signatureListView.Items.Refresh();
+            _searchSignatureCollection.Move(selectIndex, selectIndex + 1);
 
             _signatureListViewUpdate();
         }
@@ -904,7 +907,7 @@ namespace Amoeba.Windows
                 e.Handled = true;
             }
         }
-        
+
         private void _keywordListViewUpdate()
         {
             _keywordListView_SelectionChanged(this, null);
@@ -1051,9 +1054,7 @@ namespace Amoeba.Windows
             var selectIndex = _keywordListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchKeywordCollection.Remove(item);
-            _searchKeywordCollection.Insert(selectIndex - 1, item);
-            _keywordListView.Items.Refresh();
+            _searchKeywordCollection.Move(selectIndex, selectIndex - 1);
 
             _keywordListViewUpdate();
         }
@@ -1066,9 +1067,7 @@ namespace Amoeba.Windows
             var selectIndex = _keywordListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchKeywordCollection.Remove(item);
-            _searchKeywordCollection.Insert(selectIndex + 1, item);
-            _keywordListView.Items.Refresh();
+            _searchKeywordCollection.Move(selectIndex, selectIndex + 1);
 
             _keywordListViewUpdate();
         }
@@ -1317,9 +1316,7 @@ namespace Amoeba.Windows
             var selectIndex = _creationTimeRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchCreationTimeRangeCollection.Remove(item);
-            _searchCreationTimeRangeCollection.Insert(selectIndex - 1, item);
-            _creationTimeRangeListView.Items.Refresh();
+            _searchCreationTimeRangeCollection.Move(selectIndex, selectIndex - 1);
 
             _creationTimeRangeListViewUpdate();
         }
@@ -1332,9 +1329,7 @@ namespace Amoeba.Windows
             var selectIndex = _creationTimeRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchCreationTimeRangeCollection.Remove(item);
-            _searchCreationTimeRangeCollection.Insert(selectIndex + 1, item);
-            _creationTimeRangeListView.Items.Refresh();
+            _searchCreationTimeRangeCollection.Move(selectIndex, selectIndex + 1);
 
             _creationTimeRangeListViewUpdate();
         }
@@ -1453,7 +1448,7 @@ namespace Amoeba.Windows
                 e.Handled = true;
             }
         }
-        
+
         private void _lengthRangeListViewUpdate()
         {
             _lengthRangeListView_SelectionChanged(this, null);
@@ -1607,9 +1602,7 @@ namespace Amoeba.Windows
             var selectIndex = _lengthRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchLengthRangeCollection.Remove(item);
-            _searchLengthRangeCollection.Insert(selectIndex - 1, item);
-            _lengthRangeListView.Items.Refresh();
+            _searchLengthRangeCollection.Move(selectIndex, selectIndex - 1);
 
             _lengthRangeListViewUpdate();
         }
@@ -1622,9 +1615,7 @@ namespace Amoeba.Windows
             var selectIndex = _lengthRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchLengthRangeCollection.Remove(item);
-            _searchLengthRangeCollection.Insert(selectIndex + 1, item);
-            _lengthRangeListView.Items.Refresh();
+            _searchLengthRangeCollection.Move(selectIndex, selectIndex + 1);
 
             _lengthRangeListViewUpdate();
         }
@@ -1728,7 +1719,7 @@ namespace Amoeba.Windows
                 e.Handled = true;
             }
         }
-        
+
         private void _seedListViewUpdate()
         {
             _seedListView_SelectionChanged(this, null);
@@ -1906,9 +1897,7 @@ namespace Amoeba.Windows
             var selectIndex = _seedListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchSeedCollection.Remove(item);
-            _searchSeedCollection.Insert(selectIndex - 1, item);
-            _seedListView.Items.Refresh();
+            _searchSeedCollection.Move(selectIndex, selectIndex - 1);
 
             _seedListViewUpdate();
         }
@@ -1921,9 +1910,7 @@ namespace Amoeba.Windows
             var selectIndex = _seedListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchSeedCollection.Remove(item);
-            _searchSeedCollection.Insert(selectIndex + 1, item);
-            _seedListView.Items.Refresh();
+            _searchSeedCollection.Move(selectIndex, selectIndex + 1);
 
             _seedListViewUpdate();
         }
@@ -2020,7 +2007,7 @@ namespace Amoeba.Windows
                 e.Handled = true;
             }
         }
-        
+
         private void _searchStateListViewUpdate()
         {
             _searchStateListView_SelectionChanged(this, null);
@@ -2167,9 +2154,7 @@ namespace Amoeba.Windows
             var selectIndex = _searchStateListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchStateCollection.Remove(item);
-            _searchStateCollection.Insert(selectIndex - 1, item);
-            _searchStateListView.Items.Refresh();
+            _searchStateCollection.Move(selectIndex, selectIndex - 1);
 
             _searchStateListViewUpdate();
         }
@@ -2182,9 +2167,7 @@ namespace Amoeba.Windows
             var selectIndex = _searchStateListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchStateCollection.Remove(item);
-            _searchStateCollection.Insert(selectIndex + 1, item);
-            _searchStateListView.Items.Refresh();
+            _searchStateCollection.Move(selectIndex, selectIndex + 1);
 
             _searchStateListViewUpdate();
         }

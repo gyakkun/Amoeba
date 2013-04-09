@@ -24,7 +24,7 @@ namespace Amoeba.Windows
     /// </summary>
     partial class ViewSettingsWindow : Window
     {
-        private BufferManager _bufferManager = new BufferManager();
+        private BufferManager _bufferManager;
         private KeywordCollection _keywords = new KeywordCollection();
         private List<SignatureListViewItem> _signatureListViewItemCollection = new List<SignatureListViewItem>();
 
@@ -68,6 +68,8 @@ namespace Amoeba.Windows
                 _updateOptionAutoUpdateRadioButton.IsChecked = true;
             }
 
+            _extractToTextBox.Text = Settings.Instance.Global_BoxExtractTo_Path;
+
             try
             {
                 string extension = ".box";
@@ -101,6 +103,13 @@ namespace Amoeba.Windows
             }
 
             _miscellaneousOpenBoxCheckBox.IsChecked = Settings.Instance.Global_OpenBox_IsEnabled;
+        }
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            WindowPosition.Move(this);
+
+            base.OnInitialized(e);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -574,7 +583,7 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_Update_Url = _updateUrlTextBox.Text;
             Settings.Instance.Global_Update_ProxyUri = _updateProxyUriTextBox.Text;
-            Settings.Instance.Global_Update_Signature = _updateSignatureTextBox.Text;
+            if (Signature.HasSignature(_updateSignatureTextBox.Text)) Settings.Instance.Global_Update_Signature = _updateSignatureTextBox.Text;
 
             if (_updateOptionNoneRadioButton.IsChecked.Value)
             {
@@ -588,6 +597,8 @@ namespace Amoeba.Windows
             {
                 Settings.Instance.Global_Update_Option = UpdateOption.AutoUpdate;
             }
+
+            Settings.Instance.Global_BoxExtractTo_Path = _extractToTextBox.Text;
 
             if (Settings.Instance.Global_RelateBoxFile_IsEnabled != _miscellaneousRelateBoxFileCheckBox.IsChecked.Value)
             {

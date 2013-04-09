@@ -16,7 +16,7 @@
 
     <Grid>
         <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
-        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" TextChanged="_nameTextBox_TextChanged" />
         <Label Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
         <Grid Height="24" Margin="138,42,12,0" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
