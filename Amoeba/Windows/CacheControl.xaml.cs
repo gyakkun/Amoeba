@@ -568,14 +568,14 @@ namespace Amoeba.Windows
                         var boxList = new List<Box>();
                         boxList.Add(Settings.Instance.BoxControl_Box);
 
-                        foreach (var store in Settings.Instance.StoreControl_StoreTreeItems)
+                        foreach (var storeInfo in Settings.Instance.StoreControl_StoreTreeItems)
                         {
-                            boxList.AddRange(store.Boxes);
+                            boxList.AddRange(storeInfo.Boxes);
                         }
 
-                        foreach (var store in Settings.Instance.SearchControl_StoreTreeItems)
+                        foreach (var storeInfo in Settings.Instance.SearchControl_StoreTreeItems)
                         {
-                            boxList.AddRange(store.Boxes);
+                            boxList.AddRange(storeInfo.Boxes);
                         }
 
                         for (int i = 0; i < boxList.Count; i++)

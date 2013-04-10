@@ -1321,6 +1321,31 @@ namespace Amoeba.Windows
             {
                 _checkUpdateMenuItem_Click(null, null);
             }
+
+            _amoebaManager.RemoveSeedSignaturesEvent = new RemoveSeedSignaturesEventHandler(_amoebaManagerRemoveSeedSignaturesEvent);
+        }
+
+        SignatureCollection _amoebaManagerRemoveSeedSignaturesEvent(object sender)
+        {
+            HashSet<string> lockedSignatures = new HashSet<string>();
+
+            foreach (var storeInfo in Settings.Instance.StoreControl_StoreTreeItems)
+            {
+                if (!Signature.HasSignature(storeInfo.UploadSignature)) continue;
+                lockedSignatures.Add(storeInfo.UploadSignature);
+            }
+
+            foreach (var storeInfo in Settings.Instance.SearchControl_StoreTreeItems)
+            {
+                if (!Signature.HasSignature(storeInfo.UploadSignature)) continue;
+                lockedSignatures.Add(storeInfo.UploadSignature);
+            }
+
+            HashSet<string> removeSignatures = new HashSet<string>(_amoebaManager.GetSignatures());
+            removeSignatures.ExceptWith(lockedSignatures);
+
+            int capacity = Math.Max(lockedSignatures.Count * 2, 1024);
+            return new SignatureCollection(removeSignatures.Randomize().Skip(capacity));
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
