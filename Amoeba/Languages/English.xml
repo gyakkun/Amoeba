@@ -41,8 +41,8 @@
   <Translate Key="MainWindow_ViewSettings" Value="View settings" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
   <Translate Key="MainWindow_Help" Value="Help" />
-  <Translate Key="MainWindow_DeveloperSite" Value="Developer site" />
-  <Translate Key="MainWindow_ManualSite" Value="Manual site" />
+  <Translate Key="MainWindow_ManualSite" Value="Documentation" />
+  <Translate Key="MainWindow_DeveloperSite" Value="Source code" />
   <Translate Key="MainWindow_CheckUpdate" Value="Check update" />
   <Translate Key="MainWindow_VersionInformation" Value="Version information" />
   <Translate Key="MainWindow_SendSpeed" Value="Send:" />

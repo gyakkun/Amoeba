@@ -560,17 +560,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_DeveloperSite
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_DeveloperSite");
-                }
-            }
-        }
-
         public string MainWindow_ManualSite
         {
             get
@@ -578,6 +567,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_ManualSite");
+                }
+            }
+        }
+
+        public string MainWindow_DeveloperSite
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_DeveloperSite");
                 }
             }
         }

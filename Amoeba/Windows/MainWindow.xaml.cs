@@ -1689,14 +1689,14 @@ namespace Amoeba.Windows
             _checkUpdateMenuItem.IsEnabled = _checkUpdateMenuItem_IsEnabled;
         }
 
-        private void _developerSiteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("http://lyrise.i2p.to/projects/trac/");
-        }
-
         private void _manualSiteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("http://lyrise.web.fc2.com/");
+            Process.Start("http://lyrise.web.fc2.com/index.html");
+        }
+
+        private void _developerSiteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/Alliance-Network");
         }
 
         volatile bool _checkUpdateMenuItem_IsEnabled = true;
