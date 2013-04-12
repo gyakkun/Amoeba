@@ -1252,6 +1252,8 @@ namespace Amoeba.Windows
 
             if (window.ShowDialog() == true)
             {
+                if (_treeViewItemCollection.Any(n => n.Value.UploadSignature == window.DigitalSignature.ToString())) return;
+
                 var storeInfo = new StoreInfo();
                 storeInfo.UploadSignature = window.DigitalSignature.ToString();
 
@@ -1321,10 +1323,10 @@ namespace Amoeba.Windows
 
             if (window.ShowDialog() == true)
             {
-                var storeInfo = new StoreInfo();
-                storeInfo.UploadSignature = window.DigitalSignature.ToString();
+                if (_treeViewItemCollection.Any(n => n.Value.UploadSignature == window.DigitalSignature.ToString())) return;
 
-                _treeViewItemCollection.Add(new StoreTreeViewItem(storeInfo));
+                selectTreeViewItem.Value.UploadSignature = window.DigitalSignature.ToString();
+                selectTreeViewItem.Update();
             }
 
             this.Update();
