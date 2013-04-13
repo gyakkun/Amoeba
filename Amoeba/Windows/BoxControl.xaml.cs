@@ -1954,19 +1954,35 @@ namespace Amoeba.Windows
             e.Handled = true;
         }
 
+        private static int GetTotalSeedCount(Box box)
+        {
+            List<Box> boxList = new List<Box>();
+            List<Seed> seedList = new List<Seed>();
+
+            boxList.Add(box);
+
+            for (int i = 0; i < boxList.Count; i++)
+            {
+                boxList.AddRange(boxList[i].Boxes);
+                seedList.AddRange(boxList[i].Seeds);
+            }
+
+            return seedList.Count;
+        }
+
         public void Update()
         {
             this.AllowDrop = true;
 
             if (this.Value.Certificate == null)
             {
-                this.Header = string.Format("{0} ({1})", this.Value.Name, this.Value.Seeds.Count);
+                this.Header = string.Format("{0} ({1})", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value));
             }
             else
             {
                 var w = new WrapPanel();
                 w.Children.Add(new TextBlock() { Text = this.Value.Name });
-                w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) - ", this.Value.Seeds.Count) });
+                w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) - ", BoxTreeViewItem.GetTotalSeedCount(this.Value)) });
                 w.Children.Add(new TextBlock()
                 {
                     Text = this.Value.Certificate.ToString(),

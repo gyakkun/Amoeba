@@ -1948,7 +1948,7 @@ namespace Amoeba.Windows
 
             if (selectTreeViewItem is StoreTreeViewItem)
             {
-                var selectStoreTreeViewItem = (StoreTreeViewItem)_treeView.SelectedItem;
+                var selectStoreTreeViewItem = (StoreTreeViewItem)selectTreeViewItem;
 
                 Box box;
 
@@ -1976,7 +1976,7 @@ namespace Amoeba.Windows
             }
             else if (selectTreeViewItem is BoxTreeViewItem)
             {
-                var selectBoxTreeViewItem = (BoxTreeViewItem)_treeView.SelectedItem;
+                var selectBoxTreeViewItem = (BoxTreeViewItem)selectTreeViewItem;
 
                 if (!this.DigitalSignatureRelease(_treeView.GetLineage(selectBoxTreeViewItem).OfType<BoxTreeViewItem>().Select(n => n.Value))) return;
 
