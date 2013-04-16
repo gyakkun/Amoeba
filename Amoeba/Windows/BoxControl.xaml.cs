@@ -1970,34 +1970,43 @@ namespace Amoeba.Windows
             return seedList.Count;
         }
 
-        public void Update()
+        private void Update_Header()
         {
-            this.AllowDrop = true;
-
             if (this.Value.Certificate == null)
             {
                 this.Header = string.Format("{0} ({1})", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value));
             }
             else
             {
-                var w = new WrapPanel();
-                w.Children.Add(new TextBlock() { Text = this.Value.Name });
-                w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) - ", BoxTreeViewItem.GetTotalSeedCount(this.Value)) });
-                w.Children.Add(new TextBlock()
-                {
-                    Text = this.Value.Certificate.ToString(),
-                    //Foreground = new SolidColorBrush(Color.FromRgb(64, 255, 0))
-                    //FontWeight = FontWeight.FromOpenTypeWeight(800),
-                });
+                //var w = new WrapPanel();
+                //w.Children.Add(new TextBlock() { Text = this.Value.Name });
+                //w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) - ", BoxTreeViewItem.GetTotalSeedCount(this.Value)) });
+                //w.Children.Add(new TextBlock()
+                //{
+                //    Text = this.Value.Certificate.ToString(),
+                //    //Foreground = new SolidColorBrush(Color.FromRgb(64, 255, 0))
+                //    //FontWeight = FontWeight.FromOpenTypeWeight(800),
+                //});
 
-                this.Header = w;
+                //this.Header = w;
+
+                this.Header = string.Format("{0} ({1}) - {2}", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value), this.Value.Certificate.ToString());
             }
+
+            if (this.Parent != null) this.Parent.Update_Header();
+        }
+
+        public void Update()
+        {
+            this.Update_Header();
 
             List<BoxTreeViewItem> list = new List<BoxTreeViewItem>();
 
             foreach (var item in _value.Boxes)
             {
-                list.Add(new BoxTreeViewItem(item));
+                var treeViewItem = new BoxTreeViewItem(item);
+                treeViewItem.Parent = this;
+                list.Add(treeViewItem);
             }
 
             foreach (var item in _listViewItemCollection.OfType<BoxTreeViewItem>().ToArray())
@@ -2054,6 +2063,8 @@ namespace Amoeba.Windows
                 item.Sort();
             }
         }
+
+        private new BoxTreeViewItem Parent { get; set; }
 
         public Box Value
         {

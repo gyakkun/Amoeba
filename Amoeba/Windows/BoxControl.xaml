@@ -91,7 +91,7 @@
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove" >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" IsItemsHost="True"/>
+                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
             <ListView.ContextMenu>

@@ -134,11 +134,13 @@ namespace Amoeba.Windows
 
                         continue;
                     }
-                    
+
                     if (selectTreeViewItem is StoreTreeViewItem)
                     {
                         StoreTreeViewItem selectStoreTreeViewItem = (StoreTreeViewItem)selectTreeViewItem;
 
+                        selectStoreTreeViewItem.Value.IsUpdated = false;
+                        
                         HashSet<object> newList = new HashSet<object>(new ReferenceEqualityComparer());
                         HashSet<object> oldList = new HashSet<object>(new ReferenceEqualityComparer());
 
@@ -482,6 +484,7 @@ namespace Amoeba.Windows
                             StoreInfo storeInfo = new StoreInfo();
                             storeInfo.UploadSignature = storeTreeViewItem.Value.UploadSignature;
                             storeInfo.Boxes.AddRange(store.Boxes);
+                            storeInfo.IsUpdated = true;
 
                             storeTreeViewItem.Value = storeInfo;
                             storeTreeViewItem.Update();
@@ -671,6 +674,8 @@ namespace Amoeba.Windows
                 item.Sort();
             }
 
+            this.Update_TreeView_Color();
+
             Settings.Instance.SearchControl_StoreTreeItems = _treeViewItemCollection.Select(n => n.Value).ToLockedList();
 
             _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
@@ -680,6 +685,55 @@ namespace Amoeba.Windows
         private void Update_Cache()
         {
             _autoResetEvent.Set();
+        }
+
+        private void Update_TreeView_Color()
+        {
+            var selectTreeViewItem = _treeView.SelectedItem as TreeViewItem;
+
+            {
+                var items = new List<TreeViewItem>();
+                items.AddRange(_treeViewItemCollection.OfType<TreeViewItem>());
+
+                var hitItems = new HashSet<TreeViewItem>();
+
+                foreach (var item in items.OfType<StoreTreeViewItem>().Where(n => n.Value.IsUpdated))
+                {
+                    hitItems.UnionWith(_treeView.GetLineage(item));
+                }
+
+                foreach (var item in items)
+                {
+                    var textBlock = (TextBlock)item.Header;
+
+                    if (hitItems.Contains(item))
+                    {
+                        textBlock.FontWeight = FontWeights.ExtraBlack;
+
+                        if (selectTreeViewItem != item)
+                        {
+                            textBlock.Foreground = new SolidColorBrush(Settings.Instance.Color_Tree_Hit);
+                        }
+                        else
+                        {
+                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
+                        }
+                    }
+                    else
+                    {
+                        textBlock.FontWeight = FontWeights.Normal;
+
+                        if (selectTreeViewItem != item)
+                        {
+                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF));
+                        }
+                        else
+                        {
+                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
+                        }
+                    }
+                }
+            }
         }
 
         #region _treeView

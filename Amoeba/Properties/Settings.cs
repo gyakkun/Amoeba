@@ -10,6 +10,7 @@ using Library.Net;
 using Library.Net.Amoeba;
 using Library.Security;
 using Library.Collections;
+using System.Windows.Media;
 
 namespace Amoeba.Properties
 {
@@ -35,6 +36,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:18118" },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_Signature", Value = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A" },
                 new Library.Configuration.SettingsContext<UpdateOption>() { Name = "Global_Update_Option", Value = UpdateOption.AutoCheck },
+
+                new Library.Configuration.SettingsContext<Color>() { Name = "Color_Tree_Hit", Value = Colors.LightPink },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Left", Value = 120 },
@@ -490,6 +493,26 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_Update_Option"] = value;
+                }
+            }
+        }
+
+
+        public Color Color_Tree_Hit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (Color)this["Color_Tree_Hit"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Color_Tree_Hit"] = value;
                 }
             }
         }

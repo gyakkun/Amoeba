@@ -18,6 +18,7 @@ using Ionic.Zip;
 using Library;
 using Library.Io;
 using Library.Net.Amoeba;
+using System.Windows.Media;
 
 namespace Amoeba
 {
@@ -46,7 +47,7 @@ namespace Amoeba
         private List<Process> _processList = new List<Process>();
 
         public App()
-        {
+        {            
             App.AmoebaVersion = new Version(1, 0, 6);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
@@ -81,7 +82,7 @@ namespace Amoeba
 
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(App_UnhandledException);
         }
-
+        
         private static string GetUniqueFilePath(string path)
         {
             if (!File.Exists(path))

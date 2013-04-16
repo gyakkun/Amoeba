@@ -2614,9 +2614,11 @@ namespace Amoeba.Windows
     {
         private StoreInfo _value;
         private ObservableCollection<BoxTreeViewItem> _listViewItemCollection = new ObservableCollection<BoxTreeViewItem>();
+        private TextBlock _header = new TextBlock();
 
         public StoreTreeViewItem(StoreInfo storeTreeItem)
         {
+            base.Header = _header;
             this.Value = storeTreeItem;
 
             this.ItemsSource = _listViewItemCollection;
@@ -2638,9 +2640,7 @@ namespace Amoeba.Windows
 
         public void Update()
         {
-            this.AllowDrop = true;
-
-            this.Header = this.Value.UploadSignature;
+            _header.Text = this.Value.UploadSignature;
 
             List<BoxTreeViewItem> list = new List<BoxTreeViewItem>();
 
@@ -2724,6 +2724,7 @@ namespace Amoeba.Windows
     {
         private string _uploadSignature = null;
         private BoxCollection _boxes = null;
+        private bool _isUpdated;
 
         private object _thisLock = new object();
         private static object _thisStaticLock = new object();
@@ -2758,6 +2759,25 @@ namespace Amoeba.Windows
                         _boxes = new BoxCollection();
 
                     return _boxes;
+                }
+            }
+        }
+
+        [DataMember(Name = "IsUpdated")]
+        public bool IsUpdated
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return _isUpdated;
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    _isUpdated = value;
                 }
             }
         }

@@ -103,15 +103,17 @@ namespace Amoeba.Windows
                     var ext = Path.GetExtension(seed.Name);
                     if (string.IsNullOrWhiteSpace(ext)) return null;
 
-                    if (!_icon.ContainsKey(ext))
+                    BitmapSource icon;
+
+                    if (!_icon.TryGetValue(ext, out icon))
                     {
-                        var icon = IconUtilities.FileAssociatedImage(ext, false, false);
+                        icon = IconUtilities.FileAssociatedImage(ext, false, false);
                         if (icon.CanFreeze) icon.Freeze();
 
                         _icon[ext] = icon;
                     }
 
-                    return _icon[ext];
+                    return icon;
                 }
                 else if (value is Box)
                 {
@@ -157,7 +159,12 @@ namespace Amoeba.Windows
             var item = value as string;
             if (item == null) return null;
 
-            return item.Replace('\r', ' ').Replace('\n', ' ').Replace('\uFFFD', ' ');
+            StringBuilder sb = new StringBuilder(item);
+            sb.Replace('\r', ' ');
+            sb.Replace('\n', ' ');
+            sb.Replace('\uFFFD', ' ');
+
+            return sb.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
