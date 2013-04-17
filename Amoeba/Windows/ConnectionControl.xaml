@@ -58,11 +58,6 @@
         </local:ListViewEx>
         <local:ListViewEx x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=ConnectionControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />

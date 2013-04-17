@@ -45,11 +45,6 @@
     <Grid>
         <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=DownloadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />

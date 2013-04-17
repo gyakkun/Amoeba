@@ -91,11 +91,6 @@
 
         <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />

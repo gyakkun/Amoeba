@@ -89,11 +89,6 @@
         
         <local:ListViewEx x:Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="_listView_PreviewMouseLeftButtonUp" PreviewDragOver="_listView_PreviewDragOver"  
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove" >
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewNewMenuItem" Header="{Binding Path=BoxControl_New, Source={StaticResource ResourcesInstance}}" Click="_listViewNewMenuItem_Click" />

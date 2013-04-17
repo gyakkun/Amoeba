@@ -31,11 +31,6 @@
     <Grid>
         <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=ShareControl_Add, Source={StaticResource ResourcesInstance}}" Click="_listViewAddMenuItem_Click" />

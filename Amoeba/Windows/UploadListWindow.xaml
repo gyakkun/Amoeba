@@ -41,11 +41,6 @@
         <Label Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
         <local:ListViewEx x:Name="_listView" Margin="138,72,12,41"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel CanHorizontallyScroll="False" Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
