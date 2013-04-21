@@ -52,7 +52,7 @@ namespace Amoeba.Windows
             }
 
             _nameTextBox.Text = System.IO.Path.GetFileName(_filePath);
-          
+
             if (Settings.Instance.Global_UploadKeywords.Count >= 1) _keywordsComboBox1.Text = Settings.Instance.Global_UploadKeywords[0];
             if (Settings.Instance.Global_UploadKeywords.Count >= 2) _keywordsComboBox2.Text = Settings.Instance.Global_UploadKeywords[1];
             if (Settings.Instance.Global_UploadKeywords.Count >= 3) _keywordsComboBox3.Text = Settings.Instance.Global_UploadKeywords[2];
@@ -66,16 +66,7 @@ namespace Amoeba.Windows
             foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item });
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
-
-            for (int index = 0; index < Settings.Instance.Global_DigitalSignatureCollection.Count; index++)
-            {
-                if (Settings.Instance.Global_DigitalSignatureCollection[index].ToString() == Settings.Instance.Global_UploadDigitalSignature)
-                {
-                    _signatureComboBox.SelectedIndex = index + 1;
-
-                    break;
-                }
-            }
+            if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
 
             _nameTextBox_TextChanged(null, null);
         }
@@ -95,7 +86,7 @@ namespace Amoeba.Windows
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
-            
+
             string name = _nameTextBox.Text;
             var keywords = new KeywordCollection();
             if (!string.IsNullOrWhiteSpace(_keywordsComboBox1.Text)) keywords.Add(_keywordsComboBox1.Text);
@@ -105,8 +96,6 @@ namespace Amoeba.Windows
             string comment = _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
-
-            Settings.Instance.Global_UploadDigitalSignature = (digitalSignature == null) ? null : digitalSignature.ToString();
 
             if (!_isShare)
             {

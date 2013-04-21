@@ -124,11 +124,6 @@
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
 
-  <Translate Key="SignatureWindow_Title" Value="Signature setting" />
-  <Translate Key="SignatureWindow_Signature" Value="Signature" />
-  <Translate Key="SignatureWindow_Ok" Value="Ok" />
-  <Translate Key="SignatureWindow_Cancel" Value="Cancel" />
-
   <Translate Key="ViewSettingsWindow_Title" Value="User interface setting" />
   <Translate Key="ViewSettingsWindow_Update" Value="Update" />
   <Translate Key="ViewSettingsWindow_UpdateUrl" Value="Update url" />
@@ -165,6 +160,11 @@
   <Translate Key="VersionInformationWindow_Version" Value="Version" />
   <Translate Key="VersionInformationWindow_License" Value="License" />
   <Translate Key="VersionInformationWindow_Close" Value="Close" />
+
+  <Translate Key="SignatureWindow_Title" Value="Signature setting" />
+  <Translate Key="SignatureWindow_Signature" Value="Signature" />
+  <Translate Key="SignatureWindow_Ok" Value="Ok" />
+  <Translate Key="SignatureWindow_Cancel" Value="Cancel" />
 
   <Translate Key="ConnectionControl_Uri" Value="Uri" />
   <Translate Key="ConnectionControl_Priority" Value="Priority" />

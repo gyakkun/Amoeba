@@ -40,13 +40,6 @@ namespace Amoeba.Windows
             _button.IsEnabled = _closeIsEnabled;
         }
 
-        protected override void OnInitialized(EventArgs e)
-        {
-            WindowPosition.Move(this);
-
-            base.OnInitialized(e);
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.MaxHeight = this.RenderSize.Height;

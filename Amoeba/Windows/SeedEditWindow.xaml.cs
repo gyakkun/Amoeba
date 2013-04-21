@@ -88,18 +88,9 @@ namespace Amoeba.Windows
             }
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
+            if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
 
-            for (int index = 0; index < Settings.Instance.Global_DigitalSignatureCollection.Count; index++)
-            {
-                if (Settings.Instance.Global_DigitalSignatureCollection[index].ToString() == Settings.Instance.Global_UploadDigitalSignature)
-                {
-                    _signatureComboBox.SelectedIndex = index + 1;
-
-                    break;
-                }
-            }
-
-            _nameTextBox.TextChanged +=new TextChangedEventHandler(_nameTextBox_TextChanged);
+            _nameTextBox.TextChanged += new TextChangedEventHandler(_nameTextBox_TextChanged);
             _nameTextBox_TextChanged(null, null);
         }
 
@@ -131,8 +122,6 @@ namespace Amoeba.Windows
             string comment = string.IsNullOrWhiteSpace(_commentTextBox.Text) ? null : _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
-
-            Settings.Instance.Global_UploadDigitalSignature = (digitalSignature == null) ? null : digitalSignature.ToString();
 
             var now = DateTime.UtcNow;
 

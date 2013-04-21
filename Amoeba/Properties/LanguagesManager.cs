@@ -1423,51 +1423,6 @@ namespace Amoeba.Properties
         }
 
 
-        public string SignatureWindow_Title
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SignatureWindow_Title");
-                }
-            }
-        }
-
-        public string SignatureWindow_Signature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SignatureWindow_Signature");
-                }
-            }
-        }
-
-        public string SignatureWindow_Ok
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SignatureWindow_Ok");
-                }
-            }
-        }
-
-        public string SignatureWindow_Cancel
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SignatureWindow_Cancel");
-                }
-            }
-        }
-
-
         public string ViewSettingsWindow_Title
         {
             get
@@ -1850,6 +1805,51 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("VersionInformationWindow_Close");
+                }
+            }
+        }
+
+
+        public string SignatureWindow_Title
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SignatureWindow_Title");
+                }
+            }
+        }
+
+        public string SignatureWindow_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SignatureWindow_Signature");
+                }
+            }
+        }
+
+        public string SignatureWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SignatureWindow_Ok");
+                }
+            }
+        }
+
+        public string SignatureWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SignatureWindow_Cancel");
                 }
             }
         }

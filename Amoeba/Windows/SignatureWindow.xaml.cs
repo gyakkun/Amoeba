@@ -44,23 +44,7 @@ namespace Amoeba.Windows
             }
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
-
-            for (int index = 0; index < Settings.Instance.Global_DigitalSignatureCollection.Count; index++)
-            {
-                if (Settings.Instance.Global_DigitalSignatureCollection[index].ToString() == Settings.Instance.Global_UploadDigitalSignature)
-                {
-                    _signatureComboBox.SelectedIndex = index + 1;
-
-                    break;
-                }
-            }
-        }
-
-        protected override void OnInitialized(EventArgs e)
-        {
-            WindowPosition.Move(this);
-
-            base.OnInitialized(e);
+            if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
         }
 
         public SignatureWindow(string signature)
@@ -93,6 +77,13 @@ namespace Amoeba.Windows
                     break;
                 }
             }
+        }
+
+        protected override void OnInitialized(EventArgs e)
+        {
+            WindowPosition.Move(this);
+
+            base.OnInitialized(e);
         }
 
         public DigitalSignature DigitalSignature

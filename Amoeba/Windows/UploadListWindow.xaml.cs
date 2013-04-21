@@ -75,16 +75,7 @@ namespace Amoeba.Windows
             _listView.ItemsSource = _filePaths;
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
-
-            for (int index = 0; index < Settings.Instance.Global_DigitalSignatureCollection.Count; index++)
-            {
-                if (Settings.Instance.Global_DigitalSignatureCollection[index].ToString() == Settings.Instance.Global_UploadDigitalSignature)
-                {
-                    _signatureComboBox.SelectedIndex = index + 1;
-
-                    break;
-                }
-            }
+            if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -100,7 +91,7 @@ namespace Amoeba.Windows
             if (selectItems == null || selectItems.Count == 0) return;
 
             if (MessageBox.Show(this, LanguagesManager.Instance.MainWindow_Delete_Message, "Upload", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
-            
+
             foreach (var item in selectItems.Cast<UploadListViewItem>().ToArray())
             {
                 _filePaths.Remove(item);
@@ -118,8 +109,6 @@ namespace Amoeba.Windows
             keywords = new KeywordCollection(new HashSet<string>(keywords));
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
-
-            Settings.Instance.Global_UploadDigitalSignature = (digitalSignature == null) ? null : digitalSignature.ToString();
 
             if (!_isShare)
             {

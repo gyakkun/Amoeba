@@ -120,14 +120,9 @@
   <Translate Key="TransferLimitType_Uploads" Value="アップロード" />
   <Translate Key="TransferLimitType_Total" Value="トータル" />
 
-  <Translate Key="ProgressWindow_Title" Value="Progress state" />
-  <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
+  <Translate Key="ProgressWindow_Title" Value="進行状況" />
+  <Translate Key="ProgressWindow_Cancel" Value="キャンセル" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
-
-  <Translate Key="SignatureWindow_Title" Value="サイン設定" />
-  <Translate Key="SignatureWindow_Signature" Value="サイン" />
-  <Translate Key="SignatureWindow_Ok" Value="Ok" />
-  <Translate Key="SignatureWindow_Cancel" Value="キャンセル" />
 
   <Translate Key="ViewSettingsWindow_Title" Value="表示設定" />
   <Translate Key="ViewSettingsWindow_Update" Value="アップデート" />
@@ -137,7 +132,7 @@
   <Translate Key="ViewSettingsWindow_Signatures" Value="サイン" />
   <Translate Key="ViewSettingsWindow_Keywords" Value="キーワード" />
   <Translate Key="ViewSettingsWindow_Miscellaneous" Value="その他" />
-  <Translate Key="ViewSettingsWindow_Box" Value="Box" />
+  <Translate Key="ViewSettingsWindow_Box" Value="ボックス" />
   <Translate Key="ViewSettingsWindow_RelateBoxFile" Value="Boxファイルを関連付ける" />
   <Translate Key="ViewSettingsWindow_Events" Value="イベント" />
   <Translate Key="ViewSettingsWindow_OpenBox" Value="ダウンロードされたBoxファイルを展開する" />
@@ -165,6 +160,11 @@
   <Translate Key="VersionInformationWindow_Version" Value="バージョン" />
   <Translate Key="VersionInformationWindow_License" Value="ライセンス" />
   <Translate Key="VersionInformationWindow_Close" Value="閉じる" />
+
+  <Translate Key="SignatureWindow_Title" Value="サイン設定" />
+  <Translate Key="SignatureWindow_Signature" Value="サイン" />
+  <Translate Key="SignatureWindow_Ok" Value="Ok" />
+  <Translate Key="SignatureWindow_Cancel" Value="キャンセル" />
 
   <Translate Key="ConnectionControl_Uri" Value="Uri" />
   <Translate Key="ConnectionControl_Priority" Value="優先度" />
