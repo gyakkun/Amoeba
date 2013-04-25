@@ -47,8 +47,8 @@ namespace Amoeba
         private List<Process> _processList = new List<Process>();
 
         public App()
-        {            
-            App.AmoebaVersion = new Version(1, 0, 8);
+        {
+            App.AmoebaVersion = new Version(1, 0, 9);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -82,7 +82,7 @@ namespace Amoeba
 
             Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(App_UnhandledException);
         }
-        
+
         private static string GetUniqueFilePath(string path)
         {
             if (!File.Exists(path))
