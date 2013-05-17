@@ -318,6 +318,7 @@
   <Translate Key="CacheControl_SearchSignature" Value="このサインで検索" />
   <Translate Key="CacheControl_SearchKeyword" Value="このキーワードで検索" />
   <Translate Key="CacheControl_SearchCreationTimeRange" Value="この作成日で検索" />
+  <Translate Key="CacheControl_SearchState" Value="この状態で検索" />
   <Translate Key="CacheControl_Filter" Value="フィルタ" />
   <Translate Key="CacheControl_FilterName" Value="この名前でフィルタ" />
   <Translate Key="CacheControl_FilterSignature" Value="このサインでフィルタ" />

@@ -110,6 +110,7 @@
                         <MenuItem Name="_listViewSearchSignatureMenuItem" Header="{Binding Path=CacheControl_SearchSignature, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchSignatureMenuItem_Click" />
                         <MenuItem Name="_listViewSearchKeywordMenuItem" Header="{Binding Path=CacheControl_SearchKeyword, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchKeywordMenuItem_Click" />
                         <MenuItem Name="_listViewSearchCreationTimeRangeMenuItem" Header="{Binding Path=CacheControl_SearchCreationTimeRange, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchCreationTimeRangeMenuItem_Click" />
+                        <MenuItem Name="_listViewSearchStateMenuItem" Header="{Binding Path=CacheControl_SearchState, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchStateMenuItem_Click" />
                     </MenuItem>
                     <MenuItem Name="_listViewFilterMenuItem" Header="{Binding Path=CacheControl_Filter, Source={StaticResource ResourcesInstance}}" >
                         <MenuItem Name="_listViewFilterNameMenuItem" Header="{Binding Path=CacheControl_FilterName, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterNameMenuItem_Click" />

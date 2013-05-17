@@ -63,6 +63,27 @@ namespace Amoeba.Windows
 
             }
 
+            {
+                foreach (var path in Settings.Instance.BoxControl_ExpandedPath.ToArray())
+                {
+                    if (path.Count == 0 || path[0] != _treeViewItem.Value.Name) goto End;
+                    TreeViewItem treeViewItem = _treeViewItem;
+
+                    foreach (var name in path.Skip(1))
+                    {
+                        treeViewItem = treeViewItem.Items.OfType<BoxTreeViewItem>().FirstOrDefault(n => n.Value.Name == name);
+                        if (treeViewItem == null) goto End;
+                    }
+
+                    treeViewItem.IsExpanded = true;
+                    continue;
+
+                End: ;
+
+                    Settings.Instance.BoxControl_ExpandedPath.Remove(path);
+                }
+            }
+
             _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
                 var selectTreeViewItem = _treeView.SelectedItem as BoxTreeViewItem;
@@ -540,7 +561,7 @@ namespace Amoeba.Windows
                 seedList.AddRange(boxList[i].Seeds);
             }
 
-            foreach (var item in seedList)
+            foreach (var item in seedList.Reverse<Seed>())
             {
                 if (!item.VerifyCertificate())
                 {
@@ -550,7 +571,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            foreach (var item in boxList)
+            foreach (var item in boxList.Reverse<Box>())
             {
                 if (!item.VerifyCertificate())
                 {
@@ -927,6 +948,36 @@ namespace Amoeba.Windows
         #endregion
 
         #region _treeView
+
+        private void _treeView_Expanded(object sender, RoutedEventArgs e)
+        {
+            var treeViewItem = e.OriginalSource as TreeViewItem;
+            if (treeViewItem == null) return;
+
+            NameCollection path = new NameCollection();
+
+            foreach (var item in _treeView.GetLineage(treeViewItem))
+            {
+                if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
+            }
+
+            Settings.Instance.BoxControl_ExpandedPath.Add(path);
+        }
+
+        private void _treeView_Collapsed(object sender, RoutedEventArgs e)
+        {
+            var treeViewItem = e.OriginalSource as TreeViewItem;
+            if (treeViewItem == null) return;
+
+            NameCollection path = new NameCollection();
+
+            foreach (var item in _treeView.GetLineage(treeViewItem))
+            {
+                if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
+            }
+
+            Settings.Instance.BoxControl_ExpandedPath.Remove(path);
+        }
 
         private void _treeView_PreviewDragOver(object sender, DragEventArgs e)
         {
@@ -1978,22 +2029,17 @@ namespace Amoeba.Windows
             }
             else
             {
-                //var w = new WrapPanel();
-                //w.Children.Add(new TextBlock() { Text = this.Value.Name });
-                //w.Children.Add(new TextBlock() { Text = string.Format(" ({0}) - ", BoxTreeViewItem.GetTotalSeedCount(this.Value)) });
-                //w.Children.Add(new TextBlock()
-                //{
-                //    Text = this.Value.Certificate.ToString(),
-                //    //Foreground = new SolidColorBrush(Color.FromRgb(64, 255, 0))
-                //    //FontWeight = FontWeight.FromOpenTypeWeight(800),
-                //});
-
-                //this.Header = w;
-
                 this.Header = string.Format("{0} ({1}) - {2}", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value), this.Value.Certificate.ToString());
             }
 
-            if (this.Parent != null) this.Parent.Update_Header();
+            {
+                var parent = this.Parent as BoxTreeViewItem;
+
+                if (parent != null)
+                {
+                    parent.Update_Header();
+                }
+            }
         }
 
         public void Update()

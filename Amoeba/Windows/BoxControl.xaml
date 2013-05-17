@@ -68,8 +68,8 @@
         <GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
         
         <TreeView Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" SelectedItemChanged="_treeView_SelectedItemChanged" AllowDrop="True" PreviewDragOver="_treeView_PreviewDragOver"
-                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove" Grid.RowSpan="2">
-            <local:BoxTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
+                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove" Grid.RowSpan="2" TreeViewItem.Expanded="_treeView_Expanded" TreeViewItem.Collapsed="_treeView_Collapsed">
+            <local:BoxTreeViewItem x:Name="_treeViewItem">
                 <local:BoxTreeViewItem.ContextMenu>
                     <ContextMenu Name="_treeViewContextMenu" >
                         <MenuItem Name="_treeViewNewMenuItem" Header="{Binding Path=BoxControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewNewMenuItem_Click" />

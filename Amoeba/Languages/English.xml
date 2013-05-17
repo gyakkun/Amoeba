@@ -318,6 +318,7 @@
   <Translate Key="CacheControl_SearchSignature" Value="Search signature" />
   <Translate Key="CacheControl_SearchKeyword" Value="Search keyword" />
   <Translate Key="CacheControl_SearchCreationTimeRange" Value="Search creation time range" />
+  <Translate Key="CacheControl_SearchState" Value="Search state" />
   <Translate Key="CacheControl_Filter" Value="Filter" />
   <Translate Key="CacheControl_FilterName" Value="Filter name" />
   <Translate Key="CacheControl_FilterSignature" Value="Filter signature" />

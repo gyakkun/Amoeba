@@ -96,6 +96,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<LockedList<StoreInfo>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreInfo>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "SearchControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "SearchControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<LockedHashSet<NameCollection>>() { Name = "SearchControl_ExpandedPath", Value = new LockedHashSet<NameCollection>() },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "DownloadControl_LastHeaderClicked", Value = "Rate" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "DownloadControl_ListSortDirection", Value = ListSortDirection.Descending },
@@ -175,11 +176,13 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<LockedList<StoreInfo>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreInfo>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "StoreControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "StoreControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<LockedHashSet<NameCollection>>() { Name = "StoreControl_ExpandedPath", Value = new LockedHashSet<NameCollection>() },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "BoxControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "BoxControl_ListSortDirection", Value = ListSortDirection.Ascending },
                 new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = new Box() { Name = "Box" } },
                 new Library.Configuration.SettingsContext<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
+                new Library.Configuration.SettingsContext<LockedHashSet<NameCollection>>() { Name = "BoxControl_ExpandedPath", Value = new LockedHashSet<NameCollection>() },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
@@ -1470,6 +1473,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["SearchControl_ListSortDirection"] = value;
+                }
+            }
+        }
+
+        public LockedHashSet<NameCollection> SearchControl_ExpandedPath
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedHashSet<NameCollection>)this["SearchControl_ExpandedPath"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchControl_ExpandedPath"] = value;
                 }
             }
         }
@@ -2849,6 +2871,25 @@ namespace Amoeba.Properties
             }
         }
 
+        public LockedHashSet<NameCollection> StoreControl_ExpandedPath
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedHashSet<NameCollection>)this["StoreControl_ExpandedPath"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreControl_ExpandedPath"] = value;
+                }
+            }
+        }
+
 
         public string BoxControl_LastHeaderClicked
         {
@@ -2922,6 +2963,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["LibraryControl_Box"] = value;
+                }
+            }
+        }
+
+        public LockedHashSet<NameCollection> BoxControl_ExpandedPath
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedHashSet<NameCollection>)this["BoxControl_ExpandedPath"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["BoxControl_ExpandedPath"] = value;
                 }
             }
         }

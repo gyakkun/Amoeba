@@ -65,6 +65,29 @@ namespace Amoeba.Windows
 
             _treeView.ItemsSource = _treeViewItemCollection;
 
+            {
+                foreach (var path in Settings.Instance.SearchControl_ExpandedPath.ToArray())
+                {
+                    if (path.Count == 0) goto End;
+
+                    TreeViewItem treeViewItem = _treeViewItemCollection.FirstOrDefault(n => n.Value.UploadSignature == path[0]);
+                    if (treeViewItem == null) goto End;
+
+                    foreach (var name in path.Skip(1))
+                    {
+                        treeViewItem = treeViewItem.Items.OfType<BoxTreeViewItem>().FirstOrDefault(n => n.Value.Name == name);
+                        if (treeViewItem == null) goto End;
+                    }
+
+                    treeViewItem.IsExpanded = true;
+                    continue;
+
+                End: ;
+
+                    Settings.Instance.BoxControl_ExpandedPath.Remove(path);
+                }
+            }
+
             _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
                 if (App.SelectTab == TabItemType.Search && !_refresh)
@@ -140,7 +163,7 @@ namespace Amoeba.Windows
                         StoreTreeViewItem selectStoreTreeViewItem = (StoreTreeViewItem)selectTreeViewItem;
 
                         selectStoreTreeViewItem.Value.IsUpdated = false;
-                        
+
                         HashSet<object> newList = new HashSet<object>(new ReferenceEqualityComparer());
                         HashSet<object> oldList = new HashSet<object>(new ReferenceEqualityComparer());
 
@@ -737,6 +760,38 @@ namespace Amoeba.Windows
         }
 
         #region _treeView
+
+        private void _treeView_Expanded(object sender, RoutedEventArgs e)
+        {
+            var treeViewItem = e.OriginalSource as TreeViewItem;
+            if (treeViewItem == null) return;
+
+            NameCollection path = new NameCollection();
+
+            foreach (var item in _treeView.GetLineage(treeViewItem))
+            {
+                if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.UploadSignature);
+                else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
+            }
+
+            Settings.Instance.SearchControl_ExpandedPath.Add(path);
+        }
+
+        private void _treeView_Collapsed(object sender, RoutedEventArgs e)
+        {
+            var treeViewItem = e.OriginalSource as TreeViewItem;
+            if (treeViewItem == null) return;
+
+            NameCollection path = new NameCollection();
+
+            foreach (var item in _treeView.GetLineage(treeViewItem))
+            {
+                if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.UploadSignature);
+                else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
+            }
+
+            Settings.Instance.SearchControl_ExpandedPath.Remove(path);
+        }
 
         private void _treeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

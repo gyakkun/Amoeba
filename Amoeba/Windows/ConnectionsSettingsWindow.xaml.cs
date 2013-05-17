@@ -1368,11 +1368,11 @@ namespace Amoeba.Windows
                 int count = ConnectionsSettingsWindow.GetStringToInt(_bandwidthConnectionCountTextBox.Text);
                 _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 100), 12);
 
-                long bandwidthLimit = (long)NetworkConverter.FromSizeString("0");
+                int bandwidthLimit = (int)NetworkConverter.FromSizeString("0");
 
                 try
                 {
-                    bandwidthLimit = (long)NetworkConverter.FromSizeString(_bandwidthLimitTextBox.Text);
+                    bandwidthLimit = (int)NetworkConverter.FromSizeString(_bandwidthLimitTextBox.Text);
                 }
                 catch (Exception)
                 {

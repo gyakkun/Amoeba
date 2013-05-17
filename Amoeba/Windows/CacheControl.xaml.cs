@@ -1824,6 +1824,52 @@ namespace Amoeba.Windows
             this.Update();
         }
 
+        private void _listViewSearchStateMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+            if (selectTreeViewItem == null) return;
+
+            HashSet<SearchState> states = new HashSet<SearchState>();
+
+            foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                foreach (var state in Enum.GetValues(typeof(SearchState)).Cast<SearchState>())
+                {
+                    if (listItem.State.HasFlag(state))
+                    {
+                        states.Add(state);
+                    }
+                }
+            }
+
+            SearchStateFlagToStringConverter converter = new SearchStateFlagToStringConverter();
+
+            foreach (var state in states)
+            {
+                var searchTreeItem = new SearchTreeItem();
+                searchTreeItem.SearchItem = new SearchItem();
+
+                var item = new SearchContains<SearchState>()
+                {
+                    Contains = true,
+                    Value = state,
+                };
+
+                searchTreeItem.SearchItem.Name = string.Format("State - \"{0}\"", converter.Convert(state, typeof(string), null, System.Globalization.CultureInfo.CurrentUICulture));
+                searchTreeItem.SearchItem.SearchStateCollection.Add(item);
+
+                if (selectTreeViewItem.Value.Items.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
+                selectTreeViewItem.Value.Items.Add(searchTreeItem);
+
+                selectTreeViewItem.Update();
+            }
+
+            this.Update();
+        }
+
         private void _listViewFilterNameMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectSearchListViewItems = _listView.SelectedItems;

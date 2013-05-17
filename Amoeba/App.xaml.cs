@@ -12,13 +12,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using System.Xml;
 using Ionic.Zip;
 using Library;
 using Library.Io;
 using Library.Net.Amoeba;
-using System.Windows.Media;
 
 namespace Amoeba
 {
@@ -48,7 +48,7 @@ namespace Amoeba
 
         public App()
         {
-            App.AmoebaVersion = new Version(1, 0, 9);
+            App.AmoebaVersion = new Version(1, 0, 10);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 

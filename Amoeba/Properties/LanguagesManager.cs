@@ -3447,6 +3447,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string CacheControl_SearchState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_SearchState");
+                }
+            }
+        }
+
         public string CacheControl_Filter
         {
             get
