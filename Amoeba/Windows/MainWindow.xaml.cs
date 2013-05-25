@@ -136,6 +136,8 @@ namespace Amoeba.Windows
 
                 _transferLimitManager.StartEvent += new EventHandler(_transferLimitManager_StartEvent);
                 _transferLimitManager.StopEvent += new EventHandler(_transferLimitManager_StopEvent);
+
+                Debug.WriteLineIf(System.Runtime.GCSettings.IsServerGC, "GCSettings.IsServerGC");
             }
             catch (Exception e)
             {
