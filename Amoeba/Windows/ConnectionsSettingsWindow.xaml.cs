@@ -69,7 +69,7 @@ namespace Amoeba.Windows
             _clientFiltersListView.ItemsSource = _clientFilters;
             _serverListenUrisListView.ItemsSource = _listenUris;
             _dataDownloadDirectoryTextBox.Text = _amoebaManager.DownloadDirectory;
-            _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.BandWidthLimit);
+            _bandwidthConnectionCountTextBox.Text = _amoebaManager.ConnectionCountLimit.ToString();
             _transferLimitSpanTextBox.Text = _transferLimitManager.TransferLimit.Span.ToString();
             _transferLimitSizeTextBox.Text = NetworkConverter.ToSizeString(_transferLimitManager.TransferLimit.Size);
             _eventAutoBaseNodeSettingCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
