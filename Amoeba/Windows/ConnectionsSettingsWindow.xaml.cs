@@ -1458,16 +1458,19 @@ namespace Amoeba.Windows
                 size = Math.Max((long)NetworkConverter.FromSizeString("50 GB"), size);
 #endif
 
-                if (((long)_amoebaManager.Information["UsingSpace"]) > size)
+                if (_amoebaManager.Size != size)
                 {
-                    if (MessageBox.Show(this, LanguagesManager.Instance.MainWindow_CacheResize_Message, "Connections Settings", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
+                    if (((long)_amoebaManager.Information["UsingSpace"]) > size)
+                    {
+                        if (MessageBox.Show(this, LanguagesManager.Instance.MainWindow_CacheResize_Message, "Connections Settings", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
+                        {
+                            _amoebaManager.Resize(size);
+                        }
+                    }
+                    else
                     {
                         _amoebaManager.Resize(size);
                     }
-                }
-                else
-                {
-                    _amoebaManager.Resize(size);
                 }
 
                 _amoebaManager.BaseNode = _baseNode.DeepClone();
