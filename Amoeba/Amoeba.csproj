@@ -109,109 +109,68 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Hash\Sha512.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Page Include="Windows\ConnectionControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\ConnectionsSettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\BoxEditWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\SearchControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\SignatureWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\StoreControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\ViewSettingsWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\UploadListWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\DownloadControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\SeedEditWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\BoxControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\ProgressWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\CacheControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\SearchItemEditWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\ShareControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="Windows\BoxControl.xaml.cs">
+      <DependentUpon>BoxControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\BoxEditWindow.xaml.cs">
+      <DependentUpon>BoxEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\CacheControl.xaml.cs">
+      <DependentUpon>CacheControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ConnectionControl.xaml.cs">
+      <DependentUpon>ConnectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ConnectionsSettingsWindow.xaml.cs">
+      <DependentUpon>ConnectionsSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\DownloadControl.xaml.cs">
+      <DependentUpon>DownloadControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ListViewEx.cs" />
+    <Compile Include="Windows\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ProgressWindow.xaml.cs">
+      <DependentUpon>ProgressWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SearchControl.xaml.cs">
+      <DependentUpon>SearchControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SearchItemEditWindow.xaml.cs">
+      <DependentUpon>SearchItemEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SeedEditWindow.xaml.cs">
+      <DependentUpon>SeedEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ShareControl.xaml.cs">
+      <DependentUpon>ShareControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SignatureWindow.xaml.cs">
+      <DependentUpon>SignatureWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\StoreControl.xaml.cs">
+      <DependentUpon>StoreControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UploadControl.xaml.cs">
+      <DependentUpon>UploadControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UploadListWindow.xaml.cs">
+      <DependentUpon>UploadListWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UploadWindow.xaml.cs">
+      <DependentUpon>UploadWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ValueConverter.cs" />
+    <Compile Include="Windows\VersionInformationWindow.xaml.cs">
+      <DependentUpon>VersionInformationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
+      <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Themes\ExpressionDark.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\UploadControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\UploadWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\VersionInformationWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -220,76 +179,92 @@
     <Compile Include="NameCollection.cs" />
     <Compile Include="TransfarLimitManager.cs" />
     <Compile Include="WindowPosition.cs" />
-    <Compile Include="Windows\SearchControl.xaml.cs">
-      <DependentUpon>SearchControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\SignatureWindow.xaml.cs">
-      <DependentUpon>SignatureWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\StoreControl.xaml.cs">
-      <DependentUpon>StoreControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
-      <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ListViewEx.cs" />
-    <Compile Include="Windows\UploadListWindow.xaml.cs">
-      <DependentUpon>UploadListWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Page Include="Windows\BoxControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\BoxEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\CacheControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ConnectionControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ConnectionsSettingsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\DownloadControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ProgressWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\SearchControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\SearchItemEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\SeedEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ShareControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\SignatureWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\StoreControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\UploadControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\UploadListWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\UploadWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\VersionInformationWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ViewSettingsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clipboard.cs" />
-    <Compile Include="Windows\ConnectionControl.xaml.cs">
-      <DependentUpon>ConnectionControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ConnectionsSettingsWindow.xaml.cs">
-      <DependentUpon>ConnectionsSettingsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\BoxEditWindow.xaml.cs">
-      <DependentUpon>BoxEditWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\DownloadControl.xaml.cs">
-      <DependentUpon>DownloadControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MessageConverter.cs" />
-    <Compile Include="Windows\SeedEditWindow.xaml.cs">
-      <DependentUpon>SeedEditWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\BoxControl.xaml.cs">
-      <DependentUpon>BoxControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ProgressWindow.xaml.cs">
-      <DependentUpon>ProgressWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\LanguagesManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\Settings.cs" />
-    <Compile Include="Windows\CacheControl.xaml.cs">
-      <DependentUpon>CacheControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\SearchItemEditWindow.xaml.cs">
-      <DependentUpon>SearchItemEditWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ShareControl.xaml.cs">
-      <DependentUpon>ShareControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\UploadControl.xaml.cs">
-      <DependentUpon>UploadControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\UploadWindow.xaml.cs">
-      <DependentUpon>UploadWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="AutoBaseNodeSettingManager.cs" />
-    <Compile Include="Windows\ValueConverter.cs" />
-    <Compile Include="Windows\VersionInformationWindow.xaml.cs">
-      <DependentUpon>VersionInformationWindow.xaml</DependentUpon>
-    </Compile>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

@@ -202,10 +202,12 @@ namespace Amoeba.Windows
                 Stopwatch backupStopwatch = new Stopwatch();
                 Stopwatch updateStopwatch = new Stopwatch();
                 Stopwatch uriUpdateStopwatch = new Stopwatch();
+                Stopwatch GcStopwatch = new Stopwatch();
                 spaceCheckStopwatch.Start();
                 backupStopwatch.Start();
                 updateStopwatch.Start();
                 uriUpdateStopwatch.Start();
+                GcStopwatch.Start();
 
                 for (; ; )
                 {
@@ -218,6 +220,7 @@ namespace Amoeba.Windows
                             this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
                                 _stopMenuItem_Click(null, null);
+                                _encodeAndDecodeStopMenuItem_Click(null, null);
                             }));
                         }
 
@@ -245,6 +248,17 @@ namespace Amoeba.Windows
                             _amoebaManager.Stop();
 
                             Log.Information("Stop");
+                        }
+
+                        if (Settings.Instance.Global_IsEncodeAndDecodeStart)
+                        {
+                            _amoebaManager.EncodeStart();
+                            _amoebaManager.DecodeStart();
+                        }
+                        else if (!Settings.Instance.Global_IsEncodeAndDecodeStart)
+                        {
+                            _amoebaManager.EncodeStop();
+                            _amoebaManager.DecodeStop();
                         }
 
                         if (_diskSpaceNotFoundException)
@@ -316,13 +330,6 @@ namespace Amoeba.Windows
                         {
                             Log.Warning(e);
                         }
-
-                        {
-                            if (((long)_amoebaManager.Information["FreeSpace"]) < (_amoebaManager.Size / 3))
-                            {
-                                _cacheSpaceNotFoundException = true;
-                            }
-                        }
                     }
 
                     if (backupStopwatch.Elapsed > new TimeSpan(0, 30, 0))
@@ -367,6 +374,22 @@ namespace Amoeba.Windows
                         try
                         {
                             _autoBaseNodeSettingManager.Update();
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Warning(e);
+                        }
+                    }
+
+                    if (GcStopwatch.Elapsed > new TimeSpan(1, 0, 0))
+                    {
+                        GcStopwatch.Restart();
+
+                        try
+                        {
+                            System.GC.Collect();
+                            System.GC.WaitForPendingFinalizers();
+                            System.GC.Collect();
                         }
                         catch (Exception e)
                         {
@@ -1318,6 +1341,11 @@ namespace Amoeba.Windows
                 _startMenuItem_Click(null, null);
             }
 
+            if (Settings.Instance.Global_IsEncodeAndDecodeStart)
+            {
+                _encodeAndDecodeStartMenuItem_Click(null, null);
+            }
+
             if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
                || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
             {
@@ -1390,6 +1418,8 @@ namespace Amoeba.Windows
                     _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                     _autoBaseNodeSettingManager.Dispose();
 
+                    _amoebaManager.EncodeStop();
+                    _amoebaManager.DecodeStop();
                     _amoebaManager.Stop();
                     _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                     _amoebaManager.Dispose();
@@ -1474,9 +1504,6 @@ namespace Amoeba.Windows
         private void _connectionsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled && _updateBaseNodeMenuItem_IsEnabled;
-            _checkSeedsMenuItem.IsEnabled = _checkSeedsMenuItem_IsEnabled;
-            _checkInternalBlocksMenuItem.IsEnabled = _checkInternalBlocksMenuItem_IsEnabled;
-            _checkExternalBlocksMenuItem.IsEnabled = _checkExternalBlocksMenuItem_IsEnabled;
         }
 
         private void _startMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1531,6 +1558,27 @@ namespace Amoeba.Windows
                     _updateBaseNodeMenuItem_IsEnabled = true;
                 }
             }));
+        }
+
+        private void _connectionsSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectionsSettingsWindow window = new ConnectionsSettingsWindow(_amoebaManager, _autoBaseNodeSettingManager, _transferLimitManager, _bufferManager);
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
+        private void _viewSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ViewSettingsWindow window = new ViewSettingsWindow(_bufferManager);
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
+        private void _cacheMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            _checkSeedsMenuItem.IsEnabled = _checkSeedsMenuItem_IsEnabled;
+            _checkInternalBlocksMenuItem.IsEnabled = _checkInternalBlocksMenuItem_IsEnabled;
+            _checkExternalBlocksMenuItem.IsEnabled = _checkExternalBlocksMenuItem_IsEnabled;
         }
 
         volatile bool _checkSeedsMenuItem_IsEnabled = true;
@@ -1672,18 +1720,20 @@ namespace Amoeba.Windows
             window.Show();
         }
 
-        private void _connectionsSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _encodeAndDecodeStartMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ConnectionsSettingsWindow window = new ConnectionsSettingsWindow(_amoebaManager, _autoBaseNodeSettingManager, _transferLimitManager, _bufferManager);
-            window.Owner = this;
-            window.ShowDialog();
+            _encodeAndDecodeStartMenuItem.IsEnabled = false;
+            _encodeAndDecodeStopMenuItem.IsEnabled = true;
+
+            Settings.Instance.Global_IsEncodeAndDecodeStart = true;
         }
 
-        private void _viewSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _encodeAndDecodeStopMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ViewSettingsWindow window = new ViewSettingsWindow(_bufferManager);
-            window.Owner = this;
-            window.ShowDialog();
+            _encodeAndDecodeStartMenuItem.IsEnabled = true;
+            _encodeAndDecodeStopMenuItem.IsEnabled = false;
+
+            Settings.Instance.Global_IsEncodeAndDecodeStart = false;
         }
 
         private void _helpMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)

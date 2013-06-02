@@ -33,10 +33,12 @@
   <Translate Key="MainWindow_Start" Value="開始" />
   <Translate Key="MainWindow_Stop" Value="停止" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="基礎ノードUriの更新" />
-  <Translate Key="MainWindow_CheckSeeds" Value="シードのデコード可能性チェック" />
+  <Translate Key="MainWindow_CheckSeeds" Value="完全キャッシュのチェック" />
   <Translate Key="MainWindow_CheckInternalBlocks" Value="内部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckExternalBlocks" Value="外部ブロックの破損チェック" />
   <Translate Key="MainWindow_ConnectionsSettings" Value="接続設定" />
+  <Translate Key="MainWindow_EncodeAndDecodeStart" Value="エンコードとデコードの開始" />
+  <Translate Key="MainWindow_EncodeAndDecodeStop" Value="エンコードとデコードの停止" />
   <Translate Key="MainWindow_View" Value="表示" />
   <Translate Key="MainWindow_ViewSettings" Value="表示設定" />
   <Translate Key="MainWindow_Languages" Value="言語" />
@@ -48,7 +50,7 @@
   <Translate Key="MainWindow_SendSpeed" Value="送信:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="受信:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
-  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="キャッシュに1/3以上の空き領域が必要です。" />
+  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="内部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="外部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="チェック済み:{1} 破損:{0} 総ブロック数:{2}" />

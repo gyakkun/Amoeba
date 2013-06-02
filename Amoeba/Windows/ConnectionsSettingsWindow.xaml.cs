@@ -69,11 +69,9 @@ namespace Amoeba.Windows
             _clientFiltersListView.ItemsSource = _clientFilters;
             _serverListenUrisListView.ItemsSource = _listenUris;
             _dataDownloadDirectoryTextBox.Text = _amoebaManager.DownloadDirectory;
-            _bandwidthConnectionCountTextBox.Text = _amoebaManager.ConnectionCountLimit.ToString();
             _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.BandWidthLimit);
             _transferLimitSpanTextBox.Text = _transferLimitManager.TransferLimit.Span.ToString();
             _transferLimitSizeTextBox.Text = NetworkConverter.ToSizeString(_transferLimitManager.TransferLimit.Size);
-            _dataCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size);
             _eventAutoBaseNodeSettingCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
 
             foreach (var item in Enum.GetValues(typeof(ConnectionType)).Cast<ConnectionType>())
@@ -93,6 +91,42 @@ namespace Amoeba.Windows
             _transferInfoUploaded.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize);
             _transferInfoDownloaded.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalDownloadSize);
             _transferInfoTotal.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize + _transferLimitManager.TotalDownloadSize);
+
+            {
+                try
+                {
+                    _dataCacheSizeTextBox.Text = long.Parse(NetworkConverter.ToSizeString(_amoebaManager.Size, Settings.Instance.ConnectionsSettingsWindow_DataCacheSize_Unit).Split(' ')[0]).ToString();
+                }
+                catch (Exception)
+                {
+                    _dataCacheSizeTextBox.Text = "";
+                }
+
+                foreach (var u in new string[] { "Byte", "KB", "MB", "GB", "TB" })
+                {
+                    _dataCacheSizeComboBox.Items.Add(u);
+                }
+
+                _dataCacheSizeComboBox.SelectedItem = Settings.Instance.ConnectionsSettingsWindow_DataCacheSize_Unit;
+            }
+
+            {
+                try
+                {
+                    _bandwidthLimitTextBox.Text = long.Parse(NetworkConverter.ToSizeString(_amoebaManager.BandWidthLimit, Settings.Instance.ConnectionsSettingsWindow_BandwidthLimit_Unit).Split(' ')[0]).ToString();
+                }
+                catch (Exception)
+                {
+                    _bandwidthLimitTextBox.Text = "";
+                }
+
+                foreach (var u in new string[] { "Byte", "KB", "MB", "GB", })
+                {
+                    _bandwidthLimitComboBox.Items.Add(u);
+                }
+
+                _bandwidthLimitComboBox.SelectedItem = Settings.Instance.ConnectionsSettingsWindow_BandwidthLimit_Unit;
+            }
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -1223,6 +1257,43 @@ namespace Amoeba.Windows
 
         #region Data
 
+        private void _dataCacheSizeTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(_dataCacheSizeTextBox.Text)) return;
+
+            StringBuilder builder = new StringBuilder("");
+
+            foreach (var item in _dataCacheSizeTextBox.Text)
+            {
+                if (Regex.IsMatch(item.ToString(), @"[0-9\.]"))
+                {
+                    builder.Append(item.ToString());
+                }
+            }
+
+            var value = builder.ToString();
+            if (_dataCacheSizeTextBox.Text != value) _dataCacheSizeTextBox.Text = value;
+        }
+
+        private void _dataCacheSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count != 1 || e.RemovedItems.Count != 1) return;
+
+            var newItem = (string)e.AddedItems[0];
+            var oldItem = (string)e.RemovedItems[0];
+
+            try
+            {
+                var size = (long)NetworkConverter.FromSizeString(_dataCacheSizeTextBox.Text + oldItem);
+                _dataCacheSizeTextBox.Text = NetworkConverter.ToSizeString(size, newItem);
+            }
+            catch (Exception)
+            {
+                var size = long.MaxValue;
+                _dataCacheSizeTextBox.Text = NetworkConverter.ToSizeString(size, newItem);
+            }
+        }
+
         private void _dataDownloadDirectoryTextBox_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             using (System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog())
@@ -1287,6 +1358,43 @@ namespace Amoeba.Windows
             if (_bandwidthConnectionCountTextBox.Text != value) _bandwidthConnectionCountTextBox.Text = value;
         }
 
+        private void _bandwidthLimitTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(_bandwidthLimitTextBox.Text)) return;
+
+            StringBuilder builder = new StringBuilder("");
+
+            foreach (var item in _bandwidthLimitTextBox.Text)
+            {
+                if (Regex.IsMatch(item.ToString(), @"[0-9\.]"))
+                {
+                    builder.Append(item.ToString());
+                }
+            }
+
+            var value = builder.ToString();
+            if (_bandwidthLimitTextBox.Text != value) _bandwidthLimitTextBox.Text = value;
+        }
+
+        private void _bandwidthLimitComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count != 1 || e.RemovedItems.Count != 1) return;
+
+            var newItem = (string)e.AddedItems[0];
+            var oldItem = (string)e.RemovedItems[0];
+
+            try
+            {
+                var size = (long)NetworkConverter.FromSizeString(_bandwidthLimitTextBox.Text + oldItem);
+                _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(size, newItem);
+            }
+            catch (Exception)
+            {
+                var size = long.MaxValue;
+                _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(size, newItem);
+            }
+        }
+
         #endregion
 
         #region Transfer
@@ -1339,25 +1447,25 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    size = Math.Abs((long)NetworkConverter.FromSizeString(_dataCacheSizeTextBox.Text));
+                    size = (long)NetworkConverter.FromSizeString(_dataCacheSizeTextBox.Text + (string)_dataCacheSizeComboBox.SelectedItem);
                 }
                 catch (Exception)
                 {
-
+                    size = long.MaxValue;
                 }
 
 #if !DEBUG
                 size = Math.Max((long)NetworkConverter.FromSizeString("50 GB"), size);
 #endif
 
-                if (_amoebaManager.Size > size)
+                if (((long)_amoebaManager.Information["UsingSpace"]) > size)
                 {
                     if (MessageBox.Show(this, LanguagesManager.Instance.MainWindow_CacheResize_Message, "Connections Settings", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
                     {
                         _amoebaManager.Resize(size);
                     }
                 }
-                else if (_amoebaManager.Size < size)
+                else
                 {
                     _amoebaManager.Resize(size);
                 }
@@ -1372,11 +1480,11 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    bandwidthLimit = (int)NetworkConverter.FromSizeString(_bandwidthLimitTextBox.Text);
+                    bandwidthLimit = (int)NetworkConverter.FromSizeString(_bandwidthLimitTextBox.Text + (string)_bandwidthLimitComboBox.SelectedItem);
                 }
                 catch (Exception)
                 {
-
+                    bandwidthLimit = int.MaxValue;
                 }
 
                 _amoebaManager.BandWidthLimit = bandwidthLimit;
@@ -1436,6 +1544,8 @@ namespace Amoeba.Windows
             }
 
             Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _eventAutoBaseNodeSettingCheckBox.IsChecked.Value;
+            Settings.Instance.ConnectionsSettingsWindow_DataCacheSize_Unit = (string)_dataCacheSizeComboBox.SelectedItem;
+            Settings.Instance.ConnectionsSettingsWindow_BandwidthLimit_Unit = (string)_bandwidthLimitComboBox.SelectedItem;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

@@ -37,6 +37,8 @@
   <Translate Key="MainWindow_CheckInternalBlocks" Value="Check internal blocks" />
   <Translate Key="MainWindow_CheckExternalBlocks" Value="Check external blocks" />
   <Translate Key="MainWindow_ConnectionsSettings" Value="Connections settings" />
+  <Translate Key="MainWindow_EncodeAndDecodeStart" Value="Encode and decode start" />
+  <Translate Key="MainWindow_EncodeAndDecodeStop" Value="Encode and decode stop" />
   <Translate Key="MainWindow_View" Value="View" />
   <Translate Key="MainWindow_ViewSettings" Value="View settings" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
@@ -48,7 +50,7 @@
   <Translate Key="MainWindow_SendSpeed" Value="Send:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="Receive:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
-  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="cache need a free space of at least 1/3" />
+  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Space of cache not found." />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Check internal blocks" />
   <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="Check external blocks" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />

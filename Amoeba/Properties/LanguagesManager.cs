@@ -516,6 +516,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string MainWindow_EncodeAndDecodeStart
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_EncodeAndDecodeStart");
+                }
+            }
+        }
+
+        public string MainWindow_EncodeAndDecodeStop
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_EncodeAndDecodeStop");
+                }
+            }
+        }
+
         public string MainWindow_View
         {
             get

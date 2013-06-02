@@ -27,6 +27,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<LockedList<string>>() { Name = "Global_UploadKeywords", Value = new LockedList<string>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "Global_UseLanguage", Value = "English" },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
+                new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsEncodeAndDecodeStart", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
                 new Library.Configuration.SettingsContext<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
@@ -65,6 +66,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width", Value = 200 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Server_ListenUris_GridViewColumn_Uri_Width", Value = 400 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
+                new Library.Configuration.SettingsContext<string>() { Name = "ConnectionsSettingsWindow_BandwidthLimit_Unit", Value = "Byte" },
+                new Library.Configuration.SettingsContext<string>() { Name = "ConnectionsSettingsWindow_DataCacheSize_Unit", Value = "GB" },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Left", Value = 120 },
@@ -324,6 +327,25 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_IsStart"] = value;
+                }
+            }
+        }
+
+        public bool Global_IsEncodeAndDecodeStart
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (bool)this["Global_IsEncodeAndDecodeStart"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_IsEncodeAndDecodeStart"] = value;
                 }
             }
         }
@@ -956,6 +978,44 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ConnectionsSettingsWindow_Grid_ColumnDefinitions_Width"] = value;
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_BandwidthLimit_Unit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["ConnectionsSettingsWindow_BandwidthLimit_Unit"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsSettingsWindow_BandwidthLimit_Unit"] = value;
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_DataCacheSize_Unit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["ConnectionsSettingsWindow_DataCacheSize_Unit"];
+                }
+            }
+
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionsSettingsWindow_DataCacheSize_Unit"] = value;
                 }
             }
         }
