@@ -202,12 +202,12 @@ namespace Amoeba.Windows
                 Stopwatch backupStopwatch = new Stopwatch();
                 Stopwatch updateStopwatch = new Stopwatch();
                 Stopwatch uriUpdateStopwatch = new Stopwatch();
-                Stopwatch GcStopwatch = new Stopwatch();
+                //Stopwatch GcStopwatch = new Stopwatch();
                 spaceCheckStopwatch.Start();
                 backupStopwatch.Start();
                 updateStopwatch.Start();
                 uriUpdateStopwatch.Start();
-                GcStopwatch.Start();
+                //GcStopwatch.Start();
 
                 for (; ; )
                 {
@@ -381,21 +381,21 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (GcStopwatch.Elapsed > new TimeSpan(1, 0, 0))
-                    {
-                        GcStopwatch.Restart();
+                    //if (GcStopwatch.Elapsed > new TimeSpan(1, 0, 0))
+                    //{
+                    //    GcStopwatch.Restart();
 
-                        try
-                        {
-                            System.GC.Collect();
-                            System.GC.WaitForPendingFinalizers();
-                            System.GC.Collect();
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Warning(e);
-                        }
-                    }
+                    //    try
+                    //    {
+                    //        System.GC.Collect();
+                    //        System.GC.WaitForPendingFinalizers();
+                    //        System.GC.Collect();
+                    //    }
+                    //    catch (Exception e)
+                    //    {
+                    //        Log.Warning(e);
+                    //    }
+                    //}
                 }
             }
             catch (Exception)

@@ -95,7 +95,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _dataCacheSizeTextBox.Text = long.Parse(NetworkConverter.ToSizeString(_amoebaManager.Size, Settings.Instance.ConnectionsSettingsWindow_DataCacheSize_Unit).Split(' ')[0]).ToString();
+                    _dataCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size, Settings.Instance.ConnectionsSettingsWindow_DataCacheSize_Unit);
                 }
                 catch (Exception)
                 {
@@ -113,7 +113,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    _bandwidthLimitTextBox.Text = long.Parse(NetworkConverter.ToSizeString(_amoebaManager.BandWidthLimit, Settings.Instance.ConnectionsSettingsWindow_BandwidthLimit_Unit).Split(' ')[0]).ToString();
+                    _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.BandWidthLimit, Settings.Instance.ConnectionsSettingsWindow_BandwidthLimit_Unit);
                 }
                 catch (Exception)
                 {
