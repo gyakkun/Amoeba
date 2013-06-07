@@ -754,6 +754,11 @@ namespace Amoeba.Windows
                 else
                 {
                     _cacheBlocksPath = Path.Combine(App.DirectoryPaths["Configuration"], "Cache.blocks");
+
+                    using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"), false, new UTF8Encoding(false)))
+                    {
+                        writer.WriteLine(_cacheBlocksPath);
+                    }
                 }
 
                 _amoebaManager = new AmoebaManager(_cacheBlocksPath, _bufferManager);
