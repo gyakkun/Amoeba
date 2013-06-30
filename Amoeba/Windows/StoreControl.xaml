@@ -44,6 +44,9 @@
             <MenuItem Name="_storeTreeViewItemPasteMenuItem" Header="{Binding Path=StoreControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemPasteMenuItem_Click" />
             <Separator />
             <MenuItem Name="_storeTreeViewItemImportMenuItem" Header="{Binding Path=StoreControl_Import, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemImportMenuItem_Click" />
+            <MenuItem Name="_storeTreeViewItemExportMenuItem" Header="{Binding Path=StoreControl_Export, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemExportMenuItem_Click" />
+            <Separator />
+            <MenuItem Name="_storeTreeViewItemUploadMenuItem" Header="{Binding Path=StoreControl_Upload, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemUploadMenuItem_Click" />
         </ContextMenu>
 
         <ContextMenu x:Key="_boxTreeViewItemContextMenu" >
@@ -111,11 +114,9 @@
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>
-      
-        <Button Content="{Binding Path=StoreControl_Upload, Source={StaticResource ResourcesInstance}}" Grid.Column="2" Height="23" HorizontalAlignment="Right" Margin="0,0,6,0" Name="_uploadButton" VerticalAlignment="Top" Width="75" Click="_uploadButton_Click" IsEnabled="False" />
-        
+             
         <local:ListViewEx x:Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="_listView_PreviewMouseLeftButtonUp" PreviewDragOver="_listView_PreviewDragOver"  
-                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove" Grid.Row="1">
+                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove">
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewNewMenuItem" Header="{Binding Path=StoreControl_New, Source={StaticResource ResourcesInstance}}" Click="_listViewNewMenuItem_Click" />

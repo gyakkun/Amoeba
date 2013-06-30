@@ -40,6 +40,8 @@
             <Separator />
             <MenuItem Name="_storeTreeViewItemCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemCopyMenuItem_Click" />
             <Separator />
+            <MenuItem Name="_storeTreeViewItemExportMenuItem" Header="{Binding Path=SearchControl_Export, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemExportMenuItem_Click" />
+            <Separator />
             <MenuItem Name="_storeTreeViewItemResetMenuItem" Header="{Binding Path=SearchControl_Reset, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemResetMenuItem_Click" />
         </ContextMenu>
 

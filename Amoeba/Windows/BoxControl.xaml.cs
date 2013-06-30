@@ -416,7 +416,7 @@ namespace Amoeba.Windows
                                 {
                                     if (MessageBox.Show(
                                             _mainWindow,
-                                            LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message,
+                                            string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message),
                                             "Box",
                                             MessageBoxButton.OKCancel,
                                             MessageBoxImage.Asterisk) == MessageBoxResult.OK)
@@ -738,7 +738,7 @@ namespace Amoeba.Windows
                             {
                                 if (MessageBox.Show(
                                     _mainWindow,
-                                    LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message,
+                                    string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message),
                                     "Box",
                                     MessageBoxButton.OKCancel,
                                     MessageBoxImage.Asterisk) == MessageBoxResult.OK)
@@ -1138,7 +1138,7 @@ namespace Amoeba.Windows
                                 {
                                     if (MessageBox.Show(
                                             _mainWindow,
-                                            LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message,
+                                            string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message),
                                             "Box",
                                             MessageBoxButton.OKCancel,
                                             MessageBoxImage.Asterisk) == MessageBoxResult.OK)

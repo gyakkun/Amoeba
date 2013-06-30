@@ -81,7 +81,7 @@ namespace Amoeba.Windows
 
                 End: ;
 
-                    Settings.Instance.BoxControl_ExpandedPath.Remove(path);
+                    Settings.Instance.StoreControl_ExpandedPath.Remove(path);
                 }
             }
 
@@ -136,19 +136,6 @@ namespace Amoeba.Windows
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         selectTreeViewItem = _treeView.SelectedItem as TreeViewItem;
-
-                        if (selectTreeViewItem == null)
-                        {
-                            _uploadButton.IsEnabled = false;
-                        }
-                        else if (selectTreeViewItem is StoreTreeViewItem)
-                        {
-                            _uploadButton.IsEnabled = (((StoreTreeViewItem)selectTreeViewItem).Value.Boxes.Count != 0);
-                        }
-                        else if (selectTreeViewItem is BoxTreeViewItem)
-                        {
-                            _uploadButton.IsEnabled = false;
-                        }
                     }));
 
                     if (selectTreeViewItem == null)
@@ -773,7 +760,7 @@ namespace Amoeba.Windows
                             {
                                 if (MessageBox.Show(
                                     _mainWindow,
-                                    LanguagesManager.Instance.StoreControl_DigitalSignatureError_Message,
+                                    string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message),
                                     "Store",
                                     MessageBoxButton.OKCancel,
                                     MessageBoxImage.Asterisk) == MessageBoxResult.OK)
@@ -1133,7 +1120,7 @@ namespace Amoeba.Windows
 
             foreach (var item in _treeView.GetLineage(treeViewItem))
             {
-                if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.UploadSignature); 
+                if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.UploadSignature);
                 else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
             }
 
@@ -1265,6 +1252,13 @@ namespace Amoeba.Windows
 
                 storeTreeViewItemPasteMenuItem.IsEnabled = boxes.Count() > 0 ? true : false;
             }
+
+            {
+                var storeTreeViewItemUploadMenuItem = contextMenu.Items.OfType<MenuItem>().FirstOrDefault(n => n.Name == "_storeTreeViewItemUploadMenuItem");
+                if (storeTreeViewItemUploadMenuItem == null) return;
+
+                storeTreeViewItemUploadMenuItem.IsEnabled = selectTreeViewItem.Value.Boxes.Count > 0 ? true : false;
+            }
         }
 
         private void _storeTreeViewItemNewMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1378,7 +1372,7 @@ namespace Amoeba.Windows
                                 {
                                     if (MessageBox.Show(
                                             _mainWindow,
-                                            LanguagesManager.Instance.StoreControl_DigitalSignatureError_Message,
+                                            string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message),
                                             "Store",
                                             MessageBoxButton.OKCancel,
                                             MessageBoxImage.Asterisk) == MessageBoxResult.OK)
@@ -1402,6 +1396,64 @@ namespace Amoeba.Windows
                     this.Update();
                 }
             }
+        }
+
+        private void _storeTreeViewItemExportMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;
+            if (selectTreeViewItem == null) return;
+
+            using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
+            {
+                dialog.RestoreDirectory = true;
+                dialog.FileName = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.UploadSignature);
+                dialog.DefaultExt = ".box";
+                dialog.Filter = "Box (*.box)|*.box";
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var fileName = dialog.FileName;
+
+                    var box = new Box();
+                    box.Name = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.UploadSignature);
+                    box.Boxes.AddRange(selectTreeViewItem.Value.Boxes);
+                    box.CreationTime = DateTime.UtcNow;
+
+                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
+                    using (Stream directoryStream = AmoebaConverter.ToBoxStream(box))
+                    {
+                        int i = -1;
+                        byte[] buffer = _bufferManager.TakeBuffer(1024);
+
+                        while ((i = directoryStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            stream.Write(buffer, 0, i);
+                        }
+
+                        _bufferManager.ReturnBuffer(buffer);
+                    }
+
+                    this.Update();
+                }
+            }
+        }
+
+        private void _storeTreeViewItemUploadMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;
+            if (selectTreeViewItem == null) return;
+
+            var digitalSignature = Settings.Instance.Global_DigitalSignatureCollection.FirstOrDefault(n => n.ToString() == selectTreeViewItem.Value.UploadSignature);
+            if (digitalSignature == null) return;
+
+            if (selectTreeViewItem.Value.Boxes.Count == 0) return;
+
+            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Upload_Message, "Store", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+
+            Store store = new Store();
+            store.Boxes.AddRange(selectTreeViewItem.Value.Boxes);
+
+            _amoebaManager.Upload(store, digitalSignature);
         }
 
         private void _boxTreeViewItemContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -1590,7 +1642,7 @@ namespace Amoeba.Windows
                                 {
                                     if (MessageBox.Show(
                                             _mainWindow,
-                                            LanguagesManager.Instance.StoreControl_DigitalSignatureError_Message,
+                                            string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.BoxControl_DigitalSignatureError_Message),
                                             "Store",
                                             MessageBoxButton.OKCancel,
                                             MessageBoxImage.Asterisk) == MessageBoxResult.OK)
@@ -1650,28 +1702,6 @@ namespace Amoeba.Windows
                     this.Update();
                 }
             }
-        }
-
-        #endregion
-
-        #region Tool
-
-        private void _uploadButton_Click(object sender, RoutedEventArgs e)
-        {
-            var storeTreeViewItem = _treeView.GetLineage((TreeViewItem)_treeView.SelectedItem).OfType<StoreTreeViewItem>().FirstOrDefault() as StoreTreeViewItem;
-            if (storeTreeViewItem == null) return;
-
-            var digitalSignature = Settings.Instance.Global_DigitalSignatureCollection.FirstOrDefault(n => n.ToString() == storeTreeViewItem.Value.UploadSignature);
-            if (digitalSignature == null) return;
-
-            if (storeTreeViewItem.Value.Boxes.Count == 0) return;
-
-            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Upload_Message, "Store", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
-
-            Store store = new Store();
-            store.Boxes.AddRange(storeTreeViewItem.Value.Boxes);
-
-            _amoebaManager.Upload(store, digitalSignature);
         }
 
         #endregion

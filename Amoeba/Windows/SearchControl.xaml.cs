@@ -84,7 +84,7 @@ namespace Amoeba.Windows
 
                 End: ;
 
-                    Settings.Instance.BoxControl_ExpandedPath.Remove(path);
+                    Settings.Instance.SearchControl_ExpandedPath.Remove(path);
                 }
             }
 
@@ -789,6 +789,46 @@ namespace Amoeba.Windows
             _amoebaManager.Signatures.Remove(selectTreeViewItem.Value.UploadSignature);
 
             this.Update_Cache();
+        }
+
+        private void _storeTreeViewItemExportMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;
+            if (selectTreeViewItem == null) return;
+
+            using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
+            {
+                dialog.RestoreDirectory = true;
+                dialog.FileName = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.UploadSignature);
+                dialog.DefaultExt = ".box";
+                dialog.Filter = "Box (*.box)|*.box";
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var fileName = dialog.FileName;
+
+                    var box = new Box();
+                    box.Name = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.UploadSignature);
+                    box.Boxes.AddRange(selectTreeViewItem.Value.Boxes);
+                    box.CreationTime = DateTime.UtcNow;
+
+                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
+                    using (Stream directoryStream = AmoebaConverter.ToBoxStream(box))
+                    {
+                        int i = -1;
+                        byte[] buffer = _bufferManager.TakeBuffer(1024);
+
+                        while ((i = directoryStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            stream.Write(buffer, 0, i);
+                        }
+
+                        _bufferManager.ReturnBuffer(buffer);
+                    }
+
+                    this.Update();
+                }
+            }
         }
 
         private void _storeTreeViewItemResetMenuItem_Click(object sender, RoutedEventArgs e)
