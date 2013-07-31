@@ -153,9 +153,9 @@ namespace Amoeba.Windows
                     Thread.Sleep(1000 * 10);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Log.Error(e);
+
             }
         }
 
@@ -290,9 +290,9 @@ namespace Amoeba.Windows
                     Thread.Sleep(1000 * 3);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Log.Error(e);
+
             }
         }
 

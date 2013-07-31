@@ -1357,30 +1357,26 @@ namespace Amoeba.Windows
                 _checkUpdateMenuItem_Click(null, null);
             }
 
-            _amoebaManager.RemoveSeedSignaturesEvent = new RemoveSeedSignaturesEventHandler(_amoebaManagerRemoveSeedSignaturesEvent);
+            _amoebaManager.LockSeedSignaturesEvent = new LockSeedSignaturesEventHandler(_amoebaManagerLockSeedSignaturesEvent);
         }
 
-        SignatureCollection _amoebaManagerRemoveSeedSignaturesEvent(object sender)
+        SignatureCollection _amoebaManagerLockSeedSignaturesEvent(object sender)
         {
-            HashSet<string> lockedSignatures = new HashSet<string>();
+            HashSet<string> lockSignatures = new HashSet<string>();
 
             foreach (var storeInfo in Settings.Instance.StoreControl_StoreTreeItems)
             {
                 if (!Signature.HasSignature(storeInfo.UploadSignature)) continue;
-                lockedSignatures.Add(storeInfo.UploadSignature);
+                lockSignatures.Add(storeInfo.UploadSignature);
             }
 
             foreach (var storeInfo in Settings.Instance.SearchControl_StoreTreeItems)
             {
                 if (!Signature.HasSignature(storeInfo.UploadSignature)) continue;
-                lockedSignatures.Add(storeInfo.UploadSignature);
+                lockSignatures.Add(storeInfo.UploadSignature);
             }
 
-            HashSet<string> removeSignatures = new HashSet<string>(_amoebaManager.GetSignatures());
-            removeSignatures.ExceptWith(lockedSignatures);
-
-            int capacity = Math.Max(lockedSignatures.Count * 2, 1024);
-            return new SignatureCollection(removeSignatures.Randomize().Skip(capacity));
+            return new SignatureCollection(lockSignatures);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

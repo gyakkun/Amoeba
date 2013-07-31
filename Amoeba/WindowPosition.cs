@@ -12,14 +12,14 @@ namespace Amoeba
         {
             foreach (var n in System.Windows.Forms.Screen.AllScreens)
             {
-                var maxLeft = n.WorkingArea.Left;
-                var maxTop = n.WorkingArea.Top;
-                var maxRight = (n.WorkingArea.Left + n.WorkingArea.Width) - window.Width;
-                var maxBottom = (n.WorkingArea.Top + n.WorkingArea.Height) - window.Height;
-
                 if (n.WorkingArea.Left <= (window.Left + (window.Width / 2)) && (window.Left + (window.Width / 2)) <= (n.WorkingArea.Left + n.WorkingArea.Width)
                     && n.WorkingArea.Top <= window.Top && window.Top <= (n.WorkingArea.Top + n.WorkingArea.Height))
                 {
+                    var maxLeft = n.WorkingArea.Left;
+                    var maxTop = n.WorkingArea.Top;
+                    var maxRight = (n.WorkingArea.Left + n.WorkingArea.Width) - window.Width;
+                    var maxBottom = (n.WorkingArea.Top + n.WorkingArea.Height) - window.Height;
+
                     window.Left = Math.Min(Math.Max(maxLeft, window.Left), maxRight);
                     window.Top = Math.Min(Math.Max(maxTop, window.Top), maxBottom);
 

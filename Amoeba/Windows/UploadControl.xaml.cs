@@ -193,9 +193,9 @@ namespace Amoeba.Windows
                     Thread.Sleep(1000 * 3);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Log.Error(e);
+
             }
         }
 

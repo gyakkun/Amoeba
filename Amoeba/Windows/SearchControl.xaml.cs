@@ -251,6 +251,8 @@ namespace Amoeba.Windows
 
                             if (App.SelectTab == TabItemType.Search)
                                 _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectStoreTreeViewItem.Value.UploadSignature);
+
+                            this.Update_TreeView_Color();
                         }));
                     }
                     else if (selectTreeViewItem is BoxTreeViewItem)
@@ -463,6 +465,8 @@ namespace Amoeba.Windows
 
                             if (App.SelectTab == TabItemType.Search)
                                 _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectBoxTreeViewItem.Value.Name);
+
+                            this.Update_TreeView_Color();
                         }));
                     }
                 }
@@ -479,10 +483,10 @@ namespace Amoeba.Windows
             {
                 for (; ; )
                 {
+                    var signatures = new HashSet<string>(_amoebaManager.SearchSignatures);
+
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
-                        var signatures = _amoebaManager.Signatures;
-
                         foreach (var item in _treeViewItemCollection.ToArray())
                         {
                             if (signatures.Contains(item.Value.UploadSignature)) continue;
@@ -519,9 +523,9 @@ namespace Amoeba.Windows
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Log.Error(e);
+
             }
         }
 
@@ -760,9 +764,9 @@ namespace Amoeba.Windows
         {
             foreach (var signature in Clipboard.GetText().Split('\r', '\n').Where(n => Signature.HasSignature(n)))
             {
-                if (_amoebaManager.Signatures.Contains(signature)) continue;
+                if (_amoebaManager.SearchSignatures.Contains(signature)) continue;
 
-                _amoebaManager.Signatures.Add(signature);
+                _amoebaManager.SearchSignatures.Add(signature);
             }
 
             this.Update_Cache();
@@ -786,7 +790,7 @@ namespace Amoeba.Windows
             var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;
             if (selectTreeViewItem == null) return;
 
-            _amoebaManager.Signatures.Remove(selectTreeViewItem.Value.UploadSignature);
+            _amoebaManager.SearchSignatures.Remove(selectTreeViewItem.Value.UploadSignature);
 
             this.Update_Cache();
         }
