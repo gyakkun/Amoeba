@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Library.Collections;
-using System;
 
 namespace Library.Net.Amoeba
 {
-    public sealed class NameCollection : FilterList<string>, IEquatable<NameCollection>, IEnumerable<string>
+    public sealed class Route : FilterList<string>, IEquatable<Route>, IEnumerable<string>
     {
-        public NameCollection() : base() { }
-        public NameCollection(int capacity) : base(capacity) { }
-        public NameCollection(IEnumerable<string> collections) : base(collections) { }
+        public Route() : base() { }
+        public Route(int capacity) : base(capacity) { }
+        public Route(IEnumerable<string> collections) : base(collections) { }
 
         protected override bool Filter(string item)
         {
@@ -25,12 +25,12 @@ namespace Library.Net.Amoeba
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null || !(obj is NameCollection)) return false;
+            if ((object)obj == null || !(obj is Route)) return false;
 
-            return this.Equals((NameCollection)obj);
+            return this.Equals((Route)obj);
         }
 
-        public bool Equals(NameCollection other)
+        public bool Equals(Route other)
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;

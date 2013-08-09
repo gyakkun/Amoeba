@@ -22,7 +22,7 @@ namespace Amoeba
         static Clipboard()
         {
             _clipboardWatcher = new ClipboardWatcher();
-            _clipboardWatcher.DrawClipboard += (sender2, e2) =>
+            _clipboardWatcher.DrawClipboard += (sender, e) =>
             {
                 _boxList.Clear();
                 _searchTreeItemList.Clear();

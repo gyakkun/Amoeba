@@ -96,10 +96,10 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_Name_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_Value_Width", Value = 100 },
 
-                new Library.Configuration.SettingsContext<LockedList<StoreInfo>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreInfo>() },
+                new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "SearchControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "SearchControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<LockedHashSet<NameCollection>>() { Name = "SearchControl_ExpandedPath", Value = new LockedHashSet<NameCollection>() },
+                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "SearchControl_ExpandedPath", Value = new LockedHashSet<Route>() },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "DownloadControl_LastHeaderClicked", Value = "Rate" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "DownloadControl_ListSortDirection", Value = ListSortDirection.Descending },
@@ -176,16 +176,16 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Value_Width", Value = 600 },
 
-                new Library.Configuration.SettingsContext<LockedList<StoreInfo>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreInfo>() },
+                new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
                 new Library.Configuration.SettingsContext<string>() { Name = "StoreControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "StoreControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<LockedHashSet<NameCollection>>() { Name = "StoreControl_ExpandedPath", Value = new LockedHashSet<NameCollection>() },
+                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "StoreControl_ExpandedPath", Value = new LockedHashSet<Route>() },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "BoxControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "BoxControl_ListSortDirection", Value = ListSortDirection.Ascending },
                 new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = new Box() { Name = "Box" } },
                 new Library.Configuration.SettingsContext<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
-                new Library.Configuration.SettingsContext<LockedHashSet<NameCollection>>() { Name = "BoxControl_ExpandedPath", Value = new LockedHashSet<NameCollection>() },
+                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "BoxControl_ExpandedPath", Value = new LockedHashSet<Route>() },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
@@ -1480,13 +1480,13 @@ namespace Amoeba.Properties
         }
 
 
-        public LockedList<StoreInfo> SearchControl_StoreTreeItems
+        public LockedList<StoreTreeItem> SearchControl_StoreTreeItems
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<StoreInfo>)this["SearchControl_StoreTreeItems"];
+                   return (LockedList<StoreTreeItem>)this["SearchControl_StoreTreeItems"];
                 }
             }
 
@@ -1537,13 +1537,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public LockedHashSet<NameCollection> SearchControl_ExpandedPath
+        public LockedHashSet<Route> SearchControl_ExpandedPath
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedHashSet<NameCollection>)this["SearchControl_ExpandedPath"];
+                   return (LockedHashSet<Route>)this["SearchControl_ExpandedPath"];
                 }
             }
 
@@ -2874,13 +2874,13 @@ namespace Amoeba.Properties
         }
 
 
-        public LockedList<StoreInfo> StoreControl_StoreTreeItems
+        public LockedList<StoreTreeItem> StoreControl_StoreTreeItems
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<StoreInfo>)this["StoreControl_StoreTreeItems"];
+                   return (LockedList<StoreTreeItem>)this["StoreControl_StoreTreeItems"];
                 }
             }
 
@@ -2931,13 +2931,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public LockedHashSet<NameCollection> StoreControl_ExpandedPath
+        public LockedHashSet<Route> StoreControl_ExpandedPath
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedHashSet<NameCollection>)this["StoreControl_ExpandedPath"];
+                   return (LockedHashSet<Route>)this["StoreControl_ExpandedPath"];
                 }
             }
 
@@ -3027,13 +3027,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public LockedHashSet<NameCollection> BoxControl_ExpandedPath
+        public LockedHashSet<Route> BoxControl_ExpandedPath
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedHashSet<NameCollection>)this["BoxControl_ExpandedPath"];
+                   return (LockedHashSet<Route>)this["BoxControl_ExpandedPath"];
                 }
             }
 

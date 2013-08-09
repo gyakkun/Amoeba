@@ -108,7 +108,7 @@
     </ApplicationDefinition>
     <Compile Include="EqualityComparer.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Hash\Sha512.cs" />
+    <Compile Include="Tools\Sha512.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Windows\BoxControl.xaml.cs">
       <DependentUpon>BoxControl.xaml</DependentUpon>
@@ -128,7 +128,15 @@
     <Compile Include="Windows\DownloadControl.xaml.cs">
       <DependentUpon>DownloadControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ListViewEx.cs" />
+    <Compile Include="Windows\_Controls\BoxTreeViewItem.cs" />
+    <Compile Include="Windows\_Controls\StoreCategorizeTreeViewItem.cs" />
+    <Compile Include="Windows\_Items\SearchItem.cs" />
+    <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />
+    <Compile Include="Windows\_Controls\DigitalSignatureComboBoxItem.cs" />
+    <Compile Include="Windows\_Controls\LanguageMenuItem.cs" />
+    <Compile Include="Windows\_Items\SearchTreeItem.cs" />
+    <Compile Include="Windows\_Controls\SearchTreeViewItem.cs" />
+    <Compile Include="Windows\_Controls\ListViewEx.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -162,7 +170,10 @@
     <Compile Include="Windows\UploadWindow.xaml.cs">
       <DependentUpon>UploadWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ValueConverter.cs" />
+    <Compile Include="Windows\_Items\StoreTreeItem.cs" />
+    <Compile Include="Windows\_Controls\StoreTreeViewItem.cs" />
+    <Compile Include="Windows\_Items\UpdateOption.cs" />
+    <Compile Include="Windows\_Items\ValueConverter.cs" />
     <Compile Include="Windows\VersionInformationWindow.xaml.cs">
       <DependentUpon>VersionInformationWindow.xaml</DependentUpon>
     </Compile>
@@ -177,7 +188,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="NameCollection.cs" />
+    <Compile Include="Route.cs" />
     <Compile Include="TransfarLimitManager.cs" />
     <Compile Include="WindowPosition.cs" />
     <Page Include="Windows\BoxControl.xaml">

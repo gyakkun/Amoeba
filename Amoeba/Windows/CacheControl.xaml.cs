@@ -802,7 +802,7 @@ namespace Amoeba.Windows
                     Value = _textBox.Text
                 });
 
-                selectTreeViewItem.Value.Items.Add(searchTreeItem);
+                selectTreeViewItem.Value.Children.Add(searchTreeItem);
 
                 selectTreeViewItem.Update();
 
@@ -877,7 +877,7 @@ namespace Amoeba.Windows
                 var s = e.Data.GetData("item") as SearchTreeViewItem;
                 var t = _treeView.GetCurrentItem(e.GetPosition) as SearchTreeViewItem;
                 if (t == null || s == t
-                    || t.Value.Items.Any(n => object.ReferenceEquals(n, s.Value))) return;
+                    || t.Value.Children.Any(n => object.ReferenceEquals(n, s.Value))) return;
 
                 if (_treeViewItem.GetLineage(t).OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n, s))) return;
 
@@ -886,11 +886,11 @@ namespace Amoeba.Windows
                 var list = _treeViewItem.GetLineage(s).OfType<SearchTreeViewItem>().ToList();
                 var target = list[list.Count - 2];
 
-                var tItems = target.Value.Items.Where(n => !object.ReferenceEquals(n, s.Value)).ToArray();
-                target.Value.Items.Clear();
-                target.Value.Items.AddRange(tItems);
+                var tItems = target.Value.Children.Where(n => !object.ReferenceEquals(n, s.Value)).ToArray();
+                target.Value.Children.Clear();
+                target.Value.Children.AddRange(tItems);
 
-                t.Value.Items.Add(s.Value);
+                t.Value.Children.Add(s.Value);
 
                 target.Update();
                 t.Update();
@@ -968,7 +968,7 @@ namespace Amoeba.Windows
 
             if (window.ShowDialog() == true)
             {
-                selectTreeViewItem.Value.Items.Add(searchTreeItem);
+                selectTreeViewItem.Value.Children.Add(searchTreeItem);
 
                 selectTreeViewItem.Update();
             }
@@ -1003,7 +1003,7 @@ namespace Amoeba.Windows
 
             target.IsSelected = true;
 
-            target.Value.Items.Remove(selectTreeViewItem.Value);
+            target.Value.Children.Remove(selectTreeViewItem.Value);
             target.Update();
 
             this.Update();
@@ -1021,7 +1021,7 @@ namespace Amoeba.Windows
 
             target.IsSelected = true;
 
-            target.Value.Items.Remove(selectTreeViewItem.Value);
+            target.Value.Children.Remove(selectTreeViewItem.Value);
             target.Update();
 
             this.Update();
@@ -1042,7 +1042,7 @@ namespace Amoeba.Windows
 
             foreach (var searchTreeitem in Clipboard.GetSearchTreeItems())
             {
-                selectTreeViewItem.Value.Items.Add(searchTreeitem);
+                selectTreeViewItem.Value.Children.Add(searchTreeitem);
             }
 
             selectTreeViewItem.Update();
@@ -1702,8 +1702,8 @@ namespace Amoeba.Windows
                 searchTreeItem.SearchItem.Name = string.Format("Signature - \"{0}\"", signature);
                 searchTreeItem.SearchItem.SearchSignatureCollection.Add(item);
 
-                if (selectTreeViewItem.Value.Items.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
-                selectTreeViewItem.Value.Items.Add(searchTreeItem);
+                if (selectTreeViewItem.Value.Children.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
+                selectTreeViewItem.Value.Children.Add(searchTreeItem);
 
                 selectTreeViewItem.Update();
             }
@@ -1735,8 +1735,8 @@ namespace Amoeba.Windows
                     searchTreeItem.SearchItem.Name = string.Format("Keyword - \"{0}\"", keyword);
                     searchTreeItem.SearchItem.SearchKeywordCollection.Add(item);
 
-                    if (selectTreeViewItem.Value.Items.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
-                    selectTreeViewItem.Value.Items.Add(searchTreeItem);
+                    if (selectTreeViewItem.Value.Children.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
+                    selectTreeViewItem.Value.Children.Add(searchTreeItem);
 
                     selectTreeViewItem.Update();
                 }
@@ -1767,8 +1767,8 @@ namespace Amoeba.Windows
                 searchTreeItem.SearchItem.Name = string.Format("CreationTime - \"{0}\"", listItem.Value.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo));
                 searchTreeItem.SearchItem.SearchCreationTimeRangeCollection.Add(item);
 
-                if (selectTreeViewItem.Value.Items.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
-                selectTreeViewItem.Value.Items.Add(searchTreeItem);
+                if (selectTreeViewItem.Value.Children.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
+                selectTreeViewItem.Value.Children.Add(searchTreeItem);
 
                 selectTreeViewItem.Update();
             }
@@ -1813,8 +1813,8 @@ namespace Amoeba.Windows
                 searchTreeItem.SearchItem.Name = string.Format("State - \"{0}\"", converter.Convert(state, typeof(string), null, System.Globalization.CultureInfo.CurrentUICulture));
                 searchTreeItem.SearchItem.SearchStateCollection.Add(item);
 
-                if (selectTreeViewItem.Value.Items.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
-                selectTreeViewItem.Value.Items.Add(searchTreeItem);
+                if (selectTreeViewItem.Value.Children.Any(n => n.SearchItem.Name == searchTreeItem.SearchItem.Name)) continue;
+                selectTreeViewItem.Value.Children.Add(searchTreeItem);
 
                 selectTreeViewItem.Update();
             }
@@ -2172,801 +2172,5 @@ namespace Amoeba.Windows
             _searchRowDefinition.Height = new GridLength(24);
             _searchTextBox.Focus();
         }
-    }
-
-    class SearchTreeViewItem : TreeViewItem
-    {
-        private int _hit;
-        private SearchTreeItem _value;
-        private ObservableCollection<SearchTreeViewItem> _listViewItemCollection = new ObservableCollection<SearchTreeViewItem>();
-
-        public SearchTreeViewItem()
-            : base()
-        {
-            this.Value = new SearchTreeItem()
-            {
-                SearchItem = new SearchItem()
-                {
-                    Name = "",
-                },
-            };
-
-            base.ItemsSource = _listViewItemCollection;
-
-            base.RequestBringIntoView += (object sender, RequestBringIntoViewEventArgs e) =>
-            {
-                e.Handled = true;
-            };
-        }
-
-        public SearchTreeViewItem(SearchTreeItem searchTreeItem)
-            : base()
-        {
-            this.Value = searchTreeItem;
-
-            base.ItemsSource = _listViewItemCollection;
-
-            base.RequestBringIntoView += (object sender, RequestBringIntoViewEventArgs e) =>
-            {
-                e.Handled = true;
-            };
-        }
-
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            this.IsSelected = true;
-
-            e.Handled = true;
-        }
-
-        protected override void OnExpanded(RoutedEventArgs e)
-        {
-            base.OnExpanded(e);
-
-            this.Value.IsExpanded = true;
-        }
-
-        protected override void OnCollapsed(RoutedEventArgs e)
-        {
-            base.OnCollapsed(e);
-
-            this.Value.IsExpanded = false;
-        }
-
-        public void Update()
-        {
-            base.Header = string.Format("{0} ({1})", _value.SearchItem.Name, _hit);
-
-            base.IsExpanded = this.Value.IsExpanded;
-
-            List<SearchTreeViewItem> list = new List<SearchTreeViewItem>();
-
-            foreach (var item in this.Value.Items)
-            {
-                list.Add(new SearchTreeViewItem(item));
-            }
-
-            foreach (var item in _listViewItemCollection.OfType<SearchTreeViewItem>().ToArray())
-            {
-                if (!list.Any(n => object.ReferenceEquals(n.Value.SearchItem, item.Value.SearchItem)))
-                {
-                    _listViewItemCollection.Remove(item);
-                }
-            }
-
-            foreach (var item in list)
-            {
-                if (!_listViewItemCollection.OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n.Value.SearchItem, item.Value.SearchItem)))
-                {
-                    _listViewItemCollection.Add(item);
-                }
-            }
-
-            this.Sort();
-        }
-
-        public void Sort()
-        {
-            var list = _listViewItemCollection.OfType<SearchTreeViewItem>().ToList();
-
-            list.Sort((x, y) =>
-            {
-                int c = x.Value.SearchItem.Name.CompareTo(y.Value.SearchItem.Name);
-                if (c != 0) return c;
-                c = x.Hit.CompareTo(y.Hit);
-                if (c != 0) return c;
-
-                return x.GetHashCode().CompareTo(y.GetHashCode());
-            });
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                var o = _listViewItemCollection.IndexOf(list[i]);
-
-                if (i != o) _listViewItemCollection.Move(o, i);
-            }
-
-            foreach (var item in this.Items.OfType<SearchTreeViewItem>())
-            {
-                item.Sort();
-            }
-        }
-
-        public SearchTreeItem Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                _value = value;
-
-                this.Update();
-            }
-        }
-
-        public int Hit
-        {
-            get
-            {
-                return _hit;
-            }
-            set
-            {
-                _hit = value;
-
-                this.Update();
-            }
-        }
-    }
-
-    [DataContract(Name = "SearchTreeItem", Namespace = "http://Amoeba/Windows")]
-    class SearchTreeItem : IDeepCloneable<SearchTreeItem>, IThisLock
-    {
-        private SearchItem _searchItem;
-        private LockedList<SearchTreeItem> _items;
-        private bool _isExpanded = true;
-
-        private object _thisLock = new object();
-        private static object _thisStaticLock = new object();
-
-        [DataMember(Name = "SearchItem")]
-        public SearchItem SearchItem
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return _searchItem;
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    _searchItem = value;
-                }
-            }
-        }
-
-        [DataMember(Name = "Items")]
-        public LockedList<SearchTreeItem> Items
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    if (_items == null)
-                        _items = new LockedList<SearchTreeItem>();
-
-                    return _items;
-                }
-            }
-        }
-
-        [DataMember(Name = "IsExpanded")]
-        public bool IsExpanded
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return _isExpanded;
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    _isExpanded = value;
-                }
-            }
-        }
-
-        #region IDeepClone<SearchTreeItem>
-
-        public SearchTreeItem DeepClone()
-        {
-            lock (this.ThisLock)
-            {
-                var ds = new DataContractSerializer(typeof(SearchTreeItem));
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(ms, new UTF8Encoding(false), false))
-                    {
-                        ds.WriteObject(textDictionaryWriter, this);
-                    }
-
-                    ms.Position = 0;
-
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(ms, XmlDictionaryReaderQuotas.Max))
-                    {
-                        return (SearchTreeItem)ds.ReadObject(textDictionaryReader);
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region IThisLock
-
-        public object ThisLock
-        {
-            get
-            {
-                lock (_thisStaticLock)
-                {
-                    if (_thisLock == null)
-                        _thisLock = new object();
-
-                    return _thisLock;
-                }
-            }
-        }
-
-        #endregion
-    }
-
-    [DataContract(Name = "SearchItem", Namespace = "http://Amoeba/Windows")]
-    class SearchItem : IDeepCloneable<SearchItem>, IThisLock
-    {
-        private string _name = "default";
-        private LockedList<SearchContains<string>> _searchNameCollection;
-        private LockedList<SearchContains<SearchRegex>> _searchNameRegexCollection;
-        private LockedList<SearchContains<SearchRegex>> _searchSignatureCollection;
-        private LockedList<SearchContains<string>> _searchKeywordCollection;
-        private LockedList<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRangeCollection;
-        private LockedList<SearchContains<SearchRange<long>>> _searchLengthRangeCollection;
-        private LockedList<SearchContains<Seed>> _searchSeedCollection;
-        private LockedList<SearchContains<SearchState>> _searchStateCollection;
-
-        private object _thisLock = new object();
-        private static object _thisStaticLock = new object();
-
-        [DataMember(Name = "Name")]
-        public string Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return _name;
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    _name = value;
-                }
-            }
-        }
-
-        [DataMember(Name = "SearchNameCollection")]
-        public LockedList<SearchContains<string>> SearchNameCollection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    if (_searchNameCollection == null)
-                        _searchNameCollection = new LockedList<SearchContains<string>>();
-
-                    return _searchNameCollection;
-                }
-            }
-        }
-
-        [DataMember(Name = "SearchNameRegexCollection")]
-        public LockedList<SearchContains<SearchRegex>> SearchNameRegexCollection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    if (_searchNameRegexCollection == null)
-                        _searchNameRegexCollection = new LockedList<SearchContains<SearchRegex>>();
-
-                    return _searchNameRegexCollection;
-                }
-            }
-        }
-
-        [DataMember(Name = "SearchSignatureCollection 2")]
-        public LockedList<SearchContains<SearchRegex>> SearchSignatureCollection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    if (_searchSignatureCollection == null)
-                        _searchSignatureCollection = new LockedList<SearchContains<SearchRegex>>();
-
-                    return _searchSignatureCollection;
-                }
-            }
-        }
-
-        [DataMember(Name = "SearchKeywordCollection")]
-        public LockedList<SearchContains<string>> SearchKeywordCollection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    if (_searchKeywordCollection == null)
-                        _searchKeywordCollection = new LockedList<SearchContains<string>>();
-
-                    return _searchKeywordCollection;
-                }
-            }
-        }
-
-        [DataMember(Name = "SearchCreationTimeRangeCollection")]
-        public LockedList<SearchContains<SearchRange<DateTime>>> SearchCreationTimeRangeCollection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    if (_searchCreationTimeRangeCollection == null)
-                        _searchCreationTimeRangeCollection = new LockedList<SearchContains<SearchRange<DateTime>>>();
-
-                    return _searchCreationTimeRangeCollection;
-                }
-            }
-        }
-
-        [DataMember(Name = "SearchLengthRangeCollection")]
-        public LockedList<SearchContains<SearchRange<long>>> SearchLengthRangeCollection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    if (_searchLengthRangeCollection == null)
-                        _searchLengthRangeCollection = new LockedList<SearchContains<SearchRange<long>>>();
-
-                    return _searchLengthRangeCollection;
-                }
-            }
-        }
-
-        [DataMember(Name = "SearchSeedCollection")]
-        public LockedList<SearchContains<Seed>> SearchSeedCollection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    if (_searchSeedCollection == null)
-                        _searchSeedCollection = new LockedList<SearchContains<Seed>>();
-
-                    return _searchSeedCollection;
-                }
-            }
-        }
-
-        [DataMember(Name = "SearchStateCollection")]
-        public LockedList<SearchContains<SearchState>> SearchStateCollection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-
-                    if (_searchStateCollection == null)
-                        _searchStateCollection = new LockedList<SearchContains<SearchState>>();
-
-                    return _searchStateCollection;
-                }
-            }
-        }
-
-        public override string ToString()
-        {
-            lock (this.ThisLock)
-            {
-                return string.Format("Name = {0}", this.Name);
-            }
-        }
-
-        #region IDeepClone<SearchItem>
-
-        public SearchItem DeepClone()
-        {
-            lock (this.ThisLock)
-            {
-                var ds = new DataContractSerializer(typeof(SearchItem));
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(ms, new UTF8Encoding(false), false))
-                    {
-                        ds.WriteObject(textDictionaryWriter, this);
-                    }
-
-                    ms.Position = 0;
-
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(ms, XmlDictionaryReaderQuotas.Max))
-                    {
-                        return (SearchItem)ds.ReadObject(textDictionaryReader);
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region IThisLock
-
-        public object ThisLock
-        {
-            get
-            {
-                lock (_thisStaticLock)
-                {
-                    if (_thisLock == null)
-                        _thisLock = new object();
-
-                    return _thisLock;
-                }
-            }
-        }
-
-        #endregion
-    }
-
-    [Flags]
-    [DataContract(Name = "SearchState", Namespace = "http://Amoeba/Windows")]
-    enum SearchState
-    {
-        [EnumMember(Value = "Cache")]
-        Cache = 0x1,
-
-        [EnumMember(Value = "Share")]
-        Share = 0x2,
-
-        [EnumMember(Value = "Uploading")]
-        Uploading = 0x4,
-
-        [EnumMember(Value = "Uploaded")]
-        Uploaded = 0x8,
-
-        [EnumMember(Value = "Downloading")]
-        Downloading = 0x10,
-
-        [EnumMember(Value = "Downloaded")]
-        Downloaded = 0x20,
-
-        [EnumMember(Value = "Box")]
-        Box = 0x40,
-    }
-
-    [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]
-    class SearchContains<T> : IEquatable<SearchContains<T>>, IDeepCloneable<SearchContains<T>>
-    {
-        private bool _contains;
-        private T _value;
-
-        [DataMember(Name = "Contains")]
-        public bool Contains
-        {
-            get
-            {
-                return _contains;
-            }
-            set
-            {
-                _contains = value;
-            }
-        }
-
-        [DataMember(Name = "Value")]
-        public T Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                _value = value;
-            }
-        }
-
-        public override int GetHashCode()
-        {
-            return this.Value.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if ((object)obj == null || !(obj is SearchContains<T>)) return false;
-
-            return this.Equals((SearchContains<T>)obj);
-        }
-
-        public bool Equals(SearchContains<T> other)
-        {
-            if ((object)other == null) return false;
-            if (object.ReferenceEquals(this, other)) return true;
-            if (this.GetHashCode() != other.GetHashCode()) return false;
-
-            if ((this.Contains != other.Contains)
-                || (!this.Value.Equals(other.Value)))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", this.Contains, this.Value);
-        }
-
-        #region IDeepClone<SearchContains<T>>
-
-        public SearchContains<T> DeepClone()
-        {
-            var ds = new DataContractSerializer(typeof(SearchContains<T>));
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(ms, new UTF8Encoding(false), false))
-                {
-                    ds.WriteObject(textDictionaryWriter, this);
-                }
-
-                ms.Position = 0;
-
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(ms, XmlDictionaryReaderQuotas.Max))
-                {
-                    return (SearchContains<T>)ds.ReadObject(textDictionaryReader);
-                }
-            }
-        }
-
-        #endregion
-    }
-
-    [DataContract(Name = "SearchRegex", Namespace = "http://Amoeba/Windows")]
-    class SearchRegex : IEquatable<SearchRegex>, IDeepCloneable<SearchRegex>
-    {
-        private string _value;
-        private bool _isIgnoreCase;
-
-        private Regex _regex;
-
-        [DataMember(Name = "Value")]
-        public string Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                _value = value;
-
-                this.RegexUpdate();
-            }
-        }
-
-        [DataMember(Name = "IsIgnoreCase")]
-        public bool IsIgnoreCase
-        {
-            get
-            {
-                return _isIgnoreCase;
-            }
-            set
-            {
-                _isIgnoreCase = value;
-
-                this.RegexUpdate();
-            }
-        }
-
-        private void RegexUpdate()
-        {
-            var o = RegexOptions.Compiled | RegexOptions.Singleline;
-            if (_isIgnoreCase) o |= RegexOptions.IgnoreCase;
-
-            if (_value != null) _regex = new Regex(_value, o);
-            else _regex = null;
-        }
-
-        public bool IsMatch(string value)
-        {
-            if (_regex == null) return false;
-
-            return _regex.IsMatch(value);
-        }
-
-        public override int GetHashCode()
-        {
-            return this.Value.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if ((object)obj == null || !(obj is SearchRegex)) return false;
-
-            return this.Equals((SearchRegex)obj);
-        }
-
-        public bool Equals(SearchRegex other)
-        {
-            if ((object)other == null) return false;
-            if (object.ReferenceEquals(this, other)) return true;
-            if (this.GetHashCode() != other.GetHashCode()) return false;
-
-            if ((this.IsIgnoreCase != other.IsIgnoreCase)
-                || (this.Value != other.Value))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} {1}", this.IsIgnoreCase, this.Value);
-        }
-
-        #region IDeepClone<SearchRegex>
-
-        public SearchRegex DeepClone()
-        {
-            var ds = new DataContractSerializer(typeof(SearchRegex));
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(ms, new UTF8Encoding(false), false))
-                {
-                    ds.WriteObject(textDictionaryWriter, this);
-                }
-
-                ms.Position = 0;
-
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(ms, XmlDictionaryReaderQuotas.Max))
-                {
-                    return (SearchRegex)ds.ReadObject(textDictionaryReader);
-                }
-            }
-        }
-
-        #endregion
-    }
-
-    [DataContract(Name = "SearchRange", Namespace = "http://Amoeba/Windows")]
-    class SearchRange<T> : IEquatable<SearchRange<T>>, IDeepCloneable<SearchRange<T>>
-        where T : IComparable
-    {
-        T _max;
-        T _min;
-
-        [DataMember(Name = "Max")]
-        public T Max
-        {
-            get
-            {
-                return _max;
-            }
-            set
-            {
-                _max = value;
-                _min = (_min.CompareTo(_max) > 0) ? _max : _min;
-            }
-        }
-
-        [DataMember(Name = "Min")]
-        public T Min
-        {
-            get
-            {
-                return _min;
-            }
-            set
-            {
-                _min = value;
-                _max = (_max.CompareTo(_min) < 0) ? _min : _max;
-            }
-        }
-
-        public bool Verify(T value)
-        {
-            if (value.CompareTo(this.Min) < 0 || value.CompareTo(this.Max) > 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public override int GetHashCode()
-        {
-            return this.Min.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if ((object)obj == null || !(obj is SearchRange<T>)) return false;
-
-            return this.Equals((SearchRange<T>)obj);
-        }
-
-        public bool Equals(SearchRange<T> other)
-        {
-            if ((object)other == null) return false;
-            if (object.ReferenceEquals(this, other)) return true;
-            if (this.GetHashCode() != other.GetHashCode()) return false;
-
-            if ((!this.Min.Equals(other.Min))
-                || (!this.Max.Equals(other.Max)))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("Max = {0}, Min = {1}", this.Max, this.Min);
-        }
-
-        #region IDeepClone<SearchRange<T>>
-
-        public SearchRange<T> DeepClone()
-        {
-            var ds = new DataContractSerializer(typeof(SearchRange<T>));
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(ms, new UTF8Encoding(false), false))
-                {
-                    ds.WriteObject(textDictionaryWriter, this);
-                }
-
-                ms.Position = 0;
-
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(ms, XmlDictionaryReaderQuotas.Max))
-                {
-                    return (SearchRange<T>)ds.ReadObject(textDictionaryReader);
-                }
-            }
-        }
-
-        #endregion
     }
 }

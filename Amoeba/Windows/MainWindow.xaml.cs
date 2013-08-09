@@ -879,28 +879,28 @@ namespace Amoeba.Windows
                         Value = "Executable",
                     });
 
-                    Settings.Instance.CacheControl_SearchTreeItem.Items.Clear();
-                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Children.Clear();
+                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = pictureSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = movieSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = musicSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = archiveSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = documentSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Items.Add(new SearchTreeItem()
+                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = ExecutableSearchItem
                     });
@@ -1360,20 +1360,20 @@ namespace Amoeba.Windows
             _amoebaManager.LockSeedSignaturesEvent = new LockSeedSignaturesEventHandler(_amoebaManagerLockSeedSignaturesEvent);
         }
 
-        SignatureCollection _amoebaManagerLockSeedSignaturesEvent(object sender)
+        IEnumerable<string> _amoebaManagerLockSeedSignaturesEvent(object sender)
         {
             HashSet<string> lockSignatures = new HashSet<string>();
 
             foreach (var storeInfo in Settings.Instance.StoreControl_StoreTreeItems)
             {
-                if (!Signature.HasSignature(storeInfo.UploadSignature)) continue;
-                lockSignatures.Add(storeInfo.UploadSignature);
+                if (!Signature.HasSignature(storeInfo.Signature)) continue;
+                lockSignatures.Add(storeInfo.Signature);
             }
 
             foreach (var storeInfo in Settings.Instance.SearchControl_StoreTreeItems)
             {
-                if (!Signature.HasSignature(storeInfo.UploadSignature)) continue;
-                lockSignatures.Add(storeInfo.UploadSignature);
+                if (!Signature.HasSignature(storeInfo.Signature)) continue;
+                lockSignatures.Add(storeInfo.Signature);
             }
 
             return new SignatureCollection(lockSignatures);
@@ -1783,40 +1783,6 @@ namespace Amoeba.Windows
             VersionInformationWindow window = new VersionInformationWindow();
             window.Owner = this;
             window.ShowDialog();
-        }
-    }
-
-    class LanguageMenuItem : MenuItem
-    {
-        private string _value;
-
-        public LanguageMenuItem()
-        {
-            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
-        }
-
-        void LanguagesManager_UsingLanguageChangedEvent(object sender)
-        {
-            this.Update();
-        }
-
-        public string Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                _value = value;
-
-                this.Update();
-            }
-        }
-
-        private void Update()
-        {
-            base.Header = LanguagesManager.Instance.Translate("Languages_" + _value) ?? _value;
         }
     }
 }

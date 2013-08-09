@@ -885,7 +885,7 @@ namespace Amoeba.Windows
             var treeViewItem = e.OriginalSource as TreeViewItem;
             if (treeViewItem == null) return;
 
-            NameCollection path = new NameCollection();
+            Route path = new Route();
 
             foreach (var item in _treeView.GetLineage(treeViewItem))
             {
@@ -900,7 +900,7 @@ namespace Amoeba.Windows
             var treeViewItem = e.OriginalSource as TreeViewItem;
             if (treeViewItem == null) return;
 
-            NameCollection path = new NameCollection();
+            Route path = new Route();
 
             foreach (var item in _treeView.GetLineage(treeViewItem))
             {
@@ -1895,166 +1895,6 @@ namespace Amoeba.Windows
         {
             _searchRowDefinition.Height = new GridLength(24);
             _searchTextBox.Focus();
-        }
-    }
-
-    class BoxTreeViewItem : TreeViewItem
-    {
-        private Box _value;
-        private ObservableCollection<BoxTreeViewItem> _listViewItemCollection = new ObservableCollection<BoxTreeViewItem>();
-
-        public BoxTreeViewItem()
-            : base()
-        {
-            this.Value = new Box();
-
-            this.ItemsSource = _listViewItemCollection;
-
-            base.RequestBringIntoView += (object sender, RequestBringIntoViewEventArgs e) =>
-            {
-                e.Handled = true;
-            };
-        }
-
-        public BoxTreeViewItem(Box box)
-            : base()
-        {
-            this.Value = box;
-
-            this.ItemsSource = _listViewItemCollection;
-
-            base.RequestBringIntoView += (object sender, RequestBringIntoViewEventArgs e) =>
-            {
-                e.Handled = true;
-            };
-        }
-
-        protected override void OnMouseDown(MouseButtonEventArgs e)
-        {
-            this.IsSelected = true;
-
-            e.Handled = true;
-        }
-
-        private static int GetTotalSeedCount(Box box)
-        {
-            List<Box> boxList = new List<Box>();
-            List<Seed> seedList = new List<Seed>();
-
-            boxList.Add(box);
-
-            for (int i = 0; i < boxList.Count; i++)
-            {
-                boxList.AddRange(boxList[i].Boxes);
-                seedList.AddRange(boxList[i].Seeds);
-            }
-
-            return seedList.Count;
-        }
-
-        private void Update_Header()
-        {
-            if (this.Value.Certificate == null)
-            {
-                this.Header = string.Format("{0} ({1})", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value));
-            }
-            else
-            {
-                this.Header = string.Format("{0} ({1}) - {2}", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value), this.Value.Certificate.ToString());
-            }
-
-            {
-                var parent = this.Parent as BoxTreeViewItem;
-
-                if (parent != null)
-                {
-                    parent.Update_Header();
-                }
-            }
-        }
-
-        public void Update()
-        {
-            this.Update_Header();
-
-            List<BoxTreeViewItem> list = new List<BoxTreeViewItem>();
-
-            foreach (var item in _value.Boxes)
-            {
-                var treeViewItem = new BoxTreeViewItem(item);
-                treeViewItem.Parent = this;
-                list.Add(treeViewItem);
-            }
-
-            foreach (var item in _listViewItemCollection.OfType<BoxTreeViewItem>().ToArray())
-            {
-                if (!list.Any(n => object.ReferenceEquals(n.Value, item.Value)))
-                {
-                    _listViewItemCollection.Remove(item);
-                }
-            }
-
-            foreach (var item in list)
-            {
-                if (!_listViewItemCollection.OfType<BoxTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, item.Value)))
-                {
-                    _listViewItemCollection.Add(item);
-                }
-            }
-
-            this.Sort();
-        }
-
-        public void Sort()
-        {
-            var list = _listViewItemCollection.OfType<BoxTreeViewItem>().ToList();
-
-            list.Sort((x, y) =>
-            {
-                int c = x.Value.Name.CompareTo(y.Value.Name);
-                if (c != 0) return c;
-                c = (x.Value.Certificate == null).CompareTo(y.Value.Certificate == null);
-                if (c != 0) return c;
-                if (x.Value.Certificate != null && x.Value.Certificate != null)
-                {
-                    c = Collection.Compare(x.Value.Certificate.PublicKey, y.Value.Certificate.PublicKey);
-                    if (c != 0) return c;
-                }
-                c = y.Value.Seeds.Count.CompareTo(x.Value.Seeds.Count);
-                if (c != 0) return c;
-                c = y.Value.Boxes.Count.CompareTo(x.Value.Boxes.Count);
-                if (c != 0) return c;
-
-                return x.GetHashCode().CompareTo(y.GetHashCode());
-            });
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                var o = _listViewItemCollection.IndexOf(list[i]);
-
-                if (i != o) _listViewItemCollection.Move(o, i);
-            }
-
-            foreach (var item in this.Items.OfType<BoxTreeViewItem>())
-            {
-                item.Sort();
-            }
-        }
-
-        private new BoxTreeViewItem Parent { get; set; }
-
-        public Box Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                _value = value;
-
-                this.Update();
-            }
         }
     }
 }

@@ -70,7 +70,7 @@ namespace Amoeba.Windows
                 {
                     if (path.Count == 0) goto End;
 
-                    TreeViewItem treeViewItem = _treeViewItemCollection.FirstOrDefault(n => n.Value.UploadSignature == path[0]);
+                    TreeViewItem treeViewItem = _treeViewItemCollection.FirstOrDefault(n => n.Value.Signature == path[0]);
                     if (treeViewItem == null) goto End;
 
                     foreach (var name in path.Skip(1))
@@ -95,7 +95,7 @@ namespace Amoeba.Windows
                     if (_treeView.SelectedItem is StoreTreeViewItem)
                     {
                         var selectStoreTreeViewItem = (StoreTreeViewItem)_treeView.SelectedItem;
-                        _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectStoreTreeViewItem.Value.UploadSignature);
+                        _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectStoreTreeViewItem.Value.Signature);
                     }
                     else if (_treeView.SelectedItem is BoxTreeViewItem)
                     {
@@ -250,7 +250,7 @@ namespace Amoeba.Windows
                             if (sortFlag) this.Sort();
 
                             if (App.SelectTab == TabItemType.Search)
-                                _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectStoreTreeViewItem.Value.UploadSignature);
+                                _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectStoreTreeViewItem.Value.Signature);
 
                             this.Update_TreeView_Color();
                         }));
@@ -489,27 +489,27 @@ namespace Amoeba.Windows
                     {
                         foreach (var item in _treeViewItemCollection.ToArray())
                         {
-                            if (signatures.Contains(item.Value.UploadSignature)) continue;
+                            if (signatures.Contains(item.Value.Signature)) continue;
 
                             _treeViewItemCollection.Remove(item);
                         }
 
                         foreach (var signature in signatures)
                         {
-                            if (_treeViewItemCollection.Any(n => n.Value.UploadSignature == signature)) continue;
+                            if (_treeViewItemCollection.Any(n => n.Value.Signature == signature)) continue;
 
-                            StoreInfo storeInfo = new StoreInfo();
-                            storeInfo.UploadSignature = signature;
+                            StoreTreeItem storeInfo = new StoreTreeItem();
+                            storeInfo.Signature = signature;
                             _treeViewItemCollection.Add(new StoreTreeViewItem(storeInfo));
                         }
 
                         foreach (var storeTreeViewItem in _treeViewItemCollection)
                         {
-                            var store = _amoebaManager.GetStore(storeTreeViewItem.Value.UploadSignature);
+                            var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
                             if (store == null || Collection.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
 
-                            StoreInfo storeInfo = new StoreInfo();
-                            storeInfo.UploadSignature = storeTreeViewItem.Value.UploadSignature;
+                            StoreTreeItem storeInfo = new StoreTreeItem();
+                            storeInfo.Signature = storeTreeViewItem.Value.Signature;
                             storeInfo.Boxes.AddRange(store.Boxes);
                             storeInfo.IsUpdated = true;
 
@@ -562,7 +562,7 @@ namespace Amoeba.Windows
             return filePath;
         }
 
-        private static IEnumerable<Box> GetBoxLineage(StoreInfo parentItem, Seed childItem)
+        private static IEnumerable<Box> GetBoxLineage(StoreTreeItem parentItem, Seed childItem)
         {
             var list = new List<Box>();
             list.AddRange(parentItem.Boxes);
@@ -609,7 +609,7 @@ namespace Amoeba.Windows
                     var vx = x.Value;
                     var vy = y.Value;
 
-                    int c = vx.UploadSignature.CompareTo(vy.UploadSignature);
+                    int c = vx.Signature.CompareTo(vy.Signature);
                     if (c != 0) return c;
                     c = vx.Boxes.Count.CompareTo(vy.Boxes.Count);
                     if (c != 0) return c;
@@ -701,11 +701,11 @@ namespace Amoeba.Windows
             var treeViewItem = e.OriginalSource as TreeViewItem;
             if (treeViewItem == null) return;
 
-            NameCollection path = new NameCollection();
+            Route path = new Route();
 
             foreach (var item in _treeView.GetLineage(treeViewItem))
             {
-                if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.UploadSignature);
+                if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.Signature);
                 else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
             }
 
@@ -717,11 +717,11 @@ namespace Amoeba.Windows
             var treeViewItem = e.OriginalSource as TreeViewItem;
             if (treeViewItem == null) return;
 
-            NameCollection path = new NameCollection();
+            Route path = new Route();
 
             foreach (var item in _treeView.GetLineage(treeViewItem))
             {
-                if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.UploadSignature);
+                if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.Signature);
                 else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
             }
 
@@ -782,7 +782,7 @@ namespace Amoeba.Windows
             var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;
             if (selectTreeViewItem == null) return;
 
-            Clipboard.SetText(selectTreeViewItem.Value.UploadSignature);
+            Clipboard.SetText(selectTreeViewItem.Value.Signature);
         }
 
         private void _storeTreeViewItemDeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -790,7 +790,7 @@ namespace Amoeba.Windows
             var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;
             if (selectTreeViewItem == null) return;
 
-            _amoebaManager.SearchSignatures.Remove(selectTreeViewItem.Value.UploadSignature);
+            _amoebaManager.SearchSignatures.Remove(selectTreeViewItem.Value.Signature);
 
             this.Update_Cache();
         }
@@ -803,7 +803,7 @@ namespace Amoeba.Windows
             using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
                 dialog.RestoreDirectory = true;
-                dialog.FileName = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.UploadSignature);
+                dialog.FileName = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.Signature);
                 dialog.DefaultExt = ".box";
                 dialog.Filter = "Box (*.box)|*.box";
 
@@ -812,7 +812,7 @@ namespace Amoeba.Windows
                     var fileName = dialog.FileName;
 
                     var box = new Box();
-                    box.Name = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.UploadSignature);
+                    box.Name = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.Signature);
                     box.Boxes.AddRange(selectTreeViewItem.Value.Boxes);
                     box.CreationTime = DateTime.UtcNow;
 
@@ -840,7 +840,7 @@ namespace Amoeba.Windows
             var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;
             if (selectTreeViewItem == null) return;
 
-            _amoebaManager.ResetStore(selectTreeViewItem.Value.UploadSignature);
+            _amoebaManager.ResetStore(selectTreeViewItem.Value.Signature);
             selectTreeViewItem.Value.Boxes.Clear();
             selectTreeViewItem.Update();
 
@@ -1016,7 +1016,7 @@ namespace Amoeba.Windows
                     if (selectSeedListViewItem == null) return;
 
                     var seed = selectSeedListViewItem.Value;
-                    string baseDirectory = System.IO.Path.Combine("Search", SearchControl.GetNormalizedPath(Signature.GetSignatureNickname(selectTreeViewItem.Value.UploadSignature)));
+                    string baseDirectory = System.IO.Path.Combine("Search", SearchControl.GetNormalizedPath(Signature.GetSignatureNickname(selectTreeViewItem.Value.Signature)));
 
                     foreach (var item in _treeView.GetLineage(selectTreeViewItem).OfType<BoxTreeViewItem>().ToList().Select(n => n.Value))
                     {
@@ -1060,7 +1060,7 @@ namespace Amoeba.Windows
                     if (selectSeedListViewItem == null) return;
 
                     var seed = selectSeedListViewItem.Value;
-                    string baseDirectory = System.IO.Path.Combine("Search", SearchControl.GetNormalizedPath(Signature.GetSignatureNickname(storeTreeViewItem.Value.UploadSignature)));
+                    string baseDirectory = System.IO.Path.Combine("Search", SearchControl.GetNormalizedPath(Signature.GetSignatureNickname(storeTreeViewItem.Value.Signature)));
 
                     foreach (var item in _treeView.GetLineage(selectTreeViewItem).OfType<BoxTreeViewItem>().ToList().Select(n => n.Value))
                     {
@@ -1149,7 +1149,7 @@ namespace Amoeba.Windows
 
             foreach (var seed in seeds)
             {
-                string baseDirectory = System.IO.Path.Combine("Search", SearchControl.GetNormalizedPath(Signature.GetSignatureNickname(storeTreeViewItem.Value.UploadSignature)));
+                string baseDirectory = System.IO.Path.Combine("Search", SearchControl.GetNormalizedPath(Signature.GetSignatureNickname(storeTreeViewItem.Value.Signature)));
 
                 foreach (var item in SearchControl.GetBoxLineage(storeTreeViewItem.Value, seed))
                 {
