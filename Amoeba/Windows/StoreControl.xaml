@@ -31,8 +31,8 @@
         <DataTemplate x:Key="_myTemplate_State">
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Hash">
-            <TextBlock Text="{Binding Path=Hash, Mode=OneWay}" />
+        <DataTemplate x:Key="_myTemplate_Id">
+            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
         </DataTemplate>
 
         <ContextMenu x:Key="_storeTreeViewItemContextMenu">
@@ -147,8 +147,8 @@
                             Width="{Binding Path=CacheControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=StoreControl_Hash, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Hash}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Hash_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=StoreControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

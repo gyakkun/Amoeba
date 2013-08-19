@@ -1249,7 +1249,7 @@ namespace Amoeba.Windows
                 if (storeTreeViewItemPasteMenuItem == null) return;
 
                 var boxes = Clipboard.GetBoxes();
-
+                
                 storeTreeViewItemPasteMenuItem.IsEnabled = boxes.Count() > 0 ? true : false;
             }
 
@@ -2442,7 +2442,7 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.StoreControl_Hash)
+            else if (sortBy == LanguagesManager.Instance.StoreControl_Id)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Hash", direction));
             }

@@ -140,7 +140,7 @@ namespace Amoeba
         private static bool IsMouseOverTarget(TreeView myTreeView, Visual target, GetPositionDelegate getPosition)
         {
             if (target == null) return false;
-            
+
             Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
             Point mousePos = MouseUtilities.GetMousePosition(target);
             return bounds.Contains(mousePos);
@@ -148,17 +148,6 @@ namespace Amoeba
 
         public static IEnumerable<TreeViewItem> GetLineage(this TreeView parentView, TreeViewItem childItem)
         {
-            var list = new List<TreeViewItem>();
-            list.AddRange(parentView.Items.Cast<TreeViewItem>());
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                foreach (TreeViewItem item in list[i].Items)
-                {
-                    list.Add(item);
-                }
-            }
-
             var targetList = new List<TreeViewItem>();
             targetList.Add(childItem);
 
@@ -166,10 +155,10 @@ namespace Amoeba
             {
                 for (; ; )
                 {
-                    var item = targetList.Last();
-                    if (parentView.Items.Contains(item)) break;
+                    var item = VisualTreeHelper.GetParent(childItem) as TreeViewItem;
+                    if (item == null) break;
 
-                    targetList.Add(list.First(n => n.Items.Contains(item)));
+                    targetList.Add(item);
                 }
             }
             catch (Exception)
@@ -181,44 +170,10 @@ namespace Amoeba
 
             return targetList;
         }
-    }
 
-    static class TreeViewItemExtensions
-    {
-        public static IEnumerable<TreeViewItem> GetLineage(this TreeViewItem parentItem, TreeViewItem childItem)
+        public static TreeViewItem GetParent(this TreeView parentView, TreeViewItem childItem)
         {
-            var list = new List<TreeViewItem>();
-            list.Add(parentItem);
-
-            for (int i = 0; i < list.Count; i++)
-            {
-                foreach (TreeViewItem item in list[i].Items)
-                {
-                    list.Add(item);
-                }
-            }
-
-            var targetList = new List<TreeViewItem>();
-            targetList.Add(childItem);
-
-            try
-            {
-                for (; ; )
-                {
-                    var item = targetList.Last();
-                    if (item == parentItem) break;
-
-                    targetList.Add(list.First(n => n.Items.Contains(item)));
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-
-            targetList.Reverse();
-
-            return targetList;
+            return VisualTreeHelper.GetParent(childItem) as TreeViewItem;
         }
     }
 

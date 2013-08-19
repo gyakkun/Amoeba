@@ -12,6 +12,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -26,8 +28,6 @@ using Library;
 using Library.Collections;
 using Library.Io;
 using Library.Net.Amoeba;
-using System.Windows.Automation.Peers;
-using System.Windows.Automation.Provider;
 
 namespace Amoeba.Windows
 {
@@ -43,6 +43,7 @@ namespace Amoeba.Windows
         private volatile bool _refresh = false;
         private volatile bool _recache = false;
 
+        private SearchTreeViewItem _treeViewItem;
         private volatile List<SearchListViewItem> _searchingCache = new List<SearchListViewItem>();
         private Stopwatch _updateStopwatch = new Stopwatch();
 
@@ -54,10 +55,12 @@ namespace Amoeba.Windows
             _bufferManager = bufferManager;
             _amoebaManager = amoebaManager;
 
+            _treeViewItem = new SearchTreeViewItem(Settings.Instance.CacheControl_SearchTreeItem);
+
             InitializeComponent();
 
-            _treeViewItem.Value = Settings.Instance.CacheControl_SearchTreeItem;
-            _treeViewItem.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(_treeViewItem_PreviewMouseLeftButtonDown);
+            _treeView.Items.Add(_treeViewItem);
+
             try
             {
                 _treeViewItem.IsSelected = true;
@@ -118,7 +121,7 @@ namespace Amoeba.Windows
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
-                        searchTreeViewItems.AddRange(_treeViewItem.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>());
+                        searchTreeViewItems.AddRange(_treeView.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>());
                     }));
 
                     foreach (var searchTreeViewItem in searchTreeViewItems)
@@ -879,11 +882,11 @@ namespace Amoeba.Windows
                 if (t == null || s == t
                     || t.Value.Children.Any(n => object.ReferenceEquals(n, s.Value))) return;
 
-                if (_treeViewItem.GetLineage(t).OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n, s))) return;
+                if (_treeView.GetLineage(t).OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n, s))) return;
 
                 t.IsSelected = true;
 
-                var list = _treeViewItem.GetLineage(s).OfType<SearchTreeViewItem>().ToList();
+                var list = _treeView.GetLineage(s).OfType<SearchTreeViewItem>().ToList();
                 var target = list[list.Count - 2];
 
                 var tItems = target.Value.Children.Where(n => !object.ReferenceEquals(n, s.Value)).ToArray();
@@ -899,10 +902,20 @@ namespace Amoeba.Windows
             }
         }
 
-        void _treeViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void _treeView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var item = _treeView.GetCurrentItem(e.GetPosition) as SearchTreeViewItem;
+            var item = _treeView.GetCurrentItem(e.GetPosition) as TreeViewItem;
             if (item == null)
+            {
+                _startPoint = new Point(-1, -1);
+
+                return;
+            }
+
+            Point lposition = e.GetPosition(_treeView);
+
+            if ((_treeView.ActualWidth - lposition.X) < 15
+                || (_treeView.ActualHeight - lposition.Y) < 15)
             {
                 _startPoint = new Point(-1, -1);
 
@@ -929,32 +942,54 @@ namespace Amoeba.Windows
             _refresh = true;
         }
 
-        private void _treeView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void _treeViewItemContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
+            var selectTreeViewItem = sender as SearchTreeViewItem;
+            if (selectTreeViewItem == null || _treeView.SelectedItem != selectTreeViewItem) return;
+
+            var contextMenu = selectTreeViewItem.ContextMenu as ContextMenu;
+            if (contextMenu == null) return;
+
             _startPoint = new Point(-1, -1);
 
-            if (_refresh)
-            {
-                _treeViewExportMenuItem.IsEnabled = false;
+            MenuItem treeViewItemDeleteMenuItem = null;
+            MenuItem treeViewItemCutMenuItem = null;
+            MenuItem treeViewItemExportMenuItem = null;
+            MenuItem treeViewItemPasteMenuItem = null;
 
-                return;
+            {
+                List<MenuItem> menuList = new List<MenuItem>(contextMenu.Items.OfType<MenuItem>());
+
+                for (int i = 0; i < menuList.Count; i++)
+                {
+                    menuList.AddRange(menuList[i].Items.OfType<MenuItem>());
+                }
+
+                Dictionary<string, MenuItem> dic = new Dictionary<string, MenuItem>();
+
+                foreach (var menu in menuList)
+                {
+                    dic[menu.Name] = menu;
+                }
+
+                treeViewItemDeleteMenuItem = dic["_treeViewItemDeleteMenuItem"];
+                treeViewItemCutMenuItem = dic["_treeViewItemCutMenuItem"];
+                treeViewItemExportMenuItem = dic["_treeViewItemExportMenuItem"];
+                treeViewItemPasteMenuItem = dic["_treeViewItemPasteMenuItem"];
             }
 
-            var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-            if (selectTreeViewItem == null) return;
-
-            _treeViewDeleteMenuItem.IsEnabled = !(selectTreeViewItem == _treeViewItem);
-            _treeViewCutMenuItem.IsEnabled = !(selectTreeViewItem == _treeViewItem);
-            _treeViewExportMenuItem.IsEnabled = true;
+            treeViewItemDeleteMenuItem.IsEnabled = !(selectTreeViewItem == _treeViewItem);
+            treeViewItemCutMenuItem.IsEnabled = !(selectTreeViewItem == _treeViewItem);
+            treeViewItemExportMenuItem.IsEnabled = true;
 
             {
                 var searchTreeItems = Clipboard.GetSearchTreeItems();
 
-                _treeViewPasteMenuItem.IsEnabled = (searchTreeItems.Count() > 0) ? true : false;
+                treeViewItemPasteMenuItem.IsEnabled = (searchTreeItems.Count() > 0) ? true : false;
             }
         }
 
-        private void _treeViewNewMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _treeViewItemNewMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null) return;
@@ -976,7 +1011,7 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        private void _treeViewEditMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _treeViewItemEditMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null) return;
@@ -991,14 +1026,14 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        private void _treeViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _treeViewItemDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null || selectTreeViewItem == _treeViewItem) return;
 
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
-            var list = _treeViewItem.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>().ToList();
+            var list = _treeView.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>().ToList();
             var target = list[list.Count - 2];
 
             target.IsSelected = true;
@@ -1009,14 +1044,14 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        private void _treeViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _treeViewItemCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null || selectTreeViewItem == _treeViewItem) return;
 
             Clipboard.SetSearchTreeItems(new List<SearchTreeItem>() { selectTreeViewItem.Value });
 
-            var list = _treeViewItem.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>().ToList();
+            var list = _treeView.GetLineage(selectTreeViewItem).OfType<SearchTreeViewItem>().ToList();
             var target = list[list.Count - 2];
 
             target.IsSelected = true;
@@ -1027,7 +1062,7 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        private void _treeViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _treeViewItemCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null) return;
@@ -1035,7 +1070,7 @@ namespace Amoeba.Windows
             Clipboard.SetSearchTreeItems(new List<SearchTreeItem>() { selectTreeViewItem.Value });
         }
 
-        private void _treeViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _treeViewItemPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null) return;
@@ -1050,7 +1085,7 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        private void _treeViewExportMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _treeViewItemExportMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null) return;
@@ -2053,7 +2088,7 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.CacheControl_Hash)
+            else if (sortBy == LanguagesManager.Instance.CacheControl_Id)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Hash", direction));
             }
@@ -2123,14 +2158,14 @@ namespace Amoeba.Windows
 
         private void Execute_New(object sender, ExecutedRoutedEventArgs e)
         {
-            _treeViewNewMenuItem_Click(null, null);
+            _treeViewItemNewMenuItem_Click(null, null);
         }
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                _treeViewDeleteMenuItem_Click(null, null);
+                _treeViewItemDeleteMenuItem_Click(null, null);
             }
             else
             {
@@ -2142,7 +2177,7 @@ namespace Amoeba.Windows
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                _treeViewCopyMenuItem_Click(null, null);
+                _treeViewItemCopyMenuItem_Click(null, null);
             }
             else
             {
@@ -2154,7 +2189,7 @@ namespace Amoeba.Windows
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                _treeViewCutMenuItem_Click(null, null);
+                _treeViewItemCutMenuItem_Click(null, null);
             }
             else
             {
@@ -2164,7 +2199,7 @@ namespace Amoeba.Windows
 
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
-            _treeViewPasteMenuItem_Click(null, null);
+            _treeViewItemPasteMenuItem_Click(null, null);
         }
 
         private void Execute_Search(object sender, ExecutedRoutedEventArgs e)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -16,10 +17,10 @@ namespace Amoeba.Windows
         private ObservableCollection<BoxTreeViewItem> _listViewItemCollection = new ObservableCollection<BoxTreeViewItem>();
         private TextBlock _header = new TextBlock();
 
-        public StoreTreeViewItem(StoreTreeItem storeTreeItem)
+        public StoreTreeViewItem(StoreTreeItem value)
             : base()
         {
-            this.Value = storeTreeItem;
+            if (value == null) throw new ArgumentNullException("value");
 
             this.ItemsSource = _listViewItemCollection;
             base.Header = _header;
@@ -28,6 +29,8 @@ namespace Amoeba.Windows
             {
                 e.Handled = true;
             };
+
+            this.Value = value;
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)

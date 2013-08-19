@@ -982,7 +982,11 @@ namespace Amoeba.Windows
                         box.Boxes.Add(tempBox);
                         box.CreationTime = DateTime.UtcNow;
 
+                        var route = new Route();
+                        route.Add(box.Name);
+
                         Settings.Instance.BoxControl_Box = box;
+                        Settings.Instance.BoxControl_ExpandedPath.Add(route);
                     }
                 }
                 else
@@ -1301,20 +1305,30 @@ namespace Amoeba.Windows
                 return this.PointToScreen(new Point(0, 0)).X;
             };
 
+            ConnectionControl _connectionControl = new ConnectionControl(_amoebaManager);
+            _connectionControl.Height = Double.NaN;
+            _connectionControl.Width = Double.NaN;
+            _connectionTabItem.Content = _connectionControl;
+
             SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
             _searchControl.Height = Double.NaN;
             _searchControl.Width = Double.NaN;
             _searchTabItem.Content = _searchControl;
 
+            StoreControl _storeControl = new StoreControl(this, _amoebaManager, _bufferManager);
+            _storeControl.Height = Double.NaN;
+            _storeControl.Width = Double.NaN;
+            _storeTabItem.Content = _storeControl;
+
+            BoxControl _boxControl = new BoxControl(this, _amoebaManager, _bufferManager);
+            _boxControl.Height = Double.NaN;
+            _boxControl.Width = Double.NaN;
+            _boxTabItem.Content = _boxControl;
+
             CacheControl _cacheControl = new CacheControl(this, _amoebaManager, _bufferManager);
             _cacheControl.Height = Double.NaN;
             _cacheControl.Width = Double.NaN;
             _cacheTabItem.Content = _cacheControl;
-
-            ConnectionControl _connectionControl = new ConnectionControl(_amoebaManager);
-            _connectionControl.Height = Double.NaN;
-            _connectionControl.Width = Double.NaN;
-            _connectionTabItem.Content = _connectionControl;
 
             DownloadControl _downloadControl = new DownloadControl(this, _amoebaManager, _bufferManager);
             _downloadControl.Height = Double.NaN;
@@ -1330,16 +1344,6 @@ namespace Amoeba.Windows
             _shareControl.Height = Double.NaN;
             _shareControl.Width = Double.NaN;
             _shareTabItem.Content = _shareControl;
-
-            StoreControl _storeControl = new StoreControl(this, _amoebaManager, _bufferManager);
-            _storeControl.Height = Double.NaN;
-            _storeControl.Width = Double.NaN;
-            _storeTabItem.Content = _storeControl;
-
-            BoxControl _boxControl = new BoxControl(this, _amoebaManager, _bufferManager);
-            _boxControl.Height = Double.NaN;
-            _boxControl.Width = Double.NaN;
-            _boxTabItem.Content = _boxControl;
 
             if (Settings.Instance.Global_IsStart)
             {

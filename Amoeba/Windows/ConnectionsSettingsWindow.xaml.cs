@@ -1462,7 +1462,7 @@ namespace Amoeba.Windows
                 {
                     if (((long)_amoebaManager.Information["UsingSpace"]) > size)
                     {
-                        if (MessageBox.Show(this, LanguagesManager.Instance.MainWindow_CacheResize_Message, "Connections Settings", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
+                        if (MessageBox.Show(this, LanguagesManager.Instance.ConnectionsSettingsWindow_CacheResize_Message, "Connections Settings", MessageBoxButton.OKCancel, MessageBoxImage.Information) == MessageBoxResult.OK)
                         {
                             _amoebaManager.Resize(size);
                         }
@@ -1522,7 +1522,7 @@ namespace Amoeba.Windows
                     int day = ConnectionsSettingsWindow.GetStringToInt(_transferLimitSpanTextBox.Text);
                     _transferLimitManager.TransferLimit.Span = Math.Max(Math.Min(day, 31), 1);
 
-                    long size = (long)NetworkConverter.FromSizeString("256 KB");
+                    long size = (long)NetworkConverter.FromSizeString("32 GB");
 
                     try
                     {
@@ -1533,7 +1533,7 @@ namespace Amoeba.Windows
 
                     }
 
-                    _transferLimitManager.TransferLimit.Size = Math.Max((long)NetworkConverter.FromSizeString("1 KB"), size);
+                    _transferLimitManager.TransferLimit.Size = size;
                 }
             }
 

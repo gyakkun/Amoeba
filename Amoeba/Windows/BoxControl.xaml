@@ -31,9 +31,22 @@
         <DataTemplate x:Key="_myTemplate_State">
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Hash">
-            <TextBlock Text="{Binding Path=Hash, Mode=OneWay}" />
+        <DataTemplate x:Key="_myTemplate_Id">
+            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
         </DataTemplate>
+
+        <ContextMenu x:Key="_treeViewItemContextMenu" >
+            <MenuItem Name="_treeViewItemNewMenuItem" Header="{Binding Path=BoxControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemNewMenuItem_Click" />
+            <MenuItem Name="_treeViewItemEditMenuItem" Header="{Binding Path=BoxControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemEditMenuItem_Click" />
+            <MenuItem Name="_treeViewItemDeleteMenuItem" Header="{Binding Path=BoxControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemDeleteMenuItem_Click" />
+            <Separator />
+            <MenuItem Name="_treeViewItemCutMenuItem" Header="{Binding Path=BoxControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCutMenuItem_Click" />
+            <MenuItem Name="_treeViewItemCopyMenuItem" Header="{Binding Path=BoxControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCopyMenuItem_Click" />
+            <MenuItem Name="_treeViewItemPasteMenuItem" Header="{Binding Path=BoxControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemPasteMenuItem_Click" />
+            <Separator />
+            <MenuItem Name="_treeViewItemImportMenuItem" Header="{Binding Path=BoxControl_Import, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemImportMenuItem_Click" />
+            <MenuItem Name="_treeViewItemExportMenuItem" Header="{Binding Path=BoxControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemExportMenuItem_Click" />
+        </ContextMenu>
     </UserControl.Resources>
 
     <UserControl.CommandBindings>
@@ -66,29 +79,31 @@
         </Grid.ColumnDefinitions>
 
         <GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
-        
-        <TreeView Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" SelectedItemChanged="_treeView_SelectedItemChanged" AllowDrop="True" PreviewDragOver="_treeView_PreviewDragOver"
-                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_treeView_PreviewMouseMove" Grid.RowSpan="2" TreeViewItem.Expanded="_treeView_Expanded" TreeViewItem.Collapsed="_treeView_Collapsed">
-            <local:BoxTreeViewItem x:Name="_treeViewItem">
-                <local:BoxTreeViewItem.ContextMenu>
-                    <ContextMenu Name="_treeViewContextMenu" >
-                        <MenuItem Name="_treeViewNewMenuItem" Header="{Binding Path=BoxControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewNewMenuItem_Click" />
-                        <MenuItem Name="_treeViewEditMenuItem" Header="{Binding Path=BoxControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewEditMenuItem_Click" />
-                        <MenuItem Name="_treeViewDeleteMenuItem" Header="{Binding Path=BoxControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewDeleteMenuItem_Click" />
-                        <Separator />
-                        <MenuItem Name="_treeViewCutMenuItem" Header="{Binding Path=BoxControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewCutMenuItem_Click" />
-                        <MenuItem Name="_treeViewCopyMenuItem" Header="{Binding Path=BoxControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewCopyMenuItem_Click" />
-                        <MenuItem Name="_treeViewPasteMenuItem" Header="{Binding Path=BoxControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewPasteMenuItem_Click" />
-                        <Separator />
-                        <MenuItem Name="_treeViewImportMenuItem" Header="{Binding Path=BoxControl_Import, Source={StaticResource ResourcesInstance}}" Click="_treeViewImportMenuItem_Click" />
-                        <MenuItem Name="_treeViewExportMenuItem" Header="{Binding Path=BoxControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewExportMenuItem_Click" />
-                    </ContextMenu>
-                </local:BoxTreeViewItem.ContextMenu>
-            </local:BoxTreeViewItem>
+
+        <TreeView Name="_treeView" Grid.RowSpan="2" AllowDrop="True" 
+                  PreviewDragOver="_treeView_PreviewDragOver"
+                  PreviewMouseMove="_treeView_PreviewMouseMove" 
+                  PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown"
+                  SelectedItemChanged="_treeView_SelectedItemChanged"
+                  TreeViewItem.Expanded="_treeView_Expanded" TreeViewItem.Collapsed="_treeView_Collapsed"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <TreeView.Resources>
+                <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                    <Setter Property="ContextMenu" Value="{StaticResource _treeViewItemContextMenu}" />
+                    <EventSetter Event="ContextMenuOpening" Handler="_treeViewItemContextMenu_ContextMenuOpening" />
+                </Style>
+            </TreeView.Resources>
         </TreeView>
-        
-        <local:ListViewEx x:Name="_listView" Grid.Column="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" Grid.RowSpan="2" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" AllowDrop="True" PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="_listView_PreviewMouseLeftButtonUp" PreviewDragOver="_listView_PreviewDragOver"  
-                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" PreviewMouseMove="_listView_PreviewMouseMove" >
+
+        <local:ListViewEx x:Name="_listView" Grid.Column="2" Grid.RowSpan="2" AllowDrop="True" 
+                PreviewDragOver="_listView_PreviewDragOver"  
+                PreviewMouseMove="_listView_PreviewMouseMove"
+                PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown"
+                PreviewMouseLeftButtonUp="_listView_PreviewMouseLeftButtonUp"
+                PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick"
+                ContextMenuOpening="_listView_ContextMenuOpening" 
+                GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
+                VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewNewMenuItem" Header="{Binding Path=BoxControl_New, Source={StaticResource ResourcesInstance}}" Click="_listViewNewMenuItem_Click" />
@@ -119,8 +134,8 @@
                             Width="{Binding Path=CacheControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=BoxControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=BoxControl_Hash, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Hash}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Hash_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=BoxControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

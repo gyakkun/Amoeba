@@ -60,7 +60,6 @@
   <Translate Key="MainWindow_Delete_Message" Value="Are you sure you want to delete?" />
   <Translate Key="MainWindow_TransferLimit_Message" Value="Transfer limit" />
   <Translate Key="MainWindow_Upload_Message" Value="Do you want to upload?" />
-  <Translate Key="MainWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
 
   <Translate Key="ConnectionsSettingsWindow_Title" Value="Connections settings" />
   <Translate Key="ConnectionsSettingsWindow_BaseNode" Value="Base node" />
@@ -109,6 +108,7 @@
   <Translate Key="ConnectionsSettingsWindow_Cut" Value="Cut" />
   <Translate Key="ConnectionsSettingsWindow_Copy" Value="Copy" />
   <Translate Key="ConnectionsSettingsWindow_Paste" Value="Paste" />
+  <Translate Key="ConnectionsSettingsWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
 
   <Translate Key="ConnectionType_None" Value="None" />
   <Translate Key="ConnectionType_Tcp" Value="Tcp" />
@@ -300,7 +300,7 @@
   <Translate Key="CacheControl_CreationTime" Value="Creation time" />
   <Translate Key="CacheControl_Comment" Value="Comment" />
   <Translate Key="CacheControl_State" Value="State" />
-  <Translate Key="CacheControl_Hash" Value="Hash" />
+  <Translate Key="CacheControl_Id" Value="Hash" />
   <Translate Key="CacheControl_New" Value="New" />
   <Translate Key="CacheControl_Edit" Value="Edit" />
   <Translate Key="CacheControl_Delete" Value="Delete" />
@@ -375,7 +375,7 @@
   <Translate Key="StoreControl_CreationTime" Value="Creation time" />
   <Translate Key="StoreControl_Comment" Value="Comment" />
   <Translate Key="StoreControl_State" Value="State" />
-  <Translate Key="StoreControl_Hash" Value="Hash" />
+  <Translate Key="StoreControl_Id" Value="Hash" />
   <Translate Key="StoreControl_Upload" Value="Upload" />
   <Translate Key="StoreControl_New" Value="New" />
   <Translate Key="StoreControl_Edit" Value="Edit" />
@@ -397,7 +397,7 @@
   <Translate Key="BoxControl_CreationTime" Value="Creation time" />
   <Translate Key="BoxControl_Comment" Value="Comment" />
   <Translate Key="BoxControl_State" Value="State" />
-  <Translate Key="BoxControl_Hash" Value="Hash" />
+  <Translate Key="BoxControl_Id" Value="Hash" />
   <Translate Key="BoxControl_New" Value="New" />
   <Translate Key="BoxControl_Edit" Value="Edit" />
   <Translate Key="BoxControl_Delete" Value="Delete" />

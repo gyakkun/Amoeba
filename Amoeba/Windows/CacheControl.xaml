@@ -7,6 +7,18 @@
         Height="500" Width="800">
    
     <UserControl.Resources>
+        <ContextMenu x:Key="_treeViewItemContextMenu">
+            <MenuItem Name="_treeViewItemNewMenuItem" Header="{Binding Path=CacheControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemNewMenuItem_Click"/>
+            <MenuItem Name="_treeViewItemEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemEditMenuItem_Click"/>
+            <MenuItem Name="_treeViewItemDeleteMenuItem" Header="{Binding Path=CacheControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemDeleteMenuItem_Click"/>
+            <Separator />
+            <MenuItem Name="_treeViewItemCutMenuItem" Header="{Binding Path=CacheControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCutMenuItem_Click" />
+            <MenuItem Name="_treeViewItemCopyMenuItem" Header="{Binding Path=CacheControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCopyMenuItem_Click" />
+            <MenuItem Name="_treeViewItemPasteMenuItem" Header="{Binding Path=CacheControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemPasteMenuItem_Click" />
+            <Separator />
+            <MenuItem Name="_treeViewItemExportMenuItem" Header="{Binding Path=CacheControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemExportMenuItem_Click" />
+        </ContextMenu>
+
         <DataTemplate x:Key="_myTemplate_Name">
             <Grid>
                 <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
@@ -31,8 +43,8 @@
         <DataTemplate x:Key="_myTemplate_State">
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Hash">
-            <TextBlock Text="{Binding Path=Hash, Mode=OneWay}" />
+        <DataTemplate x:Key="_myTemplate_Id">
+            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
         </DataTemplate>
     </UserControl.Resources>
 
@@ -70,27 +82,26 @@
         
         <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" VerticalContentAlignment="Center" />
 
-        <TreeView Grid.Row="1" Name="_treeView" ContextMenuOpening="_treeView_ContextMenuOpening" SelectedItemChanged="_treeView_SelectedItemChanged" PreviewMouseMove="_treeView_PreviewMouseMove" AllowDrop="True" PreviewDrop="_treeView_PreviewDrop" PreviewDragOver="_treeView_PreviewDragOver"
-                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" Grid.RowSpan="2">
-            <local:SearchTreeViewItem x:Name="_treeViewItem" IsExpanded="True">
-                <local:SearchTreeViewItem.ContextMenu>
-                    <ContextMenu Name="_treeViewContextMenu">
-                        <MenuItem Name="_treeViewNewMenuItem" Header="{Binding Path=CacheControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewNewMenuItem_Click"/>
-                        <MenuItem Name="_treeViewEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewEditMenuItem_Click"/>
-                        <MenuItem Name="_treeViewDeleteMenuItem" Header="{Binding Path=CacheControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewDeleteMenuItem_Click"/>
-                        <Separator />
-                        <MenuItem Name="_treeViewCutMenuItem" Header="{Binding Path=CacheControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewCutMenuItem_Click" />
-                        <MenuItem Name="_treeViewCopyMenuItem" Header="{Binding Path=CacheControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewCopyMenuItem_Click" />
-                        <MenuItem Name="_treeViewPasteMenuItem" Header="{Binding Path=CacheControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewPasteMenuItem_Click" />
-                        <Separator />
-                        <MenuItem Name="_treeViewExportMenuItem" Header="{Binding Path=CacheControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewExportMenuItem_Click" />
-                    </ContextMenu>
-                </local:SearchTreeViewItem.ContextMenu>
-            </local:SearchTreeViewItem>
+        <TreeView Name="_treeView" Grid.Row="1" Grid.RowSpan="2" AllowDrop="True"
+                PreviewDragOver="_treeView_PreviewDragOver"
+                PreviewMouseMove="_treeView_PreviewMouseMove"
+                PreviewDrop="_treeView_PreviewDrop" 
+                PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown"
+                SelectedItemChanged="_treeView_SelectedItemChanged"
+                VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <TreeView.Resources>
+                <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                    <Setter Property="ContextMenu" Value="{StaticResource _treeViewItemContextMenu}" />
+                    <EventSetter Event="ContextMenuOpening" Handler="_treeViewItemContextMenu_ContextMenuOpening" />
+                </Style>
+            </TreeView.Resources>
         </TreeView>
 
-        <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" ContextMenuOpening="_listView_ContextMenuOpening" PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
-                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling" >
+        <local:ListViewEx x:Name="_listView" Grid.Column="2" Grid.RowSpan="2" 
+                GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+                PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" 
+                ContextMenuOpening="_listView_ContextMenuOpening" 
+                VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=CacheControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
@@ -139,8 +150,8 @@
                             Width="{Binding Path=CacheControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=CacheControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=CacheControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=CacheControl_Hash, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Hash}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Hash_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=CacheControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

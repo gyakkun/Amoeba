@@ -769,17 +769,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_CacheResize_Message
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_CacheResize_Message");
-                }
-            }
-        }
-
 
         public string ConnectionsSettingsWindow_Title
         {
@@ -1294,6 +1283,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionsSettingsWindow_Paste");
+                }
+            }
+        }
+
+        public string ConnectionsSettingsWindow_CacheResize_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionsSettingsWindow_CacheResize_Message");
                 }
             }
         }
@@ -3249,13 +3249,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string CacheControl_Hash
+        public string CacheControl_Id
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("CacheControl_Hash");
+                    return this.Translate("CacheControl_Id");
                 }
             }
         }
@@ -4044,13 +4044,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string StoreControl_Hash
+        public string StoreControl_Id
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("StoreControl_Hash");
+                    return this.Translate("StoreControl_Id");
                 }
             }
         }
@@ -4276,13 +4276,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string BoxControl_Hash
+        public string BoxControl_Id
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("BoxControl_Hash");
+                    return this.Translate("BoxControl_Id");
                 }
             }
         }

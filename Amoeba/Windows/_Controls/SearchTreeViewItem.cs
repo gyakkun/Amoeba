@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -16,16 +17,10 @@ namespace Amoeba.Windows
         private TextBlock _header = new TextBlock();
         private int _hit;
 
-        public SearchTreeViewItem()
+        public SearchTreeViewItem(SearchTreeItem value)
             : base()
         {
-            this.Value = new SearchTreeItem()
-            {
-                SearchItem = new SearchItem()
-                {
-                    Name = "",
-                },
-            };
+            if (value == null) throw new ArgumentNullException("value");
 
             base.ItemsSource = _listViewItemCollection;
             base.Header = _header;
@@ -34,20 +29,8 @@ namespace Amoeba.Windows
             {
                 e.Handled = true;
             };
-        }
 
-        public SearchTreeViewItem(SearchTreeItem searchTreeItem)
-            : base()
-        {
-            this.Value = searchTreeItem;
-
-            base.ItemsSource = _listViewItemCollection;
-            base.Header = _header;
-
-            base.RequestBringIntoView += (object sender, RequestBringIntoViewEventArgs e) =>
-            {
-                e.Handled = true;
-            };
+            this.Value = value;
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
