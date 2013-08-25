@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="Amoeba.Windows.StoreControl"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prop="clr-namespace:Amoeba.Properties"     
+        xmlns:local="clr-namespace:Amoeba.Windows" 
+        Loaded="UserControl_Loaded">
+    
+    <Grid>
+        <TabControl Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
+            <TabItem Header="{Binding Path=StoreControl_Download, Source={StaticResource ResourcesInstance}}" Name="_storeDownloadTabItem" />
+            <TabItem Header="{Binding Path=StoreControl_Upload, Source={StaticResource ResourcesInstance}}" Name="_storeUploadTabItem" />
+            <TabItem Header="{Binding Path=StoreControl_Library, Source={StaticResource ResourcesInstance}}" Name="_libraryTabItem" />
+        </TabControl>
+    </Grid>
+</UserControl>

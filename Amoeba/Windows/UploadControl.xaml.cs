@@ -30,7 +30,7 @@ namespace Amoeba.Windows
     /// </summary>
     partial class UploadControl : UserControl
     {
-        private MainWindow _mainWindow;
+        private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -38,9 +38,8 @@ namespace Amoeba.Windows
 
         private Thread _showUploadItemThread;
 
-        public UploadControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
+        public UploadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
-            _mainWindow = mainWindow;
             _bufferManager = bufferManager;
             _amoebaManager = amoebaManager;
 
@@ -69,7 +68,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (App.SelectTab != TabItemType.Upload) continue;
+                    if (MainWindow.SelectTab != TabType.Upload) continue;
 
                     var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();

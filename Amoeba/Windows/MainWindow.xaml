@@ -22,27 +22,6 @@
             <RowDefinition Height="438*" />
             <RowDefinition Height="23" />
         </Grid.RowDefinitions>
-        <TabControl Margin="0,28,0,0" Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
-            <TabItem Header="{Binding Path=MainWindow_Connection, Source={StaticResource ResourcesInstance}}" Name="_connectionTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Search, Source={StaticResource ResourcesInstance}}" Name="_searchTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource ResourcesInstance}}" Name="_storeTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Box, Source={StaticResource ResourcesInstance}}" Name="_boxTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" Name="_cacheTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Download, Source={StaticResource ResourcesInstance}}" Name="_downloadTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource ResourcesInstance}}" Name="_uploadTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem" >
-                <RichTextBox Name="_logRichTextBox" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True">
-                    <RichTextBox.Document>
-                        <FlowDocument>
-                            <FlowDocument.Blocks>
-                                <Paragraph Name="_logParagraph" />
-                            </FlowDocument.Blocks>
-                        </FlowDocument>
-                    </RichTextBox.Document>
-                </RichTextBox>
-            </TabItem>
-        </TabControl>
         <Menu Name="_menu" Height="24" VerticalAlignment="Top">
             <MenuItem Name="_connectionsMenuItem" Header="{Binding Path=MainWindow_Connections, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_connectionsMenuItem_SubmenuOpened">
                 <MenuItem Name="_startMenuItem" Header="{Binding Path=MainWindow_Start, Source={StaticResource ResourcesInstance}}" Click="_startMenuItem_Click" />
@@ -73,6 +52,25 @@
                 <MenuItem Name="_versionInformationMenuItem" Header="{Binding Path=MainWindow_VersionInformation, Source={StaticResource ResourcesInstance}}" Click="_versionInformationMenuItem_Click" />
             </MenuItem>
         </Menu>
+        <TabControl Margin="0,28,0,0" Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
+            <TabItem Header="{Binding Path=MainWindow_Connection, Source={StaticResource ResourcesInstance}}" Name="_connectionTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource ResourcesInstance}}" Name="_storeTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" Name="_cacheTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Download, Source={StaticResource ResourcesInstance}}" Name="_downloadTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource ResourcesInstance}}" Name="_uploadTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem" >
+                <RichTextBox Name="_logRichTextBox" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True">
+                    <RichTextBox.Document>
+                        <FlowDocument>
+                            <FlowDocument.Blocks>
+                                <Paragraph Name="_logParagraph" />
+                            </FlowDocument.Blocks>
+                        </FlowDocument>
+                    </RichTextBox.Document>
+                </RichTextBox>
+            </TabItem>
+        </TabControl>
         <StatusBar Grid.Row="1" 
                    FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
                    FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}" >

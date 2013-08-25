@@ -340,6 +340,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string MainWindow_Store
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Store");
+                }
+            }
+        }
+
         public string MainWindow_Search
         {
             get
@@ -347,6 +358,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Search");
+                }
+            }
+        }
+
+        public string MainWindow_Cache
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Cache");
                 }
             }
         }
@@ -380,39 +402,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Share");
-                }
-            }
-        }
-
-        public string MainWindow_Cache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Cache");
-                }
-            }
-        }
-
-        public string MainWindow_Store
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Store");
-                }
-            }
-        }
-
-        public string MainWindow_Box
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Box");
                 }
             }
         }
@@ -2241,200 +2230,1184 @@ namespace Amoeba.Properties
         }
 
 
-        public string SearchControl_Name
+        public string StoreControl_Download
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Name");
+                    return this.Translate("StoreControl_Download");
                 }
             }
         }
 
-        public string SearchControl_Signature
+        public string StoreControl_Upload
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Signature");
+                    return this.Translate("StoreControl_Upload");
                 }
             }
         }
 
-        public string SearchControl_Length
+        public string StoreControl_Library
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Length");
+                    return this.Translate("StoreControl_Library");
                 }
             }
         }
 
-        public string SearchControl_Keywords
+
+        public string StoreDownloadControl_Name
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Keywords");
+                    return this.Translate("StoreDownloadControl_Name");
                 }
             }
         }
 
-        public string SearchControl_CreationTime
+        public string StoreDownloadControl_Signature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_CreationTime");
+                    return this.Translate("StoreDownloadControl_Signature");
                 }
             }
         }
 
-        public string SearchControl_Comment
+        public string StoreDownloadControl_Length
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Comment");
+                    return this.Translate("StoreDownloadControl_Length");
                 }
             }
         }
 
-        public string SearchControl_State
+        public string StoreDownloadControl_Keywords
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_State");
+                    return this.Translate("StoreDownloadControl_Keywords");
                 }
             }
         }
 
-        public string SearchControl_Hash
+        public string StoreDownloadControl_CreationTime
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Hash");
+                    return this.Translate("StoreDownloadControl_CreationTime");
                 }
             }
         }
 
-        public string SearchControl_Upload
+        public string StoreDownloadControl_Comment
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Upload");
+                    return this.Translate("StoreDownloadControl_Comment");
                 }
             }
         }
 
-        public string SearchControl_Delete
+        public string StoreDownloadControl_State
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Delete");
+                    return this.Translate("StoreDownloadControl_State");
                 }
             }
         }
 
-        public string SearchControl_Copy
+        public string StoreDownloadControl_Id
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Copy");
+                    return this.Translate("StoreDownloadControl_Id");
                 }
             }
         }
 
-        public string SearchControl_Paste
+        public string StoreDownloadControl_Upload
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Paste");
+                    return this.Translate("StoreDownloadControl_Upload");
                 }
             }
         }
 
-        public string SearchControl_Export
+        public string StoreDownloadControl_NewStore
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Export");
+                    return this.Translate("StoreDownloadControl_NewStore");
                 }
             }
         }
 
-        public string SearchControl_CopyInfo
+        public string StoreDownloadControl_NewCategory
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_CopyInfo");
+                    return this.Translate("StoreDownloadControl_NewCategory");
                 }
             }
         }
 
-        public string SearchControl_Download
+        public string StoreDownloadControl_NewBox
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Download");
+                    return this.Translate("StoreDownloadControl_NewBox");
                 }
             }
         }
 
-        public string SearchControl_Reset
+        public string StoreDownloadControl_Edit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_Reset");
+                    return this.Translate("StoreDownloadControl_Edit");
                 }
             }
         }
 
-        public string SearchControl_DigitalSignatureAnnulled_Message
+        public string StoreDownloadControl_Delete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_DigitalSignatureAnnulled_Message");
+                    return this.Translate("StoreDownloadControl_Delete");
                 }
             }
         }
 
-        public string SearchControl_DigitalSignatureError_Message
+        public string StoreDownloadControl_Cut
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchControl_DigitalSignatureError_Message");
+                    return this.Translate("StoreDownloadControl_Cut");
+                }
+            }
+        }
+
+        public string StoreDownloadControl_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreDownloadControl_Copy");
+                }
+            }
+        }
+
+        public string StoreDownloadControl_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreDownloadControl_Paste");
+                }
+            }
+        }
+
+        public string StoreDownloadControl_Import
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreDownloadControl_Import");
+                }
+            }
+        }
+
+        public string StoreDownloadControl_Export
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreDownloadControl_Export");
+                }
+            }
+        }
+
+        public string StoreDownloadControl_CopyInfo
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreDownloadControl_CopyInfo");
+                }
+            }
+        }
+
+        public string StoreDownloadControl_Download
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreDownloadControl_Download");
+                }
+            }
+        }
+
+        public string StoreDownloadControl_DigitalSignatureAnnulled_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreDownloadControl_DigitalSignatureAnnulled_Message");
+                }
+            }
+        }
+
+        public string StoreDownloadControl_DigitalSignatureError_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreDownloadControl_DigitalSignatureError_Message");
+                }
+            }
+        }
+
+
+        public string StoreUploadControl_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Name");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Signature");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Length
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Length");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Keywords
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Keywords");
+                }
+            }
+        }
+
+        public string StoreUploadControl_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_CreationTime");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Comment");
+                }
+            }
+        }
+
+        public string StoreUploadControl_State
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_State");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Id
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Id");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Upload
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Upload");
+                }
+            }
+        }
+
+        public string StoreUploadControl_NewStore
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_NewStore");
+                }
+            }
+        }
+
+        public string StoreUploadControl_NewCategory
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_NewCategory");
+                }
+            }
+        }
+
+        public string StoreUploadControl_NewBox
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_NewBox");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Edit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Edit");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Delete");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Cut");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Copy");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Paste");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Import
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Import");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Export
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Export");
+                }
+            }
+        }
+
+        public string StoreUploadControl_CopyInfo
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_CopyInfo");
+                }
+            }
+        }
+
+        public string StoreUploadControl_Download
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_Download");
+                }
+            }
+        }
+
+        public string StoreUploadControl_DigitalSignatureAnnulled_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_DigitalSignatureAnnulled_Message");
+                }
+            }
+        }
+
+        public string StoreUploadControl_DigitalSignatureError_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreUploadControl_DigitalSignatureError_Message");
+                }
+            }
+        }
+
+
+        public string StoreCategorizeTreeItemEditWindow_Title
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreCategorizeTreeItemEditWindow_Title");
+                }
+            }
+        }
+
+        public string StoreCategorizeTreeItemEditWindow_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreCategorizeTreeItemEditWindow_Signature");
+                }
+            }
+        }
+
+        public string StoreCategorizeTreeItemEditWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreCategorizeTreeItemEditWindow_Ok");
+                }
+            }
+        }
+
+        public string StoreCategorizeTreeItemEditWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("StoreCategorizeTreeItemEditWindow_Cancel");
+                }
+            }
+        }
+
+
+        public string LibraryControl_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Name");
+                }
+            }
+        }
+
+        public string LibraryControl_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Signature");
+                }
+            }
+        }
+
+        public string LibraryControl_Length
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Length");
+                }
+            }
+        }
+
+        public string LibraryControl_Keywords
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Keywords");
+                }
+            }
+        }
+
+        public string LibraryControl_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_CreationTime");
+                }
+            }
+        }
+
+        public string LibraryControl_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Comment");
+                }
+            }
+        }
+
+        public string LibraryControl_State
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_State");
+                }
+            }
+        }
+
+        public string LibraryControl_Id
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Id");
+                }
+            }
+        }
+
+        public string LibraryControl_NewBox
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_NewBox");
+                }
+            }
+        }
+
+        public string LibraryControl_Edit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Edit");
+                }
+            }
+        }
+
+        public string LibraryControl_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Delete");
+                }
+            }
+        }
+
+        public string LibraryControl_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Cut");
+                }
+            }
+        }
+
+        public string LibraryControl_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Copy");
+                }
+            }
+        }
+
+        public string LibraryControl_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Paste");
+                }
+            }
+        }
+
+        public string LibraryControl_Import
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Import");
+                }
+            }
+        }
+
+        public string LibraryControl_Export
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Export");
+                }
+            }
+        }
+
+        public string LibraryControl_CopyInfo
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_CopyInfo");
+                }
+            }
+        }
+
+        public string LibraryControl_Download
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_Download");
+                }
+            }
+        }
+
+        public string LibraryControl_DigitalSignatureAnnulled_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_DigitalSignatureAnnulled_Message");
+                }
+            }
+        }
+
+        public string LibraryControl_DigitalSignatureError_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LibraryControl_DigitalSignatureError_Message");
+                }
+            }
+        }
+
+
+        public string CacheControl_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Name");
+                }
+            }
+        }
+
+        public string CacheControl_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Signature");
+                }
+            }
+        }
+
+        public string CacheControl_Length
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Length");
+                }
+            }
+        }
+
+        public string CacheControl_Keywords
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Keywords");
+                }
+            }
+        }
+
+        public string CacheControl_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_CreationTime");
+                }
+            }
+        }
+
+        public string CacheControl_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Comment");
+                }
+            }
+        }
+
+        public string CacheControl_State
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_State");
+                }
+            }
+        }
+
+        public string CacheControl_Id
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Id");
+                }
+            }
+        }
+
+        public string CacheControl_New
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_New");
+                }
+            }
+        }
+
+        public string CacheControl_Edit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Edit");
+                }
+            }
+        }
+
+        public string CacheControl_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Delete");
+                }
+            }
+        }
+
+        public string CacheControl_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Cut");
+                }
+            }
+        }
+
+        public string CacheControl_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Copy");
+                }
+            }
+        }
+
+        public string CacheControl_CopyInfo
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_CopyInfo");
+                }
+            }
+        }
+
+        public string CacheControl_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Paste");
+                }
+            }
+        }
+
+        public string CacheControl_Export
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Export");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteCache
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteCache");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteShare
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteShare");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteDownload
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteDownload");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteUpload
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteUpload");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteDownloadHistory
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteDownloadHistory");
+                }
+            }
+        }
+
+        public string CacheControl_DeleteUploadHistory
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_DeleteUploadHistory");
+                }
+            }
+        }
+
+        public string CacheControl_Download
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Download");
+                }
+            }
+        }
+
+        public string CacheControl_Search
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Search");
+                }
+            }
+        }
+
+        public string CacheControl_SearchSignature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_SearchSignature");
+                }
+            }
+        }
+
+        public string CacheControl_SearchKeyword
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_SearchKeyword");
+                }
+            }
+        }
+
+        public string CacheControl_SearchCreationTimeRange
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_SearchCreationTimeRange");
+                }
+            }
+        }
+
+        public string CacheControl_SearchState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_SearchState");
+                }
+            }
+        }
+
+        public string CacheControl_Filter
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_Filter");
+                }
+            }
+        }
+
+        public string CacheControl_FilterName
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterName");
+                }
+            }
+        }
+
+        public string CacheControl_FilterSignature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterSignature");
+                }
+            }
+        }
+
+        public string CacheControl_FilterKeyword
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterKeyword");
+                }
+            }
+        }
+
+        public string CacheControl_FilterCreationTimeRange
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterCreationTimeRange");
+                }
+            }
+        }
+
+        public string CacheControl_FilterSeed
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CacheControl_FilterSeed");
                 }
             }
         }
@@ -3172,381 +4145,6 @@ namespace Amoeba.Properties
         }
 
 
-        public string CacheControl_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Name");
-                }
-            }
-        }
-
-        public string CacheControl_Signature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Signature");
-                }
-            }
-        }
-
-        public string CacheControl_Length
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Length");
-                }
-            }
-        }
-
-        public string CacheControl_Keywords
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Keywords");
-                }
-            }
-        }
-
-        public string CacheControl_CreationTime
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_CreationTime");
-                }
-            }
-        }
-
-        public string CacheControl_Comment
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Comment");
-                }
-            }
-        }
-
-        public string CacheControl_State
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_State");
-                }
-            }
-        }
-
-        public string CacheControl_Id
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Id");
-                }
-            }
-        }
-
-        public string CacheControl_New
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_New");
-                }
-            }
-        }
-
-        public string CacheControl_Edit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Edit");
-                }
-            }
-        }
-
-        public string CacheControl_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Delete");
-                }
-            }
-        }
-
-        public string CacheControl_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Cut");
-                }
-            }
-        }
-
-        public string CacheControl_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Copy");
-                }
-            }
-        }
-
-        public string CacheControl_CopyInfo
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_CopyInfo");
-                }
-            }
-        }
-
-        public string CacheControl_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Paste");
-                }
-            }
-        }
-
-        public string CacheControl_Export
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Export");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteCache
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteCache");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteShare
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteShare");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteDownload
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteDownload");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteUpload
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteUpload");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteDownloadHistory
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteDownloadHistory");
-                }
-            }
-        }
-
-        public string CacheControl_DeleteUploadHistory
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_DeleteUploadHistory");
-                }
-            }
-        }
-
-        public string CacheControl_Download
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Download");
-                }
-            }
-        }
-
-        public string CacheControl_Search
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Search");
-                }
-            }
-        }
-
-        public string CacheControl_SearchSignature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_SearchSignature");
-                }
-            }
-        }
-
-        public string CacheControl_SearchKeyword
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_SearchKeyword");
-                }
-            }
-        }
-
-        public string CacheControl_SearchCreationTimeRange
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_SearchCreationTimeRange");
-                }
-            }
-        }
-
-        public string CacheControl_SearchState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_SearchState");
-                }
-            }
-        }
-
-        public string CacheControl_Filter
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_Filter");
-                }
-            }
-        }
-
-        public string CacheControl_FilterName
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterName");
-                }
-            }
-        }
-
-        public string CacheControl_FilterSignature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterSignature");
-                }
-            }
-        }
-
-        public string CacheControl_FilterKeyword
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterKeyword");
-                }
-            }
-        }
-
-        public string CacheControl_FilterCreationTimeRange
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterCreationTimeRange");
-                }
-            }
-        }
-
-        public string CacheControl_FilterSeed
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CacheControl_FilterSeed");
-                }
-            }
-        }
-
-
         public string SearchState_Cache
         {
             get
@@ -3962,459 +4560,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchItemEditWindow_SearchState_Box");
-                }
-            }
-        }
-
-
-        public string StoreControl_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Name");
-                }
-            }
-        }
-
-        public string StoreControl_Signature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Signature");
-                }
-            }
-        }
-
-        public string StoreControl_Length
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Length");
-                }
-            }
-        }
-
-        public string StoreControl_Keywords
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Keywords");
-                }
-            }
-        }
-
-        public string StoreControl_CreationTime
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_CreationTime");
-                }
-            }
-        }
-
-        public string StoreControl_Comment
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Comment");
-                }
-            }
-        }
-
-        public string StoreControl_State
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_State");
-                }
-            }
-        }
-
-        public string StoreControl_Id
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Id");
-                }
-            }
-        }
-
-        public string StoreControl_Upload
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Upload");
-                }
-            }
-        }
-
-        public string StoreControl_New
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_New");
-                }
-            }
-        }
-
-        public string StoreControl_Edit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Edit");
-                }
-            }
-        }
-
-        public string StoreControl_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Delete");
-                }
-            }
-        }
-
-        public string StoreControl_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Cut");
-                }
-            }
-        }
-
-        public string StoreControl_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Copy");
-                }
-            }
-        }
-
-        public string StoreControl_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Paste");
-                }
-            }
-        }
-
-        public string StoreControl_Import
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Import");
-                }
-            }
-        }
-
-        public string StoreControl_Export
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Export");
-                }
-            }
-        }
-
-        public string StoreControl_CopyInfo
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_CopyInfo");
-                }
-            }
-        }
-
-        public string StoreControl_Download
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_Download");
-                }
-            }
-        }
-
-        public string StoreControl_DigitalSignatureAnnulled_Message
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_DigitalSignatureAnnulled_Message");
-                }
-            }
-        }
-
-        public string StoreControl_DigitalSignatureError_Message
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreControl_DigitalSignatureError_Message");
-                }
-            }
-        }
-
-
-        public string BoxControl_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Name");
-                }
-            }
-        }
-
-        public string BoxControl_Signature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Signature");
-                }
-            }
-        }
-
-        public string BoxControl_Length
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Length");
-                }
-            }
-        }
-
-        public string BoxControl_Keywords
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Keywords");
-                }
-            }
-        }
-
-        public string BoxControl_CreationTime
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_CreationTime");
-                }
-            }
-        }
-
-        public string BoxControl_Comment
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Comment");
-                }
-            }
-        }
-
-        public string BoxControl_State
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_State");
-                }
-            }
-        }
-
-        public string BoxControl_Id
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Id");
-                }
-            }
-        }
-
-        public string BoxControl_New
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_New");
-                }
-            }
-        }
-
-        public string BoxControl_Edit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Edit");
-                }
-            }
-        }
-
-        public string BoxControl_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Delete");
-                }
-            }
-        }
-
-        public string BoxControl_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Cut");
-                }
-            }
-        }
-
-        public string BoxControl_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Copy");
-                }
-            }
-        }
-
-        public string BoxControl_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Paste");
-                }
-            }
-        }
-
-        public string BoxControl_Import
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Import");
-                }
-            }
-        }
-
-        public string BoxControl_Export
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Export");
-                }
-            }
-        }
-
-        public string BoxControl_CopyInfo
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_CopyInfo");
-                }
-            }
-        }
-
-        public string BoxControl_Download
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_Download");
-                }
-            }
-        }
-
-        public string BoxControl_DigitalSignatureAnnulled_Message
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_DigitalSignatureAnnulled_Message");
-                }
-            }
-        }
-
-        public string BoxControl_DigitalSignatureError_Message
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("BoxControl_DigitalSignatureError_Message");
                 }
             }
         }

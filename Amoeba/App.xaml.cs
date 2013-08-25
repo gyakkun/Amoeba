@@ -22,19 +22,6 @@ using Library.Net.Amoeba;
 
 namespace Amoeba
 {
-    public enum TabItemType
-    {
-        Connection,
-        Search,
-        Download,
-        Upload,
-        Share,
-        Cache,
-        Store,
-        Box,
-        Log,
-    }
-
     /// <summary>
     /// App.xaml の相互作用ロジック
     /// </summary>
@@ -42,7 +29,6 @@ namespace Amoeba
     {
         public static Version AmoebaVersion { get; private set; }
         public static Dictionary<string, string> DirectoryPaths { get; private set; }
-        public static TabItemType SelectTab { get; set; }
         private FileStream _lockStream = null;
         private List<Process> _processList = new List<Process>();
 

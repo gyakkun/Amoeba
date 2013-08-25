@@ -106,14 +106,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="TabType.cs" />
+    <Compile Include="Windows\Store\StoreDownloadControl.xaml.cs">
+      <DependentUpon>StoreDownloadControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Store\StoreCategorizeTreeItemEditWindow.xaml.cs">
+      <DependentUpon>StoreCategorizeTreeItemEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Store\StoreControl.xaml.cs">
+      <DependentUpon>StoreControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EqualityComparer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Tools\Sha512.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="Windows\BoxControl.xaml.cs">
-      <DependentUpon>BoxControl.xaml</DependentUpon>
+    <Compile Include="Windows\Store\LibraryControl.xaml.cs">
+      <DependentUpon>LibraryControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\BoxEditWindow.xaml.cs">
+    <Compile Include="Windows\Store\BoxEditWindow.xaml.cs">
       <DependentUpon>BoxEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\CacheControl.xaml.cs">
@@ -130,6 +140,7 @@
     </Compile>
     <Compile Include="Windows\_Controls\BoxTreeViewItem.cs" />
     <Compile Include="Windows\_Controls\StoreCategorizeTreeViewItem.cs" />
+    <Compile Include="Windows\_Controls\TreeViewItemEx.cs" />
     <Compile Include="Windows\_Items\SearchItem.cs" />
     <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />
     <Compile Include="Windows\_Controls\DigitalSignatureComboBoxItem.cs" />
@@ -143,9 +154,6 @@
     <Compile Include="Windows\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SearchControl.xaml.cs">
-      <DependentUpon>SearchControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\SearchItemEditWindow.xaml.cs">
       <DependentUpon>SearchItemEditWindow.xaml</DependentUpon>
     </Compile>
@@ -158,8 +166,8 @@
     <Compile Include="Windows\SignatureWindow.xaml.cs">
       <DependentUpon>SignatureWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\StoreControl.xaml.cs">
-      <DependentUpon>StoreControl.xaml</DependentUpon>
+    <Compile Include="Windows\Store\StoreUploadControl.xaml.cs">
+      <DependentUpon>StoreUploadControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\UploadControl.xaml.cs">
       <DependentUpon>UploadControl.xaml</DependentUpon>
@@ -180,6 +188,18 @@
     <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
       <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Windows\Store\StoreDownloadControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Store\StoreCategorizeTreeItemEditWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Store\StoreControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\ExpressionDark.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -191,11 +211,11 @@
     <Compile Include="Route.cs" />
     <Compile Include="TransfarLimitManager.cs" />
     <Compile Include="WindowPosition.cs" />
-    <Page Include="Windows\BoxControl.xaml">
+    <Page Include="Windows\Store\LibraryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\BoxEditWindow.xaml">
+    <Page Include="Windows\Store\BoxEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -223,10 +243,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\SearchControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Windows\SearchItemEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -243,7 +259,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\StoreControl.xaml">
+    <Page Include="Windows\Store\StoreUploadControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

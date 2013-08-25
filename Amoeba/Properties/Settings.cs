@@ -96,10 +96,38 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_Name_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_Value_Width", Value = 100 },
 
-                new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
-                new Library.Configuration.SettingsContext<string>() { Name = "SearchControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "SearchControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "SearchControl_ExpandedPath", Value = new LockedHashSet<Route>() },
+                new Library.Configuration.SettingsContext<StoreCategorizeTreeItem>() { Name = "StoreDownloadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
+                new Library.Configuration.SettingsContext<string>() { Name = "StoreDownloadControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "StoreDownloadControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "StoreDownloadControl_ExpandedPath", Value = new LockedHashSet<Route>() },
+
+                new Library.Configuration.SettingsContext<StoreCategorizeTreeItem>() { Name = "StoreUploadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
+                new Library.Configuration.SettingsContext<string>() { Name = "StoreUploadControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "StoreUploadControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "StoreUploadControl_ExpandedPath", Value = new LockedHashSet<Route>() },
+
+                new Library.Configuration.SettingsContext<string>() { Name = "LibraryControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "LibraryControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
+                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "LibraryControl_ExpandedPath", Value = new LockedHashSet<Route>() },
+
+                new Library.Configuration.SettingsContext<double>() { Name = "StoreCategorizeTreeItemEditWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "StoreCategorizeTreeItemEditWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "StoreCategorizeTreeItemEditWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "StoreCategorizeTreeItemEditWindow_WindowState", Value = WindowState.Normal },
+
+                new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "CacheControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
+                new Library.Configuration.SettingsContext<string>() { Name = "CacheControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "CacheControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_Grid_ColumnDefinitions_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Signature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Keywords_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Comment_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Id_Width", Value = 120 },
 
                 new Library.Configuration.SettingsContext<string>() { Name = "DownloadControl_LastHeaderClicked", Value = "Rate" },
                 new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "DownloadControl_ListSortDirection", Value = ListSortDirection.Descending },
@@ -137,19 +165,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Name_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Path_Width", Value = -1 },
 
-                new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "CacheControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
-                new Library.Configuration.SettingsContext<string>() { Name = "CacheControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "CacheControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_Grid_ColumnDefinitions_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Signature_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_State_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Keywords_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_CreationTime_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Length_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Comment_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CacheControl_GridViewColumn_Id_Width", Value = 120 },
-
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Height", Value = 500 },
@@ -176,17 +191,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width", Value = -1 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Value_Width", Value = 600 },
 
-                new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
-                new Library.Configuration.SettingsContext<string>() { Name = "StoreControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "StoreControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "StoreControl_ExpandedPath", Value = new LockedHashSet<Route>() },
-
-                new Library.Configuration.SettingsContext<string>() { Name = "BoxControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "BoxControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = new Box() { Name = "Box" } },
-                new Library.Configuration.SettingsContext<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
-                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "BoxControl_ExpandedPath", Value = new LockedHashSet<Route>() },
-
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Height", Value = 500 },
@@ -198,6 +202,10 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Height", Value = 500 },
                 new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "SeedEditWindow_WindowState", Value = WindowState.Normal },
+         
+                new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
+                new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
+                new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = null },
             })
         {
 
@@ -1415,74 +1423,510 @@ namespace Amoeba.Properties
         }
 
 
-        public LockedList<StoreTreeItem> SearchControl_StoreTreeItems
+        public StoreCategorizeTreeItem StoreDownloadControl_StoreCategorizeTreeItem
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<StoreTreeItem>)this["SearchControl_StoreTreeItems"];
+                   return (StoreCategorizeTreeItem)this["StoreDownloadControl_StoreCategorizeTreeItem"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_StoreTreeItems"] = value;
+                    this["StoreDownloadControl_StoreCategorizeTreeItem"] = value;
                 }
             }
         }
 
-        public string SearchControl_LastHeaderClicked
+        public string StoreDownloadControl_LastHeaderClicked
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["SearchControl_LastHeaderClicked"];
+                   return (string)this["StoreDownloadControl_LastHeaderClicked"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_LastHeaderClicked"] = value;
+                    this["StoreDownloadControl_LastHeaderClicked"] = value;
                 }
             }
         }
 
-        public ListSortDirection SearchControl_ListSortDirection
+        public ListSortDirection StoreDownloadControl_ListSortDirection
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["SearchControl_ListSortDirection"];
+                   return (ListSortDirection)this["StoreDownloadControl_ListSortDirection"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_ListSortDirection"] = value;
+                    this["StoreDownloadControl_ListSortDirection"] = value;
                 }
             }
         }
 
-        public LockedHashSet<Route> SearchControl_ExpandedPath
+        public LockedHashSet<Route> StoreDownloadControl_ExpandedPath
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedHashSet<Route>)this["SearchControl_ExpandedPath"];
+                   return (LockedHashSet<Route>)this["StoreDownloadControl_ExpandedPath"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["SearchControl_ExpandedPath"] = value;
+                    this["StoreDownloadControl_ExpandedPath"] = value;
+                }
+            }
+        }
+
+
+        public StoreCategorizeTreeItem StoreUploadControl_StoreCategorizeTreeItem
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (StoreCategorizeTreeItem)this["StoreUploadControl_StoreCategorizeTreeItem"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreUploadControl_StoreCategorizeTreeItem"] = value;
+                }
+            }
+        }
+
+        public string StoreUploadControl_LastHeaderClicked
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["StoreUploadControl_LastHeaderClicked"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreUploadControl_LastHeaderClicked"] = value;
+                }
+            }
+        }
+
+        public ListSortDirection StoreUploadControl_ListSortDirection
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (ListSortDirection)this["StoreUploadControl_ListSortDirection"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreUploadControl_ListSortDirection"] = value;
+                }
+            }
+        }
+
+        public LockedHashSet<Route> StoreUploadControl_ExpandedPath
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedHashSet<Route>)this["StoreUploadControl_ExpandedPath"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreUploadControl_ExpandedPath"] = value;
+                }
+            }
+        }
+
+
+        public string LibraryControl_LastHeaderClicked
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["LibraryControl_LastHeaderClicked"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_LastHeaderClicked"] = value;
+                }
+            }
+        }
+
+        public ListSortDirection LibraryControl_ListSortDirection
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (ListSortDirection)this["LibraryControl_ListSortDirection"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_ListSortDirection"] = value;
+                }
+            }
+        }
+
+        public Box LibraryControl_Box
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (Box)this["LibraryControl_Box"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_Box"] = value;
+                }
+            }
+        }
+
+        public LockedHashSet<Route> LibraryControl_ExpandedPath
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedHashSet<Route>)this["LibraryControl_ExpandedPath"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_ExpandedPath"] = value;
+                }
+            }
+        }
+
+
+        public double StoreCategorizeTreeItemEditWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["StoreCategorizeTreeItemEditWindow_Top"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreCategorizeTreeItemEditWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double StoreCategorizeTreeItemEditWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["StoreCategorizeTreeItemEditWindow_Left"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreCategorizeTreeItemEditWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double StoreCategorizeTreeItemEditWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["StoreCategorizeTreeItemEditWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreCategorizeTreeItemEditWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState StoreCategorizeTreeItemEditWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["StoreCategorizeTreeItemEditWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreCategorizeTreeItemEditWindow_WindowState"] = value;
+                }
+            }
+        }
+
+
+        public Windows.SearchTreeItem CacheControl_SearchTreeItem
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (Windows.SearchTreeItem)this["CacheControl_SearchTreeItem"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_SearchTreeItem"] = value;
+                }
+            }
+        }
+
+        public string CacheControl_LastHeaderClicked
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["CacheControl_LastHeaderClicked"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_LastHeaderClicked"] = value;
+                }
+            }
+        }
+
+        public ListSortDirection CacheControl_ListSortDirection
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (ListSortDirection)this["CacheControl_ListSortDirection"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_ListSortDirection"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_Grid_ColumnDefinitions_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_Grid_ColumnDefinitions_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_Grid_ColumnDefinitions_Width"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_GridViewColumn_Name_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_GridViewColumn_Name_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_GridViewColumn_Name_Width"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_GridViewColumn_Signature_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_GridViewColumn_Signature_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_GridViewColumn_Signature_Width"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_GridViewColumn_State_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_GridViewColumn_State_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_GridViewColumn_State_Width"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_GridViewColumn_Keywords_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_GridViewColumn_Keywords_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_GridViewColumn_Keywords_Width"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_GridViewColumn_CreationTime_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_GridViewColumn_CreationTime_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_GridViewColumn_CreationTime_Width"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_GridViewColumn_Length_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_GridViewColumn_Length_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_GridViewColumn_Length_Width"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_GridViewColumn_Comment_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_GridViewColumn_Comment_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_GridViewColumn_Comment_Width"] = value;
+                }
+            }
+        }
+
+        public double CacheControl_GridViewColumn_Id_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["CacheControl_GridViewColumn_Id_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_GridViewColumn_Id_Width"] = value;
                 }
             }
         }
@@ -2068,223 +2512,6 @@ namespace Amoeba.Properties
         }
 
 
-        public Windows.SearchTreeItem CacheControl_SearchTreeItem
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (Windows.SearchTreeItem)this["CacheControl_SearchTreeItem"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_SearchTreeItem"] = value;
-                }
-            }
-        }
-
-        public string CacheControl_LastHeaderClicked
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (string)this["CacheControl_LastHeaderClicked"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_LastHeaderClicked"] = value;
-                }
-            }
-        }
-
-        public ListSortDirection CacheControl_ListSortDirection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (ListSortDirection)this["CacheControl_ListSortDirection"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_ListSortDirection"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_Grid_ColumnDefinitions_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_Grid_ColumnDefinitions_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_Grid_ColumnDefinitions_Width"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_GridViewColumn_Name_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_GridViewColumn_Name_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_GridViewColumn_Name_Width"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_GridViewColumn_Signature_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_GridViewColumn_Signature_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_GridViewColumn_Signature_Width"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_GridViewColumn_State_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_GridViewColumn_State_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_GridViewColumn_State_Width"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_GridViewColumn_Keywords_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_GridViewColumn_Keywords_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_GridViewColumn_Keywords_Width"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_GridViewColumn_CreationTime_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_GridViewColumn_CreationTime_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_GridViewColumn_CreationTime_Width"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_GridViewColumn_Length_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_GridViewColumn_Length_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_GridViewColumn_Length_Width"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_GridViewColumn_Comment_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_GridViewColumn_Comment_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_GridViewColumn_Comment_Width"] = value;
-                }
-            }
-        }
-
-        public double CacheControl_GridViewColumn_Id_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["CacheControl_GridViewColumn_Id_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_GridViewColumn_Id_Width"] = value;
-                }
-            }
-        }
-
-
         public double SearchItemEditWindow_Top
         {
             get
@@ -2736,170 +2963,6 @@ namespace Amoeba.Properties
         }
 
 
-        public LockedList<StoreTreeItem> StoreControl_StoreTreeItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (LockedList<StoreTreeItem>)this["StoreControl_StoreTreeItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreControl_StoreTreeItems"] = value;
-                }
-            }
-        }
-
-        public string StoreControl_LastHeaderClicked
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (string)this["StoreControl_LastHeaderClicked"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreControl_LastHeaderClicked"] = value;
-                }
-            }
-        }
-
-        public ListSortDirection StoreControl_ListSortDirection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (ListSortDirection)this["StoreControl_ListSortDirection"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreControl_ListSortDirection"] = value;
-                }
-            }
-        }
-
-        public LockedHashSet<Route> StoreControl_ExpandedPath
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (LockedHashSet<Route>)this["StoreControl_ExpandedPath"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreControl_ExpandedPath"] = value;
-                }
-            }
-        }
-
-
-        public string BoxControl_LastHeaderClicked
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (string)this["BoxControl_LastHeaderClicked"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["BoxControl_LastHeaderClicked"] = value;
-                }
-            }
-        }
-
-        public ListSortDirection BoxControl_ListSortDirection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (ListSortDirection)this["BoxControl_ListSortDirection"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["BoxControl_ListSortDirection"] = value;
-                }
-            }
-        }
-
-        public Box BoxControl_Box
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (Box)this["BoxControl_Box"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["BoxControl_Box"] = value;
-                }
-            }
-        }
-
-        public Box LibraryControl_Box
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (Box)this["LibraryControl_Box"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LibraryControl_Box"] = value;
-                }
-            }
-        }
-
-        public LockedHashSet<Route> BoxControl_ExpandedPath
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (LockedHashSet<Route>)this["BoxControl_ExpandedPath"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["BoxControl_ExpandedPath"] = value;
-                }
-            }
-        }
-
-
         public double BoxEditWindow_Top
         {
             get
@@ -3077,6 +3140,61 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["SeedEditWindow_WindowState"] = value;
+                }
+            }
+        }
+
+
+        public LockedList<StoreTreeItem> SearchControl_StoreTreeItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedList<StoreTreeItem>)this["SearchControl_StoreTreeItems"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SearchControl_StoreTreeItems"] = value;
+                }
+            }
+        }
+
+        public LockedList<StoreTreeItem> StoreControl_StoreTreeItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedList<StoreTreeItem>)this["StoreControl_StoreTreeItems"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreControl_StoreTreeItems"] = value;
+                }
+            }
+        }
+
+        public Box BoxControl_Box
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (Box)this["BoxControl_Box"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["BoxControl_Box"] = value;
                 }
             }
         }

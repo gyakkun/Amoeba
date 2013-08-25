@@ -166,7 +166,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (App.SelectTab != TabItemType.Connection) continue;
+                    if (MainWindow.SelectTab != TabType.Connection) continue;
 
                     var connectionInformation = _amoebaManager.ConnectionInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();

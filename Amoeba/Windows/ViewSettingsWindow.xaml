@@ -47,22 +47,22 @@
             </Grid.ColumnDefinitions>
 
             <TreeView HorizontalAlignment="Stretch" Name="_treeView" VerticalAlignment="Stretch">
-                <TreeViewItem Name="_updateTreeViewItem" Header="{Binding Path=ViewSettingsWindow_Update, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
+                <TreeViewItem Name="_updateTreeViewItem" Header="{Binding Path=ViewSettingsWindow_Update, Source={StaticResource ResourcesInstance}}" IsSelected="False" IsEnabled="True" />
                 <TreeViewItem Name="_signaturesTreeViewItem" Header="{Binding Path=ViewSettingsWindow_Signatures, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_keywordsTreeViewItem" Header="{Binding Path=ViewSettingsWindow_Keywords, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
-                <TreeViewItem Name="_boxTreeViewItem" Header="{Binding Path=ViewSettingsWindow_Box, Source={StaticResource ResourcesInstance}}" IsSelected="True" />
+                <TreeViewItem Name="_boxTreeViewItem" Header="{Binding Path=ViewSettingsWindow_Box, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <!--<TreeViewItem Name="_eventsTreeViewItem" Header="{Binding Path=ViewSettingsWindow_Events, Source={StaticResource ResourcesInstance}}" IsSelected="False" />-->
             </TreeView>
 
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="3" />
             
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_updateUrlTextBox}" Visibility="{Binding ElementName=_updateTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <Label Content="{Binding Path=ViewSettingsWindow_UpdateUrl, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
-                <TextBox Height="24" Margin="252,6,6,0" Name="_updateUrlTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <Label Content="{Binding Path=ViewSettingsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
-                <TextBox Height="24" Margin="252,36,6,0" Name="_updateProxyUriTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <Label Content="{Binding Path=ViewSettingsWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
-                <TextBox Height="24" Margin="252,66,6,0" Name="_updateSignatureTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=ViewSettingsWindow_UpdateUrl, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+                <TextBox Height="24" Margin="132,6,6,0" Name="_updateUrlTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=ViewSettingsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+                <TextBox Height="24" Margin="132,36,6,0" Name="_updateProxyUriTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=ViewSettingsWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
+                <TextBox Height="24" Margin="132,66,6,0" Name="_updateSignatureTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
                 <GroupBox Header="{Binding Path=ViewSettingsWindow_UpdateOption, Source={StaticResource ResourcesInstance}}" Height="103" Margin="6,96,6,0" Name="groupBox1" VerticalAlignment="Top">
                     <Grid>
                         <RadioButton Content="{Binding Path=ViewSettingsWindow_None, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_updateOptionNoneRadioButton" VerticalAlignment="Top" />

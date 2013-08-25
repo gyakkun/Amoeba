@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Amoeba.Windows
 {
-    class SearchTreeViewItem : TreeViewItem
+    class SearchTreeViewItem : TreeViewItemEx
     {
         private SearchTreeItem _value;
 
@@ -72,7 +72,10 @@ namespace Amoeba.Windows
             {
                 if (!_listViewItemCollection.OfType<SearchTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, item)))
                 {
-                    _listViewItemCollection.Add(new SearchTreeViewItem(item));
+                    var treeViewItem = new SearchTreeViewItem(item);
+                    treeViewItem.Parent = this;
+
+                    _listViewItemCollection.Add(treeViewItem);
                 }
             }
 

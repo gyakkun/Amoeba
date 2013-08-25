@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Amoeba.Windows
 {
-    class StoreCategorizeTreeViewItem : TreeViewItem
+    class StoreCategorizeTreeViewItem : TreeViewItemEx
     {
         private StoreCategorizeTreeItem _value;
 
@@ -70,7 +70,10 @@ namespace Amoeba.Windows
             {
                 if (!_listViewItemCollection.OfType<StoreCategorizeTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, item)))
                 {
-                    _listViewItemCollection.Add(new StoreCategorizeTreeViewItem(item));
+                    var treeViewItem = new StoreCategorizeTreeViewItem(item);
+                    treeViewItem.Parent = this;
+
+                    _listViewItemCollection.Add(treeViewItem);
                 }
             }
 
@@ -86,7 +89,10 @@ namespace Amoeba.Windows
             {
                 if (!_listViewItemCollection.OfType<StoreTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, item)))
                 {
-                    _listViewItemCollection.Add(new StoreTreeViewItem(item));
+                    var treeViewItem = new StoreTreeViewItem(item);
+                    treeViewItem.Parent = this;
+
+                    _listViewItemCollection.Add(treeViewItem);
                 }
             }
 

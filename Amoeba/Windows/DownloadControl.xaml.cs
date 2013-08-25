@@ -29,7 +29,7 @@ namespace Amoeba.Windows
     /// </summary>
     partial class DownloadControl : UserControl
     {
-        private MainWindow _mainWindow;
+        private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -39,9 +39,8 @@ namespace Amoeba.Windows
         private Thread _showDownloadItemThread;
         private Thread _watchThread;
 
-        public DownloadControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
+        public DownloadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
-            _mainWindow = mainWindow;
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
 
@@ -76,7 +75,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (App.SelectTab != TabItemType.Download) continue;
+                    if (MainWindow.SelectTab != TabType.Download) continue;
 
                     var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();

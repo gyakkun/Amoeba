@@ -1,0 +1,146 @@
+﻿<UserControl x:Class="Amoeba.Windows.LibraryControl"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prop="clr-namespace:Amoeba.Properties"     
+        xmlns:local="clr-namespace:Amoeba.Windows" 
+        Height="500" Width="800">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="_myTemplate_Name">
+            <Grid>
+                <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
+                <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Signature">
+            <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Keywords">
+            <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_CreationTime">
+            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Length">
+            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Comment">
+            <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_State">
+            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Id">
+            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
+        </DataTemplate>
+
+        <ContextMenu x:Key="_treeViewItemContextMenu" >
+            <MenuItem Name="_treeViewItemNewMenuItem" Header="{Binding Path=LibraryControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemNewMenuItem_Click" />
+            <MenuItem Name="_treeViewItemEditMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemEditMenuItem_Click" />
+            <MenuItem Name="_treeViewItemDeleteMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemDeleteMenuItem_Click" />
+            <Separator />
+            <MenuItem Name="_treeViewItemCutMenuItem" Header="{Binding Path=LibraryControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCutMenuItem_Click" />
+            <MenuItem Name="_treeViewItemCopyMenuItem" Header="{Binding Path=LibraryControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCopyMenuItem_Click" />
+            <MenuItem Name="_treeViewItemPasteMenuItem" Header="{Binding Path=LibraryControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemPasteMenuItem_Click" />
+            <Separator />
+            <MenuItem Name="_treeViewItemImportMenuItem" Header="{Binding Path=LibraryControl_Import, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemImportMenuItem_Click" />
+            <MenuItem Name="_treeViewItemExportMenuItem" Header="{Binding Path=LibraryControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemExportMenuItem_Click" />
+        </ContextMenu>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="New" Executed="Execute_New" />
+        <CommandBinding Command="Delete" Executed="Execute_Delete" />
+        <CommandBinding Command="Cut" Executed="Execute_Cut" />
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
+        <CommandBinding Command="Paste" Executed="Execute_Paste" />
+        <CommandBinding Command="Search"  Executed="Execute_Search" />
+    </UserControl.CommandBindings>
+    
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="CTRL+N" Command="New" />
+        <KeyBinding Gesture="Delete" Command="Delete" />
+        <KeyBinding Gesture="CTRL+X" Command="Cut" />
+        <KeyBinding Gesture="CTRL+C" Command="Copy" />
+        <KeyBinding Gesture="CTRL+V" Command="Paste" />
+        <KeyBinding Gesture="CTRL+F" Command="Search" />
+    </UserControl.InputBindings>
+
+    <Grid Name="_grid" AllowDrop="True" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Name="_searchRowDefinition" Height="24" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding Path=CacheControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
+            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+
+        <GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
+
+        <TreeView Name="_treeView" Grid.RowSpan="2" AllowDrop="True" 
+                PreviewDragOver="_treeView_PreviewDragOver"
+                PreviewMouseMove="_treeView_PreviewMouseMove" 
+                PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown"
+                SelectedItemChanged="_treeView_SelectedItemChanged"
+                TreeViewItem.Expanded="_treeView_Expanded" TreeViewItem.Collapsed="_treeView_Collapsed"
+                VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <TreeView.Resources>
+                <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                    <Setter Property="ContextMenu" Value="{StaticResource _treeViewItemContextMenu}" />
+                    <EventSetter Event="ContextMenuOpening" Handler="_treeViewItemContextMenu_ContextMenuOpening" />
+                </Style>
+            </TreeView.Resources>
+        </TreeView>
+
+        <local:ListViewEx x:Name="_listView" Grid.Column="2" Grid.RowSpan="2" AllowDrop="True" 
+                PreviewDragOver="_listView_PreviewDragOver"  
+                PreviewMouseMove="_listView_PreviewMouseMove"
+                PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown"
+                PreviewMouseLeftButtonUp="_listView_PreviewMouseLeftButtonUp"
+                PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick"
+                ContextMenuOpening="_listView_ContextMenuOpening" 
+                GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
+                VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.ContextMenu>
+                <ContextMenu Name="_listViewContextMenu">
+                    <MenuItem Name="_listViewNewMenuItem" Header="{Binding Path=LibraryControl_New, Source={StaticResource ResourcesInstance}}" Click="_listViewNewMenuItem_Click" />
+                    <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_listViewCutMenuItem" Header="{Binding Path=LibraryControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_listViewCutMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=LibraryControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=LibraryControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
+                    <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=LibraryControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=LibraryControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Signature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Signature}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Signature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Keywords, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keywords}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=LibraryControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
+                            Width="{Binding Path=CacheControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                </GridView>
+            </ListView.View>
+        </local:ListViewEx>
+        
+        <TextBox Grid.Column="2" Grid.Row="2" Margin="24,0,0,0" Name="_searchTextBox" KeyDown="_searchTextBox_KeyDown" />
+        <Button Content="×" Grid.Column="2" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Click="_serachCloseButton_Click" />
+    </Grid>
+</UserControl>

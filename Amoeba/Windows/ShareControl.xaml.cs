@@ -30,7 +30,7 @@ namespace Amoeba.Windows
     /// </summary>
     partial class ShareControl : UserControl
     {
-        private MainWindow _mainWindow;
+        private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -38,9 +38,8 @@ namespace Amoeba.Windows
 
         private Thread _showShareItemThread;
 
-        public ShareControl(MainWindow mainWindow, AmoebaManager amoebaManager, BufferManager bufferManager)
+        public ShareControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
-            _mainWindow = mainWindow;
             _bufferManager = bufferManager;
             _amoebaManager = amoebaManager;
 
@@ -62,7 +61,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (App.SelectTab != TabItemType.Share) continue;
+                    if (MainWindow.SelectTab != TabType.Share) continue;
 
                     var shareInformation = _amoebaManager.ShareInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();

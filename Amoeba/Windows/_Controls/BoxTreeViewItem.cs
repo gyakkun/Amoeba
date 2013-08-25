@@ -11,13 +11,12 @@ using Library.Net.Amoeba;
 
 namespace Amoeba.Windows
 {
-    class BoxTreeViewItem : TreeViewItem
+    class BoxTreeViewItem : TreeViewItemEx
     {
         private Box _value;
 
         private ObservableCollection<BoxTreeViewItem> _listViewItemCollection = new ObservableCollection<BoxTreeViewItem>();
         private TextBlock _header = new TextBlock();
-        private BoxTreeViewItem _parent = null;
 
         public BoxTreeViewItem(Box value)
             : base()
@@ -69,7 +68,15 @@ namespace Amoeba.Windows
                 this.Header = string.Format("{0} ({1}) - {2}", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value), this.Value.Certificate.ToString());
             }
 
-            if (_parent != null) _parent.Update_Header();
+            if (this.Parent != null)
+            {
+                if (this.Parent is BoxTreeViewItem)
+                {
+                    var parentBoxTreeViewItem = (BoxTreeViewItem)this.Parent;
+
+                    parentBoxTreeViewItem.Update_Header();
+                }
+            }
         }
 
         public void Update()
@@ -89,7 +96,7 @@ namespace Amoeba.Windows
                 if (!_listViewItemCollection.OfType<BoxTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, item)))
                 {
                     var treeViewItem = new BoxTreeViewItem(item);
-                    treeViewItem._parent = this;
+                    treeViewItem.Parent = this;
 
                     _listViewItemCollection.Add(treeViewItem);
                 }

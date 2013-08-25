@@ -10,7 +10,7 @@ using Library;
 
 namespace Amoeba.Windows
 {
-    class StoreTreeViewItem : TreeViewItem
+    class StoreTreeViewItem : TreeViewItemEx
     {
         private StoreTreeItem _value;
 
@@ -56,7 +56,10 @@ namespace Amoeba.Windows
             {
                 if (!_listViewItemCollection.OfType<BoxTreeViewItem>().Any(n => object.ReferenceEquals(n.Value, item)))
                 {
-                    _listViewItemCollection.Add(new BoxTreeViewItem(item));
+                    var treeViewItem = new BoxTreeViewItem(item);
+                    treeViewItem.Parent = this;
+
+                    _listViewItemCollection.Add(treeViewItem);
                 }
             }
 

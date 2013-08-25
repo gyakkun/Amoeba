@@ -62,6 +62,8 @@ namespace Amoeba.Windows
 
         private string _cacheBlocksPath = null;
 
+        public static TabType SelectTab { get; set; }
+
         public MainWindow()
         {
             try
@@ -985,8 +987,8 @@ namespace Amoeba.Windows
                         var route = new Route();
                         route.Add(box.Name);
 
-                        Settings.Instance.BoxControl_Box = box;
-                        Settings.Instance.BoxControl_ExpandedPath.Add(route);
+                        Settings.Instance.LibraryControl_Box = box;
+                        Settings.Instance.LibraryControl_ExpandedPath.Add(route);
                     }
                 }
                 else
@@ -1026,9 +1028,15 @@ namespace Amoeba.Windows
                         Settings.Instance.Global_Update_Signature = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A";
                     }
 
-                    if (version < new Version(1, 0, 1))
+                    if (version < new Version(2, 0, 0))
                     {
-                        Settings.Instance.BoxControl_Box = Settings.Instance.LibraryControl_Box;
+                        Settings.Instance.StoreUploadControl_StoreCategorizeTreeItem.StoreTreeItems.AddRange(Settings.Instance.StoreControl_StoreTreeItems);
+                        Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem.StoreTreeItems.AddRange(Settings.Instance.SearchControl_StoreTreeItems);
+
+                        if (Settings.Instance.BoxControl_Box != null)
+                        {
+                            Settings.Instance.LibraryControl_Box = Settings.Instance.BoxControl_Box;
+                        }
                     }
                 }
 
@@ -1305,45 +1313,35 @@ namespace Amoeba.Windows
                 return this.PointToScreen(new Point(0, 0)).X;
             };
 
-            ConnectionControl _connectionControl = new ConnectionControl(_amoebaManager);
-            _connectionControl.Height = Double.NaN;
-            _connectionControl.Width = Double.NaN;
-            _connectionTabItem.Content = _connectionControl;
+            ConnectionControl connectionControl = new ConnectionControl(_amoebaManager);
+            connectionControl.Height = Double.NaN;
+            connectionControl.Width = Double.NaN;
+            _connectionTabItem.Content = connectionControl;
 
-            SearchControl _searchControl = new SearchControl(this, _amoebaManager, _bufferManager);
-            _searchControl.Height = Double.NaN;
-            _searchControl.Width = Double.NaN;
-            _searchTabItem.Content = _searchControl;
+            StoreControl storeControl = new StoreControl(_amoebaManager, _bufferManager);
+            storeControl.Height = Double.NaN;
+            storeControl.Width = Double.NaN;
+            _storeTabItem.Content = storeControl;
 
-            StoreControl _storeControl = new StoreControl(this, _amoebaManager, _bufferManager);
-            _storeControl.Height = Double.NaN;
-            _storeControl.Width = Double.NaN;
-            _storeTabItem.Content = _storeControl;
+            CacheControl cacheControl = new CacheControl(_amoebaManager, _bufferManager);
+            cacheControl.Height = Double.NaN;
+            cacheControl.Width = Double.NaN;
+            _cacheTabItem.Content = cacheControl;
 
-            BoxControl _boxControl = new BoxControl(this, _amoebaManager, _bufferManager);
-            _boxControl.Height = Double.NaN;
-            _boxControl.Width = Double.NaN;
-            _boxTabItem.Content = _boxControl;
+            DownloadControl downloadControl = new DownloadControl(_amoebaManager, _bufferManager);
+            downloadControl.Height = Double.NaN;
+            downloadControl.Width = Double.NaN;
+            _downloadTabItem.Content = downloadControl;
 
-            CacheControl _cacheControl = new CacheControl(this, _amoebaManager, _bufferManager);
-            _cacheControl.Height = Double.NaN;
-            _cacheControl.Width = Double.NaN;
-            _cacheTabItem.Content = _cacheControl;
+            UploadControl uploadControl = new UploadControl(_amoebaManager, _bufferManager);
+            uploadControl.Height = Double.NaN;
+            uploadControl.Width = Double.NaN;
+            _uploadTabItem.Content = uploadControl;
 
-            DownloadControl _downloadControl = new DownloadControl(this, _amoebaManager, _bufferManager);
-            _downloadControl.Height = Double.NaN;
-            _downloadControl.Width = Double.NaN;
-            _downloadTabItem.Content = _downloadControl;
-
-            UploadControl _uploadControl = new UploadControl(this, _amoebaManager, _bufferManager);
-            _uploadControl.Height = Double.NaN;
-            _uploadControl.Width = Double.NaN;
-            _uploadTabItem.Content = _uploadControl;
-
-            ShareControl _shareControl = new ShareControl(this, _amoebaManager, _bufferManager);
-            _shareControl.Height = Double.NaN;
-            _shareControl.Width = Double.NaN;
-            _shareTabItem.Content = _shareControl;
+            ShareControl shareControl = new ShareControl(_amoebaManager, _bufferManager);
+            shareControl.Height = Double.NaN;
+            shareControl.Width = Double.NaN;
+            _shareTabItem.Content = shareControl;
 
             if (Settings.Instance.Global_IsStart)
             {
@@ -1368,16 +1366,24 @@ namespace Amoeba.Windows
         {
             HashSet<string> lockSignatures = new HashSet<string>();
 
-            foreach (var storeInfo in Settings.Instance.StoreControl_StoreTreeItems)
             {
-                if (!Signature.HasSignature(storeInfo.Signature)) continue;
-                lockSignatures.Add(storeInfo.Signature);
-            }
+                var storeTreeItems = new List<StoreTreeItem>();
 
-            foreach (var storeInfo in Settings.Instance.SearchControl_StoreTreeItems)
-            {
-                if (!Signature.HasSignature(storeInfo.Signature)) continue;
-                lockSignatures.Add(storeInfo.Signature);
+                {
+                    var categorizeStoreTreeItems = new List<StoreCategorizeTreeItem>();
+                    categorizeStoreTreeItems.Add(Settings.Instance.StoreUploadControl_StoreCategorizeTreeItem);
+
+                    for (int i = 0; i < categorizeStoreTreeItems.Count; i++)
+                    {
+                        categorizeStoreTreeItems.AddRange(categorizeStoreTreeItems[i].Children);
+                        storeTreeItems.AddRange(categorizeStoreTreeItems[i].StoreTreeItems);
+                    }
+                }
+
+                foreach (var item in storeTreeItems)
+                {
+                    lockSignatures.Add(item.Signature);
+                }
             }
 
             return new SignatureCollection(lockSignatures);
@@ -1461,49 +1467,41 @@ namespace Amoeba.Windows
         {
             if (_tabControl.SelectedItem == _connectionTabItem)
             {
-                App.SelectTab = TabItemType.Connection;
-            }
-            else if (_tabControl.SelectedItem == _searchTabItem)
-            {
-                App.SelectTab = TabItemType.Search;
-            }
-            else if (_tabControl.SelectedItem == _downloadTabItem)
-            {
-                App.SelectTab = TabItemType.Download;
-            }
-            else if (_tabControl.SelectedItem == _uploadTabItem)
-            {
-                App.SelectTab = TabItemType.Upload;
-            }
-            else if (_tabControl.SelectedItem == _shareTabItem)
-            {
-                App.SelectTab = TabItemType.Share;
-            }
-            else if (_tabControl.SelectedItem == _cacheTabItem)
-            {
-                App.SelectTab = TabItemType.Cache;
+                MainWindow.SelectTab = TabType.Connection;
             }
             else if (_tabControl.SelectedItem == _storeTabItem)
             {
-                App.SelectTab = TabItemType.Store;
+                MainWindow.SelectTab = TabType.Store;
             }
-            else if (_tabControl.SelectedItem == _boxTabItem)
+            else if (_tabControl.SelectedItem == _cacheTabItem)
             {
-                App.SelectTab = TabItemType.Box;
+                MainWindow.SelectTab = TabType.Cache;
+            }
+            else if (_tabControl.SelectedItem == _downloadTabItem)
+            {
+                MainWindow.SelectTab = TabType.Download;
+            }
+            else if (_tabControl.SelectedItem == _uploadTabItem)
+            {
+                MainWindow.SelectTab = TabType.Upload;
+            }
+            else if (_tabControl.SelectedItem == _shareTabItem)
+            {
+                MainWindow.SelectTab = TabType.Share;
             }
             else if (_tabControl.SelectedItem == _logTabItem)
             {
-                App.SelectTab = TabItemType.Log;
+                MainWindow.SelectTab = TabType.Log;
 
                 _logRichTextBox.UpdateLayout();
                 _logRichTextBox.ScrollToEnd();
+
+                this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
             }
             else
             {
-                App.SelectTab = 0;
+                MainWindow.SelectTab = 0;
             }
-
-            this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
 
         private void _connectionsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
