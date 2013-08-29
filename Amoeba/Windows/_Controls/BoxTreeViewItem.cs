@@ -61,11 +61,11 @@ namespace Amoeba.Windows
         {
             if (this.Value.Certificate == null)
             {
-                this.Header = string.Format("{0} ({1})", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value));
+                _header.Text = string.Format("{0} ({1})", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value));
             }
             else
             {
-                this.Header = string.Format("{0} ({1}) - {2}", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value), this.Value.Certificate.ToString());
+                _header.Text = string.Format("{0} ({1}) - {2}", this.Value.Name, BoxTreeViewItem.GetTotalSeedCount(this.Value), this.Value.Certificate.ToString());
             }
 
             if (this.Parent != null)

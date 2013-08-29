@@ -107,6 +107,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="TabType.cs" />
+    <Compile Include="Windows\Link\LinkWindow.xaml.cs">
+      <DependentUpon>LinkWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Store\StoreDownloadControl.xaml.cs">
       <DependentUpon>StoreDownloadControl.xaml</DependentUpon>
     </Compile>
@@ -126,8 +129,8 @@
     <Compile Include="Windows\Store\BoxEditWindow.xaml.cs">
       <DependentUpon>BoxEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\CacheControl.xaml.cs">
-      <DependentUpon>CacheControl.xaml</DependentUpon>
+    <Compile Include="Windows\SearchControl.xaml.cs">
+      <DependentUpon>SearchControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ConnectionControl.xaml.cs">
       <DependentUpon>ConnectionControl.xaml</DependentUpon>
@@ -141,6 +144,7 @@
     <Compile Include="Windows\_Controls\BoxTreeViewItem.cs" />
     <Compile Include="Windows\_Controls\StoreCategorizeTreeViewItem.cs" />
     <Compile Include="Windows\_Controls\TreeViewItemEx.cs" />
+    <Compile Include="Windows\_Items\LinkItem.cs" />
     <Compile Include="Windows\_Items\SearchItem.cs" />
     <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />
     <Compile Include="Windows\_Controls\DigitalSignatureComboBoxItem.cs" />
@@ -188,6 +192,10 @@
     <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
       <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Windows\Link\LinkWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Store\StoreDownloadControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -219,7 +227,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\CacheControl.xaml">
+    <Page Include="Windows\SearchControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -103,7 +103,7 @@
             <RowDefinition Name="_searchRowDefinition" Height="24" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{Binding Path=CacheControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
+            <ColumnDefinition Width="{Binding Path=SearchControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
             <ColumnDefinition Width="4" />
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
@@ -144,7 +144,7 @@
                 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
-                    <MenuItem Name="_listViewNewMenuItem" Header="{Binding Path=StoreUploadControl_New, Source={StaticResource ResourcesInstance}}" Click="_listViewNewMenuItem_Click" />
+                    <MenuItem Name="_listViewNewBoxMenuItem" Header="{Binding Path=StoreUploadControl_NewBox, Source={StaticResource ResourcesInstance}}" Click="_listViewNewBoxMenuItem_Click" />
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=StoreUploadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=StoreUploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
@@ -159,21 +159,21 @@
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=SearchControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_Signature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Signature}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Signature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=SearchControl_GridViewColumn_Signature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=SearchControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_Keywords, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keywords}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=SearchControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=SearchControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=SearchControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=SearchControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
-                            Width="{Binding Path=CacheControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                            Width="{Binding Path=SearchControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

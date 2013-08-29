@@ -192,14 +192,15 @@ namespace Amoeba.Windows
             _nameListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var line = Clipboard.GetText().Split('\r', '\n');
+                bool flag = false;
 
-                if (line.Length != 0)
+                if (Clipboard.ContainsText())
                 {
-                    Regex regex = new Regex("^([\\+-]) \"(.*)\"$");
-
-                    _nameListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                    var line = Clipboard.GetText().Split('\r', '\n');
+                    flag = Regex.IsMatch(line[0], "^([\\+-]) \"(.*)\"$");
                 }
+
+                _nameListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
@@ -431,14 +432,15 @@ namespace Amoeba.Windows
             _nameRegexListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var line = Clipboard.GetText().Split('\r', '\n');
+                bool flag = false;
 
-                if (line.Length != 0)
+                if (Clipboard.ContainsText())
                 {
-                    Regex regex = new Regex("^([\\+-]) ([\\+-]) \"(.*)\"$");
-
-                    _nameRegexListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                    var line = Clipboard.GetText().Split('\r', '\n');
+                    flag = Regex.IsMatch(line[0], "^([\\+-]) ([\\+-]) \"(.*)\"$");
                 }
+
+                _nameRegexListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
@@ -706,14 +708,15 @@ namespace Amoeba.Windows
             _signatureListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var line = Clipboard.GetText().Split('\r', '\n');
+                bool flag = false;
 
-                if (line.Length != 0)
+                if (Clipboard.ContainsText())
                 {
-                    Regex regex = new Regex("^([\\+-]) ([\\+-]) \"(.*)\"$");
-
-                    _signatureListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                    var line = Clipboard.GetText().Split('\r', '\n');
+                    flag = Regex.IsMatch(line[0], "^([\\+-]) ([\\+-]) \"(.*)\"$");
                 }
+
+                _signatureListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
@@ -979,14 +982,15 @@ namespace Amoeba.Windows
             _keywordListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var line = Clipboard.GetText().Split('\r', '\n');
+                bool flag = false;
 
-                if (line.Length != 0)
+                if (Clipboard.ContainsText())
                 {
-                    Regex regex = new Regex("^([\\+-]) \"(.*)\"$");
-
-                    _keywordListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                    var line = Clipboard.GetText().Split('\r', '\n');
+                    flag = Regex.IsMatch(line[0], "^([\\+-]) \"(.*)\"$");
                 }
+
+                _keywordListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
@@ -1232,14 +1236,15 @@ namespace Amoeba.Windows
             _creationTimeRangeListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var line = Clipboard.GetText().Split('\r', '\n');
+                bool flag = false;
 
-                if (line.Length != 0)
+                if (Clipboard.ContainsText())
                 {
-                    Regex regex = new Regex(@"^([\+-]) (.*), (.*)$");
-
-                    _creationTimeRangeListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                    var line = Clipboard.GetText().Split('\r', '\n');
+                    flag = Regex.IsMatch(line[0], @"^([\+-]) (.*), (.*)$");
                 }
+
+                _creationTimeRangeListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
@@ -1522,14 +1527,15 @@ namespace Amoeba.Windows
             _lengthRangeListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var line = Clipboard.GetText().Split('\r', '\n');
+                bool flag = false;
 
-                if (line.Length != 0)
+                if (Clipboard.ContainsText())
                 {
-                    Regex regex = new Regex(@"^([\+-]) (.*), (.*)$");
-
-                    _lengthRangeListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                    var line = Clipboard.GetText().Split('\r', '\n');
+                    flag = Regex.IsMatch(line[0], @"^([\+-]) (.*), (.*)$");
                 }
+
+                _lengthRangeListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
@@ -1791,23 +1797,19 @@ namespace Amoeba.Windows
             _seedListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var seeds = Clipboard.GetSeeds();
+                bool flag = false;
 
-                if (seeds.Count() > 0)
-                {
-                    _seedListViewPasteMenuItem.IsEnabled = true;
-                }
-                else
+                if (Clipboard.ContainsText())
                 {
                     var line = Clipboard.GetText().Split('\r', '\n');
-
-                    if (line.Length != 0)
-                    {
-                        Regex regex = new Regex(@"^([\+-]) (.*)$");
-
-                        _seedListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
-                    }
+                    flag = Regex.IsMatch(line[0], @"^([\+-]) (.*)$");
                 }
+                else if (Clipboard.ContainsSeeds())
+                {
+                    flag = true;
+                }
+
+                _seedListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
@@ -2079,14 +2081,15 @@ namespace Amoeba.Windows
             _searchStateListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
-                var line = Clipboard.GetText().Split('\r', '\n');
+                bool flag = false;
 
-                if (line.Length != 0)
+                if (Clipboard.ContainsText())
                 {
-                    Regex regex = new Regex(@"^([\+-]) (.*)$");
-
-                    _searchStateListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
+                    var line = Clipboard.GetText().Split('\r', '\n');
+                    flag = Regex.IsMatch(line[0], @"^([\+-]) (.*)$");
                 }
+
+                _searchStateListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 

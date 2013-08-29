@@ -41,21 +41,18 @@ namespace Amoeba.Windows
             _bufferManager = bufferManager;
 
             InitializeComponent();
-        }
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            StoreDownloadControl storeDownloadControl = new StoreDownloadControl(_amoebaManager, _bufferManager);
+           
+            StoreDownloadControl storeDownloadControl = new StoreDownloadControl(this, _amoebaManager, _bufferManager);
             storeDownloadControl.Height = Double.NaN;
             storeDownloadControl.Width = Double.NaN;
             _storeDownloadTabItem.Content = storeDownloadControl;
 
-            StoreUploadControl storeUploadControl = new StoreUploadControl(_amoebaManager, _bufferManager);
+            StoreUploadControl storeUploadControl = new StoreUploadControl(this, _amoebaManager, _bufferManager);
             storeUploadControl.Height = Double.NaN;
             storeUploadControl.Width = Double.NaN;
             _storeUploadTabItem.Content = storeUploadControl;
 
-            LibraryControl libraryControl = new LibraryControl(_amoebaManager, _bufferManager);
+            LibraryControl libraryControl = new LibraryControl(this, _amoebaManager, _bufferManager);
             libraryControl.Height = Double.NaN;
             libraryControl.Width = Double.NaN;
             _libraryTabItem.Content = libraryControl;

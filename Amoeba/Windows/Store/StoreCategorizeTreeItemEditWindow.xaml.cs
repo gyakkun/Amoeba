@@ -19,22 +19,6 @@ namespace Amoeba.Windows
     /// </summary>
     partial class StoreCategorizeTreeItemEditWindow : Window
     {
-        public StoreCategorizeTreeItemEditWindow()
-        {
-            InitializeComponent();
-
-            {
-                var icon = new BitmapImage();
-
-                icon.BeginInit();
-                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
-                icon.EndInit();
-                if (icon.CanFreeze) icon.Freeze();
-
-                this.Icon = icon;
-            }
-        }
-
         public StoreCategorizeTreeItemEditWindow(string name)
         {
             InitializeComponent();

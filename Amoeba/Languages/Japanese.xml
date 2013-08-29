@@ -21,17 +21,19 @@
   <Translate Key="Box_Comment" Value="コメント" />
 
   <Translate Key="MainWindow_Connection" Value="コネクション" />
-  <Translate Key="MainWindow_Store" Value="ストア" />
-  <Translate Key="MainWindow_Search" Value="サーチ" />
-  <Translate Key="MainWindow_Cache" Value="キャッシュ" />
+  <Translate Key="MainWindow_Search" Value="検索" />
   <Translate Key="MainWindow_Download" Value="ダウンロード" />
   <Translate Key="MainWindow_Upload" Value="アップロード" />
   <Translate Key="MainWindow_Share" Value="シェア" />
+  <Translate Key="MainWindow_Store" Value="ストア" />
   <Translate Key="MainWindow_Log" Value="ログ" />
   <Translate Key="MainWindow_Connections" Value="接続" />
   <Translate Key="MainWindow_Start" Value="開始" />
   <Translate Key="MainWindow_Stop" Value="停止" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="基礎ノードUriの更新" />
+  <Translate Key="MainWindow_Link" Value="リンク" />
+  <Translate Key="MainWindow_LinkSettings" Value="リンク設定" />
+  <Translate Key="MainWindow_Cache" Value="キャッシュ" />
   <Translate Key="MainWindow_CheckSeeds" Value="完全キャッシュのチェック" />
   <Translate Key="MainWindow_CheckInternalBlocks" Value="内部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckExternalBlocks" Value="外部ブロックの破損チェック" />
@@ -49,7 +51,7 @@
   <Translate Key="MainWindow_SendSpeed" Value="送信:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="受信:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
-  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
+  <Translate Key="MainWindow_SearchSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="内部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="外部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="チェック済み:{1} 破損:{0} 総ブロック数:{2}" />
@@ -156,6 +158,20 @@
   <Translate Key="ViewSettingsWindow_Copy" Value="コピー" />
   <Translate Key="ViewSettingsWindow_Paste" Value="貼り付け" />
 
+  <Translate Key="LinkWindow_Title" Value="リンク設定" />
+  <Translate Key="LinkWindow_Download" Value="ダウンロード" />
+  <Translate Key="LinkWindow_Upload" Value="アップロード" />
+  <Translate Key="LinkWindow_LinkerSignature" Value="リンカサイン" />
+  <Translate Key="LinkWindow_TrustSignature" Value="トラストサイン" />
+  <Translate Key="LinkWindow_New" Value="新規" />
+  <Translate Key="LinkWindow_Edit" Value="編集" />
+  <Translate Key="LinkWindow_Delete" Value="削除" />
+  <Translate Key="LinkWindow_Cut" Value="切り取り" />
+  <Translate Key="LinkWindow_Copy" Value="コピー" />
+  <Translate Key="LinkWindow_Paste" Value="貼り付け" />
+  <Translate Key="LinkWindow_Ok" Value="Ok" />
+  <Translate Key="LinkWindow_Cancel" Value="キャンセル" />
+
   <Translate Key="VersionInformationWindow_Title" Value="バージョン情報" />
   <Translate Key="VersionInformationWindow_FileName" Value="ファイル名" />
   <Translate Key="VersionInformationWindow_Version" Value="バージョン" />
@@ -213,16 +229,16 @@
   <Translate Key="StoreDownloadControl_Comment" Value="コメント" />
   <Translate Key="StoreDownloadControl_State" Value="状態" />
   <Translate Key="StoreDownloadControl_Id" Value="ID" />
-  <Translate Key="StoreDownloadControl_Upload" Value="Upload" />
+  <Translate Key="StoreDownloadControl_Upload" Value="アップロード" />
   <Translate Key="StoreDownloadControl_NewStore" Value="新しいストア" />
   <Translate Key="StoreDownloadControl_NewCategory" Value="新しいカテゴリ" />
-  <Translate Key="StoreDownloadControl_NewBox" Value="New box" />
-  <Translate Key="StoreDownloadControl_Edit" Value="Edit" />
+  <Translate Key="StoreDownloadControl_NewBox" Value="新しいボックス" />
+  <Translate Key="StoreDownloadControl_Edit" Value="編集" />
   <Translate Key="StoreDownloadControl_Delete" Value="削除" />
-  <Translate Key="StoreDownloadControl_Cut" Value="Cut" />
+  <Translate Key="StoreDownloadControl_Cut" Value="切り取り" />
   <Translate Key="StoreDownloadControl_Copy" Value="コピー" />
   <Translate Key="StoreDownloadControl_Paste" Value="貼り付け" />
-  <Translate Key="StoreDownloadControl_Import" Value="Import" />
+  <Translate Key="StoreDownloadControl_Import" Value="インポート" />
   <Translate Key="StoreDownloadControl_Export" Value="エクスポート" />
   <Translate Key="StoreDownloadControl_CopyInfo" Value="コピー (詳細情報)" />
   <Translate Key="StoreDownloadControl_Download" Value="ダウンロード" />
@@ -240,7 +256,7 @@
   <Translate Key="StoreUploadControl_Upload" Value="アップロード" />
   <Translate Key="StoreUploadControl_NewStore" Value="新しいストア" />
   <Translate Key="StoreUploadControl_NewCategory" Value="新しいカテゴリ" />
-  <Translate Key="StoreUploadControl_NewBox" Value="New box" />
+  <Translate Key="StoreUploadControl_NewBox" Value="新しいボックス" />
   <Translate Key="StoreUploadControl_Edit" Value="編集" />
   <Translate Key="StoreUploadControl_Delete" Value="削除" />
   <Translate Key="StoreUploadControl_Cut" Value="切り取り" />
@@ -254,7 +270,7 @@
   <Translate Key="StoreUploadControl_DigitalSignatureError_Message" Value="サインエラー" />
 
   <Translate Key="StoreCategorizeTreeItemEditWindow_Title" Value="カテゴリ設定" />
-  <Translate Key="StoreCategorizeTreeItemEditWindow_Signature" Value="名前" />
+  <Translate Key="StoreCategorizeTreeItemEditWindow_Name" Value="名前" />
   <Translate Key="StoreCategorizeTreeItemEditWindow_Ok" Value="Ok" />
   <Translate Key="StoreCategorizeTreeItemEditWindow_Cancel" Value="キャンセル" />
 
@@ -266,7 +282,7 @@
   <Translate Key="LibraryControl_Comment" Value="コメント" />
   <Translate Key="LibraryControl_State" Value="状態" />
   <Translate Key="LibraryControl_Id" Value="ID" />
-  <Translate Key="LibraryControl_NewBox" Value="New box" />
+  <Translate Key="LibraryControl_NewBox" Value="新しいボックス" />
   <Translate Key="LibraryControl_Edit" Value="編集" />
   <Translate Key="LibraryControl_Delete" Value="削除" />
   <Translate Key="LibraryControl_Cut" Value="切り取り" />
@@ -279,45 +295,45 @@
   <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="ボックスのサインが解除されますがよろしいですか?" />
   <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="サインエラー" />
 
-  <Translate Key="CacheControl_Name" Value="名前" />
-  <Translate Key="CacheControl_Signature" Value="サイン" />
-  <Translate Key="CacheControl_Length" Value="サイズ" />
-  <Translate Key="CacheControl_Keywords" Value="キーワード" />
-  <Translate Key="CacheControl_CreationTime" Value="作成日" />
-  <Translate Key="CacheControl_Comment" Value="コメント" />
-  <Translate Key="CacheControl_State" Value="状態" />
-  <Translate Key="CacheControl_Id" Value="ID" />
-  <Translate Key="CacheControl_New" Value="新しいカテゴリ" />
-  <Translate Key="CacheControl_Edit" Value="編集" />
-  <Translate Key="CacheControl_Delete" Value="削除" />
-  <Translate Key="CacheControl_Cut" Value="切り取り" />
-  <Translate Key="CacheControl_Copy" Value="コピー" />
-  <Translate Key="CacheControl_CopyInfo" Value="コピー (詳細情報)" />
-  <Translate Key="CacheControl_Paste" Value="貼り付け" />
-  <Translate Key="CacheControl_Export" Value="エクスポート" />
-  <Translate Key="CacheControl_DeleteCache" Value="キャッシュ削除" />
-  <Translate Key="CacheControl_DeleteShare" Value="シェア削除" />
-  <Translate Key="CacheControl_DeleteDownload" Value="ダウンロード削除" />
-  <Translate Key="CacheControl_DeleteUpload" Value="アップロード削除" />
-  <Translate Key="CacheControl_DeleteDownloadHistory" Value="ダウンロード履歴削除" />
-  <Translate Key="CacheControl_DeleteUploadHistory" Value="アップロード履歴削除" />
-  <Translate Key="CacheControl_Download" Value="ダウンロード" />
-  <Translate Key="CacheControl_Search" Value="検索" />
-  <Translate Key="CacheControl_SearchSignature" Value="このサインで検索" />
-  <Translate Key="CacheControl_SearchKeyword" Value="このキーワードで検索" />
-  <Translate Key="CacheControl_SearchCreationTimeRange" Value="この作成日で検索" />
-  <Translate Key="CacheControl_SearchState" Value="この状態で検索" />
-  <Translate Key="CacheControl_Filter" Value="フィルタ" />
-  <Translate Key="CacheControl_FilterName" Value="この名前でフィルタ" />
-  <Translate Key="CacheControl_FilterSignature" Value="このサインでフィルタ" />
-  <Translate Key="CacheControl_FilterKeyword" Value="このキーワードでフィルタ" />
-  <Translate Key="CacheControl_FilterCreationTimeRange" Value="この作成日でフィルタ" />
-  <Translate Key="CacheControl_FilterSeed" Value="このシードでフィルタ" />
+  <Translate Key="SearchControl_Name" Value="名前" />
+  <Translate Key="SearchControl_Signature" Value="サイン" />
+  <Translate Key="SearchControl_Length" Value="サイズ" />
+  <Translate Key="SearchControl_Keywords" Value="キーワード" />
+  <Translate Key="SearchControl_CreationTime" Value="作成日" />
+  <Translate Key="SearchControl_Comment" Value="コメント" />
+  <Translate Key="SearchControl_State" Value="状態" />
+  <Translate Key="SearchControl_Id" Value="ID" />
+  <Translate Key="SearchControl_New" Value="新しいカテゴリ" />
+  <Translate Key="SearchControl_Edit" Value="編集" />
+  <Translate Key="SearchControl_Delete" Value="削除" />
+  <Translate Key="SearchControl_Cut" Value="切り取り" />
+  <Translate Key="SearchControl_Copy" Value="コピー" />
+  <Translate Key="SearchControl_CopyInfo" Value="コピー (詳細情報)" />
+  <Translate Key="SearchControl_Paste" Value="貼り付け" />
+  <Translate Key="SearchControl_Export" Value="エクスポート" />
+  <Translate Key="SearchControl_DeleteCache" Value="キャッシュ削除" />
+  <Translate Key="SearchControl_DeleteShare" Value="シェア削除" />
+  <Translate Key="SearchControl_DeleteDownload" Value="ダウンロード削除" />
+  <Translate Key="SearchControl_DeleteUpload" Value="アップロード削除" />
+  <Translate Key="SearchControl_DeleteDownloadHistory" Value="ダウンロード履歴削除" />
+  <Translate Key="SearchControl_DeleteUploadHistory" Value="アップロード履歴削除" />
+  <Translate Key="SearchControl_Download" Value="ダウンロード" />
+  <Translate Key="SearchControl_Search" Value="検索" />
+  <Translate Key="SearchControl_SearchSignature" Value="このサインで検索" />
+  <Translate Key="SearchControl_SearchKeyword" Value="このキーワードで検索" />
+  <Translate Key="SearchControl_SearchCreationTimeRange" Value="この作成日で検索" />
+  <Translate Key="SearchControl_SearchState" Value="この状態で検索" />
+  <Translate Key="SearchControl_Filter" Value="フィルタ" />
+  <Translate Key="SearchControl_FilterName" Value="この名前でフィルタ" />
+  <Translate Key="SearchControl_FilterSignature" Value="このサインでフィルタ" />
+  <Translate Key="SearchControl_FilterKeyword" Value="このキーワードでフィルタ" />
+  <Translate Key="SearchControl_FilterCreationTimeRange" Value="この作成日でフィルタ" />
+  <Translate Key="SearchControl_FilterSeed" Value="このシードでフィルタ" />
 
   <Translate Key="DownloadControl_Name" Value="名前" />
   <Translate Key="DownloadControl_Length" Value="サイズ" />
   <Translate Key="DownloadControl_Priority" Value="優先度" />
-  <Translate Key="DownloadControl_Rank" Value="Rank" />
+  <Translate Key="DownloadControl_Rank" Value="ランク" />
   <Translate Key="DownloadControl_Rate" Value="率" />
   <Translate Key="DownloadControl_Path" Value="パス" />
   <Translate Key="DownloadControl_State" Value="状態" />
@@ -344,7 +360,7 @@
   <Translate Key="UploadControl_Name" Value="名前" />
   <Translate Key="UploadControl_Length" Value="サイズ" />
   <Translate Key="UploadControl_Priority" Value="優先度" />
-  <Translate Key="UploadControl_Rank" Value="Rank" />
+  <Translate Key="UploadControl_Rank" Value="ランク" />
   <Translate Key="UploadControl_Rate" Value="率" />
   <Translate Key="UploadControl_Path" Value="パス" />
   <Translate Key="UploadControl_State" Value="状態" />
@@ -393,6 +409,7 @@
   <Translate Key="SearchState_Downloaded" Value="DH" />
   <Translate Key="SearchState_Uploaded" Value="UH" />
   <Translate Key="SearchState_Box" Value="B" />
+  <Translate Key="SearchState_Link" Value="L" />
 
   <Translate Key="SearchItemEditWindow_Title" Value="検索アイテム編集" />
   <Translate Key="SearchItemEditWindow_Name" Value="名前" />
@@ -425,6 +442,7 @@
   <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="ダウンロード済み" />
   <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="アップロード済み" />
   <Translate Key="SearchItemEditWindow_SearchState_Box" Value="ボックス" />
+  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="リンク" />
 
   <Translate Key="SeedEditWindow_Title" Value="シード編集" />
   <Translate Key="SeedEditWindow_Name" Value="名前" />

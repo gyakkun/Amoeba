@@ -8,6 +8,8 @@ using System.Windows.Media;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Amoeba.Windows;
+using System.Collections.ObjectModel;
+using System.Windows.Controls.Primitives;
 
 namespace Amoeba
 {
@@ -34,17 +36,19 @@ namespace Amoeba
 
     public delegate Point GetPositionDelegate(IInputElement element);
 
-    static class ListViewExtensions
+    static class ItemsControlExtensions
     {
-        public static int GetCurrentIndex(this ListView thisListView, GetPositionDelegate getPosition)
+        public static int GetCurrentIndex(this ItemsControl thisItemsControl, GetPositionDelegate getPosition)
         {
             try
             {
-                for (int i = 0; i < thisListView.Items.Count; i++)
-                {
-                    ListViewItem item = ListViewExtensions.GetListViewItem(thisListView, i);
+                if (!ItemsControlExtensions.IsMouseOverTarget(thisItemsControl, getPosition)) return -1;
 
-                    if (ListViewExtensions.IsMouseOverTarget(thisListView, item, getPosition))
+                for (int i = 0; i < thisItemsControl.Items.Count; i++)
+                {
+                    Visual item = ItemsControlExtensions.GetItemsControlItem(thisItemsControl, i);
+
+                    if (ItemsControlExtensions.IsMouseOverTarget(item, getPosition))
                     {
                         return i;
                     }
@@ -58,57 +62,15 @@ namespace Amoeba
             return -1;
         }
 
-        private static ListViewItem GetListViewItem(ListView thisListView, int index)
+        private static Visual GetItemsControlItem(ItemsControl thisItemsControl, int index)
         {
-            if (thisListView.ItemContainerGenerator.Status != System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
+            if (thisItemsControl.ItemContainerGenerator.Status != System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
                 return null;
 
-            return thisListView.ItemContainerGenerator.ContainerFromIndex(index) as ListViewItem;
+            return thisItemsControl.ItemContainerGenerator.ContainerFromIndex(index) as Visual;
         }
 
-        private static bool IsMouseOverTarget(ListView thisListView, Visual target, GetPositionDelegate getPosition)
-        {
-            if (target == null) return false;
-
-            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
-            Point mousePos = MouseUtilities.GetMousePosition(target);
-            return bounds.Contains(mousePos);
-        }
-    }
-
-    static class ListBoxExtensions
-    {
-        public static int GetCurrentIndex(this ListBox thisListBox, GetPositionDelegate getPosition)
-        {
-            try
-            {
-                for (int i = 0; i < thisListBox.Items.Count; i++)
-                {
-                    ListBoxItem item = ListBoxExtensions.GetListBoxItem(thisListBox, i);
-
-                    if (ListBoxExtensions.IsMouseOverTarget(thisListBox, item, getPosition))
-                    {
-                        return i;
-                    }
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-
-            return -1;
-        }
-
-        private static ListBoxItem GetListBoxItem(ListBox thisListBox, int index)
-        {
-            if (thisListBox.ItemContainerGenerator.Status != System.Windows.Controls.Primitives.GeneratorStatus.ContainersGenerated)
-                return null;
-
-            return thisListBox.ItemContainerGenerator.ContainerFromIndex(index) as ListBoxItem;
-        }
-
-        private static bool IsMouseOverTarget(ListBox thisListBox, Visual target, GetPositionDelegate getPosition)
+        private static bool IsMouseOverTarget(Visual target, GetPositionDelegate getPosition)
         {
             if (target == null) return false;
 
@@ -124,6 +86,8 @@ namespace Amoeba
         {
             try
             {
+                if (!TreeViewExtensions.IsMouseOverTarget(thisTreeView, getPosition)) return null;
+
                 var items = new List<TreeViewItem>();
                 items.AddRange(thisTreeView.Items.OfType<TreeViewItem>());
 
@@ -141,7 +105,7 @@ namespace Amoeba
 
                 foreach (var item in items)
                 {
-                    if (TreeViewExtensions.IsMouseOverTarget(thisTreeView, item, getPosition))
+                    if (TreeViewExtensions.IsMouseOverTarget(item, getPosition))
                     {
                         return item;
                     }
@@ -155,7 +119,7 @@ namespace Amoeba
             return null;
         }
 
-        private static bool IsMouseOverTarget(TreeView thisTreeView, Visual target, GetPositionDelegate getPosition)
+        private static bool IsMouseOverTarget(Visual target, GetPositionDelegate getPosition)
         {
             if (target == null) return false;
 
@@ -215,6 +179,17 @@ namespace Amoeba
         }
     }
 
+    static class ObservableCollectionExtensions
+    {
+        public static void AddRange<T>(this ObservableCollection<T> thisCollection, IEnumerable<T> collection)
+        {
+            foreach (var item in collection)
+            {
+                thisCollection.Add(item);
+            }
+        }
+    }
+
     //http://geekswithblogs.net/sonam/archive/2009/03/02/listview-dragdrop-in-wpfmultiselect.aspx
 
     /// <summary>
@@ -250,6 +225,117 @@ namespace Amoeba
             Win32Point mouse = new Win32Point();
             GetCursorPos(ref mouse);
             return relativeTo.PointFromScreen(new Point((double)mouse.X, (double)mouse.Y));
+        }
+    }
+
+    // http://pro.art55.jp/?eid=1160884
+    public static class ItemsControlUtilities
+    {
+        public static void GoBottom(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.SetVerticalOffset(double.PositiveInfinity);
+        }
+
+        public static void GoTop(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.SetVerticalOffset(0);
+        }
+
+        public static void GoRight(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.SetHorizontalOffset(double.PositiveInfinity);
+        }
+
+        public static void GoLeft(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.SetHorizontalOffset(0);
+        }
+
+        public static void PageDown(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.PageDown();
+        }
+
+        public static void PageUp(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.PageUp();
+        }
+
+        public static void PageRight(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.PageRight();
+        }
+
+        public static void PageLeft(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.PageLeft();
+        }
+
+        public static void LineDown(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.LineDown();
+        }
+
+        public static void LineUp(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.LineUp();
+        }
+
+        public static void LineRight(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.LineRight();
+        }
+
+        public static void LineLeft(this ItemsControl itemsControl)
+        {
+            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
+            panel.LineLeft();
+        }
+
+        public static Panel FindItemsHostPanel(this ItemsControl itemsControl)
+        {
+            return Find(itemsControl.ItemContainerGenerator, itemsControl);
+        }
+
+        private static Panel Find(this IItemContainerGenerator generator, DependencyObject control)
+        {
+            int count = VisualTreeHelper.GetChildrenCount(control);
+
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(control, i);
+
+                if (IsItemsHostPanel(generator, child))
+                {
+                    return (Panel)child;
+                }
+
+                Panel panel = Find(generator, child);
+
+                if (panel != null)
+                {
+                    return panel;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool IsItemsHostPanel(IItemContainerGenerator generator, DependencyObject target)
+        {
+            var panel = target as Panel;
+            return panel != null && panel.IsItemsHost && generator == generator.GetItemContainerGeneratorForPanel(panel);
         }
     }
 }

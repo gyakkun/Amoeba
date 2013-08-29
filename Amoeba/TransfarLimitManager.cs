@@ -45,14 +45,14 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _settings.TransferLimit;
                 }
             }
             set
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _settings.TransferLimit = value;
                 }
@@ -63,7 +63,7 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _settings.UploadTransferSizeList.Sum(n => n.Value);
                 }
@@ -74,7 +74,7 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _settings.DownloadTransferSizeList.Sum(n => n.Value);
                 }
@@ -99,7 +99,7 @@ namespace Amoeba
 
         public void Reset()
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.UploadTransferSizeList.Clear();
                 _settings.DownloadTransferSizeList.Clear();
@@ -120,7 +120,7 @@ namespace Amoeba
 
                 var now = DateTime.Today;
 
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _settings.UploadTransferSizeList.TryGetValue(now, out _uploadSize);
                     _settings.DownloadTransferSizeList.TryGetValue(now, out _downloadSize);
@@ -139,7 +139,7 @@ namespace Amoeba
                         {
                             now = DateTime.Today;
 
-                            lock (this.ThisLock)
+                            lock (_thisLock)
                             {
                                 _uploadSize = -_amoebaManager.SentByteCount;
                                 _downloadSize = -_amoebaManager.ReceivedByteCount;
@@ -149,7 +149,7 @@ namespace Amoeba
                         }
                         else
                         {
-                            lock (this.ThisLock)
+                            lock (_thisLock)
                             {
                                 _settings.UploadTransferSizeList[now] = _uploadSize + _amoebaManager.SentByteCount;
                                 _settings.DownloadTransferSizeList[now] = _downloadSize + _amoebaManager.ReceivedByteCount;
@@ -214,7 +214,7 @@ namespace Amoeba
 
         public void Load(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Load(directoryPath);
             }
@@ -222,7 +222,7 @@ namespace Amoeba
 
         public void Save(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Save(directoryPath);
             }
@@ -230,7 +230,7 @@ namespace Amoeba
 
         #endregion
 
-        private class Settings : Library.Configuration.SettingsBase, IThisLock
+        private class Settings : Library.Configuration.SettingsBase
         {
             private object _thisLock = new object();
 
@@ -246,7 +246,7 @@ namespace Amoeba
 
             public override void Load(string directoryPath)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     base.Load(directoryPath);
                 }
@@ -254,7 +254,7 @@ namespace Amoeba
 
             public override void Save(string directoryPath)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     base.Save(directoryPath);
                 }
@@ -264,7 +264,7 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         return (TransferLimit)this["TransferLimit"];
                     }
@@ -272,7 +272,7 @@ namespace Amoeba
 
                 set
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         this["TransferLimit"] = value;
                     }
@@ -283,7 +283,7 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         return (LockedDictionary<DateTime, long>)this["UploadTransferSizeList"];
                     }
@@ -291,7 +291,7 @@ namespace Amoeba
 
                 set
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         this["UploadTransferSizeList"] = value;
                     }
@@ -302,7 +302,7 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         return (LockedDictionary<DateTime, long>)this["DownloadTransferSizeList"];
                     }
@@ -310,24 +310,12 @@ namespace Amoeba
 
                 set
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         this["DownloadTransferSizeList"] = value;
                     }
                 }
             }
-
-            #region IThisLock
-
-            public object ThisLock
-            {
-                get
-                {
-                    return _thisLock;
-                }
-            }
-
-            #endregion
         }
 
         protected override void Dispose(bool disposing)
@@ -388,14 +376,14 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _type;
                 }
             }
             set
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _type = value;
                 }
@@ -407,14 +395,14 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _span;
                 }
             }
             set
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _span = value;
                 }
@@ -426,14 +414,14 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _size;
                 }
             }
             set
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _size = value;
                 }

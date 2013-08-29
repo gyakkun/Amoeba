@@ -410,7 +410,7 @@ namespace Amoeba
 
         #endregion
 
-        private class Settings : Library.Configuration.SettingsBase, IThisLock
+        private class Settings : Library.Configuration.SettingsBase
         {
             private object _thisLock = new object();
 
@@ -426,7 +426,7 @@ namespace Amoeba
 
             public override void Load(string directoryPath)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     base.Load(directoryPath);
                 }
@@ -434,7 +434,7 @@ namespace Amoeba
 
             public override void Save(string directoryPath)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     base.Save(directoryPath);
                 }
@@ -444,14 +444,14 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         return (string)this["Ipv4Uri"];
                     }
                 }
                 set
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         this["Ipv4Uri"] = value;
                     }
@@ -462,14 +462,14 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         return (string)this["Ipv6Uri"];
                     }
                 }
                 set
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         this["Ipv6Uri"] = value;
                     }
@@ -480,31 +480,19 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         return (string)this["UpnpUri"];
                     }
                 }
                 set
                 {
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         this["UpnpUri"] = value;
                     }
                 }
             }
-
-            #region IThisLock
-
-            public object ThisLock
-            {
-                get
-                {
-                    return _thisLock;
-                }
-            }
-
-            #endregion
         }
 
         protected override void Dispose(bool disposing)

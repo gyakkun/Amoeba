@@ -244,6 +244,9 @@ namespace Amoeba.Windows
 
         [EnumMember(Value = "Box")]
         Box = 0x40,
+
+        [EnumMember(Value = "Link")]
+        Link = 0x80,
     }
 
     [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]

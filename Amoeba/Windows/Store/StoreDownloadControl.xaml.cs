@@ -38,6 +38,7 @@ namespace Amoeba.Windows
     partial class StoreDownloadControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
+        private StoreControl _storeControl;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -51,8 +52,9 @@ namespace Amoeba.Windows
         private Thread _searchThread;
         private Thread _cacheThread;
 
-        public StoreDownloadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
+        public StoreDownloadControl(StoreControl storeControl, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
+            _storeControl = storeControl;
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
 
@@ -61,6 +63,15 @@ namespace Amoeba.Windows
             InitializeComponent();
 
             _treeView.Items.Add(_treeViewItem);
+
+            try
+            {
+                _treeViewItem.IsSelected = true;
+            }
+            catch (Exception)
+            {
+
+            }
 
             foreach (var path in Settings.Instance.StoreDownloadControl_ExpandedPath.ToArray())
             {
@@ -90,8 +101,10 @@ namespace Amoeba.Windows
                 Settings.Instance.StoreDownloadControl_ExpandedPath.Remove(path);
             }
 
-            _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
+            _storeControl._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
+                if (e.Source != _storeControl._tabControl) return;
+
                 this.Update_Title();
             };
 
@@ -145,12 +158,12 @@ namespace Amoeba.Windows
                             this.Update_Title();
                         }));
                     }
-                    else if (selectTreeViewItem is StoreTreeViewItem && selectTreeViewItem is BoxTreeViewItem)
+                    else if (selectTreeViewItem is StoreTreeViewItem || selectTreeViewItem is BoxTreeViewItem)
                     {
                         BoxCollection boxes = new BoxCollection();
                         SeedCollection seeds = new SeedCollection();
 
-                        if (selectTreeViewItem is StoreCategorizeTreeViewItem)
+                        if (selectTreeViewItem is StoreTreeViewItem)
                         {
                             var storeTreeViewItem = (StoreTreeViewItem)selectTreeViewItem;
 
@@ -412,7 +425,7 @@ namespace Amoeba.Windows
                     do
                     {
                         _autoResetEvent.WaitOne(1000 * 60 * 3);
-                    } while (StoreControl.SelectTab != TabType.Store_Upload);
+                    } while (StoreControl.SelectTab != TabType.Store_Download);
                 }
             }
             catch (Exception e)
@@ -529,6 +542,8 @@ namespace Amoeba.Windows
 
         private void Update()
         {
+            this.Update_TreeView_Color();
+
             Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem = _treeViewItem.Value;
 
             _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
@@ -565,6 +580,63 @@ namespace Amoeba.Windows
             }
         }
 
+        private void Update_TreeView_Color()
+        {
+            var selectTreeViewItem = _treeView.SelectedItem as TreeViewItem;
+
+            {
+                var items = new List<TreeViewItem>();
+                items.Add(_treeViewItem);
+
+                for (int i = 0; i < items.Count; i++)
+                {
+                    foreach (TreeViewItem item in items[i].Items)
+                    {
+                        items.Add(item);
+                    }
+                }
+
+                var hitItems = new HashSet<TreeViewItem>();
+
+                foreach (var item in items.OfType<StoreTreeViewItem>().Where(n => n.Value.IsUpdated))
+                {
+                    hitItems.UnionWith(_treeView.GetAncestors(item));
+                }
+
+                foreach (var item in items)
+                {
+                    var textBlock = (TextBlock)item.Header;
+
+                    if (hitItems.Contains(item))
+                    {
+                        textBlock.FontWeight = FontWeights.ExtraBlack;
+
+                        if (selectTreeViewItem != item)
+                        {
+                            textBlock.Foreground = new SolidColorBrush(Settings.Instance.Color_Tree_Hit);
+                        }
+                        else
+                        {
+                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
+                        }
+                    }
+                    else
+                    {
+                        textBlock.FontWeight = FontWeights.Normal;
+
+                        if (selectTreeViewItem != item)
+                        {
+                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF));
+                        }
+                        else
+                        {
+                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
+                        }
+                    }
+                }
+            }
+        }
+
         #region DragAndDrop
 
         private Point _startPoint = new Point(-1, -1);
@@ -586,6 +658,11 @@ namespace Amoeba.Windows
                     DragDrop.DoDragDrop(_grid, data, DragDropEffects.Move);
                 }
             }
+        }
+
+        private void _grid_PreviewDragOver(object sender, DragEventArgs e)
+        {
+
         }
 
         private void _grid_PreviewDrop(object sender, DragEventArgs e)
@@ -619,8 +696,9 @@ namespace Amoeba.Windows
                             p.Update();
                         }
 
-                        d.IsSelected = true;
                         d.Value.Children.Add(s.Value);
+                        d.IsSelected = true;
+
                         d.Update();
                     }
                 }
@@ -641,15 +719,16 @@ namespace Amoeba.Windows
                         {
                             var p = (StoreCategorizeTreeViewItem)parentItem;
 
-                            var tItems = p.Value.Children.Where(n => !object.ReferenceEquals(n, s.Value)).ToArray();
-                            p.Value.Children.Clear();
-                            p.Value.Children.AddRange(tItems);
+                            var tItems = p.Value.StoreTreeItems.Where(n => !object.ReferenceEquals(n, s.Value)).ToArray();
+                            p.Value.StoreTreeItems.Clear();
+                            p.Value.StoreTreeItems.AddRange(tItems);
 
                             p.Update();
                         }
 
-                        d.IsSelected = true;
                         d.Value.StoreTreeItems.Add(s.Value);
+                        d.IsSelected = true;
+
                         d.Update();
                     }
                 }
@@ -755,6 +834,14 @@ namespace Amoeba.Windows
                 return;
             }
 
+            {
+                var storeTreeViewItem = sender as StoreTreeViewItem;
+                if (storeTreeViewItem == null) return;
+
+                storeTreeViewItem.Value.IsUpdated = false;
+                storeTreeViewItem.Update();
+            }
+
             if (item.IsSelected == true)
             {
                 _startPoint = e.GetPosition(null);
@@ -793,26 +880,26 @@ namespace Amoeba.Windows
 
             storeCategorizeTreeViewItemDeleteMenuItem.IsEnabled = (selectTreeViewItem != _treeViewItem);
             storeCategorizeTreeViewItemCutMenuItem.IsEnabled = (selectTreeViewItem != _treeViewItem);
-            storeCategorizeTreeViewItemPasteMenuItem.IsEnabled = Clipboard.ContainsStoreCategorizeTreeItems() || Clipboard.ContainsStoreTreeItems();
-        }
 
-        private void _storeCategorizeTreeViewItemNewStoreMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectTreeViewItem = _treeView.SelectedItem as StoreCategorizeTreeViewItem;
-            if (selectTreeViewItem == null) return;
-
-            SignatureWindow window = new SignatureWindow();
-            window.Owner = _mainWindow;
-
-            if (window.ShowDialog() == true)
             {
-                selectTreeViewItem.Value.StoreTreeItems.Add(new StoreTreeItem() { Signature = window.DigitalSignature.ToString() });
+                bool flag = false;
 
-                selectTreeViewItem.Update();
+                if (Clipboard.ContainsText())
+                {
+                    var line = Clipboard.GetText().Split('\r', '\n');
+                    flag |= Signature.HasSignature(line[0]);
+                }
+                else if (Clipboard.ContainsStoreCategorizeTreeItems())
+                {
+                    flag = true;
+                }
+                else if (Clipboard.ContainsStoreTreeItems())
+                {
+                    flag = true;
+                }
+
+                storeCategorizeTreeViewItemPasteMenuItem.IsEnabled = flag;
             }
-
-            this.Update();
-
         }
 
         private void _storeCategorizeTreeViewItemNewCategoryMenuItem_Click(object sender, RoutedEventArgs e)
@@ -822,19 +909,19 @@ namespace Amoeba.Windows
 
             string name;
 
-            if (!selectTreeViewItem.Value.Children.Any(n => n.Name == "New Category"))
+            if (!selectTreeViewItem.Value.Children.Any(n => n.Name == "New category"))
             {
-                name = "New Category";
+                name = "New category";
             }
             else
             {
                 int i = 1;
-                while (selectTreeViewItem.Value.Children.Any(n => n.Name == "New Category_" + i)) i++;
+                while (selectTreeViewItem.Value.Children.Any(n => n.Name == "New category_" + i)) i++;
 
-                name = "New Category_" + i;
+                name = "New category_" + i;
             }
 
-            StoreCategorizeTreeItemEditWindow window = new StoreCategorizeTreeItemEditWindow();
+            StoreCategorizeTreeItemEditWindow window = new StoreCategorizeTreeItemEditWindow(name);
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)
@@ -924,43 +1011,20 @@ namespace Amoeba.Windows
             selectTreeViewItem.Value.Children.AddRange(Clipboard.GetStoreCategorizeTreeItems());
             selectTreeViewItem.Value.StoreTreeItems.AddRange(Clipboard.GetStoreTreeItems());
 
+            foreach (var signature in Clipboard.GetText().Split('\r', '\n'))
+            {
+                if (!Signature.HasSignature(signature)
+                    || selectTreeViewItem.Value.StoreTreeItems.Any(n => n.Signature == signature)) continue;
+
+                var storeTreeItem = new StoreTreeItem();
+                storeTreeItem.Signature = signature;
+
+                selectTreeViewItem.Value.StoreTreeItems.Add(storeTreeItem);
+            }
+
             selectTreeViewItem.Update();
 
             this.Update();
-        }
-
-        private void _storeCategorizeTreeViewItemUploadMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectTreeViewItem = _treeView.SelectedItem as StoreCategorizeTreeViewItem;
-            if (selectTreeViewItem == null) return;
-
-            var storeTreeItems = new List<StoreTreeItem>();
-
-            {
-                var categorizeStoreTreeItems = new List<StoreCategorizeTreeItem>();
-                categorizeStoreTreeItems.Add(selectTreeViewItem.Value);
-
-                for (int i = 0; i < categorizeStoreTreeItems.Count; i++)
-                {
-                    categorizeStoreTreeItems.AddRange(categorizeStoreTreeItems[i].Children);
-                    storeTreeItems.AddRange(categorizeStoreTreeItems[i].StoreTreeItems);
-                }
-            }
-
-            if (!storeTreeItems.Any(n => n.Boxes.Count != 0)) return;
-
-            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Upload_Message, "Store", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
-
-            foreach (var storeTreeItem in storeTreeItems)
-            {
-                var digitalSignature = Settings.Instance.Global_DigitalSignatureCollection.FirstOrDefault(n => n.ToString() == storeTreeItem.Signature);
-                if (digitalSignature == null) return;
-
-                Store store = new Store();
-                store.Boxes.AddRange(storeTreeItem.Boxes);
-
-                _amoebaManager.Upload(store, digitalSignature);
-            }
         }
 
         private void _storeTreeViewItemContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -985,6 +1049,8 @@ namespace Amoeba.Windows
             if (window.ShowDialog() == true)
             {
                 selectTreeViewItem.Value.Signature = window.DigitalSignature.ToString();
+                selectTreeViewItem.Value.IsUpdated = false;
+
                 selectTreeViewItem.Update();
             }
 
@@ -1248,8 +1314,15 @@ namespace Amoeba.Windows
 
                         var item = selectTreeViewItem.Items.OfType<BoxTreeViewItem>().FirstOrDefault(n => object.ReferenceEquals(n.Value, boxListViewItem.Value));
 
-                        selectTreeViewItem.IsExpanded = true;
-                        item.IsSelected = true;
+                        try
+                        {
+                            selectTreeViewItem.IsExpanded = true;
+                            item.IsSelected = true;
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                     }
                 }
                 else if (selectItem is BoxTreeViewItem)
@@ -1263,8 +1336,15 @@ namespace Amoeba.Windows
 
                         var item = selectTreeViewItem.Items.OfType<BoxTreeViewItem>().FirstOrDefault(n => object.ReferenceEquals(n.Value, boxListViewItem.Value));
 
-                        selectTreeViewItem.IsExpanded = true;
-                        item.IsSelected = true;
+                        try
+                        {
+                            selectTreeViewItem.IsExpanded = true;
+                            item.IsSelected = true;
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                     }
                     else if (listViewItem is SeedListViewItem)
                     {
@@ -1473,11 +1553,11 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Signature", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.CacheControl_Length)
+            else if (sortBy == LanguagesManager.Instance.SearchControl_Length)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.CacheControl_Keywords)
+            else if (sortBy == LanguagesManager.Instance.SearchControl_Keywords)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Keywords", direction));
             }
@@ -1495,7 +1575,7 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Id)
             {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Hash", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
             }
 
             _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));

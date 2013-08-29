@@ -468,6 +468,10 @@ namespace Amoeba.Windows
             {
                 list.Add(LanguagesManager.Instance.SearchState_Box);
             }
+            if (item.HasFlag(SearchState.Link))
+            {
+                list.Add(LanguagesManager.Instance.SearchState_Link);
+            }
             if (item.HasFlag(SearchState.Downloading))
             {
                 list.Add(LanguagesManager.Instance.SearchState_Downloading);
@@ -530,6 +534,10 @@ namespace Amoeba.Windows
             else if (item.HasFlag(SearchState.Box))
             {
                 return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Box;
+            }
+            else if (item.HasFlag(SearchState.Link))
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Link;
             }
 
             return "";

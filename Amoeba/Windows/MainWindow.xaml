@@ -34,7 +34,10 @@
             <MenuItem Name="_viewMenuItem" Header="{Binding Path=MainWindow_View, Source={StaticResource ResourcesInstance}}">
                 <MenuItem Name="_viewSettingsMenuItem" Header="{Binding Path=MainWindow_ViewSettings, Source={StaticResource ResourcesInstance}}" Click="_viewSettingsMenuItem_Click" />
             </MenuItem>
-            <MenuItem Name="_cacheMenuItem" Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_cacheMenuItem_SubmenuOpened">
+            <MenuItem Name="_searchMenuItem" Header="{Binding Path=MainWindow_Search, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_searchMenuItem_SubmenuOpened">
+                <MenuItem Name="_linkSettingsMenuItem" Header="{Binding Path=MainWindow_LinkSettings, Source={StaticResource ResourcesInstance}}" Click="_linkSettingsMenuItem_Click" />
+            </MenuItem>
+            <MenuItem Name="_cacheMenuItem" Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_searchMenuItem_SubmenuOpened">
                 <MenuItem Name="_checkSeedsMenuItem" Header="{Binding Path=MainWindow_CheckSeeds, Source={StaticResource ResourcesInstance}}" Click="_checkSeedsMenuItem_Click" />
                 <MenuItem Name="_checkInternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckInternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkInternalBlocksMenuItem_Click" />
                 <MenuItem Name="_checkExternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckExternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkExternalBlocksMenuItem_Click" />
@@ -54,11 +57,11 @@
         </Menu>
         <TabControl Margin="0,28,0,0" Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
             <TabItem Header="{Binding Path=MainWindow_Connection, Source={StaticResource ResourcesInstance}}" Name="_connectionTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource ResourcesInstance}}" Name="_storeTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" Name="_cacheTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Search, Source={StaticResource ResourcesInstance}}" Name="_searchTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Download, Source={StaticResource ResourcesInstance}}" Name="_downloadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource ResourcesInstance}}" Name="_uploadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource ResourcesInstance}}" Name="_storeTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem" >
                 <RichTextBox Name="_logRichTextBox" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True">
                     <RichTextBox.Document>

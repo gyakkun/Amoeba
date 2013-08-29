@@ -56,6 +56,7 @@ namespace Amoeba.Windows
         private System.Timers.Timer _refreshTimer = new System.Timers.Timer();
         private Thread _timerThread = null;
         private Thread _timer2Thread = null;
+        private Thread _managerThread = null;
 
         private volatile bool _diskSpaceNotFoundException = false;
         private volatile bool _cacheSpaceNotFoundException = false;
@@ -135,6 +136,11 @@ namespace Amoeba.Windows
                 _timer2Thread.Priority = ThreadPriority.Highest;
                 _timer2Thread.Name = "MainWindow_Timer2Thread";
                 _timer2Thread.Start();
+
+                _managerThread = new Thread(new ThreadStart(this.Manager));
+                _managerThread.Priority = ThreadPriority.Highest;
+                _managerThread.Name = "MainWindow_ManagerThread";
+                _managerThread.Start();
 
                 _transferLimitManager.StartEvent += new EventHandler(_transferLimitManager_StartEvent);
                 _transferLimitManager.StopEvent += new EventHandler(_transferLimitManager_StopEvent);
@@ -282,13 +288,13 @@ namespace Amoeba.Windows
 
                         if (_cacheSpaceNotFoundException)
                         {
-                            Log.Warning(LanguagesManager.Instance.MainWindow_CacheSpaceNotFound_Message);
+                            Log.Warning(LanguagesManager.Instance.MainWindow_SearchSpaceNotFound_Message);
 
                             this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
                                 MessageBox.Show(
                                     this,
-                                    LanguagesManager.Instance.MainWindow_CacheSpaceNotFound_Message,
+                                    LanguagesManager.Instance.MainWindow_SearchSpaceNotFound_Message,
                                     "Warning",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Warning);
@@ -446,6 +452,88 @@ namespace Amoeba.Windows
 
                         }
                     }));
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void Manager()
+        {
+            try
+            {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                for (; ; )
+                {
+                    Thread.Sleep(1000);
+                    if (!_isRun) return;
+
+                    if (Settings.Instance.Global_IsStart && stopwatch.Elapsed > new TimeSpan(0, 1, 0))
+                    {
+                        stopwatch.Restart();
+
+                        try
+                        {
+                            var searchSignatures = new HashSet<string>();
+
+                            {
+                                var storeTreeItems = new List<StoreTreeItem>();
+                                storeTreeItems.AddRange(Clipboard.GetStoreTreeItems());
+
+                                {
+                                    var categorizeStoreTreeItems = new List<StoreCategorizeTreeItem>();
+                                    categorizeStoreTreeItems.AddRange(Clipboard.GetStoreCategorizeTreeItems());
+                                    categorizeStoreTreeItems.Add(Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem);
+
+                                    for (int i = 0; i < categorizeStoreTreeItems.Count; i++)
+                                    {
+                                        categorizeStoreTreeItems.AddRange(categorizeStoreTreeItems[i].Children);
+                                        storeTreeItems.AddRange(categorizeStoreTreeItems[i].StoreTreeItems);
+                                    }
+                                }
+
+                                searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
+                            }
+
+                            {
+                                searchSignatures.UnionWith(Settings.Instance.LinkWindow_DownloadLinkItems.Select(n => n.Signature));
+                            }
+
+                            lock (_amoebaManager.ThisLock)
+                            {
+                                var amoebaSearchSignatures = _amoebaManager.SearchSignatures;
+
+                                lock (amoebaSearchSignatures.ThisLock)
+                                {
+                                    amoebaSearchSignatures.Clear();
+                                    amoebaSearchSignatures.AddRange(searchSignatures);
+                                }
+                            }
+
+                            foreach (var item in Settings.Instance.LinkWindow_DownloadLinkItems)
+                            {
+                                var link = _amoebaManager.GetLink(item.Signature);
+                                if (link == null || Collection.Equals(item.TrustSignatures, link.TrustSignatures)) continue;
+
+                                lock (item.ThisLock)
+                                {
+                                    lock (item.TrustSignatures.ThisLock)
+                                    {
+                                        item.TrustSignatures.Clear();
+                                        item.TrustSignatures.AddRange(link.TrustSignatures);
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Warning(e);
+                        }
+                    }
                 }
             }
             catch (Exception)
@@ -881,28 +969,28 @@ namespace Amoeba.Windows
                         Value = "Executable",
                     });
 
-                    Settings.Instance.CacheControl_SearchTreeItem.Children.Clear();
-                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                    Settings.Instance.SearchControl_SearchTreeItem.Children.Clear();
+                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = pictureSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = movieSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = musicSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = archiveSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = documentSearchItem
                     });
-                    Settings.Instance.CacheControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
                     {
                         SearchItem = ExecutableSearchItem
                     });
@@ -1318,15 +1406,10 @@ namespace Amoeba.Windows
             connectionControl.Width = Double.NaN;
             _connectionTabItem.Content = connectionControl;
 
-            StoreControl storeControl = new StoreControl(_amoebaManager, _bufferManager);
-            storeControl.Height = Double.NaN;
-            storeControl.Width = Double.NaN;
-            _storeTabItem.Content = storeControl;
-
-            CacheControl cacheControl = new CacheControl(_amoebaManager, _bufferManager);
-            cacheControl.Height = Double.NaN;
-            cacheControl.Width = Double.NaN;
-            _cacheTabItem.Content = cacheControl;
+            SearchControl searchControl = new SearchControl(_amoebaManager, _bufferManager);
+            searchControl.Height = Double.NaN;
+            searchControl.Width = Double.NaN;
+            _searchTabItem.Content = searchControl;
 
             DownloadControl downloadControl = new DownloadControl(_amoebaManager, _bufferManager);
             downloadControl.Height = Double.NaN;
@@ -1342,6 +1425,11 @@ namespace Amoeba.Windows
             shareControl.Height = Double.NaN;
             shareControl.Width = Double.NaN;
             _shareTabItem.Content = shareControl;
+
+            StoreControl storeControl = new StoreControl(_amoebaManager, _bufferManager);
+            storeControl.Height = Double.NaN;
+            storeControl.Width = Double.NaN;
+            _storeTabItem.Content = storeControl;
 
             if (Settings.Instance.Global_IsStart)
             {
@@ -1422,6 +1510,9 @@ namespace Amoeba.Windows
                     _timer2Thread.Join();
                     _timer2Thread = null;
 
+                    _managerThread.Join();
+                    _managerThread = null;
+
                     _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                     _transferLimitManager.Dispose();
 
@@ -1469,13 +1560,9 @@ namespace Amoeba.Windows
             {
                 MainWindow.SelectTab = TabType.Connection;
             }
-            else if (_tabControl.SelectedItem == _storeTabItem)
+            else if (_tabControl.SelectedItem == _searchTabItem)
             {
-                MainWindow.SelectTab = TabType.Store;
-            }
-            else if (_tabControl.SelectedItem == _cacheTabItem)
-            {
-                MainWindow.SelectTab = TabType.Cache;
+                MainWindow.SelectTab = TabType.Search;
             }
             else if (_tabControl.SelectedItem == _downloadTabItem)
             {
@@ -1488,6 +1575,10 @@ namespace Amoeba.Windows
             else if (_tabControl.SelectedItem == _shareTabItem)
             {
                 MainWindow.SelectTab = TabType.Share;
+            }
+            else if (_tabControl.SelectedItem == _storeTabItem)
+            {
+                MainWindow.SelectTab = TabType.Store;
             }
             else if (_tabControl.SelectedItem == _logTabItem)
             {
@@ -1573,6 +1664,18 @@ namespace Amoeba.Windows
         private void _viewSettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ViewSettingsWindow window = new ViewSettingsWindow(_bufferManager);
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
+        private void _searchMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void _linkSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            LinkWindow window = new LinkWindow(_amoebaManager);
             window.Owner = this;
             window.ShowDialog();
         }

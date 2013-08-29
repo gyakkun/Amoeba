@@ -91,7 +91,7 @@ namespace Amoeba.Windows
                 _okButton.IsEnabled = !string.IsNullOrWhiteSpace(_nameTextBox.Text);
             }
         }
-        
+
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;

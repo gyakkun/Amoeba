@@ -7,14 +7,14 @@ namespace Library.Net.Amoeba
     public enum TabType
     {
         Connection,
+        Search,
+        Download,
+        Upload,
+        Share,
         Store,
         Store_Download,
         Store_Upload,
         Store_Library,
-        Cache,
-        Download,
-        Upload,
-        Share,
         Log,
     }
 }

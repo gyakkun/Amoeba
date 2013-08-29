@@ -7,6 +7,7 @@ using System.Text;
 using Library;
 using Library.Collections;
 using Library.Net.Amoeba;
+using System.Threading;
 
 namespace Amoeba
 {
@@ -15,13 +16,13 @@ namespace Amoeba
         private static bool _isNodesCached = false;
         private static bool _isSeedsCached = false;
 
-        private static List<Node> _nodeList = new List<Node>();
-        private static List<Seed> _seedList = new List<Seed>();
+        private static LockedList<Node> _nodeList = new LockedList<Node>();
+        private static LockedList<Seed> _seedList = new LockedList<Seed>();
 
-        private static List<Box> _boxList = new List<Box>();
-        private static List<Windows.SearchTreeItem> _searchTreeItemList = new List<Windows.SearchTreeItem>();
-        private static List<Windows.StoreCategorizeTreeItem> _storeCategorizeTreeItemList = new List<Windows.StoreCategorizeTreeItem>();
-        private static List<Windows.StoreTreeItem> _storeTreeItemList = new List<Windows.StoreTreeItem>();
+        private static LockedList<Box> _boxList = new LockedList<Box>();
+        private static LockedList<Windows.SearchTreeItem> _searchTreeItemList = new LockedList<Windows.SearchTreeItem>();
+        private static LockedList<Windows.StoreCategorizeTreeItem> _storeCategorizeTreeItemList = new LockedList<Windows.StoreCategorizeTreeItem>();
+        private static LockedList<Windows.StoreTreeItem> _storeTreeItemList = new LockedList<Windows.StoreTreeItem>();
 
         private static ClipboardWatcher _clipboardWatcher;
 
@@ -361,6 +362,17 @@ namespace Amoeba
             {
                 System.Windows.Clipboard.Clear();
 
+                {
+                    var sb = new StringBuilder();
+
+                    foreach (var item in storeTreeItems)
+                    {
+                        sb.AppendLine(item.Signature);
+                    }
+
+                    Clipboard.SetText(sb.ToString());
+                }
+
                 _storeTreeItemList.Clear();
                 _storeTreeItemList.AddRange(storeTreeItems.Select(n => n.DeepClone()));
             }
@@ -368,14 +380,14 @@ namespace Amoeba
 
         public class ClipboardWatcher : IDisposable
         {
-            private ClipBoardWatcherForm form;
+            private ClipboardWatcherForm _form;
 
             public event EventHandler DrawClipboard;
 
             public ClipboardWatcher()
             {
-                form = new ClipBoardWatcherForm();
-                form.StartWatch(raiseDrawClipboard);
+                _form = new ClipboardWatcherForm();
+                _form.StartWatch(this.OnDrawClipboard);
             }
 
             ~ClipboardWatcher()
@@ -383,7 +395,7 @@ namespace Amoeba
                 this.Dispose();
             }
 
-            private void raiseDrawClipboard()
+            private void OnDrawClipboard()
             {
                 if (DrawClipboard != null)
                 {
@@ -393,48 +405,40 @@ namespace Amoeba
 
             public void Dispose()
             {
-                form.Dispose();
+                _form.Dispose();
             }
 
-            private class ClipBoardWatcherForm : System.Windows.Forms.Form
+            private class ClipboardWatcherForm : System.Windows.Forms.Form
             {
                 [DllImport("user32.dll")]
                 private static extern IntPtr SetClipboardViewer(IntPtr hwnd);
 
                 [DllImport("user32.dll")]
-                private static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
-
-                [DllImport("user32.dll")]
                 private static extern bool ChangeClipboardChain(IntPtr hwnd, IntPtr hWndNext);
 
-                const int WM_DRAWCLIPBOARD = 0x0308;
-                const int WM_CHANGECBCHAIN = 0x030D;
+                private const int WM_DRAWCLIPBOARD = 0x0308;
+                private const int WM_CHANGECBCHAIN = 0x030D;
 
-                IntPtr nextHandle;
-                System.Threading.ThreadStart proc;
+                private IntPtr _nextHandle;
+                private Action _drawClipboard;
 
-                public void StartWatch(System.Threading.ThreadStart proc)
+                public void StartWatch(Action drawClipboard)
                 {
-                    this.proc = proc;
-                    nextHandle = SetClipboardViewer(this.Handle);
+                    _drawClipboard = drawClipboard;
+                    _nextHandle = SetClipboardViewer(this.Handle);
                 }
 
                 protected override void WndProc(ref System.Windows.Forms.Message m)
                 {
                     if (m.Msg == WM_DRAWCLIPBOARD)
                     {
-                        SendMessage(nextHandle, m.Msg, m.WParam, m.LParam);
-                        proc();
+                        _drawClipboard();
                     }
                     else if (m.Msg == WM_CHANGECBCHAIN)
                     {
-                        if (m.WParam == nextHandle)
+                        if (m.WParam == _nextHandle)
                         {
-                            nextHandle = m.LParam;
-                        }
-                        else
-                        {
-                            SendMessage(nextHandle, m.Msg, m.WParam, m.LParam);
+                            _nextHandle = m.LParam;
                         }
                     }
 
@@ -445,7 +449,7 @@ namespace Amoeba
                 {
                     try
                     {
-                        ChangeClipboardChain(this.Handle, nextHandle);
+                        ChangeClipboardChain(this.Handle, _nextHandle);
                         base.Dispose(disposing);
                     }
                     catch (Exception)
