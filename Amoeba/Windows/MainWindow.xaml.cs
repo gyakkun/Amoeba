@@ -505,12 +505,10 @@ namespace Amoeba.Windows
 
                             lock (_amoebaManager.ThisLock)
                             {
-                                var amoebaSearchSignatures = _amoebaManager.SearchSignatures;
-
-                                lock (amoebaSearchSignatures.ThisLock)
+                                lock (_amoebaManager.SearchSignatures.ThisLock)
                                 {
-                                    amoebaSearchSignatures.Clear();
-                                    amoebaSearchSignatures.AddRange(searchSignatures);
+                                    _amoebaManager.SearchSignatures.Clear();
+                                    _amoebaManager.SearchSignatures.AddRange(searchSignatures);
                                 }
                             }
 
@@ -672,11 +670,11 @@ namespace Amoeba.Windows
                 {
                     if (logCount == 0)
                     {
-                        _logPath = Path.Combine(App.DirectoryPaths["Log"], string.Format("{0}.txt", DateTime.UtcNow.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo)));
+                        _logPath = Path.Combine(App.DirectoryPaths["Log"], string.Format("{0}.txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo)));
                     }
                     else
                     {
-                        _logPath = Path.Combine(App.DirectoryPaths["Log"], string.Format("{0}.({1}).txt", DateTime.UtcNow.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo), logCount));
+                        _logPath = Path.Combine(App.DirectoryPaths["Log"], string.Format("{0}.({1}).txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo), logCount));
                     }
 
                     logCount++;
@@ -704,7 +702,7 @@ namespace Amoeba.Windows
                                     "Time:\t\t{0}\r\n" +
                                     "Level:\t\t{1}\r\n" +
                                     "{2}",
-                                    DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
+                                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
                                 writer.Flush();
                             }
                         }

@@ -29,7 +29,7 @@ namespace Amoeba
         {
             _amoebaManager = amoebaManager;
 
-            _settings = new Settings();
+            _settings = new Settings(this.ThisLock);
         }
 
         public override ManagerState State
@@ -412,16 +412,16 @@ namespace Amoeba
 
         private class Settings : Library.Configuration.SettingsBase
         {
-            private object _thisLock = new object();
+            private object _thisLock;
 
-            public Settings()
+            public Settings(object lockObject)
                 : base(new List<Library.Configuration.ISettingsContext>() { 
                     new Library.Configuration.SettingsContext<string>() { Name = "Ipv4Uri", Value = null },
                     new Library.Configuration.SettingsContext<string>() { Name = "Ipv6Uri", Value = null },
                     new Library.Configuration.SettingsContext<string>() { Name = "UpnpUri", Value = null },
                 })
             {
-
+                _thisLock = lockObject;
             }
 
             public override void Load(string directoryPath)

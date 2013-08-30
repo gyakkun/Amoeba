@@ -106,6 +106,11 @@ namespace Amoeba.Windows
                 if (e.Source != _storeControl._tabControl) return;
 
                 this.Update_Title();
+
+                if (MainWindow.SelectTab == TabType.Store_Download)
+                {
+                    this.Update_Cache();
+                }
             };
 
             _searchThread = new Thread(new ThreadStart(this.Search));
@@ -835,11 +840,13 @@ namespace Amoeba.Windows
             }
 
             {
-                var storeTreeViewItem = sender as StoreTreeViewItem;
-                if (storeTreeViewItem == null) return;
+                var storeTreeViewItem = item as StoreTreeViewItem;
+                if (storeTreeViewItem == null) goto End;
 
                 storeTreeViewItem.Value.IsUpdated = false;
                 storeTreeViewItem.Update();
+
+            End: ;
             }
 
             if (item.IsSelected == true)

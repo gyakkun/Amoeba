@@ -106,6 +106,11 @@ namespace Amoeba.Windows
                 if (e.Source != _storeControl._tabControl) return;
 
                 this.Update_Title();
+
+                if (MainWindow.SelectTab == TabType.Store_Upload)
+                {
+                    this.Update_Cache();
+                }
             };
 
             _searchThread = new Thread(new ThreadStart(this.Search));
