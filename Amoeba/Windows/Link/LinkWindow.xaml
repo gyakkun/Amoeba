@@ -118,7 +118,7 @@
                         </ListView.ContextMenu>
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
-                                <GridViewColumn Header="{Binding Path=LinkWindow_TrustSignature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_String}"
+                                <GridViewColumn x:Name="_uploadTrustSignatureGridViewColumn" Header="{Binding Path=LinkWindow_TrustSignature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_String}"
                                     Width="{Binding Path=LinkWindow_GridViewColumn_TrustSignature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>

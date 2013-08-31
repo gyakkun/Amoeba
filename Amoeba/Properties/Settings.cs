@@ -74,9 +74,9 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Height", Value = 500 },
                 new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "LinkWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Grid_ColumnDefinitions_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_GridViewColumn_LinkerSignature_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_GridViewColumn_TrustSignature_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Grid_ColumnDefinitions_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
                 new Library.Configuration.SettingsContext<List<LinkItem>>() { Name = "LinkWindow_DownloadLinkItems", Value = new List<LinkItem>() },
                 new Library.Configuration.SettingsContext<List<LinkItem>>() { Name = "LinkWindow_UploadLinkItems", Value = new List<LinkItem>() },
 
