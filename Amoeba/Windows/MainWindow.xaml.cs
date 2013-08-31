@@ -1116,6 +1116,7 @@ namespace Amoeba.Windows
 
                     if (version < new Version(2, 0, 0))
                     {
+                        Settings.Instance.SearchControl_SearchTreeItem = Settings.Instance.CacheControl_SearchTreeItem;
                         Settings.Instance.StoreUploadControl_StoreCategorizeTreeItem.StoreTreeItems.AddRange(Settings.Instance.StoreControl_StoreTreeItems);
                         Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem.StoreTreeItems.AddRange(Settings.Instance.SearchControl_StoreTreeItems);
 

@@ -214,6 +214,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "SeedEditWindow_WindowState", Value = WindowState.Normal },
          
+                new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "CacheControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
                 new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
                 new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
                 new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = null },
@@ -3336,6 +3337,24 @@ namespace Amoeba.Properties
             }
         }
 
+
+        public Windows.SearchTreeItem CacheControl_SearchTreeItem
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (Windows.SearchTreeItem)this["CacheControl_SearchTreeItem"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["CacheControl_SearchTreeItem"] = value;
+                }
+            }
+        }
 
         public LockedList<StoreTreeItem> SearchControl_StoreTreeItems
         {

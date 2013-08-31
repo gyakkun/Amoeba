@@ -7,7 +7,7 @@ using Library.Net.Amoeba;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "StoreTreeInfo", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "StoreInfo", Namespace = "http://Amoeba/Windows")]
     class StoreTreeItem : IDeepCloneable<StoreTreeItem>, IThisLock
     {
         private string _signature = null;
