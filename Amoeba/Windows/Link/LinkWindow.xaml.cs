@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,10 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Amoeba.Properties;
+using Library;
 using Library.Net.Amoeba;
 using Library.Security;
-using System.Text.RegularExpressions;
-using Library;
 
 namespace Amoeba.Windows
 {
@@ -63,8 +63,22 @@ namespace Amoeba.Windows
 
             _downloadLinkListView.ItemsSource = _downloadCollection;
             _uploadLinkListView.ItemsSource = _uploadCollection;
+
+            this.Sort();
         }
 
+        private void Sort()
+        {
+            _downloadLinkListView.Items.SortDescriptions.Clear();
+            _downloadLinkListView.Items.SortDescriptions.Add(new SortDescription("Signature", ListSortDirection.Ascending));
+            _downloadTrustSignatureListView.Items.SortDescriptions.Clear();
+            _downloadTrustSignatureListView.Items.SortDescriptions.Add(new SortDescription(null, ListSortDirection.Ascending));
+            _uploadLinkListView.Items.SortDescriptions.Clear();
+            _uploadLinkListView.Items.SortDescriptions.Add(new SortDescription("Signature", ListSortDirection.Ascending));
+            _uploadTrustSignatureListView.Items.SortDescriptions.Clear();
+            _uploadTrustSignatureListView.Items.SortDescriptions.Add(new SortDescription(null, ListSortDirection.Ascending));
+        }
+        
         #region _downloadLink
 
         private void _downloadLinkListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -302,6 +316,7 @@ namespace Amoeba.Windows
                     var LinkItem = new LinkItem();
                     LinkItem.Signature = item.Signature;
                     LinkItem.TrustSignatures.AddRange(item.TrustSignatures);
+                    LinkItem.TrustSignatures.Sort();
 
                     downloadCollection.Add(LinkItem);
                 }
@@ -311,6 +326,7 @@ namespace Amoeba.Windows
                     var LinkItem = new LinkItem();
                     LinkItem.Signature = item.Signature;
                     LinkItem.TrustSignatures.AddRange(item.TrustSignatures);
+                    LinkItem.TrustSignatures.Sort();
 
                     uploadCollection.Add(LinkItem);
                 }
