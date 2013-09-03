@@ -72,13 +72,12 @@ namespace Amoeba.Windows
 
             _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
-                if (e.Source != _mainWindow._tabControl) return;
-
-                this.Update_Title();
+                if (e.OriginalSource != _mainWindow._tabControl) return;
 
                 if (MainWindow.SelectTab == TabType.Search)
                 {
-                    this.Update_Cache();
+                    if (!_refresh) this.Update_Title();
+                    _autoResetEvent.Set();
                 }
             };
 
@@ -97,6 +96,8 @@ namespace Amoeba.Windows
             _searchRowDefinition.Height = new GridLength(0);
 
             LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+
+            this.Update_Cache();
         }
 
         private void LanguagesManager_UsingLanguageChangedEvent(object sender)
@@ -118,6 +119,7 @@ namespace Amoeba.Windows
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
+                        _listView.ContextMenu.IsOpen = false;
                     }));
 
                     if (selectTreeViewItem == null) continue;
@@ -822,10 +824,12 @@ namespace Amoeba.Windows
                         }));
                     }
 
-                    do
+                    _autoResetEvent.WaitOne(1000 * 60 * 3);
+
+                    while (MainWindow.SelectTab != TabType.Search)
                     {
-                        _autoResetEvent.WaitOne(1000 * 60 * 3);
-                    } while (MainWindow.SelectTab != TabType.Search);
+                        Thread.Sleep(1000);
+                    }
                 }
             }
             catch (Exception e)
@@ -861,13 +865,16 @@ namespace Amoeba.Windows
 
         private void Update_Title()
         {
-            if (_refresh || MainWindow.SelectTab != TabType.Search) return;
+            if (_refresh) return;
 
-            if (_treeView.SelectedItem is SearchTreeViewItem)
+            if (MainWindow.SelectTab == TabType.Search)
             {
-                var selectTreeViewItem = (SearchTreeViewItem)_treeView.SelectedItem;
+                if (_treeView.SelectedItem is SearchTreeViewItem)
+                {
+                    var selectTreeViewItem = (SearchTreeViewItem)_treeView.SelectedItem;
 
-                _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewItem.Value.SearchItem.Name);
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewItem.Value.SearchItem.Name);
+                }
             }
         }
 

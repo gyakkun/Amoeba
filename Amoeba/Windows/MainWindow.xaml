@@ -32,10 +32,9 @@
                 <MenuItem Name="_connectionsSettingsMenuItem" Header="{Binding Path=MainWindow_ConnectionsSettings, Source={StaticResource ResourcesInstance}}" Click="_connectionsSettingsMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_viewMenuItem" Header="{Binding Path=MainWindow_View, Source={StaticResource ResourcesInstance}}">
-                <MenuItem Name="_viewSettingsMenuItem" Header="{Binding Path=MainWindow_ViewSettings, Source={StaticResource ResourcesInstance}}" Click="_viewSettingsMenuItem_Click" />
-            </MenuItem>
-            <MenuItem Name="_searchMenuItem" Header="{Binding Path=MainWindow_Search, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_searchMenuItem_SubmenuOpened">
                 <MenuItem Name="_linkSettingsMenuItem" Header="{Binding Path=MainWindow_LinkSettings, Source={StaticResource ResourcesInstance}}" Click="_linkSettingsMenuItem_Click" />
+                <Separator />
+                <MenuItem Name="_viewSettingsMenuItem" Header="{Binding Path=MainWindow_ViewSettings, Source={StaticResource ResourcesInstance}}" Click="_viewSettingsMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_cacheMenuItem" Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_searchMenuItem_SubmenuOpened">
                 <MenuItem Name="_checkSeedsMenuItem" Header="{Binding Path=MainWindow_CheckSeeds, Source={StaticResource ResourcesInstance}}" Click="_checkSeedsMenuItem_Click" />

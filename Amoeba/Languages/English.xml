@@ -127,7 +127,7 @@
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
 
-  <Translate Key="ViewSettingsWindow_Title" Value="User interface setting" />
+  <Translate Key="ViewSettingsWindow_Title" Value="View setting" />
   <Translate Key="ViewSettingsWindow_Update" Value="Update" />
   <Translate Key="ViewSettingsWindow_UpdateUrl" Value="Update url" />
   <Translate Key="ViewSettingsWindow_ProxyUri" Value="Proxy uri" />

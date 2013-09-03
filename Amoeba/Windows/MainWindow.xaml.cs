@@ -500,7 +500,11 @@ namespace Amoeba.Windows
                             }
 
                             {
-                                searchSignatures.UnionWith(Settings.Instance.LinkWindow_DownloadLinkItems.Select(n => n.Signature));
+                                foreach (var linkItem in Settings.Instance.LinkWindow_DownloadLinkItems)
+                                {
+                                    searchSignatures.Add(linkItem.Signature);
+                                    searchSignatures.UnionWith(linkItem.TrustSignatures);
+                                }
                             }
 
                             lock (_amoebaManager.ThisLock)
@@ -1445,35 +1449,6 @@ namespace Amoeba.Windows
             {
                 _checkUpdateMenuItem_Click(null, null);
             }
-
-            _amoebaManager.LockSeedSignaturesEvent = new LockSeedSignaturesEventHandler(_amoebaManagerLockSeedSignaturesEvent);
-        }
-
-        IEnumerable<string> _amoebaManagerLockSeedSignaturesEvent(object sender)
-        {
-            HashSet<string> lockSignatures = new HashSet<string>();
-
-            {
-                var storeTreeItems = new List<StoreTreeItem>();
-
-                {
-                    var categorizeStoreTreeItems = new List<StoreCategorizeTreeItem>();
-                    categorizeStoreTreeItems.Add(Settings.Instance.StoreUploadControl_StoreCategorizeTreeItem);
-
-                    for (int i = 0; i < categorizeStoreTreeItems.Count; i++)
-                    {
-                        categorizeStoreTreeItems.AddRange(categorizeStoreTreeItems[i].Children);
-                        storeTreeItems.AddRange(categorizeStoreTreeItems[i].StoreTreeItems);
-                    }
-                }
-
-                foreach (var item in storeTreeItems)
-                {
-                    lockSignatures.Add(item.Signature);
-                }
-            }
-
-            return new SignatureCollection(lockSignatures);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1555,6 +1530,8 @@ namespace Amoeba.Windows
 
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.OriginalSource != _tabControl) return;
+
             if (_tabControl.SelectedItem == _connectionTabItem)
             {
                 MainWindow.SelectTab = TabType.Connection;
@@ -1585,13 +1562,13 @@ namespace Amoeba.Windows
 
                 _logRichTextBox.UpdateLayout();
                 _logRichTextBox.ScrollToEnd();
-
-                this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
             }
             else
             {
                 MainWindow.SelectTab = 0;
             }
+
+            this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
 
         private void _connectionsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)

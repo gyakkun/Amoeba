@@ -171,7 +171,7 @@
                             <Grid>
                                 <Label HorizontalAlignment="Left" Margin="6,6,0,0" Width="120" Height="24" VerticalAlignment="Top" Content="{Binding Path=ConnectionsSettingsWindow_Type, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
                                 <TextBox Margin="6,36,6,0" Name="_clientFiltersConditionTextBox" Height="24" VerticalAlignment="Top" VerticalContentAlignment="Center" KeyDown="_clientFiltersConditionTextBox_KeyDown" />
-                                <ComboBox Margin="132,6,6,0" Name="_clientFiltersConditionSchemeComboBox" Height="24" VerticalAlignment="Top" PreviewMouseLeftButtonDown="_clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConditionSchemeComboBox_SelectionChanged" VerticalContentAlignment="Center" Width="340">
+                                <ComboBox Margin="132,6,6,0" Name="_clientFiltersConditionSchemeComboBox" Height="24" VerticalAlignment="Top" PreviewMouseLeftButtonDown="_clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConditionSchemeComboBox_SelectionChanged" VerticalContentAlignment="Center">
                                     <ComboBoxItem Content="tcp" IsSelected="True" />
                                     <ComboBoxItem Content="tor" />
                                     <ComboBoxItem Content="i2p" />

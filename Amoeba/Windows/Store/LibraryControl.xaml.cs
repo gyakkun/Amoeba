@@ -90,17 +90,19 @@ namespace Amoeba.Windows
                 Settings.Instance.LibraryControl_ExpandedPath.Remove(path);
             }
 
-            _storeControl._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
+            SelectionChangedEventHandler selectionChanged = (object sender, SelectionChangedEventArgs e) =>
             {
-                if (e.Source != _storeControl._tabControl) return;
+                if (e.OriginalSource != _mainWindow._tabControl && e.OriginalSource != _storeControl._tabControl) return;
 
-                this.Update_Title();
-
-                if (MainWindow.SelectTab == TabType.Store_Library)
+                if (MainWindow.SelectTab == TabType.Store && StoreControl.SelectTab == TabType.Store_Library)
                 {
-                    this.Update_Cache();
+                    if (!_refresh) this.Update_Title();
+                    _autoResetEvent.Set();
                 }
             };
+
+            _mainWindow._tabControl.SelectionChanged += selectionChanged;
+            _storeControl._tabControl.SelectionChanged += selectionChanged;
 
             _searchThread = new Thread(new ThreadStart(this.Search));
             _searchThread.Priority = ThreadPriority.Highest;
@@ -123,6 +125,8 @@ namespace Amoeba.Windows
             _searchRowDefinition.Height = new GridLength(0);
 
             LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+
+            this.Update_Cache();
         }
 
         private void LanguagesManager_UsingLanguageChangedEvent(object sender)
@@ -144,6 +148,7 @@ namespace Amoeba.Windows
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         selectTreeViewItem = _treeView.SelectedItem as BoxTreeViewItem;
+                        _listView.ContextMenu.IsOpen = false;
                     }));
 
                     if (selectTreeViewItem == null) continue;
@@ -375,10 +380,12 @@ namespace Amoeba.Windows
                         }));
                     }
 
-                    do
+                    _autoResetEvent.WaitOne(1000 * 60 * 3);
+
+                    while (MainWindow.SelectTab != TabType.Store || StoreControl.SelectTab != TabType.Store_Library)
                     {
-                        _autoResetEvent.WaitOne(1000 * 60 * 3);
-                    } while (StoreControl.SelectTab != TabType.Store_Library);
+                        Thread.Sleep(1000);
+                    }
                 }
             }
             catch (Exception e)
@@ -637,13 +644,16 @@ namespace Amoeba.Windows
 
         private void Update_Title()
         {
-            if (_refresh || StoreControl.SelectTab != TabType.Store_Library) return;
+            if (_refresh) return;
 
-            if (_treeView.SelectedItem is BoxTreeViewItem)
+            if (MainWindow.SelectTab == TabType.Store && StoreControl.SelectTab == TabType.Store_Library)
             {
-                var selectTreeViewItem = (BoxTreeViewItem)_treeView.SelectedItem;
+                if (_treeView.SelectedItem is BoxTreeViewItem)
+                {
+                    var selectTreeViewItem = (BoxTreeViewItem)_treeView.SelectedItem;
 
-                _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewItem.Value.Name);
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewItem.Value.Name);
+                }
             }
         }
 

@@ -41,7 +41,7 @@ namespace Amoeba.Windows
             _bufferManager = bufferManager;
 
             InitializeComponent();
-           
+
             StoreDownloadControl storeDownloadControl = new StoreDownloadControl(this, _amoebaManager, _bufferManager);
             storeDownloadControl.Height = Double.NaN;
             storeDownloadControl.Width = Double.NaN;
@@ -60,6 +60,8 @@ namespace Amoeba.Windows
 
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.OriginalSource != _tabControl) return;
+
             if (_tabControl.SelectedItem == _storeUploadTabItem)
             {
                 StoreControl.SelectTab = TabType.Store_Upload;
@@ -76,6 +78,8 @@ namespace Amoeba.Windows
             {
                 StoreControl.SelectTab = 0;
             }
+
+            _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
     }
 }

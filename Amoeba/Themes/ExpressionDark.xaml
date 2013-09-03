@@ -2830,7 +2830,7 @@
                             </DoubleAnimationUsingKeyFrames>
 
                         </Storyboard>
-                        <Storyboard x:Key="FocussedOn">
+                        <!--<Storyboard x:Key="FocussedOn">
                             <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="(UIElement.Opacity)">
                                 <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="1"/>
                             </DoubleAnimationUsingKeyFrames>
@@ -2839,7 +2839,7 @@
                             <DoubleAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="FocusVisualElement" Storyboard.TargetProperty="(UIElement.Opacity)">
                                 <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0"/>
                             </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
+                        </Storyboard>-->
                     </ControlTemplate.Resources>
                     <Border SnapsToDevicePixels="true" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" x:Name="border">
 
@@ -2859,40 +2859,25 @@
                             <Trigger.EnterActions>
                                 <BeginStoryboard Storyboard="{StaticResource SelectedOn}" x:Name="SelectedOn_BeginStoryboard"/>
                             </Trigger.EnterActions>
-
                         </Trigger>
+                        
                         <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="Selector.IsSelected" Value="False" />
+                            </MultiTrigger.Conditions>
                             <MultiTrigger.ExitActions>
                                 <BeginStoryboard Storyboard="{StaticResource HoverOff}" x:Name="HoverOff_BeginStoryboard"/>
                             </MultiTrigger.ExitActions>
                             <MultiTrigger.EnterActions>
                                 <BeginStoryboard Storyboard="{StaticResource HoverOn}"/>
                             </MultiTrigger.EnterActions>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsMouseOver" Value="True" />
-                                <Condition Property="Selector.IsSelected" Value="False" />
-                            </MultiTrigger.Conditions>
-
                         </MultiTrigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="Selector.IsSelected" Value="True" />
-                                <Condition Property="IsMouseOver" Value="True" />
-                            </MultiTrigger.Conditions>
-
-                        </MultiTrigger>
+                        
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundBrush}" />
                             <Setter Property="Fill" TargetName="Background" Value="{DynamicResource DisabledBackgroundBrush}"/>
                         </Trigger>
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="true" />
-                                <Condition Property="Selector.IsSelectionActive" Value="false" />
-                            </MultiTrigger.Conditions>
-
-
-                        </MultiTrigger>
 
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2908,7 +2893,6 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
 
     <Style x:Key="GridViewColumnHeaderGripper" TargetType="{x:Type Thumb}">
         <Setter Property="Canvas.Right" Value="-8.5" />
