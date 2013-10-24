@@ -201,7 +201,7 @@ namespace Amoeba
                     _isNodesCached = true;
                 }
 
-                return _nodeList.Select(n => n.DeepClone()).ToArray();
+                return _nodeList.Where(n => n != null).Select(n => n.DeepClone()).ToArray();
             }
         }
 
@@ -268,7 +268,7 @@ namespace Amoeba
                     _isSeedsCached = true;
                 }
 
-                return _seedList.Select(n => n.DeepClone()).ToArray();
+                return _seedList.Where(n => n != null).Select(n => n.DeepClone()).ToArray();
             }
         }
 
