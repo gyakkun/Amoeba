@@ -74,7 +74,7 @@ namespace Amoeba.Windows
             {
                 if (e.OriginalSource != _mainWindow._tabControl) return;
 
-                if (MainWindow.SelectTab == TabType.Search)
+                if (_mainWindow.SelectedTab == MainWindowTabType.Search)
                 {
                     if (!_refresh) this.Update_Title();
                     _autoResetEvent.Set();
@@ -114,15 +114,14 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (!_refresh) continue;
 
-                    SearchTreeViewItem selectTreeViewItem = null;
+                    SearchTreeViewItem tempTreeViewItem = null;
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
-                        selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
-                        _listView.ContextMenu.IsOpen = false;
+                        tempTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
                     }));
 
-                    if (selectTreeViewItem == null) continue;
+                    if (tempTreeViewItem == null) continue;
 
                     HashSet<SearchListViewItem> newList = new HashSet<SearchListViewItem>();
 
@@ -157,7 +156,7 @@ namespace Amoeba.Windows
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
-                        searchTreeViewItems.AddRange(_treeView.GetAncestors(selectTreeViewItem).OfType<SearchTreeViewItem>());
+                        searchTreeViewItems.AddRange(_treeView.GetAncestors(tempTreeViewItem).OfType<SearchTreeViewItem>());
                     }));
 
                     foreach (var searchTreeViewItem in searchTreeViewItems)
@@ -199,7 +198,7 @@ namespace Amoeba.Windows
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
-                        if (selectTreeViewItem != _treeView.SelectedItem) return;
+                        if (tempTreeViewItem != _treeView.SelectedItem) return;
                         _refresh = false;
 
                         _listView.SelectedItems.Clear();
@@ -626,7 +625,7 @@ namespace Amoeba.Windows
                             {
                                 var boxList = new List<Box>();
 
-                                foreach (var item in Settings.Instance.LinkWindow_DownloadLinkItems)
+                                foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                                 {
                                     foreach (var signature in item.TrustSignatures)
                                     {
@@ -826,7 +825,7 @@ namespace Amoeba.Windows
 
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 
-                    while (MainWindow.SelectTab != TabType.Search)
+                    while (_mainWindow.SelectedTab != MainWindowTabType.Search)
                     {
                         Thread.Sleep(1000);
                     }
@@ -867,7 +866,7 @@ namespace Amoeba.Windows
         {
             if (_refresh) return;
 
-            if (MainWindow.SelectTab == TabType.Search)
+            if (_mainWindow.SelectedTab == MainWindowTabType.Search)
             {
                 if (_treeView.SelectedItem is SearchTreeViewItem)
                 {
@@ -1235,19 +1234,14 @@ namespace Amoeba.Windows
         {
             if (_refresh)
             {
-                _listViewEditMenuItem.IsEnabled = false;
-                _listViewCopyMenuItem.IsEnabled = false;
-                _listViewCopyInfoMenuItem.IsEnabled = false;
-                _listViewDeleteCacheMenuItem.IsEnabled = false;
-                _listViewDeleteShareMenuItem.IsEnabled = false;
-                _listViewDeleteDownloadHistoryMenuItem.IsEnabled = false;
-                _listViewDeleteUploadHistoryMenuItem.IsEnabled = false;
-                _listViewFilterMenuItem.IsEnabled = false;
-                _listViewSearchMenuItem.IsEnabled = false;
-                _listViewDownloadMenuItem.IsEnabled = false;
+                _listViewContextMenu.IsEnabled = false;
+
+                e.Handled = true;
             }
             else
             {
+                _listViewContextMenu.IsEnabled = true;
+
                 var selectItems = _listView.SelectedItems;
 
                 _listViewEditMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);

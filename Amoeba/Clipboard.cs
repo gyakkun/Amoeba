@@ -188,8 +188,6 @@ namespace Amoeba
                 {
                     foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        if (!item.StartsWith("Node@")) continue;
-
                         try
                         {
                             _nodeList.Add(AmoebaConverter.FromNodeString(item));
@@ -252,8 +250,6 @@ namespace Amoeba
                 {
                     foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                     {
-                        if (!item.StartsWith("Seed@")) continue;
-
                         try
                         {
                             var seed = AmoebaConverter.FromSeedString(item);

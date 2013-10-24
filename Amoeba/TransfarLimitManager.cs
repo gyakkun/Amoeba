@@ -12,47 +12,80 @@ using Library.Net.Amoeba;
 
 namespace Amoeba
 {
-    class TransfarLimitManager : ManagerBase, Library.Configuration.ISettings, IThisLock
+    class TransfarLimitManager : StateManagerBase, Library.Configuration.ISettings, IThisLock
     {
         private AmoebaManager _amoebaManager;
 
         private Settings _settings;
 
-        private bool _isRun = true;
+        private long _uploadSize;
+        private long _downloadSize;
 
-        private Thread _timerThread = null;
+        private volatile Thread _timerThread = null;
 
-        public event EventHandler StartEvent;
-        public event EventHandler StopEvent;
+        private ManagerState _state = ManagerState.Stop;
 
+        public EventHandler _startEvent;
+        public EventHandler _stopEvent;
+
+        private volatile bool _disposed = false;
         private object _thisLock = new object();
-        private bool _disposed = false;
 
         public TransfarLimitManager(AmoebaManager amoebaManager)
         {
             _amoebaManager = amoebaManager;
 
             _settings = new Settings(this.ThisLock);
+        }
 
-            _timerThread = new Thread(this.Timer);
-            _timerThread.Priority = ThreadPriority.Highest;
-            _timerThread.IsBackground = true;
-            _timerThread.Name = "TransfarLimitManager_TimerThread";
-            _timerThread.Start();
+        public event EventHandler StartEvent
+        {
+            add
+            {
+                lock (this.ThisLock)
+                {
+                    _startEvent += value;
+                }
+            }
+            remove
+            {
+                lock (this.ThisLock)
+                {
+                    _startEvent -= value;
+                }
+            }
+        }
+
+        public event EventHandler StopEvent
+        {
+            add
+            {
+                lock (this.ThisLock)
+                {
+                    _stopEvent += value;
+                }
+            }
+            remove
+            {
+                lock (this.ThisLock)
+                {
+                    _stopEvent -= value;
+                }
+            }
         }
 
         public TransferLimit TransferLimit
         {
             get
             {
-                lock (_thisLock)
+                lock (this.ThisLock)
                 {
                     return _settings.TransferLimit;
                 }
             }
             set
             {
-                lock (_thisLock)
+                lock (this.ThisLock)
                 {
                     _settings.TransferLimit = value;
                 }
@@ -63,7 +96,7 @@ namespace Amoeba
         {
             get
             {
-                lock (_thisLock)
+                lock (this.ThisLock)
                 {
                     return _settings.UploadTransferSizeList.Sum(n => n.Value);
                 }
@@ -74,7 +107,7 @@ namespace Amoeba
         {
             get
             {
-                lock (_thisLock)
+                lock (this.ThisLock)
                 {
                     return _settings.DownloadTransferSizeList.Sum(n => n.Value);
                 }
@@ -83,23 +116,23 @@ namespace Amoeba
 
         protected virtual void OnStartEvent()
         {
-            if (this.StartEvent != null)
+            if (_startEvent != null)
             {
-                this.StartEvent(this, new EventArgs());
+                _startEvent(this, new EventArgs());
             }
         }
 
         protected virtual void OnStopEvent()
         {
-            if (this.StopEvent != null)
+            if (_stopEvent != null)
             {
-                this.StopEvent(this, new EventArgs());
+                _stopEvent(this, new EventArgs());
             }
         }
 
         public void Reset()
         {
-            lock (_thisLock)
+            lock (this.ThisLock)
             {
                 _settings.UploadTransferSizeList.Clear();
                 _settings.DownloadTransferSizeList.Clear();
@@ -109,9 +142,6 @@ namespace Amoeba
             }
         }
 
-        private long _uploadSize;
-        private long _downloadSize;
-
         private void Timer()
         {
             try
@@ -120,18 +150,31 @@ namespace Amoeba
 
                 var now = DateTime.Today;
 
-                lock (_thisLock)
+                lock (this.ThisLock)
                 {
-                    _settings.UploadTransferSizeList.TryGetValue(now, out _uploadSize);
-                    _settings.DownloadTransferSizeList.TryGetValue(now, out _downloadSize);
+                    foreach (var item in _settings.UploadTransferSizeList.ToArray())
+                    {
+                        if ((now - item.Key).TotalDays >= _settings.TransferLimit.Span)
+                        {
+                            _settings.UploadTransferSizeList.Remove(item.Key);
+                        }
+                    }
+
+                    foreach (var item in _settings.DownloadTransferSizeList.ToArray())
+                    {
+                        if ((now - item.Key).TotalDays >= _settings.TransferLimit.Span)
+                        {
+                            _settings.DownloadTransferSizeList.Remove(item.Key);
+                        }
+                    }
                 }
 
                 for (; ; )
                 {
-                    Thread.Sleep(1000);
-                    if (!_isRun) return;
+                    Thread.Sleep(1000 * 1);
+                    if (this.State == ManagerState.Stop) return;
 
-                    if (!stopwatch.IsRunning || stopwatch.Elapsed > new TimeSpan(0, 1, 0))
+                    if (!stopwatch.IsRunning || stopwatch.ElapsedMilliseconds > 1000 * 20)
                     {
                         stopwatch.Restart();
 
@@ -139,8 +182,24 @@ namespace Amoeba
                         {
                             now = DateTime.Today;
 
-                            lock (_thisLock)
+                            lock (this.ThisLock)
                             {
+                                foreach (var item in _settings.UploadTransferSizeList.ToArray())
+                                {
+                                    if ((now - item.Key).TotalDays >= _settings.TransferLimit.Span)
+                                    {
+                                        _settings.UploadTransferSizeList.Remove(item.Key);
+                                    }
+                                }
+
+                                foreach (var item in _settings.DownloadTransferSizeList.ToArray())
+                                {
+                                    if ((now - item.Key).TotalDays >= _settings.TransferLimit.Span)
+                                    {
+                                        _settings.DownloadTransferSizeList.Remove(item.Key);
+                                    }
+                                }
+
                                 _uploadSize = -_amoebaManager.SentByteCount;
                                 _downloadSize = -_amoebaManager.ReceivedByteCount;
                             }
@@ -149,56 +208,39 @@ namespace Amoeba
                         }
                         else
                         {
-                            lock (_thisLock)
+                            lock (this.ThisLock)
                             {
                                 _settings.UploadTransferSizeList[now] = _uploadSize + _amoebaManager.SentByteCount;
                                 _settings.DownloadTransferSizeList[now] = _downloadSize + _amoebaManager.ReceivedByteCount;
                             }
                         }
 
-                        if (_settings.TransferLimit.Type != TransferLimitType.None)
+                        if (_settings.TransferLimit.Type == TransferLimitType.Uploads)
                         {
-                            foreach (var item in _settings.UploadTransferSizeList.ToArray())
+                            var totalUploadSize = _settings.UploadTransferSizeList.Sum(n => n.Value);
+
+                            if (totalUploadSize > _settings.TransferLimit.Size)
                             {
-                                if ((now - item.Key).TotalDays >= _settings.TransferLimit.Span)
-                                    _settings.UploadTransferSizeList.Remove(item.Key);
+                                if (_amoebaManager.State == ManagerState.Start) this.OnStopEvent();
                             }
+                        }
+                        else if (_settings.TransferLimit.Type == TransferLimitType.Downloads)
+                        {
+                            var totalDownloadSize = _settings.DownloadTransferSizeList.Sum(n => n.Value);
 
-                            foreach (var item in _settings.DownloadTransferSizeList.ToArray())
+                            if (totalDownloadSize > _settings.TransferLimit.Size)
                             {
-                                if ((now - item.Key).TotalDays >= _settings.TransferLimit.Span)
-                                    _settings.DownloadTransferSizeList.Remove(item.Key);
+                                if (_amoebaManager.State == ManagerState.Start) this.OnStopEvent();
                             }
+                        }
+                        else if (_settings.TransferLimit.Type == TransferLimitType.Total)
+                        {
+                            var totalUploadSize = _settings.UploadTransferSizeList.Sum(n => n.Value);
+                            var totalDownloadSize = _settings.DownloadTransferSizeList.Sum(n => n.Value);
 
-                            if (_settings.TransferLimit.Type == TransferLimitType.Uploads)
+                            if ((totalUploadSize + totalDownloadSize) > _settings.TransferLimit.Size)
                             {
-                                var totalUploadSize = _settings.UploadTransferSizeList.Sum(n => n.Value);
-
-                                if (totalUploadSize > _settings.TransferLimit.Size)
-                                {
-                                    if (_amoebaManager.State == ManagerState.Start) this.OnStopEvent();
-                                }
-                            }
-
-                            if (_settings.TransferLimit.Type == TransferLimitType.Downloads)
-                            {
-                                var totalDownloadSize = _settings.DownloadTransferSizeList.Sum(n => n.Value);
-
-                                if (totalDownloadSize > _settings.TransferLimit.Size)
-                                {
-                                    if (_amoebaManager.State == ManagerState.Start) this.OnStopEvent();
-                                }
-                            }
-
-                            if (_settings.TransferLimit.Type == TransferLimitType.Total)
-                            {
-                                var totalUploadSize = _settings.UploadTransferSizeList.Sum(n => n.Value);
-                                var totalDownloadSize = _settings.DownloadTransferSizeList.Sum(n => n.Value);
-
-                                if ((totalUploadSize + totalDownloadSize) > _settings.TransferLimit.Size)
-                                {
-                                    if (_amoebaManager.State == ManagerState.Start) this.OnStopEvent();
-                                }
+                                if (_amoebaManager.State == ManagerState.Start) this.OnStopEvent();
                             }
                         }
                     }
@@ -210,19 +252,63 @@ namespace Amoeba
             }
         }
 
+        public override ManagerState State
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return _state;
+                }
+            }
+        }
+
+        public override void Start()
+        {
+            while (_timerThread != null) Thread.Sleep(1000);
+
+            lock (this.ThisLock)
+            {
+                if (this.State == ManagerState.Start) return;
+                _state = ManagerState.Start;
+
+                _timerThread = new Thread(this.Timer);
+                _timerThread.Priority = ThreadPriority.Lowest;
+                _timerThread.Name = "TransfarLimitManager_Timer";
+                _timerThread.Start();
+            }
+        }
+
+        public override void Stop()
+        {
+            lock (this.ThisLock)
+            {
+                if (this.State == ManagerState.Stop) return;
+                _state = ManagerState.Stop;
+            }
+
+            _timerThread.Join();
+            _timerThread = null;
+        }
+
         #region ISettings
 
         public void Load(string directoryPath)
         {
-            lock (_thisLock)
+            lock (this.ThisLock)
             {
                 _settings.Load(directoryPath);
+
+                var now = DateTime.Today;
+
+                _settings.UploadTransferSizeList.TryGetValue(now, out _uploadSize);
+                _settings.DownloadTransferSizeList.TryGetValue(now, out _downloadSize);
             }
         }
 
         public void Save(string directoryPath)
         {
-            lock (_thisLock)
+            lock (this.ThisLock)
             {
                 _settings.Save(directoryPath);
             }
@@ -321,15 +407,12 @@ namespace Amoeba
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
+            _disposed = true;
 
             if (disposing)
             {
-                _isRun = false;
 
-                _timerThread.Join();
             }
-
-            _disposed = true;
         }
 
         #region IThisLock

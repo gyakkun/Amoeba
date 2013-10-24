@@ -26,7 +26,7 @@ namespace Amoeba.Windows
     {
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<UploadListViewItem> _filePaths = new ObservableCollection<UploadListViewItem>();
+        private ObservableCollectionEx<UploadListViewItem> _filePaths = new ObservableCollectionEx<UploadListViewItem>();
         private bool _isShare = false;
 
         public UploadListWindow(IEnumerable<string> filePaths, bool isShare, AmoebaManager amoebaManager)

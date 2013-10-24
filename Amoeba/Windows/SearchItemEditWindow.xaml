@@ -43,10 +43,10 @@
             <TextBlock Text="{Binding Path=Value.Name, Mode=OneWay}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}"/>
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_SearchContains_SearchState_Value">
-            <TextBlock Text="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _searchStateFlagToStringConverter}}" />
+            <TextBlock Text="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _stateFlagToStringConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_SearchState">
-            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _searchStateFlagToStringConverter}}" />
+            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _stateFlagToStringConverter}}" />
         </DataTemplate>
     </Window.Resources>
 
@@ -300,23 +300,23 @@
                     </local:ListViewEx>
                 </Grid>
             </TabItem>
-            <TabItem Header="{Binding Path=SearchItemEditWindow_SearchState, Source={StaticResource ResourcesInstance}}" Name="_searchStateTabItem">
-                <Grid FocusManager.FocusedElement="{Binding ElementName=_searchStateContainsCheckBox}">
-                    <Button Name="_searchStateUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_searchStateUpButton_Click" IsEnabled="False" />
-                    <Button Name="_searchStateDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_searchStateDownButton_Click" IsEnabled="False" />
-                    <Button Name="_searchStateAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_searchStateAddButton_Click" />
-                    <Button Name="_searchStateEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_searchStateEditButton_Click" />
-                    <Button Name="_searchStateDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_searchStateDeleteButton_Click" />
-                    <ComboBox Name="_searchStateComboBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_searchStateComboBox_KeyDown" ItemTemplate="{StaticResource _myTemplate_SearchState}" />
-                    <CheckBox Name="_searchStateContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
-                    <local:ListViewEx x:Name="_searchStateListView" Margin="0,0,0,87" SelectionChanged="_searchStateListView_SelectionChanged" PreviewMouseLeftButtonDown="_searchStateListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_searchStateListView_ContextMenuOpening">
+            <TabItem Header="{Binding Path=SearchItemEditWindow_SearchState, Source={StaticResource ResourcesInstance}}" Name="_stateTabItem">
+                <Grid FocusManager.FocusedElement="{Binding ElementName=_stateContainsCheckBox}">
+                    <Button Name="_stateUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_stateUpButton_Click" IsEnabled="False" />
+                    <Button Name="_stateDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_stateDownButton_Click" IsEnabled="False" />
+                    <Button Name="_stateAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_stateAddButton_Click" />
+                    <Button Name="_stateEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_stateEditButton_Click" />
+                    <Button Name="_stateDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_stateDeleteButton_Click" />
+                    <ComboBox Name="_stateComboBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_stateComboBox_KeyDown" ItemTemplate="{StaticResource _myTemplate_SearchState}" />
+                    <CheckBox Name="_stateContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
+                    <local:ListViewEx x:Name="_stateListView" Margin="0,0,0,87" SelectionChanged="_stateListView_SelectionChanged" PreviewMouseLeftButtonDown="_stateListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_stateListView_ContextMenuOpening">
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_searchStateListViewContextMenu" >
-                                <MenuItem Name="_searchStateListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_searchStateListViewDeleteMenuItem_Click"/>
+                            <ContextMenu Name="_stateListViewContextMenu" >
+                                <MenuItem Name="_stateListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_stateListViewDeleteMenuItem_Click"/>
                                 <Separator />
-                                <MenuItem Name="_searchStateListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_searchStateListViewCutMenuItem_Click"/>
-                                <MenuItem Name="_searchStateListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_searchStateListViewCopyMenuItem_Click"/>
-                                <MenuItem Name="_searchStateListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_searchStateListViewPasteMenuItem_Click"/>
+                                <MenuItem Name="_stateListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_stateListViewCutMenuItem_Click"/>
+                                <MenuItem Name="_stateListViewCopyMenuItem" Header="{Binding Path=SearchItemEditWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_stateListViewCopyMenuItem_Click"/>
+                                <MenuItem Name="_stateListViewPasteMenuItem" Header="{Binding Path=SearchItemEditWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_stateListViewPasteMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                         <ListView.View>

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Library.Collections;
 
-namespace Library.Net.Amoeba
+namespace Amoeba
 {
-    public enum TabType
+    public enum MainWindowTabType
     {
         Connection,
         Search,
@@ -12,9 +12,6 @@ namespace Library.Net.Amoeba
         Upload,
         Share,
         Store,
-        Store_Download,
-        Store_Upload,
-        Store_Library,
         Log,
     }
 }

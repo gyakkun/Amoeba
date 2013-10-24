@@ -106,9 +106,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="TabType.cs" />
-    <Compile Include="Windows\Link\LinkWindow.xaml.cs">
-      <DependentUpon>LinkWindow.xaml</DependentUpon>
+    <Compile Include="ObservableCollectionEx.cs" />
+    <Compile Include="StoreControlTabType.cs" />
+    <Compile Include="MainWindowTabType.cs" />
+    <Compile Include="Windows\Link\LinkOptionsWindow.xaml.cs">
+      <DependentUpon>LinkOptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Store\StoreDownloadControl.xaml.cs">
       <DependentUpon>StoreDownloadControl.xaml</DependentUpon>
@@ -135,8 +137,8 @@
     <Compile Include="Windows\ConnectionControl.xaml.cs">
       <DependentUpon>ConnectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ConnectionsSettingsWindow.xaml.cs">
-      <DependentUpon>ConnectionsSettingsWindow.xaml</DependentUpon>
+    <Compile Include="Windows\ConnectionsOptionsWindow.xaml.cs">
+      <DependentUpon>ConnectionsOptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\DownloadControl.xaml.cs">
       <DependentUpon>DownloadControl.xaml</DependentUpon>
@@ -185,14 +187,14 @@
     <Compile Include="Windows\_Items\StoreTreeItem.cs" />
     <Compile Include="Windows\_Controls\StoreTreeViewItem.cs" />
     <Compile Include="Windows\_Items\UpdateOption.cs" />
-    <Compile Include="Windows\_Items\ValueConverter.cs" />
+    <Compile Include="Windows\_Controls\ValueConverter.cs" />
     <Compile Include="Windows\VersionInformationWindow.xaml.cs">
       <DependentUpon>VersionInformationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
-      <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
+    <Compile Include="Windows\ViewOptionsWindow.xaml.cs">
+      <DependentUpon>ViewOptionsWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Windows\Link\LinkWindow.xaml">
+    <Page Include="Windows\Link\LinkOptionsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -235,7 +237,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\ConnectionsSettingsWindow.xaml">
+    <Page Include="Windows\ConnectionsOptionsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -287,7 +289,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\ViewSettingsWindow.xaml">
+    <Page Include="Windows\ViewOptionsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

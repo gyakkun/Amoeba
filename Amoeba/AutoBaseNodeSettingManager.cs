@@ -22,8 +22,8 @@ namespace Amoeba
 
         private ManagerState _state = ManagerState.Stop;
 
+        private volatile bool _disposed = false;
         private object _thisLock = new object();
-        private bool _disposed = false;
 
         public AutoBaseNodeSettingManager(AmoebaManager amoebaManager)
         {
@@ -85,6 +85,11 @@ namespace Amoeba
             {
                 if (this.State == ManagerState.Stop) return;
 
+                var baseNode = _amoebaManager.BaseNode;
+
+                var nodeId = baseNode.Id;
+                var nodeUris = new List<string>(baseNode.Uris);
+
                 try
                 {
                     string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:{0}:", IPAddress.Any.ToString())));
@@ -132,7 +137,7 @@ namespace Amoeba
                         {
                             if (ipv4Uri != _settings.Ipv4Uri)
                             {
-                                _amoebaManager.BaseNode.Uris.Remove(_settings.Ipv4Uri);
+                                nodeUris.Remove(_settings.Ipv4Uri);
 
                                 Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv4Uri));
                             }
@@ -140,9 +145,9 @@ namespace Amoeba
 
                         _settings.Ipv4Uri = ipv4Uri;
 
-                        if (!_amoebaManager.BaseNode.Uris.Any(n => n == _settings.Ipv4Uri))
+                        if (!baseNode.Uris.Any(n => n == _settings.Ipv4Uri))
                         {
-                            _amoebaManager.BaseNode.Uris.Add(_settings.Ipv4Uri);
+                            nodeUris.Add(_settings.Ipv4Uri);
 
                             Log.Information(string.Format("Add Node Uri: {0}", _settings.Ipv4Uri));
                         }
@@ -194,7 +199,7 @@ namespace Amoeba
                         {
                             if (ipv6Uri != _settings.Ipv6Uri)
                             {
-                                _amoebaManager.BaseNode.Uris.Remove(_settings.Ipv6Uri);
+                                nodeUris.Remove(_settings.Ipv6Uri);
 
                                 Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv6Uri));
                             }
@@ -202,9 +207,9 @@ namespace Amoeba
 
                         _settings.Ipv6Uri = ipv6Uri;
 
-                        if (!_amoebaManager.BaseNode.Uris.Any(n => n == _settings.Ipv6Uri))
+                        if (!baseNode.Uris.Any(n => n == _settings.Ipv6Uri))
                         {
-                            _amoebaManager.BaseNode.Uris.Add(_settings.Ipv6Uri);
+                            nodeUris.Add(_settings.Ipv6Uri);
 
                             Log.Information(string.Format("Add Node Uri: {0}", _settings.Ipv6Uri));
                         }
@@ -242,7 +247,7 @@ namespace Amoeba
                             {
                                 if (upnpUri != _settings.UpnpUri)
                                 {
-                                    _amoebaManager.BaseNode.Uris.Remove(_settings.UpnpUri);
+                                    nodeUris.Remove(_settings.UpnpUri);
 
                                     Log.Information(string.Format("Remove Node Uri: {0}", _settings.UpnpUri));
 
@@ -286,9 +291,9 @@ namespace Amoeba
 
                                     _settings.UpnpUri = upnpUri;
 
-                                    if (!_amoebaManager.BaseNode.Uris.Any(n => n == _settings.UpnpUri))
+                                    if (!baseNode.Uris.Any(n => n == _settings.UpnpUri))
                                     {
-                                        _amoebaManager.BaseNode.Uris.Add(_settings.UpnpUri);
+                                        nodeUris.Add(_settings.UpnpUri);
 
                                         Log.Information(string.Format("Add Node Uri: {0}", _settings.UpnpUri));
                                     }
@@ -298,9 +303,9 @@ namespace Amoeba
                             {
                                 _settings.UpnpUri = upnpUri;
 
-                                if (!_amoebaManager.BaseNode.Uris.Any(n => n == _settings.UpnpUri))
+                                if (!baseNode.Uris.Any(n => n == _settings.UpnpUri))
                                 {
-                                    _amoebaManager.BaseNode.Uris.Add(_settings.UpnpUri);
+                                    nodeUris.Add(_settings.UpnpUri);
 
                                     Log.Information(string.Format("Add Node Uri: {0}", _settings.UpnpUri));
                                 }
@@ -312,6 +317,8 @@ namespace Amoeba
                 {
 
                 }
+
+                _amoebaManager.SetBaseNode(new Node(nodeId, nodeUris));
             }
         }
 
@@ -319,9 +326,14 @@ namespace Amoeba
         {
             lock (this.ThisLock)
             {
+                var baseNode = _amoebaManager.BaseNode;
+
+                var nodeId = baseNode.Id;
+                var nodeUris = new List<string>(baseNode.Uris);
+
                 if (_settings.Ipv4Uri != null)
                 {
-                    _amoebaManager.BaseNode.Uris.Remove(_settings.Ipv4Uri);
+                    nodeUris.Remove(_settings.Ipv4Uri);
 
                     Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv4Uri));
                 }
@@ -329,7 +341,7 @@ namespace Amoeba
 
                 if (_settings.Ipv6Uri != null)
                 {
-                    _amoebaManager.BaseNode.Uris.Remove(_settings.Ipv6Uri);
+                    nodeUris.Remove(_settings.Ipv6Uri);
 
                     Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv6Uri));
                 }
@@ -337,7 +349,7 @@ namespace Amoeba
 
                 if (_settings.UpnpUri != null)
                 {
-                    _amoebaManager.BaseNode.Uris.Remove(_settings.UpnpUri);
+                    nodeUris.Remove(_settings.UpnpUri);
 
                     Log.Information(string.Format("Remove Node Uri: {0}", _settings.UpnpUri));
 
@@ -363,6 +375,8 @@ namespace Amoeba
                     }
                 }
                 _settings.UpnpUri = null;
+
+                _amoebaManager.SetBaseNode(new Node(nodeId, nodeUris));
             }
         }
 
@@ -498,20 +512,12 @@ namespace Amoeba
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
+            _disposed = true;
 
             if (disposing)
             {
-                try
-                {
-                    this.Stop();
-                }
-                catch (Exception)
-                {
 
-                }
             }
-
-            _disposed = true;
         }
 
         #region IThisLock

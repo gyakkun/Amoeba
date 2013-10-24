@@ -15,7 +15,7 @@ namespace Amoeba.Windows
     {
         private Box _value;
 
-        private ObservableCollection<BoxTreeViewItem> _listViewItemCollection = new ObservableCollection<BoxTreeViewItem>();
+        private ObservableCollectionEx<BoxTreeViewItem> _listViewItemCollection = new ObservableCollectionEx<BoxTreeViewItem>();
         private TextBlock _header = new TextBlock();
 
         public BoxTreeViewItem(Box value)
@@ -147,7 +147,7 @@ namespace Amoeba.Windows
             {
                 return _value;
             }
-            set
+            private set
             {
                 _value = value;
 

@@ -34,7 +34,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<ShareListViewItem> _listViewItemCollection = new ObservableCollection<ShareListViewItem>();
+        private ObservableCollectionEx<ShareListViewItem> _listViewItemCollection = new ObservableCollectionEx<ShareListViewItem>();
 
         private Thread _showShareItemThread;
 
@@ -61,7 +61,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (MainWindow.SelectTab != TabType.Share) continue;
+                    if (_mainWindow.SelectedTab != MainWindowTabType.Share) continue;
 
                     var shareInformation = _amoebaManager.ShareInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();

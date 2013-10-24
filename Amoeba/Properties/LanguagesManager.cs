@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Data;
 using System.Xml;
 using Library;
+using System.Windows;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Amoeba.Properties
 {
@@ -17,7 +21,7 @@ namespace Amoeba.Properties
         private static LanguagesManager _defaultInstance = new LanguagesManager();
         private static Dictionary<string, Dictionary<string, string>> _dic = new Dictionary<string, Dictionary<string, string>>();
         private static string _usingLanguage = null;
-        private static ObjectDataProvider provider;
+        private static ObjectDataProvider _provider;
         private object _thisLock = new object();
 
         public static UsingLanguageChangedEventHandler UsingLanguageChangedEvent;
@@ -33,7 +37,7 @@ namespace Amoeba.Properties
         static LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:\Core\Project\Amoeba\Amoeba\bin\Debug\Core\Languages";
+            string path = @"C:\Local\Project\Amoeba\Amoeba\bin\Debug\Core\Languages";
 
             if (!Directory.Exists(path))
                 path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
@@ -139,10 +143,10 @@ namespace Amoeba.Properties
             {
                 if (System.Windows.Application.Current != null)
                 {
-                    provider = (ObjectDataProvider)System.Windows.Application.Current.FindResource("ResourcesInstance");
+                    _provider = (ObjectDataProvider)System.Windows.Application.Current.FindResource("ResourcesInstance");
                 }
 
-                return provider;
+                return _provider;
             }
         }
 
@@ -406,13 +410,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_Connections
+        public string MainWindow_Core
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Connections");
+                    return this.Translate("MainWindow_Core");
                 }
             }
         }
@@ -439,6 +443,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string MainWindow_LinkOptions
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_LinkOptions");
+                }
+            }
+        }
+
         public string MainWindow_UpdateBaseNode
         {
             get
@@ -450,24 +465,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_Link
+        public string MainWindow_CoreOptions
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Link");
-                }
-            }
-        }
-
-        public string MainWindow_LinkSettings
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_LinkSettings");
+                    return this.Translate("MainWindow_CoreOptions");
                 }
             }
         }
@@ -516,17 +520,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_ConnectionsSettings
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_ConnectionsSettings");
-                }
-            }
-        }
-
         public string MainWindow_EncodeAndDecodeStart
         {
             get
@@ -560,17 +553,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_ViewSettings
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_ViewSettings");
-                }
-            }
-        }
-
         public string MainWindow_Languages
         {
             get
@@ -578,6 +560,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Languages");
+                }
+            }
+        }
+
+        public string MainWindow_ViewOptions
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_ViewOptions");
                 }
             }
         }
@@ -781,530 +774,674 @@ namespace Amoeba.Properties
         }
 
 
-        public string ConnectionsSettingsWindow_Title
+        public string LinkOptionsWindow_Title
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Title");
+                    return this.Translate("LinkOptionsWindow_Title");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_BaseNode
+        public string LinkOptionsWindow_Download
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_BaseNode");
+                    return this.Translate("LinkOptionsWindow_Download");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Node
+        public string LinkOptionsWindow_Upload
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Node");
+                    return this.Translate("LinkOptionsWindow_Upload");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Uris
+        public string LinkOptionsWindow_LinkerSignature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Uris");
+                    return this.Translate("LinkOptionsWindow_LinkerSignature");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Uri
+        public string LinkOptionsWindow_TrustSignature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Uri");
+                    return this.Translate("LinkOptionsWindow_TrustSignature");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_OtherNodes
+        public string LinkOptionsWindow_New
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_OtherNodes");
+                    return this.Translate("LinkOptionsWindow_New");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Nodes
+        public string LinkOptionsWindow_Edit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Nodes");
+                    return this.Translate("LinkOptionsWindow_Edit");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Client
+        public string LinkOptionsWindow_Delete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Client");
+                    return this.Translate("LinkOptionsWindow_Delete");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Filters
+        public string LinkOptionsWindow_Cut
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Filters");
+                    return this.Translate("LinkOptionsWindow_Cut");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_ConnectionType
+        public string LinkOptionsWindow_Copy
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_ConnectionType");
+                    return this.Translate("LinkOptionsWindow_Copy");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_ProxyUri
+        public string LinkOptionsWindow_Paste
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_ProxyUri");
+                    return this.Translate("LinkOptionsWindow_Paste");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_UriCondition
+        public string LinkOptionsWindow_Ok
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_UriCondition");
+                    return this.Translate("LinkOptionsWindow_Ok");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Option
+        public string LinkOptionsWindow_Cancel
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Option");
+                    return this.Translate("LinkOptionsWindow_Cancel");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Type
+
+        public string CoreOptionsWindow_Title
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Type");
+                    return this.Translate("CoreOptionsWindow_Title");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Host
+        public string CoreOptionsWindow_BaseNode
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Host");
+                    return this.Translate("CoreOptionsWindow_BaseNode");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Server
+        public string CoreOptionsWindow_Node
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Server");
+                    return this.Translate("CoreOptionsWindow_Node");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_ListenUris
+        public string CoreOptionsWindow_Uris
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_ListenUris");
+                    return this.Translate("CoreOptionsWindow_Uris");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Events
+        public string CoreOptionsWindow_Uri
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Events");
+                    return this.Translate("CoreOptionsWindow_Uri");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Data
+        public string CoreOptionsWindow_OtherNodes
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Data");
+                    return this.Translate("CoreOptionsWindow_OtherNodes");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Bandwidth
+        public string CoreOptionsWindow_Nodes
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Bandwidth");
+                    return this.Translate("CoreOptionsWindow_Nodes");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_BandwidthLimit
+        public string CoreOptionsWindow_Client
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_BandwidthLimit");
+                    return this.Translate("CoreOptionsWindow_Client");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Transfer
+        public string CoreOptionsWindow_Filters
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Transfer");
+                    return this.Translate("CoreOptionsWindow_Filters");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_TransferLimitType
+        public string CoreOptionsWindow_ConnectionType
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_TransferLimitType");
+                    return this.Translate("CoreOptionsWindow_ConnectionType");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_TransferLimitSpan
+        public string CoreOptionsWindow_ProxyUri
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_TransferLimitSpan");
+                    return this.Translate("CoreOptionsWindow_ProxyUri");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_TransferLimitSize
+        public string CoreOptionsWindow_UriCondition
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_TransferLimitSize");
+                    return this.Translate("CoreOptionsWindow_UriCondition");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_TransferInformation
+        public string CoreOptionsWindow_Option
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_TransferInformation");
+                    return this.Translate("CoreOptionsWindow_Option");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Downloaded
+        public string CoreOptionsWindow_Type
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Downloaded");
+                    return this.Translate("CoreOptionsWindow_Type");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Uploaded
+        public string CoreOptionsWindow_Host
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Uploaded");
+                    return this.Translate("CoreOptionsWindow_Host");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Total
+        public string CoreOptionsWindow_Server
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Total");
+                    return this.Translate("CoreOptionsWindow_Server");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Reset
+        public string CoreOptionsWindow_ListenUris
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Reset");
+                    return this.Translate("CoreOptionsWindow_ListenUris");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_ConnectionCount
+        public string CoreOptionsWindow_Events
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_ConnectionCount");
+                    return this.Translate("CoreOptionsWindow_Events");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_DownloadDirectory
+        public string CoreOptionsWindow_Data
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_DownloadDirectory");
+                    return this.Translate("CoreOptionsWindow_Data");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_CacheSize
+        public string CoreOptionsWindow_Bandwidth
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_CacheSize");
+                    return this.Translate("CoreOptionsWindow_Bandwidth");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_AutoBaseNodeSetting
+        public string CoreOptionsWindow_BandwidthLimit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_AutoBaseNodeSetting");
+                    return this.Translate("CoreOptionsWindow_BandwidthLimit");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Tor
+        public string CoreOptionsWindow_Transfer
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Tor");
+                    return this.Translate("CoreOptionsWindow_Transfer");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Ipv4
+        public string CoreOptionsWindow_TransferLimitType
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Ipv4");
+                    return this.Translate("CoreOptionsWindow_TransferLimitType");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Ipv6
+        public string CoreOptionsWindow_TransferLimitSpan
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Ipv6");
+                    return this.Translate("CoreOptionsWindow_TransferLimitSpan");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Up
+        public string CoreOptionsWindow_TransferLimitSize
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Up");
+                    return this.Translate("CoreOptionsWindow_TransferLimitSize");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Down
+        public string CoreOptionsWindow_TransferInformation
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Down");
+                    return this.Translate("CoreOptionsWindow_TransferInformation");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Add
+        public string CoreOptionsWindow_Downloaded
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Add");
+                    return this.Translate("CoreOptionsWindow_Downloaded");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Edit
+        public string CoreOptionsWindow_Uploaded
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Edit");
+                    return this.Translate("CoreOptionsWindow_Uploaded");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Delete
+        public string CoreOptionsWindow_Total
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Delete");
+                    return this.Translate("CoreOptionsWindow_Total");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Ok
+        public string CoreOptionsWindow_Reset
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Ok");
+                    return this.Translate("CoreOptionsWindow_Reset");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Cancel
+        public string CoreOptionsWindow_ConnectionCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Cancel");
+                    return this.Translate("CoreOptionsWindow_ConnectionCount");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Cut
+        public string CoreOptionsWindow_DownloadDirectory
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Cut");
+                    return this.Translate("CoreOptionsWindow_DownloadDirectory");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Copy
+        public string CoreOptionsWindow_CacheSize
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Copy");
+                    return this.Translate("CoreOptionsWindow_CacheSize");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_Paste
+        public string CoreOptionsWindow_AutoBaseNodeSetting
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_Paste");
+                    return this.Translate("CoreOptionsWindow_AutoBaseNodeSetting");
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_CacheResize_Message
+        public string CoreOptionsWindow_Tor
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionsSettingsWindow_CacheResize_Message");
+                    return this.Translate("CoreOptionsWindow_Tor");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Ipv4
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Ipv4");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Ipv6
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Ipv6");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Up
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Up");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Down
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Down");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Add
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Add");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Edit
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Edit");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Delete");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Ok");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Cancel");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Cut");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Copy");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Paste");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_CacheResize_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_CacheResize_Message");
                 }
             }
         }
@@ -1456,476 +1593,332 @@ namespace Amoeba.Properties
         }
 
 
-        public string ViewSettingsWindow_Title
+        public string ViewOptionsWindow_Title
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Title");
+                    return this.Translate("ViewOptionsWindow_Title");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Update
+        public string ViewOptionsWindow_Update
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Update");
+                    return this.Translate("ViewOptionsWindow_Update");
                 }
             }
         }
 
-        public string ViewSettingsWindow_UpdateUrl
+        public string ViewOptionsWindow_UpdateUrl
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_UpdateUrl");
+                    return this.Translate("ViewOptionsWindow_UpdateUrl");
                 }
             }
         }
 
-        public string ViewSettingsWindow_ProxyUri
+        public string ViewOptionsWindow_ProxyUri
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_ProxyUri");
+                    return this.Translate("ViewOptionsWindow_ProxyUri");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Signature
+        public string ViewOptionsWindow_Signature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Signature");
+                    return this.Translate("ViewOptionsWindow_Signature");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Signatures
+        public string ViewOptionsWindow_Signatures
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Signatures");
+                    return this.Translate("ViewOptionsWindow_Signatures");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Keywords
+        public string ViewOptionsWindow_Keywords
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Keywords");
+                    return this.Translate("ViewOptionsWindow_Keywords");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Miscellaneous
+        public string ViewOptionsWindow_Miscellaneous
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Miscellaneous");
+                    return this.Translate("ViewOptionsWindow_Miscellaneous");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Box
+        public string ViewOptionsWindow_Box
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Box");
+                    return this.Translate("ViewOptionsWindow_Box");
                 }
             }
         }
 
-        public string ViewSettingsWindow_RelateBoxFile
+        public string ViewOptionsWindow_RelateBoxFile
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_RelateBoxFile");
+                    return this.Translate("ViewOptionsWindow_RelateBoxFile");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Events
+        public string ViewOptionsWindow_Events
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Events");
+                    return this.Translate("ViewOptionsWindow_Events");
                 }
             }
         }
 
-        public string ViewSettingsWindow_OpenBox
+        public string ViewOptionsWindow_OpenBox
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_OpenBox");
+                    return this.Translate("ViewOptionsWindow_OpenBox");
                 }
             }
         }
 
-        public string ViewSettingsWindow_ExtractTo
+        public string ViewOptionsWindow_ExtractTo
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_ExtractTo");
+                    return this.Translate("ViewOptionsWindow_ExtractTo");
                 }
             }
         }
 
-        public string ViewSettingsWindow_UpdateOption
+        public string ViewOptionsWindow_UpdateOption
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_UpdateOption");
+                    return this.Translate("ViewOptionsWindow_UpdateOption");
                 }
             }
         }
 
-        public string ViewSettingsWindow_None
+        public string ViewOptionsWindow_None
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_None");
+                    return this.Translate("ViewOptionsWindow_None");
                 }
             }
         }
 
-        public string ViewSettingsWindow_AutoCheck
+        public string ViewOptionsWindow_AutoCheck
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_AutoCheck");
+                    return this.Translate("ViewOptionsWindow_AutoCheck");
                 }
             }
         }
 
-        public string ViewSettingsWindow_AutoUpdate
+        public string ViewOptionsWindow_AutoUpdate
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_AutoUpdate");
+                    return this.Translate("ViewOptionsWindow_AutoUpdate");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Value
+        public string ViewOptionsWindow_Value
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Value");
+                    return this.Translate("ViewOptionsWindow_Value");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Import
+        public string ViewOptionsWindow_Import
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Import");
+                    return this.Translate("ViewOptionsWindow_Import");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Export
+        public string ViewOptionsWindow_Export
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Export");
+                    return this.Translate("ViewOptionsWindow_Export");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Up
+        public string ViewOptionsWindow_Up
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Up");
+                    return this.Translate("ViewOptionsWindow_Up");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Down
+        public string ViewOptionsWindow_Down
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Down");
+                    return this.Translate("ViewOptionsWindow_Down");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Add
+        public string ViewOptionsWindow_Add
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Add");
+                    return this.Translate("ViewOptionsWindow_Add");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Edit
+        public string ViewOptionsWindow_Edit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Edit");
+                    return this.Translate("ViewOptionsWindow_Edit");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Delete
+        public string ViewOptionsWindow_Delete
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Delete");
+                    return this.Translate("ViewOptionsWindow_Delete");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Ok
+        public string ViewOptionsWindow_Ok
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Ok");
+                    return this.Translate("ViewOptionsWindow_Ok");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Cancel
+        public string ViewOptionsWindow_Cancel
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Cancel");
+                    return this.Translate("ViewOptionsWindow_Cancel");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Cut
+        public string ViewOptionsWindow_Cut
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Cut");
+                    return this.Translate("ViewOptionsWindow_Cut");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Copy
+        public string ViewOptionsWindow_Copy
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Copy");
+                    return this.Translate("ViewOptionsWindow_Copy");
                 }
             }
         }
 
-        public string ViewSettingsWindow_Paste
+        public string ViewOptionsWindow_Paste
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ViewSettingsWindow_Paste");
-                }
-            }
-        }
-
-
-        public string LinkWindow_Title
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Title");
-                }
-            }
-        }
-
-        public string LinkWindow_Download
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Download");
-                }
-            }
-        }
-
-        public string LinkWindow_Upload
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Upload");
-                }
-            }
-        }
-
-        public string LinkWindow_LinkerSignature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_LinkerSignature");
-                }
-            }
-        }
-
-        public string LinkWindow_TrustSignature
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_TrustSignature");
-                }
-            }
-        }
-
-        public string LinkWindow_New
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_New");
-                }
-            }
-        }
-
-        public string LinkWindow_Edit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Edit");
-                }
-            }
-        }
-
-        public string LinkWindow_Delete
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Delete");
-                }
-            }
-        }
-
-        public string LinkWindow_Cut
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Cut");
-                }
-            }
-        }
-
-        public string LinkWindow_Copy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Copy");
-                }
-            }
-        }
-
-        public string LinkWindow_Paste
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Paste");
-                }
-            }
-        }
-
-        public string LinkWindow_Ok
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Ok");
-                }
-            }
-        }
-
-        public string LinkWindow_Cancel
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("LinkWindow_Cancel");
+                    return this.Translate("ViewOptionsWindow_Paste");
                 }
             }
         }

@@ -105,7 +105,7 @@ namespace Amoeba.Windows
             {
                 if (e.OriginalSource != _mainWindow._tabControl && e.OriginalSource != _storeControl._tabControl) return;
 
-                if (MainWindow.SelectTab == TabType.Store && StoreControl.SelectTab == TabType.Store_Download)
+                if (_mainWindow.SelectedTab == MainWindowTabType.Store && _storeControl.SelectedTab == StoreControlTabType.Download)
                 {
                     if (!_refresh) this.Update_Title();
                     _autoResetEvent.Set();
@@ -148,19 +148,19 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (!_refresh) continue;
 
-                    TreeViewItem selectTreeViewItem = null;
+                    TreeViewItem tempTreeViewItem = null;
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
-                        selectTreeViewItem = (TreeViewItem)_treeView.SelectedItem;
+                        tempTreeViewItem = (TreeViewItem)_treeView.SelectedItem;
                         _listView.ContextMenu.IsOpen = false;
                     }));
 
-                    if (selectTreeViewItem is StoreCategorizeTreeViewItem)
+                    if (tempTreeViewItem is StoreCategorizeTreeViewItem)
                     {
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
-                            if (selectTreeViewItem != _treeView.SelectedItem) return;
+                            if (tempTreeViewItem != _treeView.SelectedItem) return;
                             _refresh = false;
 
                             _listView.Items.Clear();
@@ -168,20 +168,20 @@ namespace Amoeba.Windows
                             this.Update_Title();
                         }));
                     }
-                    else if (selectTreeViewItem is StoreTreeViewItem || selectTreeViewItem is BoxTreeViewItem)
+                    else if (tempTreeViewItem is StoreTreeViewItem || tempTreeViewItem is BoxTreeViewItem)
                     {
                         BoxCollection boxes = new BoxCollection();
                         SeedCollection seeds = new SeedCollection();
 
-                        if (selectTreeViewItem is StoreTreeViewItem)
+                        if (tempTreeViewItem is StoreTreeViewItem)
                         {
-                            var storeTreeViewItem = (StoreTreeViewItem)selectTreeViewItem;
+                            var storeTreeViewItem = (StoreTreeViewItem)tempTreeViewItem;
 
                             boxes.AddRange(storeTreeViewItem.Value.Boxes);
                         }
-                        else if (selectTreeViewItem is BoxTreeViewItem)
+                        else if (tempTreeViewItem is BoxTreeViewItem)
                         {
-                            var boxTreeViewItem = (BoxTreeViewItem)selectTreeViewItem;
+                            var boxTreeViewItem = (BoxTreeViewItem)tempTreeViewItem;
 
                             boxes.AddRange(boxTreeViewItem.Value.Boxes);
                             seeds.AddRange(boxTreeViewItem.Value.Seeds);
@@ -263,7 +263,7 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
-                            if (selectTreeViewItem != _treeView.SelectedItem) return;
+                            if (tempTreeViewItem != _treeView.SelectedItem) return;
                             _refresh = false;
 
                             _listView.SelectedItems.Clear();
@@ -413,12 +413,10 @@ namespace Amoeba.Windows
                             var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
                             if (store == null || Collection.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
 
-                            StoreTreeItem storeTreeItem = new StoreTreeItem();
-                            storeTreeItem.Signature = storeTreeViewItem.Value.Signature;
-                            storeTreeItem.Boxes.AddRange(store.Boxes);
-                            storeTreeItem.IsUpdated = true;
+                            storeTreeViewItem.Value.Boxes.Clear();
+                            storeTreeViewItem.Value.Boxes.AddRange(store.Boxes);
+                            storeTreeViewItem.Value.IsUpdated = true;
 
-                            storeTreeViewItem.Value = storeTreeItem;
                             storeTreeViewItem.Update();
 
                             isUpdate = true;
@@ -434,7 +432,7 @@ namespace Amoeba.Windows
 
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 
-                    while (MainWindow.SelectTab != TabType.Store || StoreControl.SelectTab != TabType.Store_Download)
+                    while (_mainWindow.SelectedTab != MainWindowTabType.Store || _storeControl.SelectedTab != StoreControlTabType.Download)
                     {
                         Thread.Sleep(1000);
                     }
@@ -572,7 +570,7 @@ namespace Amoeba.Windows
         {
             if (_refresh) return;
 
-            if (MainWindow.SelectTab == TabType.Store && StoreControl.SelectTab == TabType.Store_Download)
+            if (_mainWindow.SelectedTab == MainWindowTabType.Store && _storeControl.SelectedTab == StoreControlTabType.Download)
             {
                 if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
                 {
@@ -1399,18 +1397,20 @@ namespace Amoeba.Windows
 
             if (_refresh || _treeView.SelectedItem is StoreCategorizeTreeViewItem)
             {
-                _listViewCopyMenuItem.IsEnabled = false;
-                _listViewCopyInfoMenuItem.IsEnabled = false;
-                _listViewDownloadMenuItem.IsEnabled = false;
+                _listViewContextMenu.IsEnabled = false;
 
-                return;
+                e.Handled = true;
             }
+            else
+            {
+                _listViewContextMenu.IsEnabled = true;
 
-            var selectItems = _listView.SelectedItems;
+                var selectItems = _listView.SelectedItems;
 
-            _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+                _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+                _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+                _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            }
         }
 
         private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)

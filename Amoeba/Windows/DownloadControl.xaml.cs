@@ -33,7 +33,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<DownloadListViewItem> _listViewItemCollection = new ObservableCollection<DownloadListViewItem>();
+        private ObservableCollectionEx<DownloadListViewItem> _listViewItemCollection = new ObservableCollectionEx<DownloadListViewItem>();
         private object _listLock = new object();
 
         private Thread _showDownloadItemThread;
@@ -75,7 +75,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (MainWindow.SelectTab != TabType.Download) continue;
+                    if (_mainWindow.SelectedTab != MainWindowTabType.Download) continue;
 
                     var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();

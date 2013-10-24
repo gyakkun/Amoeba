@@ -24,14 +24,15 @@ namespace Amoeba.Windows
     partial class SearchItemEditWindow : Window
     {
         private SearchItem _searchItem;
-        private ObservableCollection<SearchContains<string>> _searchNameCollection;
-        private ObservableCollection<SearchContains<SearchRegex>> _searchNameRegexCollection;
-        private ObservableCollection<SearchContains<SearchRegex>> _searchSignatureCollection;
-        private ObservableCollection<SearchContains<string>> _searchKeywordCollection;
-        private ObservableCollection<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRangeCollection;
-        private ObservableCollection<SearchContains<SearchRange<long>>> _searchLengthRangeCollection;
-        private ObservableCollection<SearchContains<Seed>> _searchSeedCollection;
-        private ObservableCollection<SearchContains<SearchState>> _searchStateCollection;
+
+        private ObservableCollectionEx<SearchContains<string>> _nameCollection;
+        private ObservableCollectionEx<SearchContains<SearchRegex>> _nameRegexCollection;
+        private ObservableCollectionEx<SearchContains<SearchRegex>> _signatureCollection;
+        private ObservableCollectionEx<SearchContains<string>> _keywordCollection;
+        private ObservableCollectionEx<SearchContains<SearchRange<DateTime>>> _creationTimeRangeCollection;
+        private ObservableCollectionEx<SearchContains<SearchRange<long>>> _lengthRangeCollection;
+        private ObservableCollectionEx<SearchContains<Seed>> _seedCollection;
+        private ObservableCollectionEx<SearchContains<SearchState>> _stateCollection;
 
         public SearchItemEditWindow(ref SearchItem searchItem)
         {
@@ -50,51 +51,44 @@ namespace Amoeba.Windows
                 this.Icon = icon;
             }
 
+            foreach (var item in Enum.GetValues(typeof(SearchState)).Cast<SearchState>())
+            {
+                _stateComboBox.Items.Add(item);
+            }
+
             lock (_searchItem.ThisLock)
             {
                 _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
 
-                _searchNameCollection = new ObservableCollection<SearchContains<string>>(_searchItem.SearchNameCollection.Select(n => n.DeepClone()));
-                _searchNameRegexCollection = new ObservableCollection<SearchContains<SearchRegex>>(_searchItem.SearchNameRegexCollection.Select(n => n.DeepClone()));
-                _searchSignatureCollection = new ObservableCollection<SearchContains<SearchRegex>>(_searchItem.SearchSignatureCollection.Select(n => n.DeepClone()));
-                _searchKeywordCollection = new ObservableCollection<SearchContains<string>>(_searchItem.SearchKeywordCollection.Select(n => n.DeepClone()));
-                _searchCreationTimeRangeCollection = new ObservableCollection<SearchContains<SearchRange<DateTime>>>(_searchItem.SearchCreationTimeRangeCollection.Select(n => n.DeepClone()));
-                _searchLengthRangeCollection = new ObservableCollection<SearchContains<SearchRange<long>>>(_searchItem.SearchLengthRangeCollection.Select(n => n.DeepClone()));
-                _searchSeedCollection = new ObservableCollection<SearchContains<Seed>>(_searchItem.SearchSeedCollection.Select(n => n.DeepClone()));
-                _searchStateCollection = new ObservableCollection<SearchContains<SearchState>>(_searchItem.SearchStateCollection.Select(n => n.DeepClone()));
+                _nameCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchNameCollection.Select(n => n.DeepClone()));
+                _nameRegexCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchNameRegexCollection.Select(n => n.DeepClone()));
+                _signatureCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchSignatureCollection.Select(n => n.DeepClone()));
+                _keywordCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchKeywordCollection.Select(n => n.DeepClone()));
+                _creationTimeRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<DateTime>>>(_searchItem.SearchCreationTimeRangeCollection.Select(n => n.DeepClone()));
+                _lengthRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<long>>>(_searchItem.SearchLengthRangeCollection.Select(n => n.DeepClone()));
+                _seedCollection = new ObservableCollectionEx<SearchContains<Seed>>(_searchItem.SearchSeedCollection.Select(n => n.DeepClone()));
+                _stateCollection = new ObservableCollectionEx<SearchContains<SearchState>>(_searchItem.SearchStateCollection.Select(n => n.DeepClone()));
             }
-
-            _nameContainsCheckBox.IsChecked = true;
-            _nameRegexContainsCheckBox.IsChecked = true;
-            _signatureContainsCheckBox.IsChecked = true;
-            _keywordContainsCheckBox.IsChecked = true;
-            _creationTimeRangeContainsCheckBox.IsChecked = true;
-            _lengthRangeContainsCheckBox.IsChecked = true;
-            _seedContainsCheckBox.IsChecked = true;
-            _searchStateContainsCheckBox.IsChecked = true;
-
-            _nameListView.ItemsSource = _searchNameCollection;
-            _nameRegexListView.ItemsSource = _searchNameRegexCollection;
-            _signatureListView.ItemsSource = _searchSignatureCollection;
-            _keywordListView.ItemsSource = _searchKeywordCollection;
-            _creationTimeRangeListView.ItemsSource = _searchCreationTimeRangeCollection;
-            _lengthRangeListView.ItemsSource = _searchLengthRangeCollection;
-            _seedListView.ItemsSource = _searchSeedCollection;
-            _searchStateListView.ItemsSource = _searchStateCollection;
-
-            var maxDateTime = DateTime.Now.AddDays(1);
-
-            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeMaxTextBox.Text = new DateTime(maxDateTime.Year, maxDateTime.Month, maxDateTime.Day, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-
-            foreach (var item in Enum.GetValues(typeof(SearchState)).Cast<SearchState>())
-            {
-                _searchStateComboBox.Items.Add(item);
-            }
-
-            _searchStateComboBox.SelectedIndex = -1;
 
             _searchTreeViewItemNameTextBox_TextChanged(null, null);
+
+            _nameListView.ItemsSource = _nameCollection;
+            _nameRegexListView.ItemsSource = _nameRegexCollection;
+            _signatureListView.ItemsSource = _signatureCollection;
+            _keywordListView.ItemsSource = _keywordCollection;
+            _creationTimeRangeListView.ItemsSource = _creationTimeRangeCollection;
+            _lengthRangeListView.ItemsSource = _lengthRangeCollection;
+            _seedListView.ItemsSource = _seedCollection;
+            _stateListView.ItemsSource = _stateCollection;
+
+            _nameListViewUpdate();
+            _nameRegexListViewUpdate();
+            _signatureListViewUpdate();
+            _keywordListViewUpdate();
+            _creationTimeRangeListViewUpdate();
+            _lengthRangeListViewUpdate();
+            _seedListViewUpdate();
+            _stateListViewUpdate();
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -115,7 +109,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _nameAddButton_Click(null, null);
+                if (_nameListView.SelectedIndex == -1)
+                {
+                    _nameAddButton_Click(null, null);
+                }
+                else
+                {
+                    _nameEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -148,7 +149,7 @@ namespace Amoeba.Windows
                         _nameUpButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _searchNameCollection.Count - 1)
+                    if (selectIndex == _nameCollection.Count - 1)
                     {
                         _nameDownButton.IsEnabled = false;
                     }
@@ -173,6 +174,7 @@ namespace Amoeba.Windows
             {
                 _nameContainsCheckBox.IsChecked = true;
                 _nameTextBox.Text = "";
+
                 return;
             }
 
@@ -244,19 +246,15 @@ namespace Amoeba.Windows
                         Value = match.Groups[2].Value,
                     };
 
-                    if (_searchNameCollection.Contains(item)) continue;
-                    _searchNameCollection.Add(item);
+                    if (_nameCollection.Contains(item)) continue;
+                    _nameCollection.Add(item);
                 }
                 catch (Exception)
                 {
-                    continue;
+
                 }
             }
 
-            _nameTextBox.Text = "";
-            _nameListView.SelectedIndex = _searchNameCollection.Count - 1;
-
-            _nameListView.Items.Refresh();
             _nameListViewUpdate();
         }
 
@@ -268,7 +266,7 @@ namespace Amoeba.Windows
             var selectIndex = _nameListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchNameCollection.Move(selectIndex, selectIndex - 1);
+            _nameCollection.Move(selectIndex, selectIndex - 1);
 
             _nameListViewUpdate();
         }
@@ -281,7 +279,7 @@ namespace Amoeba.Windows
             var selectIndex = _nameListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchNameCollection.Move(selectIndex, selectIndex + 1);
+            _nameCollection.Move(selectIndex, selectIndex + 1);
 
             _nameListViewUpdate();
         }
@@ -296,13 +294,9 @@ namespace Amoeba.Windows
                 Value = _nameTextBox.Text,
             };
 
-            if (_searchNameCollection.Contains(item)) return;
-            _searchNameCollection.Add(item);
+            if (_nameCollection.Contains(item)) return;
+            _nameCollection.Add(item);
 
-            _nameTextBox.Text = "";
-            _nameListView.SelectedIndex = _searchNameCollection.Count - 1;
-
-            _nameListView.Items.Refresh();
             _nameListViewUpdate();
         }
 
@@ -310,21 +304,20 @@ namespace Amoeba.Windows
         {
             if (_nameTextBox.Text == "") return;
 
-            var uitem = new SearchContains<string>()
+            var selectIndex = _nameListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            var item = new SearchContains<string>()
             {
                 Contains = _nameContainsCheckBox.IsChecked.Value,
                 Value = _nameTextBox.Text,
             };
 
-            if (_searchNameCollection.Contains(uitem)) return;
+            if (_nameCollection.Contains(item)) return;
+            _nameCollection.Set(selectIndex, item);
 
-            var item = _nameListView.SelectedItem as SearchContains<string>;
-            if (item == null) return;
+            _nameListView.SelectedIndex = selectIndex;
 
-            item.Contains = _nameContainsCheckBox.IsChecked.Value;
-            item.Value = _nameTextBox.Text;
-
-            _nameListView.Items.Refresh();
             _nameListViewUpdate();
         }
 
@@ -333,15 +326,11 @@ namespace Amoeba.Windows
             int selectIndex = _nameListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _nameTextBox.Text = "";
-
             foreach (var item in _nameListView.SelectedItems.OfType<SearchContains<string>>().ToArray())
             {
-                _searchNameCollection.Remove(item);
+                _nameCollection.Remove(item);
             }
 
-            _nameListView.Items.Refresh();
-            _nameListView.SelectedIndex = selectIndex;
             _nameListViewUpdate();
         }
 
@@ -353,7 +342,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _nameRegexAddButton_Click(null, null);
+                if (_nameRegexListView.SelectedIndex == -1)
+                {
+                    _nameRegexAddButton_Click(null, null);
+                }
+                else
+                {
+                    _nameRegexEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -386,7 +382,7 @@ namespace Amoeba.Windows
                         _nameRegexUpButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _searchNameRegexCollection.Count - 1)
+                    if (selectIndex == _nameRegexCollection.Count - 1)
                     {
                         _nameRegexDownButton.IsEnabled = false;
                     }
@@ -412,6 +408,7 @@ namespace Amoeba.Windows
                 _nameRegexContainsCheckBox.IsChecked = true;
                 _nameRegexIsIgnoreCaseCheckBox.IsChecked = false;
                 _nameRegexTextBox.Text = "";
+
                 return;
             }
 
@@ -478,15 +475,6 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    try
-                    {
-                        new Regex(match.Groups[3].Value);
-                    }
-                    catch (Exception)
-                    {
-                        return;
-                    }
-
                     var item = new SearchContains<SearchRegex>()
                     {
                         Contains = (match.Groups[1].Value == "+") ? true : false,
@@ -497,19 +485,15 @@ namespace Amoeba.Windows
                         },
                     };
 
-                    if (_searchNameRegexCollection.Contains(item)) continue;
-                    _searchNameRegexCollection.Add(item);
+                    if (_nameRegexCollection.Contains(item)) continue;
+                    _nameRegexCollection.Add(item);
                 }
                 catch (Exception)
                 {
-                    continue;
+
                 }
             }
 
-            _nameRegexTextBox.Text = "";
-            _nameRegexListView.SelectedIndex = _searchNameRegexCollection.Count - 1;
-
-            _nameRegexListView.Items.Refresh();
             _nameRegexListViewUpdate();
         }
 
@@ -521,7 +505,7 @@ namespace Amoeba.Windows
             var selectIndex = _nameRegexListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchNameRegexCollection.Move(selectIndex, selectIndex - 1);
+            _nameRegexCollection.Move(selectIndex, selectIndex - 1);
 
             _nameRegexListViewUpdate();
         }
@@ -534,7 +518,7 @@ namespace Amoeba.Windows
             var selectIndex = _nameRegexListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchNameRegexCollection.Move(selectIndex, selectIndex + 1);
+            _nameRegexCollection.Move(selectIndex, selectIndex + 1);
 
             _nameRegexListViewUpdate();
         }
@@ -555,18 +539,14 @@ namespace Amoeba.Windows
                     },
                 };
 
-                if (_searchNameRegexCollection.Contains(item)) return;
-                _searchNameRegexCollection.Add(item);
+                if (_nameRegexCollection.Contains(item)) return;
+                _nameRegexCollection.Add(item);
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _nameRegexTextBox.Text = "";
-            _nameRegexListView.SelectedIndex = _searchNameRegexCollection.Count - 1;
-
-            _nameRegexListView.Items.Refresh();
             _nameRegexListViewUpdate();
         }
 
@@ -574,10 +554,12 @@ namespace Amoeba.Windows
         {
             if (_nameRegexTextBox.Text == "") return;
 
+            int selectIndex = _nameRegexListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
             try
             {
-
-                var uitem = new SearchContains<SearchRegex>()
+                var item = new SearchContains<SearchRegex>()
                 {
                     Contains = _nameRegexContainsCheckBox.IsChecked.Value,
                     Value = new SearchRegex()
@@ -587,20 +569,16 @@ namespace Amoeba.Windows
                     },
                 };
 
-                if (_searchNameRegexCollection.Contains(uitem)) return;
+                if (_nameRegexCollection.Contains(item)) return;
+                _nameRegexCollection.Set(selectIndex, item);
 
-                var item = _nameRegexListView.SelectedItem as SearchContains<SearchRegex>;
-                if (item == null) return;
-
-                item.Contains = _nameRegexContainsCheckBox.IsChecked.Value;
-                item.Value = new SearchRegex() { IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value, Value = _nameRegexTextBox.Text };
+                _nameRegexListView.SelectedIndex = selectIndex;
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _nameRegexListView.Items.Refresh();
             _nameRegexListViewUpdate();
         }
 
@@ -609,15 +587,11 @@ namespace Amoeba.Windows
             int selectIndex = _nameRegexListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _nameRegexTextBox.Text = "";
-
             foreach (var item in _nameRegexListView.SelectedItems.OfType<SearchContains<SearchRegex>>().ToArray())
             {
-                _searchNameRegexCollection.Remove(item);
+                _nameRegexCollection.Remove(item);
             }
 
-            _nameRegexListView.Items.Refresh();
-            _nameRegexListView.SelectedIndex = selectIndex;
             _nameRegexListViewUpdate();
         }
 
@@ -629,7 +603,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _signatureAddButton_Click(null, null);
+                if (_signatureListView.SelectedIndex == -1)
+                {
+                    _signatureAddButton_Click(null, null);
+                }
+                else
+                {
+                    _signatureEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -662,7 +643,7 @@ namespace Amoeba.Windows
                         _signatureUpButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _searchSignatureCollection.Count - 1)
+                    if (selectIndex == _signatureCollection.Count - 1)
                     {
                         _signatureDownButton.IsEnabled = false;
                     }
@@ -688,6 +669,7 @@ namespace Amoeba.Windows
                 _signatureContainsCheckBox.IsChecked = true;
                 _signatureIsIgnoreCaseCheckBox.IsChecked = false;
                 _signatureTextBox.Text = "";
+
                 return;
             }
 
@@ -754,15 +736,6 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    try
-                    {
-                        new Regex(match.Groups[3].Value);
-                    }
-                    catch (Exception)
-                    {
-                        return;
-                    }
-
                     var item = new SearchContains<SearchRegex>()
                     {
                         Contains = (match.Groups[1].Value == "+") ? true : false,
@@ -773,19 +746,15 @@ namespace Amoeba.Windows
                         },
                     };
 
-                    if (_searchSignatureCollection.Contains(item)) continue;
-                    _searchSignatureCollection.Add(item);
+                    if (_signatureCollection.Contains(item)) continue;
+                    _signatureCollection.Add(item);
                 }
                 catch (Exception)
                 {
-                    continue;
+
                 }
             }
 
-            _signatureTextBox.Text = "";
-            _signatureListView.SelectedIndex = _searchSignatureCollection.Count - 1;
-
-            _signatureListView.Items.Refresh();
             _signatureListViewUpdate();
         }
 
@@ -797,7 +766,7 @@ namespace Amoeba.Windows
             var selectIndex = _signatureListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchSignatureCollection.Move(selectIndex, selectIndex - 1);
+            _signatureCollection.Move(selectIndex, selectIndex - 1);
 
             _signatureListViewUpdate();
         }
@@ -810,7 +779,7 @@ namespace Amoeba.Windows
             var selectIndex = _signatureListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchSignatureCollection.Move(selectIndex, selectIndex + 1);
+            _signatureCollection.Move(selectIndex, selectIndex + 1);
 
             _signatureListViewUpdate();
         }
@@ -831,18 +800,14 @@ namespace Amoeba.Windows
                     },
                 };
 
-                if (_searchSignatureCollection.Contains(item)) return;
-                _searchSignatureCollection.Add(item);
+                if (_signatureCollection.Contains(item)) return;
+                _signatureCollection.Add(item);
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _signatureTextBox.Text = "";
-            _signatureListView.SelectedIndex = _searchSignatureCollection.Count - 1;
-
-            _signatureListView.Items.Refresh();
             _signatureListViewUpdate();
         }
 
@@ -850,10 +815,12 @@ namespace Amoeba.Windows
         {
             if (_signatureTextBox.Text == "") return;
 
+            var selectIndex = _signatureListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
             try
             {
-
-                var uitem = new SearchContains<SearchRegex>()
+                var item = new SearchContains<SearchRegex>()
                 {
                     Contains = _signatureContainsCheckBox.IsChecked.Value,
                     Value = new SearchRegex()
@@ -863,20 +830,16 @@ namespace Amoeba.Windows
                     },
                 };
 
-                if (_searchSignatureCollection.Contains(uitem)) return;
+                if (_signatureCollection.Contains(item)) return;
+                _signatureCollection.Set(selectIndex, item);
 
-                var item = _signatureListView.SelectedItem as SearchContains<SearchRegex>;
-                if (item == null) return;
-
-                item.Contains = _signatureContainsCheckBox.IsChecked.Value;
-                item.Value = new SearchRegex() { IsIgnoreCase = _signatureIsIgnoreCaseCheckBox.IsChecked.Value, Value = _signatureTextBox.Text };
+                _signatureListView.SelectedIndex = selectIndex;
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _signatureListView.Items.Refresh();
             _signatureListViewUpdate();
         }
 
@@ -885,15 +848,11 @@ namespace Amoeba.Windows
             int selectIndex = _signatureListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _signatureTextBox.Text = "";
-
             foreach (var item in _signatureListView.SelectedItems.OfType<SearchContains<SearchRegex>>().ToArray())
             {
-                _searchSignatureCollection.Remove(item);
+                _signatureCollection.Remove(item);
             }
 
-            _signatureListView.Items.Refresh();
-            _signatureListView.SelectedIndex = selectIndex;
             _signatureListViewUpdate();
         }
 
@@ -905,7 +864,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _keywordAddButton_Click(null, null);
+                if (_keywordListView.SelectedIndex == -1)
+                {
+                    _keywordAddButton_Click(null, null);
+                }
+                else
+                {
+                    _keywordEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -938,7 +904,7 @@ namespace Amoeba.Windows
                         _keywordUpButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _searchKeywordCollection.Count - 1)
+                    if (selectIndex == _keywordCollection.Count - 1)
                     {
                         _keywordDownButton.IsEnabled = false;
                     }
@@ -963,6 +929,7 @@ namespace Amoeba.Windows
             {
                 _keywordContainsCheckBox.IsChecked = true;
                 _keywordTextBox.Text = "";
+
                 return;
             }
 
@@ -1034,19 +1001,15 @@ namespace Amoeba.Windows
                         Value = match.Groups[2].Value,
                     };
 
-                    if (_searchKeywordCollection.Contains(item)) continue;
-                    _searchKeywordCollection.Add(item);
+                    if (_keywordCollection.Contains(item)) continue;
+                    _keywordCollection.Add(item);
                 }
                 catch (Exception)
                 {
-                    continue;
+
                 }
             }
 
-            _keywordTextBox.Text = "";
-            _keywordListView.SelectedIndex = _searchKeywordCollection.Count - 1;
-
-            _keywordListView.Items.Refresh();
             _keywordListViewUpdate();
         }
 
@@ -1058,7 +1021,7 @@ namespace Amoeba.Windows
             var selectIndex = _keywordListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchKeywordCollection.Move(selectIndex, selectIndex - 1);
+            _keywordCollection.Move(selectIndex, selectIndex - 1);
 
             _keywordListViewUpdate();
         }
@@ -1071,7 +1034,7 @@ namespace Amoeba.Windows
             var selectIndex = _keywordListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchKeywordCollection.Move(selectIndex, selectIndex + 1);
+            _keywordCollection.Move(selectIndex, selectIndex + 1);
 
             _keywordListViewUpdate();
         }
@@ -1086,13 +1049,9 @@ namespace Amoeba.Windows
                 Value = _keywordTextBox.Text,
             };
 
-            if (_searchKeywordCollection.Contains(item)) return;
-            _searchKeywordCollection.Add(item);
+            if (_keywordCollection.Contains(item)) return;
+            _keywordCollection.Add(item);
 
-            _keywordTextBox.Text = "";
-            _keywordListView.SelectedIndex = _searchKeywordCollection.Count - 1;
-
-            _keywordListView.Items.Refresh();
             _keywordListViewUpdate();
         }
 
@@ -1100,21 +1059,20 @@ namespace Amoeba.Windows
         {
             if (_keywordTextBox.Text == "") return;
 
-            var uitem = new SearchContains<string>()
+            int selectIndex = _keywordListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            var item = new SearchContains<string>()
             {
                 Contains = _keywordContainsCheckBox.IsChecked.Value,
                 Value = _keywordTextBox.Text,
             };
 
-            if (_searchKeywordCollection.Contains(uitem)) return;
+            if (_keywordCollection.Contains(item)) return;
+            _keywordCollection.Set(selectIndex, item);
 
-            var item = _keywordListView.SelectedItem as SearchContains<string>;
-            if (item == null) return;
+            _keywordListView.SelectedIndex = selectIndex;
 
-            item.Contains = _keywordContainsCheckBox.IsChecked.Value;
-            item.Value = _keywordTextBox.Text;
-
-            _keywordListView.Items.Refresh();
             _keywordListViewUpdate();
         }
 
@@ -1123,15 +1081,11 @@ namespace Amoeba.Windows
             int selectIndex = _keywordListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _keywordTextBox.Text = "";
-
             foreach (var item in _keywordListView.SelectedItems.OfType<SearchContains<string>>().ToArray())
             {
-                _searchKeywordCollection.Remove(item);
+                _keywordCollection.Remove(item);
             }
 
-            _keywordListView.Items.Refresh();
-            _keywordListView.SelectedIndex = selectIndex;
             _keywordListViewUpdate();
         }
 
@@ -1143,7 +1097,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _creationTimeRangeMaxTextBox.Focus();
+                if (_creationTimeRangeListView.SelectedIndex == -1)
+                {
+                    _creationTimeRangeAddButton_Click(null, null);
+                }
+                else
+                {
+                    _creationTimeRangeEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -1187,7 +1148,7 @@ namespace Amoeba.Windows
                         _creationTimeRangeUpButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _searchCreationTimeRangeCollection.Count - 1)
+                    if (selectIndex == _creationTimeRangeCollection.Count - 1)
                     {
                         _creationTimeRangeDownButton.IsEnabled = false;
                     }
@@ -1216,6 +1177,7 @@ namespace Amoeba.Windows
 
                 _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 _creationTimeRangeMaxTextBox.Text = new DateTime(maxDateTime.Year, maxDateTime.Month, maxDateTime.Day, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+
                 return;
             }
 
@@ -1294,22 +1256,15 @@ namespace Amoeba.Windows
                         },
                     };
 
-                    if (_searchCreationTimeRangeCollection.Contains(item)) continue;
-                    _searchCreationTimeRangeCollection.Add(item);
+                    if (_creationTimeRangeCollection.Contains(item)) continue;
+                    _creationTimeRangeCollection.Add(item);
                 }
                 catch (Exception)
                 {
-                    continue;
+
                 }
             }
 
-            var maxDateTime = DateTime.Now.AddDays(1);
-
-            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeMaxTextBox.Text = new DateTime(maxDateTime.Year, maxDateTime.Month, maxDateTime.Day, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeListView.SelectedIndex = _searchCreationTimeRangeCollection.Count - 1;
-
-            _creationTimeRangeListView.Items.Refresh();
             _creationTimeRangeListViewUpdate();
         }
 
@@ -1321,7 +1276,7 @@ namespace Amoeba.Windows
             var selectIndex = _creationTimeRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchCreationTimeRangeCollection.Move(selectIndex, selectIndex - 1);
+            _creationTimeRangeCollection.Move(selectIndex, selectIndex - 1);
 
             _creationTimeRangeListViewUpdate();
         }
@@ -1334,7 +1289,7 @@ namespace Amoeba.Windows
             var selectIndex = _creationTimeRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchCreationTimeRangeCollection.Move(selectIndex, selectIndex + 1);
+            _creationTimeRangeCollection.Move(selectIndex, selectIndex + 1);
 
             _creationTimeRangeListViewUpdate();
         }
@@ -1356,21 +1311,14 @@ namespace Amoeba.Windows
                     }
                 };
 
-                if (_searchCreationTimeRangeCollection.Contains(item)) return;
-                _searchCreationTimeRangeCollection.Add(item);
+                if (_creationTimeRangeCollection.Contains(item)) return;
+                _creationTimeRangeCollection.Add(item);
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            var maxDateTime = DateTime.Now.AddDays(1);
-
-            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeMaxTextBox.Text = new DateTime(maxDateTime.Year, maxDateTime.Month, maxDateTime.Day, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeListView.SelectedIndex = _searchCreationTimeRangeCollection.Count - 1;
-
-            _creationTimeRangeListView.Items.Refresh();
             _creationTimeRangeListViewUpdate();
         }
 
@@ -1379,9 +1327,12 @@ namespace Amoeba.Windows
             if (_creationTimeRangeMinTextBox.Text == "") return;
             if (_creationTimeRangeMaxTextBox.Text == "") return;
 
+            int selectIndex = _creationTimeRangeListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
             try
             {
-                var uitem = new SearchContains<SearchRange<DateTime>>()
+                var item = new SearchContains<SearchRange<DateTime>>()
                 {
                     Contains = _creationTimeRangeContainsCheckBox.IsChecked.Value,
                     Value = new SearchRange<DateTime>()
@@ -1391,21 +1342,16 @@ namespace Amoeba.Windows
                     }
                 };
 
-                if (_searchCreationTimeRangeCollection.Contains(uitem)) return;
+                if (_creationTimeRangeCollection.Contains(item)) return;
+                _creationTimeRangeCollection.Set(selectIndex, item);
 
-                var item = _creationTimeRangeListView.SelectedItem as SearchContains<SearchRange<DateTime>>;
-                if (item == null) return;
-
-                item.Contains = _creationTimeRangeContainsCheckBox.IsChecked.Value;
-                item.Value.Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
-                item.Value.Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
+                _creationTimeRangeListView.SelectedIndex = selectIndex;
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _creationTimeRangeListView.Items.Refresh();
             _creationTimeRangeListViewUpdate();
         }
 
@@ -1414,18 +1360,11 @@ namespace Amoeba.Windows
             int selectIndex = _creationTimeRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            var maxDateTime = DateTime.Now.AddDays(1);
-
-            _creationTimeRangeMinTextBox.Text = new DateTime(DateTime.Now.Year, 1, 1, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-            _creationTimeRangeMaxTextBox.Text = new DateTime(maxDateTime.Year, maxDateTime.Month, maxDateTime.Day, 0, 0, 0, DateTimeKind.Local).ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-
             foreach (var item in _creationTimeRangeListView.SelectedItems.OfType<SearchContains<SearchRange<DateTime>>>().ToArray())
             {
-                _searchCreationTimeRangeCollection.Remove(item);
+                _creationTimeRangeCollection.Remove(item);
             }
 
-            _creationTimeRangeListView.Items.Refresh();
-            _creationTimeRangeListView.SelectedIndex = selectIndex;
             _creationTimeRangeListViewUpdate();
         }
 
@@ -1447,8 +1386,16 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _lengthRangeAddButton_Click(null, null);
                 _lengthRangeMinTextBox.Focus();
+
+                if (_lengthRangeListView.SelectedIndex == -1)
+                {
+                    _lengthRangeAddButton_Click(null, null);
+                }
+                else
+                {
+                    _lengthRangeEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -1481,7 +1428,7 @@ namespace Amoeba.Windows
                         _lengthRangeUpButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _searchLengthRangeCollection.Count - 1)
+                    if (selectIndex == _lengthRangeCollection.Count - 1)
                     {
                         _lengthRangeDownButton.IsEnabled = false;
                     }
@@ -1507,6 +1454,7 @@ namespace Amoeba.Windows
                 _lengthRangeContainsCheckBox.IsChecked = true;
                 _lengthRangeMinTextBox.Text = "";
                 _lengthRangeMaxTextBox.Text = "";
+
                 return;
             }
 
@@ -1583,20 +1531,15 @@ namespace Amoeba.Windows
                         },
                     };
 
-                    if (_searchLengthRangeCollection.Contains(item)) continue;
-                    _searchLengthRangeCollection.Add(item);
+                    if (_lengthRangeCollection.Contains(item)) continue;
+                    _lengthRangeCollection.Add(item);
                 }
                 catch (Exception)
                 {
-                    continue;
+
                 }
             }
 
-            _lengthRangeMinTextBox.Text = "";
-            _lengthRangeMaxTextBox.Text = "";
-            _lengthRangeListView.SelectedIndex = _searchLengthRangeCollection.Count - 1;
-
-            _lengthRangeListView.Items.Refresh();
             _lengthRangeListViewUpdate();
         }
 
@@ -1608,7 +1551,7 @@ namespace Amoeba.Windows
             var selectIndex = _lengthRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchLengthRangeCollection.Move(selectIndex, selectIndex - 1);
+            _lengthRangeCollection.Move(selectIndex, selectIndex - 1);
 
             _lengthRangeListViewUpdate();
         }
@@ -1621,7 +1564,7 @@ namespace Amoeba.Windows
             var selectIndex = _lengthRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchLengthRangeCollection.Move(selectIndex, selectIndex + 1);
+            _lengthRangeCollection.Move(selectIndex, selectIndex + 1);
 
             _lengthRangeListViewUpdate();
         }
@@ -1643,19 +1586,14 @@ namespace Amoeba.Windows
                     }
                 };
 
-                if (_searchLengthRangeCollection.Contains(item)) return;
-                _searchLengthRangeCollection.Add(item);
+                if (_lengthRangeCollection.Contains(item)) return;
+                _lengthRangeCollection.Add(item);
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _lengthRangeMinTextBox.Text = "";
-            _lengthRangeMaxTextBox.Text = "";
-            _lengthRangeListView.SelectedIndex = _searchLengthRangeCollection.Count - 1;
-
-            _lengthRangeListView.Items.Refresh();
             _lengthRangeListViewUpdate();
         }
 
@@ -1664,9 +1602,12 @@ namespace Amoeba.Windows
             if (_lengthRangeMinTextBox.Text == "") return;
             if (_lengthRangeMaxTextBox.Text == "") return;
 
+            int selectIndex = _lengthRangeListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
             try
             {
-                var uitem = new SearchContains<SearchRange<long>>()
+                var item = new SearchContains<SearchRange<long>>()
                 {
                     Contains = _lengthRangeContainsCheckBox.IsChecked.Value,
                     Value = new SearchRange<long>()
@@ -1676,21 +1617,16 @@ namespace Amoeba.Windows
                     }
                 };
 
-                if (_searchLengthRangeCollection.Contains(uitem)) return;
+                if (_lengthRangeCollection.Contains(item)) return;
+                _lengthRangeCollection.Set(selectIndex, item);
 
-                var item = _lengthRangeListView.SelectedItem as SearchContains<SearchRange<long>>;
-                if (item == null) return;
-
-                item.Contains = _lengthRangeContainsCheckBox.IsChecked.Value;
-                item.Value.Max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text));
-                item.Value.Min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text));
+                _lengthRangeListView.SelectedIndex = selectIndex;
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _lengthRangeListView.Items.Refresh();
             _lengthRangeListViewUpdate();
         }
 
@@ -1699,16 +1635,11 @@ namespace Amoeba.Windows
             int selectIndex = _lengthRangeListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _lengthRangeMinTextBox.Text = "";
-            _lengthRangeMaxTextBox.Text = "";
-
             foreach (var item in _lengthRangeListView.SelectedItems.OfType<SearchContains<SearchRange<long>>>().ToArray())
             {
-                _searchLengthRangeCollection.Remove(item);
+                _lengthRangeCollection.Remove(item);
             }
 
-            _lengthRangeListView.Items.Refresh();
-            _lengthRangeListView.SelectedIndex = selectIndex;
             _lengthRangeListViewUpdate();
         }
 
@@ -1720,7 +1651,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _seedAddButton_Click(null, null);
+                if (_seedListView.SelectedIndex == -1)
+                {
+                    _seedAddButton_Click(null, null);
+                }
+                else
+                {
+                    _seedEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -1753,7 +1691,7 @@ namespace Amoeba.Windows
                         _seedUpButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _searchSeedCollection.Count - 1)
+                    if (selectIndex == _seedCollection.Count - 1)
                     {
                         _seedDownButton.IsEnabled = false;
                     }
@@ -1778,6 +1716,7 @@ namespace Amoeba.Windows
             {
                 _seedContainsCheckBox.IsChecked = true;
                 _seedTextBox.Text = "";
+
                 return;
             }
 
@@ -1848,8 +1787,8 @@ namespace Amoeba.Windows
                         Value = seed,
                     };
 
-                    if (_searchSeedCollection.Contains(item)) continue;
-                    _searchSeedCollection.Add(item);
+                    if (_seedCollection.Contains(item)) continue;
+                    _seedCollection.Add(item);
                 }
                 catch (Exception)
                 {
@@ -1875,8 +1814,8 @@ namespace Amoeba.Windows
                         Value = seed,
                     };
 
-                    if (_searchSeedCollection.Contains(item)) continue;
-                    _searchSeedCollection.Add(item);
+                    if (_seedCollection.Contains(item)) continue;
+                    _seedCollection.Add(item);
                 }
                 catch (Exception)
                 {
@@ -1884,10 +1823,6 @@ namespace Amoeba.Windows
                 }
             }
 
-            _seedTextBox.Text = "";
-            _seedListView.SelectedIndex = _searchSeedCollection.Count - 1;
-
-            _seedListView.Items.Refresh();
             _seedListViewUpdate();
         }
 
@@ -1899,7 +1834,7 @@ namespace Amoeba.Windows
             var selectIndex = _seedListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchSeedCollection.Move(selectIndex, selectIndex - 1);
+            _seedCollection.Move(selectIndex, selectIndex - 1);
 
             _seedListViewUpdate();
         }
@@ -1912,7 +1847,7 @@ namespace Amoeba.Windows
             var selectIndex = _seedListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchSeedCollection.Move(selectIndex, selectIndex + 1);
+            _seedCollection.Move(selectIndex, selectIndex + 1);
 
             _seedListViewUpdate();
         }
@@ -1932,18 +1867,14 @@ namespace Amoeba.Windows
                     Value = seed,
                 };
 
-                if (_searchSeedCollection.Contains(item)) return;
-                _searchSeedCollection.Add(item);
+                if (_seedCollection.Contains(item)) return;
+                _seedCollection.Add(item);
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _seedTextBox.Text = "";
-            _seedListView.SelectedIndex = _searchSeedCollection.Count - 1;
-
-            _seedListView.Items.Refresh();
             _seedListViewUpdate();
         }
 
@@ -1951,31 +1882,30 @@ namespace Amoeba.Windows
         {
             if (_seedTextBox.Text == "") return;
 
+            int selectIndex = _seedListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
             try
             {
                 var seed = AmoebaConverter.FromSeedString(_seedTextBox.Text);
                 if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
 
-                var uitem = new SearchContains<Seed>()
+                var item = new SearchContains<Seed>()
                 {
                     Contains = _seedContainsCheckBox.IsChecked.Value,
                     Value = seed,
                 };
 
-                if (_searchSeedCollection.Contains(uitem)) return;
+                if (_seedCollection.Contains(item)) return;
+                _seedCollection.Set(selectIndex, item);
 
-                var item = _seedListView.SelectedItem as SearchContains<Seed>;
-                if (item == null) return;
-
-                item.Contains = _seedContainsCheckBox.IsChecked.Value;
-                item.Value = seed;
+                _seedListView.SelectedIndex = selectIndex;
             }
             catch (Exception)
             {
-                return;
+
             }
 
-            _seedListView.Items.Refresh();
             _seedListViewUpdate();
         }
 
@@ -1984,70 +1914,73 @@ namespace Amoeba.Windows
             int selectIndex = _seedListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _seedTextBox.Text = "";
-
             foreach (var item in _seedListView.SelectedItems.OfType<SearchContains<Seed>>().ToArray())
             {
-                _searchSeedCollection.Remove(item);
+                _seedCollection.Remove(item);
             }
 
-            _seedListView.Items.Refresh();
-            _seedListView.SelectedIndex = selectIndex;
             _seedListViewUpdate();
         }
 
         #endregion
 
-        #region _searchStateListView
+        #region _stateListView
 
-        private void _searchStateComboBox_KeyDown(object sender, KeyEventArgs e)
+        private void _stateComboBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _searchStateAddButton_Click(null, null);
+                if (_stateListView.SelectedIndex == -1)
+                {
+                    _stateAddButton_Click(null, null);
+                }
+                else
+                {
+                    _stateEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
         }
 
-        private void _searchStateListViewUpdate()
+        private void _stateListViewUpdate()
         {
-            _searchStateListView_SelectionChanged(this, null);
+            _stateListView_SelectionChanged(this, null);
         }
 
-        private void _searchStateListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void _stateListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                var selectIndex = _searchStateListView.SelectedIndex;
+                var selectIndex = _stateListView.SelectedIndex;
 
                 if (selectIndex == -1)
                 {
-                    _searchStateUpButton.IsEnabled = false;
-                    _searchStateDownButton.IsEnabled = false;
+                    _stateUpButton.IsEnabled = false;
+                    _stateDownButton.IsEnabled = false;
                 }
                 else
                 {
                     if (selectIndex == 0)
                     {
-                        _searchStateUpButton.IsEnabled = false;
+                        _stateUpButton.IsEnabled = false;
                     }
                     else
                     {
-                        _searchStateUpButton.IsEnabled = true;
+                        _stateUpButton.IsEnabled = true;
                     }
 
-                    if (selectIndex == _searchStateCollection.Count - 1)
+                    if (selectIndex == _stateCollection.Count - 1)
                     {
-                        _searchStateDownButton.IsEnabled = false;
+                        _stateDownButton.IsEnabled = false;
                     }
                     else
                     {
-                        _searchStateDownButton.IsEnabled = true;
+                        _stateDownButton.IsEnabled = true;
                     }
                 }
 
-                _searchStateListView_PreviewMouseLeftButtonDown(this, null);
+                _stateListView_PreviewMouseLeftButtonDown(this, null);
             }
             catch (Exception)
             {
@@ -2055,30 +1988,31 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _searchStateListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void _stateListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var selectIndex = _searchStateListView.SelectedIndex;
+            var selectIndex = _stateListView.SelectedIndex;
             if (selectIndex == -1)
             {
-                _searchStateContainsCheckBox.IsChecked = true;
-                _searchStateComboBox.SelectedIndex = -1;
+                _stateContainsCheckBox.IsChecked = true;
+                _stateComboBox.SelectedIndex = -1;
+
                 return;
             }
 
-            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
+            var item = _stateListView.SelectedItem as SearchContains<SearchState>;
             if (item == null) return;
 
-            _searchStateContainsCheckBox.IsChecked = item.Contains;
-            _searchStateComboBox.SelectedItem = item.Value;
+            _stateContainsCheckBox.IsChecked = item.Contains;
+            _stateComboBox.SelectedItem = item.Value;
         }
 
-        private void _searchStateListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void _stateListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var selectItems = _searchStateListView.SelectedItems;
+            var selectItems = _stateListView.SelectedItems;
 
-            _searchStateListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _searchStateListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _searchStateListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _stateListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _stateListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _stateListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -2089,20 +2023,20 @@ namespace Amoeba.Windows
                     flag = Regex.IsMatch(line[0], @"^([\+-]) (.*)$");
                 }
 
-                _searchStateListViewPasteMenuItem.IsEnabled = flag;
+                _stateListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
-        private void _searchStateListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _stateListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _searchStateDeleteButton_Click(null, null);
+            _stateDeleteButton_Click(null, null);
         }
 
-        private void _searchStateListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _stateListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
-            foreach (var item in _searchStateListView.SelectedItems.OfType<SearchContains<SearchState>>())
+            foreach (var item in _stateListView.SelectedItems.OfType<SearchContains<SearchState>>())
             {
                 sb.AppendLine(string.Format("{0} {1}", (item.Contains == true) ? "+" : "-", item.Value));
             }
@@ -2110,13 +2044,13 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _searchStateListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _stateListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _searchStateListViewCopyMenuItem_Click(null, null);
-            _searchStateDeleteButton_Click(null, null);
+            _stateListViewCopyMenuItem_Click(null, null);
+            _stateDeleteButton_Click(null, null);
         }
 
-        private void _searchStateListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _stateListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Regex regex = new Regex(@"^([\+-]) (.*)$");
 
@@ -2133,105 +2067,92 @@ namespace Amoeba.Windows
                         Value = (SearchState)Enum.Parse(typeof(SearchState), match.Groups[2].Value),
                     };
 
-                    if (_searchStateCollection.Contains(item)) continue;
-                    _searchStateCollection.Add(item);
+                    if (_stateCollection.Contains(item)) continue;
+                    _stateCollection.Add(item);
                 }
                 catch (Exception)
                 {
-                    continue;
+
                 }
             }
 
-            _searchStateComboBox.Text = "";
-            _searchStateListView.SelectedIndex = _searchStateCollection.Count - 1;
-
-            _searchStateListView.Items.Refresh();
-            _searchStateListViewUpdate();
+            _stateListViewUpdate();
         }
 
-        private void _searchStateUpButton_Click(object sender, RoutedEventArgs e)
+        private void _stateUpButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
+            var item = _stateListView.SelectedItem as SearchContains<SearchState>;
             if (item == null) return;
 
-            var selectIndex = _searchStateListView.SelectedIndex;
+            var selectIndex = _stateListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchStateCollection.Move(selectIndex, selectIndex - 1);
+            _stateCollection.Move(selectIndex, selectIndex - 1);
 
-            _searchStateListViewUpdate();
+            _stateListViewUpdate();
         }
 
-        private void _searchStateDownButton_Click(object sender, RoutedEventArgs e)
+        private void _stateDownButton_Click(object sender, RoutedEventArgs e)
         {
-            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
+            var item = _stateListView.SelectedItem as SearchContains<SearchState>;
             if (item == null) return;
 
-            var selectIndex = _searchStateListView.SelectedIndex;
+            var selectIndex = _stateListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchStateCollection.Move(selectIndex, selectIndex + 1);
+            _stateCollection.Move(selectIndex, selectIndex + 1);
 
-            _searchStateListViewUpdate();
+            _stateListViewUpdate();
         }
 
-        private void _searchStateAddButton_Click(object sender, RoutedEventArgs e)
+        private void _stateAddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_searchStateComboBox.SelectedIndex == -1) return;
+            if (_stateComboBox.SelectedIndex == -1) return;
 
             var item = new SearchContains<SearchState>()
             {
-                Contains = _searchStateContainsCheckBox.IsChecked.Value,
-                Value = (SearchState)_searchStateComboBox.SelectedItem,
+                Contains = _stateContainsCheckBox.IsChecked.Value,
+                Value = (SearchState)_stateComboBox.SelectedItem,
             };
 
-            if (_searchStateCollection.Contains(item)) return;
-            _searchStateCollection.Add(item);
+            if (_stateCollection.Contains(item)) return;
+            _stateCollection.Add(item);
 
-            _searchStateComboBox.Text = "";
-            _searchStateListView.SelectedIndex = _searchStateCollection.Count - 1;
-
-            _searchStateListView.Items.Refresh();
-            _searchStateListViewUpdate();
+            _stateListViewUpdate();
         }
 
-        private void _searchStateEditButton_Click(object sender, RoutedEventArgs e)
+        private void _stateEditButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_searchStateComboBox.SelectedIndex == -1) return;
+            if (_stateComboBox.SelectedIndex == -1) return;
 
-            var uitem = new SearchContains<SearchState>()
-            {
-                Contains = _searchStateContainsCheckBox.IsChecked.Value,
-                Value = (SearchState)_searchStateComboBox.SelectedItem,
-            };
-
-            if (_searchStateCollection.Contains(uitem)) return;
-
-            var item = _searchStateListView.SelectedItem as SearchContains<SearchState>;
-            if (item == null) return;
-
-            item.Contains = _searchStateContainsCheckBox.IsChecked.Value;
-            item.Value = (SearchState)_searchStateComboBox.SelectedItem;
-
-            _searchStateListView.Items.Refresh();
-            _searchStateListViewUpdate();
-        }
-
-        private void _searchStateDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int selectIndex = _searchStateListView.SelectedIndex;
+            int selectIndex = _stateListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            _searchStateComboBox.SelectedIndex = 0;
-
-            foreach (var item in _searchStateListView.SelectedItems.OfType<SearchContains<SearchState>>().ToArray())
+            var item = new SearchContains<SearchState>()
             {
-                _searchStateCollection.Remove(item);
+                Contains = _stateContainsCheckBox.IsChecked.Value,
+                Value = (SearchState)_stateComboBox.SelectedItem,
+            };
+
+            if (_stateCollection.Contains(item)) return;
+            _stateCollection.Set(selectIndex, item);
+
+            _stateListView.SelectedIndex = selectIndex;
+
+            _stateListViewUpdate();
+        }
+
+        private void _stateDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int selectIndex = _stateListView.SelectedIndex;
+            if (selectIndex == -1) return;
+
+            foreach (var item in _stateListView.SelectedItems.OfType<SearchContains<SearchState>>().ToArray())
+            {
+                _stateCollection.Remove(item);
             }
 
-            _searchStateListView.Items.Refresh();
-            _searchStateListView.SelectedIndex = selectIndex;
-            _searchStateListViewUpdate();
+            _stateListViewUpdate();
         }
 
         #endregion
@@ -2247,49 +2168,49 @@ namespace Amoeba.Windows
                 lock (_searchItem.SearchNameCollection.ThisLock)
                 {
                     _searchItem.SearchNameCollection.Clear();
-                    _searchItem.SearchNameCollection.AddRange(_searchNameCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchNameCollection.AddRange(_nameCollection.Select(n => n.DeepClone()).ToList());
                 }
 
                 lock (_searchItem.SearchNameRegexCollection.ThisLock)
                 {
                     _searchItem.SearchNameRegexCollection.Clear();
-                    _searchItem.SearchNameRegexCollection.AddRange(_searchNameRegexCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchNameRegexCollection.AddRange(_nameRegexCollection.Select(n => n.DeepClone()).ToList());
                 }
 
                 lock (_searchItem.SearchSignatureCollection.ThisLock)
                 {
                     _searchItem.SearchSignatureCollection.Clear();
-                    _searchItem.SearchSignatureCollection.AddRange(_searchSignatureCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchSignatureCollection.AddRange(_signatureCollection.Select(n => n.DeepClone()).ToList());
                 }
 
                 lock (_searchItem.SearchKeywordCollection.ThisLock)
                 {
                     _searchItem.SearchKeywordCollection.Clear();
-                    _searchItem.SearchKeywordCollection.AddRange(_searchKeywordCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchKeywordCollection.AddRange(_keywordCollection.Select(n => n.DeepClone()).ToList());
                 }
 
                 lock (_searchItem.SearchCreationTimeRangeCollection.ThisLock)
                 {
                     _searchItem.SearchCreationTimeRangeCollection.Clear();
-                    _searchItem.SearchCreationTimeRangeCollection.AddRange(_searchCreationTimeRangeCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchCreationTimeRangeCollection.AddRange(_creationTimeRangeCollection.Select(n => n.DeepClone()).ToList());
                 }
 
                 lock (_searchItem.SearchLengthRangeCollection.ThisLock)
                 {
                     _searchItem.SearchLengthRangeCollection.Clear();
-                    _searchItem.SearchLengthRangeCollection.AddRange(_searchLengthRangeCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchLengthRangeCollection.AddRange(_lengthRangeCollection.Select(n => n.DeepClone()).ToList());
                 }
 
                 lock (_searchItem.SearchSeedCollection.ThisLock)
                 {
                     _searchItem.SearchSeedCollection.Clear();
-                    _searchItem.SearchSeedCollection.AddRange(_searchSeedCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchSeedCollection.AddRange(_seedCollection.Select(n => n.DeepClone()).ToList());
                 }
 
                 lock (_searchItem.SearchStateCollection.ThisLock)
                 {
                     _searchItem.SearchStateCollection.Clear();
-                    _searchItem.SearchStateCollection.AddRange(_searchStateCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchStateCollection.AddRange(_stateCollection.Select(n => n.DeepClone()).ToList());
                 }
             }
         }
@@ -2329,9 +2250,9 @@ namespace Amoeba.Windows
             {
                 _seedListViewDeleteMenuItem_Click(null, null);
             }
-            else if (_searchStateTabItem.IsSelected)
+            else if (_stateTabItem.IsSelected)
             {
-                _searchStateListViewDeleteMenuItem_Click(null, null);
+                _stateListViewDeleteMenuItem_Click(null, null);
             }
         }
 
@@ -2365,9 +2286,9 @@ namespace Amoeba.Windows
             {
                 _seedListViewCopyMenuItem_Click(null, null);
             }
-            else if (_searchStateTabItem.IsSelected)
+            else if (_stateTabItem.IsSelected)
             {
-                _searchStateListViewCopyMenuItem_Click(null, null);
+                _stateListViewCopyMenuItem_Click(null, null);
             }
         }
 
@@ -2401,9 +2322,9 @@ namespace Amoeba.Windows
             {
                 _seedListViewCutMenuItem_Click(null, null);
             }
-            else if (_searchStateTabItem.IsSelected)
+            else if (_stateTabItem.IsSelected)
             {
-                _searchStateListViewCutMenuItem_Click(null, null);
+                _stateListViewCutMenuItem_Click(null, null);
             }
         }
 
@@ -2437,9 +2358,9 @@ namespace Amoeba.Windows
             {
                 _seedListViewPasteMenuItem_Click(null, null);
             }
-            else if (_searchStateTabItem.IsSelected)
+            else if (_stateTabItem.IsSelected)
             {
-                _searchStateListViewPasteMenuItem_Click(null, null);
+                _stateListViewPasteMenuItem_Click(null, null);
             }
         }
     }

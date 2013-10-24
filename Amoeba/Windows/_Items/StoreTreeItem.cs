@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using Library;
 using Library.Net.Amoeba;
+using Library.Io;
 
 namespace Amoeba.Windows
 {
@@ -98,16 +99,16 @@ namespace Amoeba.Windows
             {
                 var ds = new DataContractSerializer(typeof(StoreTreeItem));
 
-                using (MemoryStream ms = new MemoryStream())
+                using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(ms, new UTF8Encoding(false), false))
+                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
                     {
                         ds.WriteObject(textDictionaryWriter, this);
                     }
 
-                    ms.Position = 0;
+                    stream.Position = 0;
 
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(ms, XmlDictionaryReaderQuotas.Max))
+                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
                         return (StoreTreeItem)ds.ReadObject(textDictionaryReader);
                     }

@@ -33,7 +33,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        public static TabType SelectTab { get; set; }
+        private volatile StoreControlTabType _selectedTab;
 
         public StoreControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
@@ -58,25 +58,37 @@ namespace Amoeba.Windows
             _libraryTabItem.Content = libraryControl;
         }
 
+        public StoreControlTabType SelectedTab
+        {
+            get
+            {
+                return _selectedTab;
+            }
+            set
+            {
+                _selectedTab = value;
+            }
+        }
+
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.OriginalSource != _tabControl) return;
 
             if (_tabControl.SelectedItem == _storeUploadTabItem)
             {
-                StoreControl.SelectTab = TabType.Store_Upload;
+                this.SelectedTab = StoreControlTabType.Upload;
             }
             else if (_tabControl.SelectedItem == _storeDownloadTabItem)
             {
-                StoreControl.SelectTab = TabType.Store_Download;
+                this.SelectedTab = StoreControlTabType.Download;
             }
             else if (_tabControl.SelectedItem == _libraryTabItem)
             {
-                StoreControl.SelectTab = TabType.Store_Library;
+                this.SelectedTab = StoreControlTabType.Library;
             }
             else
             {
-                StoreControl.SelectTab = 0;
+                this.SelectedTab = 0;
             }
 
             _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);

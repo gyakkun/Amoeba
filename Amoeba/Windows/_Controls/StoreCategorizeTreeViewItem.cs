@@ -13,7 +13,7 @@ namespace Amoeba.Windows
     {
         private StoreCategorizeTreeItem _value;
 
-        private ObservableCollection<TreeViewItem> _listViewItemCollection = new ObservableCollection<TreeViewItem>();
+        private ObservableCollectionEx<TreeViewItem> _listViewItemCollection = new ObservableCollectionEx<TreeViewItem>();
         private TextBlock _header = new TextBlock();
 
         public StoreCategorizeTreeViewItem(StoreCategorizeTreeItem value)
@@ -161,7 +161,7 @@ namespace Amoeba.Windows
             {
                 return _value;
             }
-            set
+            private set
             {
                 _value = value;
 

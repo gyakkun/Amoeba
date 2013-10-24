@@ -13,7 +13,7 @@ namespace Amoeba.Windows
     {
         private SearchTreeItem _value;
 
-        private ObservableCollection<SearchTreeViewItem> _listViewItemCollection = new ObservableCollection<SearchTreeViewItem>();
+        private ObservableCollectionEx<SearchTreeViewItem> _listViewItemCollection = new ObservableCollectionEx<SearchTreeViewItem>();
         private TextBlock _header = new TextBlock();
         private int _hit;
 
@@ -115,7 +115,7 @@ namespace Amoeba.Windows
             {
                 return _value;
             }
-            set
+            private set
             {
                 _value = value;
 

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Runtime.InteropServices;
-using System.Diagnostics;
-using Amoeba.Windows;
-using System.Collections.ObjectModel;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
+using Amoeba.Windows;
 
 namespace Amoeba
 {
@@ -175,17 +175,6 @@ namespace Amoeba
                 }
 
                 return targetList;
-            }
-        }
-    }
-
-    static class ObservableCollectionExtensions
-    {
-        public static void AddRange<T>(this ObservableCollection<T> thisCollection, IEnumerable<T> collection)
-        {
-            foreach (var item in collection)
-            {
-                thisCollection.Add(item);
             }
         }
     }

@@ -7,6 +7,7 @@ using Library.Collections;
 using System;
 using Library.Net.Amoeba;
 using System.Text.RegularExpressions;
+using Library.Io;
 
 namespace Amoeba.Windows
 {
@@ -81,16 +82,16 @@ namespace Amoeba.Windows
             {
                 var ds = new DataContractSerializer(typeof(SearchTreeItem));
 
-                using (MemoryStream ms = new MemoryStream())
+                using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(ms, new UTF8Encoding(false), false))
+                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
                     {
                         ds.WriteObject(textDictionaryWriter, this);
                     }
 
-                    ms.Position = 0;
+                    stream.Position = 0;
 
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(ms, XmlDictionaryReaderQuotas.Max))
+                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
                         return (SearchTreeItem)ds.ReadObject(textDictionaryReader);
                     }

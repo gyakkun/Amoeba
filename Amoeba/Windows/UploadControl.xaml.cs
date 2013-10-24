@@ -34,7 +34,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<UploadListViewItem> _listViewItemCollection = new ObservableCollection<UploadListViewItem>();
+        private ObservableCollectionEx<UploadListViewItem> _listViewItemCollection = new ObservableCollectionEx<UploadListViewItem>();
 
         private Thread _showUploadItemThread;
 
@@ -68,7 +68,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (MainWindow.SelectTab != TabType.Upload) continue;
+                    if (_mainWindow.SelectedTab != MainWindowTabType.Upload) continue;
 
                     var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();

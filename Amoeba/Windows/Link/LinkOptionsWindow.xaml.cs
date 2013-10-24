@@ -21,16 +21,16 @@ using Library.Security;
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// Interaction logic for LinkWindow.xaml
+    /// Interaction logic for LinkOptionsWindow.xaml
     /// </summary>
-    partial class LinkWindow : Window
+    partial class LinkOptionsWindow : Window
     {
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<LinkViewModel> _downloadCollection = new ObservableCollection<LinkViewModel>();
-        private ObservableCollection<LinkViewModel> _uploadCollection = new ObservableCollection<LinkViewModel>();
+        private ObservableCollectionEx<LinkViewModel> _downloadCollection = new ObservableCollectionEx<LinkViewModel>();
+        private ObservableCollectionEx<LinkViewModel> _uploadCollection = new ObservableCollectionEx<LinkViewModel>();
 
-        public LinkWindow(AmoebaManager amoebaManager)
+        public LinkOptionsWindow(AmoebaManager amoebaManager)
         {
             _amoebaManager = amoebaManager;
 
@@ -38,7 +38,7 @@ namespace Amoeba.Windows
 
             try
             {
-                foreach (var item in Settings.Instance.LinkWindow_DownloadLinkItems)
+                foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                 {
                     var viewModel = new LinkViewModel();
                     viewModel.Signature = item.Signature;
@@ -47,7 +47,7 @@ namespace Amoeba.Windows
                     _downloadCollection.Add(viewModel);
                 }
 
-                foreach (var item in Settings.Instance.LinkWindow_UploadLinkItems)
+                foreach (var item in Settings.Instance.LinkOptionsWindow_UploadLinkItems)
                 {
                     var viewModel = new LinkViewModel();
                     viewModel.Signature = item.Signature;
@@ -78,7 +78,7 @@ namespace Amoeba.Windows
             _uploadTrustSignatureListView.Items.SortDescriptions.Clear();
             _uploadTrustSignatureListView.Items.SortDescriptions.Add(new SortDescription(null, ListSortDirection.Ascending));
         }
-        
+
         #region _downloadLink
 
         private void _downloadLinkListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -156,7 +156,7 @@ namespace Amoeba.Windows
             }
             else
             {
-                var selectItems = _uploadTrustSignatureListView.SelectedItems;
+                var selectItems = _downloadTrustSignatureListView.SelectedItems;
 
                 _downloadTrustSignatureListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
             }
@@ -331,35 +331,35 @@ namespace Amoeba.Windows
                     uploadCollection.Add(LinkItem);
                 }
 
-                foreach (var item in Settings.Instance.LinkWindow_DownloadLinkItems.ToArray())
+                foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems.ToArray())
                 {
                     if (!downloadCollection.Contains(item))
                     {
-                        Settings.Instance.LinkWindow_DownloadLinkItems.Remove(item);
+                        Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Remove(item);
                     }
                 }
 
                 foreach (var item in downloadCollection)
                 {
-                    if (!Settings.Instance.LinkWindow_DownloadLinkItems.Contains(item))
+                    if (!Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Contains(item))
                     {
-                        Settings.Instance.LinkWindow_DownloadLinkItems.Add(item);
+                        Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Add(item);
                     }
                 }
 
-                foreach (var item in Settings.Instance.LinkWindow_UploadLinkItems.ToArray())
+                foreach (var item in Settings.Instance.LinkOptionsWindow_UploadLinkItems.ToArray())
                 {
                     if (!uploadCollection.Contains(item))
                     {
-                        Settings.Instance.LinkWindow_UploadLinkItems.Remove(item);
+                        Settings.Instance.LinkOptionsWindow_UploadLinkItems.Remove(item);
                     }
                 }
 
                 foreach (var item in uploadCollection)
                 {
-                    if (!Settings.Instance.LinkWindow_UploadLinkItems.Contains(item))
+                    if (!Settings.Instance.LinkOptionsWindow_UploadLinkItems.Contains(item))
                     {
-                        Settings.Instance.LinkWindow_UploadLinkItems.Add(item);
+                        Settings.Instance.LinkOptionsWindow_UploadLinkItems.Add(item);
 
                         {
                             var digitalSignature = Settings.Instance.Global_DigitalSignatureCollection.FirstOrDefault(n => n.ToString() == item.Signature);
@@ -398,7 +398,7 @@ namespace Amoeba.Windows
 
             public LinkViewModel()
             {
-                this.TrustSignatures = new ObservableCollection<string>();
+                this.TrustSignatures = new ObservableCollectionEx<string>();
             }
 
             public string Signature
@@ -418,7 +418,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public ObservableCollection<string> TrustSignatures
+            public ObservableCollectionEx<string> TrustSignatures
             {
                 get;
                 private set;

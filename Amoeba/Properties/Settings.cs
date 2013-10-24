@@ -53,41 +53,41 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Width", Value = 700 },
                 new Library.Configuration.SettingsContext<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
               
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "ConnectionsSettingsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_BaseNode_Uris_Uri_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_OtherNodes_Node_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ConnectionType_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ProxyUri_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_UriCondition_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Server_ListenUris_GridViewColumn_Uri_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionsSettingsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
-                new Library.Configuration.SettingsContext<string>() { Name = "ConnectionsSettingsWindow_BandwidthLimit_Unit", Value = "Byte" },
-                new Library.Configuration.SettingsContext<string>() { Name = "ConnectionsSettingsWindow_DataCacheSize_Unit", Value = "GB" },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "CoreOptionsWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_BaseNode_Uris_Uri_Width", Value = 400 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_OtherNodes_Node_Width", Value = 400 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_ConnectionType_Width", Value = -1 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_ProxyUri_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_UriCondition_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_Option_Width", Value = 200 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Server_ListenUris_GridViewColumn_Uri_Width", Value = 400 },
+                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
+                new Library.Configuration.SettingsContext<string>() { Name = "CoreOptionsWindow_BandwidthLimit_Unit", Value = "Byte" },
+                new Library.Configuration.SettingsContext<string>() { Name = "CoreOptionsWindow_DataCacheSize_Unit", Value = "GB" },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "LinkWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_Grid_ColumnDefinitions_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<List<LinkItem>>() { Name = "LinkWindow_DownloadLinkItems", Value = new List<LinkItem>() },
-                new Library.Configuration.SettingsContext<List<LinkItem>>() { Name = "LinkWindow_UploadLinkItems", Value = new List<LinkItem>() },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "LinkOptionsWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Grid_ColumnDefinitions_Width", Value = 300 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
+                new Library.Configuration.SettingsContext<List<LinkItem>>() { Name = "LinkOptionsWindow_DownloadLinkItems", Value = new List<LinkItem>() },
+                new Library.Configuration.SettingsContext<List<LinkItem>>() { Name = "LinkOptionsWindow_UploadLinkItems", Value = new List<LinkItem>() },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "ViewSettingsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Signature_GridViewColumn_Value_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Keyword_GridViewColumn_Value_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewSettingsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Top", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Left", Value = 120 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingsContext<WindowState>() { Name = "ViewOptionsWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Signature_GridViewColumn_Value_Width", Value = 400 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Keyword_GridViewColumn_Value_Width", Value = 400 },
+                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
 
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
                 new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
@@ -729,598 +729,598 @@ namespace Amoeba.Properties
         }
 
 
-        public double ConnectionsSettingsWindow_Top
+        public double CoreOptionsWindow_Top
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Top"];
+                   return (double)this["CoreOptionsWindow_Top"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Top"] = value;
+                    this["CoreOptionsWindow_Top"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Left
+        public double CoreOptionsWindow_Left
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Left"];
+                   return (double)this["CoreOptionsWindow_Left"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Left"] = value;
+                    this["CoreOptionsWindow_Left"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Height
+        public double CoreOptionsWindow_Height
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Height"];
+                   return (double)this["CoreOptionsWindow_Height"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Height"] = value;
+                    this["CoreOptionsWindow_Height"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Width
+        public double CoreOptionsWindow_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Width"];
+                   return (double)this["CoreOptionsWindow_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Width"] = value;
+                    this["CoreOptionsWindow_Width"] = value;
                 }
             }
         }
 
-        public WindowState ConnectionsSettingsWindow_WindowState
+        public WindowState CoreOptionsWindow_WindowState
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["ConnectionsSettingsWindow_WindowState"];
+                   return (WindowState)this["CoreOptionsWindow_WindowState"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_WindowState"] = value;
+                    this["CoreOptionsWindow_WindowState"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_BaseNode_Uris_Uri_Width
+        public double CoreOptionsWindow_BaseNode_Uris_Uri_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_BaseNode_Uris_Uri_Width"];
+                   return (double)this["CoreOptionsWindow_BaseNode_Uris_Uri_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_BaseNode_Uris_Uri_Width"] = value;
+                    this["CoreOptionsWindow_BaseNode_Uris_Uri_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_OtherNodes_Node_Width
+        public double CoreOptionsWindow_OtherNodes_Node_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_OtherNodes_Node_Width"];
+                   return (double)this["CoreOptionsWindow_OtherNodes_Node_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_OtherNodes_Node_Width"] = value;
+                    this["CoreOptionsWindow_OtherNodes_Node_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ConnectionType_Width
+        public double CoreOptionsWindow_Client_Filters_GridViewColumn_ConnectionType_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ConnectionType_Width"];
+                   return (double)this["CoreOptionsWindow_Client_Filters_GridViewColumn_ConnectionType_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ConnectionType_Width"] = value;
+                    this["CoreOptionsWindow_Client_Filters_GridViewColumn_ConnectionType_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ProxyUri_Width
+        public double CoreOptionsWindow_Client_Filters_GridViewColumn_ProxyUri_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ProxyUri_Width"];
+                   return (double)this["CoreOptionsWindow_Client_Filters_GridViewColumn_ProxyUri_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_ProxyUri_Width"] = value;
+                    this["CoreOptionsWindow_Client_Filters_GridViewColumn_ProxyUri_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Client_Filters_GridViewColumn_UriCondition_Width
+        public double CoreOptionsWindow_Client_Filters_GridViewColumn_UriCondition_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_UriCondition_Width"];
+                   return (double)this["CoreOptionsWindow_Client_Filters_GridViewColumn_UriCondition_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_UriCondition_Width"] = value;
+                    this["CoreOptionsWindow_Client_Filters_GridViewColumn_UriCondition_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width
+        public double CoreOptionsWindow_Client_Filters_GridViewColumn_Option_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width"];
+                   return (double)this["CoreOptionsWindow_Client_Filters_GridViewColumn_Option_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Client_Filters_GridViewColumn_Option_Width"] = value;
+                    this["CoreOptionsWindow_Client_Filters_GridViewColumn_Option_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Server_ListenUris_GridViewColumn_Uri_Width
+        public double CoreOptionsWindow_Server_ListenUris_GridViewColumn_Uri_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Server_ListenUris_GridViewColumn_Uri_Width"];
+                   return (double)this["CoreOptionsWindow_Server_ListenUris_GridViewColumn_Uri_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Server_ListenUris_GridViewColumn_Uri_Width"] = value;
+                    this["CoreOptionsWindow_Server_ListenUris_GridViewColumn_Uri_Width"] = value;
                 }
             }
         }
 
-        public double ConnectionsSettingsWindow_Grid_ColumnDefinitions_Width
+        public double CoreOptionsWindow_Grid_ColumnDefinitions_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ConnectionsSettingsWindow_Grid_ColumnDefinitions_Width"];
+                   return (double)this["CoreOptionsWindow_Grid_ColumnDefinitions_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_Grid_ColumnDefinitions_Width"] = value;
+                    this["CoreOptionsWindow_Grid_ColumnDefinitions_Width"] = value;
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_BandwidthLimit_Unit
+        public string CoreOptionsWindow_BandwidthLimit_Unit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["ConnectionsSettingsWindow_BandwidthLimit_Unit"];
+                   return (string)this["CoreOptionsWindow_BandwidthLimit_Unit"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_BandwidthLimit_Unit"] = value;
+                    this["CoreOptionsWindow_BandwidthLimit_Unit"] = value;
                 }
             }
         }
 
-        public string ConnectionsSettingsWindow_DataCacheSize_Unit
+        public string CoreOptionsWindow_DataCacheSize_Unit
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["ConnectionsSettingsWindow_DataCacheSize_Unit"];
+                   return (string)this["CoreOptionsWindow_DataCacheSize_Unit"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ConnectionsSettingsWindow_DataCacheSize_Unit"] = value;
-                }
-            }
-        }
-
-
-        public double LinkWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["LinkWindow_Top"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double LinkWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["LinkWindow_Left"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double LinkWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["LinkWindow_Height"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double LinkWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["LinkWindow_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState LinkWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["LinkWindow_WindowState"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double LinkWindow_Grid_ColumnDefinitions_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["LinkWindow_Grid_ColumnDefinitions_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_Grid_ColumnDefinitions_Width"] = value;
-                }
-            }
-        }
-
-        public double LinkWindow_GridViewColumn_LinkerSignature_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["LinkWindow_GridViewColumn_LinkerSignature_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_GridViewColumn_LinkerSignature_Width"] = value;
-                }
-            }
-        }
-
-        public double LinkWindow_GridViewColumn_TrustSignature_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["LinkWindow_GridViewColumn_TrustSignature_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_GridViewColumn_TrustSignature_Width"] = value;
-                }
-            }
-        }
-
-        public List<LinkItem> LinkWindow_DownloadLinkItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (List<LinkItem>)this["LinkWindow_DownloadLinkItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_DownloadLinkItems"] = value;
-                }
-            }
-        }
-
-        public List<LinkItem> LinkWindow_UploadLinkItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (List<LinkItem>)this["LinkWindow_UploadLinkItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkWindow_UploadLinkItems"] = value;
+                    this["CoreOptionsWindow_DataCacheSize_Unit"] = value;
                 }
             }
         }
 
 
-        public double ViewSettingsWindow_Top
+        public double LinkOptionsWindow_Top
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ViewSettingsWindow_Top"];
+                   return (double)this["LinkOptionsWindow_Top"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ViewSettingsWindow_Top"] = value;
+                    this["LinkOptionsWindow_Top"] = value;
                 }
             }
         }
 
-        public double ViewSettingsWindow_Left
+        public double LinkOptionsWindow_Left
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ViewSettingsWindow_Left"];
+                   return (double)this["LinkOptionsWindow_Left"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ViewSettingsWindow_Left"] = value;
+                    this["LinkOptionsWindow_Left"] = value;
                 }
             }
         }
 
-        public double ViewSettingsWindow_Height
+        public double LinkOptionsWindow_Height
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ViewSettingsWindow_Height"];
+                   return (double)this["LinkOptionsWindow_Height"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ViewSettingsWindow_Height"] = value;
+                    this["LinkOptionsWindow_Height"] = value;
                 }
             }
         }
 
-        public double ViewSettingsWindow_Width
+        public double LinkOptionsWindow_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ViewSettingsWindow_Width"];
+                   return (double)this["LinkOptionsWindow_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ViewSettingsWindow_Width"] = value;
+                    this["LinkOptionsWindow_Width"] = value;
                 }
             }
         }
 
-        public WindowState ViewSettingsWindow_WindowState
+        public WindowState LinkOptionsWindow_WindowState
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["ViewSettingsWindow_WindowState"];
+                   return (WindowState)this["LinkOptionsWindow_WindowState"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ViewSettingsWindow_WindowState"] = value;
+                    this["LinkOptionsWindow_WindowState"] = value;
                 }
             }
         }
 
-        public double ViewSettingsWindow_Signature_GridViewColumn_Value_Width
+        public double LinkOptionsWindow_Grid_ColumnDefinitions_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ViewSettingsWindow_Signature_GridViewColumn_Value_Width"];
+                   return (double)this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ViewSettingsWindow_Signature_GridViewColumn_Value_Width"] = value;
+                    this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"] = value;
                 }
             }
         }
 
-        public double ViewSettingsWindow_Keyword_GridViewColumn_Value_Width
+        public double LinkOptionsWindow_GridViewColumn_LinkerSignature_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ViewSettingsWindow_Keyword_GridViewColumn_Value_Width"];
+                   return (double)this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ViewSettingsWindow_Keyword_GridViewColumn_Value_Width"] = value;
+                    this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"] = value;
                 }
             }
         }
 
-        public double ViewSettingsWindow_Grid_ColumnDefinitions_Width
+        public double LinkOptionsWindow_GridViewColumn_TrustSignature_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ViewSettingsWindow_Grid_ColumnDefinitions_Width"];
+                   return (double)this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["ViewSettingsWindow_Grid_ColumnDefinitions_Width"] = value;
+                    this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"] = value;
+                }
+            }
+        }
+
+        public List<LinkItem> LinkOptionsWindow_DownloadLinkItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (List<LinkItem>)this["LinkOptionsWindow_DownloadLinkItems"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_DownloadLinkItems"] = value;
+                }
+            }
+        }
+
+        public List<LinkItem> LinkOptionsWindow_UploadLinkItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (List<LinkItem>)this["LinkOptionsWindow_UploadLinkItems"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_UploadLinkItems"] = value;
+                }
+            }
+        }
+
+
+        public double ViewOptionsWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ViewOptionsWindow_Top"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ViewOptionsWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double ViewOptionsWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ViewOptionsWindow_Left"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ViewOptionsWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double ViewOptionsWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ViewOptionsWindow_Height"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ViewOptionsWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double ViewOptionsWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ViewOptionsWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ViewOptionsWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState ViewOptionsWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["ViewOptionsWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ViewOptionsWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double ViewOptionsWindow_Signature_GridViewColumn_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ViewOptionsWindow_Signature_GridViewColumn_Value_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ViewOptionsWindow_Signature_GridViewColumn_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double ViewOptionsWindow_Keyword_GridViewColumn_Value_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ViewOptionsWindow_Keyword_GridViewColumn_Value_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ViewOptionsWindow_Keyword_GridViewColumn_Value_Width"] = value;
+                }
+            }
+        }
+
+        public double ViewOptionsWindow_Grid_ColumnDefinitions_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ViewOptionsWindow_Grid_ColumnDefinitions_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ViewOptionsWindow_Grid_ColumnDefinitions_Width"] = value;
                 }
             }
         }

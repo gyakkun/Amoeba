@@ -27,22 +27,21 @@
   <Translate Key="MainWindow_Share" Value="Share" />
   <Translate Key="MainWindow_Store" Value="Store" />
   <Translate Key="MainWindow_Log" Value="Log" />
-  <Translate Key="MainWindow_Connections" Value="Connections" />
+  <Translate Key="MainWindow_Core" Value="Core" />
   <Translate Key="MainWindow_Start" Value="Start" />
   <Translate Key="MainWindow_Stop" Value="Stop" />
+  <Translate Key="MainWindow_LinkOptions" Value="Link options" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="Update Base Node Uri" />
-  <Translate Key="MainWindow_Link" Value="Link" />
-  <Translate Key="MainWindow_LinkSettings" Value="Link settings" />
+  <Translate Key="MainWindow_CoreOptions" Value="Core options" />
   <Translate Key="MainWindow_Cache" Value="Cache" />
   <Translate Key="MainWindow_CheckSeeds" Value="Check seeds" />
   <Translate Key="MainWindow_CheckInternalBlocks" Value="Check internal blocks" />
   <Translate Key="MainWindow_CheckExternalBlocks" Value="Check external blocks" />
-  <Translate Key="MainWindow_ConnectionsSettings" Value="Connections settings" />
   <Translate Key="MainWindow_EncodeAndDecodeStart" Value="Encode and decode start" />
   <Translate Key="MainWindow_EncodeAndDecodeStop" Value="Encode and decode stop" />
   <Translate Key="MainWindow_View" Value="View" />
-  <Translate Key="MainWindow_ViewSettings" Value="View settings" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
+  <Translate Key="MainWindow_ViewOptions" Value="View options" />
   <Translate Key="MainWindow_Help" Value="Help" />
   <Translate Key="MainWindow_ManualSite" Value="Documentation" />
   <Translate Key="MainWindow_DeveloperSite" Value="Source code" />
@@ -62,54 +61,68 @@
   <Translate Key="MainWindow_TransferLimit_Message" Value="Transfer limit" />
   <Translate Key="MainWindow_Upload_Message" Value="Do you want to upload?" />
 
-  <Translate Key="ConnectionsSettingsWindow_Title" Value="Connections settings" />
-  <Translate Key="ConnectionsSettingsWindow_BaseNode" Value="Base node" />
-  <Translate Key="ConnectionsSettingsWindow_Node" Value="Node" />
-  <Translate Key="ConnectionsSettingsWindow_Uris" Value="Uris" />
-  <Translate Key="ConnectionsSettingsWindow_Uri" Value="Uri" />
-  <Translate Key="ConnectionsSettingsWindow_OtherNodes" Value="Other nodes" />
-  <Translate Key="ConnectionsSettingsWindow_Nodes" Value="Nodes" />
-  <Translate Key="ConnectionsSettingsWindow_Client" Value="Client" />
-  <Translate Key="ConnectionsSettingsWindow_Filters" Value="Filters" />
-  <Translate Key="ConnectionsSettingsWindow_ConnectionType" Value="Connection type" />
-  <Translate Key="ConnectionsSettingsWindow_ProxyUri" Value="Proxy uri" />
-  <Translate Key="ConnectionsSettingsWindow_UriCondition" Value="Uri condition" />
-  <Translate Key="ConnectionsSettingsWindow_Option" Value="Option" />
-  <Translate Key="ConnectionsSettingsWindow_Type" Value="Type" />
-  <Translate Key="ConnectionsSettingsWindow_Host" Value="Host" />
-  <Translate Key="ConnectionsSettingsWindow_Server" Value="Server" />
-  <Translate Key="ConnectionsSettingsWindow_ListenUris" Value="Listen uris" />
-  <Translate Key="ConnectionsSettingsWindow_Events" Value="Events" />
-  <Translate Key="ConnectionsSettingsWindow_Data" Value="Data" />
-  <Translate Key="ConnectionsSettingsWindow_Bandwidth" Value="Bandwidth" />
-  <Translate Key="ConnectionsSettingsWindow_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
-  <Translate Key="ConnectionsSettingsWindow_Transfer" Value="Transfer" />
-  <Translate Key="ConnectionsSettingsWindow_TransferLimitType" Value="Limit type" />
-  <Translate Key="ConnectionsSettingsWindow_TransferLimitSpan" Value="Limit span (day)" />
-  <Translate Key="ConnectionsSettingsWindow_TransferLimitSize" Value="Limit size" />
-  <Translate Key="ConnectionsSettingsWindow_TransferInformation" Value="Transfer information" />
-  <Translate Key="ConnectionsSettingsWindow_Downloaded" Value="Downloaded" />
-  <Translate Key="ConnectionsSettingsWindow_Uploaded" Value="Uploaded" />
-  <Translate Key="ConnectionsSettingsWindow_Total" Value="Total" />
-  <Translate Key="ConnectionsSettingsWindow_Reset" Value="Reset" />
-  <Translate Key="ConnectionsSettingsWindow_ConnectionCount" Value="Connection count" />
-  <Translate Key="ConnectionsSettingsWindow_DownloadDirectory" Value="Download directory" />
-  <Translate Key="ConnectionsSettingsWindow_CacheSize" Value="Cache size" />
-  <Translate Key="ConnectionsSettingsWindow_AutoBaseNodeSetting" Value="Auto base node setting" />
-  <Translate Key="ConnectionsSettingsWindow_Tor" Value="Tor" />
-  <Translate Key="ConnectionsSettingsWindow_Ipv4" Value="Ipv4" />
-  <Translate Key="ConnectionsSettingsWindow_Ipv6" Value="Ipv6" />
-  <Translate Key="ConnectionsSettingsWindow_Up" Value="Up" />
-  <Translate Key="ConnectionsSettingsWindow_Down" Value="Down" />
-  <Translate Key="ConnectionsSettingsWindow_Add" Value="Add" />
-  <Translate Key="ConnectionsSettingsWindow_Edit" Value="Edit" />
-  <Translate Key="ConnectionsSettingsWindow_Delete" Value="Delete" />
-  <Translate Key="ConnectionsSettingsWindow_Ok" Value="Ok" />
-  <Translate Key="ConnectionsSettingsWindow_Cancel" Value="Cancel" />
-  <Translate Key="ConnectionsSettingsWindow_Cut" Value="Cut" />
-  <Translate Key="ConnectionsSettingsWindow_Copy" Value="Copy" />
-  <Translate Key="ConnectionsSettingsWindow_Paste" Value="Paste" />
-  <Translate Key="ConnectionsSettingsWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
+  <Translate Key="LinkOptionsWindow_Title" Value="Link options" />
+  <Translate Key="LinkOptionsWindow_Download" Value="Download" />
+  <Translate Key="LinkOptionsWindow_Upload" Value="Upload" />
+  <Translate Key="LinkOptionsWindow_LinkerSignature" Value="Linker signature" />
+  <Translate Key="LinkOptionsWindow_TrustSignature" Value="Trust signature" />
+  <Translate Key="LinkOptionsWindow_New" Value="New" />
+  <Translate Key="LinkOptionsWindow_Edit" Value="Edit" />
+  <Translate Key="LinkOptionsWindow_Delete" Value="Delete" />
+  <Translate Key="LinkOptionsWindow_Cut" Value="Cut" />
+  <Translate Key="LinkOptionsWindow_Copy" Value="Copy" />
+  <Translate Key="LinkOptionsWindow_Paste" Value="Paste" />
+  <Translate Key="LinkOptionsWindow_Ok" Value="Ok" />
+  <Translate Key="LinkOptionsWindow_Cancel" Value="Cancel" />
+
+  <Translate Key="CoreOptionsWindow_Title" Value="Core options" />
+  <Translate Key="CoreOptionsWindow_BaseNode" Value="Base node" />
+  <Translate Key="CoreOptionsWindow_Node" Value="Node" />
+  <Translate Key="CoreOptionsWindow_Uris" Value="Uris" />
+  <Translate Key="CoreOptionsWindow_Uri" Value="Uri" />
+  <Translate Key="CoreOptionsWindow_OtherNodes" Value="Other nodes" />
+  <Translate Key="CoreOptionsWindow_Nodes" Value="Nodes" />
+  <Translate Key="CoreOptionsWindow_Client" Value="Client" />
+  <Translate Key="CoreOptionsWindow_Filters" Value="Filters" />
+  <Translate Key="CoreOptionsWindow_ConnectionType" Value="Connection type" />
+  <Translate Key="CoreOptionsWindow_ProxyUri" Value="Proxy uri" />
+  <Translate Key="CoreOptionsWindow_UriCondition" Value="Uri condition" />
+  <Translate Key="CoreOptionsWindow_Option" Value="Option" />
+  <Translate Key="CoreOptionsWindow_Type" Value="Type" />
+  <Translate Key="CoreOptionsWindow_Host" Value="Host" />
+  <Translate Key="CoreOptionsWindow_Server" Value="Server" />
+  <Translate Key="CoreOptionsWindow_ListenUris" Value="Listen uris" />
+  <Translate Key="CoreOptionsWindow_Events" Value="Events" />
+  <Translate Key="CoreOptionsWindow_Data" Value="Data" />
+  <Translate Key="CoreOptionsWindow_Bandwidth" Value="Bandwidth" />
+  <Translate Key="CoreOptionsWindow_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
+  <Translate Key="CoreOptionsWindow_Transfer" Value="Transfer" />
+  <Translate Key="CoreOptionsWindow_TransferLimitType" Value="Limit type" />
+  <Translate Key="CoreOptionsWindow_TransferLimitSpan" Value="Limit span (day)" />
+  <Translate Key="CoreOptionsWindow_TransferLimitSize" Value="Limit size" />
+  <Translate Key="CoreOptionsWindow_TransferInformation" Value="Transfer information" />
+  <Translate Key="CoreOptionsWindow_Downloaded" Value="Downloaded" />
+  <Translate Key="CoreOptionsWindow_Uploaded" Value="Uploaded" />
+  <Translate Key="CoreOptionsWindow_Total" Value="Total" />
+  <Translate Key="CoreOptionsWindow_Reset" Value="Reset" />
+  <Translate Key="CoreOptionsWindow_ConnectionCount" Value="Connection count" />
+  <Translate Key="CoreOptionsWindow_DownloadDirectory" Value="Download directory" />
+  <Translate Key="CoreOptionsWindow_CacheSize" Value="Cache size" />
+  <Translate Key="CoreOptionsWindow_AutoBaseNodeSetting" Value="Auto base node setting" />
+  <Translate Key="CoreOptionsWindow_Tor" Value="Tor" />
+  <Translate Key="CoreOptionsWindow_Ipv4" Value="Ipv4" />
+  <Translate Key="CoreOptionsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="CoreOptionsWindow_Up" Value="Up" />
+  <Translate Key="CoreOptionsWindow_Down" Value="Down" />
+  <Translate Key="CoreOptionsWindow_Add" Value="Add" />
+  <Translate Key="CoreOptionsWindow_Edit" Value="Edit" />
+  <Translate Key="CoreOptionsWindow_Delete" Value="Delete" />
+  <Translate Key="CoreOptionsWindow_Ok" Value="Ok" />
+  <Translate Key="CoreOptionsWindow_Cancel" Value="Cancel" />
+  <Translate Key="CoreOptionsWindow_Cut" Value="Cut" />
+  <Translate Key="CoreOptionsWindow_Copy" Value="Copy" />
+  <Translate Key="CoreOptionsWindow_Paste" Value="Paste" />
+  <Translate Key="CoreOptionsWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
 
   <Translate Key="ConnectionType_None" Value="None" />
   <Translate Key="ConnectionType_Tcp" Value="Tcp" />
@@ -127,50 +140,36 @@
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
 
-  <Translate Key="ViewSettingsWindow_Title" Value="View setting" />
-  <Translate Key="ViewSettingsWindow_Update" Value="Update" />
-  <Translate Key="ViewSettingsWindow_UpdateUrl" Value="Update url" />
-  <Translate Key="ViewSettingsWindow_ProxyUri" Value="Proxy uri" />
-  <Translate Key="ViewSettingsWindow_Signature" Value="Signature" />
-  <Translate Key="ViewSettingsWindow_Signatures" Value="Signatures" />
-  <Translate Key="ViewSettingsWindow_Keywords" Value="Keywords" />
-  <Translate Key="ViewSettingsWindow_Miscellaneous" Value="Miscellaneous" />
-  <Translate Key="ViewSettingsWindow_Box" Value="Box" />
-  <Translate Key="ViewSettingsWindow_RelateBoxFile" Value="Box file is related." />
-  <Translate Key="ViewSettingsWindow_Events" Value="Events" />
-  <Translate Key="ViewSettingsWindow_OpenBox" Value="Open a box file that downloaded." />
-  <Translate Key="ViewSettingsWindow_ExtractTo" Value="Extract to path" />
-  <Translate Key="ViewSettingsWindow_UpdateOption" Value="Update option" />
-  <Translate Key="ViewSettingsWindow_None" Value="None" />
-  <Translate Key="ViewSettingsWindow_AutoCheck" Value="Auto check" />
-  <Translate Key="ViewSettingsWindow_AutoUpdate" Value="Auto update" />
-  <Translate Key="ViewSettingsWindow_Value" Value="Value" />
-  <Translate Key="ViewSettingsWindow_Import" Value="Import" />
-  <Translate Key="ViewSettingsWindow_Export" Value="Export" />
-  <Translate Key="ViewSettingsWindow_Up" Value="Up" />
-  <Translate Key="ViewSettingsWindow_Down" Value="Down" />
-  <Translate Key="ViewSettingsWindow_Add" Value="Add" />
-  <Translate Key="ViewSettingsWindow_Edit" Value="Edit" />
-  <Translate Key="ViewSettingsWindow_Delete" Value="Delete" />
-  <Translate Key="ViewSettingsWindow_Ok" Value="Ok" />
-  <Translate Key="ViewSettingsWindow_Cancel" Value="Cancel" />
-  <Translate Key="ViewSettingsWindow_Cut" Value="Cut" />
-  <Translate Key="ViewSettingsWindow_Copy" Value="Copy" />
-  <Translate Key="ViewSettingsWindow_Paste" Value="Paste" />
-
-  <Translate Key="LinkWindow_Title" Value="Link setting" />
-  <Translate Key="LinkWindow_Download" Value="Download" />
-  <Translate Key="LinkWindow_Upload" Value="Upload" />
-  <Translate Key="LinkWindow_LinkerSignature" Value="Linker signature" />
-  <Translate Key="LinkWindow_TrustSignature" Value="Trust signature" />
-  <Translate Key="LinkWindow_New" Value="New" />
-  <Translate Key="LinkWindow_Edit" Value="Edit" />
-  <Translate Key="LinkWindow_Delete" Value="Delete" />
-  <Translate Key="LinkWindow_Cut" Value="Cut" />
-  <Translate Key="LinkWindow_Copy" Value="Copy" />
-  <Translate Key="LinkWindow_Paste" Value="Paste" />
-  <Translate Key="LinkWindow_Ok" Value="Ok" />
-  <Translate Key="LinkWindow_Cancel" Value="Cancel" />
+  <Translate Key="ViewOptionsWindow_Title" Value="View options" />
+  <Translate Key="ViewOptionsWindow_Update" Value="Update" />
+  <Translate Key="ViewOptionsWindow_UpdateUrl" Value="Update url" />
+  <Translate Key="ViewOptionsWindow_ProxyUri" Value="Proxy uri" />
+  <Translate Key="ViewOptionsWindow_Signature" Value="Signature" />
+  <Translate Key="ViewOptionsWindow_Signatures" Value="Signatures" />
+  <Translate Key="ViewOptionsWindow_Keywords" Value="Keywords" />
+  <Translate Key="ViewOptionsWindow_Miscellaneous" Value="Miscellaneous" />
+  <Translate Key="ViewOptionsWindow_Box" Value="Box" />
+  <Translate Key="ViewOptionsWindow_RelateBoxFile" Value="Box file is related." />
+  <Translate Key="ViewOptionsWindow_Events" Value="Events" />
+  <Translate Key="ViewOptionsWindow_OpenBox" Value="Open a box file that downloaded." />
+  <Translate Key="ViewOptionsWindow_ExtractTo" Value="Extract to path" />
+  <Translate Key="ViewOptionsWindow_UpdateOption" Value="Update option" />
+  <Translate Key="ViewOptionsWindow_None" Value="None" />
+  <Translate Key="ViewOptionsWindow_AutoCheck" Value="Auto check" />
+  <Translate Key="ViewOptionsWindow_AutoUpdate" Value="Auto update" />
+  <Translate Key="ViewOptionsWindow_Value" Value="Value" />
+  <Translate Key="ViewOptionsWindow_Import" Value="Import" />
+  <Translate Key="ViewOptionsWindow_Export" Value="Export" />
+  <Translate Key="ViewOptionsWindow_Up" Value="Up" />
+  <Translate Key="ViewOptionsWindow_Down" Value="Down" />
+  <Translate Key="ViewOptionsWindow_Add" Value="Add" />
+  <Translate Key="ViewOptionsWindow_Edit" Value="Edit" />
+  <Translate Key="ViewOptionsWindow_Delete" Value="Delete" />
+  <Translate Key="ViewOptionsWindow_Ok" Value="Ok" />
+  <Translate Key="ViewOptionsWindow_Cancel" Value="Cancel" />
+  <Translate Key="ViewOptionsWindow_Cut" Value="Cut" />
+  <Translate Key="ViewOptionsWindow_Copy" Value="Copy" />
+  <Translate Key="ViewOptionsWindow_Paste" Value="Paste" />
 
   <Translate Key="VersionInformationWindow_Title" Value="Version information" />
   <Translate Key="VersionInformationWindow_FileName" Value="File name" />

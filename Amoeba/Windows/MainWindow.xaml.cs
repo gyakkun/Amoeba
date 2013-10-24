@@ -63,7 +63,7 @@ namespace Amoeba.Windows
 
         private string _cacheBlocksPath = null;
 
-        public static TabType SelectTab { get; set; }
+        private volatile MainWindowTabType _selectedTab;
 
         public MainWindow()
         {
@@ -152,6 +152,18 @@ namespace Amoeba.Windows
                 Log.Error(e);
 
                 throw;
+            }
+        }
+
+        public MainWindowTabType SelectedTab
+        {
+            get
+            {
+                return _selectedTab;
+            }
+            set
+            {
+                _selectedTab = value;
             }
         }
 
@@ -500,7 +512,7 @@ namespace Amoeba.Windows
                             }
 
                             {
-                                foreach (var linkItem in Settings.Instance.LinkWindow_DownloadLinkItems)
+                                foreach (var linkItem in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                                 {
                                     searchSignatures.Add(linkItem.Signature);
                                     searchSignatures.UnionWith(linkItem.TrustSignatures);
@@ -516,7 +528,7 @@ namespace Amoeba.Windows
                                 }
                             }
 
-                            foreach (var item in Settings.Instance.LinkWindow_DownloadLinkItems)
+                            foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                             {
                                 var link = _amoebaManager.GetLink(item.Signature);
                                 if (link == null || Collection.Equals(item.TrustSignatures, link.TrustSignatures)) continue;
@@ -861,10 +873,7 @@ namespace Amoeba.Windows
                     byte[] buffer = new byte[64];
                     (new RNGCryptoServiceProvider()).GetBytes(buffer);
 
-                    var baseNode = new Node();
-                    baseNode.Id = buffer;
-
-                    _amoebaManager.BaseNode = baseNode;
+                    _amoebaManager.SetBaseNode(new Node(buffer, null));
                 }
 
                 if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
@@ -1141,7 +1150,6 @@ namespace Amoeba.Windows
                 {
                     using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Debug_NodeId.txt"), new UTF8Encoding(false)))
                     {
-                        var baseNode = new Node();
                         byte[] buffer = new byte[64];
 
                         byte b = byte.Parse(reader.ReadLine());
@@ -1151,10 +1159,9 @@ namespace Amoeba.Windows
                             buffer[i] = b;
                         }
 
-                        baseNode.Id = buffer;
-                        baseNode.Uris.AddRange(_amoebaManager.BaseNode.Uris);
+                        var baseNode = _amoebaManager.BaseNode;
 
-                        _amoebaManager.BaseNode = baseNode;
+                        _amoebaManager.SetBaseNode(new Node(buffer, baseNode.Uris));
                     }
                 }
 #endif
@@ -1164,6 +1171,7 @@ namespace Amoeba.Windows
 
                 _transferLimitManager = new TransfarLimitManager(_amoebaManager);
                 _transferLimitManager.Load(_configrationDirectoryPaths["TransfarLimitManager"]);
+                _transferLimitManager.Start();
 
                 if (initFlag)
                 {
@@ -1487,6 +1495,7 @@ namespace Amoeba.Windows
                     _managerThread.Join();
                     _managerThread = null;
 
+                    _transferLimitManager.Stop();
                     _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                     _transferLimitManager.Dispose();
 
@@ -1534,44 +1543,44 @@ namespace Amoeba.Windows
 
             if (_tabControl.SelectedItem == _connectionTabItem)
             {
-                MainWindow.SelectTab = TabType.Connection;
+                this.SelectedTab = MainWindowTabType.Connection;
             }
             else if (_tabControl.SelectedItem == _searchTabItem)
             {
-                MainWindow.SelectTab = TabType.Search;
+                this.SelectedTab = MainWindowTabType.Search;
             }
             else if (_tabControl.SelectedItem == _downloadTabItem)
             {
-                MainWindow.SelectTab = TabType.Download;
+                this.SelectedTab = MainWindowTabType.Download;
             }
             else if (_tabControl.SelectedItem == _uploadTabItem)
             {
-                MainWindow.SelectTab = TabType.Upload;
+                this.SelectedTab = MainWindowTabType.Upload;
             }
             else if (_tabControl.SelectedItem == _shareTabItem)
             {
-                MainWindow.SelectTab = TabType.Share;
+                this.SelectedTab = MainWindowTabType.Share;
             }
             else if (_tabControl.SelectedItem == _storeTabItem)
             {
-                MainWindow.SelectTab = TabType.Store;
+                this.SelectedTab = MainWindowTabType.Store;
             }
             else if (_tabControl.SelectedItem == _logTabItem)
             {
-                MainWindow.SelectTab = TabType.Log;
+                this.SelectedTab = MainWindowTabType.Log;
 
                 _logRichTextBox.UpdateLayout();
                 _logRichTextBox.ScrollToEnd();
             }
             else
             {
-                MainWindow.SelectTab = 0;
+                this.SelectedTab = 0;
             }
 
             this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
         }
 
-        private void _connectionsMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
+        private void _coreMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled && _updateBaseNodeMenuItem_IsEnabled;
         }
@@ -1592,6 +1601,13 @@ namespace Amoeba.Windows
             _stopMenuItem.IsEnabled = false;
 
             Settings.Instance.Global_IsStart = false;
+        }
+
+        private void _linkOptionsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            LinkOptionsWindow window = new LinkOptionsWindow(_amoebaManager);
+            window.Owner = this;
+            window.ShowDialog();
         }
 
         volatile bool _updateBaseNodeMenuItem_IsEnabled = true;
@@ -1630,28 +1646,9 @@ namespace Amoeba.Windows
             }));
         }
 
-        private void _connectionsSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _coreOptionsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ConnectionsSettingsWindow window = new ConnectionsSettingsWindow(_amoebaManager, _autoBaseNodeSettingManager, _transferLimitManager, _bufferManager);
-            window.Owner = this;
-            window.ShowDialog();
-        }
-
-        private void _viewSettingsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            ViewSettingsWindow window = new ViewSettingsWindow(_bufferManager);
-            window.Owner = this;
-            window.ShowDialog();
-        }
-
-        private void _searchMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void _linkSettingsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            LinkWindow window = new LinkWindow(_amoebaManager);
+            CoreOptionsWindow window = new CoreOptionsWindow(_amoebaManager, _autoBaseNodeSettingManager, _transferLimitManager, _bufferManager);
             window.Owner = this;
             window.ShowDialog();
         }
@@ -1816,6 +1813,13 @@ namespace Amoeba.Windows
             _encodeAndDecodeStopMenuItem.IsEnabled = false;
 
             Settings.Instance.Global_IsEncodeAndDecodeStart = false;
+        }
+
+        private void _viewOptionsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ViewOptionsWindow window = new ViewOptionsWindow(_bufferManager);
+            window.Owner = this;
+            window.ShowDialog();
         }
 
         private void _helpMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)

@@ -28,10 +28,11 @@ namespace Amoeba.Windows
     /// </summary>
     partial class ConnectionControl : UserControl
     {
+        private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollection<AmoebaInfomationListViewItem> _infomationListViewItemCollection = new ObservableCollection<AmoebaInfomationListViewItem>();
-        private ObservableCollection<ConnectionListViewItem> _listViewItemCollection = new ObservableCollection<ConnectionListViewItem>();
+        private ObservableCollectionEx<AmoebaInfomationListViewItem> _infomationListViewItemCollection = new ObservableCollectionEx<AmoebaInfomationListViewItem>();
+        private ObservableCollectionEx<ConnectionListViewItem> _listViewItemCollection = new ObservableCollectionEx<ConnectionListViewItem>();
 
         private Thread _showAmoebaInfomationThread;
         private Thread _showConnectionInfomationwThread;
@@ -166,7 +167,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(100);
-                    if (MainWindow.SelectTab != TabType.Connection) continue;
+                    if (_mainWindow.SelectedTab != MainWindowTabType.Connection) continue;
 
                     var connectionInformation = _amoebaManager.ConnectionInformation.ToArray();
                     Dictionary<int, Information> dic = new Dictionary<int, Information>();
