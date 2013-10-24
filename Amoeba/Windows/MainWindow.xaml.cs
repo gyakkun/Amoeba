@@ -868,14 +868,6 @@ namespace Amoeba.Windows
                 _amoebaManager = new AmoebaManager(_cacheBlocksPath, _bufferManager);
                 _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
 
-                if (_amoebaManager.BaseNode == null || _amoebaManager.BaseNode.Id == null)
-                {
-                    byte[] buffer = new byte[64];
-                    (new RNGCryptoServiceProvider()).GetBytes(buffer);
-
-                    _amoebaManager.SetBaseNode(new Node(buffer, null));
-                }
-
                 if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
                 {
                     initFlag = true;
@@ -1005,6 +997,13 @@ namespace Amoeba.Windows
                     {
                         SearchItem = ExecutableSearchItem
                     });
+
+                    {
+                        byte[] buffer = new byte[64];
+                        (new RNGCryptoServiceProvider()).GetBytes(buffer);
+
+                        _amoebaManager.SetBaseNode(new Node(buffer, null));
+                    }
 
                     Random random = new Random();
                     _amoebaManager.ListenUris.Clear();
