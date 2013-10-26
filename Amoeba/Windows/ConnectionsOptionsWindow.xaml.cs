@@ -154,7 +154,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _baseNodeUriAddButton_Click(null, null);
+                if (_baseNodeUrisListView.SelectedIndex == -1)
+                {
+                    _baseNodeUriAddButton_Click(null, null);
+                }
+                else
+                {
+                    _baseNodeUriEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -526,7 +533,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _clientFilterAddButton_Click(null, null);
+                if (_clientFiltersListView.SelectedIndex == -1)
+                {
+                    _clientFilterAddButton_Click(null, null);
+                }
+                else
+                {
+                    _clientFilterEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -536,7 +550,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _clientFilterAddButton_Click(null, null);
+                if (_clientFiltersListView.SelectedIndex == -1)
+                {
+                    _clientFilterAddButton_Click(null, null);
+                }
+                else
+                {
+                    _clientFilterEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
@@ -961,7 +982,14 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _serverListenUriAddButton_Click(null, null);
+                if (_serverListenUrisListView.SelectedIndex == -1)
+                {
+                    _serverListenUriAddButton_Click(null, null);
+                }
+                else
+                {
+                    _serverListenUriEditButton_Click(null, null);
+                }
 
                 e.Handled = true;
             }
