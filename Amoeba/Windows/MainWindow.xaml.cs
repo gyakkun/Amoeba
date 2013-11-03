@@ -55,8 +55,8 @@ namespace Amoeba.Windows
 
         private System.Timers.Timer _refreshTimer = new System.Timers.Timer();
         private Thread _timerThread = null;
-        private Thread _timer2Thread = null;
-        private Thread _managerThread = null;
+        private Thread _statusBarTimerThread = null;
+        private Thread _watchThread = null;
 
         private volatile bool _diskSpaceNotFoundException = false;
         private volatile bool _cacheSpaceNotFoundException = false;
@@ -132,15 +132,15 @@ namespace Amoeba.Windows
                 _timerThread.Name = "MainWindow_TimerThread";
                 _timerThread.Start();
 
-                _timer2Thread = new Thread(new ThreadStart(this.Timer2));
-                _timer2Thread.Priority = ThreadPriority.Highest;
-                _timer2Thread.Name = "MainWindow_Timer2Thread";
-                _timer2Thread.Start();
+                _statusBarTimerThread = new Thread(new ThreadStart(this.StatusBarTimer));
+                _statusBarTimerThread.Priority = ThreadPriority.Highest;
+                _statusBarTimerThread.Name = "MainWindow_StatusBarTimerThread";
+                _statusBarTimerThread.Start();
 
-                _managerThread = new Thread(new ThreadStart(this.Manager));
-                _managerThread.Priority = ThreadPriority.Highest;
-                _managerThread.Name = "MainWindow_ManagerThread";
-                _managerThread.Start();
+                _watchThread = new Thread(new ThreadStart(this.WatchThread));
+                _watchThread.Priority = ThreadPriority.Highest;
+                _watchThread.Name = "MainWindow_WatchThread";
+                _watchThread.Start();
 
                 _transferLimitManager.StartEvent += new EventHandler(_transferLimitManager_StartEvent);
                 _transferLimitManager.StopEvent += new EventHandler(_transferLimitManager_StopEvent);
@@ -424,7 +424,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Timer2()
+        private void StatusBarTimer()
         {
             try
             {
@@ -472,7 +472,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Manager()
+        private void WatchThread()
         {
             try
             {
@@ -484,50 +484,63 @@ namespace Amoeba.Windows
                     Thread.Sleep(1000);
                     if (!_isRun) return;
 
-                    if (Settings.Instance.Global_IsStart && stopwatch.Elapsed > new TimeSpan(0, 1, 0))
+                    if (Settings.Instance.Global_IsStart && stopwatch.Elapsed.TotalSeconds >= 120)
                     {
                         stopwatch.Restart();
 
                         try
                         {
-                            var searchSignatures = new HashSet<string>();
-
+                            // SearchSignaturesの更新
                             {
-                                var storeTreeItems = new List<StoreTreeItem>();
-                                storeTreeItems.AddRange(Clipboard.GetStoreTreeItems());
+                                var searchSignatures = new HashSet<string>();
 
+                                // クリップボード上にあるデータも考慮する。
                                 {
-                                    var categorizeStoreTreeItems = new List<StoreCategorizeTreeItem>();
-                                    categorizeStoreTreeItems.AddRange(Clipboard.GetStoreCategorizeTreeItems());
-                                    categorizeStoreTreeItems.Add(Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem);
+                                    var storeTreeItems = new List<StoreTreeItem>();
+                                    storeTreeItems.AddRange(Clipboard.GetStoreTreeItems());
 
-                                    for (int i = 0; i < categorizeStoreTreeItems.Count; i++)
                                     {
-                                        categorizeStoreTreeItems.AddRange(categorizeStoreTreeItems[i].Children);
-                                        storeTreeItems.AddRange(categorizeStoreTreeItems[i].StoreTreeItems);
+                                        var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
+                                        storeCategorizeTreeItems.AddRange(Clipboard.GetStoreCategorizeTreeItems());
+
+                                        for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
+                                        {
+                                            storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
+                                            storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
+                                        }
                                     }
+
+                                    searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
                                 }
 
-                                searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
-                            }
+                                {
+                                    var storeTreeItems = new List<StoreTreeItem>();
 
-                            {
+                                    var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
+                                    storeCategorizeTreeItems.Add(Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem);
+
+                                    for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
+                                    {
+                                        storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
+                                        storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
+                                    }
+
+                                    searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
+                                }
+
                                 foreach (var linkItem in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                                 {
                                     searchSignatures.Add(linkItem.Signature);
                                     searchSignatures.UnionWith(linkItem.TrustSignatures);
                                 }
-                            }
 
-                            lock (_amoebaManager.ThisLock)
-                            {
-                                lock (_amoebaManager.SearchSignatures.ThisLock)
+                                lock (_amoebaManager.ThisLock)
                                 {
-                                    _amoebaManager.SearchSignatures.Clear();
-                                    _amoebaManager.SearchSignatures.AddRange(searchSignatures);
+                                    _amoebaManager.SetSearchSignatures(searchSignatures);
                                 }
                             }
 
+                            // TrustSignaturesの更新
                             foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                             {
                                 var link = _amoebaManager.GetLink(item.Signature);
@@ -1137,6 +1150,16 @@ namespace Amoeba.Windows
                             Settings.Instance.LibraryControl_Box = Settings.Instance.BoxControl_Box;
                         }
                     }
+
+                    if (version < new Version(2, 0, 3))
+                    {
+                        var lockFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.lock");
+
+                        if (File.Exists(lockFilePath))
+                        {
+                            File.Delete(lockFilePath);
+                        }
+                    }
                 }
 
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
@@ -1488,11 +1511,11 @@ namespace Amoeba.Windows
                     _timerThread.Join();
                     _timerThread = null;
 
-                    _timer2Thread.Join();
-                    _timer2Thread = null;
+                    _statusBarTimerThread.Join();
+                    _statusBarTimerThread = null;
 
-                    _managerThread.Join();
-                    _managerThread = null;
+                    _watchThread.Join();
+                    _watchThread = null;
 
                     _transferLimitManager.Stop();
                     _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);

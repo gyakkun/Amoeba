@@ -20,204 +20,202 @@ namespace Amoeba.Properties
         private object _thisLock = new object();
 
         Settings()
-            : base(new List<Library.Configuration.ISettingsContext>()
+            : base(new List<Library.Configuration.ISettingContent>()
             {
-                new Library.Configuration.SettingsContext<LockedList<DigitalSignature>>() { Name = "Global_DigitalSignatureCollection", Value = new LockedList<DigitalSignature>() },
-                new Library.Configuration.SettingsContext<LockedList<string>>() { Name = "Global_SearchKeywords", Value = new LockedList<string>() },
-                new Library.Configuration.SettingsContext<LockedList<string>>() { Name = "Global_UploadKeywords", Value = new LockedList<string>() },
-                new Library.Configuration.SettingsContext<string>() { Name = "Global_UseLanguage", Value = "English" },
-                new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsStart", Value = true },
-                new Library.Configuration.SettingsContext<bool>() { Name = "Global_IsEncodeAndDecodeStart", Value = true },
-                new Library.Configuration.SettingsContext<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
-                new Library.Configuration.SettingsContext<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
-                new Library.Configuration.SettingsContext<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
-                new Library.Configuration.SettingsContext<string>() { Name = "Global_BoxExtractTo_Path", Value = "Box/Temp" },
-                new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_Url", Value = "http://lyrise.web.fc2.com/update/Amoeba" },
-                new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:18118" },
-                new Library.Configuration.SettingsContext<string>() { Name = "Global_Update_Signature", Value = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A" },
-                new Library.Configuration.SettingsContext<UpdateOption>() { Name = "Global_Update_Option", Value = UpdateOption.AutoCheck },
+                new Library.Configuration.SettingContent<LockedList<DigitalSignature>>() { Name = "Global_DigitalSignatureCollection", Value = new LockedList<DigitalSignature>() },
+                new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_SearchKeywords", Value = new LockedList<string>() },
+                new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_UploadKeywords", Value = new LockedList<string>() },
+                new Library.Configuration.SettingContent<string>() { Name = "Global_UseLanguage", Value = "English" },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsStart", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsEncodeAndDecodeStart", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
+                new Library.Configuration.SettingContent<string>() { Name = "Global_BoxExtractTo_Path", Value = "Box/Temp" },
+                new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Url", Value = "http://lyrise.web.fc2.com/update/Amoeba" },
+                new Library.Configuration.SettingContent<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:18118" },
+                new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Signature", Value = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A" },
+                new Library.Configuration.SettingContent<UpdateOption>() { Name = "Global_Update_Option", Value = UpdateOption.AutoCheck },
 
-                new Library.Configuration.SettingsContext<Color>() { Name = "Color_Tree_Hit", Value = Colors.LightPink },
+                new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Maximized },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "MainWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Maximized },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "CoreOptionsWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_BaseNode_Uris_Uri_Width", Value = 400 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_OtherNodes_Node_Width", Value = 400 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_ConnectionType_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_ProxyUri_Width", Value = 200 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_UriCondition_Width", Value = 200 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_Option_Width", Value = 200 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Server_ListenUris_GridViewColumn_Uri_Width", Value = 400 },
+                new Library.Configuration.SettingContent<double>() { Name = "CoreOptionsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
+                new Library.Configuration.SettingContent<string>() { Name = "CoreOptionsWindow_BandwidthLimit_Unit", Value = "Byte" },
+                new Library.Configuration.SettingContent<string>() { Name = "CoreOptionsWindow_DataCacheSize_Unit", Value = "GB" },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "ProgressWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "ProgressWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "LinkOptionsWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Grid_ColumnDefinitions_Width", Value = 300 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
+                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "LinkOptionsWindow_DownloadLinkItems", Value = new LockedList<LinkItem>() },
+                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "LinkOptionsWindow_UploadLinkItems", Value = new LockedList<LinkItem>() },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SignatureWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
-              
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "CoreOptionsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_BaseNode_Uris_Uri_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_OtherNodes_Node_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_ConnectionType_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_ProxyUri_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_UriCondition_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Client_Filters_GridViewColumn_Option_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Server_ListenUris_GridViewColumn_Uri_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "CoreOptionsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
-                new Library.Configuration.SettingsContext<string>() { Name = "CoreOptionsWindow_BandwidthLimit_Unit", Value = "Byte" },
-                new Library.Configuration.SettingsContext<string>() { Name = "CoreOptionsWindow_DataCacheSize_Unit", Value = "GB" },
+                new Library.Configuration.SettingContent<double>() { Name = "ViewOptionsWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "ViewOptionsWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "ViewOptionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "ViewOptionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "ViewOptionsWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "ViewOptionsWindow_Signature_GridViewColumn_Value_Width", Value = 400 },
+                new Library.Configuration.SettingContent<double>() { Name = "ViewOptionsWindow_Keyword_GridViewColumn_Value_Width", Value = 400 },
+                new Library.Configuration.SettingContent<double>() { Name = "ViewOptionsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "LinkOptionsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_Grid_ColumnDefinitions_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "LinkOptionsWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<List<LinkItem>>() { Name = "LinkOptionsWindow_DownloadLinkItems", Value = new List<LinkItem>() },
-                new Library.Configuration.SettingsContext<List<LinkItem>>() { Name = "LinkOptionsWindow_UploadLinkItems", Value = new List<LinkItem>() },
+                new Library.Configuration.SettingContent<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "VersionInformationWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "VersionInformationWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "VersionInformationWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "VersionInformationWindow_GridViewColumn_FileName_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "VersionInformationWindow_GridViewColumn_Version_Width", Value = -1 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "ViewOptionsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Signature_GridViewColumn_Value_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Keyword_GridViewColumn_Value_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ViewOptionsWindow_Grid_ColumnDefinitions_Width", Value = 160 },
+                new Library.Configuration.SettingContent<string>() { Name = "ConnectionControl_LastHeaderClicked", Value = "Uri" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "ConnectionControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_Grid_ColumnDefinitions_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_Uri_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_Priority_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_ReceivedByteCount_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_SentByteCount_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_Name_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_Value_Width", Value = 100 },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "VersionInformationWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_GridViewColumn_FileName_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "VersionInformationWindow_GridViewColumn_Version_Width", Value = -1 },
+                new Library.Configuration.SettingContent<Windows.SearchTreeItem>() { Name = "SearchControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
+                new Library.Configuration.SettingContent<string>() { Name = "SearchControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "SearchControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_Grid_ColumnDefinitions_Width", Value = 200 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Signature_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Keywords_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Comment_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Id_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<string>() { Name = "ConnectionControl_LastHeaderClicked", Value = "Uri" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "ConnectionControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_Grid_ColumnDefinitions_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_Uri_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_Priority_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_ReceivedByteCount_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_SentByteCount_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ConnectionControl_GridViewColumn_Value_Width", Value = 100 },
+                new Library.Configuration.SettingContent<string>() { Name = "DownloadControl_LastHeaderClicked", Value = "Rate" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "DownloadControl_ListSortDirection", Value = ListSortDirection.Descending },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Index_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Priority_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Rank_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Rate_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Path_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<StoreCategorizeTreeItem>() { Name = "StoreDownloadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
-                new Library.Configuration.SettingsContext<string>() { Name = "StoreDownloadControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "StoreDownloadControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "StoreDownloadControl_ExpandedPath", Value = new LockedHashSet<Route>() },
+                new Library.Configuration.SettingContent<string>() { Name = "UploadControl_LastHeaderClicked", Value = "Rate" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "UploadControl_ListSortDirection", Value = ListSortDirection.Descending },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Index_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_State_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Length_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Priority_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Rank_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Rate_Width", Value = 120 },
 
-                new Library.Configuration.SettingsContext<StoreCategorizeTreeItem>() { Name = "StoreUploadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
-                new Library.Configuration.SettingsContext<string>() { Name = "StoreUploadControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "StoreUploadControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "StoreUploadControl_ExpandedPath", Value = new LockedHashSet<Route>() },
-
-                new Library.Configuration.SettingsContext<string>() { Name = "LibraryControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "LibraryControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
-                new Library.Configuration.SettingsContext<LockedHashSet<Route>>() { Name = "LibraryControl_ExpandedPath", Value = new LockedHashSet<Route>() },
-
-                new Library.Configuration.SettingsContext<double>() { Name = "StoreCategorizeTreeItemEditWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "StoreCategorizeTreeItemEditWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "StoreCategorizeTreeItemEditWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "StoreCategorizeTreeItemEditWindow_WindowState", Value = WindowState.Normal },
-
-                new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "SearchControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
-                new Library.Configuration.SettingsContext<string>() { Name = "SearchControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "SearchControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_Grid_ColumnDefinitions_Width", Value = 200 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Signature_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_State_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Keywords_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_CreationTime_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Length_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Comment_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchControl_GridViewColumn_Id_Width", Value = 120 },
-
-                new Library.Configuration.SettingsContext<string>() { Name = "DownloadControl_LastHeaderClicked", Value = "Rate" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "DownloadControl_ListSortDirection", Value = ListSortDirection.Descending },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Index_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_State_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Length_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Priority_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Rank_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Rate_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "DownloadControl_GridViewColumn_Path_Width", Value = 120 },
-
-                new Library.Configuration.SettingsContext<string>() { Name = "UploadControl_LastHeaderClicked", Value = "Rate" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "UploadControl_ListSortDirection", Value = ListSortDirection.Descending },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Index_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_State_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Length_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Priority_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rank_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadControl_GridViewColumn_Rate_Width", Value = 120 },
-
-                new Library.Configuration.SettingsContext<string>() { Name = "ShareControl_LastHeaderClicked", Value = "Name" },
-                new Library.Configuration.SettingsContext<ListSortDirection>() { Name = "ShareControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Index_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
+                new Library.Configuration.SettingContent<string>() { Name = "ShareControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "ShareControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_Index_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_Name_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
     
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "UploadWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Name_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "UploadWindow_GridViewColumn_Path_Width", Value = -1 },
+                new Library.Configuration.SettingContent<StoreCategorizeTreeItem>() { Name = "StoreDownloadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
+                new Library.Configuration.SettingContent<string>() { Name = "StoreDownloadControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "StoreDownloadControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "StoreDownloadControl_ExpandedPath", Value = new LockedHashSet<Route>() },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "SearchItemEditWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Value_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width", Value = 400 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Value_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width", Value = 300 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Value_Width", Value = 600 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width", Value = -1 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Value_Width", Value = 600 },
+                new Library.Configuration.SettingContent<StoreCategorizeTreeItem>() { Name = "StoreUploadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
+                new Library.Configuration.SettingContent<string>() { Name = "StoreUploadControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "StoreUploadControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "StoreUploadControl_ExpandedPath", Value = new LockedHashSet<Route>() },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "BoxEditWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "BoxEditWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<string>() { Name = "LibraryControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "LibraryControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingContent<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
+                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "LibraryControl_ExpandedPath", Value = new LockedHashSet<Route>() },
 
-                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Top", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Left", Value = 120 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Height", Value = 500 },
-                new Library.Configuration.SettingsContext<double>() { Name = "SeedEditWindow_Width", Value = 700 },
-                new Library.Configuration.SettingsContext<WindowState>() { Name = "SeedEditWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "ProgressWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "ProgressWindow_WindowState", Value = WindowState.Normal },
+
+                new Library.Configuration.SettingContent<double>() { Name = "SignatureWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SignatureWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SignatureWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
+              
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "SearchItemEditWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Name_Value_Width", Value = 600 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width", Value = 400 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width", Value = 400 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Keyword_Value_Width", Value = 600 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width", Value = 300 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width", Value = 300 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width", Value = 300 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width", Value = 300 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_Seed_Value_Width", Value = 600 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_GridViewColumn_SearchState_Value_Width", Value = 600 },
+
+                new Library.Configuration.SettingContent<double>() { Name = "UploadWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "UploadWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadWindow_GridViewColumn_Name_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadWindow_GridViewColumn_Path_Width", Value = -1 },
+
+                new Library.Configuration.SettingContent<double>() { Name = "StoreCategorizeTreeItemEditWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "StoreCategorizeTreeItemEditWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "StoreCategorizeTreeItemEditWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "StoreCategorizeTreeItemEditWindow_WindowState", Value = WindowState.Normal },
+
+                new Library.Configuration.SettingContent<double>() { Name = "BoxEditWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "BoxEditWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "BoxEditWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "BoxEditWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "BoxEditWindow_WindowState", Value = WindowState.Normal },
+
+                new Library.Configuration.SettingContent<double>() { Name = "SeedEditWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SeedEditWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SeedEditWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "SeedEditWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "SeedEditWindow_WindowState", Value = WindowState.Normal },
          
-                new Library.Configuration.SettingsContext<Windows.SearchTreeItem>() { Name = "CacheControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
-                new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
-                new Library.Configuration.SettingsContext<LockedList<StoreTreeItem>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
-                new Library.Configuration.SettingsContext<Box>() { Name = "BoxControl_Box", Value = null },
+                new Library.Configuration.SettingContent<Windows.SearchTreeItem>() { Name = "CacheControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
+                new Library.Configuration.SettingContent<LockedList<StoreTreeItem>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
+                new Library.Configuration.SettingContent<LockedList<StoreTreeItem>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() },
+                new Library.Configuration.SettingContent<Box>() { Name = "BoxControl_Box", Value = null },
             })
         {
 
@@ -225,7 +223,7 @@ namespace Amoeba.Properties
 
         public override void Load(string directoryPath)
         {
-            lock (_thisLock)
+            lock (this.ThisLock)
             {
                 try
                 {
@@ -240,7 +238,7 @@ namespace Amoeba.Properties
 
         public override void Save(string directoryPath)
         {
-            lock (_thisLock)
+            lock (this.ThisLock)
             {
                 base.Save(directoryPath);
             }
@@ -509,25 +507,6 @@ namespace Amoeba.Properties
         }
 
 
-        public Color Color_Tree_Hit
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (Color)this["Color_Tree_Hit"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["Color_Tree_Hit"] = value;
-                }
-            }
-        }
-
-
         public double MainWindow_Top
         {
             get
@@ -614,116 +593,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["MainWindow_WindowState"] = value;
-                }
-            }
-        }
-
-
-        public double ProgressWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["ProgressWindow_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ProgressWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState ProgressWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["ProgressWindow_WindowState"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["ProgressWindow_WindowState"] = value;
-                }
-            }
-        }
-
-
-        public double SignatureWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Top"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Left"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double SignatureWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["SignatureWindow_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState SignatureWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["SignatureWindow_WindowState"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SignatureWindow_WindowState"] = value;
                 }
             }
         }
@@ -1144,13 +1013,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public List<LinkItem> LinkOptionsWindow_DownloadLinkItems
+        public LockedList<LinkItem> LinkOptionsWindow_DownloadLinkItems
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (List<LinkItem>)this["LinkOptionsWindow_DownloadLinkItems"];
+                   return (LockedList<LinkItem>)this["LinkOptionsWindow_DownloadLinkItems"];
                 }
             }
             set
@@ -1162,13 +1031,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public List<LinkItem> LinkOptionsWindow_UploadLinkItems
+        public LockedList<LinkItem> LinkOptionsWindow_UploadLinkItems
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (List<LinkItem>)this["LinkOptionsWindow_UploadLinkItems"];
+                   return (LockedList<LinkItem>)this["LinkOptionsWindow_UploadLinkItems"];
                 }
             }
             set
@@ -1611,298 +1480,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ConnectionControl_GridViewColumn_Value_Width"] = value;
-                }
-            }
-        }
-
-
-        public StoreCategorizeTreeItem StoreDownloadControl_StoreCategorizeTreeItem
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (StoreCategorizeTreeItem)this["StoreDownloadControl_StoreCategorizeTreeItem"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreDownloadControl_StoreCategorizeTreeItem"] = value;
-                }
-            }
-        }
-
-        public string StoreDownloadControl_LastHeaderClicked
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (string)this["StoreDownloadControl_LastHeaderClicked"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreDownloadControl_LastHeaderClicked"] = value;
-                }
-            }
-        }
-
-        public ListSortDirection StoreDownloadControl_ListSortDirection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (ListSortDirection)this["StoreDownloadControl_ListSortDirection"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreDownloadControl_ListSortDirection"] = value;
-                }
-            }
-        }
-
-        public LockedHashSet<Route> StoreDownloadControl_ExpandedPath
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (LockedHashSet<Route>)this["StoreDownloadControl_ExpandedPath"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreDownloadControl_ExpandedPath"] = value;
-                }
-            }
-        }
-
-
-        public StoreCategorizeTreeItem StoreUploadControl_StoreCategorizeTreeItem
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (StoreCategorizeTreeItem)this["StoreUploadControl_StoreCategorizeTreeItem"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreUploadControl_StoreCategorizeTreeItem"] = value;
-                }
-            }
-        }
-
-        public string StoreUploadControl_LastHeaderClicked
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (string)this["StoreUploadControl_LastHeaderClicked"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreUploadControl_LastHeaderClicked"] = value;
-                }
-            }
-        }
-
-        public ListSortDirection StoreUploadControl_ListSortDirection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (ListSortDirection)this["StoreUploadControl_ListSortDirection"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreUploadControl_ListSortDirection"] = value;
-                }
-            }
-        }
-
-        public LockedHashSet<Route> StoreUploadControl_ExpandedPath
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (LockedHashSet<Route>)this["StoreUploadControl_ExpandedPath"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreUploadControl_ExpandedPath"] = value;
-                }
-            }
-        }
-
-
-        public string LibraryControl_LastHeaderClicked
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (string)this["LibraryControl_LastHeaderClicked"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LibraryControl_LastHeaderClicked"] = value;
-                }
-            }
-        }
-
-        public ListSortDirection LibraryControl_ListSortDirection
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (ListSortDirection)this["LibraryControl_ListSortDirection"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LibraryControl_ListSortDirection"] = value;
-                }
-            }
-        }
-
-        public Box LibraryControl_Box
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (Box)this["LibraryControl_Box"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LibraryControl_Box"] = value;
-                }
-            }
-        }
-
-        public LockedHashSet<Route> LibraryControl_ExpandedPath
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (LockedHashSet<Route>)this["LibraryControl_ExpandedPath"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LibraryControl_ExpandedPath"] = value;
-                }
-            }
-        }
-
-
-        public double StoreCategorizeTreeItemEditWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["StoreCategorizeTreeItemEditWindow_Top"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreCategorizeTreeItemEditWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double StoreCategorizeTreeItemEditWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["StoreCategorizeTreeItemEditWindow_Left"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreCategorizeTreeItemEditWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double StoreCategorizeTreeItemEditWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["StoreCategorizeTreeItemEditWindow_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreCategorizeTreeItemEditWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState StoreCategorizeTreeItemEditWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["StoreCategorizeTreeItemEditWindow_WindowState"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreCategorizeTreeItemEditWindow_WindowState"] = value;
                 }
             }
         }
@@ -2578,128 +2155,330 @@ namespace Amoeba.Properties
         }
 
 
-        public double UploadWindow_Top
+        public StoreCategorizeTreeItem StoreDownloadControl_StoreCategorizeTreeItem
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Top"];
+                   return (StoreCategorizeTreeItem)this["StoreDownloadControl_StoreCategorizeTreeItem"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_Top"] = value;
+                    this["StoreDownloadControl_StoreCategorizeTreeItem"] = value;
                 }
             }
         }
 
-        public double UploadWindow_Left
+        public string StoreDownloadControl_LastHeaderClicked
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Left"];
+                   return (string)this["StoreDownloadControl_LastHeaderClicked"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_Left"] = value;
+                    this["StoreDownloadControl_LastHeaderClicked"] = value;
                 }
             }
         }
 
-        public double UploadWindow_Height
+        public ListSortDirection StoreDownloadControl_ListSortDirection
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Height"];
+                   return (ListSortDirection)this["StoreDownloadControl_ListSortDirection"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_Height"] = value;
+                    this["StoreDownloadControl_ListSortDirection"] = value;
                 }
             }
         }
 
-        public double UploadWindow_Width
+        public LockedHashSet<Route> StoreDownloadControl_ExpandedPath
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Width"];
+                   return (LockedHashSet<Route>)this["StoreDownloadControl_ExpandedPath"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_Width"] = value;
+                    this["StoreDownloadControl_ExpandedPath"] = value;
                 }
             }
         }
 
-        public WindowState UploadWindow_WindowState
+
+        public StoreCategorizeTreeItem StoreUploadControl_StoreCategorizeTreeItem
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["UploadWindow_WindowState"];
+                   return (StoreCategorizeTreeItem)this["StoreUploadControl_StoreCategorizeTreeItem"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_WindowState"] = value;
+                    this["StoreUploadControl_StoreCategorizeTreeItem"] = value;
                 }
             }
         }
 
-        public double UploadWindow_GridViewColumn_Name_Width
+        public string StoreUploadControl_LastHeaderClicked
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_GridViewColumn_Name_Width"];
+                   return (string)this["StoreUploadControl_LastHeaderClicked"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_GridViewColumn_Name_Width"] = value;
+                    this["StoreUploadControl_LastHeaderClicked"] = value;
                 }
             }
         }
 
-        public double UploadWindow_GridViewColumn_Path_Width
+        public ListSortDirection StoreUploadControl_ListSortDirection
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_GridViewColumn_Path_Width"];
+                   return (ListSortDirection)this["StoreUploadControl_ListSortDirection"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadWindow_GridViewColumn_Path_Width"] = value;
+                    this["StoreUploadControl_ListSortDirection"] = value;
+                }
+            }
+        }
+
+        public LockedHashSet<Route> StoreUploadControl_ExpandedPath
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedHashSet<Route>)this["StoreUploadControl_ExpandedPath"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreUploadControl_ExpandedPath"] = value;
+                }
+            }
+        }
+
+
+        public string LibraryControl_LastHeaderClicked
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (string)this["LibraryControl_LastHeaderClicked"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_LastHeaderClicked"] = value;
+                }
+            }
+        }
+
+        public ListSortDirection LibraryControl_ListSortDirection
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (ListSortDirection)this["LibraryControl_ListSortDirection"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_ListSortDirection"] = value;
+                }
+            }
+        }
+
+        public Box LibraryControl_Box
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (Box)this["LibraryControl_Box"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_Box"] = value;
+                }
+            }
+        }
+
+        public LockedHashSet<Route> LibraryControl_ExpandedPath
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (LockedHashSet<Route>)this["LibraryControl_ExpandedPath"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_ExpandedPath"] = value;
+                }
+            }
+        }
+
+
+        public double ProgressWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ProgressWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ProgressWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState ProgressWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["ProgressWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ProgressWindow_WindowState"] = value;
+                }
+            }
+        }
+
+
+        public double SignatureWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SignatureWindow_Top"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SignatureWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double SignatureWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SignatureWindow_Left"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SignatureWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double SignatureWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["SignatureWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SignatureWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState SignatureWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["SignatureWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SignatureWindow_WindowState"] = value;
                 }
             }
         }
@@ -3156,6 +2935,206 @@ namespace Amoeba.Properties
         }
 
 
+        public double UploadWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UploadWindow_Top"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double UploadWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UploadWindow_Left"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double UploadWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UploadWindow_Height"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double UploadWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UploadWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState UploadWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["UploadWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double UploadWindow_GridViewColumn_Name_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UploadWindow_GridViewColumn_Name_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_GridViewColumn_Name_Width"] = value;
+                }
+            }
+        }
+
+        public double UploadWindow_GridViewColumn_Path_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["UploadWindow_GridViewColumn_Path_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["UploadWindow_GridViewColumn_Path_Width"] = value;
+                }
+            }
+        }
+
+
+        public double StoreCategorizeTreeItemEditWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["StoreCategorizeTreeItemEditWindow_Top"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreCategorizeTreeItemEditWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double StoreCategorizeTreeItemEditWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["StoreCategorizeTreeItemEditWindow_Left"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreCategorizeTreeItemEditWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double StoreCategorizeTreeItemEditWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["StoreCategorizeTreeItemEditWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreCategorizeTreeItemEditWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState StoreCategorizeTreeItemEditWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["StoreCategorizeTreeItemEditWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreCategorizeTreeItemEditWindow_WindowState"] = value;
+                }
+            }
+        }
+
+
         public double BoxEditWindow_Top
         {
             get
@@ -3412,6 +3391,8 @@ namespace Amoeba.Properties
 
         #endregion
 
+        #region IThisLock
+
         public object ThisLock
         {
             get
@@ -3419,5 +3400,7 @@ namespace Amoeba.Properties
                 return _thisLock;
             }
         }
+
+        #endregion
     }
 }

@@ -1408,7 +1408,6 @@ namespace Amoeba.Windows
 
             lock (_amoebaManager.ThisLock)
             {
-
                 long size = (long)NetworkConverter.FromSizeString("50 GB");
 
                 try

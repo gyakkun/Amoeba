@@ -850,8 +850,6 @@ namespace Amoeba.Windows
 
         private void Update()
         {
-            Settings.Instance.SearchControl_SearchTreeItem = _treeViewItem.Value;
-
             _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
             _refresh = true;
         }

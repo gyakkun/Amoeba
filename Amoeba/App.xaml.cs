@@ -29,12 +29,13 @@ namespace Amoeba
     {
         public static Version AmoebaVersion { get; private set; }
         public static Dictionary<string, string> DirectoryPaths { get; private set; }
-        private FileStream _lockStream = null;
+        public static AmoebaColors AmoebaColors { get; private set; }
+
         private List<Process> _processList = new List<Process>();
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 2);
+            App.AmoebaVersion = new Version(2, 0, 3);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -145,8 +146,7 @@ namespace Amoeba
         void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var exception = e.ExceptionObject as Exception;
-            if (exception == null)
-                return;
+            if (exception == null) return;
 
             Log.Error(exception);
         }
@@ -264,27 +264,22 @@ namespace Amoeba
                 }
             }
 
+            // 多重起動防止
             {
-                try
-                {
-                    _lockStream = new FileStream(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.lock"), FileMode.Create);
-                }
-                catch (IOException)
-                {
-                    this.Shutdown();
+                Process currentProcess = Process.GetCurrentProcess();
 
-                    return;
-                }
-
-                int count = 0;
-
-                foreach (var p in Process.GetProcessesByName("Amoeba"))
+                // 同一パスのプロセスが存在する場合、終了する。
+                foreach (Process p in Process.GetProcessesByName(currentProcess.ProcessName))
                 {
+                    if (p.Id == currentProcess.Id) continue;
+
                     try
                     {
                         if (p.MainModule.FileName == Path.GetFullPath(Assembly.GetEntryAssembly().Location))
                         {
-                            count++;
+                            this.Shutdown();
+
+                            return;
                         }
                     }
                     catch (Exception)
@@ -293,28 +288,21 @@ namespace Amoeba
                     }
                 }
 
-                if (count == 2)
-                {
-                    this.Shutdown();
+                string updateInformationFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update");
 
-                    return;
-                }
-            }
-
-            try
-            {
-                if (File.Exists("update"))
+                // アップデート中の場合、終了する。
+                if (File.Exists(updateInformationFilePath))
                 {
-                    using (FileStream stream = new FileStream("update", FileMode.Open))
-                    using (StreamReader r = new StreamReader(stream))
+                    using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Open))
+                    using (StreamReader reader = new StreamReader(stream, new UTF8Encoding(false)))
                     {
-                        var text = r.ReadLine();
+                        var updateExeFilePath = reader.ReadLine();
 
-                        foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(text)))
+                        foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(updateExeFilePath)))
                         {
                             try
                             {
-                                if (Path.GetFileName(p.MainModule.FileName) == text)
+                                if (Path.GetFileName(p.MainModule.FileName) == updateExeFilePath)
                                 {
                                     this.Shutdown();
 
@@ -328,121 +316,101 @@ namespace Amoeba
                         }
                     }
 
-                    File.Delete("update");
+                    File.Delete(updateInformationFilePath);
                 }
             }
-            catch (Exception)
-            {
-                this.Shutdown();
 
-                return;
-            }
-
-            // Update
             try
             {
+                // アップデート
                 if (Directory.Exists(App.DirectoryPaths["Update"]))
                 {
                 Restart: ;
 
-                    Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
-                    Version version = App.AmoebaVersion;
-                    string updateZipPath = null;
+                    string zipFilePath = null;
 
-                    foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
                     {
-                        string name = Path.GetFileName(path);
+                        Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
+                        Version version = App.AmoebaVersion;
 
-                        if (name.StartsWith("Amoeba"))
+                        foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
                         {
-                            var match = regex.Match(name);
+                            string name = Path.GetFileName(path);
 
-                            if (match.Success)
+                            if (name.StartsWith("Amoeba"))
                             {
-                                var tempVersion = new Version(match.Groups[1].Value);
+                                var match = regex.Match(name);
 
-                                if (version < tempVersion)
+                                if (match.Success)
                                 {
-                                    version = tempVersion;
-                                    updateZipPath = path;
-                                }
-                                else
-                                {
-                                    if (File.Exists(path))
-                                        File.Delete(path);
+                                    var tempVersion = new Version(match.Groups[1].Value);
+
+                                    if (version < tempVersion)
+                                    {
+                                        version = tempVersion;
+                                        zipFilePath = path;
+                                    }
+                                    else
+                                    {
+                                        if (File.Exists(path))
+                                            File.Delete(path);
+                                    }
                                 }
                             }
                         }
                     }
 
-                    if (updateZipPath != null)
+                    if (zipFilePath != null)
                     {
-                        var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + "-Update");
+                        string workDirectioryPath = App.DirectoryPaths["Work"];
+                        var tempCoreDirectoryPath = Path.Combine(workDirectioryPath, "Core");
 
-                        if (Directory.Exists(tempPath))
-                            Directory.Delete(tempPath, true);
+                        if (Directory.Exists(tempCoreDirectoryPath))
+                            Directory.Delete(tempCoreDirectoryPath, true);
 
                         try
                         {
-                            using (ZipFile zipfile = new ZipFile(updateZipPath))
+                            using (ZipFile zipfile = new ZipFile(zipFilePath))
                             {
                                 zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
                                 zipfile.UseUnicodeAsNecessary = true;
-                                zipfile.ExtractAll(tempPath);
+                                zipfile.ExtractAll(tempCoreDirectoryPath);
                             }
                         }
                         catch (Exception)
                         {
-                            if (File.Exists(updateZipPath))
-                                File.Delete(updateZipPath);
+                            if (File.Exists(zipFilePath))
+                                File.Delete(zipFilePath);
 
                             goto Restart;
                         }
 
-                        try
-                        {
-                            File.Move(updateZipPath, Path.Combine(App.DirectoryPaths["Base"], Path.GetFileName(updateZipPath)));
-                        }
-                        catch (Exception)
-                        {
+                        var tempUpdateExeFilePath = Path.Combine(workDirectioryPath, "Library.Update.exe");
 
-                        }
+                        if (File.Exists(tempUpdateExeFilePath))
+                            File.Delete(tempUpdateExeFilePath);
 
-                        try
-                        {
-                            File.Delete(updateZipPath);
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-
-                        updateZipPath = Path.Combine(App.DirectoryPaths["Base"], Path.GetFileName(updateZipPath));
-
-                        var tempUpdateExePath = Path.Combine(Path.GetTempPath(), "-" + Path.GetRandomFileName() + "-Library.Update.exe");
-
-                        if (File.Exists(tempUpdateExePath))
-                            File.Delete(tempUpdateExePath);
-
-                        File.Copy("Library.Update.exe", tempUpdateExePath);
+                        File.Copy("Library.Update.exe", tempUpdateExeFilePath);
 
                         ProcessStartInfo startInfo = new ProcessStartInfo();
-                        startInfo.FileName = tempUpdateExePath;
+                        startInfo.FileName = tempUpdateExeFilePath;
                         startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
                             Process.GetCurrentProcess().Id,
-                            Path.Combine(tempPath, "Core"),
+                            Path.Combine(tempCoreDirectoryPath, "Core"),
                             Directory.GetCurrentDirectory(),
                             Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"),
-                            Path.GetFullPath(updateZipPath));
-                        startInfo.WorkingDirectory = Path.GetDirectoryName(startInfo.FileName);
+                            Path.GetFullPath(zipFilePath));
+                        startInfo.WorkingDirectory = Path.GetDirectoryName(tempUpdateExeFilePath);
 
                         var process = Process.Start(startInfo);
                         process.WaitForInputIdle();
 
-                        using (FileStream stream = new FileStream("update", FileMode.Create))
-                        using (StreamWriter w = new StreamWriter(stream))
+                        string updateInformationFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update");
+
+                        using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Create))
+                        using (StreamWriter writer = new StreamWriter(stream))
                         {
-                            w.WriteLine(Path.GetFileName(tempUpdateExePath));
+                            writer.WriteLine(Path.GetFileName(tempUpdateExeFilePath));
                         }
 
                         this.Shutdown();
@@ -458,6 +426,28 @@ namespace Amoeba
 
             this.RunProcess();
 
+            // Colors
+            {
+                if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings")))
+                {
+                    using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings"), false, new UTF8Encoding(false)))
+                    {
+                        writer.WriteLine(string.Format("Tree_Hit {0}", System.Windows.Media.Colors.LightPink));
+                    }
+                }
+
+                App.AmoebaColors = new AmoebaColors();
+
+                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings"), new UTF8Encoding(false)))
+                {
+                    var items = reader.ReadLine().Split(' ');
+                    var name = items[0];
+                    var value = items[1];
+
+                    if (name == "Tree_Hit") App.AmoebaColors.Tree_Hit = (Color)ColorConverter.ConvertFromString(value);
+                }
+            }
+
             this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
         }
 
@@ -465,7 +455,7 @@ namespace Amoeba
         {
             if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"))) return;
 
-            var runList = new List<dynamic>();
+            var runList = new List<RunItem>();
 
             using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
             using (XmlTextReader xml = new XmlTextReader(r))
@@ -523,7 +513,7 @@ namespace Amoeba
                                 }
                             }
 
-                            runList.Add(new
+                            runList.Add(new RunItem()
                             {
                                 Path = path,
                                 Arguments = arguments,
@@ -536,7 +526,7 @@ namespace Amoeba
 
             Parallel.ForEach(runList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, item =>
             {
-                foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension((string)item.Path)))
+                foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(item.Path)))
                 {
                     try
                     {
@@ -622,7 +612,7 @@ namespace Amoeba
                 }
             }
 
-            var runList = new List<dynamic>();
+            var runList = new List<RunItem>();
 
             using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
             using (XmlTextReader xml = new XmlTextReader(r))
@@ -680,7 +670,7 @@ namespace Amoeba
                                 }
                             }
 
-                            runList.Add(new
+                            runList.Add(new RunItem()
                             {
                                 Path = path,
                                 Arguments = arguments,
@@ -726,12 +716,23 @@ namespace Amoeba
 
                 }
             });
-
-            if (_lockStream != null)
-            {
-                _lockStream.Close();
-                _lockStream = null;
-            }
         }
+
+        private class RunItem
+        {
+            public string Path { get; set; }
+            public string Arguments { get; set; }
+            public string WorkingDirectory { get; set; }
+        }
+    }
+
+    public class AmoebaColors
+    {
+        public AmoebaColors()
+        {
+            this.Tree_Hit = System.Windows.Media.Colors.LightPink;
+        }
+
+        public System.Windows.Media.Color Tree_Hit { get; set; }
     }
 }

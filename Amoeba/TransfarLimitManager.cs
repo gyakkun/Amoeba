@@ -321,10 +321,10 @@ namespace Amoeba
             private object _thisLock;
 
             public Settings(object lockObject)
-                : base(new List<Library.Configuration.ISettingsContext>() { 
-                new Library.Configuration.SettingsContext<TransferLimit>() { Name = "TransferLimit", Value = new TransferLimit() },
-                new Library.Configuration.SettingsContext<LockedDictionary<DateTime, long>>() { Name = "UploadTransferSizeList", Value = new LockedDictionary<DateTime, long>() },
-                new Library.Configuration.SettingsContext<LockedDictionary<DateTime, long>>() { Name = "DownloadTransferSizeList", Value = new LockedDictionary<DateTime, long>() },
+                : base(new List<Library.Configuration.ISettingContent>() { 
+                new Library.Configuration.SettingContent<TransferLimit>() { Name = "TransferLimit", Value = new TransferLimit() },
+                new Library.Configuration.SettingContent<LockedDictionary<DateTime, long>>() { Name = "UploadTransferSizeList", Value = new LockedDictionary<DateTime, long>() },
+                new Library.Configuration.SettingContent<LockedDictionary<DateTime, long>>() { Name = "DownloadTransferSizeList", Value = new LockedDictionary<DateTime, long>() },
                 })
             {
                 _thisLock = lockObject;

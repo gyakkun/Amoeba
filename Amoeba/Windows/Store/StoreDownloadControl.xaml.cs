@@ -406,8 +406,6 @@ namespace Amoeba.Windows
                             }
                         }
 
-                        bool isUpdate = false;
-
                         foreach (var storeTreeViewItem in storeTreeViewItems)
                         {
                             var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
@@ -419,16 +417,19 @@ namespace Amoeba.Windows
 
                             storeTreeViewItem.Update();
 
-                            isUpdate = true;
-                        }
-
-                        if (_cacheUpdate || isUpdate)
-                        {
-                            _cacheUpdate = false;
-
-                            this.Update();
+                            _cacheUpdate |= true;
                         }
                     }));
+
+                    if (_cacheUpdate)
+                    {
+                        _cacheUpdate = false;
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        {
+                            this.Update();
+                        }));
+                    }
 
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 
@@ -554,8 +555,6 @@ namespace Amoeba.Windows
         {
             this.Update_TreeView_Color();
 
-            Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem = _treeViewItem.Value;
-
             _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
             _refresh = true;
         }
@@ -626,7 +625,7 @@ namespace Amoeba.Windows
 
                         if (selectTreeViewItem != item)
                         {
-                            textBlock.Foreground = new SolidColorBrush(Settings.Instance.Color_Tree_Hit);
+                            textBlock.Foreground = new SolidColorBrush(App.AmoebaColors.Tree_Hit);
                         }
                         else
                         {

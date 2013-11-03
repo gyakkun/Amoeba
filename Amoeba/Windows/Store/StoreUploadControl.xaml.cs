@@ -525,8 +525,6 @@ namespace Amoeba.Windows
         {
             this.Update_TreeView_Color();
 
-            Settings.Instance.StoreUploadControl_StoreCategorizeTreeItem = _treeViewItem.Value;
-
             _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
             _refresh = true;
         }
@@ -597,7 +595,7 @@ namespace Amoeba.Windows
 
                         if (selectTreeViewItem != item)
                         {
-                            textBlock.Foreground = new SolidColorBrush(Settings.Instance.Color_Tree_Hit);
+                            textBlock.Foreground = new SolidColorBrush(App.AmoebaColors.Tree_Hit);
                         }
                         else
                         {
@@ -1266,13 +1264,13 @@ namespace Amoeba.Windows
                 var storeTreeItems = new List<StoreTreeItem>();
 
                 {
-                    var categorizeStoreTreeItems = new List<StoreCategorizeTreeItem>();
-                    categorizeStoreTreeItems.Add(selectTreeViewItem.Value);
+                    var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
+                    storeCategorizeTreeItems.Add(selectTreeViewItem.Value);
 
-                    for (int i = 0; i < categorizeStoreTreeItems.Count; i++)
+                    for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
                     {
-                        categorizeStoreTreeItems.AddRange(categorizeStoreTreeItems[i].Children);
-                        storeTreeItems.AddRange(categorizeStoreTreeItems[i].StoreTreeItems);
+                        storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
+                        storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
                     }
                 }
 
@@ -1420,13 +1418,13 @@ namespace Amoeba.Windows
             var storeTreeViewItems = new List<StoreTreeViewItem>();
 
             {
-                var categorizeStoreTreeViewItems = new List<StoreCategorizeTreeViewItem>();
-                categorizeStoreTreeViewItems.Add(_treeViewItem);
+                var storeCategorizeTreeViewItems = new List<StoreCategorizeTreeViewItem>();
+                storeCategorizeTreeViewItems.Add(_treeViewItem);
 
-                for (int i = 0; i < categorizeStoreTreeViewItems.Count; i++)
+                for (int i = 0; i < storeCategorizeTreeViewItems.Count; i++)
                 {
-                    categorizeStoreTreeViewItems.AddRange(categorizeStoreTreeViewItems[i].Items.OfType<StoreCategorizeTreeViewItem>());
-                    storeTreeViewItems.AddRange(categorizeStoreTreeViewItems[i].Items.OfType<StoreTreeViewItem>());
+                    storeCategorizeTreeViewItems.AddRange(storeCategorizeTreeViewItems[i].Items.OfType<StoreCategorizeTreeViewItem>());
+                    storeTreeViewItems.AddRange(storeCategorizeTreeViewItems[i].Items.OfType<StoreTreeViewItem>());
                 }
             }
 
@@ -2180,7 +2178,7 @@ namespace Amoeba.Windows
             else
             {
                 _listViewContextMenu.IsEnabled = true;
-                
+
                 var selectItems = _listView.SelectedItems;
 
                 _listViewNewBoxMenuItem.IsEnabled = true;

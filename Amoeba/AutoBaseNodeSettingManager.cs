@@ -429,10 +429,10 @@ namespace Amoeba
             private object _thisLock;
 
             public Settings(object lockObject)
-                : base(new List<Library.Configuration.ISettingsContext>() { 
-                    new Library.Configuration.SettingsContext<string>() { Name = "Ipv4Uri", Value = null },
-                    new Library.Configuration.SettingsContext<string>() { Name = "Ipv6Uri", Value = null },
-                    new Library.Configuration.SettingsContext<string>() { Name = "UpnpUri", Value = null },
+                : base(new List<Library.Configuration.ISettingContent>() { 
+                    new Library.Configuration.SettingContent<string>() { Name = "Ipv4Uri", Value = null },
+                    new Library.Configuration.SettingContent<string>() { Name = "Ipv6Uri", Value = null },
+                    new Library.Configuration.SettingContent<string>() { Name = "UpnpUri", Value = null },
                 })
             {
                 _thisLock = lockObject;

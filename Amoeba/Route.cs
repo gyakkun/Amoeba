@@ -38,29 +38,5 @@ namespace Library.Net.Amoeba
 
             return Collection.Equals(this, other);
         }
-
-        #region IEnumerable<string>
-
-        IEnumerator<string> IEnumerable<string>.GetEnumerator()
-        {
-            lock (base.ThisLock)
-            {
-                return base.GetEnumerator();
-            }
-        }
-
-        #endregion
-
-        #region IEnumerable
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            lock (base.ThisLock)
-            {
-                return this.GetEnumerator();
-            }
-        }
-
-        #endregion
     }
 }
