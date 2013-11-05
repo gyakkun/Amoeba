@@ -391,10 +391,10 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         var storeTreeViewItems = new List<StoreTreeViewItem>();
 
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
                             var categorizeStoreTreeViewItems = new List<StoreCategorizeTreeViewItem>();
                             categorizeStoreTreeViewItems.Add(_treeViewItem);
@@ -404,22 +404,25 @@ namespace Amoeba.Windows
                                 categorizeStoreTreeViewItems.AddRange(categorizeStoreTreeViewItems[i].Items.OfType<StoreCategorizeTreeViewItem>());
                                 storeTreeViewItems.AddRange(categorizeStoreTreeViewItems[i].Items.OfType<StoreTreeViewItem>());
                             }
-                        }
+                        }));
 
                         foreach (var storeTreeViewItem in storeTreeViewItems)
                         {
                             var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
                             if (store == null || Collection.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
 
-                            storeTreeViewItem.Value.Boxes.Clear();
-                            storeTreeViewItem.Value.Boxes.AddRange(store.Boxes);
-                            storeTreeViewItem.Value.IsUpdated = true;
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                            {
+                                storeTreeViewItem.Value.Boxes.Clear();
+                                storeTreeViewItem.Value.Boxes.AddRange(store.Boxes);
+                                storeTreeViewItem.Value.IsUpdated = true;
 
-                            storeTreeViewItem.Update();
+                                storeTreeViewItem.Update();
+                            }));
 
-                            _cacheUpdate |= true;
+                            _cacheUpdate = true;
                         }
-                    }));
+                    }
 
                     if (_cacheUpdate)
                     {
