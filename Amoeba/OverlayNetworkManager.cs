@@ -5,15 +5,16 @@ using System.Linq;
 using System.Management;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Library;
-using Library.Net.Amoeba;
-using Library.Net.Upnp;
 using Library.I2p;
-using Library.Net.Connection;
-using System.Security.Cryptography;
+using Library.Net.Amoeba;
+using Library.Net.Caps;
+using Library.Net.Connections;
+using Library.Net.Upnp;
 
 namespace Amoeba
 {
@@ -50,12 +51,15 @@ namespace Amoeba
             _settings = new Settings(this.ThisLock);
 
             _amoebaManager.CheckUriEvent = this.CheckUri;
-            _amoebaManager.CreateCapEvent = this.CreateConnection;
-            _amoebaManager.AcceptCapEvent = this.AcceptConnection;
+            _amoebaManager.CreateCapEvent = this.CreateCap;
+            _amoebaManager.AcceptCapEvent = this.AcceptCap;
         }
 
         private bool CheckUri(object sender, string uri)
         {
+            if (_disposed) return false;
+            if (this.State == ManagerState.Stop) return false;
+
             bool flag = false;
 
             if (uri.StartsWith("i2p:")) flag = true;
@@ -63,7 +67,7 @@ namespace Amoeba
             return flag;
         }
 
-        private CapBase CreateConnection(object sender, string uri)
+        private CapBase CreateCap(object sender, string uri)
         {
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
@@ -121,12 +125,13 @@ namespace Amoeba
 
                                 if (session == null)
                                 {
+                                    Socket proxySocket = null;
+
                                     try
                                     {
-                                        var proxySocket = OverlayNetworkManager.Connect(new IPEndPoint(OverlayNetworkManager.GetIpAddress(proxyHost), proxyPort), new TimeSpan(0, 0, 10));
-                                        garbages.Add(proxySocket);
+                                        proxySocket = OverlayNetworkManager.Connect(new IPEndPoint(OverlayNetworkManager.GetIpAddress(proxyHost), proxyPort), new TimeSpan(0, 0, 10));
 
-                                        string caption = "Lair";
+                                        string caption = "Lair_Client";
                                         string[] options = new string[]
                                         {
                                             "inbound.nickname=" + caption,
@@ -144,6 +149,7 @@ namespace Amoeba
                                     catch (Exception)
                                     {
                                         if (session != null) session.Dispose();
+                                        if (proxySocket != null) proxySocket.Dispose();
 
                                         throw;
                                     }
@@ -207,7 +213,7 @@ namespace Amoeba
             return null;
         }
 
-        private CapBase AcceptConnection(object sender, out string uri)
+        private CapBase AcceptCap(object sender, out string uri)
         {
             uri = null;
 
@@ -408,7 +414,7 @@ namespace Amoeba
 
                                     try
                                     {
-                                        string caption = "Lair";
+                                        string caption = "Lair_Server";
                                         string[] options = new string[]
                                         {
                                             "inbound.nickname=" + caption,

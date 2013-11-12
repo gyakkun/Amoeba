@@ -407,9 +407,13 @@
       <Project>{82230C99-6599-4130-AAC9-FC926ABC0724}</Project>
       <Name>Library.Net.Amoeba</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Connection\Library.Net.Connection.csproj">
+    <ProjectReference Include="..\..\Library\Library.Net.Caps\Library.Net.Caps.csproj">
+      <Project>{364FD425-45B7-41D5-A180-1CE912C7BA31}</Project>
+      <Name>Library.Net.Caps</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\Library.Net.Connections\Library.Net.Connections.csproj">
       <Project>{38994E3C-0699-4D6C-AD02-F9F657340347}</Project>
-      <Name>Library.Net.Connection</Name>
+      <Name>Library.Net.Connections</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Library.Net\Library.Net.csproj">
       <Project>{7CFDE01D-4A0E-4E10-ACC2-34DB897DBE0F}</Project>

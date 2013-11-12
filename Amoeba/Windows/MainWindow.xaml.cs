@@ -26,7 +26,7 @@ using Amoeba.Properties;
 using Library;
 using Library.Io;
 using Library.Net.Amoeba;
-using Library.Net.Connection;
+using Library.Net.Connections;
 using Library.Net.Proxy;
 using Library.Net.Upnp;
 using Library.Security;
@@ -1629,7 +1629,8 @@ namespace Amoeba.Windows
 
         private void _coreMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled && _updateBaseNodeMenuItem_IsEnabled;
+            _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsStart && _updateBaseNodeMenuItem_IsEnabled
+                && (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled || Settings.Instance.Global_I2p_SamBridge_IsEnabled);
         }
 
         private void _startMenuItem_Click(object sender, RoutedEventArgs e)
