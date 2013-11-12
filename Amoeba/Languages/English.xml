@@ -20,6 +20,7 @@
   <Translate Key="Box_CreationTime" Value="Creation time" />
   <Translate Key="Box_Comment" Value="Comment" />
 
+  <Translate Key="MainWindow_StatesBar" Value="Connect: {0}  Convert: {1}" />
   <Translate Key="MainWindow_Connection" Value="Connection" />
   <Translate Key="MainWindow_Search" Value="Search" />
   <Translate Key="MainWindow_Download" Value="Download" />
@@ -28,6 +29,8 @@
   <Translate Key="MainWindow_Store" Value="Store" />
   <Translate Key="MainWindow_Log" Value="Log" />
   <Translate Key="MainWindow_Core" Value="Core" />
+  <Translate Key="MainWindow_Running" Value="Running" />
+  <Translate Key="MainWindow_Stopping" Value="Stopping" />
   <Translate Key="MainWindow_Start" Value="Start" />
   <Translate Key="MainWindow_Stop" Value="Stop" />
   <Translate Key="MainWindow_LinkOptions" Value="Link options" />
@@ -37,8 +40,8 @@
   <Translate Key="MainWindow_CheckSeeds" Value="Check seeds" />
   <Translate Key="MainWindow_CheckInternalBlocks" Value="Check internal blocks" />
   <Translate Key="MainWindow_CheckExternalBlocks" Value="Check external blocks" />
-  <Translate Key="MainWindow_EncodeAndDecodeStart" Value="Encode and decode start" />
-  <Translate Key="MainWindow_EncodeAndDecodeStop" Value="Encode and decode stop" />
+  <Translate Key="MainWindow_ConvertStart" Value="Convert start" />
+  <Translate Key="MainWindow_ConvertStop" Value="Convert stop" />
   <Translate Key="MainWindow_View" Value="View" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
   <Translate Key="MainWindow_ViewOptions" Value="View options" />
@@ -92,7 +95,6 @@
   <Translate Key="CoreOptionsWindow_Host" Value="Host" />
   <Translate Key="CoreOptionsWindow_Server" Value="Server" />
   <Translate Key="CoreOptionsWindow_ListenUris" Value="Listen uris" />
-  <Translate Key="CoreOptionsWindow_Events" Value="Events" />
   <Translate Key="CoreOptionsWindow_Data" Value="Data" />
   <Translate Key="CoreOptionsWindow_Bandwidth" Value="Bandwidth" />
   <Translate Key="CoreOptionsWindow_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
@@ -108,7 +110,11 @@
   <Translate Key="CoreOptionsWindow_ConnectionCount" Value="Connection count" />
   <Translate Key="CoreOptionsWindow_DownloadDirectory" Value="Download directory" />
   <Translate Key="CoreOptionsWindow_CacheSize" Value="Cache size" />
-  <Translate Key="CoreOptionsWindow_AutoBaseNodeSetting" Value="Auto base node setting" />
+  <Translate Key="CoreOptionsWindow_Events" Value="Events" />
+  <Translate Key="CoreOptionsWindow_Events_Connection" Value="Connection" />
+  <Translate Key="CoreOptionsWindow_Events_OpenPortAndGetIpAddress" Value="Open port and get IP address." />
+  <Translate Key="CoreOptionsWindow_Events_UseI2p" Value="Use I2P." />
+  <Translate Key="CoreOptionsWindow_Events_UseI2p_SamBridgeUri" Value="Sam bridge uri:" />
   <Translate Key="CoreOptionsWindow_Tor" Value="Tor" />
   <Translate Key="CoreOptionsWindow_Ipv4" Value="Ipv4" />
   <Translate Key="CoreOptionsWindow_Ipv6" Value="Ipv6" />

@@ -4,13 +4,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 using Amoeba.Windows;
 using Library;
+using Library.Collections;
 using Library.Net;
 using Library.Net.Amoeba;
 using Library.Security;
-using Library.Collections;
-using System.Windows.Media;
 
 namespace Amoeba.Properties
 {
@@ -27,8 +27,9 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_UploadKeywords", Value = new LockedList<string>() },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_UseLanguage", Value = "English" },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_IsStart", Value = true },
-                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsEncodeAndDecodeStart", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsConvertStart", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_I2p_SamBridge_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_BoxExtractTo_Path", Value = "Box/Temp" },
@@ -344,20 +345,20 @@ namespace Amoeba.Properties
             }
         }
 
-        public bool Global_IsEncodeAndDecodeStart
+        public bool Global_IsConvertStart
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                   return (bool)this["Global_IsEncodeAndDecodeStart"];
+                   return (bool)this["Global_IsConvertStart"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["Global_IsEncodeAndDecodeStart"] = value;
+                    this["Global_IsConvertStart"] = value;
                 }
             }
         }
@@ -376,6 +377,24 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_AutoBaseNodeSetting_IsEnabled"] = value;
+                }
+            }
+        }
+
+        public bool Global_I2p_SamBridge_IsEnabled
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (bool)this["Global_I2p_SamBridge_IsEnabled"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_I2p_SamBridge_IsEnabled"] = value;
                 }
             }
         }

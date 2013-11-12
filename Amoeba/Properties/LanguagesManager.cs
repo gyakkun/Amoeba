@@ -333,6 +333,17 @@ namespace Amoeba.Properties
         }
 
 
+        public string MainWindow_StatesBar
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_StatesBar");
+                }
+            }
+        }
+
         public string MainWindow_Connection
         {
             get
@@ -417,6 +428,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Core");
+                }
+            }
+        }
+
+        public string MainWindow_Running
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Running");
+                }
+            }
+        }
+
+        public string MainWindow_Stopping
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Stopping");
                 }
             }
         }
@@ -520,24 +553,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_EncodeAndDecodeStart
+        public string MainWindow_ConvertStart
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_EncodeAndDecodeStart");
+                    return this.Translate("MainWindow_ConvertStart");
                 }
             }
         }
 
-        public string MainWindow_EncodeAndDecodeStop
+        public string MainWindow_ConvertStop
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_EncodeAndDecodeStop");
+                    return this.Translate("MainWindow_ConvertStop");
                 }
             }
         }
@@ -1105,17 +1138,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string CoreOptionsWindow_Events
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("CoreOptionsWindow_Events");
-                }
-            }
-        }
-
         public string CoreOptionsWindow_Data
         {
             get
@@ -1281,13 +1303,57 @@ namespace Amoeba.Properties
             }
         }
 
-        public string CoreOptionsWindow_AutoBaseNodeSetting
+        public string CoreOptionsWindow_Events
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("CoreOptionsWindow_AutoBaseNodeSetting");
+                    return this.Translate("CoreOptionsWindow_Events");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Events_Connection
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Events_Connection");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Events_OpenPortAndGetIpAddress
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Events_OpenPortAndGetIpAddress");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Events_UseI2p
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Events_UseI2p");
+                }
+            }
+        }
+
+        public string CoreOptionsWindow_Events_UseI2p_SamBridgeUri
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("CoreOptionsWindow_Events_UseI2p_SamBridgeUri");
                 }
             }
         }

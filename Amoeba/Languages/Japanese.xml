@@ -20,6 +20,7 @@
   <Translate Key="Box_CreationTime" Value="作成日" />
   <Translate Key="Box_Comment" Value="コメント" />
 
+  <Translate Key="MainWindow_StatesBar" Value="接続: {0}  変換: {1}" />
   <Translate Key="MainWindow_Connection" Value="コネクション" />
   <Translate Key="MainWindow_Search" Value="検索" />
   <Translate Key="MainWindow_Download" Value="ダウンロード" />
@@ -28,6 +29,8 @@
   <Translate Key="MainWindow_Store" Value="ストア" />
   <Translate Key="MainWindow_Log" Value="ログ" />
   <Translate Key="MainWindow_Core" Value="コア" />
+  <Translate Key="MainWindow_Running" Value="実行中" />
+  <Translate Key="MainWindow_Stopping" Value="停止中" />
   <Translate Key="MainWindow_Start" Value="開始" />
   <Translate Key="MainWindow_Stop" Value="停止" />
   <Translate Key="MainWindow_LinkOptions" Value="リンク設定" />
@@ -37,8 +40,8 @@
   <Translate Key="MainWindow_CheckSeeds" Value="完全キャッシュのチェック" />
   <Translate Key="MainWindow_CheckInternalBlocks" Value="内部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckExternalBlocks" Value="外部ブロックの破損チェック" />
-  <Translate Key="MainWindow_EncodeAndDecodeStart" Value="エンコードとデコードの開始" />
-  <Translate Key="MainWindow_EncodeAndDecodeStop" Value="エンコードとデコードの停止" />
+  <Translate Key="MainWindow_ConvertStart" Value="変換の開始" />
+  <Translate Key="MainWindow_ConvertStop" Value="変換の停止" />
   <Translate Key="MainWindow_View" Value="表示" />
   <Translate Key="MainWindow_Languages" Value="言語" />
   <Translate Key="MainWindow_ViewOptions" Value="表示設定" />
@@ -92,7 +95,6 @@
   <Translate Key="CoreOptionsWindow_Host" Value="ホスト" />
   <Translate Key="CoreOptionsWindow_Server" Value="サーバー" />
   <Translate Key="CoreOptionsWindow_ListenUris" Value="受信 Uris" />
-  <Translate Key="CoreOptionsWindow_Events" Value="イベント" />
   <Translate Key="CoreOptionsWindow_Data" Value="データ" />
   <Translate Key="CoreOptionsWindow_Bandwidth" Value="帯域幅" />
   <Translate Key="CoreOptionsWindow_BandwidthLimit" Value="帯域幅制限 (*/s) [0 Byte: 無制限]" />
@@ -108,7 +110,11 @@
   <Translate Key="CoreOptionsWindow_ConnectionCount" Value="接続数上限" />
   <Translate Key="CoreOptionsWindow_DownloadDirectory" Value="ダウンロードディレクトリ" />
   <Translate Key="CoreOptionsWindow_CacheSize" Value="キャッシュサイズ" />
-  <Translate Key="CoreOptionsWindow_AutoBaseNodeSetting" Value="基礎ノードを自動で設定する" />
+  <Translate Key="CoreOptionsWindow_Events" Value="イベント" />
+  <Translate Key="CoreOptionsWindow_Events_Connection" Value="接続" />
+  <Translate Key="CoreOptionsWindow_Events_OpenPortAndGetIpAddress" Value="ポート開放とIPアドレスの取得を行う。" />
+  <Translate Key="CoreOptionsWindow_Events_UseI2p" Value="I2Pを使用する。" />
+  <Translate Key="CoreOptionsWindow_Events_UseI2p_SamBridgeUri" Value="SAMブリッジのUri:" />
   <Translate Key="CoreOptionsWindow_Tor" Value="Tor" />
   <Translate Key="CoreOptionsWindow_Ipv4" Value="Ipv4" />
   <Translate Key="CoreOptionsWindow_Ipv6" Value="Ipv6" />

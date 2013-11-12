@@ -11,6 +11,7 @@ using System.Threading;
 using Library;
 using Library.Net.Amoeba;
 using Library.Net.Upnp;
+using System.Security.Cryptography;
 
 namespace Amoeba
 {
@@ -79,246 +80,257 @@ namespace Amoeba
             return Collection.Compare(x.GetAddressBytes(), y.GetAddressBytes());
         }
 
+        private bool AddUri(string uri)
+        {
+            lock (this.ThisLock)
+            {
+                lock (_amoebaManager.ThisLock)
+                {
+                    var baseNode = _amoebaManager.BaseNode;
+                    var random = new RNGCryptoServiceProvider();
+
+                    byte[] id = new byte[64];
+                    random.GetBytes(id);
+
+                    var uris = new List<string>(baseNode.Uris);
+                    if (uris.Contains(uri)) return false;
+
+                    uris.Add(uri);
+
+                    _amoebaManager.SetBaseNode(new Node(id, uris));
+                }
+            }
+
+            return true;
+        }
+
+        private bool RemoveUri(string uri)
+        {
+            lock (this.ThisLock)
+            {
+                lock (_amoebaManager.ThisLock)
+                {
+                    var baseNode = _amoebaManager.BaseNode;
+                    var random = new RNGCryptoServiceProvider();
+
+                    byte[] id = new byte[64];
+                    random.GetBytes(id);
+
+                    var uris = new List<string>(baseNode.Uris);
+                    if (!uris.Remove(uri)) return false;
+
+                    _amoebaManager.SetBaseNode(new Node(id, uris));
+                }
+            }
+
+            return true;
+        }
+
         public void Update()
         {
             lock (this.ThisLock)
             {
                 if (this.State == ManagerState.Stop) return;
 
-                var baseNode = _amoebaManager.BaseNode;
-
-                var nodeId = baseNode.Id;
-                var nodeUris = new List<string>(baseNode.Uris);
-
-                try
                 {
-                    string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:{0}:", IPAddress.Any.ToString())));
+                    string ipv4Uri = null;
 
-                    Regex regex = new Regex(@"(.*?):(.*):(\d*)");
-                    var match = regex.Match(uri);
-                    if (!match.Success) throw new Exception();
-
-                    int port = int.Parse(match.Groups[3].Value);
-
-                    List<IPAddress> myIpAddresses = new List<IPAddress>(AutoBaseNodeSettingManager.GetIpAddresses());
-
-                    foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
+                    try
                     {
-                        if (IPAddress.Any.ToString() == myIpAddress.ToString()
-                            || IPAddress.Loopback.ToString() == myIpAddress.ToString()
-                            || IPAddress.Broadcast.ToString() == myIpAddress.ToString())
-                        {
-                            continue;
-                        }
-                        if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
-                            && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
-                        {
-                            continue;
-                        }
-                        if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
-                            && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
-                        {
-                            continue;
-                        }
-                        if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
-                            && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
-                        {
-                            continue;
-                        }
-                        if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
-                            && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
-                        {
-                            continue;
-                        }
+                        string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:{0}:", IPAddress.Any.ToString())));
 
-                        var ipv4Uri = string.Format("tcp:{0}:{1}", myIpAddress.ToString(), port);
+                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                        var match = regex.Match(uri);
+                        if (!match.Success) throw new Exception();
 
-                        if (_settings.Ipv4Uri != null)
+                        int port = int.Parse(match.Groups[3].Value);
+
+                        List<IPAddress> myIpAddresses = new List<IPAddress>(AutoBaseNodeSettingManager.GetIpAddresses());
+
+                        foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
                         {
-                            if (ipv4Uri != _settings.Ipv4Uri)
+                            if (IPAddress.Any.ToString() == myIpAddress.ToString()
+                                || IPAddress.Loopback.ToString() == myIpAddress.ToString()
+                                || IPAddress.Broadcast.ToString() == myIpAddress.ToString())
                             {
-                                nodeUris.Remove(_settings.Ipv4Uri);
-
-                                Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv4Uri));
+                                continue;
                             }
+                            if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
+                                && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
+                            {
+                                continue;
+                            }
+                            if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
+                                && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
+                            {
+                                continue;
+                            }
+                            if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
+                                && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
+                            {
+                                continue;
+                            }
+                            if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
+                                && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
+                            {
+                                continue;
+                            }
+
+                            ipv4Uri = string.Format("tcp:{0}:{1}", myIpAddress.ToString(), port);
+
+                            break;
                         }
+                    }
+                    catch (Exception)
+                    {
 
-                        _settings.Ipv4Uri = ipv4Uri;
+                    }
 
-                        if (!baseNode.Uris.Any(n => n == _settings.Ipv4Uri))
-                        {
-                            nodeUris.Add(_settings.Ipv4Uri);
+                    if (ipv4Uri != _settings.Ipv4Uri)
+                    {
+                        if (this.RemoveUri(_settings.Ipv4Uri))
+                            Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv4Uri));
+                    }
 
+                    _settings.Ipv4Uri = ipv4Uri;
+
+                    if (_settings.Ipv4Uri != null)
+                    {
+                        if (this.AddUri(_settings.Ipv4Uri))
                             Log.Information(string.Format("Add Node Uri: {0}", _settings.Ipv4Uri));
-                        }
-
-                        break;
                     }
                 }
-                catch (Exception)
+
                 {
+                    string ipv6Uri = null;
 
-                }
-
-                try
-                {
-                    string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:[{0}]:", IPAddress.IPv6Any.ToString())));
-
-                    Regex regex = new Regex(@"(.*?):(.*):(\d*)");
-                    var match = regex.Match(uri);
-                    if (!match.Success) throw new Exception();
-
-                    int port = int.Parse(match.Groups[3].Value);
-
-                    List<IPAddress> myIpAddresses = new List<IPAddress>(AutoBaseNodeSettingManager.GetIpAddresses());
-
-                    foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6))
+                    try
                     {
-                        if (IPAddress.IPv6Any.ToString() == myIpAddress.ToString()
-                            || IPAddress.IPv6Loopback.ToString() == myIpAddress.ToString()
-                            || IPAddress.IPv6None.ToString() == myIpAddress.ToString())
-                        {
-                            continue;
-                        }
-                        if (myIpAddress.ToString().StartsWith("fe80:"))
-                        {
-                            continue;
-                        }
-                        if (myIpAddress.ToString().StartsWith("2001:"))
-                        {
-                            continue;
-                        }
-                        if (myIpAddress.ToString().StartsWith("2002:"))
-                        {
-                            continue;
-                        }
+                        string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:[{0}]:", IPAddress.IPv6Any.ToString())));
 
-                        var ipv6Uri = string.Format("tcp:[{0}]:{1}", myIpAddress.ToString(), port);
+                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                        var match = regex.Match(uri);
+                        if (!match.Success) throw new Exception();
 
-                        if (_settings.Ipv6Uri != null)
+                        int port = int.Parse(match.Groups[3].Value);
+
+                        List<IPAddress> myIpAddresses = new List<IPAddress>(AutoBaseNodeSettingManager.GetIpAddresses());
+
+                        foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6))
                         {
-                            if (ipv6Uri != _settings.Ipv6Uri)
+                            if (IPAddress.IPv6Any.ToString() == myIpAddress.ToString()
+                                || IPAddress.IPv6Loopback.ToString() == myIpAddress.ToString()
+                                || IPAddress.IPv6None.ToString() == myIpAddress.ToString())
                             {
-                                nodeUris.Remove(_settings.Ipv6Uri);
-
-                                Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv6Uri));
+                                continue;
                             }
+                            if (myIpAddress.ToString().StartsWith("fe80:"))
+                            {
+                                continue;
+                            }
+                            if (myIpAddress.ToString().StartsWith("2001:"))
+                            {
+                                continue;
+                            }
+                            if (myIpAddress.ToString().StartsWith("2002:"))
+                            {
+                                continue;
+                            }
+
+                            ipv6Uri = string.Format("tcp:[{0}]:{1}", myIpAddress.ToString(), port);
+
+                            break;
                         }
+                    }
+                    catch (Exception)
+                    {
 
-                        _settings.Ipv6Uri = ipv6Uri;
+                    }
 
-                        if (!baseNode.Uris.Any(n => n == _settings.Ipv6Uri))
-                        {
-                            nodeUris.Add(_settings.Ipv6Uri);
+                    if (ipv6Uri != _settings.Ipv6Uri)
+                    {
+                        if (this.RemoveUri(_settings.Ipv6Uri))
+                            Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv6Uri));
+                    }
 
+                    _settings.Ipv6Uri = ipv6Uri;
+
+                    if (_settings.Ipv6Uri != null)
+                    {
+                        if (this.AddUri(_settings.Ipv6Uri))
                             Log.Information(string.Format("Add Node Uri: {0}", _settings.Ipv6Uri));
-                        }
-
-                        break;
                     }
                 }
-                catch (Exception)
+
                 {
+                    string upnpUri = null;
 
-                }
-
-                try
-                {
-                    string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:{0}:", IPAddress.Any.ToString())));
-
-                    Regex regex = new Regex(@"(.*?):(.*):(\d*)");
-                    var match = regex.Match(uri);
-                    if (!match.Success) throw new Exception();
-
-                    int port = int.Parse(match.Groups[3].Value);
-
-                    using (UpnpClient client = new UpnpClient())
+                    try
                     {
-                        client.Connect(new TimeSpan(0, 0, 30));
+                        string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:{0}:", IPAddress.Any.ToString())));
 
-                        string ip = client.GetExternalIpAddress(new TimeSpan(0, 0, 10));
+                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                        var match = regex.Match(uri);
+                        if (!match.Success) throw new Exception();
 
-                        if (!string.IsNullOrWhiteSpace(ip))
+                        int port = int.Parse(match.Groups[3].Value);
+
+                        using (UpnpClient client = new UpnpClient())
                         {
-                            var upnpUri = string.Format("tcp:{0}:{1}", ip, port);
-                            bool flag = false;
+                            client.Connect(new TimeSpan(0, 0, 10));
 
-                            if (_settings.UpnpUri != null)
+                            string ip = client.GetExternalIpAddress(new TimeSpan(0, 0, 10));
+                            if (string.IsNullOrWhiteSpace(ip)) throw new Exception();
+
+                            upnpUri = string.Format("tcp:{0}:{1}", ip, port);
+
+                            if (upnpUri != _settings.UpnpUri)
                             {
-                                if (upnpUri != _settings.UpnpUri)
+                                if (_settings.UpnpUri != null)
                                 {
-                                    nodeUris.Remove(_settings.UpnpUri);
-
-                                    Log.Information(string.Format("Remove Node Uri: {0}", _settings.UpnpUri));
-
                                     try
                                     {
                                         var match2 = regex.Match(_settings.UpnpUri);
                                         if (!match2.Success) throw new Exception();
                                         int port2 = int.Parse(match2.Groups[3].Value);
 
-                                        flag = (port != port2);
-
-                                        if (flag)
-                                        {
-                                            client.ClosePort(UpnpProtocolType.Tcp, port2, new TimeSpan(0, 0, 10));
-
-                                            Log.Information(string.Format("UPnP Close Port: {0}", port2));
-                                        }
+                                        client.ClosePort(UpnpProtocolType.Tcp, port2, new TimeSpan(0, 0, 10));
+                                        Log.Information(string.Format("UPnP Close Port: {0}", port2));
                                     }
                                     catch (Exception)
                                     {
 
                                     }
                                 }
-                                else
-                                {
-                                    flag = false;
-                                }
-                            }
-                            else
-                            {
-                                flag = true;
-                            }
 
-                            if (flag)
-                            {
                                 client.ClosePort(UpnpProtocolType.Tcp, port, new TimeSpan(0, 0, 10));
 
                                 if (client.OpenPort(UpnpProtocolType.Tcp, port, port, "Amoeba", new TimeSpan(0, 0, 10)))
                                 {
                                     Log.Information(string.Format("UPnP Open Port: {0}", port));
-
-                                    _settings.UpnpUri = upnpUri;
-
-                                    if (!baseNode.Uris.Any(n => n == _settings.UpnpUri))
-                                    {
-                                        nodeUris.Add(_settings.UpnpUri);
-
-                                        Log.Information(string.Format("Add Node Uri: {0}", _settings.UpnpUri));
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                _settings.UpnpUri = upnpUri;
-
-                                if (!baseNode.Uris.Any(n => n == _settings.UpnpUri))
-                                {
-                                    nodeUris.Add(_settings.UpnpUri);
-
-                                    Log.Information(string.Format("Add Node Uri: {0}", _settings.UpnpUri));
                                 }
                             }
                         }
                     }
-                }
-                catch (Exception)
-                {
+                    catch (Exception)
+                    {
 
-                }
+                    }
 
-                _amoebaManager.SetBaseNode(new Node(nodeId, nodeUris));
+                    if (upnpUri != _settings.UpnpUri)
+                    {
+                        if (this.RemoveUri(_settings.UpnpUri))
+                            Log.Information(string.Format("Remove Node Uri: {0}", _settings.UpnpUri));
+                    }
+
+                    _settings.UpnpUri = upnpUri;
+
+                    if (_settings.UpnpUri != null)
+                    {
+                        if (this.AddUri(_settings.UpnpUri))
+                            Log.Information(string.Format("Add Node Uri: {0}", _settings.UpnpUri));
+                    }
+                }
             }
         }
 
@@ -326,38 +338,30 @@ namespace Amoeba
         {
             lock (this.ThisLock)
             {
-                var baseNode = _amoebaManager.BaseNode;
-
-                var nodeId = baseNode.Id;
-                var nodeUris = new List<string>(baseNode.Uris);
-
                 if (_settings.Ipv4Uri != null)
                 {
-                    nodeUris.Remove(_settings.Ipv4Uri);
-
-                    Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv4Uri));
+                    if (this.RemoveUri(_settings.Ipv4Uri))
+                        Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv4Uri));
                 }
                 _settings.Ipv4Uri = null;
 
                 if (_settings.Ipv6Uri != null)
                 {
-                    nodeUris.Remove(_settings.Ipv6Uri);
-
-                    Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv6Uri));
+                    if (this.RemoveUri(_settings.Ipv6Uri))
+                        Log.Information(string.Format("Remove Node Uri: {0}", _settings.Ipv6Uri));
                 }
                 _settings.Ipv6Uri = null;
 
                 if (_settings.UpnpUri != null)
                 {
-                    nodeUris.Remove(_settings.UpnpUri);
-
-                    Log.Information(string.Format("Remove Node Uri: {0}", _settings.UpnpUri));
+                    if (this.RemoveUri(_settings.UpnpUri))
+                        Log.Information(string.Format("Remove Node Uri: {0}", _settings.UpnpUri));
 
                     try
                     {
                         using (UpnpClient client = new UpnpClient())
                         {
-                            client.Connect(new TimeSpan(0, 0, 30));
+                            client.Connect(new TimeSpan(0, 0, 10));
 
                             Regex regex = new Regex(@"(.*?):(.*):(\d*)");
                             var match = regex.Match(_settings.UpnpUri);
@@ -375,8 +379,6 @@ namespace Amoeba
                     }
                 }
                 _settings.UpnpUri = null;
-
-                _amoebaManager.SetBaseNode(new Node(nodeId, nodeUris));
             }
         }
 

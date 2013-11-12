@@ -24,10 +24,11 @@ namespace Amoeba.Windows
     /// </summary>
     partial class CoreOptionsWindow : Window
     {
-        private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
         private AutoBaseNodeSettingManager _autoBaseNodeSettingManager;
+        private OverlayNetworkManager _overlayNetworkManager;
         private TransfarLimitManager _transferLimitManager;
+        private BufferManager _bufferManager;
 
         private byte[] _baseNode_Id;
         private ObservableCollectionEx<string> _baseNode_Uris;
@@ -35,10 +36,11 @@ namespace Amoeba.Windows
         private ObservableCollectionEx<ConnectionFilter> _clientFilters;
         private ObservableCollectionEx<string> _serverListenUris;
 
-        public CoreOptionsWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
+        public CoreOptionsWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, OverlayNetworkManager overlayNetworkManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
         {
             _amoebaManager = amoebaManager;
             _autoBaseNodeSettingManager = autoBaseNodeSettingManager;
+            _overlayNetworkManager = overlayNetworkManager;
             _transferLimitManager = transfarLimitManager;
             _bufferManager = bufferManager;
 
@@ -133,7 +135,13 @@ namespace Amoeba.Windows
                 _transferInfoTotalLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize + _transferLimitManager.TotalDownloadSize);
             }
 
-            _eventAutoBaseNodeSettingCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
+            _eventOpenPortAndGetIpAddressCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
+            _eventUseI2pCheckBox.IsChecked = Settings.Instance.Global_I2p_SamBridge_IsEnabled;
+
+            lock (_overlayNetworkManager.ThisLock)
+            {
+                _eventSamBridgeUriTextBox.Text = _overlayNetworkManager.SamBridgeUri;
+            }
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -1502,7 +1510,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            if (flag && _eventAutoBaseNodeSettingCheckBox.IsChecked.Value
+            if (flag && _eventOpenPortAndGetIpAddressCheckBox.IsChecked.Value
                 && _autoBaseNodeSettingManager.State == ManagerState.Start)
             {
                 ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
@@ -1511,7 +1519,13 @@ namespace Amoeba.Windows
                 }));
             }
 
-            Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _eventAutoBaseNodeSettingCheckBox.IsChecked.Value;
+            lock (_overlayNetworkManager.ThisLock)
+            {
+                _overlayNetworkManager.SamBridgeUri = _eventSamBridgeUriTextBox.Text;
+            }
+
+            Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _eventOpenPortAndGetIpAddressCheckBox.IsChecked.Value;
+            Settings.Instance.Global_I2p_SamBridge_IsEnabled = _eventUseI2pCheckBox.IsChecked.Value;
             Settings.Instance.CoreOptionsWindow_DataCacheSize_Unit = (string)_dataCacheSizeComboBox.SelectedItem;
             Settings.Instance.CoreOptionsWindow_BandwidthLimit_Unit = (string)_bandwidthLimitComboBox.SelectedItem;
         }

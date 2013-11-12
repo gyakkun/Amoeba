@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Update", "..\Librar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Compression", "..\Library\Library.Compression\Library.Compression.csproj", "{51ECCC57-56CB-44A0-9A43-DB596F982FC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.I2p", "..\Library\Library.I2p\Library.I2p.csproj", "{24DC1835-CC3D-4D29-B922-199027EC551F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,6 +131,12 @@ Global
 		{51ECCC57-56CB-44A0-9A43-DB596F982FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51ECCC57-56CB-44A0-9A43-DB596F982FC8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51ECCC57-56CB-44A0-9A43-DB596F982FC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{24DC1835-CC3D-4D29-B922-199027EC551F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24DC1835-CC3D-4D29-B922-199027EC551F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24DC1835-CC3D-4D29-B922-199027EC551F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{24DC1835-CC3D-4D29-B922-199027EC551F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24DC1835-CC3D-4D29-B922-199027EC551F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24DC1835-CC3D-4D29-B922-199027EC551F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

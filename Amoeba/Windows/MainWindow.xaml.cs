@@ -42,6 +42,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
         private AutoBaseNodeSettingManager _autoBaseNodeSettingManager;
+        private OverlayNetworkManager _overlayNetworkManager;
         private TransfarLimitManager _transferLimitManager;
 
         private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
@@ -76,6 +77,7 @@ namespace Amoeba.Windows
                 _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
                 _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
                 _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
+                _configrationDirectoryPaths.Add("OverlayNetworkManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/OverlayNetworkManager"));
                 _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
 
                 Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
@@ -255,6 +257,17 @@ namespace Amoeba.Windows
                             _autoBaseNodeSettingManager.Stop();
                         }
 
+                        if (_overlayNetworkManager.State == ManagerState.Stop
+                            && (Settings.Instance.Global_IsStart && Settings.Instance.Global_I2p_SamBridge_IsEnabled))
+                        {
+                            _overlayNetworkManager.Start();
+                        }
+                        else if (_overlayNetworkManager.State == ManagerState.Start
+                            && (!Settings.Instance.Global_IsStart || !Settings.Instance.Global_I2p_SamBridge_IsEnabled))
+                        {
+                            _overlayNetworkManager.Stop();
+                        }
+
                         if (_amoebaManager.State == ManagerState.Stop
                             && Settings.Instance.Global_IsStart)
                         {
@@ -270,12 +283,12 @@ namespace Amoeba.Windows
                             Log.Information("Stop");
                         }
 
-                        if (Settings.Instance.Global_IsEncodeAndDecodeStart)
+                        if (Settings.Instance.Global_IsConvertStart)
                         {
                             _amoebaManager.EncodeStart();
                             _amoebaManager.DecodeStart();
                         }
-                        else if (!Settings.Instance.Global_IsEncodeAndDecodeStart)
+                        else if (!Settings.Instance.Global_IsConvertStart)
                         {
                             _amoebaManager.EncodeStop();
                             _amoebaManager.DecodeStop();
@@ -359,6 +372,7 @@ namespace Amoeba.Windows
                         try
                         {
                             _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
+                            _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
                             _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                             Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
@@ -428,13 +442,14 @@ namespace Amoeba.Windows
         {
             try
             {
-
                 for (; ; )
                 {
                     Thread.Sleep(1000);
                     if (!_isRun) return;
 
                     var state = _amoebaManager.State;
+                    var encodeState = _amoebaManager.EncodeState;
+                    var decodeState = _amoebaManager.DecodeState;
 
                     this.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action(() =>
                     {
@@ -450,14 +465,16 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            if (state == ManagerState.Start)
-                            {
-                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Start;
-                            }
-                            else
-                            {
-                                _stateTextBlock.Text = LanguagesManager.Instance.MainWindow_Stop;
-                            }
+                            string coreText = null;
+                            string convertText = null;
+
+                            if (state == ManagerState.Start) coreText = LanguagesManager.Instance.MainWindow_Running;
+                            else coreText = LanguagesManager.Instance.MainWindow_Stopping;
+
+                            if (encodeState == ManagerState.Start && decodeState == ManagerState.Start) convertText = LanguagesManager.Instance.MainWindow_Running;
+                            else convertText = LanguagesManager.Instance.MainWindow_Stopping;
+
+                            _stateTextBlock.Text = string.Format(LanguagesManager.Instance.MainWindow_StatesBar, coreText, convertText);
                         }
                         catch (Exception)
                         {
@@ -1191,6 +1208,9 @@ namespace Amoeba.Windows
                 _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
                 _autoBaseNodeSettingManager.Load(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
 
+                _overlayNetworkManager = new OverlayNetworkManager(_amoebaManager, _bufferManager);
+                _overlayNetworkManager.Load(_configrationDirectoryPaths["OverlayNetworkManager"]);
+
                 _transferLimitManager = new TransfarLimitManager(_amoebaManager);
                 _transferLimitManager.Load(_configrationDirectoryPaths["TransfarLimitManager"]);
                 _transferLimitManager.Start();
@@ -1198,6 +1218,7 @@ namespace Amoeba.Windows
                 if (initFlag)
                 {
                     _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
+                    _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
                     _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                     _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                     Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
@@ -1469,7 +1490,7 @@ namespace Amoeba.Windows
                 _startMenuItem_Click(null, null);
             }
 
-            if (Settings.Instance.Global_IsEncodeAndDecodeStart)
+            if (Settings.Instance.Global_IsConvertStart)
             {
                 _encodeAndDecodeStartMenuItem_Click(null, null);
             }
@@ -1524,6 +1545,10 @@ namespace Amoeba.Windows
                     _autoBaseNodeSettingManager.Stop();
                     _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
                     _autoBaseNodeSettingManager.Dispose();
+
+                    _overlayNetworkManager.Stop();
+                    _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
+                    _overlayNetworkManager.Dispose();
 
                     _amoebaManager.EncodeStop();
                     _amoebaManager.DecodeStop();
@@ -1651,6 +1676,7 @@ namespace Amoeba.Windows
 #endif
 
                     _autoBaseNodeSettingManager.Update();
+                    _overlayNetworkManager.Restart();
 
 #if DEBUG
                     sw.Stop();
@@ -1670,7 +1696,13 @@ namespace Amoeba.Windows
 
         private void _coreOptionsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            CoreOptionsWindow window = new CoreOptionsWindow(_amoebaManager, _autoBaseNodeSettingManager, _transferLimitManager, _bufferManager);
+            CoreOptionsWindow window = new CoreOptionsWindow(
+                _amoebaManager,
+                _autoBaseNodeSettingManager,
+                _overlayNetworkManager,
+                _transferLimitManager,
+                _bufferManager);
+
             window.Owner = this;
             window.ShowDialog();
         }
@@ -1826,7 +1858,7 @@ namespace Amoeba.Windows
             _encodeAndDecodeStartMenuItem.IsEnabled = false;
             _encodeAndDecodeStopMenuItem.IsEnabled = true;
 
-            Settings.Instance.Global_IsEncodeAndDecodeStart = true;
+            Settings.Instance.Global_IsConvertStart = true;
         }
 
         private void _encodeAndDecodeStopMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1834,7 +1866,7 @@ namespace Amoeba.Windows
             _encodeAndDecodeStartMenuItem.IsEnabled = true;
             _encodeAndDecodeStopMenuItem.IsEnabled = false;
 
-            Settings.Instance.Global_IsEncodeAndDecodeStart = false;
+            Settings.Instance.Global_IsConvertStart = false;
         }
 
         private void _viewOptionsMenuItem_Click(object sender, RoutedEventArgs e)
