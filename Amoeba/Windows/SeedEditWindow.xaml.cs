@@ -90,7 +90,7 @@ namespace Amoeba.Windows
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
             if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
 
-            _nameTextBox.TextChanged += new TextChangedEventHandler(_nameTextBox_TextChanged);
+            _nameTextBox.TextChanged += _nameTextBox_TextChanged;
             _nameTextBox_TextChanged(null, null);
         }
 

@@ -21,15 +21,15 @@ namespace Amoeba
         private long _uploadSize;
         private long _downloadSize;
 
-        private volatile Thread _timerThread = null;
+        private volatile Thread _timerThread;
 
         private ManagerState _state = ManagerState.Stop;
 
         public EventHandler _startEvent;
         public EventHandler _stopEvent;
 
-        private volatile bool _disposed = false;
-        private object _thisLock = new object();
+        private volatile bool _disposed;
+        private readonly object _thisLock = new object();
 
         public TransfarLimitManager(AmoebaManager amoebaManager)
         {
@@ -451,8 +451,8 @@ namespace Amoeba
         private int _span = 1;
         private long _size = 1024 * 1024;
 
-        private object _thisLock = new object();
-        private static object _thisStaticLock = new object();
+        private volatile object _thisLock;
+        private static readonly object _initializeLock = new object();
 
         [DataMember(Name = "Type")]
         public TransferLimitType Type
@@ -517,13 +517,18 @@ namespace Amoeba
         {
             get
             {
-                lock (_thisStaticLock)
+                if (_thisLock == null)
                 {
-                    if (_thisLock == null)
-                        _thisLock = new object();
-
-                    return _thisLock;
+                    lock (_initializeLock)
+                    {
+                        if (_thisLock == null)
+                        {
+                            _thisLock = new object();
+                        }
+                    }
                 }
+
+                return _thisLock;
             }
         }
 

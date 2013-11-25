@@ -20,9 +20,9 @@ namespace Amoeba.Properties
     {
         private static LanguagesManager _defaultInstance = new LanguagesManager();
         private static Dictionary<string, Dictionary<string, string>> _dic = new Dictionary<string, Dictionary<string, string>>();
-        private static string _usingLanguage = null;
+        private static string _usingLanguage;
         private static ObjectDataProvider _provider;
-        private object _thisLock = new object();
+        private readonly object _thisLock = new object();
 
         public static UsingLanguageChangedEventHandler UsingLanguageChangedEvent;
 

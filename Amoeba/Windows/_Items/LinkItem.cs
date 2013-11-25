@@ -13,11 +13,11 @@ namespace Amoeba.Windows
     [DataContract(Name = "LinkItem", Namespace = "http://Amoeba/Windows")]
     class LinkItem : IEquatable<LinkItem>, IDeepCloneable<LinkItem>, IThisLock
     {
-        private string _signature = null;
-        private SignatureCollection _trustSignatures = null;
+        private string _signature;
+        private SignatureCollection _trustSignatures;
 
-        private object _thisLock = new object();
-        private static object _thisStaticLock = new object();
+        private volatile object _thisLock;
+        private static readonly object _initializeLock = new object();
 
         public override int GetHashCode()
         {
@@ -117,13 +117,18 @@ namespace Amoeba.Windows
         {
             get
             {
-                lock (_thisStaticLock)
+                if (_thisLock == null)
                 {
-                    if (_thisLock == null)
-                        _thisLock = new object();
-
-                    return _thisLock;
+                    lock (_initializeLock)
+                    {
+                        if (_thisLock == null)
+                        {
+                            _thisLock = new object();
+                        }
+                    }
                 }
+
+                return _thisLock;
             }
         }
 

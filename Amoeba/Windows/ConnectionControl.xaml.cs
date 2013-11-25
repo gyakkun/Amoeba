@@ -87,13 +87,13 @@ namespace Amoeba.Windows
 
             _infomationListView.ItemsSource = _infomationListViewItemCollection;
 
-            _showAmoebaInfomationThread = new Thread(new ThreadStart(this.ShowAmoebaInfomation));
+            _showAmoebaInfomationThread = new Thread(this.ShowAmoebaInfomation);
             _showAmoebaInfomationThread.Priority = ThreadPriority.Highest;
             _showAmoebaInfomationThread.IsBackground = true;
             _showAmoebaInfomationThread.Name = "ConnectionControl_ShowAmoebaInfomationThread";
             _showAmoebaInfomationThread.Start();
 
-            _showConnectionInfomationwThread = new Thread(new ThreadStart(this.ShowConnectionInfomation));
+            _showConnectionInfomationwThread = new Thread(this.ShowConnectionInfomation);
             _showConnectionInfomationwThread.Priority = ThreadPriority.Highest;
             _showConnectionInfomationwThread.IsBackground = true;
             _showConnectionInfomationwThread.Name = "ConnectionControl_ShowConnectionInfomationThread";
@@ -490,7 +490,7 @@ namespace Amoeba.Windows
 
             public AmoebaInfomationListViewItem()
             {
-                LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+                LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
             }
 
             void LanguagesManager_UsingLanguageChangedEvent(object sender)
@@ -498,8 +498,8 @@ namespace Amoeba.Windows
                 this.NotifyPropertyChanged("Name");
             }
 
-            private string _id = null;
-            private string _value = null;
+            private string _id;
+            private string _value;
 
             public string Id
             {
@@ -562,10 +562,10 @@ namespace Amoeba.Windows
 
             private int _id;
             private Information _information;
-            private string _uri = null;
-            private int _priority = 0;
-            private long _receivedByteCount = 0;
-            private long _sentByteCount = 0;
+            private string _uri;
+            private int _priority;
+            private long _receivedByteCount;
+            private long _sentByteCount;
 
             public ConnectionListViewItem(Information information)
             {

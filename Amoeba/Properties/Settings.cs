@@ -17,7 +17,7 @@ namespace Amoeba.Properties
     class Settings : Library.Configuration.SettingsBase, IThisLock
     {
         private static readonly Settings _defaultInstance = new Settings();
-        private object _thisLock = new object();
+        private readonly object _thisLock = new object();
 
         Settings()
             : base(new List<Library.Configuration.ISettingContent>()

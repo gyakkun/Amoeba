@@ -11,13 +11,13 @@ namespace Amoeba.Windows
     [DataContract(Name = "StoreInfo", Namespace = "http://Amoeba/Windows")]
     class StoreTreeItem : IDeepCloneable<StoreTreeItem>, IThisLock
     {
-        private string _signature = null;
-        private BoxCollection _boxes = null;
+        private string _signature;
+        private BoxCollection _boxes;
         private bool _isExpanded = true;
-        private bool _isUpdated = false;
+        private bool _isUpdated;
 
-        private object _thisLock = new object();
-        private static object _thisStaticLock = new object();
+        private volatile object _thisLock;
+        private static readonly object _initializeLock = new object();
 
         [DataMember(Name = "UploadSignature")]
         public string Signature
@@ -124,13 +124,18 @@ namespace Amoeba.Windows
         {
             get
             {
-                lock (_thisStaticLock)
+                if (_thisLock == null)
                 {
-                    if (_thisLock == null)
-                        _thisLock = new object();
-
-                    return _thisLock;
+                    lock (_initializeLock)
+                    {
+                        if (_thisLock == null)
+                        {
+                            _thisLock = new object();
+                        }
+                    }
                 }
+
+                return _thisLock;
             }
         }
 

@@ -47,13 +47,13 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            _showUploadItemThread = new Thread(new ThreadStart(ShowUploadItem));
+            _showUploadItemThread = new Thread(ShowUploadItem);
             _showUploadItemThread.Priority = ThreadPriority.Highest;
             _showUploadItemThread.IsBackground = true;
             _showUploadItemThread.Name = "UploadControl_ShowUploadItemThread";
             _showUploadItemThread.Start();
 
-            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+            LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
         }
 
         private void LanguagesManager_UsingLanguageChangedEvent(object sender)
@@ -289,7 +289,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -306,7 +306,7 @@ namespace Amoeba.Windows
                 }
 
                 _listViewDeleteMenuItem_IsEnabled = true;
-            }));
+            });
         }
 
         private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -426,7 +426,7 @@ namespace Amoeba.Windows
         {
             _listViewDeleteCompleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -448,7 +448,7 @@ namespace Amoeba.Windows
                 }
 
                 _listViewDeleteCompleteMenuItem_IsEnabled = true;
-            }));
+            });
         }
 
         #region Sort
@@ -648,15 +648,15 @@ namespace Amoeba.Windows
 
             private int _id;
             private Information _information;
-            private int _rank = 0;
-            private string _name = null;
-            private string _path = null;
+            private int _rank;
+            private string _name;
+            private string _path;
             private UploadState _state = 0;
-            private long _length = 0;
-            private int _priority = 0;
-            private double _rate = 0;
-            private string _rateText = null;
-            private Seed _value = null;
+            private long _length;
+            private int _priority;
+            private double _rate;
+            private string _rateText;
+            private Seed _value;
 
             public UploadListViewItem(Information information)
             {

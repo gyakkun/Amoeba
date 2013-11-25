@@ -67,7 +67,7 @@ namespace Amoeba
                 }
             }
 
-            Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(App_UnhandledException);
+            Thread.GetDomain().UnhandledException += App_UnhandledException;
         }
 
         private static string GetUniqueFilePath(string path)

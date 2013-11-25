@@ -9,7 +9,7 @@ namespace Amoeba.Windows
 
         public LanguageMenuItem()
         {
-            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+            LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
         }
 
         void LanguagesManager_UsingLanguageChangedEvent(object sender)

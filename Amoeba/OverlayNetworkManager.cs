@@ -14,7 +14,6 @@ using Library.I2p;
 using Library.Net.Amoeba;
 using Library.Net.Caps;
 using Library.Net.Connections;
-using Library.Net.Upnp;
 
 namespace Amoeba
 {
@@ -28,18 +27,18 @@ namespace Amoeba
         private SamV3Session _samSession;
         private object _samClientLock = new object();
 
-        private SamListener _samListener = null;
-        private string _samHistory = null;
+        private SamListener _samListener;
+        private string _samHistory;
         private object _samServerLock = new object();
 
         private Regex _regex = new Regex(@"(.*?):(.*):(\d*)");
 
-        private volatile Thread _watchThread = null;
+        private volatile Thread _watchThread;
 
         private ManagerState _state = ManagerState.Stop;
 
-        private volatile bool _disposed = false;
-        private object _thisLock = new object();
+        private volatile bool _disposed;
+        private readonly object _thisLock = new object();
 
         private const int _maxReceiveCount = 1024 * 1024 * 32;
 

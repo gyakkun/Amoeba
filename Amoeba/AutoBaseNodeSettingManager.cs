@@ -23,8 +23,8 @@ namespace Amoeba
 
         private ManagerState _state = ManagerState.Stop;
 
-        private volatile bool _disposed = false;
-        private object _thisLock = new object();
+        private volatile bool _disposed;
+        private readonly object _thisLock = new object();
 
         public AutoBaseNodeSettingManager(AmoebaManager amoebaManager)
         {

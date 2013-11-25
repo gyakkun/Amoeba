@@ -1513,10 +1513,10 @@ namespace Amoeba.Windows
             if (flag && _eventOpenPortAndGetIpAddressCheckBox.IsChecked.Value
                 && _autoBaseNodeSettingManager.State == ManagerState.Start)
             {
-                ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+                ThreadPool.QueueUserWorkItem((object state) =>
                 {
                     _autoBaseNodeSettingManager.Update();
-                }));
+                });
             }
 
             lock (_overlayNetworkManager.ThisLock)

@@ -47,7 +47,7 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            _showShareItemThread = new Thread(new ThreadStart(ShowShareItem));
+            _showShareItemThread = new Thread(ShowShareItem);
             _showShareItemThread.Priority = ThreadPriority.Highest;
             _showShareItemThread.IsBackground = true;
             _showShareItemThread.Name = "ShareControl_ShowShareItemThread";
@@ -290,7 +290,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -307,7 +307,7 @@ namespace Amoeba.Windows
                 }
 
                 _listViewDeleteMenuItem_IsEnabled = true;
-            }));
+            });
         }
 
         volatile bool _listViewCheckExistMenuItem_IsEnabled = true;
@@ -316,7 +316,7 @@ namespace Amoeba.Windows
         {
             _listViewCheckExistMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -350,7 +350,7 @@ namespace Amoeba.Windows
                 }
 
                 _listViewCheckExistMenuItem_IsEnabled = true;
-            }));
+            });
         }
 
         #region Sort
@@ -496,9 +496,9 @@ namespace Amoeba.Windows
 
             private int _id;
             private Information _information;
-            private string _name = null;
-            private string _path = null;
-            private int _blockCount = 0;
+            private string _name;
+            private string _path;
+            private int _blockCount;
 
             public ShareListViewItem(Information information)
             {

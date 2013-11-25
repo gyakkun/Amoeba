@@ -48,19 +48,19 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            _showDownloadItemThread = new Thread(new ThreadStart(this.ShowDownloadItem));
+            _showDownloadItemThread = new Thread(this.ShowDownloadItem);
             _showDownloadItemThread.Priority = ThreadPriority.Highest;
             _showDownloadItemThread.IsBackground = true;
             _showDownloadItemThread.Name = "DownloadControl_ShowDownloadItemThread";
             _showDownloadItemThread.Start();
 
-            _watchThread = new Thread(new ThreadStart(this.Watch));
+            _watchThread = new Thread(this.Watch);
             _watchThread.Priority = ThreadPriority.Highest;
             _watchThread.IsBackground = true;
             _watchThread.Name = "DownloadControl_WatchThread";
             _watchThread.Start();
 
-            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+            LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
         }
 
         private void LanguagesManager_UsingLanguageChangedEvent(object sender)
@@ -305,7 +305,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -322,7 +322,7 @@ namespace Amoeba.Windows
                 }
 
                 _listViewDeleteMenuItem_IsEnabled = true;
-            }));
+            });
         }
 
         private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -450,7 +450,7 @@ namespace Amoeba.Windows
         {
             _listViewDeleteCompleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -472,7 +472,7 @@ namespace Amoeba.Windows
                 }
 
                 _listViewDeleteCompleteMenuItem_IsEnabled = true;
-            }));
+            });
         }
 
         #region Sort
@@ -672,15 +672,15 @@ namespace Amoeba.Windows
 
             private int _id;
             private Information _information;
-            private int _rank = 0;
-            private string _name = null;
-            private string _path = null;
+            private int _rank;
+            private string _name;
+            private string _path;
             private DownloadState _state = 0;
-            private long _length = 0;
-            private int _priority = 0;
-            private double _rate = 0;
-            private string _rateText = null;
-            private Seed _value = null;
+            private long _length;
+            private int _priority;
+            private double _rate;
+            private string _rateText;
+            private Seed _value;
 
             public DownloadListViewItem(Information information)
             {

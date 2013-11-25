@@ -40,14 +40,14 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private volatile bool _refresh = false;
-        private volatile bool _cacheUpdate = false;
+        private volatile bool _refresh;
+        private volatile bool _cacheUpdate;
         private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
 
         private SearchTreeViewItem _treeViewItem;
         private LockedList<SearchListViewItem> _searchingCache = new LockedList<SearchListViewItem>();
 
-        private Thread _searchThread = null;
+        private Thread _searchThread;
         private Thread _cacheThread;
 
         public SearchControl(AmoebaManager amoebaManager, BufferManager bufferManager)
@@ -81,13 +81,13 @@ namespace Amoeba.Windows
                 }
             };
 
-            _searchThread = new Thread(new ThreadStart(this.Search));
+            _searchThread = new Thread(this.Search);
             _searchThread.Priority = ThreadPriority.Highest;
             _searchThread.IsBackground = true;
             _searchThread.Name = "SearchControl_SearchThread";
             _searchThread.Start();
 
-            _cacheThread = new Thread(new ThreadStart(this.Cache));
+            _cacheThread = new Thread(this.Cache);
             _cacheThread.Priority = ThreadPriority.Highest;
             _cacheThread.IsBackground = true;
             _cacheThread.Name = "LibraryControl_CacheThread";
@@ -95,7 +95,7 @@ namespace Amoeba.Windows
 
             _searchRowDefinition.Height = new GridLength(0);
 
-            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+            LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
 
             this.Update_Cache();
         }
@@ -1348,7 +1348,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1400,7 +1400,7 @@ namespace Amoeba.Windows
                 {
                     _listViewDeleteMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         volatile bool _listViewDeleteCacheMenuItem_IsEnabled = true;
@@ -1424,7 +1424,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteCacheMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1445,7 +1445,7 @@ namespace Amoeba.Windows
                 {
                     _listViewDeleteCacheMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         volatile bool _listViewDeleteShareMenuItem_IsEnabled = true;
@@ -1469,7 +1469,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteShareMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1490,7 +1490,7 @@ namespace Amoeba.Windows
                 {
                     _listViewDeleteShareMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         volatile bool _listViewDeleteDownloadMenuItem_IsEnabled = true;
@@ -1514,7 +1514,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteDownloadMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1535,7 +1535,7 @@ namespace Amoeba.Windows
                 {
                     _listViewDeleteDownloadMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         volatile bool _listViewDeleteUploadMenuItem_IsEnabled = true;
@@ -1559,7 +1559,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteUploadMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1580,7 +1580,7 @@ namespace Amoeba.Windows
                 {
                     _listViewDeleteUploadMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         volatile bool _listViewDeleteDownloadHistoryMenuItem_IsEnabled = true;
@@ -1604,7 +1604,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteDownloadHistoryMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1628,7 +1628,7 @@ namespace Amoeba.Windows
                 {
                     _listViewDeleteDownloadHistoryMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         volatile bool _listViewDeleteUploadHistoryMenuItem_IsEnabled = true;
@@ -1652,7 +1652,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteUploadHistoryMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1676,7 +1676,7 @@ namespace Amoeba.Windows
                 {
                     _listViewDeleteUploadHistoryMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         private void _listViewDownloadMenuItem_Click(object sender, RoutedEventArgs e)

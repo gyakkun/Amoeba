@@ -13,8 +13,8 @@ namespace Amoeba
 {
     static class Clipboard
     {
-        private static bool _isNodesCached = false;
-        private static bool _isSeedsCached = false;
+        private static bool _isNodesCached;
+        private static bool _isSeedsCached;
 
         private static LockedList<Node> _nodeList = new LockedList<Node>();
         private static LockedList<Seed> _seedList = new LockedList<Seed>();

@@ -49,20 +49,20 @@ namespace Amoeba.Windows
         private WindowState _windowState;
 
         private Dictionary<string, string> _configrationDirectoryPaths = new Dictionary<string, string>();
-        private string _logPath = null;
+        private string _logPath;
 
         private bool _isRun = true;
-        private bool _autoStop = false;
+        private bool _autoStop;
 
         private System.Timers.Timer _refreshTimer = new System.Timers.Timer();
-        private Thread _timerThread = null;
-        private Thread _statusBarTimerThread = null;
-        private Thread _watchThread = null;
+        private Thread _timerThread;
+        private Thread _statusBarTimerThread;
+        private Thread _watchThread;
 
-        private volatile bool _diskSpaceNotFoundException = false;
-        private volatile bool _cacheSpaceNotFoundException = false;
+        private volatile bool _diskSpaceNotFoundException;
+        private volatile bool _cacheSpaceNotFoundException;
 
-        private string _cacheBlocksPath = null;
+        private string _cacheBlocksPath;
 
         private volatile MainWindowTabType _selectedTab;
 
@@ -124,28 +124,28 @@ namespace Amoeba.Windows
                 };
 
                 _refreshTimer = new System.Timers.Timer();
-                _refreshTimer.Elapsed += new System.Timers.ElapsedEventHandler(_refreshTimer_Elapsed);
+                _refreshTimer.Elapsed += _refreshTimer_Elapsed;
                 _refreshTimer.Interval = 1000;
                 _refreshTimer.AutoReset = true;
                 _refreshTimer.Start();
 
-                _timerThread = new Thread(new ThreadStart(this.Timer));
+                _timerThread = new Thread(this.Timer);
                 _timerThread.Priority = ThreadPriority.Highest;
                 _timerThread.Name = "MainWindow_TimerThread";
                 _timerThread.Start();
 
-                _statusBarTimerThread = new Thread(new ThreadStart(this.StatusBarTimer));
+                _statusBarTimerThread = new Thread(this.StatusBarTimer);
                 _statusBarTimerThread.Priority = ThreadPriority.Highest;
                 _statusBarTimerThread.Name = "MainWindow_StatusBarTimerThread";
                 _statusBarTimerThread.Start();
 
-                _watchThread = new Thread(new ThreadStart(this.WatchThread));
+                _watchThread = new Thread(this.WatchThread);
                 _watchThread.Priority = ThreadPriority.Highest;
                 _watchThread.Name = "MainWindow_WatchThread";
                 _watchThread.Start();
 
-                _transferLimitManager.StartEvent += new EventHandler(_transferLimitManager_StartEvent);
-                _transferLimitManager.StopEvent += new EventHandler(_transferLimitManager_StopEvent);
+                _transferLimitManager.StartEvent += _transferLimitManager_StartEvent;
+                _transferLimitManager.StopEvent += _transferLimitManager_StopEvent;
 
                 Debug.WriteLineIf(System.Runtime.GCSettings.IsServerGC, "GCSettings.IsServerGC");
             }
@@ -587,7 +587,7 @@ namespace Amoeba.Windows
         }
 
         private ConnectionInformation _ci = new ConnectionInformation();
-        private bool _refreshTimer_Running = false;
+        private bool _refreshTimer_Running;
 
         void _refreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -727,7 +727,7 @@ namespace Amoeba.Windows
                 } while (File.Exists(_logPath));
             }
 
-            Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
+            Log.LogEvent += (object sender, LogEventArgs e) =>
             {
                 lock (_logPath)
                 {
@@ -758,9 +758,9 @@ namespace Amoeba.Windows
 
                     }
                 }
-            });
+            };
 
-            Log.LogEvent += new LogEventHandler((object sender, LogEventArgs e) =>
+            Log.LogEvent += (object sender, LogEventArgs e) =>
             {
                 if (e.Exception != null && e.Exception.GetType().ToString() == "Library.Net.Amoeba.SpaceNotFoundException")
                 {
@@ -793,7 +793,7 @@ namespace Amoeba.Windows
                 {
 
                 }
-            });
+            };
 
             Debug.Listeners.Add(new MyTraceListener(this));
         }
@@ -848,7 +848,7 @@ namespace Amoeba.Windows
             {
                 var menuItem = new LanguageMenuItem() { IsCheckable = true, Value = item };
 
-                menuItem.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+                menuItem.Click += (object sender, RoutedEventArgs e) =>
                 {
                     foreach (var item3 in _languagesMenuItem.Items.Cast<LanguageMenuItem>())
                     {
@@ -856,13 +856,13 @@ namespace Amoeba.Windows
                     }
 
                     menuItem.IsChecked = true;
-                });
+                };
 
-                menuItem.Checked += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+                menuItem.Checked += (object sender, RoutedEventArgs e) =>
                 {
                     Settings.Instance.Global_UseLanguage = (string)menuItem.Value;
                     LanguagesManager.ChangeLanguage((string)menuItem.Value);
-                });
+                };
 
                 _languagesMenuItem.Items.Add(menuItem);
             }
@@ -1295,7 +1295,7 @@ namespace Amoeba.Windows
         }
 
         private object _updateLockObject = new object();
-        private Version _updateCancelVersion = null;
+        private Version _updateCancelVersion;
 
         private void CheckUpdate(bool isLogFlag)
         {
@@ -1523,7 +1523,7 @@ namespace Amoeba.Windows
 
             _isRun = false;
 
-            var thread = new Thread(new ThreadStart(() =>
+            var thread = new Thread(() =>
             {
                 try
                 {
@@ -1562,7 +1562,7 @@ namespace Amoeba.Windows
                 {
                     Log.Error(ex);
                 }
-            }));
+            });
             thread.Priority = ThreadPriority.Highest;
             thread.Name = "MainWindow_CloseThread";
             thread.Start();
@@ -1665,7 +1665,7 @@ namespace Amoeba.Windows
             if (!_updateBaseNodeMenuItem_IsEnabled) return;
             _updateBaseNodeMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+            ThreadPool.QueueUserWorkItem((object state) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1692,7 +1692,7 @@ namespace Amoeba.Windows
                 {
                     _updateBaseNodeMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         private void _coreOptionsMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1722,12 +1722,12 @@ namespace Amoeba.Windows
             if (!_checkSeedsMenuItem_IsEnabled) return;
             _checkSeedsMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 _amoebaManager.CheckSeeds();
 
                 _checkSeedsMenuItem_IsEnabled = true;
-            }));
+            });
         }
 
         volatile bool _checkInternalBlocksMenuItem_IsEnabled = true;
@@ -1743,7 +1743,7 @@ namespace Amoeba.Windows
             window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
             window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 bool flag = false;
 
@@ -1781,7 +1781,7 @@ namespace Amoeba.Windows
 
                     }
                 }));
-            }));
+            });
 
             window.Closed += (object sender2, EventArgs e2) =>
             {
@@ -1805,7 +1805,7 @@ namespace Amoeba.Windows
             window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
             window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object wstate) =>
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
                 bool flag = false;
 
@@ -1843,7 +1843,7 @@ namespace Amoeba.Windows
 
                     }
                 }));
-            }));
+            });
 
             window.Closed += (object sender2, EventArgs e2) =>
             {
@@ -1899,7 +1899,7 @@ namespace Amoeba.Windows
             if (!_checkUpdateMenuItem_IsEnabled) return;
             _checkUpdateMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem(new WaitCallback((object state) =>
+            ThreadPool.QueueUserWorkItem((object state) =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1915,7 +1915,7 @@ namespace Amoeba.Windows
                 {
                     _checkUpdateMenuItem_IsEnabled = true;
                 }
-            }));
+            });
         }
 
         private void _versionInformationMenuItem_Click(object sender, RoutedEventArgs e)

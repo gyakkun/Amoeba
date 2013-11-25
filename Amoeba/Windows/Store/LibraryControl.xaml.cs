@@ -39,8 +39,8 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private volatile bool _refresh = false;
-        private volatile bool _cacheUpdate = false;
+        private volatile bool _refresh;
+        private volatile bool _cacheUpdate;
         private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
 
         private BoxTreeViewItem _treeViewItem;
@@ -104,19 +104,19 @@ namespace Amoeba.Windows
             _mainWindow._tabControl.SelectionChanged += selectionChanged;
             _storeControl._tabControl.SelectionChanged += selectionChanged;
 
-            _searchThread = new Thread(new ThreadStart(this.Search));
+            _searchThread = new Thread(this.Search);
             _searchThread.Priority = ThreadPriority.Highest;
             _searchThread.IsBackground = true;
             _searchThread.Name = "LibraryControl_SearchThread";
             _searchThread.Start();
 
-            _cacheThread = new Thread(new ThreadStart(this.Cache));
+            _cacheThread = new Thread(this.Cache);
             _cacheThread.Priority = ThreadPriority.Highest;
             _cacheThread.IsBackground = true;
             _cacheThread.Name = "LibraryControl_CacheThread";
             _cacheThread.Start();
 
-            _watchThread = new Thread(new ThreadStart(this.Watch));
+            _watchThread = new Thread(this.Watch);
             _watchThread.Priority = ThreadPriority.Highest;
             _watchThread.IsBackground = true;
             _watchThread.Name = "LibraryControl_WatchThread";
@@ -124,7 +124,7 @@ namespace Amoeba.Windows
 
             _searchRowDefinition.Height = new GridLength(0);
 
-            LanguagesManager.UsingLanguageChangedEvent += new UsingLanguageChangedEventHandler(this.LanguagesManager_UsingLanguageChangedEvent);
+            LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
 
             this.Update_Cache();
         }

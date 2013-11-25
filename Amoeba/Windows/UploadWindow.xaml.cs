@@ -26,7 +26,7 @@ namespace Amoeba.Windows
         private AmoebaManager _amoebaManager;
 
         private string _filePath;
-        private bool _isShare = false;
+        private bool _isShare;
 
         public UploadWindow(string filePath, bool isShare, AmoebaManager amoebaManager)
         {
