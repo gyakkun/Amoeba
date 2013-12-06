@@ -70,6 +70,9 @@ namespace Amoeba.Windows
         {
             try
             {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
                 _bufferManager = BufferManager.Instance;
 
                 this.Setting_Log();
@@ -148,6 +151,9 @@ namespace Amoeba.Windows
                 _transferLimitManager.StopEvent += _transferLimitManager_StopEvent;
 
                 Debug.WriteLineIf(System.Runtime.GCSettings.IsServerGC, "GCSettings.IsServerGC");
+
+                sw.Stop();
+                Debug.WriteLine("StartUp {0}", sw.ElapsedMilliseconds);
             }
             catch (Exception e)
             {

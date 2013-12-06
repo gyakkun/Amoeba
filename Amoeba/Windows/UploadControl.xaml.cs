@@ -47,7 +47,7 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            _showUploadItemThread = new Thread(ShowUploadItem);
+            _showUploadItemThread = new Thread(this.ShowUploadItem);
             _showUploadItemThread.Priority = ThreadPriority.Highest;
             _showUploadItemThread.IsBackground = true;
             _showUploadItemThread.Name = "UploadControl_ShowUploadItemThread";

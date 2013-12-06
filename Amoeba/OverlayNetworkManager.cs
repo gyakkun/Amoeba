@@ -49,27 +49,16 @@ namespace Amoeba
 
             _settings = new Settings(this.ThisLock);
 
-            _amoebaManager.CheckUriEvent = this.CheckUri;
             _amoebaManager.CreateCapEvent = this.CreateCap;
             _amoebaManager.AcceptCapEvent = this.AcceptCap;
-        }
-
-        private bool CheckUri(object sender, string uri)
-        {
-            if (_disposed) return false;
-            if (this.State == ManagerState.Stop) return false;
-
-            bool flag = false;
-
-            if (uri.StartsWith("i2p:")) flag = true;
-
-            return flag;
         }
 
         private CapBase CreateCap(object sender, string uri)
         {
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
+
+            if (!uri.StartsWith("i2p:")) return null;
 
             List<IDisposable> garbages = new List<IDisposable>();
 
@@ -512,13 +501,17 @@ namespace Amoeba
 
             lock (_samClientLock)
             {
-                if (_samSession != null) _samSession.Dispose();
+                if (_samSession != null)
+                    _samSession.Dispose();
+
                 _samSession = null;
             }
 
             lock (_samServerLock)
             {
-                if (_samListener != null) _samListener.Dispose();
+                if (_samListener != null)
+                    _samListener.Dispose();
+
                 _samListener = null;
 
                 _samHistory = null;
