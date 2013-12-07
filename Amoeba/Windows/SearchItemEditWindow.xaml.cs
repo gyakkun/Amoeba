@@ -60,14 +60,14 @@ namespace Amoeba.Windows
             {
                 _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
 
-                _nameCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchNameCollection.Select(n => n.DeepClone()));
-                _nameRegexCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchNameRegexCollection.Select(n => n.DeepClone()));
-                _signatureCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchSignatureCollection.Select(n => n.DeepClone()));
-                _keywordCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchKeywordCollection.Select(n => n.DeepClone()));
-                _creationTimeRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<DateTime>>>(_searchItem.SearchCreationTimeRangeCollection.Select(n => n.DeepClone()));
-                _lengthRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<long>>>(_searchItem.SearchLengthRangeCollection.Select(n => n.DeepClone()));
-                _seedCollection = new ObservableCollectionEx<SearchContains<Seed>>(_searchItem.SearchSeedCollection.Select(n => n.DeepClone()));
-                _stateCollection = new ObservableCollectionEx<SearchContains<SearchState>>(_searchItem.SearchStateCollection.Select(n => n.DeepClone()));
+                _nameCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchNameCollection.Select(n => n.Clone()));
+                _nameRegexCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchNameRegexCollection.Select(n => n.Clone()));
+                _signatureCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchSignatureCollection.Select(n => n.Clone()));
+                _keywordCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchKeywordCollection.Select(n => n.Clone()));
+                _creationTimeRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<DateTime>>>(_searchItem.SearchCreationTimeRangeCollection.Select(n => n.Clone()));
+                _lengthRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<long>>>(_searchItem.SearchLengthRangeCollection.Select(n => n.Clone()));
+                _seedCollection = new ObservableCollectionEx<SearchContains<Seed>>(_searchItem.SearchSeedCollection.Select(n => n.Clone()));
+                _stateCollection = new ObservableCollectionEx<SearchContains<SearchState>>(_searchItem.SearchStateCollection.Select(n => n.Clone()));
             }
 
             _searchTreeViewItemNameTextBox_TextChanged(null, null);
@@ -2168,49 +2168,49 @@ namespace Amoeba.Windows
                 lock (_searchItem.SearchNameCollection.ThisLock)
                 {
                     _searchItem.SearchNameCollection.Clear();
-                    _searchItem.SearchNameCollection.AddRange(_nameCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchNameCollection.AddRange(_nameCollection.Select(n => n.Clone()).ToList());
                 }
 
                 lock (_searchItem.SearchNameRegexCollection.ThisLock)
                 {
                     _searchItem.SearchNameRegexCollection.Clear();
-                    _searchItem.SearchNameRegexCollection.AddRange(_nameRegexCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchNameRegexCollection.AddRange(_nameRegexCollection.Select(n => n.Clone()).ToList());
                 }
 
                 lock (_searchItem.SearchSignatureCollection.ThisLock)
                 {
                     _searchItem.SearchSignatureCollection.Clear();
-                    _searchItem.SearchSignatureCollection.AddRange(_signatureCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchSignatureCollection.AddRange(_signatureCollection.Select(n => n.Clone()).ToList());
                 }
 
                 lock (_searchItem.SearchKeywordCollection.ThisLock)
                 {
                     _searchItem.SearchKeywordCollection.Clear();
-                    _searchItem.SearchKeywordCollection.AddRange(_keywordCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchKeywordCollection.AddRange(_keywordCollection.Select(n => n.Clone()).ToList());
                 }
 
                 lock (_searchItem.SearchCreationTimeRangeCollection.ThisLock)
                 {
                     _searchItem.SearchCreationTimeRangeCollection.Clear();
-                    _searchItem.SearchCreationTimeRangeCollection.AddRange(_creationTimeRangeCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchCreationTimeRangeCollection.AddRange(_creationTimeRangeCollection.Select(n => n.Clone()).ToList());
                 }
 
                 lock (_searchItem.SearchLengthRangeCollection.ThisLock)
                 {
                     _searchItem.SearchLengthRangeCollection.Clear();
-                    _searchItem.SearchLengthRangeCollection.AddRange(_lengthRangeCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchLengthRangeCollection.AddRange(_lengthRangeCollection.Select(n => n.Clone()).ToList());
                 }
 
                 lock (_searchItem.SearchSeedCollection.ThisLock)
                 {
                     _searchItem.SearchSeedCollection.Clear();
-                    _searchItem.SearchSeedCollection.AddRange(_seedCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchSeedCollection.AddRange(_seedCollection.Select(n => n.Clone()).ToList());
                 }
 
                 lock (_searchItem.SearchStateCollection.ThisLock)
                 {
                     _searchItem.SearchStateCollection.Clear();
-                    _searchItem.SearchStateCollection.AddRange(_stateCollection.Select(n => n.DeepClone()).ToList());
+                    _searchItem.SearchStateCollection.AddRange(_stateCollection.Select(n => n.Clone()).ToList());
                 }
             }
         }

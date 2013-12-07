@@ -1441,7 +1441,7 @@ namespace Amoeba.Windows
                 Store store = new Store();
                 store.Boxes.AddRange(storeTreeViewItem.Value.Boxes);
 
-                _amoebaManager.Upload(store.DeepClone(), digitalSignature);
+                _amoebaManager.Upload(store.Clone(), digitalSignature);
             }
 
             this.Update();
@@ -1690,7 +1690,7 @@ namespace Amoeba.Windows
             Store store = new Store();
             store.Boxes.AddRange(selectTreeViewItem.Value.Boxes);
 
-            _amoebaManager.Upload(store.DeepClone(), digitalSignature);
+            _amoebaManager.Upload(store.Clone(), digitalSignature);
 
             this.Update();
         }
@@ -2157,7 +2157,7 @@ namespace Amoeba.Windows
 
                         var seed = seedListViewItem.Value;
 
-                        _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
+                        _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
 
                         this.Update_Cache();
                     }
@@ -2294,7 +2294,7 @@ namespace Amoeba.Windows
                     var selectBoxListViewItems = _listView.SelectedItems.OfType<BoxListViewItem>();
                     if (selectBoxListViewItems == null) return;
 
-                    var editBoxs = (IList<Box>)selectBoxListViewItems.Select(n => n.Value.DeepClone()).ToList();
+                    var editBoxs = (IList<Box>)selectBoxListViewItems.Select(n => n.Value.Clone()).ToList();
                     if (editBoxs == null) return;
 
                     BoxEditWindow window = new BoxEditWindow(editBoxs.ToArray());
@@ -2332,7 +2332,7 @@ namespace Amoeba.Windows
 
                     if (!this.DigitalSignatureRelease(_treeView.GetAncestors(selectBoxTreeViewItem).OfType<BoxTreeViewItem>())) return;
 
-                    var editBoxs = (IList<Box>)selectBoxListViewItems.Select(n => n.Value.DeepClone()).ToList();
+                    var editBoxs = (IList<Box>)selectBoxListViewItems.Select(n => n.Value.Clone()).ToList();
                     if (editBoxs == null) return;
 
                     BoxEditWindow window = new BoxEditWindow(editBoxs.ToArray());
@@ -2369,7 +2369,7 @@ namespace Amoeba.Windows
 
                     if (!this.DigitalSignatureRelease(_treeView.GetAncestors(selectBoxTreeViewItem).OfType<BoxTreeViewItem>())) return;
 
-                    var editSeeds = (IList<Seed>)selectSeedListViewItems.Select(n => n.Value.DeepClone()).ToList();
+                    var editSeeds = (IList<Seed>)selectSeedListViewItems.Select(n => n.Value.Clone()).ToList();
                     if (editSeeds == null) return;
 
                     SeedEditWindow window = new SeedEditWindow(editSeeds.ToArray());
@@ -2607,7 +2607,7 @@ namespace Amoeba.Windows
 
             foreach (var seed in _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value))
             {
-                _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
+                _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
             }
 
             foreach (var box in _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value))
@@ -2624,7 +2624,7 @@ namespace Amoeba.Windows
 
             foreach (var seed in rootBox.Seeds)
             {
-                _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
+                _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
             }
 
             foreach (var box in rootBox.Boxes)

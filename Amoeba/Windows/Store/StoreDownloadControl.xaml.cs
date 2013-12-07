@@ -1385,7 +1385,7 @@ namespace Amoeba.Windows
 
                         var seed = seedListViewItem.Value;
 
-                        _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
+                        _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
 
                         this.Update_Cache();
                     }
@@ -1466,7 +1466,7 @@ namespace Amoeba.Windows
 
             foreach (var seed in _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value))
             {
-                _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
+                _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
             }
 
             foreach (var box in _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value))
@@ -1483,7 +1483,7 @@ namespace Amoeba.Windows
 
             foreach (var seed in rootBox.Seeds)
             {
-                _amoebaManager.Download(seed.DeepClone(), baseDirectory, 3);
+                _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
             }
 
             foreach (var box in rootBox.Boxes)

@@ -20,7 +20,6 @@
   <Translate Key="Box_CreationTime" Value="Creation time" />
   <Translate Key="Box_Comment" Value="Comment" />
 
-  <Translate Key="MainWindow_StatesBar" Value="Connect: {0}  Convert: {1}" />
   <Translate Key="MainWindow_Connection" Value="Connection" />
   <Translate Key="MainWindow_Search" Value="Search" />
   <Translate Key="MainWindow_Download" Value="Download" />
@@ -29,6 +28,7 @@
   <Translate Key="MainWindow_Store" Value="Store" />
   <Translate Key="MainWindow_Log" Value="Log" />
   <Translate Key="MainWindow_Core" Value="Core" />
+  <Translate Key="MainWindow_StatesBar" Value="Connect: {0}  Convert: {1}" />
   <Translate Key="MainWindow_Running" Value="Running" />
   <Translate Key="MainWindow_Stopping" Value="Stopping" />
   <Translate Key="MainWindow_Start" Value="Start" />
@@ -53,7 +53,7 @@
   <Translate Key="MainWindow_SendSpeed" Value="Send:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="Receive:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
-  <Translate Key="MainWindow_SearchSpaceNotFound_Message" Value="Space of cache not found." />
+  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Space of cache not found." />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Check internal blocks" />
   <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="Check external blocks" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="Checked:{1} Bad:{0} Count:{2}" />

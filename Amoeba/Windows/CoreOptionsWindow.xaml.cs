@@ -87,8 +87,8 @@ namespace Amoeba.Windows
 
                 _baseNode_Id = baseNode.Id;
                 _baseNode_Uris = new ObservableCollectionEx<string>(baseNode.Uris);
-                _otherNodes = new ObservableCollectionEx<Node>(_amoebaManager.OtherNodes.Select(n => n.DeepClone()));
-                _clientFilters = new ObservableCollectionEx<ConnectionFilter>(_amoebaManager.Filters.Select(n => n.DeepClone()));
+                _otherNodes = new ObservableCollectionEx<Node>(_amoebaManager.OtherNodes);
+                _clientFilters = new ObservableCollectionEx<ConnectionFilter>(_amoebaManager.Filters.Select(n => n.Clone()));
                 _serverListenUris = new ObservableCollectionEx<string>(_amoebaManager.ListenUris);
 
                 try
@@ -1446,7 +1446,11 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _amoebaManager.SetBaseNode(new Node(_baseNode_Id, _baseNode_Uris));
+                if (!Collection.Equals(_amoebaManager.BaseNode.Uris, _baseNode_Uris))
+                {
+                    _amoebaManager.SetBaseNode(new Node(_baseNode_Id, _baseNode_Uris));
+                }
+
                 _amoebaManager.SetOtherNodes(_otherNodes.Where(n => n != null && n.Id != null && n.Uris.Count() != 0));
 
                 int count = CoreOptionsWindow.GetStringToInt(_bandwidthConnectionCountTextBox.Text);
@@ -1466,7 +1470,7 @@ namespace Amoeba.Windows
                 _amoebaManager.BandWidthLimit = bandwidthLimit;
 
                 _amoebaManager.Filters.Clear();
-                _amoebaManager.Filters.AddRange(_clientFilters.Select(n => n.DeepClone()));
+                _amoebaManager.Filters.AddRange(_clientFilters.Select(n => n.Clone()));
 
                 if (!Collection.Equals(_amoebaManager.ListenUris, _serverListenUris))
                 {

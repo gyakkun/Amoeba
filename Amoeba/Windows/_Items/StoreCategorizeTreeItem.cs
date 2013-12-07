@@ -9,7 +9,7 @@ using Library.Io;
 namespace Amoeba.Windows
 {
     [DataContract(Name = "StoreCategorizeTreeItem", Namespace = "http://Amoeba/Windows")]
-    class StoreCategorizeTreeItem : IDeepCloneable<StoreCategorizeTreeItem>, IThisLock
+    class StoreCategorizeTreeItem : ICloneable<StoreCategorizeTreeItem>, IThisLock
     {
         private string _name;
         private LockedList<StoreTreeItem> _storeTreeItems;
@@ -87,9 +87,9 @@ namespace Amoeba.Windows
             }
         }
 
-        #region IDeepClone<StoreCategorizeTreeItem>
+        #region ICloneable<StoreCategorizeTreeItem>
 
-        public StoreCategorizeTreeItem DeepClone()
+        public StoreCategorizeTreeItem Clone()
         {
             lock (this.ThisLock)
             {
@@ -97,14 +97,15 @@ namespace Amoeba.Windows
 
                 using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
+                    using (WrapperStream wrapperStream = new WrapperStream(stream, true))
+                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
                     {
                         ds.WriteObject(textDictionaryWriter, this);
                     }
 
                     stream.Position = 0;
 
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
                         return (StoreCategorizeTreeItem)ds.ReadObject(textDictionaryReader);
                     }

@@ -20,7 +20,6 @@
   <Translate Key="Box_CreationTime" Value="作成日" />
   <Translate Key="Box_Comment" Value="コメント" />
 
-  <Translate Key="MainWindow_StatesBar" Value="接続: {0}  変換: {1}" />
   <Translate Key="MainWindow_Connection" Value="コネクション" />
   <Translate Key="MainWindow_Search" Value="検索" />
   <Translate Key="MainWindow_Download" Value="ダウンロード" />
@@ -29,6 +28,7 @@
   <Translate Key="MainWindow_Store" Value="ストア" />
   <Translate Key="MainWindow_Log" Value="ログ" />
   <Translate Key="MainWindow_Core" Value="コア" />
+  <Translate Key="MainWindow_StatesBar" Value="接続: {0}  変換: {1}" />
   <Translate Key="MainWindow_Running" Value="実行中" />
   <Translate Key="MainWindow_Stopping" Value="停止中" />
   <Translate Key="MainWindow_Start" Value="開始" />
@@ -53,7 +53,7 @@
   <Translate Key="MainWindow_SendSpeed" Value="送信:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="受信:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
-  <Translate Key="MainWindow_SearchSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
+  <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="内部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="外部ブロックの破損チェック" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="チェック済み:{1} 破損:{0} 総ブロック数:{2}" />

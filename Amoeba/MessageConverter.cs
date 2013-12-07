@@ -18,6 +18,8 @@ namespace Amoeba
     {
         public static string ToInfoMessage(Library.Net.Amoeba.Seed seed)
         {
+            if (seed == null) throw new ArgumentNullException("seed");
+            
             try
             {
                 var keywords = seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)).ToList();
@@ -42,6 +44,8 @@ namespace Amoeba
 
         public static string ToInfoMessage(Library.Net.Amoeba.Box box)
         {
+            if (box == null) throw new ArgumentNullException("box");
+            
             try
             {
                 StringBuilder builder = new StringBuilder();

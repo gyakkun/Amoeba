@@ -40,6 +40,7 @@ namespace Amoeba
 
                     _nodeList.Clear();
                     _seedList.Clear();
+
                     _boxList.Clear();
                     _searchTreeItemList.Clear();
                     _storeCategorizeTreeItemList.Clear();
@@ -53,64 +54,6 @@ namespace Amoeba
             lock (_thisLock)
             {
                 return System.Windows.Clipboard.ContainsFileDropList();
-            }
-        }
-
-        public static bool ContainsText()
-        {
-            lock (_thisLock)
-            {
-                return System.Windows.Clipboard.ContainsText();
-            }
-        }
-
-        public static bool ContainsNodes()
-        {
-            lock (_thisLock)
-            {
-                if (_isNodesCached) return _nodeList.Count != 0;
-                else return Clipboard.GetNodes().Count() != 0;
-            }
-        }
-
-        public static bool ContainsSeeds()
-        {
-            lock (_thisLock)
-            {
-                if (_isSeedsCached) return _seedList.Count != 0;
-                else return Clipboard.GetSeeds().Count() != 0;
-            }
-        }
-
-        public static bool ContainsBoxes()
-        {
-            lock (_thisLock)
-            {
-                return _boxList.Count != 0;
-            }
-        }
-
-        public static bool ContainsSearchTreeItems()
-        {
-            lock (_thisLock)
-            {
-                return _searchTreeItemList.Count != 0;
-            }
-        }
-
-        public static bool ContainsStoreCategorizeTreeItems()
-        {
-            lock (_thisLock)
-            {
-                return _storeCategorizeTreeItemList.Count != 0;
-            }
-        }
-
-        public static bool ContainsStoreTreeItems()
-        {
-            lock (_thisLock)
-            {
-                return _storeTreeItemList.Count != 0;
             }
         }
 
@@ -148,6 +91,14 @@ namespace Amoeba
             }
         }
 
+        public static bool ContainsText()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsText();
+            }
+        }
+
         public static string GetText()
         {
             lock (_thisLock)
@@ -180,7 +131,7 @@ namespace Amoeba
             }
         }
 
-        public static IEnumerable<Node> GetNodes()
+        public static bool ContainsNodes()
         {
             lock (_thisLock)
             {
@@ -190,7 +141,10 @@ namespace Amoeba
                     {
                         try
                         {
-                            _nodeList.Add(AmoebaConverter.FromNodeString(item));
+                            var node = AmoebaConverter.FromNodeString(item);
+                            if (node == null) continue;
+
+                            _nodeList.Add(node);
                         }
                         catch (Exception)
                         {
@@ -201,7 +155,35 @@ namespace Amoeba
                     _isNodesCached = true;
                 }
 
-                return _nodeList.Where(n => n != null).Select(n => n.DeepClone()).ToArray();
+                return _nodeList.Count != 0;
+            }
+        }
+
+        public static IEnumerable<Node> GetNodes()
+        {
+            lock (_thisLock)
+            {
+                if (!_isNodesCached)
+                {
+                    foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        try
+                        {
+                            var node = AmoebaConverter.FromNodeString(item);
+                            if (node == null) continue;
+
+                            _nodeList.Add(node);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+                    _isNodesCached = true;
+                }
+
+                return _nodeList.ToArray();
             }
         }
 
@@ -209,14 +191,19 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                var sb = new StringBuilder();
-
-                foreach (var item in nodes)
                 {
-                    sb.AppendLine(AmoebaConverter.ToNodeString(item));
+                    var sb = new StringBuilder();
+
+                    foreach (var item in nodes)
+                    {
+                        sb.AppendLine(AmoebaConverter.ToNodeString(item));
+                    }
+
+                    Clipboard.SetText(sb.ToString());
                 }
 
-                Clipboard.SetText(sb.ToString());
+                _nodeList.AddRange(nodes);
+                _isNodesCached = true;
             }
         }
 
@@ -235,10 +222,40 @@ namespace Amoeba
                     Clipboard.SetText(sb.ToString());
                 }
 
+                _boxList.AddRange(boxes.Select(n => n.Clone()));
+
+                _seedList.AddRange(seeds.Select(n => n.Clone()));
+                _isSeedsCached = true;
+            }
+        }
+
+        public static bool ContainsSeeds()
+        {
+            lock (_thisLock)
+            {
+                if (!_isSeedsCached)
                 {
-                    _boxList.Clear();
-                    _boxList.AddRange(boxes.Select(n => n.DeepClone()));
+                    foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        try
+                        {
+                            var seed = AmoebaConverter.FromSeedString(item);
+                            if (seed == null) continue;
+
+                            if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
+
+                            _seedList.Add(seed);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+                    _isSeedsCached = true;
                 }
+
+                return _seedList.Count != 0;
             }
         }
 
@@ -268,7 +285,7 @@ namespace Amoeba
                     _isSeedsCached = true;
                 }
 
-                return _seedList.Where(n => n != null).Select(n => n.DeepClone()).ToArray();
+                return _seedList.Select(n => n.Clone()).ToArray();
             }
         }
 
@@ -276,14 +293,27 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                var sb = new StringBuilder();
-
-                foreach (var item in seeds)
                 {
-                    sb.AppendLine(AmoebaConverter.ToSeedString(item));
+                    var sb = new StringBuilder();
+
+                    foreach (var item in seeds)
+                    {
+                        sb.AppendLine(AmoebaConverter.ToSeedString(item));
+                    }
+
+                    Clipboard.SetText(sb.ToString());
                 }
 
-                Clipboard.SetText(sb.ToString());
+                _seedList.AddRange(seeds.Select(n => n.Clone()));
+                _isSeedsCached = true;
+            }
+        }
+
+        public static bool ContainsBoxes()
+        {
+            lock (_thisLock)
+            {
+                return _boxList.Count != 0;
             }
         }
 
@@ -291,7 +321,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _boxList.Select(n => n.DeepClone()).ToArray();
+                return _boxList.Select(n => n.Clone()).ToArray();
             }
         }
 
@@ -301,8 +331,15 @@ namespace Amoeba
             {
                 System.Windows.Clipboard.Clear();
 
-                _boxList.Clear();
-                _boxList.AddRange(boxes.Select(n => n.DeepClone()));
+                _boxList.AddRange(boxes.Select(n => n.Clone()));
+            }
+        }
+
+        public static bool ContainsSearchTreeItems()
+        {
+            lock (_thisLock)
+            {
+                return _searchTreeItemList.Count != 0;
             }
         }
 
@@ -310,7 +347,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _searchTreeItemList.Select(n => n.DeepClone()).ToArray();
+                return _searchTreeItemList.Select(n => n.Clone()).ToArray();
             }
         }
 
@@ -320,8 +357,7 @@ namespace Amoeba
             {
                 System.Windows.Clipboard.Clear();
 
-                _searchTreeItemList.Clear();
-                _searchTreeItemList.AddRange(searchTreeItems.Select(n => n.DeepClone()));
+                _searchTreeItemList.AddRange(searchTreeItems.Select(n => n.Clone()));
             }
         }
 
@@ -329,7 +365,15 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _storeCategorizeTreeItemList.Select(n => n.DeepClone()).ToArray();
+                return _storeCategorizeTreeItemList.Select(n => n.Clone()).ToArray();
+            }
+        }
+
+        public static bool ContainsStoreCategorizeTreeItems()
+        {
+            lock (_thisLock)
+            {
+                return _storeCategorizeTreeItemList.Count != 0;
             }
         }
 
@@ -339,8 +383,15 @@ namespace Amoeba
             {
                 System.Windows.Clipboard.Clear();
 
-                _storeCategorizeTreeItemList.Clear();
-                _storeCategorizeTreeItemList.AddRange(storeCategorizeTreeItems.Select(n => n.DeepClone()));
+                _storeCategorizeTreeItemList.AddRange(storeCategorizeTreeItems.Select(n => n.Clone()));
+            }
+        }
+
+        public static bool ContainsStoreTreeItems()
+        {
+            lock (_thisLock)
+            {
+                return _storeTreeItemList.Count != 0;
             }
         }
 
@@ -348,7 +399,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _storeTreeItemList.Select(n => n.DeepClone()).ToArray();
+                return _storeTreeItemList.Select(n => n.Clone()).ToArray();
             }
         }
 
@@ -356,8 +407,6 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                System.Windows.Clipboard.Clear();
-
                 {
                     var sb = new StringBuilder();
 
@@ -369,8 +418,7 @@ namespace Amoeba
                     Clipboard.SetText(sb.ToString());
                 }
 
-                _storeTreeItemList.Clear();
-                _storeTreeItemList.AddRange(storeTreeItems.Select(n => n.DeepClone()));
+                _storeTreeItemList.AddRange(storeTreeItems.Select(n => n.Clone()));
             }
         }
 

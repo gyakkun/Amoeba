@@ -9,7 +9,7 @@ using Library.Io;
 namespace Amoeba.Windows
 {
     [DataContract(Name = "StoreInfo", Namespace = "http://Amoeba/Windows")]
-    class StoreTreeItem : IDeepCloneable<StoreTreeItem>, IThisLock
+    class StoreTreeItem : ICloneable<StoreTreeItem>, IThisLock
     {
         private string _signature;
         private BoxCollection _boxes;
@@ -91,9 +91,9 @@ namespace Amoeba.Windows
             }
         }
 
-        #region IDeepClone<StoreTreeItem>
+        #region ICloneable<StoreTreeItem>
 
-        public StoreTreeItem DeepClone()
+        public StoreTreeItem Clone()
         {
             lock (this.ThisLock)
             {
@@ -101,14 +101,15 @@ namespace Amoeba.Windows
 
                 using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
+                    using (WrapperStream wrapperStream = new WrapperStream(stream, true))
+                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
                     {
                         ds.WriteObject(textDictionaryWriter, this);
                     }
 
                     stream.Position = 0;
 
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
                         return (StoreTreeItem)ds.ReadObject(textDictionaryReader);
                     }

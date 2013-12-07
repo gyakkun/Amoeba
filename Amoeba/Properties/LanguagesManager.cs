@@ -333,17 +333,6 @@ namespace Amoeba.Properties
         }
 
 
-        public string MainWindow_StatesBar
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_StatesBar");
-                }
-            }
-        }
-
         public string MainWindow_Connection
         {
             get
@@ -428,6 +417,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Core");
+                }
+            }
+        }
+
+        public string MainWindow_StatesBar
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_StatesBar");
                 }
             }
         }
@@ -696,13 +696,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_SearchSpaceNotFound_Message
+        public string MainWindow_CacheSpaceNotFound_Message
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_SearchSpaceNotFound_Message");
+                    return this.Translate("MainWindow_CacheSpaceNotFound_Message");
                 }
             }
         }

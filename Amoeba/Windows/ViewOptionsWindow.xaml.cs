@@ -63,7 +63,7 @@ namespace Amoeba.Windows
                 _updateOptionAutoUpdateRadioButton.IsChecked = true;
             }
 
-            _signatureListViewItemCollection = new ObservableCollectionEx<SignatureListViewItem>(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n.DeepClone())));
+            _signatureListViewItemCollection = new ObservableCollectionEx<SignatureListViewItem>(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n.Clone())));
             _signatureListView.ItemsSource = _signatureListViewItemCollection;
             _signatureListViewUpdate();
 

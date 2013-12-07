@@ -12,7 +12,7 @@ using Library.Io;
 namespace Amoeba.Windows
 {
     [DataContract(Name = "SearchTreeItem", Namespace = "http://Amoeba/Windows")]
-    class SearchTreeItem : IDeepCloneable<SearchTreeItem>, IThisLock
+    class SearchTreeItem : ICloneable<SearchTreeItem>, IThisLock
     {
         private SearchItem _searchItem;
         private LockedList<SearchTreeItem> _children;
@@ -74,9 +74,9 @@ namespace Amoeba.Windows
             }
         }
 
-        #region IDeepClone<SearchTreeItem>
+        #region ICloneable<SearchTreeItem>
 
-        public SearchTreeItem DeepClone()
+        public SearchTreeItem Clone()
         {
             lock (this.ThisLock)
             {
@@ -84,14 +84,15 @@ namespace Amoeba.Windows
 
                 using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
+                    using (WrapperStream wrapperStream = new WrapperStream(stream, true))
+                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
                     {
                         ds.WriteObject(textDictionaryWriter, this);
                     }
 
                     stream.Position = 0;
 
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
                         return (SearchTreeItem)ds.ReadObject(textDictionaryReader);
                     }

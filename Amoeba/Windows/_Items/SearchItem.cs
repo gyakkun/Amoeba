@@ -12,7 +12,7 @@ using Library.Net.Amoeba;
 namespace Amoeba.Windows
 {
     [DataContract(Name = "SearchItem", Namespace = "http://Amoeba/Windows")]
-    class SearchItem : IDeepCloneable<SearchItem>, IThisLock
+    class SearchItem : ICloneable<SearchItem>, IThisLock
     {
         private string _name = "default";
         private LockedList<SearchContains<string>> _searchNameCollection;
@@ -175,9 +175,9 @@ namespace Amoeba.Windows
             }
         }
 
-        #region IDeepClone<SearchItem>
+        #region ICloneable<SearchItem>
 
-        public SearchItem DeepClone()
+        public SearchItem Clone()
         {
             lock (this.ThisLock)
             {
@@ -185,14 +185,15 @@ namespace Amoeba.Windows
 
                 using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
+                    using (WrapperStream wrapperStream = new WrapperStream(stream, true))
+                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
                     {
                         ds.WriteObject(textDictionaryWriter, this);
                     }
 
                     stream.Position = 0;
 
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
                         return (SearchItem)ds.ReadObject(textDictionaryReader);
                     }
@@ -256,7 +257,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]
-    class SearchContains<T> : IEquatable<SearchContains<T>>, IDeepCloneable<SearchContains<T>>
+    class SearchContains<T> : IEquatable<SearchContains<T>>, ICloneable<SearchContains<T>>
     {
         private bool _contains;
         private T _value;
@@ -319,22 +320,23 @@ namespace Amoeba.Windows
             return string.Format("{0} {1}", this.Contains, this.Value);
         }
 
-        #region IDeepClone<SearchContains<T>>
+        #region ICloneable<SearchContains<T>>
 
-        public SearchContains<T> DeepClone()
+        public SearchContains<T> Clone()
         {
             var ds = new DataContractSerializer(typeof(SearchContains<T>));
 
             using (BufferStream stream = new BufferStream(BufferManager.Instance))
             {
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
+                using (WrapperStream wrapperStream = new WrapperStream(stream, true))
+                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
                 {
                     ds.WriteObject(textDictionaryWriter, this);
                 }
 
                 stream.Position = 0;
 
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                 {
                     return (SearchContains<T>)ds.ReadObject(textDictionaryReader);
                 }
@@ -345,7 +347,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchRegex", Namespace = "http://Amoeba/Windows")]
-    class SearchRegex : IEquatable<SearchRegex>, IDeepCloneable<SearchRegex>
+    class SearchRegex : IEquatable<SearchRegex>, ICloneable<SearchRegex>
     {
         private string _value;
         private bool _isIgnoreCase;
@@ -430,22 +432,23 @@ namespace Amoeba.Windows
             return string.Format("{0} {1}", this.IsIgnoreCase, this.Value);
         }
 
-        #region IDeepClone<SearchRegex>
+        #region ICloneable<SearchRegex>
 
-        public SearchRegex DeepClone()
+        public SearchRegex Clone()
         {
             var ds = new DataContractSerializer(typeof(SearchRegex));
 
             using (BufferStream stream = new BufferStream(BufferManager.Instance))
             {
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
+                using (WrapperStream wrapperStream = new WrapperStream(stream, true))
+                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
                 {
                     ds.WriteObject(textDictionaryWriter, this);
                 }
 
                 stream.Position = 0;
 
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                 {
                     return (SearchRegex)ds.ReadObject(textDictionaryReader);
                 }
@@ -456,7 +459,7 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchRange", Namespace = "http://Amoeba/Windows")]
-    class SearchRange<T> : IEquatable<SearchRange<T>>, IDeepCloneable<SearchRange<T>>
+    class SearchRange<T> : IEquatable<SearchRange<T>>, ICloneable<SearchRange<T>>
         where T : IComparable
     {
         T _max;
@@ -534,22 +537,23 @@ namespace Amoeba.Windows
             return string.Format("Max = {0}, Min = {1}", this.Max, this.Min);
         }
 
-        #region IDeepClone<SearchRange<T>>
+        #region ICloneable<SearchRange<T>>
 
-        public SearchRange<T> DeepClone()
+        public SearchRange<T> Clone()
         {
             var ds = new DataContractSerializer(typeof(SearchRange<T>));
 
             using (BufferStream stream = new BufferStream(BufferManager.Instance))
             {
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(stream, new UTF8Encoding(false), false))
+                using (WrapperStream wrapperStream = new WrapperStream(stream, true))
+                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
                 {
                     ds.WriteObject(textDictionaryWriter, this);
                 }
 
                 stream.Position = 0;
 
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                 {
                     return (SearchRange<T>)ds.ReadObject(textDictionaryReader);
                 }

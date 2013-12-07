@@ -319,13 +319,13 @@ namespace Amoeba.Windows
 
                         if (_cacheSpaceNotFoundException)
                         {
-                            Log.Warning(LanguagesManager.Instance.MainWindow_SearchSpaceNotFound_Message);
+                            Log.Warning(LanguagesManager.Instance.MainWindow_CacheSpaceNotFound_Message);
 
                             this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
                                 MessageBox.Show(
                                     this,
-                                    LanguagesManager.Instance.MainWindow_SearchSpaceNotFound_Message,
+                                    LanguagesManager.Instance.MainWindow_CacheSpaceNotFound_Message,
                                     "Warning",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Warning);
@@ -1690,9 +1690,9 @@ namespace Amoeba.Windows
                     Debug.WriteLine(sw.Elapsed.ToString());
 #endif
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
+                    Log.Error(ex);
                 }
                 finally
                 {
