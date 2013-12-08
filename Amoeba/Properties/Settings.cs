@@ -162,6 +162,11 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "SignatureWindow_Width", Value = 700 },
                 new Library.Configuration.SettingContent<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
               
+                new Library.Configuration.SettingContent<double>() { Name = "NameWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "NameWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "NameWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "NameWindow_WindowState", Value = WindowState.Normal },
+
                 new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_Left", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "SearchItemEditWindow_Height", Value = 500 },
@@ -195,11 +200,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<WindowState>() { Name = "UploadWindow_WindowState", Value = WindowState.Normal },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadWindow_GridViewColumn_Name_Width", Value = -1 },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadWindow_GridViewColumn_Path_Width", Value = -1 },
-
-                new Library.Configuration.SettingContent<double>() { Name = "StoreCategorizeTreeItemEditWindow_Top", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "StoreCategorizeTreeItemEditWindow_Left", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "StoreCategorizeTreeItemEditWindow_Width", Value = 700 },
-                new Library.Configuration.SettingContent<WindowState>() { Name = "StoreCategorizeTreeItemEditWindow_WindowState", Value = WindowState.Normal },
 
                 new Library.Configuration.SettingContent<double>() { Name = "BoxEditWindow_Top", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "BoxEditWindow_Left", Value = 120 },
@@ -2503,6 +2503,79 @@ namespace Amoeba.Properties
         }
 
 
+        public double NameWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["NameWindow_Top"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["NameWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double NameWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["NameWindow_Left"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["NameWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double NameWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["NameWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["NameWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState NameWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (WindowState)this["NameWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["NameWindow_WindowState"] = value;
+                }
+            }
+        }
+
+
         public double SearchItemEditWindow_Top
         {
             get
@@ -3076,79 +3149,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["UploadWindow_GridViewColumn_Path_Width"] = value;
-                }
-            }
-        }
-
-
-        public double StoreCategorizeTreeItemEditWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["StoreCategorizeTreeItemEditWindow_Top"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreCategorizeTreeItemEditWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double StoreCategorizeTreeItemEditWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["StoreCategorizeTreeItemEditWindow_Left"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreCategorizeTreeItemEditWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double StoreCategorizeTreeItemEditWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (double)this["StoreCategorizeTreeItemEditWindow_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreCategorizeTreeItemEditWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState StoreCategorizeTreeItemEditWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                   return (WindowState)this["StoreCategorizeTreeItemEditWindow_WindowState"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreCategorizeTreeItemEditWindow_WindowState"] = value;
                 }
             }
         }

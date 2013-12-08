@@ -361,19 +361,19 @@ namespace Amoeba
             }
         }
 
-        public static IEnumerable<Windows.StoreCategorizeTreeItem> GetStoreCategorizeTreeItems()
-        {
-            lock (_thisLock)
-            {
-                return _storeCategorizeTreeItemList.Select(n => n.Clone()).ToArray();
-            }
-        }
-
         public static bool ContainsStoreCategorizeTreeItems()
         {
             lock (_thisLock)
             {
                 return _storeCategorizeTreeItemList.Count != 0;
+            }
+        }
+
+        public static IEnumerable<Windows.StoreCategorizeTreeItem> GetStoreCategorizeTreeItems()
+        {
+            lock (_thisLock)
+            {
+                return _storeCategorizeTreeItemList.Select(n => n.Clone()).ToArray();
             }
         }
 

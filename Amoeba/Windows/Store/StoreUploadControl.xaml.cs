@@ -1315,12 +1315,12 @@ namespace Amoeba.Windows
                 name = "New category_" + i;
             }
 
-            StoreCategorizeTreeItemEditWindow window = new StoreCategorizeTreeItemEditWindow(name);
+            NameWindow window = new NameWindow(name);
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)
             {
-                selectTreeViewItem.Value.Children.Add(new StoreCategorizeTreeItem() { Name = name });
+                selectTreeViewItem.Value.Children.Add(new StoreCategorizeTreeItem() { Name = window.Text });
 
                 selectTreeViewItem.Update();
             }
@@ -1333,7 +1333,7 @@ namespace Amoeba.Windows
             var selectTreeViewItem = _treeView.SelectedItem as StoreCategorizeTreeViewItem;
             if (selectTreeViewItem == null) return;
 
-            StoreCategorizeTreeItemEditWindow window = new StoreCategorizeTreeItemEditWindow(selectTreeViewItem.Value.Name);
+            NameWindow window = new NameWindow(selectTreeViewItem.Value.Name);
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)

@@ -35,13 +35,6 @@ namespace Amoeba.Windows
             }
         }
 
-        protected override void OnInitialized(EventArgs e)
-        {
-            WindowPosition.Move(this);
-
-            base.OnInitialized(e);
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             List<VersionListViewItem> items = new List<VersionListViewItem>();
@@ -67,6 +60,8 @@ namespace Amoeba.Windows
             {
                 _versionListView.Items.Add(item);
             }
+
+            WindowPosition.Move(this);
         }
 
         private void _licenseButton_Click(object sender, RoutedEventArgs e)

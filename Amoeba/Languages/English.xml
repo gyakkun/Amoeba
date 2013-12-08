@@ -188,6 +188,11 @@
   <Translate Key="SignatureWindow_Ok" Value="Ok" />
   <Translate Key="SignatureWindow_Cancel" Value="Cancel" />
 
+  <Translate Key="NameWindow_Title" Value="Name setting" />
+  <Translate Key="NameWindow_Name" Value="Name" />
+  <Translate Key="NameWindow_Ok" Value="Ok" />
+  <Translate Key="NameWindow_Cancel" Value="Cancel" />
+
   <Translate Key="ConnectionControl_Uri" Value="Uri" />
   <Translate Key="ConnectionControl_Priority" Value="Priority" />
   <Translate Key="ConnectionControl_SentByteCount" Value="Sent byte count" />
@@ -273,11 +278,6 @@
   <Translate Key="StoreUploadControl_Download" Value="Download" />
   <Translate Key="StoreUploadControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
   <Translate Key="StoreUploadControl_DigitalSignatureError_Message" Value="Digital signature error" />
-
-  <Translate Key="StoreCategorizeTreeItemEditWindow_Title" Value="Category setting" />
-  <Translate Key="StoreCategorizeTreeItemEditWindow_Name" Value="Name" />
-  <Translate Key="StoreCategorizeTreeItemEditWindow_Ok" Value="Ok" />
-  <Translate Key="StoreCategorizeTreeItemEditWindow_Cancel" Value="Cancel" />
 
   <Translate Key="LibraryControl_Name" Value="Name" />
   <Translate Key="LibraryControl_Signature" Value="Signature" />

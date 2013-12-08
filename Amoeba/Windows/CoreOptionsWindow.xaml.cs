@@ -144,16 +144,11 @@ namespace Amoeba.Windows
             }
         }
 
-        protected override void OnInitialized(EventArgs e)
-        {
-            WindowPosition.Move(this);
-
-            base.OnInitialized(e);
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             _baseNodeTreeViewItem.IsSelected = true;
+
+            WindowPosition.Move(this);
         }
 
         #region BaseNode

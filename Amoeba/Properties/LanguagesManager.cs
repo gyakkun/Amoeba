@@ -2091,6 +2091,51 @@ namespace Amoeba.Properties
         }
 
 
+        public string NameWindow_Title
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("NameWindow_Title");
+                }
+            }
+        }
+
+        public string NameWindow_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("NameWindow_Name");
+                }
+            }
+        }
+
+        public string NameWindow_Ok
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("NameWindow_Ok");
+                }
+            }
+        }
+
+        public string NameWindow_Cancel
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("NameWindow_Cancel");
+                }
+            }
+        }
+
+
         public string ConnectionControl_Uri
         {
             get
@@ -2992,51 +3037,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("StoreUploadControl_DigitalSignatureError_Message");
-                }
-            }
-        }
-
-
-        public string StoreCategorizeTreeItemEditWindow_Title
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreCategorizeTreeItemEditWindow_Title");
-                }
-            }
-        }
-
-        public string StoreCategorizeTreeItemEditWindow_Name
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreCategorizeTreeItemEditWindow_Name");
-                }
-            }
-        }
-
-        public string StoreCategorizeTreeItemEditWindow_Ok
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreCategorizeTreeItemEditWindow_Ok");
-                }
-            }
-        }
-
-        public string StoreCategorizeTreeItemEditWindow_Cancel
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("StoreCategorizeTreeItemEditWindow_Cancel");
                 }
             }
         }

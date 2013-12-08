@@ -113,11 +113,11 @@
     <Compile Include="Windows\Link\LinkOptionsWindow.xaml.cs">
       <DependentUpon>LinkOptionsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\NameWindow.xaml.cs">
+      <DependentUpon>NameWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Store\StoreDownloadControl.xaml.cs">
       <DependentUpon>StoreDownloadControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Store\StoreCategorizeTreeItemEditWindow.xaml.cs">
-      <DependentUpon>StoreCategorizeTreeItemEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Store\StoreControl.xaml.cs">
       <DependentUpon>StoreControl.xaml</DependentUpon>
@@ -138,8 +138,8 @@
     <Compile Include="Windows\ConnectionControl.xaml.cs">
       <DependentUpon>ConnectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ConnectionsOptionsWindow.xaml.cs">
-      <DependentUpon>ConnectionsOptionsWindow.xaml</DependentUpon>
+    <Compile Include="Windows\CoreOptionsWindow.xaml.cs">
+      <DependentUpon>CoreOptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\DownloadControl.xaml.cs">
       <DependentUpon>DownloadControl.xaml</DependentUpon>
@@ -199,13 +199,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Store\StoreDownloadControl.xaml">
+    <Page Include="Windows\NameWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Store\StoreCategorizeTreeItemEditWindow.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Windows\Store\StoreDownloadControl.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Store\StoreControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -238,7 +238,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\ConnectionsOptionsWindow.xaml">
+    <Page Include="Windows\CoreOptionsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

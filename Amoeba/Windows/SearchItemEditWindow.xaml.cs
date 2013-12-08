@@ -91,11 +91,9 @@ namespace Amoeba.Windows
             _stateListViewUpdate();
         }
 
-        protected override void OnInitialized(EventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowPosition.Move(this);
-
-            base.OnInitialized(e);
         }
 
         private void _searchTreeViewItemNameTextBox_TextChanged(object sender, TextChangedEventArgs e)

@@ -71,11 +71,9 @@ namespace Amoeba.Windows
             _nameTextBox_TextChanged(null, null);
         }
 
-        protected override void OnInitialized(EventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowPosition.Move(this);
-
-            base.OnInitialized(e);
         }
 
         private void _nameTextBox_TextChanged(object sender, TextChangedEventArgs e)

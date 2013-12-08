@@ -175,13 +175,6 @@ namespace Amoeba.Windows
             }
         }
 
-        protected override void OnInitialized(EventArgs e)
-        {
-            WindowPosition.Move(this);
-
-            base.OnInitialized(e);
-        }
-
         void _transferLimitManager_StartEvent(object sender, EventArgs e)
         {
             if (_autoStop && !Settings.Instance.Global_IsStart)
@@ -1506,6 +1499,8 @@ namespace Amoeba.Windows
             {
                 _checkUpdateMenuItem_Click(null, null);
             }
+
+            WindowPosition.Move(this);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

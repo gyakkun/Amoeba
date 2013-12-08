@@ -79,13 +79,6 @@ namespace Amoeba.Windows
             }
         }
 
-        protected override void OnInitialized(EventArgs e)
-        {
-            WindowPosition.Move(this);
-
-            base.OnInitialized(e);
-        }
-
         public DigitalSignature DigitalSignature
         {
             get
@@ -98,6 +91,8 @@ namespace Amoeba.Windows
         {
             this.MaxHeight = this.RenderSize.Height;
             this.MinHeight = this.RenderSize.Height;
+
+            WindowPosition.Move(this);
         }
 
         private void _signatureComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

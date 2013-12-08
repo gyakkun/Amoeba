@@ -78,11 +78,9 @@ namespace Amoeba.Windows
             if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
         }
 
-        protected override void OnInitialized(EventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowPosition.Move(this);
-
-            base.OnInitialized(e);
         }
 
         private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)

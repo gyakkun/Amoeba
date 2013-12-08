@@ -11,16 +11,23 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Amoeba.Properties;
+using Library.Net;
+using Library.Net.Amoeba;
+using Library.Security;
 
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// Interaction logic for StoreCategorizeTreeItemEditWindow.xaml
+    /// NameWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class StoreCategorizeTreeItemEditWindow : Window
+    partial class NameWindow : Window
     {
-        public StoreCategorizeTreeItemEditWindow(string name)
+        private string _text;
+
+        public NameWindow(string text)
         {
+            _text = text;
+
             InitializeComponent();
 
             {
@@ -34,33 +41,46 @@ namespace Amoeba.Windows
                 this.Icon = icon;
             }
 
-            _textBox.Text = name;
+            _textBox.Text = _text;
         }
 
-        public new string Name
+        public NameWindow()
+            : this(null)
         {
-            get
-            {
-                return _textBox.Text;
-            }
         }
 
         protected override void OnInitialized(EventArgs e)
         {
-            WindowPosition.Move(this);
-
             base.OnInitialized(e);
+
+        }
+
+        public string Text
+        {
+            get
+            {
+                return _text;
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.MaxHeight = this.RenderSize.Height;
             this.MinHeight = this.RenderSize.Height;
+
+            WindowPosition.Move(this);
+        }
+
+        private void _textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _okButton.IsEnabled = !string.IsNullOrWhiteSpace(_textBox.Text);
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
+
+            _text = _textBox.Text;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)
