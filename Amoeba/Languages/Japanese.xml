@@ -189,6 +189,7 @@
   <Translate Key="SignatureWindow_Cancel" Value="キャンセル" />
 
   <Translate Key="NameWindow_Title" Value="名前設定" />
+  <Translate Key="NameWindow_Title_Category" Value="カテゴリ名" />
   <Translate Key="NameWindow_Name" Value="名前" />
   <Translate Key="NameWindow_Ok" Value="Ok" />
   <Translate Key="NameWindow_Cancel" Value="キャンセル" />
@@ -227,9 +228,9 @@
   <Translate Key="ConnectionControl_Copy" Value="コピー" />
   <Translate Key="ConnectionControl_Paste" Value="貼り付け" />
 
-  <Translate Key="StoreControl_Download" Value="Download" />
-  <Translate Key="StoreControl_Upload" Value="Upload" />
-  <Translate Key="StoreControl_Library" Value="Library" />
+  <Translate Key="StoreControl_Download" Value="ダウンロード" />
+  <Translate Key="StoreControl_Upload" Value="アップロード" />
+  <Translate Key="StoreControl_Library" Value="ライブラリ" />
 
   <Translate Key="StoreDownloadControl_Name" Value="名前" />
   <Translate Key="StoreDownloadControl_Signature" Value="サイン" />

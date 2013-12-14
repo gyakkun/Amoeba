@@ -2102,6 +2102,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string NameWindow_Title_Category
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("NameWindow_Title_Category");
+                }
+            }
+        }
+
         public string NameWindow_Name
         {
             get

@@ -939,6 +939,7 @@ namespace Amoeba.Windows
             }
 
             NameWindow window = new NameWindow(name);
+            window.Title = LanguagesManager.Instance.NameWindow_Title_Category;
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)
@@ -957,6 +958,7 @@ namespace Amoeba.Windows
             if (selectTreeViewItem == null) return;
 
             NameWindow window = new NameWindow(selectTreeViewItem.Value.Name);
+            window.Title = LanguagesManager.Instance.NameWindow_Title_Category;
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)

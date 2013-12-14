@@ -169,7 +169,7 @@ namespace Amoeba.Windows
             {
                 return _selectedTab;
             }
-            set
+            private set
             {
                 _selectedTab = value;
             }

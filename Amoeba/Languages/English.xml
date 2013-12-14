@@ -66,7 +66,7 @@
 
   <Translate Key="LinkOptionsWindow_Title" Value="Link options" />
   <Translate Key="LinkOptionsWindow_Download" Value="Download" />
-  <Translate Key="LinkOptionsWindow_Upload" Value="Upload" />
+  <Translate Key="LinkOptionsWindow_Upload" Value="Uplojad" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="Linker signature" />
   <Translate Key="LinkOptionsWindow_TrustSignature" Value="Trust signature" />
   <Translate Key="LinkOptionsWindow_New" Value="New" />
@@ -189,6 +189,7 @@
   <Translate Key="SignatureWindow_Cancel" Value="Cancel" />
 
   <Translate Key="NameWindow_Title" Value="Name setting" />
+  <Translate Key="NameWindow_Title_Category" Value="Category name" />
   <Translate Key="NameWindow_Name" Value="Name" />
   <Translate Key="NameWindow_Ok" Value="Ok" />
   <Translate Key="NameWindow_Cancel" Value="Cancel" />
