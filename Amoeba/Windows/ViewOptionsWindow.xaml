@@ -76,6 +76,7 @@
                 <local:ListViewEx x:Name="_signatureListView" SelectionMode="Single" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" Margin="0,0,0,64" ContextMenuOpening="_signatureListView_ContextMenuOpening" PreviewDragOver="_signatureListView_PreviewDragOver" PreviewDrop="_signatureListView_PreviewDrop">
                     <ListView.ContextMenu>
                         <ContextMenu Name="_signatureListViewContextMenu">
+                            <MenuItem Name="_signatureListViewCopyMenuItem" Header="{Binding Path=ViewOptionsWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewCopyMenuItem_Click" />
                             <MenuItem Name="_signatureListViewDeleteMenuItem" Header="{Binding Path=ViewOptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewDeleteMenuItem_Click" />
                         </ContextMenu>
                     </ListView.ContextMenu>

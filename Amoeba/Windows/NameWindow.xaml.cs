@@ -52,7 +52,6 @@ namespace Amoeba.Windows
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
-
         }
 
         public string Text

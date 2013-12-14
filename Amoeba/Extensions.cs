@@ -179,6 +179,59 @@ namespace Amoeba
         }
     }
 
+    static class TreeViewItemExtensions
+    {
+        public static IEnumerable<TreeViewItem> GetAncestors(this TreeViewItem parentItem, TreeViewItem childItem)
+        {
+            if (childItem is TreeViewItemEx)
+            {
+                var targetList = new LinkedList<TreeViewItemEx>();
+                targetList.AddFirst((TreeViewItemEx)childItem);
+
+                for (; ; )
+                {
+                    var parent = targetList.First.Value.Parent;
+                    if (parent == null) break;
+
+                    targetList.AddFirst(parent);
+                }
+
+                return targetList;
+            }
+            else
+            {
+                var list = new List<TreeViewItem>();
+                list.AddRange(parentItem.Items.Cast<TreeViewItem>());
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    foreach (TreeViewItem item in list[i].Items)
+                    {
+                        list.Add(item);
+                    }
+                }
+
+                var current = childItem;
+
+                var targetList = new LinkedList<TreeViewItem>();
+                targetList.AddFirst(current);
+
+                for (int i = list.Count - 1; i >= 0; i--)
+                {
+                    if (list[i].Items.Contains(current))
+                    {
+                        current = list[i];
+                        targetList.AddFirst(current);
+
+                        if (parentItem.Items.Contains(current)) break;
+                    }
+                }
+
+                return targetList;
+            }
+        }
+    }
+
     //http://geekswithblogs.net/sonam/archive/2009/03/02/listview-dragdrop-in-wpfmultiselect.aspx
 
     /// <summary>

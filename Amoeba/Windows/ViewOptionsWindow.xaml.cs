@@ -110,7 +110,7 @@ namespace Amoeba.Windows
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             _updateTreeViewItem.IsSelected = true;
-       
+
             WindowPosition.Move(this);
         }
 
@@ -216,6 +216,21 @@ namespace Amoeba.Windows
             var selectItems = _signatureListView.SelectedItems;
 
             _signatureListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+        }
+
+        private void _signatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_signatureListView.SelectedItems.Count == 0) return;
+
+            var sb = new StringBuilder();
+
+            foreach (var item in _signatureListView.SelectedItems.OfType<SignatureListViewItem>().Select(n => n.Value))
+            {
+                sb.AppendLine(item.ToString());
+                sb.AppendLine();
+            }
+
+            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
         }
 
         private void _signatureListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)

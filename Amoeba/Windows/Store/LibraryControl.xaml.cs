@@ -1592,7 +1592,7 @@ namespace Amoeba.Windows
         {
             if (_listView.SelectedItems.Count == 0) return;
 
-            var selectTreeViewItem = _treeView.SelectedItem as BoxTreeViewItem;
+            var selectTreeViewItem = _treeView.SelectedItem as TreeViewItem;
             if (selectTreeViewItem == null) return;
 
             if (selectTreeViewItem is BoxTreeViewItem)
