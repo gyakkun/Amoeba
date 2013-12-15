@@ -451,7 +451,7 @@
   -->
   <PropertyGroup>
     <PreBuildEvent>call "$(SolutionDir)Settings.bat" "$(ProjectDir)Properties\Settings.cs"
-call "$(SolutionDir)Languages.bat" "$(ProjectDir)Properties\LanguagesManager.cs" "$(ProjectDir)Languages\English.xml"
+call "$(SolutionDir)Languages.bat" "$(ProjectDir)Properties\LanguagesManager.cs" "$(ProjectDir)Languages"
 call "$(SolutionDir)Increment.bat" "$(ProjectPath)" "$(ProjectDir)Properties\AssemblyInfo.cs"
 </PreBuildEvent>
   </PropertyGroup>

@@ -232,6 +232,17 @@ namespace Amoeba
         }
     }
 
+    static class ItemCollectionExtensions
+    {
+        public static void AddRange(this ItemCollection itemCollection, IEnumerable<object> collection)
+        {
+            foreach (var item in collection)
+            {
+                itemCollection.Add(item);
+            }
+        }
+    }
+
     //http://geekswithblogs.net/sonam/archive/2009/03/02/listview-dragdrop-in-wpfmultiselect.aspx
 
     /// <summary>
