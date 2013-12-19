@@ -191,6 +191,8 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
+                System.Windows.Clipboard.Clear();
+
                 {
                     var sb = new StringBuilder();
 
@@ -211,6 +213,8 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
+                System.Windows.Clipboard.Clear();
+
                 {
                     var sb = new StringBuilder();
 
@@ -293,6 +297,8 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
+                System.Windows.Clipboard.Clear();
+
                 {
                     var sb = new StringBuilder();
 
@@ -407,6 +413,8 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
+                System.Windows.Clipboard.Clear();
+
                 {
                     var sb = new StringBuilder();
 

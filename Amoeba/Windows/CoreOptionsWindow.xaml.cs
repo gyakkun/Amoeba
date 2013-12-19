@@ -46,6 +46,8 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
+            _baseNodeTextBox.MaxLength = UriCollection.MaxUriLength;
+
             {
                 var icon = new BitmapImage();
 
@@ -262,11 +264,6 @@ namespace Amoeba.Windows
             {
 
             }
-        }
-
-        private void _baseNodeTextBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            _baseNodeTextBox.SelectAll();
         }
 
         private void _baseNodeUrisListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)

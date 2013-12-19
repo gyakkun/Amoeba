@@ -75,7 +75,7 @@
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="3" />
 
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_baseNodeUriTextBox}" Visibility="{Binding ElementName=_baseNodeTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <TextBox Name="_baseNodeTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" IsReadOnly="True" VerticalContentAlignment="Center" PreviewMouseRightButtonDown="_baseNodeTextBox_PreviewMouseRightButtonDown" />
+                <TextBox Name="_baseNodeTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" IsReadOnly="True" VerticalContentAlignment="Center" />
                 <Label Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=CoreOptionsWindow_Node, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
                 <GroupBox Header="{Binding Path=CoreOptionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Margin="0,36,0,0">
                     <Grid>

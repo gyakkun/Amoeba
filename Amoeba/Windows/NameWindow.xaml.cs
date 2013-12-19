@@ -24,6 +24,17 @@ namespace Amoeba.Windows
     {
         private string _text;
 
+        public NameWindow()
+            : this(null)
+        {
+        }
+
+        public NameWindow(int maxLength)
+            : this(null)
+        {
+            _textBox.MaxLength = maxLength;
+        }
+
         public NameWindow(string text)
         {
             _text = text;
@@ -34,7 +45,7 @@ namespace Amoeba.Windows
                 var icon = new BitmapImage();
 
                 icon.BeginInit();
-                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Lair.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
                 icon.EndInit();
                 if (icon.CanFreeze) icon.Freeze();
 
@@ -44,9 +55,10 @@ namespace Amoeba.Windows
             _textBox.Text = _text;
         }
 
-        public NameWindow()
-            : this(null)
+        public NameWindow(string text, int maxLength)
+            : this(text)
         {
+            _textBox.MaxLength = maxLength;
         }
 
         protected override void OnInitialized(EventArgs e)
