@@ -1688,8 +1688,6 @@ namespace Amoeba.Windows
             {
                 _amoebaManager.Download(item.Value, 3);
             }
-
-            this.Update_Cache();
         }
 
         private void _listViewSearchSignatureMenuItem_Click(object sender, RoutedEventArgs e)

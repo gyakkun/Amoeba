@@ -1388,8 +1388,6 @@ namespace Amoeba.Windows
                         var seed = seedListViewItem.Value;
 
                         _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
-
-                        this.Update_Cache();
                     }
                 }
             }
@@ -1475,8 +1473,6 @@ namespace Amoeba.Windows
             {
                 this.BoxDownload(baseDirectory, box);
             }
-
-            this.Update_Cache();
         }
 
         private void BoxDownload(string baseDirectory, Box rootBox)

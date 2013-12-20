@@ -51,11 +51,6 @@ namespace Amoeba.Windows
                 this.Icon = icon;
             }
 
-            foreach (var item in Enum.GetValues(typeof(SearchState)).Cast<SearchState>())
-            {
-                _stateComboBox.Items.Add(item);
-            }
-
             lock (_searchItem.ThisLock)
             {
                 _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
@@ -89,6 +84,13 @@ namespace Amoeba.Windows
             _lengthRangeListViewUpdate();
             _seedListViewUpdate();
             _stateListViewUpdate();
+
+            foreach (var item in Enum.GetValues(typeof(SearchState)).Cast<SearchState>())
+            {
+                _stateComboBox.Items.Add(item);
+            }
+
+            _stateComboBox.SelectedIndex = 0;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

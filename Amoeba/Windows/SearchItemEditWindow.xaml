@@ -44,10 +44,10 @@
             <TextBlock Text="{Binding Path=Value.Name, Mode=OneWay}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}"/>
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_SearchContains_SearchState_Value">
-            <TextBlock Text="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _stateFlagToStringConverter}}" />
+            <TextBlock Text="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _searchStateFlagToStringConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_SearchState">
-            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _stateFlagToStringConverter}}" />
+            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _searchStateFlagToStringConverter}}" />
         </DataTemplate>
     </Window.Resources>
 
