@@ -36,22 +36,22 @@ namespace Amoeba
                     _searchTreeItemList.Clear();
                     _storeCategorizeTreeItemList.Clear();
                     _storeTreeItemList.Clear();
-                }
 
-                _manualResetEvent.Set();
+                    _manualResetEvent.Set();
+                }
             };
         }
 
         public static void Clear()
         {
-            _manualResetEvent.Reset();
-
             lock (_thisLock)
             {
+                _manualResetEvent.Reset();
+
                 System.Windows.Clipboard.Clear();
             }
 
-            _manualResetEvent.WaitOne();
+            _manualResetEvent.WaitOne(1000);
         }
 
         public static bool ContainsPaths()
