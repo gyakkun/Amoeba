@@ -48,6 +48,13 @@ namespace Amoeba
             {
                 _manualResetEvent.Reset();
 
+                _boxList.Clear();
+                _searchTreeItemList.Clear();
+                _storeCategorizeTreeItemList.Clear();
+                _storeTreeItemList.Clear();
+
+                _manualResetEvent.Set();
+                
                 System.Windows.Clipboard.Clear();
             }
 

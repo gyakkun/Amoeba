@@ -156,7 +156,7 @@ namespace Amoeba.Windows
             var item = value as string;
             if (item == null) return null;
 
-            StringBuilder sb = new StringBuilder(item);
+            StringBuilder sb = new StringBuilder(item, item.Length);
             sb.Replace('\r', ' ');
             sb.Replace('\n', ' ');
             sb.Replace('\uFFFD', ' ');

@@ -27,6 +27,7 @@ namespace Amoeba.Windows
         public NameWindow()
             : this(null)
         {
+
         }
 
         public NameWindow(int maxLength)
