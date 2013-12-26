@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -423,7 +423,7 @@ namespace Amoeba.Windows
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                //Log.Error(e);
             }
         }
 
@@ -2864,49 +2864,70 @@ namespace Amoeba.Windows
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+            if (_listView.SelectedItems.Count == 0)
             {
-                _storeCategorizeTreeViewItemDeleteMenuItem_Click(null, null);
+                if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+                {
+                    _storeCategorizeTreeViewItemDeleteMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is StoreTreeViewItem)
+                {
+                    _storeTreeViewItemDeleteMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is BoxTreeViewItem)
+                {
+                    _boxTreeViewItemDeleteMenuItem_Click(null, null);
+                }
             }
-            else if (_treeView.SelectedItem is StoreTreeViewItem)
+            else
             {
-                _storeTreeViewItemDeleteMenuItem_Click(null, null);
-            }
-            else if (_treeView.SelectedItem is BoxTreeViewItem)
-            {
-                _boxTreeViewItemDeleteMenuItem_Click(null, null);
+                _listViewDeleteMenuItem_Click(null, null);
             }
         }
 
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+            if (_listView.SelectedItems.Count == 0)
             {
-                _storeCategorizeTreeViewItemCopyMenuItem_Click(null, null);
+                if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+                {
+                    _storeCategorizeTreeViewItemCopyMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is StoreTreeViewItem)
+                {
+                    _storeTreeViewItemCopyMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is BoxTreeViewItem)
+                {
+                    _boxTreeViewItemCopyMenuItem_Click(null, null);
+                }
             }
-            else if (_treeView.SelectedItem is StoreTreeViewItem)
+            else
             {
-                _storeTreeViewItemCopyMenuItem_Click(null, null);
-            }
-            else if (_treeView.SelectedItem is BoxTreeViewItem)
-            {
-                _boxTreeViewItemCopyMenuItem_Click(null, null);
+                _listViewCopyMenuItem_Click(null, null);
             }
         }
 
         private void Execute_Cut(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+            if (_listView.SelectedItems.Count == 0)
             {
-                _storeCategorizeTreeViewItemCutMenuItem_Click(null, null);
+                if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+                {
+                    _storeCategorizeTreeViewItemCutMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is StoreTreeViewItem)
+                {
+                    _storeTreeViewItemCutMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is BoxTreeViewItem)
+                {
+                    _boxTreeViewItemCutMenuItem_Click(null, null);
+                }
             }
-            else if (_treeView.SelectedItem is StoreTreeViewItem)
+            else
             {
-                _storeTreeViewItemCutMenuItem_Click(null, null);
-            }
-            else if (_treeView.SelectedItem is BoxTreeViewItem)
-            {
-                _boxTreeViewItemCutMenuItem_Click(null, null);
+                _listViewCutMenuItem_Click(null, null);
             }
         }
 

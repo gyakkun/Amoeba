@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Amoeba.Properties;
 
 namespace Amoeba.Windows

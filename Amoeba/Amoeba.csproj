@@ -372,21 +372,17 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Properties\Amoeba.license">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Properties\Amoeba.readme">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
     <None Include="Polipo\polipo.conf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Properties\Amoeba.License" />
+    <None Include="Properties\Amoeba.Readme" />
     <None Include="Tor\torrc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

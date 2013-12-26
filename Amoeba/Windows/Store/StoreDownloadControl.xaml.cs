@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -430,11 +430,42 @@ namespace Amoeba.Windows
                             var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
                             if (store == null || Collection.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
 
+                            bool flag = false;
+
+                            {
+                                var oldSeeds = new HashSet<Seed>();
+                                var newSeeds = new HashSet<Seed>();
+
+                                {
+                                    List<Box> oldBoxes = new List<Box>();
+                                    oldBoxes.AddRange(storeTreeViewItem.Value.Boxes);
+
+                                    for (int i = 0; i < oldBoxes.Count; i++)
+                                    {
+                                        oldBoxes.AddRange(oldBoxes[i].Boxes);
+                                        oldSeeds.UnionWith(oldBoxes[i].Seeds);
+                                    }
+                                }
+
+                                {
+                                    List<Box> newBoxes = new List<Box>();
+                                    newBoxes.AddRange(store.Boxes);
+
+                                    for (int i = 0; i < newBoxes.Count; i++)
+                                    {
+                                        newBoxes.AddRange(newBoxes[i].Boxes);
+                                        newSeeds.UnionWith(newBoxes[i].Seeds);
+                                    }
+                                }
+
+                                flag = !oldSeeds.SetEquals(newSeeds);
+                            }
+
                             this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
                                 storeTreeViewItem.Value.Boxes.Clear();
                                 storeTreeViewItem.Value.Boxes.AddRange(store.Boxes);
-                                storeTreeViewItem.Value.IsUpdated = true;
+                                storeTreeViewItem.Value.IsUpdated = flag;
 
                                 storeTreeViewItem.Update();
                             }));
@@ -456,7 +487,7 @@ namespace Amoeba.Windows
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                //Log.Error(e);
             }
         }
 
@@ -1723,49 +1754,62 @@ namespace Amoeba.Windows
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+            if (_listView.SelectedItems.Count == 0)
             {
-                _storeCategorizeTreeViewItemDeleteMenuItem_Click(null, null);
-            }
-            else if (_treeView.SelectedItem is StoreTreeViewItem)
-            {
-                _storeTreeViewItemDeleteMenuItem_Click(null, null);
-            }
-            else if (_treeView.SelectedItem is BoxTreeViewItem)
-            {
+                if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+                {
+                    _storeCategorizeTreeViewItemDeleteMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is StoreTreeViewItem)
+                {
+                    _storeTreeViewItemDeleteMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is BoxTreeViewItem)
+                {
 
+                }
             }
         }
 
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+            if (_listView.SelectedItems.Count == 0)
             {
-                _storeCategorizeTreeViewItemCopyMenuItem_Click(null, null);
+                if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+                {
+                    _storeCategorizeTreeViewItemCopyMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is StoreTreeViewItem)
+                {
+                    _storeTreeViewItemCopyMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is BoxTreeViewItem)
+                {
+                    _boxTreeViewItemCopyMenuItem_Click(null, null);
+                }
             }
-            else if (_treeView.SelectedItem is StoreTreeViewItem)
+            else
             {
-                _storeTreeViewItemCopyMenuItem_Click(null, null);
-            }
-            else if (_treeView.SelectedItem is BoxTreeViewItem)
-            {
-                _boxTreeViewItemCopyMenuItem_Click(null, null);
+                _listViewCopyMenuItem_Click(null, null);
             }
         }
 
         private void Execute_Cut(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+            if (_listView.SelectedItems.Count == 0)
             {
-                _storeCategorizeTreeViewItemCutMenuItem_Click(null, null);
-            }
-            else if (_treeView.SelectedItem is StoreTreeViewItem)
-            {
-                _storeTreeViewItemCutMenuItem_Click(null, null);
-            }
-            else if (_treeView.SelectedItem is BoxTreeViewItem)
-            {
+                if (_treeView.SelectedItem is StoreCategorizeTreeViewItem)
+                {
+                    _storeCategorizeTreeViewItemCutMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is StoreTreeViewItem)
+                {
+                    _storeTreeViewItemCutMenuItem_Click(null, null);
+                }
+                else if (_treeView.SelectedItem is BoxTreeViewItem)
+                {
 
+                }
             }
         }
 

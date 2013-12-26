@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -826,7 +826,7 @@ namespace Amoeba.Windows
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                //Log.Error(e);
             }
         }
 

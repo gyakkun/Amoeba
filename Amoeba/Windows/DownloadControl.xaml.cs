@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -280,11 +280,7 @@ namespace Amoeba.Windows
             if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
             else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => n.State == DownloadState.Completed);
 
-            {
-                var seeds = Clipboard.GetSeeds();
-
-                _listViewPasteMenuItem.IsEnabled = (seeds.Count() > 0) ? true : false;
-            }
+            _listViewPasteMenuItem.IsEnabled = Clipboard.ContainsSeeds();
         }
 
         volatile bool _listViewDeleteMenuItem_IsEnabled = true;

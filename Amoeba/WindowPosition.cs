@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,8 @@ namespace Amoeba
     {
         public static void Move(Window window)
         {
+            if (window.WindowState != WindowState.Normal) return;
+
             foreach (var n in System.Windows.Forms.Screen.AllScreens)
             {
                 if (n.WorkingArea.Left <= (window.Left + (window.ActualWidth / 2)) && (window.Left + (window.ActualWidth / 2)) <= (n.WorkingArea.Left + n.WorkingArea.Width)
