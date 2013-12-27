@@ -119,7 +119,7 @@ namespace Amoeba
                                     {
                                         proxySocket = OverlayNetworkManager.Connect(new IPEndPoint(OverlayNetworkManager.GetIpAddress(proxyHost), proxyPort), new TimeSpan(0, 0, 10));
 
-                                        string caption = "Lair_Client";
+                                        string caption = "Amoeba_Client";
                                         string[] options = new string[]
                                         {
                                             "inbound.nickname=" + caption,
@@ -402,7 +402,7 @@ namespace Amoeba
 
                                     try
                                     {
-                                        string caption = "Lair_Server";
+                                        string caption = "Amoeba_Server";
                                         string[] options = new string[]
                                         {
                                             "inbound.nickname=" + caption,
