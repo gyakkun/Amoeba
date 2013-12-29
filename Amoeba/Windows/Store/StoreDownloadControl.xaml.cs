@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -51,6 +52,7 @@ namespace Amoeba.Windows
 
         private Thread _searchThread;
         private Thread _cacheThread;
+        private Thread _watchThread;
 
         public StoreDownloadControl(StoreControl storeControl, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
@@ -126,6 +128,12 @@ namespace Amoeba.Windows
             _cacheThread.IsBackground = true;
             _cacheThread.Name = "StoreDownloadControl_CacheThread";
             _cacheThread.Start();
+
+            _watchThread = new Thread(this.Watch);
+            _watchThread.Priority = ThreadPriority.Highest;
+            _watchThread.IsBackground = true;
+            _watchThread.Name = "StoreDownloadControl_WatchThread";
+            _watchThread.Start();
 
             _searchRowDefinition.Height = new GridLength(0);
 
@@ -318,9 +326,9 @@ namespace Amoeba.Windows
                 {
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 
-                    while (_mainWindow.SelectedTab != MainWindowTabType.Store || _storeControl.SelectedTab != StoreControlTabType.Download)
+                    if (_mainWindow.SelectedTab != MainWindowTabType.Store || _storeControl.SelectedTab != StoreControlTabType.Download)
                     {
-                        Thread.Sleep(1000);
+                        continue;
                     }
 
                     var seedsDictionary = new Dictionary<Seed, SearchState>(new SeedHashEqualityComparer());
@@ -410,7 +418,37 @@ namespace Amoeba.Windows
                         }
                     }
 
+                    if (_cacheUpdate)
                     {
+                        _cacheUpdate = false;
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        {
+                            this.Update();
+                        }));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                //Log.Error(e);
+            }
+        }
+
+        private void Watch()
+        {
+            try
+            {
+                Stopwatch refreshStopwatch = new Stopwatch();
+
+                for (; ; )
+                {
+                    Thread.Sleep(1000);
+
+                    if (!refreshStopwatch.IsRunning || refreshStopwatch.Elapsed.TotalMinutes >= 3)
+                    {
+                        refreshStopwatch.Restart();
+
                         var storeTreeViewItems = new List<StoreTreeViewItem>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
@@ -424,6 +462,8 @@ namespace Amoeba.Windows
                                 storeTreeViewItems.AddRange(categorizeStoreTreeViewItems[i].Items.OfType<StoreTreeViewItem>());
                             }
                         }));
+
+                        bool updateFlag = false;
 
                         foreach (var storeTreeViewItem in storeTreeViewItems)
                         {
@@ -470,18 +510,16 @@ namespace Amoeba.Windows
                                 storeTreeViewItem.Update();
                             }));
 
-                            _cacheUpdate = true;
+                            updateFlag = true;
                         }
-                    }
 
-                    if (_cacheUpdate)
-                    {
-                        _cacheUpdate = false;
-
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        if (updateFlag)
                         {
-                            this.Update();
-                        }));
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                            {
+                                this.Update();
+                            }));
+                        }
                     }
                 }
             }

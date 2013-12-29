@@ -36,7 +36,6 @@
                 <MenuItem Name="_encodeAndDecodeStartMenuItem" Header="{Binding Path=MainWindow_ConvertStart, Source={StaticResource ResourcesInstance}}" Click="_encodeAndDecodeStartMenuItem_Click" />
                 <MenuItem Name="_encodeAndDecodeStopMenuItem" Header="{Binding Path=MainWindow_ConvertStop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_encodeAndDecodeStopMenuItem_Click" />
                 <Separator />
-                <MenuItem Name="_checkSeedsMenuItem" Header="{Binding Path=MainWindow_CheckSeeds, Source={StaticResource ResourcesInstance}}" Click="_checkSeedsMenuItem_Click" />
                 <MenuItem Name="_checkInternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckInternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkInternalBlocksMenuItem_Click" />
                 <MenuItem Name="_checkExternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckExternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkExternalBlocksMenuItem_Click" />
             </MenuItem>

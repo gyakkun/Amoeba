@@ -1711,24 +1711,8 @@ namespace Amoeba.Windows
 
         private void _cacheMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            _checkSeedsMenuItem.IsEnabled = _checkSeedsMenuItem_IsEnabled;
             _checkInternalBlocksMenuItem.IsEnabled = _checkInternalBlocksMenuItem_IsEnabled;
             _checkExternalBlocksMenuItem.IsEnabled = _checkExternalBlocksMenuItem_IsEnabled;
-        }
-
-        volatile bool _checkSeedsMenuItem_IsEnabled = true;
-
-        private void _checkSeedsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            if (!_checkSeedsMenuItem_IsEnabled) return;
-            _checkSeedsMenuItem_IsEnabled = false;
-
-            ThreadPool.QueueUserWorkItem((object wstate) =>
-            {
-                _amoebaManager.CheckSeeds();
-
-                _checkSeedsMenuItem_IsEnabled = true;
-            });
         }
 
         volatile bool _checkInternalBlocksMenuItem_IsEnabled = true;

@@ -318,9 +318,9 @@ namespace Amoeba.Windows
                 {
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 
-                    while (_mainWindow.SelectedTab != MainWindowTabType.Store || _storeControl.SelectedTab != StoreControlTabType.Upload)
+                    if (_mainWindow.SelectedTab != MainWindowTabType.Store || _storeControl.SelectedTab != StoreControlTabType.Upload)
                     {
-                        Thread.Sleep(1000);
+                        continue;
                     }
 
                     var seedsDictionary = new Dictionary<Seed, SearchState>(new SeedHashEqualityComparer());
