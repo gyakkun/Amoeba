@@ -63,14 +63,14 @@ namespace Amoeba.Windows
 
             _treeView.Items.Add(_treeViewItem);
 
-            try
-            {
-                _treeViewItem.IsSelected = true;
-            }
-            catch (Exception)
-            {
+            //try
+            //{
+            //    _treeViewItem.IsSelected = true;
+            //}
+            //catch (Exception)
+            //{
 
-            }
+            //}
 
             foreach (var path in Settings.Instance.LibraryControl_ExpandedPath.ToArray())
             {
@@ -650,6 +650,12 @@ namespace Amoeba.Windows
         private void Update_Cache()
         {
             _cacheUpdate = true;
+            _autoResetEvent.Set();
+        }
+
+        private void Update_Cache(bool update)
+        {
+            _cacheUpdate = update;
             _autoResetEvent.Set();
         }
 
@@ -1410,6 +1416,8 @@ namespace Amoeba.Windows
                         var seed = seedListViewItem.Value;
 
                         _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
+
+                        this.Update_Cache(false);
                     }
                 }
             }
@@ -1713,6 +1721,8 @@ namespace Amoeba.Windows
             {
                 this.BoxDownload(baseDirectory, box);
             }
+
+            this.Update_Cache(false);
         }
 
         private void BoxDownload(string baseDirectory, Box rootBox)

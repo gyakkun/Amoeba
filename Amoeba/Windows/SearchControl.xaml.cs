@@ -47,8 +47,6 @@ namespace Amoeba.Windows
         private SearchTreeViewItem _treeViewItem;
         private LockedList<SearchListViewItem> _searchingCache = new LockedList<SearchListViewItem>();
 
-        private ObservableCollectionEx<SearchListViewItem> _listViewItemCollection = new ObservableCollectionEx<SearchListViewItem>();
-
         private Thread _searchThread;
         private Thread _cacheThread;
 
@@ -63,16 +61,14 @@ namespace Amoeba.Windows
 
             _treeView.Items.Add(_treeViewItem);
 
-            try
-            {
-                _treeViewItem.IsSelected = true;
-            }
-            catch (Exception)
-            {
+            //try
+            //{
+            //    _treeViewItem.IsSelected = true;
+            //}
+            //catch (Exception)
+            //{
 
-            }
-
-            _listView.ItemsSource = _listViewItemCollection;
+            //}
 
             _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
@@ -178,7 +174,7 @@ namespace Amoeba.Windows
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
-                        oldList.UnionWith(_listViewItemCollection.OfType<SearchListViewItem>());
+                        oldList.UnionWith(_listView.Items.Cast<SearchListViewItem>());
                     }));
 
                     var removeList = new List<SearchListViewItem>();
@@ -213,11 +209,11 @@ namespace Amoeba.Windows
                         {
                             sortFlag = true;
 
-                            _listViewItemCollection.Clear();
+                            _listView.Items.Clear();
 
                             foreach (var item in newList)
                             {
-                                _listViewItemCollection.Add(item);
+                                _listView.Items.Add(item);
                             }
                         }
                         else
@@ -227,12 +223,12 @@ namespace Amoeba.Windows
 
                             foreach (var item in addList)
                             {
-                                _listViewItemCollection.Add(item);
+                                _listView.Items.Add(item);
                             }
 
                             foreach (var item in removeList)
                             {
-                                _listViewItemCollection.Remove(item);
+                                _listView.Items.Remove(item);
                             }
                         }
 
@@ -853,6 +849,12 @@ namespace Amoeba.Windows
             _autoResetEvent.Set();
         }
 
+        private void Update_Cache(bool update)
+        {
+            _cacheUpdate = update;
+            _autoResetEvent.Set();
+        }
+
         private void Update_Title()
         {
             if (_refresh) return;
@@ -1161,7 +1163,7 @@ namespace Amoeba.Windows
             box.Name = selectTreeViewItem.Value.SearchItem.Name;
             box.CreationTime = DateTime.UtcNow;
 
-            foreach (var seed in _listViewItemCollection.Select(n => n.Value))
+            foreach (var seed in _listView.Items.Cast<SearchListViewItem>().Select(n => n.Value))
             {
                 box.Seeds.Add(seed);
             }
@@ -1218,7 +1220,7 @@ namespace Amoeba.Windows
                 _amoebaManager.Download(item.Value, 3);
             }
 
-            this.Update_Cache();
+            this.Update_Cache(false);
         }
 
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -1681,6 +1683,8 @@ namespace Amoeba.Windows
             {
                 _amoebaManager.Download(item.Value, 3);
             }
+
+            this.Update_Cache(false);
         }
 
         private void _listViewSearchSignatureMenuItem_Click(object sender, RoutedEventArgs e)
