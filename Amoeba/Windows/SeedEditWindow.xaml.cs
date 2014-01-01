@@ -94,7 +94,6 @@ namespace Amoeba.Windows
             _nameTextBox_TextChanged(null, null);
         }
 
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowPosition.Move(this);
@@ -122,8 +121,6 @@ namespace Amoeba.Windows
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
-            var now = DateTime.UtcNow;
-
             foreach (var seed in _seeds)
             {
                 lock (seed.ThisLock)
@@ -140,7 +137,6 @@ namespace Amoeba.Windows
                     }
 
                     seed.Comment = comment;
-                    seed.CreationTime = now;
 
                     if (digitalSignature == null)
                     {

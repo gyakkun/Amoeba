@@ -237,23 +237,23 @@ namespace Amoeba.Windows
         [EnumMember(Value = "Share")]
         Share = 0x2,
 
-        [EnumMember(Value = "Uploading")]
-        Uploading = 0x4,
-
-        [EnumMember(Value = "Uploaded")]
-        Uploaded = 0x8,
-
-        [EnumMember(Value = "Downloading")]
-        Downloading = 0x10,
-
-        [EnumMember(Value = "Downloaded")]
-        Downloaded = 0x20,
+        [EnumMember(Value = "Link")]
+        Link = 0x4,
 
         [EnumMember(Value = "Box")]
-        Box = 0x40,
+        Box = 0x8,
 
-        [EnumMember(Value = "Link")]
-        Link = 0x80,
+        [EnumMember(Value = "Uploading")]
+        Uploading = 0x10,
+
+        [EnumMember(Value = "Uploaded")]
+        Uploaded = 0x20,
+
+        [EnumMember(Value = "Downloading")]
+        Downloading = 0x40,
+
+        [EnumMember(Value = "Downloaded")]
+        Downloaded = 0x80,
     }
 
     [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]

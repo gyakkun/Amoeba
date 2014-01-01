@@ -213,9 +213,21 @@ namespace Amoeba.Windows
                             boxesListViewItem.Index = newList.Count;
                             boxesListViewItem.Name = box.Name;
                             if (box.Certificate != null) boxesListViewItem.Signature = box.Certificate.ToString();
-                            boxesListViewItem.CreationTime = box.CreationTime;
+
+                            {
+                                List<Box> boxList = new List<Box>();
+                                boxList.Add(box);
+
+                                for (int i = 0; i < boxList.Count; i++)
+                                {
+                                    boxList.AddRange(boxList[i].Boxes);
+                                }
+
+                                boxesListViewItem.CreationTime = boxList.Max(n => n.CreationTime);
+                            }
+
                             boxesListViewItem.Length = StoreUploadControl.GetBoxLength(box);
-                            boxesListViewItem.Comment = box.Comment;
+                            //boxesListViewItem.Comment = box.Comment;
                             boxesListViewItem.Value = box;
 
                             newList.Add(boxesListViewItem);
@@ -233,8 +245,8 @@ namespace Amoeba.Windows
                             seedListViewItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                             seedListViewItem.CreationTime = seed.CreationTime;
                             seedListViewItem.Length = seed.Length;
-                            seedListViewItem.Comment = seed.Comment;
-                            if (seed.Key != null && seed.Key.Hash != null) seedListViewItem.Id = NetworkConverter.ToHexString(seed.Key.Hash);
+                            //seedListViewItem.Comment = seed.Comment;
+                            //if (seed.Key != null && seed.Key.Hash != null) seedListViewItem.Id = NetworkConverter.ToHexString(seed.Key.Hash);
 
                             SearchState state;
 
@@ -1379,7 +1391,6 @@ namespace Amoeba.Windows
                 var p = (StoreCategorizeTreeViewItem)parentItem;
 
                 p.Value.Children.Remove(selectTreeViewItem.Value);
-                p.IsSelected = true;
 
                 p.Update();
             }
@@ -1401,7 +1412,6 @@ namespace Amoeba.Windows
                 var p = (StoreCategorizeTreeViewItem)parentItem;
 
                 p.Value.Children.Remove(selectTreeViewItem.Value);
-                p.IsSelected = true;
 
                 p.Update();
             }
@@ -1548,7 +1558,6 @@ namespace Amoeba.Windows
                 var p = (StoreCategorizeTreeViewItem)parentItem;
 
                 p.Value.StoreTreeItems.Remove(selectTreeViewItem.Value);
-                p.IsSelected = true;
 
                 p.Update();
             }
@@ -1570,7 +1579,6 @@ namespace Amoeba.Windows
                 var p = (StoreCategorizeTreeViewItem)parentItem;
 
                 p.Value.StoreTreeItems.Remove(selectTreeViewItem.Value);
-                p.IsSelected = true;
 
                 p.Update();
             }
@@ -1820,7 +1828,6 @@ namespace Amoeba.Windows
 
                 p.Value.Boxes.Remove(selectTreeViewItem.Value);
                 p.Value.IsUpdated = true;
-                p.IsSelected = true;
 
                 p.Update();
             }
@@ -1830,7 +1837,6 @@ namespace Amoeba.Windows
 
                 p.Value.Boxes.Remove(selectTreeViewItem.Value);
                 p.Value.CreationTime = DateTime.UtcNow;
-                p.IsSelected = true;
 
                 p.Update();
             }
@@ -1862,7 +1868,6 @@ namespace Amoeba.Windows
 
                 p.Value.Boxes.Remove(selectTreeViewItem.Value);
                 p.Value.IsUpdated = true;
-                p.IsSelected = true;
 
                 p.Update();
             }
@@ -1872,7 +1877,6 @@ namespace Amoeba.Windows
 
                 p.Value.Boxes.Remove(selectTreeViewItem.Value);
                 p.Value.CreationTime = DateTime.UtcNow;
-                p.IsSelected = true;
 
                 p.Update();
             }
@@ -2773,10 +2777,10 @@ namespace Amoeba.Windows
             public string Keywords { get { return null; } }
             public DateTime CreationTime { get; set; }
             public long Length { get; set; }
-            public string Comment { get; set; }
+            //public string Comment { get; set; }
             public SearchState State { get; set; }
             public Box Value { get; set; }
-            public string Id { get { return null; } }
+            //public string Id { get { return null; } }
 
             public override int GetHashCode()
             {
@@ -2798,7 +2802,7 @@ namespace Amoeba.Windows
                     || this.Signature != other.Signature
                     || this.CreationTime != other.CreationTime
                     || this.Length != other.Length
-                    || this.Comment != other.Comment
+                    //|| this.Comment != other.Comment
                     || this.State != other.State
                     || this.Value != other.Value)
                 {
@@ -2818,8 +2822,8 @@ namespace Amoeba.Windows
             public string Keywords { get; set; }
             public DateTime CreationTime { get; set; }
             public long Length { get; set; }
-            public string Comment { get; set; }
-            public string Id { get; set; }
+            //public string Comment { get; set; }
+            //public string Id { get; set; }
             public Seed Value { get; set; }
             public SearchState State { get; set; }
 
@@ -2844,8 +2848,8 @@ namespace Amoeba.Windows
                     || this.Keywords != other.Keywords
                     || this.CreationTime != other.CreationTime
                     || this.Length != other.Length
-                    || this.Comment != other.Comment
-                    || this.Id != other.Id
+                    //|| this.Comment != other.Comment
+                    //|| this.Id != other.Id
                     || this.Value != other.Value
                     || this.State != other.State)
                 {
