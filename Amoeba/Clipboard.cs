@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Library;
 using Library.Collections;
 using Library.Net.Amoeba;
-using System.Threading;
 
 namespace Amoeba
 {
@@ -22,6 +22,7 @@ namespace Amoeba
         private static ManualResetEvent _manualResetEvent = new ManualResetEvent(false);
 
         private static object _thisLock = new object();
+        private static object _clearLock = new object();
 
         static Clipboard()
         {
@@ -30,7 +31,7 @@ namespace Amoeba
             // つまり、ちゃんと同期しないといけない。
             _clipboardWatcher.DrawClipboard += (sender, e) =>
             {
-                lock (_thisLock)
+                lock (_clearLock)
                 {
                     _boxList.Clear();
                     _searchTreeItemList.Clear();
@@ -48,17 +49,10 @@ namespace Amoeba
             {
                 _manualResetEvent.Reset();
 
-                _boxList.Clear();
-                _searchTreeItemList.Clear();
-                _storeCategorizeTreeItemList.Clear();
-                _storeTreeItemList.Clear();
-
-                _manualResetEvent.Set();
-                
                 System.Windows.Clipboard.Clear();
-            }
 
-            _manualResetEvent.WaitOne(1000);
+                _manualResetEvent.WaitOne();
+            }
         }
 
         public static bool ContainsPaths()
@@ -90,6 +84,8 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
+                _manualResetEvent.Reset();
+
                 try
                 {
                     var list = new System.Collections.Specialized.StringCollection();
@@ -100,6 +96,8 @@ namespace Amoeba
                 {
 
                 }
+
+                _manualResetEvent.WaitOne();
             }
         }
 
@@ -132,6 +130,8 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
+                _manualResetEvent.Reset();
+
                 try
                 {
                     System.Windows.Clipboard.SetText(text);
@@ -140,6 +140,8 @@ namespace Amoeba
                 {
 
                 }
+
+                _manualResetEvent.WaitOne();
             }
         }
 
@@ -185,8 +187,6 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                Clipboard.Clear();
-
                 {
                     var sb = new StringBuilder();
 
@@ -204,8 +204,6 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                Clipboard.Clear();
-
                 {
                     var sb = new StringBuilder();
 
@@ -263,8 +261,6 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                Clipboard.Clear();
-
                 {
                     var sb = new StringBuilder();
 
@@ -350,7 +346,29 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                Clipboard.Clear();
+                {
+                    var storeTreeItems = new List<Windows.StoreTreeItem>();
+
+                    {
+                        var categorizeStoreTreeItems = new List<Windows.StoreCategorizeTreeItem>();
+                        categorizeStoreTreeItems.AddRange(storeCategorizeTreeItems);
+
+                        for (int i = 0; i < categorizeStoreTreeItems.Count; i++)
+                        {
+                            categorizeStoreTreeItems.AddRange(categorizeStoreTreeItems[i].Children);
+                            storeTreeItems.AddRange(categorizeStoreTreeItems[i].StoreTreeItems);
+                        }
+                    }
+
+                    var sb = new StringBuilder();
+
+                    foreach (var item in storeTreeItems)
+                    {
+                        sb.AppendLine(item.Signature);
+                    }
+
+                    Clipboard.SetText(sb.ToString());
+                }
 
                 _storeCategorizeTreeItemList.AddRange(storeCategorizeTreeItems.Select(n => n.Clone()));
             }
@@ -376,8 +394,6 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                Clipboard.Clear();
-
                 {
                     var sb = new StringBuilder();
 

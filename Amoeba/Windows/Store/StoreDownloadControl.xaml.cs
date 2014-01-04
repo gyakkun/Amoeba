@@ -1154,25 +1154,6 @@ namespace Amoeba.Windows
             _startPoint = new Point(-1, -1);
         }
 
-        private void _storeTreeViewItemEditMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;
-            if (selectTreeViewItem == null) return;
-
-            SignatureWindow window = new SignatureWindow(selectTreeViewItem.Value.Signature);
-            window.Owner = _mainWindow;
-
-            if (window.ShowDialog() == true)
-            {
-                selectTreeViewItem.Value.Signature = window.DigitalSignature.ToString();
-                selectTreeViewItem.Value.IsUpdated = false;
-
-                selectTreeViewItem.Update();
-            }
-
-            this.Update();
-        }
-
         private void _storeTreeViewItemDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectTreeViewItem = _treeView.SelectedItem as StoreTreeViewItem;

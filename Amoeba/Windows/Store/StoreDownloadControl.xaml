@@ -46,7 +46,6 @@
         </ContextMenu>
 
         <ContextMenu x:Key="_storeTreeViewItemContextMenu">
-            <MenuItem Name="_storeTreeViewItemEditMenuItem" Header="{Binding Path=StoreDownloadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemEditMenuItem_Click"/>
             <MenuItem Name="_storeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreDownloadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemDeleteMenuItem_Click"/>
             <Separator />
             <MenuItem Name="_storeTreeViewItemCutMenuItem" Header="{Binding Path=StoreDownloadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemCutMenuItem_Click" />

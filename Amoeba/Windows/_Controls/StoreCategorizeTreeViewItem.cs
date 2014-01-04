@@ -121,7 +121,7 @@ namespace Amoeba.Windows
                     }
                     else if (y is StoreTreeViewItem)
                     {
-                        return 1;
+                        return -1;
                     }
                 }
                 else if (x is StoreTreeViewItem)
@@ -140,7 +140,7 @@ namespace Amoeba.Windows
                     }
                     else if (y is StoreCategorizeTreeViewItem)
                     {
-                        return -1;
+                        return 1;
                     }
                 }
 
