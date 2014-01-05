@@ -1003,18 +1003,10 @@ namespace Amoeba.Windows
                 if (Clipboard.ContainsText())
                 {
                     var line = Clipboard.GetText().Split('\r', '\n');
-                    flag |= Signature.HasSignature(line[0]);
-                }
-                else if (Clipboard.ContainsStoreCategorizeTreeItems())
-                {
-                    flag = true;
-                }
-                else if (Clipboard.ContainsStoreTreeItems())
-                {
-                    flag = true;
+                    flag = Signature.HasSignature(line[0]);
                 }
 
-                storeCategorizeTreeViewItemPasteMenuItem.IsEnabled = flag;
+                storeCategorizeTreeViewItemPasteMenuItem.IsEnabled = flag || Clipboard.ContainsStoreCategorizeTreeItems() || Clipboard.ContainsStoreTreeItems();
             }
         }
 
@@ -1454,7 +1446,7 @@ namespace Amoeba.Windows
                             foreach (var item in _treeView.GetAncestors(selectTreeViewItem))
                             {
                                 if (item is StoreCategorizeTreeViewItem) path.Add(((StoreCategorizeTreeViewItem)item).Value.Name);
-                                else if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.Signature);
+                                else if (item is StoreTreeViewItem) path.Add(Signature.GetSignatureNickname(((StoreTreeViewItem)item).Value.Signature));
                                 else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
                             }
 
@@ -1536,12 +1528,13 @@ namespace Amoeba.Windows
 
                 foreach (var item in _treeView.GetAncestors(selectTreeViewItem))
                 {
-                    if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
+                    if (item is StoreCategorizeTreeViewItem) path.Add(((StoreCategorizeTreeViewItem)item).Value.Name);
+                    else if (item is StoreTreeViewItem) path.Add(Signature.GetSignatureNickname(((StoreTreeViewItem)item).Value.Signature));
+                    else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
                 }
 
                 baseDirectory = System.IO.Path.Combine(path.ToArray());
             }
-
             foreach (var seed in _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value))
             {
                 _amoebaManager.Download(seed.Clone(), baseDirectory, 3);

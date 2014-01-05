@@ -1,57 +1,66 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Interop;
+using System.Xml;
 using Library;
 using Library.Collections;
+using Library.Io;
 using Library.Net.Amoeba;
 
 namespace Amoeba
 {
     static class Clipboard
     {
-        private static LockedList<Box> _boxList = new LockedList<Box>();
-        private static LockedList<Windows.SearchTreeItem> _searchTreeItemList = new LockedList<Windows.SearchTreeItem>();
-        private static LockedList<Windows.StoreCategorizeTreeItem> _storeCategorizeTreeItemList = new LockedList<Windows.StoreCategorizeTreeItem>();
-        private static LockedList<Windows.StoreTreeItem> _storeTreeItemList = new LockedList<Windows.StoreTreeItem>();
-
-        private static ClipboardWatcher _clipboardWatcher;
-        private static ManualResetEvent _manualResetEvent = new ManualResetEvent(false);
-
         private static object _thisLock = new object();
-        private static object _clearLock = new object();
 
-        static Clipboard()
+        private static Stream ToStream<T>(T item)
         {
-            _clipboardWatcher = new ClipboardWatcher();
-            // Clipboard呼び出しメソッドのスレッドから呼ばれる場合もあるし、そうでない場合もある。
-            // つまり、ちゃんと同期しないといけない。
-            _clipboardWatcher.DrawClipboard += (sender, e) =>
-            {
-                lock (_clearLock)
-                {
-                    _boxList.Clear();
-                    _searchTreeItemList.Clear();
-                    _storeCategorizeTreeItemList.Clear();
-                    _storeTreeItemList.Clear();
+            var ds = new DataContractSerializer(typeof(T));
 
-                    _manualResetEvent.Set();
+            MemoryStream stream = null;
+
+            try
+            {
+                stream = new MemoryStream();
+
+                using (WrapperStream wrapperStream = new WrapperStream(stream, true))
+                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(wrapperStream, new UTF8Encoding(false)))
+                {
+                    ds.WriteObject(textDictionaryWriter, item);
                 }
-            };
+            }
+            catch (Exception)
+            {
+                if (stream != null)
+                    stream.Dispose();
+            }
+
+            return stream;
+        }
+
+        private static T FromStream<T>(Stream stream)
+        {
+            var ds = new DataContractSerializer(typeof(T));
+
+            using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+            {
+                return (T)ds.ReadObject(textDictionaryReader);
+            }
         }
 
         public static void Clear()
         {
             lock (_thisLock)
             {
-                _manualResetEvent.Reset();
-
                 System.Windows.Clipboard.Clear();
-
-                _manualResetEvent.WaitOne();
             }
         }
 
@@ -84,8 +93,6 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                _manualResetEvent.Reset();
-
                 try
                 {
                     var list = new System.Collections.Specialized.StringCollection();
@@ -96,8 +103,6 @@ namespace Amoeba
                 {
 
                 }
-
-                _manualResetEvent.WaitOne();
             }
         }
 
@@ -130,8 +135,6 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                _manualResetEvent.Reset();
-
                 try
                 {
                     System.Windows.Clipboard.SetText(text);
@@ -140,8 +143,6 @@ namespace Amoeba
                 {
 
                 }
-
-                _manualResetEvent.WaitOne();
             }
         }
 
@@ -197,25 +198,6 @@ namespace Amoeba
 
                     Clipboard.SetText(sb.ToString());
                 }
-            }
-        }
-
-        public static void SetBoxAndSeeds(IEnumerable<Box> boxes, IEnumerable<Seed> seeds)
-        {
-            lock (_thisLock)
-            {
-                {
-                    var sb = new StringBuilder();
-
-                    foreach (var item in seeds)
-                    {
-                        sb.AppendLine(AmoebaConverter.ToSeedString(item));
-                    }
-
-                    Clipboard.SetText(sb.ToString());
-                }
-
-                _boxList.AddRange(boxes.Select(n => n.Clone()));
             }
         }
 
@@ -278,7 +260,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _boxList.Count != 0;
+                return System.Windows.Clipboard.ContainsData("Amoeba_Boxes");
             }
         }
 
@@ -286,7 +268,19 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _boxList.Select(n => n.Clone()).ToArray();
+                try
+                {
+                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_Boxes"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<Box>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return new Box[0];
             }
         }
 
@@ -294,9 +288,33 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                Clipboard.Clear();
+                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_Boxes", Clipboard.ToStream(boxes));
 
-                _boxList.AddRange(boxes.Select(n => n.Clone()));
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        public static void SetBoxAndSeeds(IEnumerable<Box> boxes, IEnumerable<Seed> seeds)
+        {
+            lock (_thisLock)
+            {
+                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+
+                {
+                    var sb = new StringBuilder();
+
+                    foreach (var item in seeds)
+                    {
+                        sb.AppendLine(AmoebaConverter.ToSeedString(item));
+                    }
+
+                    dataObject.SetText(sb.ToString());
+                }
+
+                dataObject.SetData("Amoeba_Boxes", Clipboard.ToStream(boxes));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -304,7 +322,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _searchTreeItemList.Count != 0;
+                return System.Windows.Clipboard.ContainsData("Amoeba_SearchTreeItems");
             }
         }
 
@@ -312,17 +330,30 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _searchTreeItemList.Select(n => n.Clone()).ToArray();
+                try
+                {
+                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_SearchTreeItems"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<Windows.SearchTreeItem>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return new Windows.SearchTreeItem[0];
             }
         }
 
-        public static void SetSearchTreeItems(IEnumerable<Windows.SearchTreeItem> searchTreeItems)
+        public static void SetSearchTreeItems(IEnumerable<Windows.SearchTreeItem> items)
         {
             lock (_thisLock)
             {
-                Clipboard.Clear();
+                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_SearchTreeItems", Clipboard.ToStream(items));
 
-                _searchTreeItemList.AddRange(searchTreeItems.Select(n => n.Clone()));
+                System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -330,7 +361,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _storeCategorizeTreeItemList.Count != 0;
+                return System.Windows.Clipboard.ContainsData("Amoeba_StoreCategorizeTreeItems");
             }
         }
 
@@ -338,39 +369,30 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _storeCategorizeTreeItemList.Select(n => n.Clone()).ToArray();
+                try
+                {
+                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_StoreCategorizeTreeItems"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<Windows.StoreCategorizeTreeItem>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return new Windows.StoreCategorizeTreeItem[0];
             }
         }
 
-        public static void SetStoreCategorizeTreeItems(IEnumerable<Windows.StoreCategorizeTreeItem> storeCategorizeTreeItems)
+        public static void SetStoreCategorizeTreeItems(IEnumerable<Windows.StoreCategorizeTreeItem> items)
         {
             lock (_thisLock)
             {
-                {
-                    var storeTreeItems = new List<Windows.StoreTreeItem>();
+                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_StoreCategorizeTreeItems", Clipboard.ToStream(items));
 
-                    {
-                        var categorizeStoreTreeItems = new List<Windows.StoreCategorizeTreeItem>();
-                        categorizeStoreTreeItems.AddRange(storeCategorizeTreeItems);
-
-                        for (int i = 0; i < categorizeStoreTreeItems.Count; i++)
-                        {
-                            categorizeStoreTreeItems.AddRange(categorizeStoreTreeItems[i].Children);
-                            storeTreeItems.AddRange(categorizeStoreTreeItems[i].StoreTreeItems);
-                        }
-                    }
-
-                    var sb = new StringBuilder();
-
-                    foreach (var item in storeTreeItems)
-                    {
-                        sb.AppendLine(item.Signature);
-                    }
-
-                    Clipboard.SetText(sb.ToString());
-                }
-
-                _storeCategorizeTreeItemList.AddRange(storeCategorizeTreeItems.Select(n => n.Clone()));
+                System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -378,7 +400,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _storeTreeItemList.Count != 0;
+                return System.Windows.Clipboard.ContainsData("Amoeba_StoreTreeItems");
             }
         }
 
@@ -386,108 +408,42 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return _storeTreeItemList.Select(n => n.Clone()).ToArray();
+                try
+                {
+                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_StoreTreeItems"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<Windows.StoreTreeItem>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return new Windows.StoreTreeItem[0];
             }
         }
 
-        public static void SetStoreTreeItems(IEnumerable<Windows.StoreTreeItem> storeTreeItems)
+        public static void SetStoreTreeItems(IEnumerable<Windows.StoreTreeItem> items)
         {
             lock (_thisLock)
             {
+                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+
                 {
                     var sb = new StringBuilder();
 
-                    foreach (var item in storeTreeItems)
+                    foreach (var item in items)
                     {
                         sb.AppendLine(item.Signature);
                     }
 
-                    Clipboard.SetText(sb.ToString());
+                    dataObject.SetText(sb.ToString());
                 }
 
-                _storeTreeItemList.AddRange(storeTreeItems.Select(n => n.Clone()));
-            }
-        }
+                dataObject.SetData("Amoeba_StoreTreeItems", Clipboard.ToStream(items));
 
-        public class ClipboardWatcher : IDisposable
-        {
-            private ClipboardWatcherForm _form;
-
-            public event EventHandler DrawClipboard;
-
-            public ClipboardWatcher()
-            {
-                _form = new ClipboardWatcherForm();
-                _form.StartWatch(this.OnDrawClipboard);
-            }
-
-            ~ClipboardWatcher()
-            {
-                this.Dispose();
-            }
-
-            private void OnDrawClipboard()
-            {
-                if (DrawClipboard != null)
-                {
-                    DrawClipboard(this, EventArgs.Empty);
-                }
-            }
-
-            public void Dispose()
-            {
-                _form.Dispose();
-            }
-
-            private class ClipboardWatcherForm : System.Windows.Forms.Form
-            {
-                [DllImport("user32.dll")]
-                private static extern IntPtr SetClipboardViewer(IntPtr hwnd);
-
-                [DllImport("user32.dll")]
-                private static extern bool ChangeClipboardChain(IntPtr hwnd, IntPtr hWndNext);
-
-                private const int WM_DRAWCLIPBOARD = 0x0308;
-                private const int WM_CHANGECBCHAIN = 0x030D;
-
-                private IntPtr _nextHandle;
-                private Action _drawClipboard;
-
-                public void StartWatch(Action drawClipboard)
-                {
-                    _drawClipboard = drawClipboard;
-                    _nextHandle = SetClipboardViewer(this.Handle);
-                }
-
-                protected override void WndProc(ref System.Windows.Forms.Message m)
-                {
-                    if (m.Msg == WM_DRAWCLIPBOARD)
-                    {
-                        _drawClipboard();
-                    }
-                    else if (m.Msg == WM_CHANGECBCHAIN)
-                    {
-                        if (m.WParam == _nextHandle)
-                        {
-                            _nextHandle = m.LParam;
-                        }
-                    }
-
-                    base.WndProc(ref m);
-                }
-
-                protected override void Dispose(bool disposing)
-                {
-                    try
-                    {
-                        ChangeClipboardChain(this.Handle, _nextHandle);
-                        base.Dispose(disposing);
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
+                System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
     }

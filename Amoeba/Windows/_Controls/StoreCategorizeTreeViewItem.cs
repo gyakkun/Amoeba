@@ -56,6 +56,7 @@ namespace Amoeba.Windows
         public void Update()
         {
             _header.Text = this.Value.Name;
+
             base.IsExpanded = this.Value.IsExpanded;
 
             foreach (var item in _listViewItemCollection.OfType<StoreCategorizeTreeViewItem>().ToArray())

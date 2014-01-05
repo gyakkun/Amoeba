@@ -1628,6 +1628,7 @@ namespace Amoeba.Windows
                             using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             {
                                 var box = AmoebaConverter.FromBoxStream(stream);
+                                if (box == null) continue;
 
                                 if (!StoreUploadControl.CheckBoxDigitalSignature(ref box))
                                 {
@@ -1945,6 +1946,7 @@ namespace Amoeba.Windows
                             using (FileStream stream = new FileStream(filePath, FileMode.Open))
                             {
                                 var box = AmoebaConverter.FromBoxStream(stream);
+                                if (box == null) continue;
 
                                 if (!StoreUploadControl.CheckBoxDigitalSignature(ref box))
                                 {
@@ -2172,7 +2174,7 @@ namespace Amoeba.Windows
                             foreach (var item in _treeView.GetAncestors(selectTreeViewItem))
                             {
                                 if (item is StoreCategorizeTreeViewItem) path.Add(((StoreCategorizeTreeViewItem)item).Value.Name);
-                                else if (item is StoreTreeViewItem) path.Add(((StoreTreeViewItem)item).Value.Signature);
+                                else if (item is StoreTreeViewItem) path.Add(Signature.GetSignatureNickname(((StoreTreeViewItem)item).Value.Signature));
                                 else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
                             }
 
@@ -2623,7 +2625,9 @@ namespace Amoeba.Windows
 
                 foreach (var item in _treeView.GetAncestors(selectTreeViewItem))
                 {
-                    if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
+                    if (item is StoreCategorizeTreeViewItem) path.Add(((StoreCategorizeTreeViewItem)item).Value.Name);
+                    else if (item is StoreTreeViewItem) path.Add(Signature.GetSignatureNickname(((StoreTreeViewItem)item).Value.Signature));
+                    else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
                 }
 
                 baseDirectory = System.IO.Path.Combine(path.ToArray());

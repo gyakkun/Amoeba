@@ -1743,12 +1743,8 @@ namespace Amoeba.Windows
                     var line = Clipboard.GetText().Split('\r', '\n');
                     flag = Regex.IsMatch(line[0], @"^([\+-]) (.*)$");
                 }
-                else if (Clipboard.ContainsSeeds())
-                {
-                    flag = true;
-                }
 
-                _seedListViewPasteMenuItem.IsEnabled = flag;
+                _seedListViewPasteMenuItem.IsEnabled = flag || Clipboard.ContainsSeeds();
             }
         }
 

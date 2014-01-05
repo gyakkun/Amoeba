@@ -1326,6 +1326,7 @@ namespace Amoeba.Windows
                             using (StreamReader r = new StreamReader(stream))
                             {
                                 seed = AmoebaConverter.FromSeedString(r.ReadLine());
+                                if (seed == null) throw new ArgumentNullException();
                             }
 
                             break;
