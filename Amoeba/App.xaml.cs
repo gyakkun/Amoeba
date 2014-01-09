@@ -29,13 +29,15 @@ namespace Amoeba
     {
         public static Version AmoebaVersion { get; private set; }
         public static Dictionary<string, string> DirectoryPaths { get; private set; }
-        public static AmoebaColors AmoebaColors { get; private set; }
+
+        public static AmoebaColors Colors { get; private set; }
+        public static string Cache_Path { get; private set; }
 
         private List<Process> _processList = new List<Process>();
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 19);
+            App.AmoebaVersion = new Version(2, 0, 20);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -424,11 +426,80 @@ namespace Amoeba
                 this.CheckProcess();
             }
 
+            {
+                Version version;
+
+                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+                {
+                    version = new Version(reader.ReadLine());
+                }
+
+                if (version < new Version(2, 0, 20))
+                {
+                    {
+                        var torWorkDirectoryPath = Path.Combine(App.DirectoryPaths["Work"], "Tor");
+
+                        if (Directory.Exists(torWorkDirectoryPath))
+                        {
+                            try
+                            {
+                                Directory.Delete(torWorkDirectoryPath, true);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+
+                    if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path")))
+                    {
+                        string cachePath;
+
+                        using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"), new UTF8Encoding(false)))
+                        {
+                            cachePath = reader.ReadLine();
+                        }
+
+                        using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), false, new UTF8Encoding(false)))
+                        {
+                            writer.WriteLine(string.Format("{0} {1}", "Path", cachePath));
+                        }
+
+                        try
+                        {
+                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+                    {
+                        var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml");
+                        var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings");
+
+                        if (File.Exists(oldPath))
+                        {
+                            try
+                            {
+                                File.Move(oldPath, newPath);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
+
             this.RunProcess();
 
             // Colors
             {
-                App.AmoebaColors = new AmoebaColors();
+                App.Colors = new AmoebaColors();
 
                 if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings")))
                 {
@@ -441,7 +512,7 @@ namespace Amoeba
 
                         foreach (var property in list)
                         {
-                            writer.WriteLine(string.Format("{0} {1}", property.Name, (Color)property.GetValue(App.AmoebaColors, null)));
+                            writer.WriteLine(string.Format("{0} {1}", property.Name, (Color)property.GetValue(App.Colors, null)));
                         }
                     }
                 }
@@ -460,7 +531,39 @@ namespace Amoeba
                             var value = items[1].Trim();
 
                             var property = type.GetProperty(name);
-                            property.SetValue(App.AmoebaColors, (Color)ColorConverter.ConvertFromString(value), null);
+                            property.SetValue(App.Colors, (Color)ColorConverter.ConvertFromString(value), null);
+                        }
+                    }
+                }
+            }
+
+            // Cache
+            {
+                if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings")))
+                {
+                    var cachePath = Path.Combine(App.DirectoryPaths["Configuration"], "Cache.blocks");
+
+                    using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), false, new UTF8Encoding(false)))
+                    {
+                        writer.WriteLine(string.Format("{0} {1}", "Path", cachePath));
+                    }
+                }
+
+                {
+                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), new UTF8Encoding(false)))
+                    {
+                        string line;
+
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            var items = line.Split(' ');
+                            var name = items[0].Trim();
+                            var value = items[1].Trim();
+
+                            if (name == "Path")
+                            {
+                                App.Cache_Path = value;
+                            }
                         }
                     }
                 }
@@ -471,11 +574,11 @@ namespace Amoeba
 
         private void CheckProcess()
         {
-            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"))) return;
+            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"))) return;
 
             var runList = new List<RunItem>();
 
-            using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
+            using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"), new UTF8Encoding(false)))
             using (XmlTextReader xml = new XmlTextReader(r))
             {
                 while (xml.Read())
@@ -585,7 +688,7 @@ namespace Amoeba
             {
                 try
                 {
-                    File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"));
+                    File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
                 }
                 catch (Exception)
                 {
@@ -593,9 +696,9 @@ namespace Amoeba
                 }
             }
 
-            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml")))
+            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings")))
             {
-                using (XmlTextWriter xml = new XmlTextWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
+                using (XmlTextWriter xml = new XmlTextWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"), new UTF8Encoding(false)))
                 {
                     xml.Formatting = Formatting.Indented;
                     xml.WriteStartDocument();
@@ -632,7 +735,7 @@ namespace Amoeba
 
             var runList = new List<RunItem>();
 
-            using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml"), new UTF8Encoding(false)))
+            using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"), new UTF8Encoding(false)))
             using (XmlTextReader xml = new XmlTextReader(r))
             {
                 while (xml.Read())

@@ -62,8 +62,6 @@ namespace Amoeba.Windows
         private volatile bool _diskSpaceNotFoundException;
         private volatile bool _cacheSpaceNotFoundException;
 
-        private string _cacheBlocksPath;
-
         private volatile MainWindowTabType _selectedTab;
 
         public MainWindow()
@@ -348,9 +346,9 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            if (!string.IsNullOrWhiteSpace(_cacheBlocksPath))
+                            if (!string.IsNullOrWhiteSpace(App.Cache_Path))
                             {
-                                DriveInfo drive = new DriveInfo(Path.GetDirectoryName(Path.GetFullPath(_cacheBlocksPath)));
+                                DriveInfo drive = new DriveInfo(Path.GetDirectoryName(Path.GetFullPath(App.Cache_Path)));
 
                                 if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
                                 {
@@ -877,24 +875,7 @@ namespace Amoeba.Windows
             {
                 bool initFlag = false;
 
-                if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path")))
-                {
-                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"), new UTF8Encoding(false)))
-                    {
-                        _cacheBlocksPath = reader.ReadLine();
-                    }
-                }
-                else
-                {
-                    _cacheBlocksPath = Path.Combine(App.DirectoryPaths["Configuration"], "Cache.blocks");
-
-                    using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"), false, new UTF8Encoding(false)))
-                    {
-                        writer.WriteLine(_cacheBlocksPath);
-                    }
-                }
-
-                _amoebaManager = new AmoebaManager(_cacheBlocksPath, _bufferManager);
+                _amoebaManager = new AmoebaManager(App.Cache_Path, _bufferManager);
                 _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
 
                 if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))

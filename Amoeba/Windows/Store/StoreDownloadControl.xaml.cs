@@ -727,7 +727,7 @@ namespace Amoeba.Windows
 
                         if (selectTreeViewItem != item)
                         {
-                            textBlock.Foreground = new SolidColorBrush(App.AmoebaColors.Tree_Hit);
+                            textBlock.Foreground = new SolidColorBrush(App.Colors.Tree_Hit);
                         }
                         else
                         {
