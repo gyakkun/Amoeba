@@ -37,7 +37,7 @@ namespace Amoeba
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 20);
+            App.AmoebaVersion = new Version(2, 0, 21);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -675,28 +675,6 @@ namespace Amoeba
 
         private void RunProcess()
         {
-            Version version = new Version();
-
-            if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
-            {
-                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
-                {
-                    version = new Version(reader.ReadLine());
-                }
-            }
-
-            if (version <= new Version(0, 1, 11))
-            {
-                try
-                {
-                    File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-
             if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings")))
             {
                 using (XmlTextWriter xml = new XmlTextWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"), new UTF8Encoding(false)))
