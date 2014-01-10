@@ -426,6 +426,7 @@ namespace Amoeba
                 this.CheckProcess();
             }
 
+            if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
             {
                 Version version;
 
