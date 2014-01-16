@@ -4392,13 +4392,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string SearchState_Box
+        public string SearchState_Store
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchState_Box");
+                    return this.Translate("SearchState_Store");
                 }
             }
         }
@@ -4734,13 +4734,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string SearchItemEditWindow_SearchState_Box
+        public string SearchItemEditWindow_SearchState_Store
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("SearchItemEditWindow_SearchState_Box");
+                    return this.Translate("SearchItemEditWindow_SearchState_Store");
                 }
             }
         }

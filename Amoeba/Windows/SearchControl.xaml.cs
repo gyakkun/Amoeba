@@ -455,12 +455,12 @@ namespace Amoeba.Windows
 
                                 if (seedsDictionary.TryGetValue(seed, out item))
                                 {
-                                    item.State |= SearchState.Box;
+                                    item.State |= SearchState.Store;
                                 }
                                 else
                                 {
                                     item = new SeedsAndSearchState();
-                                    item.State = SearchState.Box;
+                                    item.State = SearchState.Store;
 
                                     seedsDictionary.Add(seed, item);
                                 }

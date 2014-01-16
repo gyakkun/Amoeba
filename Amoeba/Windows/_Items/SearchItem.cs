@@ -236,7 +236,7 @@ namespace Amoeba.Windows
         Link = 0x1,
 
         [EnumMember(Value = "Box")]
-        Box = 0x2,
+        Store = 0x2,
 
         [EnumMember(Value = "Cache")]
         Cache = 0x4,

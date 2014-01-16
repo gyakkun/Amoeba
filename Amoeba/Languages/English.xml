@@ -409,7 +409,7 @@
   <Translate Key="UploadWindow_Cancel" Value="Cancel" />
 
   <Translate Key="SearchState_Link" Value="L" />
-  <Translate Key="SearchState_Box" Value="B" />
+  <Translate Key="SearchState_Store" Value="S" />
   <Translate Key="SearchState_Cache" Value="C" />
   <Translate Key="SearchState_Downloading" Value="D" />
   <Translate Key="SearchState_Uploading" Value="U" />
@@ -441,7 +441,7 @@
   <Translate Key="SearchItemEditWindow_Copy" Value="Copy" />
   <Translate Key="SearchItemEditWindow_Paste" Value="Paste" />
   <Translate Key="SearchItemEditWindow_SearchState_Link" Value="Link" />
-  <Translate Key="SearchItemEditWindow_SearchState_Box" Value="Box" />
+  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="Store" />
   <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="Cache" />
   <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="Downloading" />
   <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="Uploading" />
