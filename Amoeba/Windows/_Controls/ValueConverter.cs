@@ -456,21 +456,17 @@ namespace Amoeba.Windows
 
             List<string> list = new List<string>();
 
-            if (item.HasFlag(SearchState.Cache))
+            if (item.HasFlag(SearchState.Link))
             {
-                list.Add(LanguagesManager.Instance.SearchState_Cache);
-            }
-            if (item.HasFlag(SearchState.Share))
-            {
-                list.Add(LanguagesManager.Instance.SearchState_Share);
+                list.Add(LanguagesManager.Instance.SearchState_Link);
             }
             if (item.HasFlag(SearchState.Box))
             {
                 list.Add(LanguagesManager.Instance.SearchState_Box);
             }
-            if (item.HasFlag(SearchState.Link))
+            if (item.HasFlag(SearchState.Cache))
             {
-                list.Add(LanguagesManager.Instance.SearchState_Link);
+                list.Add(LanguagesManager.Instance.SearchState_Cache);
             }
             if (item.HasFlag(SearchState.Downloading))
             {
@@ -507,13 +503,17 @@ namespace Amoeba.Windows
             if (!(value is SearchState)) return null;
             var item = (SearchState)value;
 
-            if (item.HasFlag(SearchState.Cache))
+            if (item.HasFlag(SearchState.Link))
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Link;
+            }
+            else if (item.HasFlag(SearchState.Box))
+            {
+                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Box;
+            }
+            else if (item.HasFlag(SearchState.Cache))
             {
                 return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Cache;
-            }
-            else if (item.HasFlag(SearchState.Share))
-            {
-                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Share;
             }
             else if (item.HasFlag(SearchState.Downloading))
             {
@@ -530,14 +530,6 @@ namespace Amoeba.Windows
             else if (item.HasFlag(SearchState.Uploaded))
             {
                 return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Uploaded;
-            }
-            else if (item.HasFlag(SearchState.Box))
-            {
-                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Box;
-            }
-            else if (item.HasFlag(SearchState.Link))
-            {
-                return LanguagesManager.Instance.SearchItemEditWindow_SearchState_Link;
             }
 
             return "";

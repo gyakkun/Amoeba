@@ -210,106 +210,82 @@ namespace Amoeba.Windows
 
         private static void Filter(ref HashSet<SearchListViewItem> items, SearchItem searchItem)
         {
+            var comparer = EqualityComparer<Seed>.Default;
+
             lock (searchItem.ThisLock)
             {
                 var list = items.Where(item =>
                 {
                     {
-                        lock (searchItem.SearchStateCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchStateCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchStateCollection)
+                            if (!searchContains.Contains)
                             {
-                                if (!searchContains.Contains)
+                                if (item.State.HasFlag(searchContains.Value)) return false;
+                            }
+                        }
+
+                        foreach (var searchContains in searchItem.SearchLengthRangeCollection)
+                        {
+                            if (!searchContains.Contains)
+                            {
+                                if (searchContains.Value.Verify(item.Value.Length)) return false;
+                            }
+                        }
+
+                        foreach (var searchContains in searchItem.SearchCreationTimeRangeCollection)
+                        {
+                            if (!searchContains.Contains)
+                            {
+                                if (searchContains.Value.Verify(item.Value.CreationTime)) return false;
+                            }
+                        }
+
+                        foreach (var searchContains in searchItem.SearchKeywordCollection)
+                        {
+                            if (!searchContains.Contains)
+                            {
+                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) && n == searchContains.Value)) return false;
+                            }
+                        }
+
+                        foreach (var searchContains in searchItem.SearchSignatureCollection)
+                        {
+                            if (!searchContains.Contains)
+                            {
+                                if (item.Signature == null)
                                 {
-                                    if (item.State.HasFlag(searchContains.Value)) return false;
+                                    if (searchContains.Value.IsMatch("Anonymous")) return false;
+                                }
+                                else
+                                {
+                                    if (searchContains.Value.IsMatch(item.Signature)) return false;
                                 }
                             }
                         }
 
-                        lock (searchItem.SearchLengthRangeCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchNameCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchLengthRangeCollection)
+                            if (!searchContains.Contains)
                             {
-                                if (!searchContains.Contains)
-                                {
-                                    if (searchContains.Value.Verify(item.Value.Length)) return false;
-                                }
+                                if (searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
+                                    .All(n => item.Value.Name.Contains(n))) return false;
                             }
                         }
 
-                        lock (searchItem.SearchCreationTimeRangeCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchNameRegexCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchCreationTimeRangeCollection)
+                            if (!searchContains.Contains)
                             {
-                                if (!searchContains.Contains)
-                                {
-                                    if (searchContains.Value.Verify(item.Value.CreationTime)) return false;
-                                }
+                                if (searchContains.Value.IsMatch(item.Value.Name)) return false;
                             }
                         }
 
-                        lock (searchItem.SearchKeywordCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchSeedCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchKeywordCollection)
+                            if (!searchContains.Contains)
                             {
-                                if (!searchContains.Contains)
-                                {
-                                    if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) && n == searchContains.Value)) return false;
-                                }
-                            }
-                        }
-
-                        lock (searchItem.SearchSignatureCollection.ThisLock)
-                        {
-                            foreach (var searchContains in searchItem.SearchSignatureCollection)
-                            {
-                                if (!searchContains.Contains)
-                                {
-                                    if (item.Signature == null)
-                                    {
-                                        if (searchContains.Value.IsMatch("Anonymous")) return false;
-                                    }
-                                    else
-                                    {
-                                        if (searchContains.Value.IsMatch(item.Signature)) return false;
-                                    }
-                                }
-                            }
-                        }
-
-                        lock (searchItem.SearchNameCollection.ThisLock)
-                        {
-                            foreach (var searchContains in searchItem.SearchNameCollection)
-                            {
-                                if (!searchContains.Contains)
-                                {
-                                    if (searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
-                                        .All(n => item.Value.Name.Contains(n))) return false;
-                                }
-                            }
-                        }
-
-                        lock (searchItem.SearchNameRegexCollection.ThisLock)
-                        {
-                            foreach (var searchContains in searchItem.SearchNameRegexCollection)
-                            {
-                                if (!searchContains.Contains)
-                                {
-                                    if (searchContains.Value.IsMatch(item.Value.Name)) return false;
-                                }
-                            }
-                        }
-
-                        lock (searchItem.SearchSeedCollection.ThisLock)
-                        {
-                            SeedHashEqualityComparer comparer = new SeedHashEqualityComparer();
-
-                            foreach (var searchContains in searchItem.SearchSeedCollection)
-                            {
-                                if (!searchContains.Contains)
-                                {
-                                    if (comparer.Equals(item.Value, searchContains.Value)) return false;
-                                }
+                                if (comparer.Equals(item.Value, searchContains.Value)) return false;
                             }
                         }
                     }
@@ -317,109 +293,83 @@ namespace Amoeba.Windows
                     {
                         bool flag = false;
 
-                        lock (searchItem.SearchStateCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchStateCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchStateCollection)
+                            if (searchContains.Contains)
                             {
-                                if (searchContains.Contains)
-                                {
-                                    if (item.State.HasFlag(searchContains.Value)) return true;
-                                    flag = true;
-                                }
+                                if (item.State.HasFlag(searchContains.Value)) return true;
+                                flag = true;
                             }
                         }
 
-                        lock (searchItem.SearchLengthRangeCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchLengthRangeCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchLengthRangeCollection)
+                            if (searchContains.Contains)
                             {
-                                if (searchContains.Contains)
-                                {
-                                    if (searchContains.Value.Verify(item.Value.Length)) return true;
-                                    flag = true;
-                                }
+                                if (searchContains.Value.Verify(item.Value.Length)) return true;
+                                flag = true;
                             }
                         }
 
-                        lock (searchItem.SearchCreationTimeRangeCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchCreationTimeRangeCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchCreationTimeRangeCollection)
+                            if (searchContains.Contains)
                             {
-                                if (searchContains.Contains)
-                                {
-                                    if (searchContains.Value.Verify(item.Value.CreationTime)) return true;
-                                    flag = true;
-                                }
+                                if (searchContains.Value.Verify(item.Value.CreationTime)) return true;
+                                flag = true;
                             }
                         }
 
-                        lock (searchItem.SearchKeywordCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchKeywordCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchKeywordCollection)
+                            if (searchContains.Contains)
                             {
-                                if (searchContains.Contains)
-                                {
-                                    if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) && n == searchContains.Value)) return true;
-                                    flag = true;
-                                }
+                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) && n == searchContains.Value)) return true;
+                                flag = true;
                             }
                         }
 
-                        lock (searchItem.SearchSignatureCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchSignatureCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchSignatureCollection)
+                            if (searchContains.Contains)
                             {
-                                if (searchContains.Contains)
+                                if (item.Signature == null)
                                 {
-                                    if (item.Signature == null)
-                                    {
-                                        if (searchContains.Value.IsMatch("Anonymous")) return true;
-                                    }
-                                    else
-                                    {
-                                        if (searchContains.Value.IsMatch(item.Signature)) return true;
-                                    }
-                                    flag = true;
+                                    if (searchContains.Value.IsMatch("Anonymous")) return true;
                                 }
+                                else
+                                {
+                                    if (searchContains.Value.IsMatch(item.Signature)) return true;
+                                }
+                                flag = true;
                             }
                         }
 
-                        lock (searchItem.SearchNameCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchNameCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchNameCollection)
+                            if (searchContains.Contains)
                             {
-                                if (searchContains.Contains)
-                                {
-                                    if (searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
-                                         .All(n => item.Value.Name.Contains(n))) return true;
-                                    flag = true;
-                                }
+                                if (searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
+                                     .All(n => item.Value.Name.Contains(n))) return true;
+                                flag = true;
                             }
                         }
 
-                        lock (searchItem.SearchNameRegexCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchNameRegexCollection)
                         {
-                            foreach (var searchContains in searchItem.SearchNameRegexCollection)
+                            if (searchContains.Contains)
                             {
-                                if (searchContains.Contains)
-                                {
-                                    if (searchContains.Value.IsMatch(item.Value.Name)) return true;
-                                    flag = true;
-                                }
+                                if (searchContains.Value.IsMatch(item.Value.Name)) return true;
+                                flag = true;
                             }
                         }
 
-                        lock (searchItem.SearchSeedCollection.ThisLock)
+                        foreach (var searchContains in searchItem.SearchSeedCollection)
                         {
-                            SeedHashEqualityComparer comparer = new SeedHashEqualityComparer();
-
-                            foreach (var searchContains in searchItem.SearchSeedCollection)
+                            if (searchContains.Contains)
                             {
-                                if (searchContains.Contains)
-                                {
-                                    if (comparer.Equals(item.Value, searchContains.Value)) return true;
-                                    flag = true;
-                                }
+                                if (comparer.Equals(item.Value, searchContains.Value)) return true;
+                                flag = true;
                             }
                         }
 
@@ -463,25 +413,6 @@ namespace Amoeba.Windows
                             {
                                 item = new SeedsAndSearchState();
                                 item.State = SearchState.Cache;
-                                item.Seeds.Add(seed);
-
-                                seedsDictionary.Add(seed, item);
-                            }
-                        }
-
-                        foreach (var seed in _amoebaManager.ShareSeeds)
-                        {
-                            SeedsAndSearchState item = null;
-
-                            if (seedsDictionary.TryGetValue(seed, out item))
-                            {
-                                item.State |= SearchState.Share;
-                                item.Seeds.Add(seed);
-                            }
-                            else
-                            {
-                                item = new SeedsAndSearchState();
-                                item.State = SearchState.Share;
                                 item.Seeds.Add(seed);
 
                                 seedsDictionary.Add(seed, item);
@@ -1143,8 +1074,6 @@ namespace Amoeba.Windows
                 {
                     if (!_listViewDeleteCacheMenuItem_IsEnabled) _listViewDeleteCacheMenuItem.IsEnabled = false;
                     else _listViewDeleteCacheMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Cache));
-                    if (!_listViewDeleteShareMenuItem_IsEnabled) _listViewDeleteShareMenuItem.IsEnabled = false;
-                    else _listViewDeleteShareMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Share));
                     if (!_listViewDeleteDownloadMenuItem_IsEnabled) _listViewDeleteDownloadMenuItem.IsEnabled = false;
                     else _listViewDeleteDownloadMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloading));
                     if (!_listViewDeleteUploadMenuItem_IsEnabled) _listViewDeleteUploadMenuItem.IsEnabled = false;
@@ -1157,7 +1086,6 @@ namespace Amoeba.Windows
                 else
                 {
                     _listViewDeleteCacheMenuItem.IsEnabled = false;
-                    _listViewDeleteShareMenuItem.IsEnabled = false;
                     _listViewDeleteDownloadMenuItem.IsEnabled = false;
                     _listViewDeleteUploadMenuItem.IsEnabled = false;
                     _listViewDeleteDownloadHistoryMenuItem.IsEnabled = false;
@@ -1246,11 +1174,6 @@ namespace Amoeba.Windows
                         _amoebaManager.RemoveCacheSeed(item);
                     }
 
-                    foreach (var item in list)
-                    {
-                        _amoebaManager.RemoveShareSeed(item);
-                    }
-
                     foreach (var item in downloadList)
                     {
                         _amoebaManager.RemoveDownload(item);
@@ -1331,51 +1254,6 @@ namespace Amoeba.Windows
                 finally
                 {
                     _listViewDeleteCacheMenuItem_IsEnabled = true;
-                }
-            });
-        }
-
-        volatile bool _listViewDeleteShareMenuItem_IsEnabled = true;
-
-        private void _listViewDeleteShareMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
-
-            var list = new HashSet<Seed>();
-
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
-            {
-                if (item.Value == null || !item.State.HasFlag(SearchState.Share)) continue;
-
-                list.Add(item.Value);
-            }
-
-            if (list.Count == 0) return;
-            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Cache", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
-
-            _listViewDeleteShareMenuItem_IsEnabled = false;
-
-            ThreadPool.QueueUserWorkItem((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                try
-                {
-                    foreach (var item in list)
-                    {
-                        _amoebaManager.RemoveShareSeed(item);
-                    }
-
-                    this.Update_Cache();
-                }
-                catch (Exception)
-                {
-
-                }
-                finally
-                {
-                    _listViewDeleteShareMenuItem_IsEnabled = true;
                 }
             });
         }

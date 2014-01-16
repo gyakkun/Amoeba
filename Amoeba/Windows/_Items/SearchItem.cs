@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
@@ -15,14 +16,14 @@ namespace Amoeba.Windows
     class SearchItem : ICloneable<SearchItem>, IThisLock
     {
         private string _name = "default";
-        private LockedList<SearchContains<string>> _searchNameCollection;
-        private LockedList<SearchContains<SearchRegex>> _searchNameRegexCollection;
-        private LockedList<SearchContains<SearchRegex>> _searchSignatureCollection;
-        private LockedList<SearchContains<string>> _searchKeywordCollection;
-        private LockedList<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRangeCollection;
-        private LockedList<SearchContains<SearchRange<long>>> _searchLengthRangeCollection;
-        private LockedList<SearchContains<Seed>> _searchSeedCollection;
-        private LockedList<SearchContains<SearchState>> _searchStateCollection;
+        private List<SearchContains<string>> _searchNameCollection;
+        private List<SearchContains<SearchRegex>> _searchNameRegexCollection;
+        private List<SearchContains<SearchRegex>> _searchSignatureCollection;
+        private List<SearchContains<string>> _searchKeywordCollection;
+        private List<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRangeCollection;
+        private List<SearchContains<SearchRange<long>>> _searchLengthRangeCollection;
+        private List<SearchContains<Seed>> _searchSeedCollection;
+        private List<SearchContains<SearchState>> _searchStateCollection;
 
         private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
@@ -47,14 +48,14 @@ namespace Amoeba.Windows
         }
 
         [DataMember(Name = "SearchNameCollection")]
-        public LockedList<SearchContains<string>> SearchNameCollection
+        public List<SearchContains<string>> SearchNameCollection
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_searchNameCollection == null)
-                        _searchNameCollection = new LockedList<SearchContains<string>>();
+                        _searchNameCollection = new List<SearchContains<string>>();
 
                     return _searchNameCollection;
                 }
@@ -62,14 +63,14 @@ namespace Amoeba.Windows
         }
 
         [DataMember(Name = "SearchNameRegexCollection")]
-        public LockedList<SearchContains<SearchRegex>> SearchNameRegexCollection
+        public List<SearchContains<SearchRegex>> SearchNameRegexCollection
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_searchNameRegexCollection == null)
-                        _searchNameRegexCollection = new LockedList<SearchContains<SearchRegex>>();
+                        _searchNameRegexCollection = new List<SearchContains<SearchRegex>>();
 
                     return _searchNameRegexCollection;
                 }
@@ -77,14 +78,14 @@ namespace Amoeba.Windows
         }
 
         [DataMember(Name = "SearchSignatureCollection 2")]
-        public LockedList<SearchContains<SearchRegex>> SearchSignatureCollection
+        public List<SearchContains<SearchRegex>> SearchSignatureCollection
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_searchSignatureCollection == null)
-                        _searchSignatureCollection = new LockedList<SearchContains<SearchRegex>>();
+                        _searchSignatureCollection = new List<SearchContains<SearchRegex>>();
 
                     return _searchSignatureCollection;
                 }
@@ -92,14 +93,14 @@ namespace Amoeba.Windows
         }
 
         [DataMember(Name = "SearchKeywordCollection")]
-        public LockedList<SearchContains<string>> SearchKeywordCollection
+        public List<SearchContains<string>> SearchKeywordCollection
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_searchKeywordCollection == null)
-                        _searchKeywordCollection = new LockedList<SearchContains<string>>();
+                        _searchKeywordCollection = new List<SearchContains<string>>();
 
                     return _searchKeywordCollection;
                 }
@@ -107,14 +108,14 @@ namespace Amoeba.Windows
         }
 
         [DataMember(Name = "SearchCreationTimeRangeCollection")]
-        public LockedList<SearchContains<SearchRange<DateTime>>> SearchCreationTimeRangeCollection
+        public List<SearchContains<SearchRange<DateTime>>> SearchCreationTimeRangeCollection
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_searchCreationTimeRangeCollection == null)
-                        _searchCreationTimeRangeCollection = new LockedList<SearchContains<SearchRange<DateTime>>>();
+                        _searchCreationTimeRangeCollection = new List<SearchContains<SearchRange<DateTime>>>();
 
                     return _searchCreationTimeRangeCollection;
                 }
@@ -122,14 +123,14 @@ namespace Amoeba.Windows
         }
 
         [DataMember(Name = "SearchLengthRangeCollection")]
-        public LockedList<SearchContains<SearchRange<long>>> SearchLengthRangeCollection
+        public List<SearchContains<SearchRange<long>>> SearchLengthRangeCollection
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_searchLengthRangeCollection == null)
-                        _searchLengthRangeCollection = new LockedList<SearchContains<SearchRange<long>>>();
+                        _searchLengthRangeCollection = new List<SearchContains<SearchRange<long>>>();
 
                     return _searchLengthRangeCollection;
                 }
@@ -137,14 +138,14 @@ namespace Amoeba.Windows
         }
 
         [DataMember(Name = "SearchSeedCollection")]
-        public LockedList<SearchContains<Seed>> SearchSeedCollection
+        public List<SearchContains<Seed>> SearchSeedCollection
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_searchSeedCollection == null)
-                        _searchSeedCollection = new LockedList<SearchContains<Seed>>();
+                        _searchSeedCollection = new List<SearchContains<Seed>>();
 
                     return _searchSeedCollection;
                 }
@@ -152,7 +153,7 @@ namespace Amoeba.Windows
         }
 
         [DataMember(Name = "SearchStateCollection")]
-        public LockedList<SearchContains<SearchState>> SearchStateCollection
+        public List<SearchContains<SearchState>> SearchStateCollection
         {
             get
             {
@@ -160,7 +161,7 @@ namespace Amoeba.Windows
                 {
 
                     if (_searchStateCollection == null)
-                        _searchStateCollection = new LockedList<SearchContains<SearchState>>();
+                        _searchStateCollection = new List<SearchContains<SearchState>>();
 
                     return _searchStateCollection;
                 }
@@ -231,17 +232,17 @@ namespace Amoeba.Windows
     [DataContract(Name = "SearchState", Namespace = "http://Amoeba/Windows")]
     enum SearchState
     {
-        [EnumMember(Value = "Cache")]
-        Cache = 0x1,
-
-        [EnumMember(Value = "Share")]
-        Share = 0x2,
-
         [EnumMember(Value = "Link")]
-        Link = 0x4,
+        Link = 0x1,
 
         [EnumMember(Value = "Box")]
-        Box = 0x8,
+        Box = 0x2,
+
+        [EnumMember(Value = "Cache")]
+        Cache = 0x4,
+
+        //[EnumMember(Value = "Share")]
+        //Share = 0x8,
 
         [EnumMember(Value = "Uploading")]
         Uploading = 0x10,

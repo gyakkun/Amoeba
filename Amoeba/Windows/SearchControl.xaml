@@ -108,7 +108,6 @@
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
                     <MenuItem Name="_listViewDeleteCacheMenuItem" Header="{Binding Path=SearchControl_DeleteCache, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteCacheMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteShareMenuItem" Header="{Binding Path=SearchControl_DeleteShare, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteShareMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteDownloadMenuItem" Header="{Binding Path=SearchControl_DeleteDownload, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteDownloadMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteUploadMenuItem" Header="{Binding Path=SearchControl_DeleteUpload, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteUploadMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteDownloadHistoryMenuItem" Header="{Binding Path=SearchControl_DeleteDownloadHistory, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteDownloadHistoryMenuItem_Click" />

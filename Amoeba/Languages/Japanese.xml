@@ -408,14 +408,13 @@
   <Translate Key="UploadWindow_Ok" Value="Ok" />
   <Translate Key="UploadWindow_Cancel" Value="キャンセル" />
 
+  <Translate Key="SearchState_Link" Value="L" />
+  <Translate Key="SearchState_Box" Value="B" />
   <Translate Key="SearchState_Cache" Value="C" />
-  <Translate Key="SearchState_Share" Value="S" />
   <Translate Key="SearchState_Downloading" Value="D" />
   <Translate Key="SearchState_Uploading" Value="U" />
   <Translate Key="SearchState_Downloaded" Value="DH" />
   <Translate Key="SearchState_Uploaded" Value="UH" />
-  <Translate Key="SearchState_Box" Value="B" />
-  <Translate Key="SearchState_Link" Value="L" />
 
   <Translate Key="SearchItemEditWindow_Title" Value="検索アイテム編集" />
   <Translate Key="SearchItemEditWindow_Name" Value="名前" />
@@ -441,14 +440,13 @@
   <Translate Key="SearchItemEditWindow_Cut" Value="切り取り" />
   <Translate Key="SearchItemEditWindow_Copy" Value="コピー" />
   <Translate Key="SearchItemEditWindow_Paste" Value="貼り付け" />
+  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="リンク" />
+  <Translate Key="SearchItemEditWindow_SearchState_Box" Value="ボックス" />
   <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="キャッシュ" />
-  <Translate Key="SearchItemEditWindow_SearchState_Share" Value="シェア" />
   <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="ダウンロード" />
   <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="アップロード" />
   <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="ダウンロード済み" />
   <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="アップロード済み" />
-  <Translate Key="SearchItemEditWindow_SearchState_Box" Value="ボックス" />
-  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="リンク" />
 
   <Translate Key="SeedEditWindow_Title" Value="シード編集" />
   <Translate Key="SeedEditWindow_Name" Value="名前" />

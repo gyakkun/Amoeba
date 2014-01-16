@@ -4381,6 +4381,28 @@ namespace Amoeba.Properties
         }
 
 
+        public string SearchState_Link
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Link");
+                }
+            }
+        }
+
+        public string SearchState_Box
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchState_Box");
+                }
+            }
+        }
+
         public string SearchState_Cache
         {
             get
@@ -4388,17 +4410,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchState_Cache");
-                }
-            }
-        }
-
-        public string SearchState_Share
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Share");
                 }
             }
         }
@@ -4443,28 +4454,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchState_Uploaded");
-                }
-            }
-        }
-
-        public string SearchState_Box
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Box");
-                }
-            }
-        }
-
-        public string SearchState_Link
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchState_Link");
                 }
             }
         }
@@ -4734,6 +4723,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string SearchItemEditWindow_SearchState_Link
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState_Link");
+                }
+            }
+        }
+
+        public string SearchItemEditWindow_SearchState_Box
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchItemEditWindow_SearchState_Box");
+                }
+            }
+        }
+
         public string SearchItemEditWindow_SearchState_Cache
         {
             get
@@ -4741,17 +4752,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchItemEditWindow_SearchState_Cache");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_SearchState_Share
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_SearchState_Share");
                 }
             }
         }
@@ -4796,28 +4796,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("SearchItemEditWindow_SearchState_Uploaded");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_SearchState_Box
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_SearchState_Box");
-                }
-            }
-        }
-
-        public string SearchItemEditWindow_SearchState_Link
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("SearchItemEditWindow_SearchState_Link");
                 }
             }
         }

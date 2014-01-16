@@ -45,7 +45,7 @@ namespace Amoeba.Windows
         private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
 
         private BoxTreeViewItem _treeViewItem;
-        private LockedDictionary<Seed, SearchState> _seedsDictionary = new LockedDictionary<Seed, SearchState>(new SeedHashEqualityComparer());
+        private LockedDictionary<Seed, SearchState> _seedsDictionary = new LockedDictionary<Seed, SearchState>();
 
         private Thread _searchThread;
         private Thread _cacheThread;
@@ -315,23 +315,11 @@ namespace Amoeba.Windows
                         continue;
                     }
 
-                    var seedsDictionary = new Dictionary<Seed, SearchState>(new SeedHashEqualityComparer());
+                    var seedsDictionary = new Dictionary<Seed, SearchState>();
 
                     foreach (var seed in _amoebaManager.CacheSeeds)
                     {
                         seedsDictionary[seed] = SearchState.Cache;
-                    }
-
-                    foreach (var seed in _amoebaManager.ShareSeeds)
-                    {
-                        if (!seedsDictionary.ContainsKey(seed))
-                        {
-                            seedsDictionary[seed] = SearchState.Share;
-                        }
-                        else
-                        {
-                            seedsDictionary[seed] |= SearchState.Share;
-                        }
                     }
 
                     foreach (var information in _amoebaManager.UploadingInformation)
@@ -1425,7 +1413,7 @@ namespace Amoeba.Windows
 
                         var seed = seedListViewItem.Value;
 
-                        _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
+                        _amoebaManager.Download(seed, baseDirectory, 3);
 
                         this.Update_Cache(false);
                     }
@@ -1437,7 +1425,7 @@ namespace Amoeba.Windows
         {
             _startPoint = new Point(-1, -1);
 
-            if (_refresh)
+            if (_refresh || _treeView.SelectedItem == null)
             {
                 _listViewContextMenu.IsEnabled = false;
 
