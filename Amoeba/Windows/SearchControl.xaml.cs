@@ -1068,20 +1068,21 @@ namespace Amoeba.Windows
                 _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
                 if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
-                else _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+                else _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : selectItems.OfType<SearchListViewItem>()
+                    .Any(n => (n.State & (SearchState.Cache | SearchState.Downloading | SearchState.Uploading | SearchState.Downloaded | SearchState.Uploaded)) != 0);
 
                 if (_listViewDeleteMenuItem.IsEnabled)
                 {
                     if (!_listViewDeleteCacheMenuItem_IsEnabled) _listViewDeleteCacheMenuItem.IsEnabled = false;
-                    else _listViewDeleteCacheMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Cache));
+                    else _listViewDeleteCacheMenuItem.IsEnabled = (selectItems == null) ? false : selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Cache));
                     if (!_listViewDeleteDownloadMenuItem_IsEnabled) _listViewDeleteDownloadMenuItem.IsEnabled = false;
-                    else _listViewDeleteDownloadMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloading));
+                    else _listViewDeleteDownloadMenuItem.IsEnabled = (selectItems == null) ? false : selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloading));
                     if (!_listViewDeleteUploadMenuItem_IsEnabled) _listViewDeleteUploadMenuItem.IsEnabled = false;
-                    else _listViewDeleteUploadMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploading));
+                    else _listViewDeleteUploadMenuItem.IsEnabled = (selectItems == null) ? false : selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploading));
                     if (!_listViewDeleteDownloadHistoryMenuItem_IsEnabled) _listViewDeleteDownloadHistoryMenuItem.IsEnabled = false;
-                    else _listViewDeleteDownloadHistoryMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
+                    else _listViewDeleteDownloadHistoryMenuItem.IsEnabled = (selectItems == null) ? false : selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Downloaded));
                     if (!_listViewDeleteUploadHistoryMenuItem_IsEnabled) _listViewDeleteUploadHistoryMenuItem.IsEnabled = false;
-                    else _listViewDeleteUploadHistoryMenuItem.IsEnabled = selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploaded));
+                    else _listViewDeleteUploadHistoryMenuItem.IsEnabled = (selectItems == null) ? false : selectItems.OfType<SearchListViewItem>().Any(n => n.State.HasFlag(SearchState.Uploaded));
                 }
                 else
                 {
