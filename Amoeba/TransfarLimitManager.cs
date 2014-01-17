@@ -263,32 +263,38 @@ namespace Amoeba
             }
         }
 
+        private readonly object _stateLock = new object();
+
         public override void Start()
         {
-            while (_timerThread != null) Thread.Sleep(1000);
-
-            lock (this.ThisLock)
+            lock (_stateLock)
             {
-                if (this.State == ManagerState.Start) return;
-                _state = ManagerState.Start;
+                lock (this.ThisLock)
+                {
+                    if (this.State == ManagerState.Start) return;
+                    _state = ManagerState.Start;
 
-                _timerThread = new Thread(this.Timer);
-                _timerThread.Priority = ThreadPriority.Lowest;
-                _timerThread.Name = "TransfarLimitManager_Timer";
-                _timerThread.Start();
+                    _timerThread = new Thread(this.Timer);
+                    _timerThread.Priority = ThreadPriority.Lowest;
+                    _timerThread.Name = "TransfarLimitManager_Timer";
+                    _timerThread.Start();
+                }
             }
         }
 
         public override void Stop()
         {
-            lock (this.ThisLock)
+            lock (_stateLock)
             {
-                if (this.State == ManagerState.Stop) return;
-                _state = ManagerState.Stop;
-            }
+                lock (this.ThisLock)
+                {
+                    if (this.State == ManagerState.Stop) return;
+                    _state = ManagerState.Stop;
+                }
 
-            _timerThread.Join();
-            _timerThread = null;
+                _timerThread.Join();
+                _timerThread = null;
+            }
         }
 
         #region ISettings

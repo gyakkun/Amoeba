@@ -472,59 +472,65 @@ namespace Amoeba
             }
         }
 
+        private readonly object _stateLock = new object();
+
         public override void Start()
         {
-            while (_watchThread != null) Thread.Sleep(1000);
-
-            lock (this.ThisLock)
+            lock (_stateLock)
             {
-                if (this.State == ManagerState.Start) return;
-                _state = ManagerState.Start;
+                lock (this.ThisLock)
+                {
+                    if (this.State == ManagerState.Start) return;
+                    _state = ManagerState.Start;
 
-                _watchThread = new Thread(this.WatchThread);
-                _watchThread.Priority = ThreadPriority.Lowest;
-                _watchThread.Name = "OverlayNetworkManager_WatchThread";
-                _watchThread.Start();
+                    _watchThread = new Thread(this.WatchThread);
+                    _watchThread.Priority = ThreadPriority.Lowest;
+                    _watchThread.Name = "OverlayNetworkManager_WatchThread";
+                    _watchThread.Start();
+                }
             }
         }
 
         public override void Stop()
         {
-            lock (this.ThisLock)
+            lock (_stateLock)
             {
-                if (this.State == ManagerState.Stop) return;
-                _state = ManagerState.Stop;
-            }
-
-            _watchThread.Join();
-            _watchThread = null;
-
-            lock (_samClientLock)
-            {
-                if (_samSession != null)
-                    _samSession.Dispose();
-
-                _samSession = null;
-            }
-
-            lock (_samServerLock)
-            {
-                if (_samListener != null)
-                    _samListener.Dispose();
-
-                _samListener = null;
-
-                _samHistory = null;
-            }
-
-            lock (this.ThisLock)
-            {
-                if (_settings.I2pUri != null)
+                lock (this.ThisLock)
                 {
-                    if (this.RemoveUri(_settings.I2pUri))
-                        Log.Information(string.Format("Remove Node Uri: {0}", _settings.I2pUri));
+                    if (this.State == ManagerState.Stop) return;
+                    _state = ManagerState.Stop;
                 }
-                _settings.I2pUri = null;
+
+                _watchThread.Join();
+                _watchThread = null;
+
+                lock (_samClientLock)
+                {
+                    if (_samSession != null)
+                        _samSession.Dispose();
+
+                    _samSession = null;
+                }
+
+                lock (_samServerLock)
+                {
+                    if (_samListener != null)
+                        _samListener.Dispose();
+
+                    _samListener = null;
+
+                    _samHistory = null;
+                }
+
+                lock (this.ThisLock)
+                {
+                    if (_settings.I2pUri != null)
+                    {
+                        if (this.RemoveUri(_settings.I2pUri))
+                            Log.Information(string.Format("Remove Node Uri: {0}", _settings.I2pUri));
+                    }
+                    _settings.I2pUri = null;
+                }
             }
         }
 

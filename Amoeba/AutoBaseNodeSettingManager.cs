@@ -382,25 +382,33 @@ namespace Amoeba
             }
         }
 
+        private readonly object _stateLock = new object();
+
         public override void Start()
         {
-            lock (this.ThisLock)
+            lock (_stateLock)
             {
-                if (this.State == ManagerState.Start) return;
-                _state = ManagerState.Start;
+                lock (this.ThisLock)
+                {
+                    if (this.State == ManagerState.Start) return;
+                    _state = ManagerState.Start;
 
-                this.Update();
+                    this.Update();
+                }
             }
         }
 
         public override void Stop()
         {
-            lock (this.ThisLock)
+            lock (_stateLock)
             {
-                if (this.State == ManagerState.Stop) return;
-                _state = ManagerState.Stop;
+                lock (this.ThisLock)
+                {
+                    if (this.State == ManagerState.Stop) return;
+                    _state = ManagerState.Stop;
 
-                this.Shutdown();
+                    this.Shutdown();
+                }
             }
         }
 
