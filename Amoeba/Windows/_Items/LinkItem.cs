@@ -39,7 +39,6 @@ namespace Amoeba.Windows
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
-            if (this.GetHashCode() != other.GetHashCode()) return false;
 
             if (this.Signature != other.Signature
                 || !Collection.Equals(this.TrustSignatures, other.TrustSignatures))

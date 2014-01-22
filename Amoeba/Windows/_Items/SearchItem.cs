@@ -305,7 +305,6 @@ namespace Amoeba.Windows
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
-            if (this.GetHashCode() != other.GetHashCode()) return false;
 
             if ((this.Contains != other.Contains)
                 || (!this.Value.Equals(other.Value)))
@@ -417,7 +416,6 @@ namespace Amoeba.Windows
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
-            if (this.GetHashCode() != other.GetHashCode()) return false;
 
             if ((this.IsIgnoreCase != other.IsIgnoreCase)
                 || (this.Value != other.Value))
@@ -522,7 +520,6 @@ namespace Amoeba.Windows
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
-            if (this.GetHashCode() != other.GetHashCode()) return false;
 
             if ((!this.Min.Equals(other.Min))
                 || (!this.Max.Equals(other.Max)))

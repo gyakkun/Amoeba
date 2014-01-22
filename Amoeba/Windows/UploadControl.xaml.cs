@@ -186,7 +186,7 @@ namespace Amoeba.Windows
                             _listView.SetSelectedItems(selectItems);
                         }
 
-                        if (sortFlag && _listViewItemCollection.Count < 3000) this.Sort();
+                        if (sortFlag) this.Sort();
                     }));
 
                     Thread.Sleep(1000 * 3);
