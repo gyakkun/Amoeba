@@ -31,9 +31,15 @@ using Library.Net.Proxy;
 using Library.Net.Upnp;
 using Library.Security;
 using Library.Collections;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
+using System.Windows.Input;
+using System.Windows.Automation;
 
 namespace Amoeba.Windows
 {
+    public delegate void DebugLog(string message);
+
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
@@ -217,21 +223,30 @@ namespace Amoeba.Windows
         {
             try
             {
+                Stopwatch debugStopwatch = new Stopwatch();
                 Stopwatch spaceCheckStopwatch = new Stopwatch();
                 Stopwatch backupStopwatch = new Stopwatch();
                 Stopwatch updateStopwatch = new Stopwatch();
                 Stopwatch uriUpdateStopwatch = new Stopwatch();
-                Stopwatch GcStopwatch = new Stopwatch();
+                Stopwatch gcStopwatch = new Stopwatch();
+                debugStopwatch.Start();
                 spaceCheckStopwatch.Start();
                 backupStopwatch.Start();
                 updateStopwatch.Start();
                 uriUpdateStopwatch.Start();
-                GcStopwatch.Start();
+                gcStopwatch.Start();
 
                 for (; ; )
                 {
                     Thread.Sleep(1000);
                     if (!_isRun) return;
+
+                    if (debugStopwatch.Elapsed.TotalMinutes >= 1)
+                    {
+                        debugStopwatch.Restart();
+
+                        Debug.WriteLine(string.Format("----- ----- ----- BufferManager Size {0} ----- ----- -----", NetworkConverter.ToSizeString(_bufferManager.Size)));
+                    }
 
                     {
                         if (_diskSpaceNotFoundException || _cacheSpaceNotFoundException)
@@ -326,7 +341,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (Settings.Instance.Global_IsStart && spaceCheckStopwatch.Elapsed > new TimeSpan(0, 1, 0))
+                    if (Settings.Instance.Global_IsStart && spaceCheckStopwatch.Elapsed.TotalMinutes >= 1)
                     {
                         spaceCheckStopwatch.Restart();
 
@@ -362,7 +377,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (backupStopwatch.Elapsed > new TimeSpan(0, 30, 0))
+                    if (backupStopwatch.Elapsed.TotalMinutes >= 30)
                     {
                         backupStopwatch.Restart();
 
@@ -380,7 +395,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (updateStopwatch.Elapsed > new TimeSpan(1, 0, 0, 0))
+                    if (updateStopwatch.Elapsed.TotalDays >= 1)
                     {
                         updateStopwatch.Restart();
 
@@ -398,7 +413,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (uriUpdateStopwatch.Elapsed > new TimeSpan(1, 0, 0))
+                    if (uriUpdateStopwatch.Elapsed.TotalHours >= 1)
                     {
                         uriUpdateStopwatch.Restart();
 
@@ -412,9 +427,9 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (GcStopwatch.Elapsed > new TimeSpan(1, 0, 0))
+                    if (gcStopwatch.Elapsed.TotalHours >= 1)
                     {
-                        GcStopwatch.Restart();
+                        gcStopwatch.Restart();
 
                         try
                         {
@@ -429,9 +444,9 @@ namespace Amoeba.Windows
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
@@ -771,14 +786,13 @@ namespace Amoeba.Windows
                     {
                         try
                         {
-                            _logParagraph.Inlines.Add(string.Format("{0} {1}:\t{2}\r\n", DateTime.Now.ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo), e.MessageLevel, e.Message));
-
-                            if (_logParagraph.Inlines.Count > 100)
+                            if (_logListBox.Items.Count > 100)
                             {
-                                _logParagraph.Inlines.Remove(_logParagraph.Inlines.FirstInline);
+                                _logListBox.Items.RemoveAt(0);
                             }
 
-                            _logRichTextBox.ScrollToEnd();
+                            _logListBox.Items.Add(string.Format("{0} {1}:\t{2}", DateTime.Now.ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo), e.MessageLevel, e.Message));
+                            _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
                         }
                         catch (Exception)
                         {
@@ -792,39 +806,21 @@ namespace Amoeba.Windows
                 }
             };
 
-            Debug.Listeners.Add(new MyTraceListener(this));
-        }
-
-        private class MyTraceListener : TraceListener
-        {
-            MainWindow _mainWindow;
-
-            public MyTraceListener(MainWindow mainWindow)
-            {
-                _mainWindow = mainWindow;
-            }
-
-            public override void Write(string message)
-            {
-                this.WriteLine(message);
-            }
-
-            public override void WriteLine(string message)
+            Debug.Listeners.Add(new MyTraceListener((string message) =>
             {
                 try
                 {
-                    _mainWindow.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
                         try
                         {
-                            _mainWindow._logParagraph.Inlines.Add(string.Format("{0} Debug:\t{1}\r\n", DateTime.Now.ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo), message));
-
-                            if (_mainWindow._logParagraph.Inlines.Count > 100)
+                            if (_logListBox.Items.Count > 100)
                             {
-                                _mainWindow._logParagraph.Inlines.Remove(_mainWindow._logParagraph.Inlines.FirstInline);
+                                _logListBox.Items.RemoveAt(0);
                             }
 
-                            _mainWindow._logRichTextBox.ScrollToEnd();
+                            _logListBox.Items.Add(string.Format("{0} Debug:\t{1}", DateTime.Now.ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo), message));
+                            _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
                         }
                         catch (Exception)
                         {
@@ -836,6 +832,26 @@ namespace Amoeba.Windows
                 {
 
                 }
+            }));
+        }
+
+        private class MyTraceListener : TraceListener
+        {
+            private DebugLog _debugLog;
+
+            public MyTraceListener(DebugLog debugLog)
+            {
+                _debugLog = debugLog;
+            }
+
+            public override void Write(string message)
+            {
+                this.WriteLine(message);
+            }
+
+            public override void WriteLine(string message)
+            {
+                _debugLog(message);
             }
         }
 
@@ -1569,8 +1585,6 @@ namespace Amoeba.Windows
             {
                 _windowState = this.WindowState;
             }
-
-            _logRichTextBox.ScrollToEnd();
         }
 
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1604,9 +1618,6 @@ namespace Amoeba.Windows
             else if (_tabControl.SelectedItem == _logTabItem)
             {
                 this.SelectedTab = MainWindowTabType.Log;
-
-                _logRichTextBox.UpdateLayout();
-                _logRichTextBox.ScrollToEnd();
             }
             else
             {
@@ -1896,6 +1907,26 @@ namespace Amoeba.Windows
             VersionInformationWindow window = new VersionInformationWindow();
             window.Owner = this;
             window.ShowDialog();
+        }
+
+        private void _logListBoxCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var line in _logListBox.SelectedItems.Cast<string>())
+            {
+                sb.AppendLine(line);
+            }
+
+            Clipboard.SetText(sb.ToString().TrimEnd('\n', '\r'));
+        }
+
+        private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_logTabItem.IsSelected)
+            {
+                _logListBoxCopyMenuItem_Click(null, null);
+            }
         }
     }
 }

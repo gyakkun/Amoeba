@@ -194,20 +194,6 @@ namespace Amoeba.Windows
             }
         }
 
-        public void DoEvents()
-        {
-            DispatcherFrame frame = new DispatcherFrame();
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
-                new DispatcherOperationCallback((object f) =>
-                {
-                    ((DispatcherFrame)f).Continue = false;
-                    return null;
-
-                }), frame);
-
-            Dispatcher.PushFrame(frame);
-        }
-
         private static void Filter(ref HashSet<SearchListViewItem> items, SearchItem searchItem)
         {
             var comparer = EqualityComparer<Seed>.Default;

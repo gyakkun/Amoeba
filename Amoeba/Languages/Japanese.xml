@@ -63,6 +63,7 @@
   <Translate Key="MainWindow_Delete_Message" Value="本当に削除しますか？" />
   <Translate Key="MainWindow_TransferLimit_Message" Value="転送量制限を越えたので停止しました。" />
   <Translate Key="MainWindow_Upload_Message" Value="アップロードしますか？" />
+  <Translate Key="MainWindow_Copy" Value="コピー" />
 
   <Translate Key="LinkOptionsWindow_Title" Value="リンク設定" />
   <Translate Key="LinkOptionsWindow_Download" Value="ダウンロード" />

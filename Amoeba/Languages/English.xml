@@ -63,6 +63,7 @@
   <Translate Key="MainWindow_Delete_Message" Value="Are you sure you want to delete?" />
   <Translate Key="MainWindow_TransferLimit_Message" Value="Transfer limit" />
   <Translate Key="MainWindow_Upload_Message" Value="Do you want to upload?" />
+  <Translate Key="MainWindow_Copy" Value="Copy" />
 
   <Translate Key="LinkOptionsWindow_Title" Value="Link options" />
   <Translate Key="LinkOptionsWindow_Download" Value="Download" />

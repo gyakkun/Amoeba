@@ -16,7 +16,20 @@
         Loaded="Window_Loaded"
         Closing="Window_Closing"
         Closed="Window_Closed">
+    <Window.Resources>
+        <DataTemplate x:Key="_logListBox_Template">
+            <TextBlock Text="{Binding Mode=OneWay}" TextWrapping="Wrap"/>
+        </DataTemplate>
+    </Window.Resources>
     
+    <Window.CommandBindings>
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Gesture="CTRL+C" Command="Copy" />
+    </Window.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="438*" />
@@ -61,15 +74,14 @@
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource ResourcesInstance}}" Name="_storeTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem" >
-                <RichTextBox Name="_logRichTextBox" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" IsReadOnly="True">
-                    <RichTextBox.Document>
-                        <FlowDocument>
-                            <FlowDocument.Blocks>
-                                <Paragraph Name="_logParagraph" />
-                            </FlowDocument.Blocks>
-                        </FlowDocument>
-                    </RichTextBox.Document>
-                </RichTextBox>
+                <ListBox Name="_logListBox" SelectionMode="Extended" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                            ItemTemplate="{StaticResource _logListBox_Template}" >
+                    <ListBox.ContextMenu>
+                        <ContextMenu Name="_logListBoxContextMenu" >
+                            <MenuItem Name="_logListBoxCopyMenuItem" Header="{Binding Path=MainWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_logListBoxCopyMenuItem_Click" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
             </TabItem>
         </TabControl>
         <StatusBar Grid.Row="1" 

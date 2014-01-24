@@ -9,10 +9,28 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Amoeba.Windows;
 
 namespace Amoeba
 {
+    static class DependencyObjectExtensions
+    {
+        public static void DoEvents(this DependencyObject thisDependencyObject)
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback((object f) =>
+                {
+                    ((DispatcherFrame)f).Continue = false;
+                    return null;
+
+                }), frame);
+
+            Dispatcher.PushFrame(frame);
+        }
+    }
+
     static class ContextMenuExtensions
     {
         public static MenuItem GetMenuItem(this ContextMenu thisContextMenu, string name)
