@@ -223,13 +223,16 @@ namespace Amoeba.Windows
         {
             try
             {
+#if DEBUG
                 Stopwatch debugStopwatch = new Stopwatch();
+                debugStopwatch.Start();
+#endif
+
                 Stopwatch spaceCheckStopwatch = new Stopwatch();
                 Stopwatch backupStopwatch = new Stopwatch();
                 Stopwatch updateStopwatch = new Stopwatch();
                 Stopwatch uriUpdateStopwatch = new Stopwatch();
                 Stopwatch gcStopwatch = new Stopwatch();
-                debugStopwatch.Start();
                 spaceCheckStopwatch.Start();
                 backupStopwatch.Start();
                 updateStopwatch.Start();
@@ -241,12 +244,14 @@ namespace Amoeba.Windows
                     Thread.Sleep(1000);
                     if (!_isRun) return;
 
+#if DEBUG
                     if (debugStopwatch.Elapsed.TotalMinutes >= 1)
                     {
                         debugStopwatch.Restart();
 
                         Debug.WriteLine(string.Format("----- ----- ----- BufferManager Size {0} ----- ----- -----", NetworkConverter.ToSizeString(_bufferManager.Size)));
                     }
+#endif
 
                     {
                         if (_diskSpaceNotFoundException || _cacheSpaceNotFoundException)
@@ -427,7 +432,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (gcStopwatch.Elapsed.TotalHours >= 1)
+                    if (gcStopwatch.Elapsed.TotalMinutes >= 10)
                     {
                         gcStopwatch.Restart();
 

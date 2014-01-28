@@ -150,6 +150,7 @@
       <DependentUpon>DownloadControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\_Controls\BoxTreeViewItem.cs" />
+    <Compile Include="Windows\_Controls\ListBoxEx.cs" />
     <Compile Include="Windows\_Controls\StoreCategorizeTreeViewItem.cs" />
     <Compile Include="Windows\_Controls\TreeViewItemEx.cs" />
     <Compile Include="Windows\_Items\LinkItem.cs" />

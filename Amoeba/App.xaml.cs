@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -37,7 +38,9 @@ namespace Amoeba
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 27);
+            App.AmoebaVersion = new Version(2, 0, 28);
+
+            GCSettings.LatencyMode = GCLatencyMode.Batch;
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -437,22 +440,6 @@ namespace Amoeba
 
                 if (version < new Version(2, 0, 20))
                 {
-                    {
-                        var torWorkDirectoryPath = Path.Combine(App.DirectoryPaths["Work"], "Tor");
-
-                        if (Directory.Exists(torWorkDirectoryPath))
-                        {
-                            try
-                            {
-                                Directory.Delete(torWorkDirectoryPath, true);
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-                    }
-
                     if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path")))
                     {
                         string cachePath;
@@ -486,6 +473,25 @@ namespace Amoeba
                             try
                             {
                                 File.Move(oldPath, newPath);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+                }
+
+                if (version < new Version(2, 0, 28))
+                {
+                    {
+                        var torWorkDirectoryPath = Path.Combine(App.DirectoryPaths["Work"], "Tor");
+
+                        if (Directory.Exists(torWorkDirectoryPath))
+                        {
+                            try
+                            {
+                                Directory.Delete(torWorkDirectoryPath, true);
                             }
                             catch (Exception)
                             {
@@ -685,9 +691,6 @@ namespace Amoeba
                     xml.WriteStartElement("Configuration");
 
                     {
-                        var path = Path.Combine(App.DirectoryPaths["Work"], "Tor");
-                        Directory.CreateDirectory(path);
-
                         xml.WriteStartElement("Process");
                         xml.WriteElementString("Path", @"Tor\tor.exe");
                         xml.WriteElementString("Arguments", "-f torrc DataDirectory " + @"..\..\Work\Tor");

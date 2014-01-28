@@ -1,2 +1,1 @@
-SocksListenAddress 127.0.0.1
-SocksPort 19050
+SocksPort 127.0.0.1:19050 PreferSOCKSNoAuth
