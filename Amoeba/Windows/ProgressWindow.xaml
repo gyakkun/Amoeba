@@ -12,7 +12,6 @@
         Background="{DynamicResource WindowBackgroundBrush}"
         Title="{Binding Path=ProgressWindow_Title, Source={StaticResource ResourcesInstance}}"
         Width="{Binding Path=ProgressWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        WindowState="{Binding Path=ProgressWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         SizeToContent="Height"
         WindowStartupLocation="CenterOwner"
         Loaded="Window_Loaded"

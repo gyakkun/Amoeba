@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Amoeba.Properties;
 
 namespace Amoeba.Windows
 {
@@ -37,6 +38,9 @@ namespace Amoeba.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this.SetBinding(Window.WindowStateProperty, new Binding("VersionInformationWindow_WindowState") { Mode = BindingMode.TwoWay, Source = Settings.Instance });
+            WindowPosition.Move(this);
+
             List<VersionListViewItem> items = new List<VersionListViewItem>();
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll", SearchOption.TopDirectoryOnly));
@@ -60,8 +64,6 @@ namespace Amoeba.Windows
             {
                 _versionListView.Items.Add(item);
             }
-
-            WindowPosition.Move(this);
         }
 
         private void _licenseButton_Click(object sender, RoutedEventArgs e)

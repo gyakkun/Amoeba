@@ -91,8 +91,6 @@ namespace Amoeba.Windows
 
                 InitializeComponent();
 
-                _windowState = this.WindowState;
-
                 this.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
 
                 {
@@ -1450,6 +1448,11 @@ namespace Amoeba.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this.SetBinding(Window.WindowStateProperty, new Binding("MainWindow_WindowState") { Mode = BindingMode.TwoWay, Source = Settings.Instance });
+            WindowPosition.Move(this);
+
+            _windowState = this.WindowState;
+
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
@@ -1508,8 +1511,6 @@ namespace Amoeba.Windows
             {
                 _checkUpdateMenuItem_Click(null, null);
             }
-
-            WindowPosition.Move(this);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

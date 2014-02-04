@@ -148,9 +148,10 @@ namespace Amoeba.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _baseNodeTreeViewItem.IsSelected = true;
-
+            this.SetBinding(Window.WindowStateProperty, new Binding("CoreOptionsWindow_WindowState") { Mode = BindingMode.TwoWay, Source = Settings.Instance });
             WindowPosition.Move(this);
+
+            _baseNodeTreeViewItem.IsSelected = true;
         }
 
         #region BaseNode

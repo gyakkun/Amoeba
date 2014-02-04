@@ -11,7 +11,6 @@
         Left="{Binding Path=MainWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Height="{Binding Path=MainWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Width="{Binding Path=MainWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        WindowState="{Binding Path=MainWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         StateChanged="Window_StateChanged"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
