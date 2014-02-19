@@ -1448,7 +1448,6 @@ namespace Amoeba.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.SetBinding(Window.WindowStateProperty, new Binding("MainWindow_WindowState") { Mode = BindingMode.TwoWay, Source = Settings.Instance });
             WindowPosition.Move(this);
 
             _windowState = this.WindowState;
@@ -1538,8 +1537,6 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
-
                     _timerThread.Join();
                     _timerThread = null;
 
@@ -1729,8 +1726,8 @@ namespace Amoeba.Windows
 
             var window = new ProgressWindow(true);
             window.Owner = this;
-            window.Message1 = LanguagesManager.Instance.MainWindow_CheckInternalBlocks_Message;
-            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
+            window.Title = string.Format(LanguagesManager.Instance.ProgressWindow_Title, LanguagesManager.Instance.MainWindow_CheckInternalBlocks_Message);
+            window.Message = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
             window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
 
             ThreadPool.QueueUserWorkItem((object wstate) =>
@@ -1749,7 +1746,7 @@ namespace Amoeba.Windows
                         try
                         {
                             window.Value = 100 * ((double)checkedBlockCount / (double)blockCount);
-                            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, badBlockCount, checkedBlockCount, blockCount);
+                            window.Message = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, badBlockCount, checkedBlockCount, blockCount);
                         }
                         catch (Exception)
                         {
@@ -1791,8 +1788,8 @@ namespace Amoeba.Windows
 
             var window = new ProgressWindow(true);
             window.Owner = this;
-            window.Message1 = LanguagesManager.Instance.MainWindow_CheckExternalBlocks_Message;
-            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
+            window.Title = string.Format(LanguagesManager.Instance.ProgressWindow_Title, LanguagesManager.Instance.MainWindow_CheckExternalBlocks_Message);
+            window.Message = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
             window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
 
             ThreadPool.QueueUserWorkItem((object wstate) =>
@@ -1811,7 +1808,7 @@ namespace Amoeba.Windows
                         try
                         {
                             window.Value = 100 * ((double)checkedBlockCount / (double)blockCount);
-                            window.Message2 = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, badBlockCount, checkedBlockCount, blockCount);
+                            window.Message = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, badBlockCount, checkedBlockCount, blockCount);
                         }
                         catch (Exception)
                         {

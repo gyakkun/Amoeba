@@ -15,7 +15,8 @@
         Left="{Binding Path=LinkOptionsWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Height="{Binding Path=LinkOptionsWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Width="{Binding Path=LinkOptionsWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
-        d:DesignHeight="594" d:DesignWidth="899" >
+        WindowState="{Binding Path=LinkOptionsWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        Loaded="Window_Loaded" d:DesignHeight="594" d:DesignWidth="899" >
 
     <Window.Resources>
         <DataTemplate x:Key="_myTemplate_Linker_Signature">

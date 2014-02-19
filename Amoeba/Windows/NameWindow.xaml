@@ -14,6 +14,7 @@
         Top="{Binding Path=NameWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _topRelativeDoubleConverter}}"
         Left="{Binding Path=NameWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Width="{Binding Path=NameWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        WindowState="{Binding Path=NameWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         SizeToContent="Height" 
         Loaded="Window_Loaded"
         d:DesignWidth="600">

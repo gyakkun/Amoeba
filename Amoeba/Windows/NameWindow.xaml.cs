@@ -80,7 +80,6 @@ namespace Amoeba.Windows
             this.MaxHeight = this.RenderSize.Height;
             this.MinHeight = this.RenderSize.Height;
 
-            this.SetBinding(Window.WindowStateProperty, new Binding("NameWindow_WindowState") { Mode = BindingMode.TwoWay, Source = Settings.Instance });
             WindowPosition.Move(this);
         }
 

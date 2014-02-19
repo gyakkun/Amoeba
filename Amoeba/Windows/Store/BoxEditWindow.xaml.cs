@@ -79,7 +79,6 @@ namespace Amoeba.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.SetBinding(Window.WindowStateProperty, new Binding("BoxEditWindow_WindowState") { Mode = BindingMode.TwoWay, Source = Settings.Instance });
             WindowPosition.Move(this);
         }
 

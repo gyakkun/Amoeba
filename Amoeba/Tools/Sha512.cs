@@ -16,7 +16,7 @@ namespace Amoeba
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
 
-            using (var sha512 = new SHA512Managed())
+            using (var sha512 = SHA512.Create())
             {
                 return sha512.ComputeHash(buffer, offset, count);
             }
@@ -55,7 +55,7 @@ namespace Amoeba
         {
             if (inputStream == null) throw new ArgumentNullException("inputStream");
 
-            using (var sha512 = new SHA512Managed())
+            using (var sha512 = SHA512.Create())
             {
                 return sha512.ComputeHash(inputStream);
             }
@@ -67,7 +67,7 @@ namespace Amoeba
 
             if (value.Count == 1) return Sha512.ComputeHash(value[0]);
 
-            using (var sha512 = new SHA512Managed())
+            using (var sha512 = SHA512.Create())
             {
                 for (int i = 0; i < value.Count; i++)
                 {

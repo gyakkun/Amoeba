@@ -37,7 +37,7 @@ namespace Amoeba.Properties
         static LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:\Local\Project\Amoeba\Amoeba\bin\Debug\Core\Languages";
+            string path = @"C:\Local\Project\Alliance-Network\Amoeba\Amoeba\bin\Debug\Core\Languages";
 
             if (!Directory.Exists(path))
                 path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
@@ -802,6 +802,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Upload_Message");
+                }
+            }
+        }
+
+        public string MainWindow_Shutdown_Message
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Shutdown_Message");
                 }
             }
         }

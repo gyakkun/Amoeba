@@ -63,6 +63,7 @@
   <Translate Key="MainWindow_Delete_Message" Value="Are you sure you want to delete?" />
   <Translate Key="MainWindow_TransferLimit_Message" Value="Transfer limit" />
   <Translate Key="MainWindow_Upload_Message" Value="Do you want to upload?" />
+  <Translate Key="MainWindow_Shutdown_Message" Value="Shutdown..." />
   <Translate Key="MainWindow_Copy" Value="Copy" />
 
   <Translate Key="LinkOptionsWindow_Title" Value="Link options" />
@@ -143,7 +144,7 @@
   <Translate Key="TransferLimitType_Uploads" Value="Uploads" />
   <Translate Key="TransferLimitType_Total" Value="Total" />
 
-  <Translate Key="ProgressWindow_Title" Value="Progress state" />
+  <Translate Key="ProgressWindow_Title" Value="Progress state - {0}" />
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
 

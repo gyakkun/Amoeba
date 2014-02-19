@@ -12,6 +12,7 @@
         Left="{Binding Path=VersionInformationWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Height="{Binding Path=VersionInformationWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Width="{Binding Path=VersionInformationWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
+        WindowState="{Binding Path=VersionInformationWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" 
         Loaded="Window_Loaded">
     
     <Window.Resources>

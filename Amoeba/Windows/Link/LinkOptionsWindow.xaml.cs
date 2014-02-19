@@ -67,6 +67,11 @@ namespace Amoeba.Windows
             this.Sort();
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            WindowPosition.Move(this);
+        }
+
         private void Sort()
         {
             _downloadLinkListView.Items.SortDescriptions.Clear();

@@ -44,6 +44,8 @@ namespace Amoeba.Windows
         {
             this.MaxHeight = this.RenderSize.Height;
             this.MinHeight = this.RenderSize.Height;
+
+            WindowPosition.Move(this);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -51,27 +53,15 @@ namespace Amoeba.Windows
             e.Cancel = !_closeIsEnabled;
         }
 
-        public string Message1
+        public string Message
         {
             get
             {
-                return (string)_label1.Content;
+                return (string)_label.Content;
             }
             set
             {
-                _label1.Content = value;
-            }
-        }
-
-        public string Message2
-        {
-            get
-            {
-                return (string)_label2.Content;
-            }
-            set
-            {
-                _label2.Content = value;
+                _label.Content = value;
             }
         }
 
