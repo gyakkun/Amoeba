@@ -38,7 +38,7 @@ namespace Amoeba
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 32);
+            App.AmoebaVersion = new Version(2, 0, 33);
 
             //GCSettings.LatencyMode = GCLatencyMode.Batch;
 
