@@ -324,7 +324,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            var random = new RNGCryptoServiceProvider();
+            var random = RandomNumberGenerator.Create();
             byte[] buffer = new byte[64];
             random.GetBytes(buffer);
             _baseNode_Id = buffer;
@@ -405,7 +405,7 @@ namespace Amoeba.Windows
             if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _baseNode_Uris.Any(n => n == uri)) return;
             _baseNode_Uris.Add(uri);
 
-            var random = new RNGCryptoServiceProvider();
+            var random = RandomNumberGenerator.Create();
             byte[] buffer = new byte[64];
             random.GetBytes(buffer);
             _baseNode_Id = buffer;
@@ -427,7 +427,7 @@ namespace Amoeba.Windows
 
             _baseNodeUrisListView.SelectedIndex = selectIndex;
 
-            var random = new RNGCryptoServiceProvider();
+            var random = RandomNumberGenerator.Create();
             byte[] buffer = new byte[64];
             random.GetBytes(buffer);
             _baseNode_Id = buffer;
@@ -445,7 +445,7 @@ namespace Amoeba.Windows
                 _baseNode_Uris.Remove(item);
             }
 
-            var random = new RNGCryptoServiceProvider();
+            var random = RandomNumberGenerator.Create();
             byte[] buffer = new byte[64];
             random.GetBytes(buffer);
             _baseNode_Id = buffer;

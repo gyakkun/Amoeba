@@ -87,7 +87,7 @@ namespace Amoeba
                 lock (_amoebaManager.ThisLock)
                 {
                     var baseNode = _amoebaManager.BaseNode;
-                    var random = new RNGCryptoServiceProvider();
+                    var random = RandomNumberGenerator.Create();
 
                     byte[] id = new byte[64];
                     random.GetBytes(id);
@@ -111,7 +111,7 @@ namespace Amoeba
                 lock (_amoebaManager.ThisLock)
                 {
                     var baseNode = _amoebaManager.BaseNode;
-                    var random = new RNGCryptoServiceProvider();
+                    var random = RandomNumberGenerator.Create();
 
                     byte[] id = new byte[64];
                     random.GetBytes(id);

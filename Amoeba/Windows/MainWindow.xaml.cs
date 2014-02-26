@@ -1029,7 +1029,7 @@ namespace Amoeba.Windows
 
                     {
                         byte[] buffer = new byte[64];
-                        (new RNGCryptoServiceProvider()).GetBytes(buffer);
+                        RandomNumberGenerator.Create().GetBytes(buffer);
 
                         _amoebaManager.SetBaseNode(new Node(buffer, null));
                     }
