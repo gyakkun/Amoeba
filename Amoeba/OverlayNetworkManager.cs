@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Library;
-using Library.I2p;
+using Library.Net.I2p;
 using Library.Net.Amoeba;
 using Library.Net.Caps;
 using Library.Net.Connections;
