@@ -152,7 +152,7 @@ namespace Amoeba
             {
                 foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (item.StartsWith("Node:")) return true;
+                    if (item.StartsWith("Node:") || item.StartsWith("Node@")) return true;
                 }
 
                 return false;
@@ -207,7 +207,7 @@ namespace Amoeba
             {
                 foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (item.StartsWith("Seed:")) return true;
+                    if (item.StartsWith("Seed:") || item.StartsWith("Seed@")) return true;
                 }
 
                 return false;
