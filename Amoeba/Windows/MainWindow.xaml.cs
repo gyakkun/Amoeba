@@ -57,7 +57,7 @@ namespace Amoeba.Windows
         private Dictionary<string, string> _configrationDirectoryPaths = new Dictionary<string, string>();
         private string _logPath;
 
-        private bool _isRun = true;
+        private volatile bool _isClose = false;
         private bool _autoStop;
 
         private System.Timers.Timer _refreshTimer = new System.Timers.Timer();
@@ -240,7 +240,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(1000);
-                    if (!_isRun) return;
+                    if (_isClose) return;
 
 #if DEBUG
                     if (debugStopwatch.Elapsed.TotalMinutes >= 1)
@@ -460,7 +460,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(1000);
-                    if (!_isRun) return;
+                    if (_isClose) return;
 
                     var state = _amoebaManager.State;
                     var encodeState = _amoebaManager.EncodeState;
@@ -514,7 +514,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(1000);
-                    if (!_isRun) return;
+                    if (_isClose) return;
 
                     if (Settings.Instance.Global_IsStart && stopwatch.Elapsed.TotalSeconds >= 120)
                     {
@@ -1514,6 +1514,8 @@ namespace Amoeba.Windows
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (_isClose) return;
+
             if (MessageBox.Show(
                 this,
                 LanguagesManager.Instance.MainWindow_Close_Message,
@@ -1523,15 +1525,13 @@ namespace Amoeba.Windows
             {
                 e.Cancel = true;
             }
-        }
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            NativeMethods.SetThreadExecutionState(ExecutionState.Continuous);
+            _isClose = true;
 
-            _notifyIcon.Visible = false;
+            e.Cancel = true;
 
-            _isRun = false;
+            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+            this.WindowState = System.Windows.WindowState.Minimized;
 
             var thread = new Thread(() =>
             {
@@ -1564,7 +1564,13 @@ namespace Amoeba.Windows
                     _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                     _amoebaManager.Dispose();
 
-                    Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                    NativeMethods.SetThreadExecutionState(ExecutionState.Continuous);
+                    _notifyIcon.Visible = false;
+
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                    {
+                        this.Close();
+                    }));
                 }
                 catch (Exception ex)
                 {
