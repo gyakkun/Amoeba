@@ -2235,6 +2235,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string ConnectionControl_BufferManagerSize
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_BufferManagerSize");
+                }
+            }
+        }
+
         public string ConnectionControl_CreateConnectionCount
         {
             get

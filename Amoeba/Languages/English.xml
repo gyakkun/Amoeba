@@ -202,6 +202,7 @@
   <Translate Key="ConnectionControl_ReceivedByteCount" Value="Received byte count" />
   <Translate Key="ConnectionControl_Name" Value="Name" />
   <Translate Key="ConnectionControl_Value" Value="Value" />
+  <Translate Key="ConnectionControl_BufferManagerSize" Value="BufferManager Size" />
   <Translate Key="ConnectionControl_CreateConnectionCount" Value="Create connection count" />
   <Translate Key="ConnectionControl_AcceptConnectionCount" Value="Accept connection count" />
   <Translate Key="ConnectionControl_SurroundingNodeCount" Value="Surrounding node count" />

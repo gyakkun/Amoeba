@@ -29,6 +29,7 @@ namespace Amoeba.Windows
     partial class ConnectionControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
+        private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
         private ObservableCollectionEx<AmoebaInfomationListViewItem> _infomationListViewItemCollection = new ObservableCollectionEx<AmoebaInfomationListViewItem>();
@@ -37,13 +38,19 @@ namespace Amoeba.Windows
         private Thread _showAmoebaInfomationThread;
         private Thread _showConnectionInfomationwThread;
 
-        public ConnectionControl(AmoebaManager amoebaManager)
+        public ConnectionControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
+            _bufferManager = bufferManager;
             _amoebaManager = amoebaManager;
 
             InitializeComponent();
 
             _listView.ItemsSource = _listViewItemCollection;
+
+#if DEBUG
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_BufferManagerSize" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+#endif
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_SentByteCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ReceivedByteCount" });
@@ -108,6 +115,10 @@ namespace Amoeba.Windows
                 {
                     var information = _amoebaManager.Information;
                     Dictionary<string, string> dic = new Dictionary<string, string>();
+
+#if DEBUG
+                    dic["ConnectionControl_BufferManagerSize"] = NetworkConverter.ToSizeString(_bufferManager.Size);
+#endif
 
                     dic["ConnectionControl_SentByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.SentByteCount);
                     dic["ConnectionControl_ReceivedByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.ReceivedByteCount);
