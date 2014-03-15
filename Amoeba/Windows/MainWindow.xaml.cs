@@ -1591,7 +1591,7 @@ namespace Amoeba.Windows
                 _windowState = this.WindowState;
             }
 
-            _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
+            if (_logListBox.Items.Count != 0) _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
         }
 
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1624,7 +1624,7 @@ namespace Amoeba.Windows
             }
             else if (_tabControl.SelectedItem == _logTabItem)
             {
-                _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
+                if (_logListBox.Items.Count != 0) _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
 
                 this.SelectedTab = MainWindowTabType.Log;
             }
