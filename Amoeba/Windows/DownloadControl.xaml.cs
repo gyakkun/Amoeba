@@ -78,14 +78,14 @@ namespace Amoeba.Windows
                     if (_mainWindow.SelectedTab != MainWindowTabType.Download) continue;
 
                     var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
-                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+                    SortedDictionary<int, Information> dic = new SortedDictionary<int, Information>();
 
                     foreach (var item in downloadingInformation.ToArray())
                     {
                         dic[(int)item["Id"]] = item;
                     }
 
-                    Dictionary<int, DownloadListViewItem> dic2 = new Dictionary<int, DownloadListViewItem>();
+                    SortedDictionary<int, DownloadListViewItem> dic2 = new SortedDictionary<int, DownloadListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {

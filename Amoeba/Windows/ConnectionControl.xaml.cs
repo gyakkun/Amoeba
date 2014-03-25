@@ -181,14 +181,14 @@ namespace Amoeba.Windows
                     if (_mainWindow.SelectedTab != MainWindowTabType.Connection) continue;
 
                     var connectionInformation = _amoebaManager.ConnectionInformation.ToArray();
-                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+                    SortedDictionary<int, Information> dic = new SortedDictionary<int, Information>();
 
                     foreach (var item in connectionInformation.ToArray())
                     {
                         dic[(int)item["Id"]] = item;
                     }
 
-                    Dictionary<int, ConnectionListViewItem> dic2 = new Dictionary<int, ConnectionListViewItem>();
+                    SortedDictionary<int, ConnectionListViewItem> dic2 = new SortedDictionary<int, ConnectionListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {

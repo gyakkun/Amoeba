@@ -629,9 +629,9 @@ namespace Amoeba.Windows
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                //Log.Error(e);
+
             }
         }
 

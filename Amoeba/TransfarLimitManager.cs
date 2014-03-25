@@ -329,8 +329,8 @@ namespace Amoeba
             public Settings(object lockObject)
                 : base(new List<Library.Configuration.ISettingContent>() { 
                 new Library.Configuration.SettingContent<TransferLimit>() { Name = "TransferLimit", Value = new TransferLimit() },
-                new Library.Configuration.SettingContent<LockedDictionary<DateTime, long>>() { Name = "UploadTransferSizeList", Value = new LockedDictionary<DateTime, long>() },
-                new Library.Configuration.SettingContent<LockedDictionary<DateTime, long>>() { Name = "DownloadTransferSizeList", Value = new LockedDictionary<DateTime, long>() },
+                new Library.Configuration.SettingContent<LockedHashDictionary<DateTime, long>>() { Name = "UploadTransferSizeList", Value = new LockedHashDictionary<DateTime, long>() },
+                new Library.Configuration.SettingContent<LockedHashDictionary<DateTime, long>>() { Name = "DownloadTransferSizeList", Value = new LockedHashDictionary<DateTime, long>() },
                 })
             {
                 _thisLock = lockObject;
@@ -371,13 +371,13 @@ namespace Amoeba
                 }
             }
 
-            public LockedDictionary<DateTime, long> UploadTransferSizeList
+            public LockedHashDictionary<DateTime, long> UploadTransferSizeList
             {
                 get
                 {
                     lock (_thisLock)
                     {
-                        return (LockedDictionary<DateTime, long>)this["UploadTransferSizeList"];
+                        return (LockedHashDictionary<DateTime, long>)this["UploadTransferSizeList"];
                     }
                 }
 
@@ -390,13 +390,13 @@ namespace Amoeba
                 }
             }
 
-            public LockedDictionary<DateTime, long> DownloadTransferSizeList
+            public LockedHashDictionary<DateTime, long> DownloadTransferSizeList
             {
                 get
                 {
                     lock (_thisLock)
                     {
-                        return (LockedDictionary<DateTime, long>)this["DownloadTransferSizeList"];
+                        return (LockedHashDictionary<DateTime, long>)this["DownloadTransferSizeList"];
                     }
                 }
 

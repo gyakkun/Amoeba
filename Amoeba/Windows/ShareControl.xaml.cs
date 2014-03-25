@@ -64,14 +64,14 @@ namespace Amoeba.Windows
                     if (_mainWindow.SelectedTab != MainWindowTabType.Share) continue;
 
                     var shareInformation = _amoebaManager.ShareInformation.ToArray();
-                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+                    SortedDictionary<int, Information> dic = new SortedDictionary<int, Information>();
 
                     foreach (var item in shareInformation.ToArray())
                     {
                         dic[(int)item["Id"]] = item;
                     }
 
-                    Dictionary<int, ShareListViewItem> dic2 = new Dictionary<int, ShareListViewItem>();
+                    SortedDictionary<int, ShareListViewItem> dic2 = new SortedDictionary<int, ShareListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {

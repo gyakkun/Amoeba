@@ -45,7 +45,7 @@ namespace Amoeba.Windows
         private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
 
         private BoxTreeViewItem _treeViewItem;
-        private LockedDictionary<Seed, SearchState> _seedsDictionary = new LockedDictionary<Seed, SearchState>();
+        private LockedHashDictionary<Seed, SearchState> _seedsDictionary = new LockedHashDictionary<Seed, SearchState>();
 
         private Thread _searchThread;
         private Thread _cacheThread;
@@ -296,9 +296,9 @@ namespace Amoeba.Windows
                     }));
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                //Log.Error(e);
+
             }
         }
 
@@ -401,9 +401,9 @@ namespace Amoeba.Windows
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                //Log.Error(e);
+
             }
         }
 
