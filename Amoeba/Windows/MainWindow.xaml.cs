@@ -1520,19 +1520,24 @@ namespace Amoeba.Windows
                 MessageBoxImage.Information) == MessageBoxResult.No)
             {
                 e.Cancel = true;
+                return;
             }
 
             _isClose = true;
 
             e.Cancel = true;
 
-            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
-            this.WindowState = System.Windows.WindowState.Minimized;
-
             var thread = new Thread(() =>
             {
                 try
                 {
+                    Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                    
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+                    {
+                        this.WindowState = System.Windows.WindowState.Minimized;
+                    }));
+                    
                     _timerThread.Join();
                     _timerThread = null;
 
