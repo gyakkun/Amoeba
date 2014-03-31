@@ -38,7 +38,7 @@ namespace Amoeba
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 48);
+            App.AmoebaVersion = new Version(2, 0, 49);
             GCSettings.LatencyMode = GCLatencyMode.Batch;
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
