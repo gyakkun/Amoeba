@@ -54,7 +54,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 50);
+            App.AmoebaVersion = new Version(2, 0, 51);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
