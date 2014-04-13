@@ -40,6 +40,17 @@ namespace Amoeba.Windows
 {
     public delegate void DebugLog(string message);
 
+    public enum MainWindowTabType
+    {
+        Connection,
+        Search,
+        Download,
+        Upload,
+        Share,
+        Store,
+        Log,
+    }
+
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
@@ -157,6 +168,8 @@ namespace Amoeba.Windows
 #endif
 
                 Debug.WriteLineIf(System.Runtime.GCSettings.IsServerGC, "GCSettings.IsServerGC");
+
+                this.GarbageCollect();
 
                 sw.Stop();
                 Debug.WriteLine("StartUp {0}", sw.ElapsedMilliseconds);
@@ -420,26 +433,91 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (gcStopwatch.Elapsed.TotalMinutes >= 10)
+#if DEBUG
+                    if (gcStopwatch.Elapsed.TotalMinutes >= 1)
                     {
                         gcStopwatch.Restart();
 
                         try
                         {
-                            System.GC.Collect();
-                            System.GC.WaitForPendingFinalizers();
-                            System.GC.Collect();
+                            this.GarbageCollect();
                         }
                         catch (Exception e)
                         {
                             Log.Warning(e);
                         }
                     }
+#else
+                    if (gcStopwatch.Elapsed.TotalMinutes >= 12)
+                    {
+                        gcStopwatch.Restart();
+
+                        try
+                        {
+                            this.GarbageCollect();
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Warning(e);
+                        }
+                    }
+#endif
                 }
             }
             catch (Exception e)
             {
                 Log.Error(e);
+            }
+        }
+
+        private void GarbageCollect()
+        {
+            long pressure = (long)NetworkConverter.FromSizeString("8 GB");
+
+            try
+            {
+                GC.AddMemoryPressure(pressure);
+
+                // ワーキングセットを縮小する。
+                //{
+                //    //NativeMethods.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+                //
+                //    var currentProcess = Process.GetCurrentProcess();
+                //    currentProcess.MaxWorkingSet = (IntPtr)(1024 * 1024 * 256);
+                //    currentProcess.MinWorkingSet = (IntPtr)(1024 * 1024 * 256);
+                //}
+
+                // LargeObjectHeapCompactionModeの設定を試みる。(.net 4.5.1以上で可能)
+                try
+                {
+                    var type = typeof(System.Runtime.GCSettings);
+                    var property = type.GetProperty("LargeObjectHeapCompactionMode", BindingFlags.Static | BindingFlags.Public);
+
+                    if (null != property)
+                    {
+                        var Setter = property.GetSetMethod();
+                        Setter.Invoke(null, new object[] { /* GCLargeObjectHeapCompactionMode.CompactOnce */ 2 });
+                        System.GC.Collect();
+
+                        Debug.WriteLine("Set GCLargeObjectHeapCompactionMode.CompactOnce");
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                {
+                    System.GC.Collect();
+                    System.GC.WaitForPendingFinalizers();
+                    System.GC.Collect();
+                }
+
+                GC.RemoveMemoryPressure(pressure);
+            }
+            catch (Exception e)
+            {
+                Log.Warning(e);
             }
         }
 
@@ -905,6 +983,7 @@ namespace Amoeba.Windows
 
                         OperatingSystem osInfo = Environment.OSVersion;
 
+                        // Windows Vista以上。
                         if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
                         {
                             p.Verb = "runas";
@@ -1532,12 +1611,12 @@ namespace Amoeba.Windows
                 try
                 {
                     Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
-                    
+
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
                         this.WindowState = System.Windows.WindowState.Minimized;
                     }));
-                    
+
                     _timerThread.Join();
                     _timerThread = null;
 

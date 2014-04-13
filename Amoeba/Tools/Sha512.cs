@@ -4,6 +4,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;
+using System.Threading;
 
 namespace Amoeba
 {
@@ -12,6 +13,8 @@ namespace Amoeba
     /// </summary>
     static class Sha512
     {
+        private static readonly ThreadLocal<Encoding> _threadLocalEncoding = new ThreadLocal<Encoding>(() => new UTF8Encoding(false));
+
         public static byte[] ComputeHash(byte[] buffer, int offset, int count)
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
@@ -41,7 +44,8 @@ namespace Amoeba
         {
             if (value == null) throw new ArgumentNullException("value");
 
-            return Sha512.ComputeHash(new UTF8Encoding(false).GetBytes(value));
+            Encoding encoding = _threadLocalEncoding.Value;
+            return Sha512.ComputeHash(encoding.GetBytes(value));
         }
 
         public static byte[] ComputeHash(ArraySegment<byte> value)

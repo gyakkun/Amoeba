@@ -19,5 +19,8 @@ namespace Amoeba
     {
         [DllImport("kernel32.dll")]
         public extern static ExecutionState SetThreadExecutionState(ExecutionState esFlags);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool SetProcessWorkingSetSize(IntPtr handle, int minSize, int maxSize);
     }
 }

@@ -24,6 +24,13 @@ using Library.Net.Amoeba;
 
 namespace Amoeba.Windows
 {
+    public enum StoreControlTabType
+    {
+        Download,
+        Upload,
+        Library,
+    }
+
     /// <summary>
     /// StoreControl.xaml の相互作用ロジック
     /// </summary>

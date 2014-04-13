@@ -170,7 +170,7 @@ namespace Amoeba.Windows
                         }));
                     }
 
-                    var sortList = this.Sort(newList).Take(100000); // 10万件
+                    var sortList = this.Sort(newList, 100000); // 10万件
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
@@ -1158,7 +1158,7 @@ namespace Amoeba.Windows
                 {
                     foreach (var item in list)
                     {
-                        _amoebaManager.RemoveCacheSeed(item);
+                        _amoebaManager.RemoveCache(item);
                     }
 
                     foreach (var item in downloadList)
@@ -1229,7 +1229,7 @@ namespace Amoeba.Windows
                 {
                     foreach (var item in list)
                     {
-                        _amoebaManager.RemoveCacheSeed(item);
+                        _amoebaManager.RemoveCache(item);
                     }
 
                     this.Update_Cache();
@@ -1766,7 +1766,7 @@ namespace Amoeba.Windows
             this.Update();
         }
 
-        private IEnumerable<SearchListViewItem> Sort(IEnumerable<SearchListViewItem> collection)
+        private IEnumerable<SearchListViewItem> Sort(IEnumerable<SearchListViewItem> collection, int maxCount)
         {
             var sortBy = Settings.Instance.SearchControl_LastHeaderClicked;
             var direction = Settings.Instance.SearchControl_ListSortDirection;
@@ -1881,7 +1881,8 @@ namespace Amoeba.Windows
                 list.Reverse();
             }
 
-            return list;
+            if (list.Count <= maxCount) return list;
+            else return list.GetRange(0, maxCount);
         }
 
         #endregion

@@ -605,6 +605,7 @@ namespace Amoeba.Windows
 
                     OperatingSystem osInfo = Environment.OSVersion;
 
+                    // Windows Vista以上。
                     if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
                     {
                         p.Verb = "runas";
@@ -628,6 +629,7 @@ namespace Amoeba.Windows
 
                     OperatingSystem osInfo = Environment.OSVersion;
 
+                    // Windows Vista以上。
                     if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
                     {
                         p.Verb = "runas";

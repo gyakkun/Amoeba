@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -38,8 +39,22 @@ namespace Amoeba
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 49);
-            GCSettings.LatencyMode = GCLatencyMode.Batch;
+            {
+                OperatingSystem osInfo = Environment.OSVersion;
+
+                // Windows Vista以上。
+                if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
+                {
+                    // SHA512CryptoServiceProviderをデフォルトで使うように設定する。
+                    CryptoConfig.AddAlgorithm(typeof(SHA512CryptoServiceProvider),
+                        "SHA512",
+                        "SHA512CryptoServiceProvider",
+                        "System.Security.Cryptography.SHA512",
+                        "System.Security.Cryptography.SHA512CryptoServiceProvider");
+                }
+            }
+
+            App.AmoebaVersion = new Version(2, 0, 50);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -324,110 +339,106 @@ namespace Amoeba
                 }
             }
 
-            try
+            this.CheckProcess();
+
+            // アップデート
+            if (Directory.Exists(App.DirectoryPaths["Update"]))
             {
-                // アップデート
-                if (Directory.Exists(App.DirectoryPaths["Update"]))
+            Restart: ;
+
+                string zipFilePath = null;
+
                 {
-                Restart: ;
+                    Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
+                    Version version = App.AmoebaVersion;
 
-                    string zipFilePath = null;
-
+                    foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
                     {
-                        Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
-                        Version version = App.AmoebaVersion;
+                        string name = Path.GetFileName(path);
 
-                        foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
+                        if (name.StartsWith("Amoeba"))
                         {
-                            string name = Path.GetFileName(path);
+                            var match = regex.Match(name);
 
-                            if (name.StartsWith("Amoeba"))
+                            if (match.Success)
                             {
-                                var match = regex.Match(name);
+                                var tempVersion = new Version(match.Groups[1].Value);
 
-                                if (match.Success)
+                                if (version < tempVersion)
                                 {
-                                    var tempVersion = new Version(match.Groups[1].Value);
-
-                                    if (version < tempVersion)
-                                    {
-                                        version = tempVersion;
-                                        zipFilePath = path;
-                                    }
-                                    else
-                                    {
-                                        if (File.Exists(path))
-                                            File.Delete(path);
-                                    }
+                                    version = tempVersion;
+                                    zipFilePath = path;
+                                }
+                                else
+                                {
+                                    if (File.Exists(path))
+                                        File.Delete(path);
                                 }
                             }
                         }
                     }
+                }
 
-                    if (zipFilePath != null)
+                if (zipFilePath != null)
+                {
+                    string workDirectioryPath = App.DirectoryPaths["Work"];
+                    var tempCoreDirectoryPath = Path.Combine(workDirectioryPath, "Core");
+
+                    if (Directory.Exists(tempCoreDirectoryPath))
+                        Directory.Delete(tempCoreDirectoryPath, true);
+
+                    try
                     {
-                        string workDirectioryPath = App.DirectoryPaths["Work"];
-                        var tempCoreDirectoryPath = Path.Combine(workDirectioryPath, "Core");
-
-                        if (Directory.Exists(tempCoreDirectoryPath))
-                            Directory.Delete(tempCoreDirectoryPath, true);
-
-                        try
+                        using (ZipFile zipfile = new ZipFile(zipFilePath))
                         {
-                            using (ZipFile zipfile = new ZipFile(zipFilePath))
-                            {
-                                zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                                zipfile.UseUnicodeAsNecessary = true;
-                                zipfile.ExtractAll(tempCoreDirectoryPath);
-                            }
+                            zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
+                            zipfile.UseUnicodeAsNecessary = true;
+                            zipfile.ExtractAll(tempCoreDirectoryPath);
                         }
-                        catch (Exception)
-                        {
-                            if (File.Exists(zipFilePath))
-                                File.Delete(zipFilePath);
-
-                            goto Restart;
-                        }
-
-                        var tempUpdateExeFilePath = Path.Combine(workDirectioryPath, "Library.Update.exe");
-
-                        if (File.Exists(tempUpdateExeFilePath))
-                            File.Delete(tempUpdateExeFilePath);
-
-                        File.Copy("Library.Update.exe", tempUpdateExeFilePath);
-
-                        ProcessStartInfo startInfo = new ProcessStartInfo();
-                        startInfo.FileName = tempUpdateExeFilePath;
-                        startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
-                            Process.GetCurrentProcess().Id,
-                            Path.Combine(tempCoreDirectoryPath, "Core"),
-                            Directory.GetCurrentDirectory(),
-                            Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"),
-                            Path.GetFullPath(zipFilePath));
-                        startInfo.WorkingDirectory = Path.GetDirectoryName(tempUpdateExeFilePath);
-
-                        var process = Process.Start(startInfo);
-                        process.WaitForInputIdle();
-
-                        string updateInformationFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update");
-
-                        using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Create))
-                        using (StreamWriter writer = new StreamWriter(stream))
-                        {
-                            writer.WriteLine(Path.GetFileName(tempUpdateExeFilePath));
-                        }
-
-                        this.Shutdown();
-
-                        return;
                     }
+                    catch (Exception)
+                    {
+                        if (File.Exists(zipFilePath))
+                            File.Delete(zipFilePath);
+
+                        goto Restart;
+                    }
+
+                    var tempUpdateExeFilePath = Path.Combine(workDirectioryPath, "Library.Update.exe");
+
+                    if (File.Exists(tempUpdateExeFilePath))
+                        File.Delete(tempUpdateExeFilePath);
+
+                    File.Copy("Library.Update.exe", tempUpdateExeFilePath);
+
+                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                    startInfo.FileName = tempUpdateExeFilePath;
+                    startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
+                        Process.GetCurrentProcess().Id,
+                        Path.Combine(tempCoreDirectoryPath, "Core"),
+                        Directory.GetCurrentDirectory(),
+                        Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"),
+                        Path.GetFullPath(zipFilePath));
+                    startInfo.WorkingDirectory = Path.GetDirectoryName(tempUpdateExeFilePath);
+
+                    var process = Process.Start(startInfo);
+                    process.WaitForInputIdle();
+
+                    string updateInformationFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update");
+
+                    using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Create))
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
+                        writer.WriteLine(Path.GetFileName(tempUpdateExeFilePath));
+                    }
+
+                    this.Shutdown();
+
+                    return;
                 }
             }
-            finally
-            {
-                this.CheckProcess();
-            }
 
+            // バージョンアップ処理。
             if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
             {
                 Version version;

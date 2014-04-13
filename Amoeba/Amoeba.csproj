@@ -63,9 +63,6 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Mono|AnyCPU'">
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -112,10 +109,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ObservableCollectionEx.cs" />
+    <Compile Include="Windows\_Controls\ObservableCollectionEx.cs" />
     <Compile Include="OverlayNetworkManager.cs" />
-    <Compile Include="StoreControlTabType.cs" />
-    <Compile Include="MainWindowTabType.cs" />
     <Compile Include="Windows\Link\LinkOptionsWindow.xaml.cs">
       <DependentUpon>LinkOptionsWindow.xaml</DependentUpon>
     </Compile>
@@ -128,7 +123,7 @@
     <Compile Include="Windows\Store\StoreControl.xaml.cs">
       <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EqualityComparer.cs" />
+    <Compile Include="Tools\EqualityComparer.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Tools\Sha512.cs" />
     <Compile Include="NativeMethods.cs" />
