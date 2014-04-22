@@ -165,7 +165,7 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
-                            searchTreeViewItem.Hit = Math.Min(newList.Count, 100000);
+                            searchTreeViewItem.Hit = newList.Count;
                             searchTreeViewItem.Update();
                         }));
                     }
@@ -182,6 +182,13 @@ namespace Amoeba.Windows
                         foreach (var item in sortList)
                         {
                             _listView.Items.Add(item);
+
+                            if ((_listView.Items.Count % 256) == 0)
+                            {
+                                if (_refresh) return;
+
+                                this.DoEvents();
+                            }
                         }
 
                         this.Update_Title();
@@ -692,11 +699,7 @@ namespace Amoeba.Windows
                 var searchTreeItem = new SearchTreeItem();
                 searchTreeItem.SearchItem = new SearchItem();
                 searchTreeItem.SearchItem.Name = string.Format("Name - \"{0}\"", _textBox.Text);
-                searchTreeItem.SearchItem.SearchNameCollection.Add(new SearchContains<string>()
-                {
-                    Contains = true,
-                    Value = _textBox.Text
-                });
+                searchTreeItem.SearchItem.SearchNameCollection.Add(new SearchContains<string>(true, _textBox.Text));
 
                 selectTreeViewItem.Value.Children.Add(searchTreeItem);
 
@@ -1459,15 +1462,10 @@ namespace Amoeba.Windows
 
                 var signature = !string.IsNullOrWhiteSpace(listItem.Signature) ? listItem.Signature : "Anonymous";
 
-                var item = new SearchContains<SearchRegex>()
-                {
-                    Contains = true,
-                    Value = new SearchRegex()
-                    {
-                        IsIgnoreCase = false,
-                        Value = Regex.Escape(signature),
-                    },
-                };
+                var item = new SearchContains<SearchRegex>(
+                    true,
+                    new SearchRegex(Regex.Escape(signature), false)
+                );
 
                 searchTreeItem.SearchItem.Name = string.Format("Signature - \"{0}\"", signature);
                 searchTreeItem.SearchItem.SearchSignatureCollection.Add(item);
@@ -1494,11 +1492,10 @@ namespace Amoeba.Windows
                     var searchTreeItem = new SearchTreeItem();
                     searchTreeItem.SearchItem = new SearchItem();
 
-                    var item = new SearchContains<string>()
-                    {
-                        Contains = true,
-                        Value = keyword,
-                    };
+                    var item = new SearchContains<string>(
+                        true,
+                        keyword
+                    );
 
                     searchTreeItem.SearchItem.Name = string.Format("Keyword - \"{0}\"", keyword);
                     searchTreeItem.SearchItem.SearchKeywordCollection.Add(item);
@@ -1524,11 +1521,10 @@ namespace Amoeba.Windows
                 var searchTreeItem = new SearchTreeItem();
                 searchTreeItem.SearchItem = new SearchItem();
 
-                var item = new SearchContains<SearchRange<DateTime>>()
-                {
-                    Contains = true,
-                    Value = new SearchRange<DateTime>() { Min = listItem.Value.CreationTime },
-                };
+                var item = new SearchContains<SearchRange<DateTime>>(
+                    true,
+                    new SearchRange<DateTime>(listItem.Value.CreationTime, listItem.Value.CreationTime)
+                );
 
                 searchTreeItem.SearchItem.Name = string.Format("CreationTime - \"{0}\"", listItem.Value.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo));
                 searchTreeItem.SearchItem.SearchCreationTimeRangeCollection.Add(item);
@@ -1568,11 +1564,10 @@ namespace Amoeba.Windows
                 var searchTreeItem = new SearchTreeItem();
                 searchTreeItem.SearchItem = new SearchItem();
 
-                var item = new SearchContains<SearchState>()
-                {
-                    Contains = true,
-                    Value = state,
-                };
+                var item = new SearchContains<SearchState>(
+                    true,
+                    state
+                );
 
                 searchTreeItem.SearchItem.Name = string.Format("State - \"{0}\"", converter.Convert(state, typeof(string), null, System.Globalization.CultureInfo.CurrentUICulture));
                 searchTreeItem.SearchItem.SearchStateCollection.Add(item);
@@ -1596,11 +1591,10 @@ namespace Amoeba.Windows
             {
                 if (string.IsNullOrWhiteSpace(listItem.Name)) continue;
 
-                var item = new SearchContains<string>()
-                {
-                    Contains = false,
-                    Value = listItem.Name,
-                };
+                var item = new SearchContains<string>(
+                    false,
+                    listItem.Name
+                );
 
                 if (selectTreeViewItem.Value.SearchItem.SearchNameCollection.Contains(item)) continue;
                 selectTreeViewItem.Value.SearchItem.SearchNameCollection.Add(item);
@@ -1621,15 +1615,10 @@ namespace Amoeba.Windows
             {
                 var signature = !string.IsNullOrWhiteSpace(listItem.Signature) ? listItem.Signature : "Anonymous";
 
-                var item = new SearchContains<SearchRegex>()
-                {
-                    Contains = false,
-                    Value = new SearchRegex()
-                    {
-                        IsIgnoreCase = false,
-                        Value = Regex.Escape(signature),
-                    },
-                };
+                var item = new SearchContains<SearchRegex>(
+                    false,
+                    new SearchRegex(Regex.Escape(signature), false)
+                );
 
                 if (selectTreeViewItem.Value.SearchItem.SearchSignatureCollection.Contains(item)) continue;
                 selectTreeViewItem.Value.SearchItem.SearchSignatureCollection.Add(item);
@@ -1652,11 +1641,10 @@ namespace Amoeba.Windows
                 {
                     if (string.IsNullOrWhiteSpace(keyword)) continue;
 
-                    var item = new SearchContains<string>()
-                    {
-                        Contains = false,
-                        Value = keyword,
-                    };
+                    var item = new SearchContains<string>(
+                        false,
+                        keyword
+                    );
 
                     if (selectTreeViewItem.Value.SearchItem.SearchKeywordCollection.Contains(item)) continue;
                     selectTreeViewItem.Value.SearchItem.SearchKeywordCollection.Add(item);
@@ -1676,11 +1664,10 @@ namespace Amoeba.Windows
 
             foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
-                var item = new SearchContains<SearchRange<DateTime>>()
-                {
-                    Contains = false,
-                    Value = new SearchRange<DateTime>() { Min = listItem.Value.CreationTime },
-                };
+                var item = new SearchContains<SearchRange<DateTime>>(
+                    false,
+                    new SearchRange<DateTime>(listItem.Value.CreationTime, listItem.Value.CreationTime)
+                );
 
                 if (selectTreeViewItem.Value.SearchItem.SearchCreationTimeRangeCollection.Contains(item)) continue;
                 selectTreeViewItem.Value.SearchItem.SearchCreationTimeRangeCollection.Add(item);
@@ -1701,11 +1688,10 @@ namespace Amoeba.Windows
             {
                 if (listitem.Value == null) continue;
 
-                var item = new SearchContains<Seed>()
-                {
-                    Contains = false,
-                    Value = listitem.Value
-                };
+                var item = new SearchContains<Seed>(
+                    false,
+                    listitem.Value
+                );
 
                 if (selectTreeViewItem.Value.SearchItem.SearchSeedCollection.Contains(item)) continue;
                 selectTreeViewItem.Value.SearchItem.SearchSeedCollection.Add(item);

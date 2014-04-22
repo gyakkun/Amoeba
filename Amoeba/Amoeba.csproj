@@ -45,6 +45,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -54,7 +55,7 @@
     <ErrorReport>none</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
@@ -109,8 +110,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Utilities\AddressFilter.cs" />
+    <Compile Include="Utilities\CatharsisManager.cs" />
     <Compile Include="Windows\_Controls\ObservableCollectionEx.cs" />
-    <Compile Include="OverlayNetworkManager.cs" />
+    <Compile Include="Utilities\OverlayNetworkManager.cs" />
     <Compile Include="Windows\Link\LinkOptionsWindow.xaml.cs">
       <DependentUpon>LinkOptionsWindow.xaml</DependentUpon>
     </Compile>
@@ -123,10 +126,9 @@
     <Compile Include="Windows\Store\StoreControl.xaml.cs">
       <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tools\EqualityComparer.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Tools\Sha512.cs" />
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Utilities\EqualityComparer.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\Sha512.cs" />
     <Compile Include="Windows\Store\LibraryControl.xaml.cs">
       <DependentUpon>LibraryControl.xaml</DependentUpon>
     </Compile>
@@ -221,9 +223,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Route.cs" />
-    <Compile Include="TransfarLimitManager.cs" />
-    <Compile Include="WindowPosition.cs" />
+    <Compile Include="Utilities\Route.cs" />
+    <Compile Include="Utilities\TransfarLimitManager.cs" />
+    <Compile Include="Utilities\WindowPosition.cs" />
     <Page Include="Windows\Store\LibraryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -298,14 +300,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Clipboard.cs" />
-    <Compile Include="MessageConverter.cs" />
+    <Compile Include="Utilities\Clipboard.cs" />
+    <Compile Include="Utilities\MessageConverter.cs" />
     <Compile Include="Properties\LanguagesManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\Settings.cs" />
-    <Compile Include="AutoBaseNodeSettingManager.cs" />
+    <Compile Include="Utilities\AutoBaseNodeSettingManager.cs" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -323,16 +325,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Polipo\libgnurx-0.dll">
+    <Content Include="Assembly\Polipo\libgnurx-0.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Polipo\polipo.exe">
+    <Content Include="Assembly\Polipo\polipo.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tor\tor-resolve.exe">
+    <Content Include="Assembly\Tor\tor-resolve.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tor\tor.exe">
+    <Content Include="Assembly\Tor\tor.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -375,12 +377,12 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Polipo\polipo.conf">
+    <None Include="Assembly\Polipo\polipo.conf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Amoeba.License" />
     <None Include="Properties\Amoeba.Readme" />
-    <None Include="Tor\torrc">
+    <None Include="Assembly\Tor\torrc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -400,10 +402,6 @@
     <ProjectReference Include="..\..\Library\Library.Net.Amoeba\Library.Net.Amoeba.csproj">
       <Project>{82230C99-6599-4130-AAC9-FC926ABC0724}</Project>
       <Name>Library.Net.Amoeba</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Caps\Library.Net.Caps.csproj">
-      <Project>{364FD425-45B7-41D5-A180-1CE912C7BA31}</Project>
-      <Name>Library.Net.Caps</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Library.Net.Connections\Library.Net.Connections.csproj">
       <Project>{38994E3C-0699-4D6C-AD02-F9F657340347}</Project>

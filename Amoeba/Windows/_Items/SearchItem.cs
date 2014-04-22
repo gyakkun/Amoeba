@@ -258,10 +258,16 @@ namespace Amoeba.Windows
     }
 
     [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]
-    class SearchContains<T> : IEquatable<SearchContains<T>>, ICloneable<SearchContains<T>>
+    class SearchContains<T> : IEquatable<SearchContains<T>>
     {
         private bool _contains;
         private T _value;
+
+        public SearchContains(bool contains, T value)
+        {
+            this.Contains = contains;
+            this.Value = value;
+        }
 
         [DataMember(Name = "Contains")]
         public bool Contains
@@ -270,7 +276,7 @@ namespace Amoeba.Windows
             {
                 return _contains;
             }
-            set
+            private set
             {
                 _contains = value;
             }
@@ -283,7 +289,7 @@ namespace Amoeba.Windows
             {
                 return _value;
             }
-            set
+            private set
             {
                 _value = value;
             }
@@ -319,40 +325,21 @@ namespace Amoeba.Windows
         {
             return string.Format("{0} {1}", this.Contains, this.Value);
         }
-
-        #region ICloneable<SearchContains<T>>
-
-        public SearchContains<T> Clone()
-        {
-            var ds = new DataContractSerializer(typeof(SearchContains<T>));
-
-            using (BufferStream stream = new BufferStream(BufferManager.Instance))
-            {
-                using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
-                {
-                    ds.WriteObject(textDictionaryWriter, this);
-                }
-
-                stream.Position = 0;
-
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
-                {
-                    return (SearchContains<T>)ds.ReadObject(textDictionaryReader);
-                }
-            }
-        }
-
-        #endregion
     }
 
     [DataContract(Name = "SearchRegex", Namespace = "http://Amoeba/Windows")]
-    class SearchRegex : IEquatable<SearchRegex>, ICloneable<SearchRegex>
+    class SearchRegex : IEquatable<SearchRegex>
     {
         private string _value;
         private bool _isIgnoreCase;
 
         private Regex _regex;
+
+        public SearchRegex(string value, bool isIgnoreCase)
+        {
+            this.Value = value;
+            this.IsIgnoreCase = isIgnoreCase;
+        }
 
         [DataMember(Name = "Value")]
         public string Value
@@ -361,7 +348,7 @@ namespace Amoeba.Windows
             {
                 return _value;
             }
-            set
+            private set
             {
                 _value = value;
 
@@ -376,7 +363,7 @@ namespace Amoeba.Windows
             {
                 return _isIgnoreCase;
             }
-            set
+            private set
             {
                 _isIgnoreCase = value;
 
@@ -430,52 +417,19 @@ namespace Amoeba.Windows
         {
             return string.Format("{0} {1}", this.IsIgnoreCase, this.Value);
         }
-
-        #region ICloneable<SearchRegex>
-
-        public SearchRegex Clone()
-        {
-            var ds = new DataContractSerializer(typeof(SearchRegex));
-
-            using (BufferStream stream = new BufferStream(BufferManager.Instance))
-            {
-                using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
-                {
-                    ds.WriteObject(textDictionaryWriter, this);
-                }
-
-                stream.Position = 0;
-
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
-                {
-                    return (SearchRegex)ds.ReadObject(textDictionaryReader);
-                }
-            }
-        }
-
-        #endregion
     }
 
     [DataContract(Name = "SearchRange", Namespace = "http://Amoeba/Windows")]
-    class SearchRange<T> : IEquatable<SearchRange<T>>, ICloneable<SearchRange<T>>
-        where T : IComparable
+    struct SearchRange<T> : IEquatable<SearchRange<T>>
+        where T : IComparable, IEquatable<T>
     {
-        T _max;
-        T _min;
+        private T _min;
+        private T _max;
 
-        [DataMember(Name = "Max")]
-        public T Max
+        public SearchRange(T min, T max)
         {
-            get
-            {
-                return _max;
-            }
-            set
-            {
-                _max = value;
-                _min = (_min.CompareTo(_max) > 0) ? _max : _min;
-            }
+            _min = min;
+            _max = (max.CompareTo(_min) < 0) ? _min : max;
         }
 
         [DataMember(Name = "Min")]
@@ -485,10 +439,22 @@ namespace Amoeba.Windows
             {
                 return _min;
             }
-            set
+            private set
             {
                 _min = value;
-                _max = (_max.CompareTo(_min) < 0) ? _min : _max;
+            }
+        }
+
+        [DataMember(Name = "Max")]
+        public T Max
+        {
+            get
+            {
+                return _max;
+            }
+            private set
+            {
+                _max = value;
             }
         }
 
@@ -521,8 +487,7 @@ namespace Amoeba.Windows
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
-            if ((!this.Min.Equals(other.Min))
-                || (!this.Max.Equals(other.Max)))
+            if (!this.Min.Equals(other.Min) || !this.Max.Equals(other.Max))
             {
                 return false;
             }
@@ -532,32 +497,7 @@ namespace Amoeba.Windows
 
         public override string ToString()
         {
-            return string.Format("Max = {0}, Min = {1}", this.Max, this.Min);
+            return string.Format("Min = {0}, Max = {1}", this.Min, this.Max);
         }
-
-        #region ICloneable<SearchRange<T>>
-
-        public SearchRange<T> Clone()
-        {
-            var ds = new DataContractSerializer(typeof(SearchRange<T>));
-
-            using (BufferStream stream = new BufferStream(BufferManager.Instance))
-            {
-                using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
-                {
-                    ds.WriteObject(textDictionaryWriter, this);
-                }
-
-                stream.Position = 0;
-
-                using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
-                {
-                    return (SearchRange<T>)ds.ReadObject(textDictionaryReader);
-                }
-            }
-        }
-
-        #endregion
     }
 }

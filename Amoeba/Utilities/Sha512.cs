@@ -8,68 +8,51 @@ using System.Threading;
 
 namespace Amoeba
 {
-    /// <summary>
-    /// SHA512bitハッシュ生成クラス
-    /// </summary>
     static class Sha512
     {
+        private static readonly ThreadLocal<SHA512> _threadLocalSha512 = new ThreadLocal<SHA512>(() => SHA512.Create());
         private static readonly ThreadLocal<Encoding> _threadLocalEncoding = new ThreadLocal<Encoding>(() => new UTF8Encoding(false));
 
         public static byte[] ComputeHash(byte[] buffer, int offset, int count)
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
 
-            using (var sha512 = SHA512.Create())
-            {
-                return sha512.ComputeHash(buffer, offset, count);
-            }
+            return _threadLocalSha512.Value.ComputeHash(buffer, offset, count);
         }
 
-        /// <summary>
-        /// ハッシュを生成する
-        /// </summary>
-        /// <param name="buffer">ハッシュ値を計算するbyte配列</param>
         public static byte[] ComputeHash(byte[] buffer)
         {
             if (buffer == null) throw new ArgumentNullException("buffer");
 
-            return Sha512.ComputeHash(buffer, 0, buffer.Length);
+            return _threadLocalSha512.Value.ComputeHash(buffer, 0, buffer.Length);
         }
 
-        /// <summary>
-        /// ハッシュを生成する
-        /// </summary>
-        /// <param name="value">ハッシュ値を計算する文字列</param>
         public static byte[] ComputeHash(string value)
         {
             if (value == null) throw new ArgumentNullException("value");
 
-            Encoding encoding = _threadLocalEncoding.Value;
-            return Sha512.ComputeHash(encoding.GetBytes(value));
+            return _threadLocalSha512.Value.ComputeHash(_threadLocalEncoding.Value.GetBytes(value));
         }
 
         public static byte[] ComputeHash(ArraySegment<byte> value)
         {
             if (value.Array == null) throw new ArgumentNullException("value");
 
-            return Sha512.ComputeHash(value.Array, value.Offset, value.Count);
+            return _threadLocalSha512.Value.ComputeHash(value.Array, value.Offset, value.Count);
         }
 
         public static byte[] ComputeHash(Stream inputStream)
         {
             if (inputStream == null) throw new ArgumentNullException("inputStream");
 
-            using (var sha512 = SHA512.Create())
-            {
-                return sha512.ComputeHash(inputStream);
-            }
+            return _threadLocalSha512.Value.ComputeHash(inputStream);
         }
 
         public static byte[] ComputeHash(IList<ArraySegment<byte>> value)
         {
             if (value == null) throw new ArgumentNullException("value");
 
-            if (value.Count == 1) return Sha512.ComputeHash(value[0]);
+            if (value.Count == 1) return _threadLocalSha512.Value.ComputeHash(value[0].Array, value[0].Offset, value[0].Count);
 
             using (var sha512 = SHA512.Create())
             {

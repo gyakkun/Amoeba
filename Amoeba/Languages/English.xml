@@ -8,6 +8,9 @@
   <Translate Key="Languages_English" Value="English" />
   <Translate Key="Languages_Japanese" Value="Japanese" />
 
+  <Translate Key="ConnectDirection_In" Value="In" />
+  <Translate Key="ConnectDirection_Out" Value="Out" />
+
   <Translate Key="Seed_Name" Value="Name" />
   <Translate Key="Seed_Signature" Value="Signature" />
   <Translate Key="Seed_Length" Value="Length" />
@@ -196,6 +199,7 @@
   <Translate Key="NameWindow_Ok" Value="Ok" />
   <Translate Key="NameWindow_Cancel" Value="Cancel" />
 
+  <Translate Key="ConnectionControl_Direction" Value="Direction" />
   <Translate Key="ConnectionControl_Uri" Value="Uri" />
   <Translate Key="ConnectionControl_Priority" Value="Priority" />
   <Translate Key="ConnectionControl_SentByteCount" Value="Sent byte count" />

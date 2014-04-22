@@ -91,6 +91,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<string>() { Name = "ConnectionControl_LastHeaderClicked", Value = "Uri" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "ConnectionControl_ListSortDirection", Value = ListSortDirection.Ascending },
                 new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_Grid_ColumnDefinitions_Width", Value = -1 },
+                new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_Direction_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_Uri_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_Priority_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "ConnectionControl_GridViewColumn_ReceivedByteCount_Width", Value = 120 },
@@ -1391,6 +1392,24 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ConnectionControl_Grid_ColumnDefinitions_Width"] = value;
+                }
+            }
+        }
+
+        public double ConnectionControl_GridViewColumn_Direction_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                   return (double)this["ConnectionControl_GridViewColumn_Direction_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["ConnectionControl_GridViewColumn_Direction_Width"] = value;
                 }
             }
         }

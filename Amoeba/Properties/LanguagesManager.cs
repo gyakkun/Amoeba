@@ -221,6 +221,29 @@ namespace Amoeba.Properties
         }
 
 
+        public string ConnectDirection_In
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectDirection_In");
+                }
+            }
+        }
+
+        public string ConnectDirection_Out
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectDirection_Out");
+                }
+            }
+        }
+
+
         public string Seed_Name
         {
             get
@@ -2168,6 +2191,17 @@ namespace Amoeba.Properties
             }
         }
 
+
+        public string ConnectionControl_Direction
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_Direction");
+                }
+            }
+        }
 
         public string ConnectionControl_Uri
         {

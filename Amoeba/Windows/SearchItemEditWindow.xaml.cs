@@ -55,14 +55,14 @@ namespace Amoeba.Windows
             {
                 _searchTreeViewItemNameTextBox.Text = _searchItem.Name;
 
-                _nameCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchNameCollection.Select(n => n.Clone()));
-                _nameRegexCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchNameRegexCollection.Select(n => n.Clone()));
-                _signatureCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchSignatureCollection.Select(n => n.Clone()));
-                _keywordCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchKeywordCollection.Select(n => n.Clone()));
-                _creationTimeRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<DateTime>>>(_searchItem.SearchCreationTimeRangeCollection.Select(n => n.Clone()));
-                _lengthRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<long>>>(_searchItem.SearchLengthRangeCollection.Select(n => n.Clone()));
-                _seedCollection = new ObservableCollectionEx<SearchContains<Seed>>(_searchItem.SearchSeedCollection.Select(n => n.Clone()));
-                _stateCollection = new ObservableCollectionEx<SearchContains<SearchState>>(_searchItem.SearchStateCollection.Select(n => n.Clone()));
+                _nameCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchNameCollection);
+                _nameRegexCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchNameRegexCollection);
+                _signatureCollection = new ObservableCollectionEx<SearchContains<SearchRegex>>(_searchItem.SearchSignatureCollection);
+                _keywordCollection = new ObservableCollectionEx<SearchContains<string>>(_searchItem.SearchKeywordCollection);
+                _creationTimeRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<DateTime>>>(_searchItem.SearchCreationTimeRangeCollection);
+                _lengthRangeCollection = new ObservableCollectionEx<SearchContains<SearchRange<long>>>(_searchItem.SearchLengthRangeCollection);
+                _seedCollection = new ObservableCollectionEx<SearchContains<Seed>>(_searchItem.SearchSeedCollection);
+                _stateCollection = new ObservableCollectionEx<SearchContains<SearchState>>(_searchItem.SearchStateCollection);
             }
 
             _searchTreeViewItemNameTextBox_TextChanged(null, null);
@@ -240,11 +240,10 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    var item = new SearchContains<string>()
-                    {
-                        Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = match.Groups[2].Value,
-                    };
+                    var item = new SearchContains<string>(
+                       (match.Groups[1].Value == "+") ? true : false,
+                        match.Groups[2].Value
+                    );
 
                     if (_nameCollection.Contains(item)) continue;
                     _nameCollection.Add(item);
@@ -288,11 +287,10 @@ namespace Amoeba.Windows
         {
             if (_nameTextBox.Text == "") return;
 
-            var item = new SearchContains<string>()
-            {
-                Contains = _nameContainsCheckBox.IsChecked.Value,
-                Value = _nameTextBox.Text,
-            };
+            var item = new SearchContains<string>(
+               _nameContainsCheckBox.IsChecked.Value,
+               _nameTextBox.Text
+            );
 
             if (_nameCollection.Contains(item)) return;
             _nameCollection.Add(item);
@@ -307,11 +305,10 @@ namespace Amoeba.Windows
             var selectIndex = _nameListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            var item = new SearchContains<string>()
-            {
-                Contains = _nameContainsCheckBox.IsChecked.Value,
-                Value = _nameTextBox.Text,
-            };
+            var item = new SearchContains<string>(
+                _nameContainsCheckBox.IsChecked.Value,
+                _nameTextBox.Text
+            );
 
             if (_nameCollection.Contains(item)) return;
             _nameCollection.Set(selectIndex, item);
@@ -475,15 +472,10 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    var item = new SearchContains<SearchRegex>()
-                    {
-                        Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = new SearchRegex()
-                        {
-                            IsIgnoreCase = (match.Groups[2].Value == "+") ? true : false,
-                            Value = match.Groups[3].Value
-                        },
-                    };
+                    var item = new SearchContains<SearchRegex>(
+                        (match.Groups[1].Value == "+") ? true : false,
+                        new SearchRegex(match.Groups[3].Value, (match.Groups[2].Value == "+") ? true : false)
+                    );
 
                     if (_nameRegexCollection.Contains(item)) continue;
                     _nameRegexCollection.Add(item);
@@ -529,15 +521,10 @@ namespace Amoeba.Windows
 
             try
             {
-                var item = new SearchContains<SearchRegex>()
-                {
-                    Contains = _nameRegexContainsCheckBox.IsChecked.Value,
-                    Value = new SearchRegex()
-                    {
-                        IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value,
-                        Value = _nameRegexTextBox.Text
-                    },
-                };
+                var item = new SearchContains<SearchRegex>(
+                    _nameRegexContainsCheckBox.IsChecked.Value,
+                    new SearchRegex(_nameRegexTextBox.Text, _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value)
+                );
 
                 if (_nameRegexCollection.Contains(item)) return;
                 _nameRegexCollection.Add(item);
@@ -559,15 +546,10 @@ namespace Amoeba.Windows
 
             try
             {
-                var item = new SearchContains<SearchRegex>()
-                {
-                    Contains = _nameRegexContainsCheckBox.IsChecked.Value,
-                    Value = new SearchRegex()
-                    {
-                        IsIgnoreCase = _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value,
-                        Value = _nameRegexTextBox.Text
-                    },
-                };
+                var item = new SearchContains<SearchRegex>(
+                    _nameRegexContainsCheckBox.IsChecked.Value,
+                    new SearchRegex(_nameRegexTextBox.Text, _nameRegexIsIgnoreCaseCheckBox.IsChecked.Value)
+                );
 
                 if (_nameRegexCollection.Contains(item)) return;
                 _nameRegexCollection.Set(selectIndex, item);
@@ -736,15 +718,10 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    var item = new SearchContains<SearchRegex>()
-                    {
-                        Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = new SearchRegex()
-                        {
-                            IsIgnoreCase = (match.Groups[2].Value == "+") ? true : false,
-                            Value = match.Groups[3].Value
-                        },
-                    };
+                    var item = new SearchContains<SearchRegex>(
+                        (match.Groups[1].Value == "+") ? true : false,
+                        new SearchRegex(match.Groups[3].Value, (match.Groups[2].Value == "+") ? true : false)
+                    );
 
                     if (_signatureCollection.Contains(item)) continue;
                     _signatureCollection.Add(item);
@@ -790,15 +767,10 @@ namespace Amoeba.Windows
 
             try
             {
-                var item = new SearchContains<SearchRegex>()
-                {
-                    Contains = _signatureContainsCheckBox.IsChecked.Value,
-                    Value = new SearchRegex()
-                    {
-                        IsIgnoreCase = _signatureIsIgnoreCaseCheckBox.IsChecked.Value,
-                        Value = _signatureTextBox.Text
-                    },
-                };
+                var item = new SearchContains<SearchRegex>(
+                    _signatureContainsCheckBox.IsChecked.Value,
+                    new SearchRegex(_signatureTextBox.Text, _signatureIsIgnoreCaseCheckBox.IsChecked.Value)
+                );
 
                 if (_signatureCollection.Contains(item)) return;
                 _signatureCollection.Add(item);
@@ -820,15 +792,10 @@ namespace Amoeba.Windows
 
             try
             {
-                var item = new SearchContains<SearchRegex>()
-                {
-                    Contains = _signatureContainsCheckBox.IsChecked.Value,
-                    Value = new SearchRegex()
-                    {
-                        IsIgnoreCase = _signatureIsIgnoreCaseCheckBox.IsChecked.Value,
-                        Value = _signatureTextBox.Text
-                    },
-                };
+                var item = new SearchContains<SearchRegex>(
+                    _signatureContainsCheckBox.IsChecked.Value,
+                    new SearchRegex(_signatureTextBox.Text, _signatureIsIgnoreCaseCheckBox.IsChecked.Value)
+                );
 
                 if (_signatureCollection.Contains(item)) return;
                 _signatureCollection.Set(selectIndex, item);
@@ -995,11 +962,10 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    var item = new SearchContains<string>()
-                    {
-                        Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = match.Groups[2].Value,
-                    };
+                    var item = new SearchContains<string>(
+                        (match.Groups[1].Value == "+") ? true : false,
+                        match.Groups[2].Value
+                    );
 
                     if (_keywordCollection.Contains(item)) continue;
                     _keywordCollection.Add(item);
@@ -1043,11 +1009,10 @@ namespace Amoeba.Windows
         {
             if (_keywordTextBox.Text == "") return;
 
-            var item = new SearchContains<string>()
-            {
-                Contains = _keywordContainsCheckBox.IsChecked.Value,
-                Value = _keywordTextBox.Text,
-            };
+            var item = new SearchContains<string>(
+                _keywordContainsCheckBox.IsChecked.Value,
+                _keywordTextBox.Text
+            );
 
             if (_keywordCollection.Contains(item)) return;
             _keywordCollection.Add(item);
@@ -1062,11 +1027,10 @@ namespace Amoeba.Windows
             int selectIndex = _keywordListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            var item = new SearchContains<string>()
-            {
-                Contains = _keywordContainsCheckBox.IsChecked.Value,
-                Value = _keywordTextBox.Text,
-            };
+            var item = new SearchContains<string>(
+                _keywordContainsCheckBox.IsChecked.Value,
+                _keywordTextBox.Text
+            );
 
             if (_keywordCollection.Contains(item)) return;
             _keywordCollection.Set(selectIndex, item);
@@ -1246,15 +1210,13 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    var item = new SearchContains<SearchRange<DateTime>>()
-                    {
-                        Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = new SearchRange<DateTime>()
-                        {
-                            Max = DateTime.ParseExact(match.Groups[3].Value, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
-                            Min = DateTime.ParseExact(match.Groups[2].Value, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
-                        },
-                    };
+                    var min = DateTime.ParseExact(match.Groups[2].Value, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
+                    var max = DateTime.ParseExact(match.Groups[3].Value, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
+
+                    var item = new SearchContains<SearchRange<DateTime>>(
+                        (match.Groups[1].Value == "+") ? true : false,
+                        new SearchRange<DateTime>(min, max)
+                    );
 
                     if (_creationTimeRangeCollection.Contains(item)) continue;
                     _creationTimeRangeCollection.Add(item);
@@ -1301,15 +1263,13 @@ namespace Amoeba.Windows
 
             try
             {
-                var item = new SearchContains<SearchRange<DateTime>>()
-                {
-                    Contains = _creationTimeRangeContainsCheckBox.IsChecked.Value,
-                    Value = new SearchRange<DateTime>()
-                    {
-                        Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
-                        Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
-                    }
-                };
+                var min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
+                var max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
+
+                var item = new SearchContains<SearchRange<DateTime>>(
+                    _creationTimeRangeContainsCheckBox.IsChecked.Value,
+                    new SearchRange<DateTime>(min, max)
+                );
 
                 if (_creationTimeRangeCollection.Contains(item)) return;
                 _creationTimeRangeCollection.Add(item);
@@ -1332,15 +1292,13 @@ namespace Amoeba.Windows
 
             try
             {
-                var item = new SearchContains<SearchRange<DateTime>>()
-                {
-                    Contains = _creationTimeRangeContainsCheckBox.IsChecked.Value,
-                    Value = new SearchRange<DateTime>()
-                    {
-                        Max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
-                        Min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime(),
-                    }
-                };
+                var min = DateTime.ParseExact(_creationTimeRangeMinTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
+                var max = DateTime.ParseExact(_creationTimeRangeMaxTextBox.Text, LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo, System.Globalization.DateTimeStyles.AssumeLocal).ToUniversalTime();
+
+                var item = new SearchContains<SearchRange<DateTime>>(
+                    _creationTimeRangeContainsCheckBox.IsChecked.Value,
+                    new SearchRange<DateTime>(min, max)
+                );
 
                 if (_creationTimeRangeCollection.Contains(item)) return;
                 _creationTimeRangeCollection.Set(selectIndex, item);
@@ -1521,15 +1479,13 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    var item = new SearchContains<SearchRange<long>>()
-                    {
-                        Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = new SearchRange<long>()
-                        {
-                            Max = Math.Max(0, long.Parse(match.Groups[3].Value)),
-                            Min = Math.Max(0, long.Parse(match.Groups[2].Value)),
-                        },
-                    };
+                    var min = Math.Max(0, long.Parse(match.Groups[2].Value));
+                    var max = Math.Max(0, long.Parse(match.Groups[3].Value));
+
+                    var item = new SearchContains<SearchRange<long>>(
+                        (match.Groups[1].Value == "+") ? true : false,
+                        new SearchRange<long>(min, max)
+                    );
 
                     if (_lengthRangeCollection.Contains(item)) continue;
                     _lengthRangeCollection.Add(item);
@@ -1576,15 +1532,13 @@ namespace Amoeba.Windows
 
             try
             {
-                var item = new SearchContains<SearchRange<long>>()
-                {
-                    Contains = _lengthRangeContainsCheckBox.IsChecked.Value,
-                    Value = new SearchRange<long>()
-                    {
-                        Max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text)),
-                        Min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text)),
-                    }
-                };
+                var min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text));
+                var max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text));
+
+                var item = new SearchContains<SearchRange<long>>(
+                    _lengthRangeContainsCheckBox.IsChecked.Value,
+                    new SearchRange<long>(min, max)
+                );
 
                 if (_lengthRangeCollection.Contains(item)) return;
                 _lengthRangeCollection.Add(item);
@@ -1607,15 +1561,13 @@ namespace Amoeba.Windows
 
             try
             {
-                var item = new SearchContains<SearchRange<long>>()
-                {
-                    Contains = _lengthRangeContainsCheckBox.IsChecked.Value,
-                    Value = new SearchRange<long>()
-                    {
-                        Max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text)),
-                        Min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text)),
-                    }
-                };
+                var min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text));
+                var max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text));
+
+                var item = new SearchContains<SearchRange<long>>(
+                    _lengthRangeContainsCheckBox.IsChecked.Value,
+                    new SearchRange<long>(min, max)
+                );
 
                 if (_lengthRangeCollection.Contains(item)) return;
                 _lengthRangeCollection.Set(selectIndex, item);
@@ -1777,11 +1729,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    var item = new SearchContains<Seed>()
-                    {
-                        Contains = false,
-                        Value = seed,
-                    };
+                    var item = new SearchContains<Seed>(false, seed);
 
                     if (_seedCollection.Contains(item)) continue;
                     _seedCollection.Add(item);
@@ -1804,11 +1752,10 @@ namespace Amoeba.Windows
                     var seed = AmoebaConverter.FromSeedString(match.Groups[2].Value);
                     if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
 
-                    var item = new SearchContains<Seed>()
-                    {
-                        Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = seed,
-                    };
+                    var item = new SearchContains<Seed>(
+                        (match.Groups[1].Value == "+") ? true : false,
+                        seed
+                    );
 
                     if (_seedCollection.Contains(item)) continue;
                     _seedCollection.Add(item);
@@ -1857,11 +1804,10 @@ namespace Amoeba.Windows
                 var seed = AmoebaConverter.FromSeedString(_seedTextBox.Text);
                 if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
 
-                var item = new SearchContains<Seed>()
-                {
-                    Contains = _seedContainsCheckBox.IsChecked.Value,
-                    Value = seed,
-                };
+                var item = new SearchContains<Seed>(
+                    _seedContainsCheckBox.IsChecked.Value,
+                    seed
+                );
 
                 if (_seedCollection.Contains(item)) return;
                 _seedCollection.Add(item);
@@ -1886,11 +1832,10 @@ namespace Amoeba.Windows
                 var seed = AmoebaConverter.FromSeedString(_seedTextBox.Text);
                 if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
 
-                var item = new SearchContains<Seed>()
-                {
-                    Contains = _seedContainsCheckBox.IsChecked.Value,
-                    Value = seed,
-                };
+                var item = new SearchContains<Seed>(
+                    _seedContainsCheckBox.IsChecked.Value,
+                    seed
+                );
 
                 if (_seedCollection.Contains(item)) return;
                 _seedCollection.Set(selectIndex, item);
@@ -2057,11 +2002,10 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    var item = new SearchContains<SearchState>()
-                    {
-                        Contains = (match.Groups[1].Value == "+") ? true : false,
-                        Value = (SearchState)Enum.Parse(typeof(SearchState), match.Groups[2].Value),
-                    };
+                    var item = new SearchContains<SearchState>(
+                        (match.Groups[1].Value == "+") ? true : false,
+                        (SearchState)Enum.Parse(typeof(SearchState), match.Groups[2].Value)
+                    );
 
                     if (_stateCollection.Contains(item)) continue;
                     _stateCollection.Add(item);
@@ -2105,11 +2049,10 @@ namespace Amoeba.Windows
         {
             if (_stateComboBox.SelectedIndex == -1) return;
 
-            var item = new SearchContains<SearchState>()
-            {
-                Contains = _stateContainsCheckBox.IsChecked.Value,
-                Value = (SearchState)_stateComboBox.SelectedItem,
-            };
+            var item = new SearchContains<SearchState>(
+                _stateContainsCheckBox.IsChecked.Value,
+                (SearchState)_stateComboBox.SelectedItem
+            );
 
             if (_stateCollection.Contains(item)) return;
             _stateCollection.Add(item);
@@ -2124,11 +2067,10 @@ namespace Amoeba.Windows
             int selectIndex = _stateListView.SelectedIndex;
             if (selectIndex == -1) return;
 
-            var item = new SearchContains<SearchState>()
-            {
-                Contains = _stateContainsCheckBox.IsChecked.Value,
-                Value = (SearchState)_stateComboBox.SelectedItem,
-            };
+            var item = new SearchContains<SearchState>(
+                _stateContainsCheckBox.IsChecked.Value,
+                (SearchState)_stateComboBox.SelectedItem
+            );
 
             if (_stateCollection.Contains(item)) return;
             _stateCollection.Set(selectIndex, item);
@@ -2162,28 +2104,28 @@ namespace Amoeba.Windows
                 _searchItem.Name = _searchTreeViewItemNameTextBox.Text;
 
                 _searchItem.SearchNameCollection.Clear();
-                _searchItem.SearchNameCollection.AddRange(_nameCollection.Select(n => n.Clone()).ToList());
+                _searchItem.SearchNameCollection.AddRange(_nameCollection);
 
                 _searchItem.SearchNameRegexCollection.Clear();
-                _searchItem.SearchNameRegexCollection.AddRange(_nameRegexCollection.Select(n => n.Clone()).ToList());
+                _searchItem.SearchNameRegexCollection.AddRange(_nameRegexCollection);
 
                 _searchItem.SearchSignatureCollection.Clear();
-                _searchItem.SearchSignatureCollection.AddRange(_signatureCollection.Select(n => n.Clone()).ToList());
+                _searchItem.SearchSignatureCollection.AddRange(_signatureCollection);
 
                 _searchItem.SearchKeywordCollection.Clear();
-                _searchItem.SearchKeywordCollection.AddRange(_keywordCollection.Select(n => n.Clone()).ToList());
+                _searchItem.SearchKeywordCollection.AddRange(_keywordCollection);
 
                 _searchItem.SearchCreationTimeRangeCollection.Clear();
-                _searchItem.SearchCreationTimeRangeCollection.AddRange(_creationTimeRangeCollection.Select(n => n.Clone()).ToList());
+                _searchItem.SearchCreationTimeRangeCollection.AddRange(_creationTimeRangeCollection);
 
                 _searchItem.SearchLengthRangeCollection.Clear();
-                _searchItem.SearchLengthRangeCollection.AddRange(_lengthRangeCollection.Select(n => n.Clone()).ToList());
+                _searchItem.SearchLengthRangeCollection.AddRange(_lengthRangeCollection);
 
                 _searchItem.SearchSeedCollection.Clear();
-                _searchItem.SearchSeedCollection.AddRange(_seedCollection.Select(n => n.Clone()).ToList());
+                _searchItem.SearchSeedCollection.AddRange(_seedCollection);
 
                 _searchItem.SearchStateCollection.Clear();
-                _searchItem.SearchStateCollection.AddRange(_stateCollection.Select(n => n.Clone()).ToList());
+                _searchItem.SearchStateCollection.AddRange(_stateCollection);
             }
         }
 

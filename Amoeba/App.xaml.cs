@@ -32,10 +32,18 @@ namespace Amoeba
         public static Version AmoebaVersion { get; private set; }
         public static Dictionary<string, string> DirectoryPaths { get; private set; }
 
-        public static AmoebaColors Colors { get; private set; }
-        public static string Cache_Path { get; private set; }
+        // Startup
+        private static List<Process> _processList = new List<Process>();
 
-        private List<Process> _processList = new List<Process>();
+        // Catharsis
+        private static List<AddressFilter> _addressFilters = new List<AddressFilter>();
+        public static List<AddressFilter> AddressFilters { get { return _addressFilters; } }
+
+        // Colors
+        public static AmoebaColors Colors { get; private set; }
+
+        // Cache
+        public static string Cache_Path { get; private set; }
 
         public App()
         {
@@ -54,7 +62,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 51);
+            App.AmoebaVersion = new Version(2, 0, 52);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -339,7 +347,7 @@ namespace Amoeba
                 }
             }
 
-            this.CheckProcess();
+            App.CheckProcess();
 
             // アップデート
             if (Directory.Exists(App.DirectoryPaths["Update"]))
@@ -392,7 +400,6 @@ namespace Amoeba
                         using (ZipFile zipfile = new ZipFile(zipFilePath))
                         {
                             zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                            zipfile.UseUnicodeAsNecessary = true;
                             zipfile.ExtractAll(tempCoreDirectoryPath);
                         }
                     }
@@ -510,86 +517,25 @@ namespace Amoeba
                         }
                     }
                 }
-            }
 
-            this.RunProcess();
-
-            // Colors
-            {
-                App.Colors = new AmoebaColors();
-
-                if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings")))
+                if (version < new Version(2, 0, 52))
                 {
-                    Type type = typeof(AmoebaColors);
-
-                    using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings"), false, new UTF8Encoding(false)))
                     {
-                        var list = type.GetProperties().ToList();
-                        list.Sort((x, y) => x.Name.CompareTo(y.Name));
-
-                        foreach (var property in list)
-                        {
-                            writer.WriteLine(string.Format("{0} {1}", property.Name, (Color)property.GetValue(App.Colors, null)));
-                        }
-                    }
-                }
-
-                {
-                    Type type = typeof(AmoebaColors);
-
-                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings"), new UTF8Encoding(false)))
-                    {
-                        string line;
-
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            var items = line.Split(' ');
-                            var name = items[0].Trim();
-                            var value = items[1].Trim();
-
-                            var property = type.GetProperty(name);
-                            property.SetValue(App.Colors, (Color)ColorConverter.ConvertFromString(value), null);
-                        }
+                        // Startup.settingsを初期化。
+                        File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
                     }
                 }
             }
 
-            // Cache
-            {
-                if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings")))
-                {
-                    var cachePath = Path.Combine(App.DirectoryPaths["Configuration"], "Cache.blocks");
-
-                    using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), false, new UTF8Encoding(false)))
-                    {
-                        writer.WriteLine(string.Format("{0} {1}", "Path", cachePath));
-                    }
-                }
-
-                {
-                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), new UTF8Encoding(false)))
-                    {
-                        string line;
-
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            var items = line.Split(' ');
-                            var name = items[0].Trim();
-                            var value = items[1].Trim();
-
-                            if (name == "Path")
-                            {
-                                App.Cache_Path = value;
-                            }
-                        }
-                    }
-                }
-            }
+            App.StartupSettings();
+            App.CatharsisSettings();
+            App.CacheSettings();
+            App.ColorsSettings();
 
             this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
         }
 
-        private void CheckProcess()
+        private static void CheckProcess()
         {
             if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"))) return;
 
@@ -608,17 +554,17 @@ namespace Amoeba
                             string arguments = null;
                             string workingDirectory = null;
 
-                            using (var xmlReader = xml.ReadSubtree())
+                            using (var xmlSubtree = xml.ReadSubtree())
                             {
-                                while (xmlReader.Read())
+                                while (xmlSubtree.Read())
                                 {
-                                    if (xmlReader.NodeType == XmlNodeType.Element)
+                                    if (xmlSubtree.NodeType == XmlNodeType.Element)
                                     {
-                                        if (xmlReader.LocalName == "Path")
+                                        if (xmlSubtree.LocalName == "Path")
                                         {
                                             try
                                             {
-                                                path = xmlReader.ReadString();
+                                                path = xmlSubtree.ReadString();
                                             }
                                             catch (Exception)
                                             {
@@ -629,18 +575,18 @@ namespace Amoeba
                                         {
                                             try
                                             {
-                                                arguments = xmlReader.ReadString();
+                                                arguments = xmlSubtree.ReadString();
                                             }
                                             catch (Exception)
                                             {
 
                                             }
                                         }
-                                        else if (xmlReader.LocalName == "WorkingDirectory")
+                                        else if (xmlSubtree.LocalName == "WorkingDirectory")
                                         {
                                             try
                                             {
-                                                workingDirectory = xmlReader.ReadString();
+                                                workingDirectory = xmlSubtree.ReadString();
                                             }
                                             catch (Exception)
                                             {
@@ -689,7 +635,7 @@ namespace Amoeba
             });
         }
 
-        private void RunProcess()
+        private static void StartupSettings()
         {
             if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings")))
             {
@@ -702,18 +648,20 @@ namespace Amoeba
 
                     {
                         xml.WriteStartElement("Process");
-                        xml.WriteElementString("Path", @"Tor\tor.exe");
-                        xml.WriteElementString("Arguments", "-f torrc DataDirectory " + @"..\..\Work\Tor");
-                        xml.WriteElementString("WorkingDirectory", "Tor");
+
+                        xml.WriteElementString("Path", @"Assembly\Tor\tor.exe");
+                        xml.WriteElementString("Arguments", "-f torrc DataDirectory " + @"..\..\..\Work\Tor");
+                        xml.WriteElementString("WorkingDirectory", @"Assembly\Tor");
 
                         xml.WriteEndElement(); //Process
                     }
 
                     {
                         xml.WriteStartElement("Process");
-                        xml.WriteElementString("Path", @"Polipo\polipo.exe");
+
+                        xml.WriteElementString("Path", @"Assembly\Polipo\polipo.exe");
                         xml.WriteElementString("Arguments", "-c polipo.conf");
-                        xml.WriteElementString("WorkingDirectory", "Polipo");
+                        xml.WriteElementString("WorkingDirectory", @"Assembly\Polipo");
 
                         xml.WriteEndElement(); //Process
                     }
@@ -740,17 +688,17 @@ namespace Amoeba
                             string arguments = null;
                             string workingDirectory = null;
 
-                            using (var xmlReader = xml.ReadSubtree())
+                            using (var xmlSubtree = xml.ReadSubtree())
                             {
-                                while (xmlReader.Read())
+                                while (xmlSubtree.Read())
                                 {
-                                    if (xmlReader.NodeType == XmlNodeType.Element)
+                                    if (xmlSubtree.NodeType == XmlNodeType.Element)
                                     {
-                                        if (xmlReader.LocalName == "Path")
+                                        if (xmlSubtree.LocalName == "Path")
                                         {
                                             try
                                             {
-                                                path = xmlReader.ReadString();
+                                                path = xmlSubtree.ReadString();
                                             }
                                             catch (Exception)
                                             {
@@ -761,18 +709,18 @@ namespace Amoeba
                                         {
                                             try
                                             {
-                                                arguments = xmlReader.ReadString();
+                                                arguments = xmlSubtree.ReadString();
                                             }
                                             catch (Exception)
                                             {
 
                                             }
                                         }
-                                        else if (xmlReader.LocalName == "WorkingDirectory")
+                                        else if (xmlSubtree.LocalName == "WorkingDirectory")
                                         {
                                             try
                                             {
-                                                workingDirectory = xmlReader.ReadString();
+                                                workingDirectory = xmlSubtree.ReadString();
                                             }
                                             catch (Exception)
                                             {
@@ -815,6 +763,209 @@ namespace Amoeba
             });
         }
 
+        private class RunItem
+        {
+            public string Path { get; set; }
+            public string Arguments { get; set; }
+            public string WorkingDirectory { get; set; }
+        }
+
+        private static void CatharsisSettings()
+        {
+            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings")))
+            {
+                using (XmlTextWriter xml = new XmlTextWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"), new UTF8Encoding(false)))
+                {
+                    xml.Formatting = Formatting.Indented;
+                    xml.WriteStartDocument();
+
+                    xml.WriteStartElement("Configuration");
+
+                    {
+                        xml.WriteStartElement("Ipv4AddressFilter");
+
+                        {
+                            xml.WriteStartElement("Proxy");
+
+                            xml.WriteElementString("Uri", @"tcp:127.0.0.1:18118");
+
+                            xml.WriteEndElement(); //Proxy
+                        }
+
+                        {
+                            xml.WriteStartElement("Targets");
+
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/ads-trackers-and-bad-pr0n");
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/edu");
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/level-1");
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/spyware");
+
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/bad-peers");
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/dshield");
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/hijacked");
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/level-2");
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/tbg/primary-threats");
+
+                            xml.WriteEndElement(); //Targets
+                        }
+
+                        xml.WriteEndElement(); //Ipv4AddressFilter
+                    }
+
+                    xml.WriteEndElement(); //Configuration
+
+                    xml.WriteEndDocument();
+                    xml.Flush();
+                }
+            }
+
+            using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"), new UTF8Encoding(false)))
+            using (XmlTextReader xml = new XmlTextReader(r))
+            {
+                while (xml.Read())
+                {
+                    if (xml.NodeType == XmlNodeType.Element)
+                    {
+                        if (xml.LocalName == "Ipv4AddressFilter")
+                        {
+                            string proxyUri = null;
+                            List<string> urls = new List<string>();
+
+                            using (var xmlSubtree = xml.ReadSubtree())
+                            {
+                                while (xmlSubtree.Read())
+                                {
+                                    if (xmlSubtree.NodeType == XmlNodeType.Element)
+                                    {
+                                        if (xmlSubtree.LocalName == "Proxy")
+                                        {
+                                            using (var xmlSubtree2 = xmlSubtree.ReadSubtree())
+                                            {
+                                                while (xmlSubtree2.Read())
+                                                {
+                                                    if (xmlSubtree2.NodeType == XmlNodeType.Element)
+                                                    {
+                                                        if (xmlSubtree2.LocalName == "Uri")
+                                                        {
+                                                            try
+                                                            {
+                                                                proxyUri = xmlSubtree2.ReadString();
+                                                            }
+                                                            catch (Exception)
+                                                            {
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else if (xmlSubtree.LocalName == "Targets")
+                                        {
+                                            using (var xmlSubtree2 = xmlSubtree.ReadSubtree())
+                                            {
+                                                while (xmlSubtree2.Read())
+                                                {
+                                                    if (xmlSubtree2.NodeType == XmlNodeType.Element)
+                                                    {
+                                                        if (xmlSubtree2.LocalName == "Url")
+                                                        {
+                                                            try
+                                                            {
+                                                                urls.Add(xmlSubtree2.ReadString());
+                                                            }
+                                                            catch (Exception)
+                                                            {
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            App.AddressFilters.Add(new AddressFilter(proxyUri, urls));
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void CacheSettings()
+        {
+            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings")))
+            {
+                var cachePath = Path.Combine(App.DirectoryPaths["Configuration"], "Cache.blocks");
+
+                using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), false, new UTF8Encoding(false)))
+                {
+                    writer.WriteLine(string.Format("{0} {1}", "Path", cachePath));
+                }
+            }
+
+            {
+                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), new UTF8Encoding(false)))
+                {
+                    string line;
+
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var items = line.Split(' ');
+                        var name = items[0].Trim();
+                        var value = items[1].Trim();
+
+                        if (name == "Path")
+                        {
+                            App.Cache_Path = value;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ColorsSettings()
+        {
+            App.Colors = new AmoebaColors();
+
+            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings")))
+            {
+                Type type = typeof(AmoebaColors);
+
+                using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings"), false, new UTF8Encoding(false)))
+                {
+                    var list = type.GetProperties().ToList();
+                    list.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+                    foreach (var property in list)
+                    {
+                        writer.WriteLine(string.Format("{0} {1}", property.Name, (Color)property.GetValue(App.Colors, null)));
+                    }
+                }
+            }
+
+            {
+                Type type = typeof(AmoebaColors);
+
+                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Colors.settings"), new UTF8Encoding(false)))
+                {
+                    string line;
+
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var items = line.Split(' ');
+                        var name = items[0].Trim();
+                        var value = items[1].Trim();
+
+                        var property = type.GetProperty(name);
+                        property.SetValue(App.Colors, (Color)ColorConverter.ConvertFromString(value), null);
+                    }
+                }
+            }
+        }
+
         private void Application_Exit(object sender, ExitEventArgs e)
         {
             Parallel.ForEach(_processList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, p =>
@@ -829,13 +980,6 @@ namespace Amoeba
 
                 }
             });
-        }
-
-        private class RunItem
-        {
-            public string Path { get; set; }
-            public string Arguments { get; set; }
-            public string WorkingDirectory { get; set; }
         }
     }
 

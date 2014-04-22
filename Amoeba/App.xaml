@@ -45,6 +45,7 @@
             <local:ConnectionTypeToStringConverter x:Key="_connectionTypeToStringConverter"/>
             <local:ExpanderToBooleanConverter x:Key="_expanderToBooleanConverter"/>
             <local:TransferLimitTypeToStringConverter x:Key="_transferLimitTypeToStringConverter"/>
+            <local:ConnectDirectionToStringConverter x:Key="_connectDirectionToStringConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

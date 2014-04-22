@@ -15,26 +15,26 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Automation.Peers;
+using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using Amoeba.Properties;
 using Library;
+using Library.Collections;
 using Library.Io;
 using Library.Net.Amoeba;
 using Library.Net.Connections;
 using Library.Net.Proxy;
 using Library.Net.Upnp;
 using Library.Security;
-using Library.Collections;
-using System.Windows.Automation.Peers;
-using System.Windows.Automation.Provider;
-using System.Windows.Input;
-using System.Windows.Automation;
 
 namespace Amoeba.Windows
 {
@@ -61,6 +61,7 @@ namespace Amoeba.Windows
         private AutoBaseNodeSettingManager _autoBaseNodeSettingManager;
         private OverlayNetworkManager _overlayNetworkManager;
         private TransfarLimitManager _transferLimitManager;
+        private CatharsisManager _catharsisManager;
 
         private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
         private WindowState _windowState;
@@ -81,6 +82,24 @@ namespace Amoeba.Windows
 
         private volatile MainWindowTabType _selectedTab;
 
+        [FlagsAttribute]
+        enum ExecutionState : uint
+        {
+            Null = 0,
+            SystemRequired = 1,
+            DisplayRequired = 2,
+            Continuous = 0x80000000,
+        }
+
+        static class NativeMethods
+        {
+            [DllImport("kernel32.dll")]
+            public extern static ExecutionState SetThreadExecutionState(ExecutionState esFlags);
+
+            [DllImport("kernel32.dll")]
+            public static extern bool SetProcessWorkingSetSize(IntPtr handle, int minSize, int maxSize);
+        }
+
         public MainWindow()
         {
             try
@@ -97,6 +116,7 @@ namespace Amoeba.Windows
                 _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
                 _configrationDirectoryPaths.Add("OverlayNetworkManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/OverlayNetworkManager"));
                 _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
+                _configrationDirectoryPaths.Add("CatharsisManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/CatharsisManager"));
 
                 Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
 
@@ -125,6 +145,8 @@ namespace Amoeba.Windows
                 _notifyIcon.Visible = false;
                 _notifyIcon.Click += (object sender2, EventArgs e2) =>
                 {
+                    if (_isClose) return;
+
                     try
                     {
                         this.Show();
@@ -389,6 +411,7 @@ namespace Amoeba.Windows
 
                         try
                         {
+                            _catharsisManager.Save(_configrationDirectoryPaths["CatharsisManager"]);
                             _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                             _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
                             _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
@@ -434,7 +457,7 @@ namespace Amoeba.Windows
                     }
 
 #if DEBUG
-                    if (gcStopwatch.Elapsed.TotalMinutes >= 1)
+                    if (gcStopwatch.Elapsed.TotalMinutes >= 3)
                     {
                         gcStopwatch.Restart();
 
@@ -765,6 +788,10 @@ namespace Amoeba.Windows
                         case 1:
                             osName = "Windows 7";
                             break;
+
+                        case 2:
+                            osName = "Windows 8";
+                            break;
                     }
                 }
             }
@@ -816,7 +843,7 @@ namespace Amoeba.Windows
                 {
                     try
                     {
-                        if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
+                        if (e.MessageLevel == LogMessageLevel.Output || e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
                         {
                             using (var writer = new StreamWriter(_logPath, true, new UTF8Encoding(false)))
                             {
@@ -1020,61 +1047,37 @@ namespace Amoeba.Windows
                     {
                         Name = "Keyword - \"Picture\""
                     };
-                    pictureSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
-                    {
-                        Contains = true,
-                        Value = "Picture",
-                    });
+                    pictureSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Picture"));
 
                     SearchItem movieSearchItem = new SearchItem()
                     {
                         Name = "Keyword - \"Movie\""
                     };
-                    movieSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
-                    {
-                        Contains = true,
-                        Value = "Movie",
-                    });
+                    movieSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Movie"));
 
                     SearchItem musicSearchItem = new SearchItem()
                     {
                         Name = "Keyword - \"Music\""
                     };
-                    musicSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
-                    {
-                        Contains = true,
-                        Value = "Music",
-                    });
+                    musicSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Music"));
 
                     SearchItem archiveSearchItem = new SearchItem()
                     {
                         Name = "Keyword - \"Archive\""
                     };
-                    archiveSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
-                    {
-                        Contains = true,
-                        Value = "Archive",
-                    });
+                    archiveSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Archive"));
 
                     SearchItem documentSearchItem = new SearchItem()
                     {
                         Name = "Keyword - \"Document\""
                     };
-                    documentSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
-                    {
-                        Contains = true,
-                        Value = "Document",
-                    });
+                    documentSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Document"));
 
                     SearchItem ExecutableSearchItem = new SearchItem()
                     {
                         Name = "Keyword - \"Executable\""
                     };
-                    ExecutableSearchItem.SearchKeywordCollection.Add(new SearchContains<string>()
-                    {
-                        Contains = true,
-                        Value = "Executable",
-                    });
+                    ExecutableSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Executable"));
 
                     Settings.Instance.SearchControl_SearchTreeItem.Children.Clear();
                     Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
@@ -1295,8 +1298,12 @@ namespace Amoeba.Windows
                 _transferLimitManager.Load(_configrationDirectoryPaths["TransfarLimitManager"]);
                 _transferLimitManager.Start();
 
+                _catharsisManager = new CatharsisManager(_amoebaManager, _bufferManager);
+                _catharsisManager.Load(_configrationDirectoryPaths["CatharsisManager"]);
+
                 if (initFlag)
                 {
+                    _catharsisManager.Save(_configrationDirectoryPaths["CatharsisManager"]);
                     _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                     _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
                     _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
@@ -1625,6 +1632,9 @@ namespace Amoeba.Windows
 
                     _watchThread.Join();
                     _watchThread = null;
+
+                    _catharsisManager.Save(_configrationDirectoryPaths["CatharsisManager"]);
+                    _catharsisManager.Dispose();
 
                     _transferLimitManager.Stop();
                     _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);

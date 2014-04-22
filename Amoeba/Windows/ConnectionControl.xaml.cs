@@ -114,7 +114,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     var information = _amoebaManager.Information;
-                    Dictionary<string, string> dic = new Dictionary<string, string>();
+                    var dic = new SortedDictionary<string, string>();
 
 #if DEBUG
                     dic["ConnectionControl_BufferManagerSize"] = NetworkConverter.ToSizeString(_bufferManager.Size);
@@ -401,7 +401,11 @@ namespace Amoeba.Windows
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.ConnectionControl_Uri)
+            if (sortBy == LanguagesManager.Instance.ConnectionControl_Direction)
+            {
+                _listView.Items.SortDescriptions.Add(new SortDescription("Direction", direction));
+            }
+            else if (sortBy == LanguagesManager.Instance.ConnectionControl_Uri)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Uri", direction));
             }
@@ -423,7 +427,19 @@ namespace Amoeba.Windows
         {
             List<ConnectionListViewItem> list = new List<ConnectionListViewItem>(collection);
 
-            if (sortBy == LanguagesManager.Instance.ConnectionControl_Uri)
+            if (sortBy == LanguagesManager.Instance.ConnectionControl_Direction)
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.Direction.CompareTo(y.Direction);
+                    if (c != 0) return c;
+                    c = x.Id.CompareTo(y.Id);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (sortBy == LanguagesManager.Instance.ConnectionControl_Uri)
             {
                 list.Sort((x, y) =>
                 {
@@ -572,6 +588,7 @@ namespace Amoeba.Windows
             private int _priority;
             private long _receivedByteCount;
             private long _sentByteCount;
+            private ConnectDirection _direction;
 
             public ConnectionListViewItem(Information information)
             {
@@ -609,6 +626,9 @@ namespace Amoeba.Windows
 
                     if (_information.Contains("SentByteCount")) this.SentByteCount = (long)_information["SentByteCount"];
                     else this.SentByteCount = 0;
+
+                    if (_information.Contains("Direction")) this.Direction = (ConnectDirection)_information["Direction"];
+                    else this.Direction = 0;
                 }
             }
 
@@ -676,6 +696,23 @@ namespace Amoeba.Windows
                         _sentByteCount = value;
 
                         this.NotifyPropertyChanged("SentByteCount");
+                    }
+                }
+            }
+
+            public ConnectDirection Direction
+            {
+                get
+                {
+                    return _direction;
+                }
+                set
+                {
+                    if (value != _direction)
+                    {
+                        _direction = value;
+
+                        this.NotifyPropertyChanged("Direction");
                     }
                 }
             }

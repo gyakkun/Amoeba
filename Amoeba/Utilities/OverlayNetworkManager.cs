@@ -10,10 +10,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Library;
-using Library.Net.I2p;
+using Library.Net;
 using Library.Net.Amoeba;
-using Library.Net.Caps;
 using Library.Net.Connections;
+using Library.Net.I2p;
 
 namespace Amoeba
 {
@@ -35,7 +35,7 @@ namespace Amoeba
 
         private volatile Thread _watchThread;
 
-        private ManagerState _state = ManagerState.Stop;
+        private volatile ManagerState _state = ManagerState.Stop;
 
         private volatile bool _disposed;
         private readonly object _thisLock = new object();
@@ -465,10 +465,7 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
-                {
-                    return _state;
-                }
+                return _state;
             }
         }
 

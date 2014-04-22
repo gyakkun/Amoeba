@@ -30,8 +30,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Update", "..\Librar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Compression", "..\Library\Library.Compression\Library.Compression.csproj", "{51ECCC57-56CB-44A0-9A43-DB596F982FC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Caps", "..\Library\Library.Net.Caps\Library.Net.Caps.csproj", "{364FD425-45B7-41D5-A180-1CE912C7BA31}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.I2p", "..\Library\Library.Net.I2p\Library.Net.I2p.csproj", "{24DC1835-CC3D-4D29-B922-199027EC551F}"
 EndProject
 Global
@@ -100,10 +98,6 @@ Global
 		{51ECCC57-56CB-44A0-9A43-DB596F982FC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51ECCC57-56CB-44A0-9A43-DB596F982FC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51ECCC57-56CB-44A0-9A43-DB596F982FC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{364FD425-45B7-41D5-A180-1CE912C7BA31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{364FD425-45B7-41D5-A180-1CE912C7BA31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{364FD425-45B7-41D5-A180-1CE912C7BA31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{364FD425-45B7-41D5-A180-1CE912C7BA31}.Release|Any CPU.Build.0 = Release|Any CPU
 		{24DC1835-CC3D-4D29-B922-199027EC551F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24DC1835-CC3D-4D29-B922-199027EC551F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24DC1835-CC3D-4D29-B922-199027EC551F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -111,8 +105,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

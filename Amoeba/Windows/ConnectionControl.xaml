@@ -19,6 +19,9 @@
         <DataTemplate x:Key="_myTemplate_SentByteCount">
             <TextBlock Text="{Binding Path=SentByteCount, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Direction">
+            <TextBlock Text="{Binding Path=Direction, Mode=OneWay, Converter={StaticResource _connectDirectionToStringConverter}}" />
+        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Name">
             <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
         </DataTemplate>
@@ -66,6 +69,8 @@
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=ConnectionControl_Direction, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Direction}" 
+                            Width="{Binding Path=ConnectionControl_GridViewColumn_Direction_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Uri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Uri}" 
                             Width="{Binding Path=ConnectionControl_GridViewColumn_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=ConnectionControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
