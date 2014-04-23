@@ -468,7 +468,7 @@ namespace Amoeba.Windows
                         foreach (var storeTreeViewItem in storeTreeViewItems)
                         {
                             var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
-                            if (store == null || Collection.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
+                            if (store == null || CollectionUtilities.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
 
                             bool flag = false;
 

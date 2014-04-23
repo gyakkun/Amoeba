@@ -1924,17 +1924,17 @@ namespace Amoeba.Windows
 
                 if (this.Seeds != null && other.Seeds != null)
                 {
-                    if (!Collection.Equals(this.Seeds, other.Seeds)) return false;
+                    if (!CollectionUtilities.Equals(this.Seeds, other.Seeds)) return false;
                 }
 
                 if (this.DownloadIds != null && other.DownloadIds != null)
                 {
-                    if (!Collection.Equals(this.DownloadIds, other.DownloadIds)) return false;
+                    if (!CollectionUtilities.Equals(this.DownloadIds, other.DownloadIds)) return false;
                 }
 
                 if (this.UploadIds != null && other.UploadIds != null)
                 {
-                    if (!Collection.Equals(this.UploadIds, other.UploadIds)) return false;
+                    if (!CollectionUtilities.Equals(this.UploadIds, other.UploadIds)) return false;
                 }
 
                 return true;

@@ -35,7 +35,7 @@ namespace Library.Net.Amoeba
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
-            return Collection.Equals(this, other);
+            return CollectionUtilities.Equals(this, other);
         }
     }
 }

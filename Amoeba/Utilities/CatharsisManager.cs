@@ -50,7 +50,7 @@ namespace Amoeba
 #if DEBUG
             _watchTimer = new System.Threading.Timer(this.WatchTimer, null, new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0, 0));
 #else
-            _watchTimer = new System.Threading.Timer(this.WatchTimer, null, new TimeSpan(0, 3, 0), new TimeSpan(28, 0, 0, 0));
+            _watchTimer = new System.Threading.Timer(this.WatchTimer, null, new TimeSpan(0, 3, 0), new TimeSpan(7, 0, 0, 0));
 #endif
 
             _amoebaManager.CheckUriEvent = this.CheckUri;
@@ -88,7 +88,7 @@ namespace Amoeba
 
                     lock (this.ThisLock)
                     {
-                        if (_settings.IpAddressSet.Contains(uip)) return false;
+                        if (_settings.Ipv4AddressSet.Contains(uip)) return false;
 
                         foreach (var range in _settings.Ipv4AddressRangeSet)
                         {
@@ -187,8 +187,8 @@ namespace Amoeba
 
             lock (this.ThisLock)
             {
-                _settings.IpAddressSet.Clear();
-                _settings.IpAddressSet.UnionWith(ipv4AddressSet);
+                _settings.Ipv4AddressSet.Clear();
+                _settings.Ipv4AddressSet.UnionWith(ipv4AddressSet);
 
                 _settings.Ipv4AddressRangeSet.Clear();
                 _settings.Ipv4AddressRangeSet.UnionWith(ipv4AddressRangeSet);
@@ -460,7 +460,7 @@ namespace Amoeba
                 }
             }
 
-            public HashSet<uint> IpAddressSet
+            public HashSet<uint> Ipv4AddressSet
             {
                 get
                 {

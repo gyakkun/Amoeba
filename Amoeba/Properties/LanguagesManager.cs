@@ -2280,13 +2280,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionControl_CreateConnectionCount
+        public string ConnectionControl_ConnectConnectionCount
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("ConnectionControl_CreateConnectionCount");
+                    return this.Translate("ConnectionControl_ConnectConnectionCount");
                 }
             }
         }
@@ -2298,6 +2298,28 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("ConnectionControl_AcceptConnectionCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_ConnectBlockedCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_ConnectBlockedCount");
+                }
+            }
+        }
+
+        public string ConnectionControl_AcceptBlockedCount
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("ConnectionControl_AcceptBlockedCount");
                 }
             }
         }

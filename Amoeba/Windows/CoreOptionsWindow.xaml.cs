@@ -1433,7 +1433,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                if (!Collection.Equals(_amoebaManager.BaseNode.Uris, _baseNode_Uris))
+                if (!CollectionUtilities.Equals(_amoebaManager.BaseNode.Uris, _baseNode_Uris))
                 {
                     _amoebaManager.SetBaseNode(new Node(_baseNode_Id, _baseNode_Uris));
                 }
@@ -1459,7 +1459,7 @@ namespace Amoeba.Windows
                 _amoebaManager.Filters.Clear();
                 _amoebaManager.Filters.AddRange(_clientFilters.Select(n => n.Clone()));
 
-                if (!Collection.Equals(_amoebaManager.ListenUris, _serverListenUris))
+                if (!CollectionUtilities.Equals(_amoebaManager.ListenUris, _serverListenUris))
                 {
                     _amoebaManager.ListenUris.Clear();
                     _amoebaManager.ListenUris.AddRange(_serverListenUris);

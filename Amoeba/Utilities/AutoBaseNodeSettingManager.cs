@@ -74,7 +74,7 @@ namespace Amoeba
 
         private static int IpAddressCompare(IPAddress x, IPAddress y)
         {
-            return Collection.Compare(x.GetAddressBytes(), y.GetAddressBytes());
+            return CollectionUtilities.Compare(x.GetAddressBytes(), y.GetAddressBytes());
         }
 
         private bool AddUri(string uri)

@@ -207,8 +207,10 @@
   <Translate Key="ConnectionControl_Name" Value="項目" />
   <Translate Key="ConnectionControl_Value" Value="値" />
   <Translate Key="ConnectionControl_BufferManagerSize" Value="BufferManager サイズ" />
-  <Translate Key="ConnectionControl_CreateConnectionCount" Value="成功した接続試行数" />
+  <Translate Key="ConnectionControl_ConnectConnectionCount" Value="成功した接続試行数" />
   <Translate Key="ConnectionControl_AcceptConnectionCount" Value="成功した接続受信数" />
+  <Translate Key="ConnectionControl_ConnectBlockedCount" Value="ブロックされた接続試行数" />
+  <Translate Key="ConnectionControl_AcceptBlockedCount" Value="ブロックされた接続受信数" />
   <Translate Key="ConnectionControl_SurroundingNodeCount" Value="確認できる周辺ノード数" />
   <Translate Key="ConnectionControl_RelayBlockCount" Value="中継ブロック数" />
   <Translate Key="ConnectionControl_FreeSpace" Value="空き領域" />

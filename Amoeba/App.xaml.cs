@@ -62,7 +62,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 52);
+            App.AmoebaVersion = new Version(2, 0, 53);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -525,6 +525,14 @@ namespace Amoeba
                         File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
                     }
                 }
+
+                if (version < new Version(2, 0, 53))
+                {
+                    {
+                        // Catharsis.settingsを初期化。
+                        File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"));
+                    }
+                }
             }
 
             App.StartupSettings();
@@ -795,15 +803,10 @@ namespace Amoeba
                         {
                             xml.WriteStartElement("Targets");
 
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/ads-trackers-and-bad-pr0n");
                             xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/edu");
                             xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/level-1");
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/spyware");
-
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/bad-peers");
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/dshield");
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/hijacked");
                             xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/level-2");
+                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/spyware");
                             xml.WriteElementString("Url", "http://list.iblocklist.com/lists/tbg/primary-threats");
 
                             xml.WriteEndElement(); //Targets

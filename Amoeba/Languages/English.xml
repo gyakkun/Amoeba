@@ -207,8 +207,10 @@
   <Translate Key="ConnectionControl_Name" Value="Name" />
   <Translate Key="ConnectionControl_Value" Value="Value" />
   <Translate Key="ConnectionControl_BufferManagerSize" Value="BufferManager Size" />
-  <Translate Key="ConnectionControl_CreateConnectionCount" Value="Create connection count" />
+  <Translate Key="ConnectionControl_ConnectConnectionCount" Value="Connect connection count" />
   <Translate Key="ConnectionControl_AcceptConnectionCount" Value="Accept connection count" />
+  <Translate Key="ConnectionControl_ConnectBlockedCount" Value="Connect blocked count" />
+  <Translate Key="ConnectionControl_AcceptBlockedCount" Value="Accept blocked count" />
   <Translate Key="ConnectionControl_SurroundingNodeCount" Value="Surrounding node count" />
   <Translate Key="ConnectionControl_RelayBlockCount" Value="Relay block count" />
   <Translate Key="ConnectionControl_FreeSpace" Value="Free space" />

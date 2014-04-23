@@ -56,8 +56,10 @@ namespace Amoeba.Windows
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ReceivedByteCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_CreateConnectionCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ConnectConnectionCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_AcceptConnectionCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ConnectBlockedCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_AcceptBlockedCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_SurroundingNodeCount" });
@@ -123,11 +125,13 @@ namespace Amoeba.Windows
                     dic["ConnectionControl_SentByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.SentByteCount);
                     dic["ConnectionControl_ReceivedByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.ReceivedByteCount);
 
-                    dic["ConnectionControl_CreateConnectionCount"] = ((int)information["CreateConnectionCount"]).ToString();
-                    dic["ConnectionControl_AcceptConnectionCount"] = ((int)information["AcceptConnectionCount"]).ToString();
+                    dic["ConnectionControl_ConnectConnectionCount"] = ((long)information["ConnectConnectionCount"]).ToString();
+                    dic["ConnectionControl_AcceptConnectionCount"] = ((long)information["AcceptConnectionCount"]).ToString();
+                    dic["ConnectionControl_ConnectBlockedCount"] = ((long)information["ConnectBlockedCount"]).ToString();
+                    dic["ConnectionControl_AcceptBlockedCount"] = ((long)information["AcceptBlockedCount"]).ToString();
 
                     dic["ConnectionControl_SurroundingNodeCount"] = ((int)information["SurroundingNodeCount"]).ToString();
-                    dic["ConnectionControl_RelayBlockCount"] = ((int)information["RelayBlockCount"]).ToString();
+                    dic["ConnectionControl_RelayBlockCount"] = ((long)information["RelayBlockCount"]).ToString();
 
                     dic["ConnectionControl_LockSpace"] = NetworkConverter.ToSizeString(((long)information["LockSpace"])).ToString();
                     dic["ConnectionControl_FreeSpace"] = NetworkConverter.ToSizeString(((long)information["FreeSpace"])).ToString();
@@ -140,19 +144,19 @@ namespace Amoeba.Windows
                     dic["ConnectionControl_UploadCount"] = ((int)information["UploadingCount"]).ToString();
                     dic["ConnectionControl_ShareCount"] = ((int)information["ShareCount"]).ToString();
 
-                    dic["ConnectionControl_PushNodeCount"] = ((int)information["PushNodeCount"]).ToString();
-                    dic["ConnectionControl_PushBlockLinkCount"] = ((int)information["PushBlockLinkCount"]).ToString();
-                    dic["ConnectionControl_PushBlockRequestCount"] = ((int)information["PushBlockRequestCount"]).ToString();
-                    dic["ConnectionControl_PushBlockCount"] = ((int)information["PushBlockCount"]).ToString();
-                    dic["ConnectionControl_PushSeedRequestCount"] = ((int)information["PushSeedRequestCount"]).ToString();
-                    dic["ConnectionControl_PushSeedCount"] = ((int)information["PushSeedCount"]).ToString();
+                    dic["ConnectionControl_PushNodeCount"] = ((long)information["PushNodeCount"]).ToString();
+                    dic["ConnectionControl_PushBlockLinkCount"] = ((long)information["PushBlockLinkCount"]).ToString();
+                    dic["ConnectionControl_PushBlockRequestCount"] = ((long)information["PushBlockRequestCount"]).ToString();
+                    dic["ConnectionControl_PushBlockCount"] = ((long)information["PushBlockCount"]).ToString();
+                    dic["ConnectionControl_PushSeedRequestCount"] = ((long)information["PushSeedRequestCount"]).ToString();
+                    dic["ConnectionControl_PushSeedCount"] = ((long)information["PushSeedCount"]).ToString();
 
-                    dic["ConnectionControl_PullNodeCount"] = ((int)information["PullNodeCount"]).ToString();
-                    dic["ConnectionControl_PullBlockLinkCount"] = ((int)information["PullBlockLinkCount"]).ToString();
-                    dic["ConnectionControl_PullBlockRequestCount"] = ((int)information["PullBlockRequestCount"]).ToString();
-                    dic["ConnectionControl_PullBlockCount"] = ((int)information["PullBlockCount"]).ToString();
-                    dic["ConnectionControl_PullSeedRequestCount"] = ((int)information["PullSeedRequestCount"]).ToString();
-                    dic["ConnectionControl_PullSeedCount"] = ((int)information["PullSeedCount"]).ToString();
+                    dic["ConnectionControl_PullNodeCount"] = ((long)information["PullNodeCount"]).ToString();
+                    dic["ConnectionControl_PullBlockLinkCount"] = ((long)information["PullBlockLinkCount"]).ToString();
+                    dic["ConnectionControl_PullBlockRequestCount"] = ((long)information["PullBlockRequestCount"]).ToString();
+                    dic["ConnectionControl_PullBlockCount"] = ((long)information["PullBlockCount"]).ToString();
+                    dic["ConnectionControl_PullSeedRequestCount"] = ((long)information["PullSeedRequestCount"]).ToString();
+                    dic["ConnectionControl_PullSeedCount"] = ((long)information["PullSeedCount"]).ToString();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
@@ -253,7 +257,7 @@ namespace Amoeba.Windows
 
                             if (item != null)
                             {
-                                if (!Collection.Equals(item.Information, information))
+                                if (!CollectionUtilities.Equals(item.Information, information))
                                 {
                                     updateDic[item] = information;
                                 }

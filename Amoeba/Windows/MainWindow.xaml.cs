@@ -667,7 +667,7 @@ namespace Amoeba.Windows
                             foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                             {
                                 var link = _amoebaManager.GetLink(item.Signature);
-                                if (link == null || Collection.Equals(item.TrustSignatures, link.TrustSignatures)) continue;
+                                if (link == null || CollectionUtilities.Equals(item.TrustSignatures, link.TrustSignatures)) continue;
 
                                 lock (item.ThisLock)
                                 {
