@@ -128,7 +128,6 @@
     </Compile>
     <Compile Include="Utilities\EqualityComparer.cs" />
     <Compile Include="Utilities\Extensions.cs" />
-    <Compile Include="Utilities\Sha512.cs" />
     <Compile Include="Windows\Store\LibraryControl.xaml.cs">
       <DependentUpon>LibraryControl.xaml</DependentUpon>
     </Compile>

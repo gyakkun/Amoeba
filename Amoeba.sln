@@ -24,13 +24,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Upnp", "..\Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Security", "..\Library\Library.Security\Library.Security.csproj", "{D314C626-A6FC-4FD5-BE3C-9D36C2738418}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tool", "..\Library\Library.Tool\Library.Tool.csproj", "{B4424312-441E-4B12-9278-D640CDABD99B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Update", "..\Library\Library.Update\Library.Update.csproj", "{5D842D8A-5BFE-4D68-956B-E1E690EDB48A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Compression", "..\Library\Library.Compression\Library.Compression.csproj", "{51ECCC57-56CB-44A0-9A43-DB596F982FC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.I2p", "..\Library\Library.Net.I2p\Library.Net.I2p.csproj", "{24DC1835-CC3D-4D29-B922-199027EC551F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tools", "..\Library\Library.Tools\Library.Tools.csproj", "{B4424312-441E-4B12-9278-D640CDABD99B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,10 +86,6 @@ Global
 		{D314C626-A6FC-4FD5-BE3C-9D36C2738418}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D314C626-A6FC-4FD5-BE3C-9D36C2738418}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D314C626-A6FC-4FD5-BE3C-9D36C2738418}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4424312-441E-4B12-9278-D640CDABD99B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4424312-441E-4B12-9278-D640CDABD99B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4424312-441E-4B12-9278-D640CDABD99B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4424312-441E-4B12-9278-D640CDABD99B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D842D8A-5BFE-4D68-956B-E1E690EDB48A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D842D8A-5BFE-4D68-956B-E1E690EDB48A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D842D8A-5BFE-4D68-956B-E1E690EDB48A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -102,8 +98,15 @@ Global
 		{24DC1835-CC3D-4D29-B922-199027EC551F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24DC1835-CC3D-4D29-B922-199027EC551F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24DC1835-CC3D-4D29-B922-199027EC551F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4424312-441E-4B12-9278-D640CDABD99B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4424312-441E-4B12-9278-D640CDABD99B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4424312-441E-4B12-9278-D640CDABD99B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4424312-441E-4B12-9278-D640CDABD99B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

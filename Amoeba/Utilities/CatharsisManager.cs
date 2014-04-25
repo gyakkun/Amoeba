@@ -15,11 +15,11 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using Library;
+using Library.Collections;
 using Library.Io;
 using Library.Net;
 using Library.Net.Amoeba;
 using Library.Net.Connections;
-using Library.Net.I2p;
 
 namespace Amoeba
 {
@@ -34,6 +34,10 @@ namespace Amoeba
         private Regex _regex2 = new Regex(@"(.*?):(.*)", RegexOptions.Compiled);
 
         private System.Threading.Timer _watchTimer;
+        private volatile bool _isWatching = false;
+
+        private VolatileHashSet<string> _succeededUris;
+        private VolatileHashSet<string> _failedUris;
 
         private volatile bool _disposed;
         private readonly object _thisLock = new object();
@@ -53,10 +57,35 @@ namespace Amoeba
             _watchTimer = new System.Threading.Timer(this.WatchTimer, null, new TimeSpan(0, 3, 0), new TimeSpan(7, 0, 0, 0));
 #endif
 
-            _amoebaManager.CheckUriEvent = this.CheckUri;
+            _succeededUris = new VolatileHashSet<string>(new TimeSpan(1, 0, 0));
+            _failedUris = new VolatileHashSet<string>(new TimeSpan(1, 0, 0));
+
+            _amoebaManager.CheckUriEvent = this.ResultCache_CheckUri;
         }
 
-        private bool CheckUri(object sender, string uri)
+        private bool ResultCache_CheckUri(object sender, string uri)
+        {
+            _succeededUris.TrimExcess();
+            _failedUris.TrimExcess();
+
+            if (_succeededUris.Contains(uri)) return true;
+            if (_failedUris.Contains(uri)) return false;
+
+            if (this.CheckUri(uri))
+            {
+                _succeededUris.Add(uri);
+
+                return true;
+            }
+            else
+            {
+                _failedUris.Add(uri);
+
+                return false;
+            }
+        }
+
+        private bool CheckUri(string uri)
         {
             string host = null;
 
@@ -77,6 +106,8 @@ namespace Amoeba
                     }
                 }
             }
+
+            if (host == null) return false;
 
             IPAddress ip;
 
@@ -103,95 +134,105 @@ namespace Amoeba
 
         private void WatchTimer(object state)
         {
-            var ipv4AddressSet = new HashSet<uint>();
-            var ipv4AddressRangeSet = new HashSet<SearchRange<uint>>();
+            if (_isWatching) return;
+            _isWatching = true;
 
-            foreach (var addressFilter in App.AddressFilters)
+            try
             {
-                string proxyScheme = null;
-                string proxyHost = null;
-                int proxyPort = -1;
+                var ipv4AddressSet = new HashSet<uint>();
+                var ipv4AddressRangeSet = new HashSet<SearchRange<uint>>();
 
+                foreach (var addressFilter in App.AddressFilters)
                 {
-                    var match = _regex.Match(addressFilter.ProxyUri);
+                    string proxyScheme = null;
+                    string proxyHost = null;
+                    int proxyPort = -1;
 
-                    if (match.Success)
                     {
-                        proxyScheme = match.Groups[1].Value;
-                        proxyHost = match.Groups[2].Value;
-                        proxyPort = int.Parse(match.Groups[3].Value);
-                    }
-                    else
-                    {
-                        var match2 = _regex2.Match(addressFilter.ProxyUri);
+                        var match = _regex.Match(addressFilter.ProxyUri);
 
-                        if (match2.Success)
+                        if (match.Success)
                         {
-                            proxyScheme = match2.Groups[1].Value;
-                            proxyHost = match2.Groups[2].Value;
-                            proxyPort = 80;
+                            proxyScheme = match.Groups[1].Value;
+                            proxyHost = match.Groups[2].Value;
+                            proxyPort = int.Parse(match.Groups[3].Value);
+                        }
+                        else
+                        {
+                            var match2 = _regex2.Match(addressFilter.ProxyUri);
+
+                            if (match2.Success)
+                            {
+                                proxyScheme = match2.Groups[1].Value;
+                                proxyHost = match2.Groups[2].Value;
+                                proxyPort = 80;
+                            }
                         }
                     }
-                }
 
-                if (proxyHost == null) continue;
+                    if (proxyHost == null) continue;
 
-                WebProxy proxy = new WebProxy(proxyHost, proxyPort);
+                    WebProxy proxy = new WebProxy(proxyHost, proxyPort);
 
-                foreach (var url in addressFilter.Urls)
-                {
-                    for (int i = 0; i < 3; i++)
+                    foreach (var url in addressFilter.Urls)
                     {
-                        try
+                        for (int i = 0; i < 3; i++)
                         {
-                            using (var stream = CatharsisManager.GetStream(url, proxy))
-                            using (var gzipStream = new Ionic.Zlib.GZipStream(stream, Ionic.Zlib.CompressionMode.Decompress))
-                            using (var reader = new StreamReader(gzipStream))
+                            try
                             {
-                                string line;
-
-                                while ((line = reader.ReadLine()) != null)
+                                using (var stream = CatharsisManager.GetStream(url, proxy))
+                                using (var gzipStream = new Ionic.Zlib.GZipStream(stream, Ionic.Zlib.CompressionMode.Decompress))
+                                using (var reader = new StreamReader(gzipStream))
                                 {
-                                    var index = line.LastIndexOf(':');
-                                    if (index == -1) continue;
+                                    string line;
 
-                                    var ips = CatharsisManager.GetStringToIpv4(line.Substring(index + 1));
-                                    if (ips == null) continue;
+                                    while ((line = reader.ReadLine()) != null)
+                                    {
+                                        var index = line.LastIndexOf(':');
+                                        if (index == -1) continue;
 
-                                    if (ips[0] == ips[1])
-                                    {
-                                        ipv4AddressSet.Add(ips[0]);
-                                    }
-                                    else if (ips[0] < ips[1])
-                                    {
-                                        var range = new SearchRange<uint>(ips[0], ips[1]);
-                                        ipv4AddressRangeSet.Add(range);
-                                    }
-                                    else
-                                    {
-                                        var range = new SearchRange<uint>(ips[1], ips[0]);
-                                        ipv4AddressRangeSet.Add(range);
+                                        var ips = CatharsisManager.GetStringToIpv4(line.Substring(index + 1));
+                                        if (ips == null) continue;
+
+                                        if (ips[0] == ips[1])
+                                        {
+                                            ipv4AddressSet.Add(ips[0]);
+                                        }
+                                        else if (ips[0] < ips[1])
+                                        {
+                                            var range = new SearchRange<uint>(ips[0], ips[1]);
+                                            ipv4AddressRangeSet.Add(range);
+                                        }
+                                        else
+                                        {
+                                            var range = new SearchRange<uint>(ips[1], ips[0]);
+                                            ipv4AddressRangeSet.Add(range);
+                                        }
                                     }
                                 }
-                            }
 
-                            break;
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Warning(e);
+                                break;
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Warning(e);
+                            }
                         }
                     }
                 }
+
+                lock (this.ThisLock)
+                {
+                    _settings.Ipv4AddressSet.Clear();
+                    _settings.Ipv4AddressSet.UnionWith(ipv4AddressSet);
+
+                    _settings.Ipv4AddressRangeSet.Clear();
+                    _settings.Ipv4AddressRangeSet.UnionWith(ipv4AddressRangeSet);
+                }
             }
-
-            lock (this.ThisLock)
+            finally
             {
-                _settings.Ipv4AddressSet.Clear();
-                _settings.Ipv4AddressSet.UnionWith(ipv4AddressSet);
-
-                _settings.Ipv4AddressRangeSet.Clear();
-                _settings.Ipv4AddressRangeSet.UnionWith(ipv4AddressRangeSet);
+                _isWatching = false;
             }
         }
 
@@ -210,8 +251,8 @@ namespace Amoeba
                     request.Proxy = proxy;
                     request.Headers.Add("Pragma", "no-cache");
                     request.Headers.Add("Cache-Control", "no-cache");
-                    request.Timeout = 1000 * 60 * 30;
-                    request.ReadWriteTimeout = 1000 * 60 * 30;
+                    request.Timeout = 1000 * 60 * 5;
+                    request.ReadWriteTimeout = 1000 * 60 * 5;
 
                     using (WebResponse response = request.GetResponse())
                     {
@@ -398,7 +439,6 @@ namespace Amoeba
                 }
                 catch (Exception)
                 {
-                    Debug.WriteLine("GetEncoding: " + charset);
                     encoding = Encoding.UTF8;
                 }
             }
