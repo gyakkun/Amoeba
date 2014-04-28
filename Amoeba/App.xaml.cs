@@ -53,16 +53,23 @@ namespace Amoeba
                 // Windows Vista以上。
                 if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
                 {
-                    // SHA512CryptoServiceProviderをデフォルトで使うように設定する。
-                    CryptoConfig.AddAlgorithm(typeof(SHA512CryptoServiceProvider),
+                    // SHA256Cngをデフォルトで使うように設定する。
+                    CryptoConfig.AddAlgorithm(typeof(SHA256Cng),
+                        "SHA256",
+                        "SHA256Cng",
+                        "System.Security.Cryptography.SHA256",
+                        "System.Security.Cryptography.SHA256Cng");
+
+                    // SHA512Cngをデフォルトで使うように設定する。
+                    CryptoConfig.AddAlgorithm(typeof(SHA512Cng),
                         "SHA512",
-                        "SHA512CryptoServiceProvider",
+                        "SHA512Cng",
                         "System.Security.Cryptography.SHA512",
-                        "System.Security.Cryptography.SHA512CryptoServiceProvider");
+                        "System.Security.Cryptography.SHA512Cng");
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 53);
+            App.AmoebaVersion = new Version(2, 0, 54);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -520,17 +527,27 @@ namespace Amoeba
 
                 if (version < new Version(2, 0, 52))
                 {
+                    try
                     {
                         // Startup.settingsを初期化。
                         File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
+                    }
+                    catch (Exception)
+                    {
+
                     }
                 }
 
                 if (version < new Version(2, 0, 53))
                 {
+                    try
                     {
                         // Catharsis.settingsを初期化。
                         File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"));
+                    }
+                    catch (Exception)
+                    {
+
                     }
                 }
             }

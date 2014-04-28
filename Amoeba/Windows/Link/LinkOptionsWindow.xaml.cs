@@ -387,7 +387,7 @@ namespace Amoeba.Windows
             this.DialogResult = false;
         }
 
-        class LinkViewModel : INotifyPropertyChanged
+        private class LinkViewModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 

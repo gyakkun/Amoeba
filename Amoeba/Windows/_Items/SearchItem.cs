@@ -421,7 +421,7 @@ namespace Amoeba.Windows
 
     [DataContract(Name = "SearchRange", Namespace = "http://Amoeba/Windows")]
     struct SearchRange<T> : IEquatable<SearchRange<T>>
-        where T : IComparable, IEquatable<T>
+        where T : IComparable<T>, IEquatable<T>
     {
         private T _min;
         private T _max;
@@ -484,9 +484,6 @@ namespace Amoeba.Windows
 
         public bool Equals(SearchRange<T> other)
         {
-            if ((object)other == null) return false;
-            if (object.ReferenceEquals(this, other)) return true;
-
             if (!this.Min.Equals(other.Min) || !this.Max.Equals(other.Max))
             {
                 return false;

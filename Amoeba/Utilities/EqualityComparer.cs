@@ -12,9 +12,6 @@ namespace Amoeba
     {
         new public bool Equals(object x, object y)
         {
-            if (x == null && y == null) return true;
-            if ((x == null) != (y == null)) return false;
-
             return object.ReferenceEquals(x, y);
         }
 

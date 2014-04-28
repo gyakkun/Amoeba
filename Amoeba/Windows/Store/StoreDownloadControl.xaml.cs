@@ -1662,7 +1662,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private class BoxListViewItem
+        private class BoxListViewItem : IEquatable<BoxListViewItem>
         {
             public int Type { get { return 0; } }
             public int Index { get; set; }
@@ -1672,9 +1672,9 @@ namespace Amoeba.Windows
             public DateTime CreationTime { get; set; }
             public long Length { get; set; }
             //public string Comment { get; set; }
+            //public string Id { get { return null; } }
             public SearchState State { get; set; }
             public Box Value { get; set; }
-            //public string Id { get { return null; } }
 
             public override int GetHashCode()
             {
@@ -1684,12 +1684,15 @@ namespace Amoeba.Windows
 
             public override bool Equals(object obj)
             {
-                if (!(obj is BoxListViewItem)) return false;
-                if (obj == null) return false;
-                if (object.ReferenceEquals(this, obj)) return true;
-                if (this.GetHashCode() != obj.GetHashCode()) return false;
+                if ((object)obj == null || !(obj is BoxListViewItem)) return false;
 
-                var other = (BoxListViewItem)obj;
+                return this.Equals((BoxListViewItem)obj);
+            }
+
+            public bool Equals(BoxListViewItem other)
+            {
+                if ((object)other == null) return false;
+                if (object.ReferenceEquals(this, other)) return true;
 
                 if (this.Index != other.Index
                     || this.Name != other.Name
@@ -1707,7 +1710,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private class SeedListViewItem
+        private class SeedListViewItem : IEquatable<SeedListViewItem>
         {
             public int Type { get { return 1; } }
             public int Index { get; set; }
@@ -1729,12 +1732,15 @@ namespace Amoeba.Windows
 
             public override bool Equals(object obj)
             {
-                if (!(obj is SeedListViewItem)) return false;
-                if (obj == null) return false;
-                if (object.ReferenceEquals(this, obj)) return true;
-                if (this.GetHashCode() != obj.GetHashCode()) return false;
+                if ((object)obj == null || !(obj is SeedListViewItem)) return false;
 
-                var other = (SeedListViewItem)obj;
+                return this.Equals((SeedListViewItem)obj);
+            }
+
+            public bool Equals(SeedListViewItem other)
+            {
+                if ((object)other == null) return false;
+                if (object.ReferenceEquals(this, other)) return true;
 
                 if (this.Index != other.Index
                     || this.Name != other.Name

@@ -86,7 +86,7 @@
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </local:ListBoxEx>
-                    <CheckBox x:Name="_debugCheckBox" Content="Debug" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="70" IsChecked="True"/>
+                    <CheckBox x:Name="_debugCheckBox" Content="Debug" HorizontalAlignment="Left" Margin="10,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="70" IsChecked="False"/>
                     <CheckBox x:Name="_logCheckBox" Content="Log" HorizontalAlignment="Left" Margin="85,5,0,0" Grid.Row="1" VerticalAlignment="Top" Width="70" IsChecked="True"/>
                 </Grid>
             </TabItem>

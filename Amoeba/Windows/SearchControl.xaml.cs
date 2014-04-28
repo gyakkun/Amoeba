@@ -642,7 +642,7 @@ namespace Amoeba.Windows
             }
         }
 
-        class SeedsAndSearchState
+        private class SeedsAndSearchState
         {
             private List<Seed> _seeds = new List<Seed>();
             private List<int> _downloadIds = new List<int>();
@@ -1873,7 +1873,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private class SearchListViewItem
+        private class SearchListViewItem : IEquatable<SearchListViewItem>
         {
             public int Index { get { return this.Length.GetHashCode(); } }
             public string Name { get; set; }
@@ -1898,12 +1898,15 @@ namespace Amoeba.Windows
 
             public override bool Equals(object obj)
             {
-                if (!(obj is SearchListViewItem)) return false;
-                if (obj == null) return false;
-                if (object.ReferenceEquals(this, obj)) return true;
-                if (this.GetHashCode() != obj.GetHashCode()) return false;
+                if ((object)obj == null || !(obj is SearchListViewItem)) return false;
 
-                var other = (SearchListViewItem)obj;
+                return this.Equals((SearchListViewItem)obj);
+            }
+
+            public bool Equals(SearchListViewItem other)
+            {
+                if ((object)other == null) return false;
+                if (object.ReferenceEquals(this, other)) return true;
 
                 if (this.Name != other.Name
                     || this.Signature != other.Signature
