@@ -69,7 +69,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 54);
+            App.AmoebaVersion = new Version(2, 0, 55);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -538,7 +538,7 @@ namespace Amoeba
                     }
                 }
 
-                if (version < new Version(2, 0, 53))
+                if (version < new Version(2, 0, 54))
                 {
                     try
                     {
@@ -820,10 +820,9 @@ namespace Amoeba
                         {
                             xml.WriteStartElement("Targets");
 
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/edu");
+                            // https://www.iblocklist.com/lists.php
+                            // 政府系IP、反P2P系企業IPを選択的にブロック。
                             xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/level-1");
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/level-2");
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/spyware");
                             xml.WriteElementString("Url", "http://list.iblocklist.com/lists/tbg/primary-threats");
 
                             xml.WriteEndElement(); //Targets

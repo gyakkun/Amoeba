@@ -495,12 +495,8 @@ namespace Amoeba.Windows
 
         private void GarbageCollect()
         {
-            long pressure = (long)NetworkConverter.FromSizeString("8 GB");
-
             try
             {
-                GC.AddMemoryPressure(pressure);
-
                 // ワーキングセットを縮小する。
                 //{
                 //    //NativeMethods.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -535,8 +531,6 @@ namespace Amoeba.Windows
                     System.GC.WaitForPendingFinalizers();
                     System.GC.Collect();
                 }
-
-                GC.RemoveMemoryPressure(pressure);
             }
             catch (Exception e)
             {
