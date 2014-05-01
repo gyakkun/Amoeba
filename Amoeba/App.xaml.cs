@@ -48,6 +48,11 @@ namespace Amoeba
         public App()
         {
             {
+                // メモリ使用量の削減を優先する。
+                //GCSettings.LatencyMode = GCLatencyMode.Batch;
+            }
+
+            {
                 OperatingSystem osInfo = Environment.OSVersion;
 
                 // Windows Vista以上。

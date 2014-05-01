@@ -191,8 +191,6 @@ namespace Amoeba.Windows
 
                 Debug.WriteLineIf(System.Runtime.GCSettings.IsServerGC, "GCSettings.IsServerGC");
 
-                this.GarbageCollect();
-
                 sw.Stop();
                 Debug.WriteLine("StartUp {0}", sw.ElapsedMilliseconds);
             }
@@ -264,12 +262,12 @@ namespace Amoeba.Windows
                 Stopwatch backupStopwatch = new Stopwatch();
                 Stopwatch updateStopwatch = new Stopwatch();
                 Stopwatch uriUpdateStopwatch = new Stopwatch();
-                Stopwatch gcStopwatch = new Stopwatch();
+                Stopwatch compactionStopwatch = new Stopwatch();
                 spaceCheckStopwatch.Start();
                 backupStopwatch.Start();
                 updateStopwatch.Start();
                 uriUpdateStopwatch.Start();
-                gcStopwatch.Start();
+                compactionStopwatch.Start();
 
                 for (; ; )
                 {
@@ -456,35 +454,19 @@ namespace Amoeba.Windows
                         }
                     }
 
-#if DEBUG
-                    if (gcStopwatch.Elapsed.TotalMinutes >= 3)
+                    if (compactionStopwatch.Elapsed.TotalMinutes >= 3)
                     {
-                        gcStopwatch.Restart();
+                        compactionStopwatch.Restart();
 
                         try
                         {
-                            this.GarbageCollect();
+                            this.Compaction();
                         }
                         catch (Exception e)
                         {
                             Log.Warning(e);
                         }
                     }
-#else
-                    if (gcStopwatch.Elapsed.TotalMinutes >= 12)
-                    {
-                        gcStopwatch.Restart();
-
-                        try
-                        {
-                            this.GarbageCollect();
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Warning(e);
-                        }
-                    }
-#endif
                 }
             }
             catch (Exception e)
@@ -493,48 +475,25 @@ namespace Amoeba.Windows
             }
         }
 
-        private void GarbageCollect()
+        private void Compaction()
         {
+            // LargeObjectHeapCompactionModeの設定を試みる。(.net 4.5.1以上で可能)
             try
             {
-                // ワーキングセットを縮小する。
-                //{
-                //    //NativeMethods.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-                //
-                //    var currentProcess = Process.GetCurrentProcess();
-                //    currentProcess.MaxWorkingSet = (IntPtr)(1024 * 1024 * 256);
-                //    currentProcess.MinWorkingSet = (IntPtr)(1024 * 1024 * 256);
-                //}
+                var type = typeof(System.Runtime.GCSettings);
+                var property = type.GetProperty("LargeObjectHeapCompactionMode", BindingFlags.Static | BindingFlags.Public);
 
-                // LargeObjectHeapCompactionModeの設定を試みる。(.net 4.5.1以上で可能)
-                try
+                if (null != property)
                 {
-                    var type = typeof(System.Runtime.GCSettings);
-                    var property = type.GetProperty("LargeObjectHeapCompactionMode", BindingFlags.Static | BindingFlags.Public);
+                    var Setter = property.GetSetMethod();
+                    Setter.Invoke(null, new object[] { /* GCLargeObjectHeapCompactionMode.CompactOnce */ 2 });
 
-                    if (null != property)
-                    {
-                        var Setter = property.GetSetMethod();
-                        Setter.Invoke(null, new object[] { /* GCLargeObjectHeapCompactionMode.CompactOnce */ 2 });
-                        System.GC.Collect();
-
-                        Debug.WriteLine("Set GCLargeObjectHeapCompactionMode.CompactOnce");
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-
-                {
-                    System.GC.Collect();
-                    System.GC.WaitForPendingFinalizers();
-                    System.GC.Collect();
+                    Debug.WriteLine("Set GCLargeObjectHeapCompactionMode.CompactOnce");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Log.Warning(e);
+
             }
         }
 
