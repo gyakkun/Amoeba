@@ -103,6 +103,7 @@ namespace Amoeba.Windows
 
                     List<UploadListViewItem> newList = new List<UploadListViewItem>();
                     Dictionary<UploadListViewItem, Information> updateDic = new Dictionary<UploadListViewItem, Information>();
+
                     bool clearFlag = false;
                     var selectItems = new List<UploadListViewItem>();
 

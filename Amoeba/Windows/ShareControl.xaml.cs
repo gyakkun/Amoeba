@@ -96,6 +96,7 @@ namespace Amoeba.Windows
 
                     List<ShareListViewItem> newList = new List<ShareListViewItem>();
                     Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
+
                     bool clearFlag = false;
                     var selectItems = new List<ShareListViewItem>();
 
@@ -415,11 +416,7 @@ namespace Amoeba.Windows
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.ShareControl_Name)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.ShareControl_Path)
+            if (sortBy == LanguagesManager.Instance.ShareControl_Path)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
             }
@@ -428,6 +425,7 @@ namespace Amoeba.Windows
                 _listView.Items.SortDescriptions.Add(new SortDescription("BlockCount", direction));
             }
 
+            _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
@@ -453,6 +451,8 @@ namespace Amoeba.Windows
                 {
                     int c = x.Path.CompareTo(y.Path);
                     if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
@@ -464,6 +464,8 @@ namespace Amoeba.Windows
                 list.Sort((x, y) =>
                 {
                     int c = x.BlockCount.CompareTo(y.BlockCount);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
@@ -531,7 +533,7 @@ namespace Amoeba.Windows
 
                         if (fullPath != null)
                         {
-                            this.Path = fullPath;
+                            this.Path = System.IO.Path.GetDirectoryName(fullPath);
                             this.Name = System.IO.Path.GetFileName(fullPath);
                         }
                     }

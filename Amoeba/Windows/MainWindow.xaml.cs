@@ -495,6 +495,8 @@ namespace Amoeba.Windows
             {
 
             }
+
+            GC.Collect();
         }
 
         private void StatusBarTimer()
@@ -796,7 +798,7 @@ namespace Amoeba.Windows
                 {
                     try
                     {
-                        if (e.MessageLevel == LogMessageLevel.Output || e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
+                        if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
                         {
                             using (var writer = new StreamWriter(_logPath, true, new UTF8Encoding(false)))
                             {
@@ -845,7 +847,7 @@ namespace Amoeba.Windows
                                 }
 
                                 _logListBox.Items.Add(string.Format("{0} {1}:\t{2}", DateTime.Now.ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo), e.MessageLevel, e.Message));
-                                _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
+                                _logListBox.GoBottom();
                             }
                             catch (Exception)
                             {
@@ -876,7 +878,7 @@ namespace Amoeba.Windows
                                 }
 
                                 _logListBox.Items.Add(string.Format("{0} Debug:\t{1}", DateTime.Now.ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo), message));
-                                _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
+                                _logListBox.GoBottom();
                             }
                             catch (Exception)
                             {
@@ -890,6 +892,11 @@ namespace Amoeba.Windows
 
                 }
             }));
+        }
+
+        private void _logListBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            _logListBox.GoBottom();
         }
 
         private class MyTraceListener : TraceListener
@@ -1559,6 +1566,7 @@ namespace Amoeba.Windows
                 MessageBoxImage.Information) == MessageBoxResult.No)
             {
                 e.Cancel = true;
+
                 return;
             }
 
@@ -1637,8 +1645,6 @@ namespace Amoeba.Windows
             {
                 _windowState = this.WindowState;
             }
-
-            if (_logListBox.Items.Count != 0) _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
         }
 
         private void _tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1671,8 +1677,6 @@ namespace Amoeba.Windows
             }
             else if (_tabControl.SelectedItem == _logTabItem)
             {
-                if (_logListBox.Items.Count != 0) _logListBox.ScrollIntoView(_logListBox.Items[_logListBox.Items.Count - 1]);
-
                 this.SelectedTab = MainWindowTabType.Log;
             }
             else

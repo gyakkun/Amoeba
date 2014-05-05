@@ -2798,6 +2798,7 @@ namespace Amoeba.Windows
                     || this.CreationTime != other.CreationTime
                     || this.Length != other.Length
                     //|| this.Comment != other.Comment
+                    //|| this.Id != other.Id
                     || this.State != other.State
                     || this.Value != other.Value)
                 {

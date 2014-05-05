@@ -110,6 +110,7 @@ namespace Amoeba.Windows
 
                     List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
                     Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
+
                     bool clearFlag = false;
                     var selectItems = new List<DownloadListViewItem>();
 

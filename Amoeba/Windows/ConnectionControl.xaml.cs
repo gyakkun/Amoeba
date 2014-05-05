@@ -217,6 +217,7 @@ namespace Amoeba.Windows
 
                     List<ConnectionListViewItem> newList = new List<ConnectionListViewItem>();
                     Dictionary<ConnectionListViewItem, Information> updateDic = new Dictionary<ConnectionListViewItem, Information>();
+
                     bool clearFlag = false;
                     var selectItems = new List<ConnectionListViewItem>();
 

@@ -8,13 +8,13 @@ using Library.Net.Amoeba;
 
 namespace Amoeba
 {
-    [DataContract(Name = "AddressFilter", Namespace = "http://Amoeba")]
-    public class AddressFilter
+    [DataContract(Name = "Ipv4AddressFilter", Namespace = "http://Amoeba")]
+    public class Ipv4AddressFilter
     {
         private string _proxyUri;
         private List<string> _urls;
 
-        public AddressFilter(string proxyUri, IEnumerable<string> urls)
+        public Ipv4AddressFilter(string proxyUri, IEnumerable<string> urls)
         {
             this.ProxyUri = proxyUri;
             this.ProtectedUrls.AddRange(urls);

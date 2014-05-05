@@ -56,7 +56,7 @@ namespace Amoeba.Properties
 
             foreach (string path in Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories))
             {
-                Dictionary<string, string> dic = new Dictionary<string, string>();
+                var dic = new Dictionary<string, string>();
 
                 using (XmlTextReader xml = new XmlTextReader(path))
                 {

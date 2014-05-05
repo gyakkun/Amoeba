@@ -470,42 +470,11 @@ namespace Amoeba.Windows
                             var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
                             if (store == null || CollectionUtilities.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
 
-                            bool flag = false;
-
-                            {
-                                var oldSeeds = new HashSet<Seed>();
-                                var newSeeds = new HashSet<Seed>();
-
-                                {
-                                    List<Box> oldBoxes = new List<Box>();
-                                    oldBoxes.AddRange(storeTreeViewItem.Value.Boxes);
-
-                                    for (int i = 0; i < oldBoxes.Count; i++)
-                                    {
-                                        oldBoxes.AddRange(oldBoxes[i].Boxes);
-                                        oldSeeds.UnionWith(oldBoxes[i].Seeds);
-                                    }
-                                }
-
-                                {
-                                    List<Box> newBoxes = new List<Box>();
-                                    newBoxes.AddRange(store.Boxes);
-
-                                    for (int i = 0; i < newBoxes.Count; i++)
-                                    {
-                                        newBoxes.AddRange(newBoxes[i].Boxes);
-                                        newSeeds.UnionWith(newBoxes[i].Seeds);
-                                    }
-                                }
-
-                                flag = !oldSeeds.SetEquals(newSeeds);
-                            }
-
                             this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
                                 storeTreeViewItem.Value.Boxes.Clear();
                                 storeTreeViewItem.Value.Boxes.AddRange(store.Boxes);
-                                storeTreeViewItem.Value.IsUpdated = flag;
+                                storeTreeViewItem.Value.IsUpdated = true;
 
                                 storeTreeViewItem.Update();
                             }));
@@ -1700,6 +1669,7 @@ namespace Amoeba.Windows
                     || this.CreationTime != other.CreationTime
                     || this.Length != other.Length
                     //|| this.Comment != other.Comment
+                    //|| this.Id != other.Id
                     || this.State != other.State
                     || this.Value != other.Value)
                 {

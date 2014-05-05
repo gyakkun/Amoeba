@@ -4,7 +4,7 @@ using Library.Collections;
 
 namespace Library.Net.Amoeba
 {
-    public sealed class Route : LockedList<string>, IEquatable<Route>, IEnumerable<string>
+    public sealed class Route : LockedList<string>
     {
         public Route() : base() { }
         public Route(int capacity) : base(capacity) { }

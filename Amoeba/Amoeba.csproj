@@ -110,7 +110,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Utilities\AddressFilter.cs" />
+    <Compile Include="Utilities\Ipv4AddressFilter.cs" />
     <Compile Include="Utilities\CatharsisManager.cs" />
     <Compile Include="Windows\_Controls\ObservableCollectionEx.cs" />
     <Compile Include="Utilities\OverlayNetworkManager.cs" />

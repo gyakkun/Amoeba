@@ -36,8 +36,8 @@ namespace Amoeba
         private static List<Process> _processList = new List<Process>();
 
         // Catharsis
-        private static List<AddressFilter> _addressFilters = new List<AddressFilter>();
-        public static List<AddressFilter> AddressFilters { get { return _addressFilters; } }
+        private static List<Ipv4AddressFilter> _addressFilters = new List<Ipv4AddressFilter>();
+        public static List<Ipv4AddressFilter> AddressFilters { get { return _addressFilters; } }
 
         // Colors
         public static AmoebaColors Colors { get; private set; }
@@ -47,11 +47,6 @@ namespace Amoeba
 
         public App()
         {
-            {
-                // メモリ使用量の削減を優先する。
-                //GCSettings.LatencyMode = GCLatencyMode.Batch;
-            }
-
             {
                 OperatingSystem osInfo = Environment.OSVersion;
 
@@ -74,7 +69,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 55);
+            App.AmoebaVersion = new Version(2, 0, 57);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -911,7 +906,7 @@ namespace Amoeba
                                 }
                             }
 
-                            App.AddressFilters.Add(new AddressFilter(proxyUri, urls));
+                            App.AddressFilters.Add(new Ipv4AddressFilter(proxyUri, urls));
                         }
                     }
                 }

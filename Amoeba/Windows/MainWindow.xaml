@@ -78,7 +78,7 @@
                         <RowDefinition Height="438*" />
                         <RowDefinition Name="_logRowDefinition" Height="29" />
                     </Grid.RowDefinitions>
-                    <local:ListBoxEx x:Name="_logListBox" SelectionMode="Extended" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    <local:ListBoxEx x:Name="_logListBox" SelectionMode="Extended" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" Loaded="_logListBox_Loaded"
                             ItemTemplate="{StaticResource _logListBox_Template}" >
                         <ListBox.ContextMenu>
                             <ContextMenu Name="_logListBoxContextMenu" >

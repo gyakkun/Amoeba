@@ -304,77 +304,185 @@ namespace Amoeba
     {
         public static void GoBottom(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.SetVerticalOffset(double.PositiveInfinity);
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.SetVerticalOffset(double.PositiveInfinity);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void GoTop(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.SetVerticalOffset(0);
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.SetVerticalOffset(0);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void GoRight(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.SetHorizontalOffset(double.PositiveInfinity);
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.SetHorizontalOffset(double.PositiveInfinity);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void GoLeft(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.SetHorizontalOffset(0);
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.SetHorizontalOffset(0);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void PageDown(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.PageDown();
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.PageDown();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void PageUp(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.PageUp();
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.PageUp();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void PageRight(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.PageRight();
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.PageRight();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void PageLeft(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.PageLeft();
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.PageLeft();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void LineDown(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.LineDown();
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.LineDown();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void LineUp(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.LineUp();
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.LineUp();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void LineRight(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.LineRight();
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.LineRight();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void LineLeft(this ItemsControl itemsControl)
         {
-            var panel = (VirtualizingStackPanel)itemsControl.FindItemsHostPanel();
-            panel.LineLeft();
+            try
+            {
+                var panel = itemsControl.FindItemsHostPanel() as IScrollInfo;
+                if (panel == null) return;
+
+                panel.LineLeft();
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
-        public static Panel FindItemsHostPanel(this ItemsControl itemsControl)
+        private static Panel FindItemsHostPanel(this ItemsControl itemsControl)
         {
             return Find(itemsControl.ItemContainerGenerator, itemsControl);
         }
