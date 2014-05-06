@@ -53,13 +53,6 @@ namespace Amoeba
                 // Windows Vista以上。
                 if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
                 {
-                    // SHA256Cngをデフォルトで使うように設定する。
-                    CryptoConfig.AddAlgorithm(typeof(SHA256Cng),
-                        "SHA256",
-                        "SHA256Cng",
-                        "System.Security.Cryptography.SHA256",
-                        "System.Security.Cryptography.SHA256Cng");
-
                     // SHA512Cngをデフォルトで使うように設定する。
                     CryptoConfig.AddAlgorithm(typeof(SHA512Cng),
                         "SHA512",
