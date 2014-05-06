@@ -170,7 +170,7 @@ namespace Amoeba.Windows
                         }));
                     }
 
-                    var sortList = this.Sort(newList, 100000); // 10万件
+                    var sortList = this.Sort(newList, 1024 * 64);
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
@@ -183,7 +183,7 @@ namespace Amoeba.Windows
                         {
                             _listView.Items.Add(item);
 
-                            if ((_listView.Items.Count % 256) == 0)
+                            if ((_listView.Items.Count % 1024) == 0)
                             {
                                 if (_refresh) return;
 
@@ -513,6 +513,10 @@ namespace Amoeba.Windows
                                 {
                                     item.State |= SearchState.Uploading;
                                     item.Seeds.Add(seed);
+
+                                    if (item.UploadIds == null)
+                                        item.UploadIds = new SmallList<int>();
+
                                     item.UploadIds.Add((int)information["Id"]);
                                 }
                                 else
@@ -520,6 +524,10 @@ namespace Amoeba.Windows
                                     item = new SeedsAndSearchState();
                                     item.State = SearchState.Uploading;
                                     item.Seeds.Add(seed);
+
+                                    if (item.UploadIds == null)
+                                        item.UploadIds = new SmallList<int>();
+
                                     item.UploadIds.Add((int)information["Id"]);
 
                                     seedsDictionary.Add(seed, item);
@@ -538,6 +546,10 @@ namespace Amoeba.Windows
                                 {
                                     item.State |= SearchState.Downloading;
                                     item.Seeds.Add(seed);
+
+                                    if (item.DownloadIds == null)
+                                        item.DownloadIds = new SmallList<int>();
+
                                     item.DownloadIds.Add((int)information["Id"]);
                                 }
                                 else
@@ -545,6 +557,10 @@ namespace Amoeba.Windows
                                     item = new SeedsAndSearchState();
                                     item.State = SearchState.Downloading;
                                     item.Seeds.Add(seed);
+
+                                    if (item.DownloadIds == null)
+                                        item.DownloadIds = new SmallList<int>();
+
                                     item.DownloadIds.Add((int)information["Id"]);
 
                                     seedsDictionary.Add(seed, item);
@@ -591,35 +607,35 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    List<SearchListViewItem> searchItems = new List<SearchListViewItem>();
-
-                    foreach (var seed in seedsDictionary.Keys)
-                    {
-                        var searchItem = new SearchListViewItem();
-
-                        lock (seed.ThisLock)
-                        {
-                            searchItem.Name = seed.Name;
-                            if (seed.Certificate != null) searchItem.Signature = seed.Certificate.ToString();
-                            searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
-                            searchItem.CreationTime = seed.CreationTime;
-                            searchItem.Length = seed.Length;
-                            //searchItem.Comment = seed.Comment;
-                            searchItem.Value = seed;
-                            searchItem.Seeds = seedsDictionary[seed].Seeds;
-                            searchItem.State = seedsDictionary[seed].State;
-                            searchItem.UploadIds = seedsDictionary[seed].UploadIds;
-                            searchItem.DownloadIds = seedsDictionary[seed].DownloadIds;
-                            //if (seed.Key != null && seed.Key.Hash != null) searchItem.Id = NetworkConverter.ToHexString(seed.Key.Hash);
-                        }
-
-                        searchItems.Add(searchItem);
-                    }
-
                     lock (_searchingCache.ThisLock)
                     {
                         _searchingCache.Clear();
-                        _searchingCache.AddRange(searchItems);
+
+                        foreach (var pair in seedsDictionary)
+                        {
+                            var seed = pair.Key;
+                            var value = pair.Value;
+
+                            var searchItem = new SearchListViewItem();
+
+                            lock (seed.ThisLock)
+                            {
+                                searchItem.Name = seed.Name;
+                                if (seed.Certificate != null) searchItem.Signature = seed.Certificate.ToString();
+                                searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
+                                searchItem.CreationTime = seed.CreationTime;
+                                searchItem.Length = seed.Length;
+                                //searchItem.Comment = seed.Comment;
+                                searchItem.Value = seed;
+                                searchItem.Seeds = value.Seeds;
+                                searchItem.State = value.State;
+                                searchItem.UploadIds = value.UploadIds;
+                                searchItem.DownloadIds = value.DownloadIds;
+                                //if (seed.Key != null && seed.Key.Hash != null) searchItem.Id = NetworkConverter.ToHexString(seed.Key.Hash);
+                            }
+
+                            _searchingCache.Add(searchItem);
+                        }
                     }
 
                     sw.Stop();
@@ -644,15 +660,23 @@ namespace Amoeba.Windows
 
         private class SeedsAndSearchState
         {
-            private List<Seed> _seeds = new List<Seed>();
-            private List<int> _downloadIds = new List<int>();
-            private List<int> _uploadIds = new List<int>();
-
             public SearchState State { get; set; }
 
-            public List<Seed> Seeds { get { return _seeds; } }
-            public List<int> DownloadIds { get { return _downloadIds; } }
-            public List<int> UploadIds { get { return _uploadIds; } }
+            private SmallList<Seed> _seeds;
+
+            public SmallList<Seed> Seeds
+            {
+                get
+                {
+                    if (_seeds == null)
+                        _seeds = new SmallList<Seed>();
+
+                    return _seeds;
+                }
+            }
+
+            public SmallList<int> DownloadIds { get; set; }
+            public SmallList<int> UploadIds { get; set; }
         }
 
         private void Update()
@@ -1089,7 +1113,7 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems.OfType<SearchListViewItem>();
             if (selectSearchListViewItems == null) return;
 
-            IList<Seed> list = new List<Seed>();
+            var list = new List<Seed>();
 
             foreach (var seeds in selectSearchListViewItems.Select(n => n.Seeds))
             {
@@ -1099,7 +1123,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            SeedEditWindow window = new SeedEditWindow(list.ToArray());
+            SeedEditWindow window = new SeedEditWindow(list);
             window.Owner = _mainWindow;
 
             if (true == window.ShowDialog())
@@ -1886,9 +1910,9 @@ namespace Amoeba.Windows
             public Seed Value { get; set; }
             public SearchState State { get; set; }
 
-            public List<Seed> Seeds { get; set; }
-            public List<int> DownloadIds { get; set; }
-            public List<int> UploadIds { get; set; }
+            public SmallList<Seed> Seeds { get; set; }
+            public SmallList<int> DownloadIds { get; set; }
+            public SmallList<int> UploadIds { get; set; }
 
             public override int GetHashCode()
             {

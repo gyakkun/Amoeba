@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -9,31 +10,32 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Library.Net.Amoeba;
 using Amoeba.Properties;
-using System.IO;
 using Library.Net;
+using Library.Net.Amoeba;
 using Library.Security;
 using Library;
 
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// BoxEditWindow.xaml の相互作用ロジック
+    /// SeedEditWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class BoxEditWindow : Window
+    partial class SeedEditWindow : Window
     {
-        private List<Box> _boxes;
+        private List<Seed> _seeds;
 
-        public BoxEditWindow(params Box[] boxes)
-            : this((IEnumerable<Box>)boxes)
+        public SeedEditWindow(params Seed[] seeds)
+            : this((IEnumerable<Seed>)seeds)
         {
 
         }
 
-        public BoxEditWindow(IEnumerable<Box> boxes)
+        public SeedEditWindow(IEnumerable<Seed> seeds)
         {
-            _boxes = boxes.ToList();
+            if (seeds.Count() == 0) throw new ArgumentOutOfRangeException("seeds");
+
+            _seeds = seeds.ToList();
 
             var digitalSignatureCollection = new List<object>();
             digitalSignatureCollection.Add(new ComboBoxItem() { Content = "" });
@@ -41,8 +43,8 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _nameTextBox.MaxLength = Box.MaxNameLength;
-            _commentTextBox.MaxLength = Box.MaxCommentLength;
+            _nameTextBox.MaxLength = Seed.MaxNameLength;
+            _commentTextBox.MaxLength = Seed.MaxCommentLength;
 
             {
                 var icon = new BitmapImage();
@@ -55,15 +57,15 @@ namespace Amoeba.Windows
                 this.Icon = icon;
             }
 
-            lock (_boxes[0].ThisLock)
+            lock (_seeds[0].ThisLock)
             {
-                _nameTextBox.Text = _boxes[0].Name;
+                _nameTextBox.Text = _seeds[0].Name;
 
-                if (_boxes.Count != 1)
+                if (_seeds.Count != 1)
                 {
-                    foreach (var box in _boxes)
+                    foreach (var seed in _seeds)
                     {
-                        if (_nameTextBox.Text != box.Name)
+                        if (_nameTextBox.Text != seed.Name)
                         {
                             _nameTextBox.Text = "";
                             _nameTextBox.IsReadOnly = true;
@@ -73,7 +75,22 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _commentTextBox.Text = _boxes[0].Comment;
+                lock (_seeds[0].Keywords.ThisLock)
+                {
+                    if (_seeds[0].Keywords.Count >= 1) _keywordsComboBox1.Text = _seeds[0].Keywords[0];
+                    if (_seeds[0].Keywords.Count >= 2) _keywordsComboBox2.Text = _seeds[0].Keywords[1];
+                    if (_seeds[0].Keywords.Count >= 3) _keywordsComboBox3.Text = _seeds[0].Keywords[2];
+                }
+
+                _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = "" });
+                _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = "" });
+                _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = "" });
+
+                foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox1.Items.Add(new ComboBoxItem() { Content = item });
+                foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox2.Items.Add(new ComboBoxItem() { Content = item });
+                foreach (var item in Settings.Instance.Global_SearchKeywords) _keywordsComboBox3.Items.Add(new ComboBoxItem() { Content = item });
+
+                _commentTextBox.Text = _seeds[0].Comment;
             }
 
             _signatureComboBox.ItemsSource = digitalSignatureCollection;
@@ -101,34 +118,45 @@ namespace Amoeba.Windows
             this.DialogResult = true;
 
             string name = _nameTextBox.Text;
+            var keywords = new KeywordCollection();
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox1.Text)) keywords.Add(_keywordsComboBox1.Text);
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox2.Text)) keywords.Add(_keywordsComboBox2.Text);
+            if (!string.IsNullOrWhiteSpace(_keywordsComboBox3.Text)) keywords.Add(_keywordsComboBox3.Text);
+            keywords = new KeywordCollection(new HashSet<string>(keywords));
             string comment = string.IsNullOrWhiteSpace(_commentTextBox.Text) ? null : _commentTextBox.Text;
             var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
             DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
 
-            var now = DateTime.UtcNow;
-
-            foreach (var box in _boxes)
+            foreach (var seed in _seeds)
             {
-                lock (box.ThisLock)
+                lock (seed.ThisLock)
                 {
                     if (!_nameTextBox.IsReadOnly)
                     {
-                        box.Name = name;
+                        seed.Name = name;
                     }
 
-                    box.Comment = comment;
-                    box.CreationTime = now;
+                    lock (seed.Keywords.ThisLock)
+                    {
+                        seed.Keywords.Clear();
+                        seed.Keywords.AddRange(keywords);
+                    }
+
+                    seed.Comment = comment;
 
                     if (digitalSignature == null)
                     {
-                        box.CreateCertificate(null);
+                        seed.CreateCertificate(null);
                     }
                     else
                     {
-                        box.CreateCertificate(digitalSignature);
+                        seed.CreateCertificate(digitalSignature);
                     }
                 }
             }
+
+            Settings.Instance.Global_UploadKeywords.Clear();
+            Settings.Instance.Global_UploadKeywords.AddRange(keywords);
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

@@ -142,14 +142,14 @@ namespace Amoeba
                 var ipv4AddressSet = new HashSet<uint>();
                 var ipv4AddressRangeSet = new HashSet<SearchRange<uint>>();
 
-                foreach (var addressFilter in App.AddressFilters)
+                foreach (var ipv4AddressFilter in App.Ipv4AddressFilters)
                 {
                     string proxyScheme = null;
                     string proxyHost = null;
                     int proxyPort = -1;
 
                     {
-                        var match = _regex.Match(addressFilter.ProxyUri);
+                        var match = _regex.Match(ipv4AddressFilter.ProxyUri);
 
                         if (match.Success)
                         {
@@ -159,7 +159,7 @@ namespace Amoeba
                         }
                         else
                         {
-                            var match2 = _regex2.Match(addressFilter.ProxyUri);
+                            var match2 = _regex2.Match(ipv4AddressFilter.ProxyUri);
 
                             if (match2.Success)
                             {
@@ -174,7 +174,7 @@ namespace Amoeba
 
                     WebProxy proxy = new WebProxy(proxyHost, proxyPort);
 
-                    foreach (var url in addressFilter.Urls)
+                    foreach (var url in ipv4AddressFilter.Urls)
                     {
                         for (int i = 0; i < 3; i++)
                         {

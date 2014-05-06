@@ -96,8 +96,23 @@ namespace Amoeba.Windows
             [DllImport("kernel32.dll")]
             public extern static ExecutionState SetThreadExecutionState(ExecutionState esFlags);
 
-            [DllImport("kernel32.dll")]
-            public static extern bool SetProcessWorkingSetSize(IntPtr handle, int minSize, int maxSize);
+            [DllImport("kernel32.dll", EntryPoint = "SetProcessWorkingSetSize")]
+            private static extern bool SetProcessWorkingSetSize32(IntPtr pProcess, int dwMinimumWorkingSetSize, int dwMaximumWorkingSetSize);
+
+            [DllImport("kernel32.dll", EntryPoint = "SetProcessWorkingSetSize")]
+            private static extern bool SetProcessWorkingSetSize64(IntPtr pProcess, long dwMinimumWorkingSetSize, long dwMaximumWorkingSetSize);
+
+            public static bool SetProcessWorkingSetSize(IntPtr pProcess, long dwMinimumWorkingSetSize, long dwMaximumWorkingSetSize)
+            {
+                if (System.Environment.Is64BitProcess)
+                {
+                    return NativeMethods.SetProcessWorkingSetSize64(pProcess, dwMinimumWorkingSetSize, dwMaximumWorkingSetSize);
+                }
+                else
+                {
+                    return NativeMethods.SetProcessWorkingSetSize32(pProcess, (int)Math.Min(dwMinimumWorkingSetSize, int.MaxValue), (int)Math.Min(dwMaximumWorkingSetSize, int.MaxValue));
+                }
+            }
         }
 
         public MainWindow()
@@ -477,6 +492,16 @@ namespace Amoeba.Windows
 
         private void Compaction()
         {
+            // ワーキングセットサイズを256MBに設定する。
+            try
+            {
+                NativeMethods.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, 1024 * 1024 * 256, 1024 * 1024 * 256);
+            }
+            catch (Exception)
+            {
+
+            }
+
             // LargeObjectHeapCompactionModeの設定を試みる。(.net 4.5.1以上で可能)
             try
             {
@@ -1552,6 +1577,8 @@ namespace Amoeba.Windows
             {
                 _checkUpdateMenuItem_Click(null, null);
             }
+
+            this.Compaction();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

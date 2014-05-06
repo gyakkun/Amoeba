@@ -36,8 +36,8 @@ namespace Amoeba
         private static List<Process> _processList = new List<Process>();
 
         // Catharsis
-        private static List<Ipv4AddressFilter> _addressFilters = new List<Ipv4AddressFilter>();
-        public static List<Ipv4AddressFilter> AddressFilters { get { return _addressFilters; } }
+        private static List<Ipv4AddressFilter> _ipv4AddressFilters = new List<Ipv4AddressFilter>();
+        public static List<Ipv4AddressFilter> Ipv4AddressFilters { get { return _ipv4AddressFilters; } }
 
         // Colors
         public static AmoebaColors Colors { get; private set; }
@@ -69,7 +69,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 57);
+            App.AmoebaVersion = new Version(2, 0, 59);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -538,7 +538,7 @@ namespace Amoeba
                     }
                 }
 
-                if (version < new Version(2, 0, 54))
+                if (version < new Version(2, 0, 58))
                 {
                     try
                     {
@@ -822,8 +822,8 @@ namespace Amoeba
 
                             // https://www.iblocklist.com/lists.php
                             // 政府系IP、反P2P系企業IPを選択的にブロック。
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/bluetack/level-1");
-                            xml.WriteElementString("Url", "http://list.iblocklist.com/lists/tbg/primary-threats");
+                            xml.WriteComment(@"<Url>http://list.iblocklist.com/lists/bluetack/level-1</Url>");
+                            xml.WriteComment(@"<Url>http://list.iblocklist.com/lists/tbg/primary-threats</Url>");
 
                             xml.WriteEndElement(); //Targets
                         }
@@ -906,7 +906,7 @@ namespace Amoeba
                                 }
                             }
 
-                            App.AddressFilters.Add(new Ipv4AddressFilter(proxyUri, urls));
+                            App.Ipv4AddressFilters.Add(new Ipv4AddressFilter(proxyUri, urls));
                         }
                     }
                 }

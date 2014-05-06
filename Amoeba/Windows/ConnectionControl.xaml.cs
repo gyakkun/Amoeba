@@ -590,7 +590,7 @@ namespace Amoeba.Windows
             private int _id;
             private Information _information;
             private string _uri;
-            private int _priority;
+            private long _priority;
             private long _receivedByteCount;
             private long _sentByteCount;
             private ConnectDirection _direction;
@@ -623,7 +623,7 @@ namespace Amoeba.Windows
                     if (_information.Contains("Uri")) this.Uri = (string)_information["Uri"];
                     else this.Uri = null;
 
-                    if (_information.Contains("Priority")) this.Priority = (int)_information["Priority"];
+                    if (_information.Contains("Priority")) this.Priority = (long)_information["Priority"];
                     else this.Priority = 0;
 
                     if (_information.Contains("ReceivedByteCount")) this.ReceivedByteCount = (long)_information["ReceivedByteCount"];
@@ -654,7 +654,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public int Priority
+            public long Priority
             {
                 get
                 {

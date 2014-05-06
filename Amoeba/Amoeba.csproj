@@ -167,7 +167,7 @@
     <Compile Include="Windows\SearchItemEditWindow.xaml.cs">
       <DependentUpon>SearchItemEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SeedEditWindow.xaml.cs">
+    <Compile Include="Windows\Store\SeedEditWindow.xaml.cs">
       <DependentUpon>SeedEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ShareControl.xaml.cs">
@@ -261,7 +261,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\SeedEditWindow.xaml">
+    <Page Include="Windows\Store\SeedEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
