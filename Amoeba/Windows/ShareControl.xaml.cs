@@ -533,7 +533,7 @@ namespace Amoeba.Windows
 
                         if (fullPath != null)
                         {
-                            this.Path = System.IO.Path.GetDirectoryName(fullPath);
+                            this.Path = fullPath;
                             this.Name = System.IO.Path.GetFileName(fullPath);
                         }
                     }

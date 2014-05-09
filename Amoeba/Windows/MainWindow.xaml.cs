@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -95,30 +96,14 @@ namespace Amoeba.Windows
         {
             [DllImport("kernel32.dll")]
             public extern static ExecutionState SetThreadExecutionState(ExecutionState esFlags);
-
-            [DllImport("kernel32.dll", EntryPoint = "SetProcessWorkingSetSize")]
-            private static extern bool SetProcessWorkingSetSize32(IntPtr pProcess, int dwMinimumWorkingSetSize, int dwMaximumWorkingSetSize);
-
-            [DllImport("kernel32.dll", EntryPoint = "SetProcessWorkingSetSize")]
-            private static extern bool SetProcessWorkingSetSize64(IntPtr pProcess, long dwMinimumWorkingSetSize, long dwMaximumWorkingSetSize);
-
-            public static bool SetProcessWorkingSetSize(IntPtr pProcess, long dwMinimumWorkingSetSize, long dwMaximumWorkingSetSize)
-            {
-                if (System.Environment.Is64BitProcess)
-                {
-                    return NativeMethods.SetProcessWorkingSetSize64(pProcess, dwMinimumWorkingSetSize, dwMaximumWorkingSetSize);
-                }
-                else
-                {
-                    return NativeMethods.SetProcessWorkingSetSize32(pProcess, (int)Math.Min(dwMinimumWorkingSetSize, int.MaxValue), (int)Math.Min(dwMaximumWorkingSetSize, int.MaxValue));
-                }
-            }
         }
 
         public MainWindow()
         {
             try
             {
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
+
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
 
@@ -278,11 +263,13 @@ namespace Amoeba.Windows
                 Stopwatch updateStopwatch = new Stopwatch();
                 Stopwatch uriUpdateStopwatch = new Stopwatch();
                 Stopwatch compactionStopwatch = new Stopwatch();
+                Stopwatch garbageCollectStopwatch = new Stopwatch();
                 spaceCheckStopwatch.Start();
                 backupStopwatch.Start();
                 updateStopwatch.Start();
                 uriUpdateStopwatch.Start();
                 compactionStopwatch.Start();
+                garbageCollectStopwatch.Start();
 
                 for (; ; )
                 {
@@ -482,6 +469,20 @@ namespace Amoeba.Windows
                             Log.Warning(e);
                         }
                     }
+
+                    if (garbageCollectStopwatch.Elapsed.TotalSeconds >= 60)
+                    {
+                        garbageCollectStopwatch.Restart();
+
+                        try
+                        {
+                            this.GarbageCollect();
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Warning(e);
+                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -492,16 +493,6 @@ namespace Amoeba.Windows
 
         private void Compaction()
         {
-            // ワーキングセットサイズを256MBに設定する。
-            try
-            {
-                NativeMethods.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, 1024 * 1024 * 256, 1024 * 1024 * 256);
-            }
-            catch (Exception)
-            {
-
-            }
-
             // LargeObjectHeapCompactionModeの設定を試みる。(.net 4.5.1以上で可能)
             try
             {
@@ -520,8 +511,18 @@ namespace Amoeba.Windows
             {
 
             }
+        }
 
-            GC.Collect();
+        private void GarbageCollect()
+        {
+            try
+            {
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private void StatusBarTimer()
@@ -996,7 +997,7 @@ namespace Amoeba.Windows
                         OperatingSystem osInfo = Environment.OSVersion;
 
                         // Windows Vista以上。
-                        if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
+                        if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version >= new Version(6, 0))
                         {
                             p.Verb = "runas";
                         }
@@ -1519,7 +1520,6 @@ namespace Amoeba.Windows
 
             _windowState = this.WindowState;
 
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
             TopRelativeDoubleConverter.GetDoubleEvent = (object state) =>
@@ -1578,7 +1578,7 @@ namespace Amoeba.Windows
                 _checkUpdateMenuItem_Click(null, null);
             }
 
-            this.Compaction();
+            this.GarbageCollect();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1671,6 +1671,15 @@ namespace Amoeba.Windows
             else
             {
                 _windowState = this.WindowState;
+            }
+
+            if (this.WindowState == System.Windows.WindowState.Minimized)
+            {
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Idle;
+            }
+            else
+            {
+                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
             }
         }
 

@@ -262,7 +262,7 @@ namespace Amoeba
 
                         try
                         {
-                            buffer = bufferManager.TakeBuffer(1024 * 32);
+                            buffer = bufferManager.TakeBuffer(1024 * 4);
 
                             using (Stream stream = response.GetResponseStream())
                             {
@@ -372,7 +372,7 @@ namespace Amoeba
 
                 try
                 {
-                    buffer = bufferManager.TakeBuffer(1024 * 32);
+                    buffer = bufferManager.TakeBuffer(1024 * 4);
 
                     using (Stream stream = w.GetResponseStream())
                     {

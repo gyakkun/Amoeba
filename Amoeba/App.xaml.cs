@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -45,13 +46,34 @@ namespace Amoeba
         // Cache
         public static string Cache_Path { get; private set; }
 
+        static class NativeMethods
+        {
+            [DllImport("kernel32.dll")]
+            public static extern bool SetProcessAffinityMask(IntPtr hProcess, UIntPtr dwProcessAffinityMask);
+        }
+
         public App()
         {
+            {
+                int mask = 0;
+
+                for (int i = (Math.Min(System.Environment.ProcessorCount, 32)) - 1; i >= 0; i--)
+                {
+                    if (i % 2 == 0)
+                    {
+                        mask |= (1 << i);
+                    }
+                }
+
+                // 使用するCPUコア数を限定する。
+                NativeMethods.SetProcessAffinityMask(Process.GetCurrentProcess().Handle, (UIntPtr)mask);
+            }
+
             {
                 OperatingSystem osInfo = Environment.OSVersion;
 
                 // Windows Vista以上。
-                if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version.Major >= 6)
+                if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version >= new Version(6, 0))
                 {
                     // SHA512Cngをデフォルトで使うように設定する。
                     CryptoConfig.AddAlgorithm(typeof(SHA512Cng),
