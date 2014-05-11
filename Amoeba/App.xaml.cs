@@ -46,29 +46,8 @@ namespace Amoeba
         // Cache
         public static string Cache_Path { get; private set; }
 
-        static class NativeMethods
-        {
-            [DllImport("kernel32.dll")]
-            public static extern bool SetProcessAffinityMask(IntPtr hProcess, UIntPtr dwProcessAffinityMask);
-        }
-
         public App()
         {
-            {
-                int mask = 0;
-
-                for (int i = (Math.Min(System.Environment.ProcessorCount, 32)) - 1; i >= 0; i--)
-                {
-                    if (i % 2 == 0)
-                    {
-                        mask |= (1 << i);
-                    }
-                }
-
-                // 使用するCPUコア数を限定する。
-                NativeMethods.SetProcessAffinityMask(Process.GetCurrentProcess().Handle, (UIntPtr)mask);
-            }
-
             {
                 OperatingSystem osInfo = Environment.OSVersion;
 
@@ -84,7 +63,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 60);
+            App.AmoebaVersion = new Version(2, 0, 61);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 

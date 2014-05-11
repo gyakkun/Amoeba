@@ -426,6 +426,8 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("SentByteCount", direction));
             }
+
+            _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
         private IEnumerable<ConnectionListViewItem> Sort(IEnumerable<ConnectionListViewItem> collection, string sortBy, ListSortDirection direction)

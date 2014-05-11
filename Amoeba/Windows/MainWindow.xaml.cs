@@ -1024,7 +1024,7 @@ namespace Amoeba.Windows
                     Directory.CreateDirectory(Path.Combine(@"..\", "Download"));
                     _amoebaManager.DownloadDirectory = Path.Combine(@"..\", "Download");
 
-                    _amoebaManager.ConnectionCountLimit = 12;
+                    _amoebaManager.ConnectionCountLimit = 25;
 
                     Settings.Instance.Global_UploadKeywords.Clear();
                     Settings.Instance.Global_UploadKeywords.Add("Document");
@@ -1209,11 +1209,6 @@ namespace Amoeba.Windows
                         _amoebaManager.Filters.Add(torConnectionFilter);
                     }
 
-                    if (version <= new Version(0, 1, 55))
-                    {
-                        _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 50), 12);
-                    }
-
                     if (version < new Version(1, 0, 0))
                     {
                         Settings.Instance.Global_Update_Signature = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A";
@@ -1241,10 +1236,9 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (version < new Version(2, 0, 26))
+                    if (version < new Version(2, 0, 61))
                     {
-                        var count = Math.Min(_amoebaManager.ConnectionCountLimit, 25);
-                        _amoebaManager.ConnectionCountLimit = 25;
+                        _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 100), 25);
                     }
                 }
 
