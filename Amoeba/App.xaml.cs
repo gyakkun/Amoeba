@@ -544,6 +544,24 @@ namespace Amoeba
 
                     }
                 }
+
+                if (version < new Version(2, 0, 61))
+                {
+                    try
+                    {
+                        var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library/Net/Amoeba/AmoebaManager/ConnectionManager");
+                        var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library/Net/Amoeba/AmoebaManager/ConnectionsManager");
+
+                        if (Directory.Exists(oldPath))
+                        {
+                            Directory.Move(oldPath, newPath);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
             }
 
             App.StartupSettings();
