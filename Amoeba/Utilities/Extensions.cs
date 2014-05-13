@@ -52,7 +52,7 @@ namespace Amoeba
         }
     }
 
-    public delegate Point GetPositionDelegate(IInputElement element);
+    delegate Point GetPositionDelegate(IInputElement element);
 
     static class ItemsControlExtensions
     {
@@ -261,7 +261,7 @@ namespace Amoeba
         }
     }
 
-    //http://geekswithblogs.net/sonam/archive/2009/03/02/listview-dragdrop-in-wpfmultiselect.aspx
+    // http://geekswithblogs.net/sonam/archive/2009/03/02/listview-dragdrop-in-wpfmultiselect.aspx
 
     /// <summary>
     /// Provides access to the mouse location by calling unmanaged code.
@@ -270,7 +270,7 @@ namespace Amoeba
     /// This class was written by Dan Crevier (Microsoft). 
     /// http://blogs.msdn.com/llobo/archive/2006/09/06/Scrolling-Scrollviewer-on-Mouse-Drag-at-the-boundaries.aspx
     /// </remarks>
-    public class MouseUtilities
+    class MouseUtilities
     {
         [StructLayout(LayoutKind.Sequential)]
         private struct Win32Point
@@ -300,7 +300,7 @@ namespace Amoeba
     }
 
     // http://pro.art55.jp/?eid=1160884
-    public static class ItemsControlUtilities
+    static class ItemsControlUtilities
     {
         public static void GoBottom(this ItemsControl itemsControl)
         {

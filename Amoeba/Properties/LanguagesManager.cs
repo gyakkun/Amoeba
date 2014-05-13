@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace Amoeba.Properties
 {
-    public delegate void UsingLanguageChangedEventHandler(object sender);
+    delegate void UsingLanguageChangedEventHandler(object sender);
 
     class LanguagesManager : IThisLock
     {

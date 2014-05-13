@@ -29,7 +29,7 @@ namespace Amoeba.Windows
             _boxIcon = icon;
         }
 
-        public class IconUtilities
+        class IconUtilities
         {
             [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
             struct SHFILEINFO
@@ -204,7 +204,7 @@ namespace Amoeba.Windows
         }
     }
 
-    public delegate double GetDoubleEventHandler(object sender);
+    delegate double GetDoubleEventHandler(object sender);
 
     [ValueConversion(typeof(double), typeof(double))]
     class TopRelativeDoubleConverter : IValueConverter

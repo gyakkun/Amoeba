@@ -28,7 +28,7 @@ namespace Amoeba
     /// <summary>
     /// App.xaml の相互作用ロジック
     /// </summary>
-    public partial class App : Application
+    partial class App : Application
     {
         public static Version AmoebaVersion { get; private set; }
         public static Dictionary<string, string> DirectoryPaths { get; private set; }
@@ -63,7 +63,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 61);
+            App.AmoebaVersion = new Version(2, 0, 62);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -126,8 +126,7 @@ namespace Amoeba
             {
                 try
                 {
-                    FileStream fs = new FileStream(path, FileMode.CreateNew);
-                    return fs;
+                    return new FileStream(path, FileMode.CreateNew);
                 }
                 catch (DirectoryNotFoundException)
                 {
@@ -152,8 +151,7 @@ namespace Amoeba
                 {
                     try
                     {
-                        FileStream fs = new FileStream(text, FileMode.CreateNew);
-                        return fs;
+                        return new FileStream(text, FileMode.CreateNew);
                     }
                     catch (DirectoryNotFoundException)
                     {
@@ -1014,7 +1012,7 @@ namespace Amoeba
         }
     }
 
-    public class AmoebaColors
+    class AmoebaColors
     {
         public AmoebaColors()
         {

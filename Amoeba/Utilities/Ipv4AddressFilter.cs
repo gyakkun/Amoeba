@@ -9,7 +9,7 @@ using Library.Net.Amoeba;
 namespace Amoeba
 {
     [DataContract(Name = "Ipv4AddressFilter", Namespace = "http://Amoeba")]
-    public class Ipv4AddressFilter
+    class Ipv4AddressFilter
     {
         private string _proxyUri;
         private List<string> _urls;

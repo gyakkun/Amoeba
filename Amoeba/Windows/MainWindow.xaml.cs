@@ -39,9 +39,9 @@ using Library.Security;
 
 namespace Amoeba.Windows
 {
-    public delegate void DebugLog(string message);
+    delegate void DebugLog(string message);
 
-    public enum MainWindowTabType
+    enum MainWindowTabType
     {
         Connection,
         Search,

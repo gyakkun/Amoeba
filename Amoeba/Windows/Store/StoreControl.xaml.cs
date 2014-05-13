@@ -24,7 +24,7 @@ using Library.Net.Amoeba;
 
 namespace Amoeba.Windows
 {
-    public enum StoreControlTabType
+    enum StoreControlTabType
     {
         Download,
         Upload,

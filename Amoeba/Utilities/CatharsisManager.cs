@@ -23,7 +23,7 @@ using Library.Net.Connections;
 
 namespace Amoeba
 {
-    unsafe class CatharsisManager : ManagerBase, Library.Configuration.ISettings, IThisLock
+    class CatharsisManager : ManagerBase, Library.Configuration.ISettings, IThisLock
     {
         private AmoebaManager _amoebaManager;
         private BufferManager _bufferManager;
@@ -302,7 +302,7 @@ namespace Amoeba
             throw new Exception(string.Format("not found: {0}", url));
         }
 
-        private static uint[] GetStringToIpv4(string value)
+        private unsafe static uint[] GetStringToIpv4(string value)
         {
             var list = value.Split('.', '-');
             if (list.Length != 8) return null;
