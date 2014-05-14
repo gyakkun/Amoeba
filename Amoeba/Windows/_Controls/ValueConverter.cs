@@ -193,7 +193,7 @@ namespace Amoeba.Windows
             var item = value as GridLength?;
             if (item == null) return null;
 
-            if (GridLength.Auto == item.Value)
+            if (item.Value == GridLength.Auto)
             {
                 return double.NaN;
             }
