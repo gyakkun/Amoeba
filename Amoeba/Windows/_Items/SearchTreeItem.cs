@@ -18,8 +18,8 @@ namespace Amoeba.Windows
         private LockedList<SearchTreeItem> _children;
         private bool _isExpanded = true;
 
-        private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
+        private volatile object _thisLock;
 
         [DataMember(Name = "SearchItem")]
         public SearchItem SearchItem

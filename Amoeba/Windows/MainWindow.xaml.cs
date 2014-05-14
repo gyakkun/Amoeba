@@ -73,10 +73,10 @@ namespace Amoeba.Windows
         private volatile bool _isClose = false;
         private bool _autoStop;
 
-        private System.Timers.Timer _refreshTimer = new System.Timers.Timer();
         private Thread _timerThread;
-        private Thread _statusBarTimerThread;
         private Thread _watchThread;
+        private Thread _statusBarThread;
+        private Thread _trafficMonitorThread;
 
         private volatile bool _diskSpaceNotFoundException;
         private volatile bool _cacheSpaceNotFoundException;
@@ -161,26 +161,25 @@ namespace Amoeba.Windows
                     }
                 };
 
-                _refreshTimer = new System.Timers.Timer();
-                _refreshTimer.Elapsed += _refreshTimer_Elapsed;
-                _refreshTimer.Interval = 1000;
-                _refreshTimer.AutoReset = true;
-                _refreshTimer.Start();
-
-                _timerThread = new Thread(this.Timer);
-                _timerThread.Priority = ThreadPriority.Highest;
+                _timerThread = new Thread(this.TimerThread);
+                _timerThread.Priority = ThreadPriority.Lowest;
                 _timerThread.Name = "MainWindow_TimerThread";
                 _timerThread.Start();
 
-                _statusBarTimerThread = new Thread(this.StatusBarTimer);
-                _statusBarTimerThread.Priority = ThreadPriority.Highest;
-                _statusBarTimerThread.Name = "MainWindow_StatusBarTimerThread";
-                _statusBarTimerThread.Start();
-
                 _watchThread = new Thread(this.WatchThread);
-                _watchThread.Priority = ThreadPriority.Highest;
+                _watchThread.Priority = ThreadPriority.Lowest;
                 _watchThread.Name = "MainWindow_WatchThread";
                 _watchThread.Start();
+
+                _statusBarThread = new Thread(this.StatusBarThread);
+                _statusBarThread.Priority = ThreadPriority.Highest;
+                _statusBarThread.Name = "MainWindow_StatusBarThread";
+                _statusBarThread.Start();
+
+                _trafficMonitorThread = new Thread(this.TrafficMonitorThread);
+                _trafficMonitorThread.Priority = ThreadPriority.Highest;
+                _trafficMonitorThread.Name = "MainWindow_TrafficMonitorThread";
+                _trafficMonitorThread.Start();
 
                 _transferLimitManager.StartEvent += _transferLimitManager_StartEvent;
                 _transferLimitManager.StopEvent += _transferLimitManager_StopEvent;
@@ -254,7 +253,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Timer()
+        private void TimerThread()
         {
             try
             {
@@ -264,6 +263,7 @@ namespace Amoeba.Windows
                 Stopwatch uriUpdateStopwatch = new Stopwatch();
                 Stopwatch compactionStopwatch = new Stopwatch();
                 Stopwatch garbageCollectStopwatch = new Stopwatch();
+
                 spaceCheckStopwatch.Start();
                 backupStopwatch.Start();
                 updateStopwatch.Start();
@@ -525,57 +525,6 @@ namespace Amoeba.Windows
             }
         }
 
-        private void StatusBarTimer()
-        {
-            try
-            {
-                for (; ; )
-                {
-                    Thread.Sleep(1000);
-                    if (_isClose) return;
-
-                    var state = _amoebaManager.State;
-                    var encodeState = _amoebaManager.EncodeState;
-                    var decodeState = _amoebaManager.DecodeState;
-
-                    this.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action(() =>
-                    {
-                        try
-                        {
-                            _sendSpeedTextBlock.Text = NetworkConverter.ToSizeString(_ci.SentByteCountList.ToArray().Sum(n => n) / 3) + "/s";
-                            _receiveSpeedTextBlock.Text = NetworkConverter.ToSizeString(_ci.ReceivedByteCountList.ToArray().Sum(n => n) / 3) + "/s";
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-
-                        try
-                        {
-                            string coreText = null;
-                            string convertText = null;
-
-                            if (state == ManagerState.Start) coreText = LanguagesManager.Instance.MainWindow_Running;
-                            else coreText = LanguagesManager.Instance.MainWindow_Stopping;
-
-                            if (encodeState == ManagerState.Start && decodeState == ManagerState.Start) convertText = LanguagesManager.Instance.MainWindow_Running;
-                            else convertText = LanguagesManager.Instance.MainWindow_Stopping;
-
-                            _stateTextBlock.Text = string.Format(LanguagesManager.Instance.MainWindow_StatesBar, coreText, convertText);
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }));
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
         private void WatchThread()
         {
             try
@@ -667,67 +616,157 @@ namespace Amoeba.Windows
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Log.Error(e);
             }
         }
 
-        private ConnectionInformation _ci = new ConnectionInformation();
-        private bool _refreshTimer_Running;
-
-        void _refreshTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void StatusBarThread()
         {
-            if (_refreshTimer_Running) return;
-            _refreshTimer_Running = true;
+            try
+            {
+                for (; ; )
+                {
+                    Thread.Sleep(1000);
+                    if (_isClose) return;
+
+                    var state = _amoebaManager.State;
+                    var encodeState = _amoebaManager.EncodeState;
+                    var decodeState = _amoebaManager.DecodeState;
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action(() =>
+                    {
+                        try
+                        {
+                            decimal sentAverageTraffic;
+
+                            lock (_sentInfomation.ThisLock)
+                            {
+                                sentAverageTraffic = _sentInfomation.AverageTrafficList.Sum() / _sentInfomation.AverageTrafficList.Length;
+                            }
+
+                            decimal receivedAverageTraffic;
+
+                            lock (_receivedInfomation.ThisLock)
+                            {
+                                receivedAverageTraffic = _receivedInfomation.AverageTrafficList.Sum() / _receivedInfomation.AverageTrafficList.Length;
+                            }
+
+                            _sendSpeedTextBlock.Text = NetworkConverter.ToSizeString(sentAverageTraffic) + "/s";
+                            _receiveSpeedTextBlock.Text = NetworkConverter.ToSizeString(receivedAverageTraffic) + "/s";
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        try
+                        {
+                            string coreText = null;
+                            string convertText = null;
+
+                            if (state == ManagerState.Start) coreText = LanguagesManager.Instance.MainWindow_Running;
+                            else coreText = LanguagesManager.Instance.MainWindow_Stopping;
+
+                            if (encodeState == ManagerState.Start && decodeState == ManagerState.Start) convertText = LanguagesManager.Instance.MainWindow_Running;
+                            else convertText = LanguagesManager.Instance.MainWindow_Stopping;
+
+                            _stateTextBlock.Text = string.Format(LanguagesManager.Instance.MainWindow_StatesBar, coreText, convertText);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }));
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        private TrafficInformation _sentInfomation = new TrafficInformation();
+        private TrafficInformation _receivedInfomation = new TrafficInformation();
+
+        private void TrafficMonitorThread()
+        {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
 
             try
             {
-                var sentByteCount = _amoebaManager.SentByteCount;
-                var receivedByteCount = _amoebaManager.ReceivedByteCount;
+                for (; ; )
+                {
+                    Thread.Sleep(((int)Math.Max(2, 1000 - sw.ElapsedMilliseconds)) / 2);
+                    if (sw.ElapsedMilliseconds < 1000) continue;
 
-                _ci.SentByteCountList[_ci.Count] = sentByteCount - _ci.SentByteCount;
-                _ci.SentByteCount = sentByteCount;
-                _ci.ReceivedByteCountList[_ci.Count] = receivedByteCount - _ci.ReceivedByteCount;
-                _ci.ReceivedByteCount = receivedByteCount;
-                _ci.Count++;
+                    var receivedByteCount = _amoebaManager.ReceivedByteCount;
+                    var sentByteCount = _amoebaManager.SentByteCount;
 
-                if (_ci.Count >= _ci.SentByteCountList.Count) _ci.Count = 0;
+                    lock (_sentInfomation.ThisLock)
+                    {
+                        _sentInfomation.AverageTrafficList[_sentInfomation.Round++]
+                            = ((decimal)(sentByteCount - _sentInfomation.PreviousTraffic)) * 1000 / sw.ElapsedMilliseconds;
+                        _sentInfomation.PreviousTraffic = sentByteCount;
+
+                        if (_sentInfomation.Round >= _sentInfomation.AverageTrafficList.Length)
+                        {
+                            _sentInfomation.Round = 0;
+                        }
+                    }
+
+                    lock (_receivedInfomation.ThisLock)
+                    {
+                        _receivedInfomation.AverageTrafficList[_receivedInfomation.Round++]
+                            = ((decimal)(receivedByteCount - _receivedInfomation.PreviousTraffic)) * 1000 / sw.ElapsedMilliseconds;
+                        _receivedInfomation.PreviousTraffic = receivedByteCount;
+
+                        if (_receivedInfomation.Round >= _receivedInfomation.AverageTrafficList.Length)
+                        {
+                            _receivedInfomation.Round = 0;
+                        }
+                    }
+
+                    sw.Restart();
+                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-            }
-            finally
-            {
-                _refreshTimer_Running = false;
+                Log.Error(e);
             }
         }
 
-        private class ConnectionInformation
+        private class TrafficInformation : IThisLock
         {
-            private LockedList<long> _sentByteCountList = new LockedList<long>(new long[3]);
-            private LockedList<long> _receivedByteCountList = new LockedList<long>(new long[3]);
+            private decimal[] _averageTrafficList = new decimal[3];
 
-            public long SentByteCount { get; set; }
-            public long ReceivedByteCount { get; set; }
-            public int Count { get; set; }
+            private readonly object _thisLock = new object();
 
-            public LockedList<long> SentByteCountList
+            public long PreviousTraffic { get; set; }
+
+            public int Round { get; set; }
+
+            public decimal[] AverageTrafficList
             {
                 get
                 {
-                    return _sentByteCountList;
+                    return _averageTrafficList;
                 }
             }
 
-            public LockedList<long> ReceivedByteCountList
+            #region IThisLock
+
+            public object ThisLock
             {
                 get
                 {
-                    return _receivedByteCountList;
+                    return _thisLock;
                 }
             }
+
+            #endregion
         }
 
         private static string GetMachineInfomation()
@@ -947,15 +986,15 @@ namespace Amoeba.Windows
 
         private void Setting_Languages()
         {
-            foreach (var item in LanguagesManager.Instance.Languages)
+            foreach (var language in LanguagesManager.Instance.Languages)
             {
-                var menuItem = new LanguageMenuItem() { IsCheckable = true, Value = item };
+                var menuItem = new LanguageMenuItem() { IsCheckable = true, Value = language };
 
                 menuItem.Click += (object sender, RoutedEventArgs e) =>
                 {
-                    foreach (var item3 in _languagesMenuItem.Items.Cast<LanguageMenuItem>())
+                    foreach (var item in _languagesMenuItem.Items.Cast<LanguageMenuItem>())
                     {
-                        item3.IsChecked = false;
+                        item.IsChecked = false;
                     }
 
                     menuItem.IsChecked = true;
@@ -970,8 +1009,10 @@ namespace Amoeba.Windows
                 _languagesMenuItem.Items.Add(menuItem);
             }
 
-            var menuItem2 = _languagesMenuItem.Items.Cast<LanguageMenuItem>().FirstOrDefault(n => n.Value == Settings.Instance.Global_UseLanguage);
-            if (menuItem2 != null) menuItem2.IsChecked = true;
+            {
+                var menuItem = _languagesMenuItem.Items.Cast<LanguageMenuItem>().FirstOrDefault(n => n.Value == Settings.Instance.Global_UseLanguage);
+                if (menuItem != null) menuItem.IsChecked = true;
+            }
         }
 
         private void Setting_Init()
@@ -1609,8 +1650,8 @@ namespace Amoeba.Windows
                     _timerThread.Join();
                     _timerThread = null;
 
-                    _statusBarTimerThread.Join();
-                    _statusBarTimerThread = null;
+                    _statusBarThread.Join();
+                    _statusBarThread = null;
 
                     _watchThread.Join();
                     _watchThread = null;

@@ -16,8 +16,8 @@ namespace Amoeba.Windows
         private LockedList<StoreCategorizeTreeItem> _children;
         private bool _isExpanded = true;
 
-        private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
+        private volatile object _thisLock;
 
         [DataMember(Name = "Name")]
         public string Name

@@ -178,7 +178,7 @@ namespace Amoeba.Windows
             var item = value as double?;
             if (item == null) return null;
 
-            if (item.Value < 0)
+            if (double.IsNaN(item.Value))
             {
                 return GridLength.Auto;
             }
@@ -195,7 +195,7 @@ namespace Amoeba.Windows
 
             if (GridLength.Auto == item.Value)
             {
-                return -1;
+                return double.NaN;
             }
             else
             {

@@ -16,8 +16,8 @@ namespace Amoeba.Windows
         private string _signature;
         private SignatureCollection _trustSignatures;
 
-        private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
+        private volatile object _thisLock;
 
         public override int GetHashCode()
         {

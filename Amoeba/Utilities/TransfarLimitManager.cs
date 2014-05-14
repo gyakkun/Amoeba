@@ -21,15 +21,15 @@ namespace Amoeba
         private long _uploadSize;
         private long _downloadSize;
 
-        private volatile Thread _timerThread;
+        private volatile Thread _watchThread;
 
         private volatile ManagerState _state = ManagerState.Stop;
 
         public EventHandler _startEvent;
         public EventHandler _stopEvent;
 
-        private volatile bool _disposed;
         private readonly object _thisLock = new object();
+        private volatile bool _disposed;
 
         public TransfarLimitManager(AmoebaManager amoebaManager)
         {
@@ -142,7 +142,7 @@ namespace Amoeba
             }
         }
 
-        private void Timer()
+        private void WatchThread()
         {
             try
             {
@@ -271,10 +271,10 @@ namespace Amoeba
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    _timerThread = new Thread(this.Timer);
-                    _timerThread.Priority = ThreadPriority.Lowest;
-                    _timerThread.Name = "TransfarLimitManager_Timer";
-                    _timerThread.Start();
+                    _watchThread = new Thread(this.WatchThread);
+                    _watchThread.Priority = ThreadPriority.Lowest;
+                    _watchThread.Name = "TransfarLimitManager_WatchThread";
+                    _watchThread.Start();
                 }
             }
         }
@@ -289,8 +289,8 @@ namespace Amoeba
                     _state = ManagerState.Stop;
                 }
 
-                _timerThread.Join();
-                _timerThread = null;
+                _watchThread.Join();
+                _watchThread = null;
             }
         }
 
@@ -454,8 +454,8 @@ namespace Amoeba
         private int _span = 1;
         private long _size = 1024 * 1024;
 
-        private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
+        private volatile object _thisLock;
 
         [DataMember(Name = "Type")]
         public TransferLimitType Type

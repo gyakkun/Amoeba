@@ -39,8 +39,8 @@ namespace Amoeba
         private VolatileHashSet<string> _succeededUris;
         private VolatileHashSet<string> _failedUris;
 
-        private volatile bool _disposed;
         private readonly object _thisLock = new object();
+        private volatile bool _disposed;
 
         private const int _maxReceiveCount = 1024 * 1024 * 32;
 

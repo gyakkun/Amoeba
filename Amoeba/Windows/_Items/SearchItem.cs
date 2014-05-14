@@ -25,8 +25,8 @@ namespace Amoeba.Windows
         private List<SearchContains<Seed>> _searchSeedCollection;
         private List<SearchContains<SearchState>> _searchStateCollection;
 
-        private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
+        private volatile object _thisLock;
 
         [DataMember(Name = "Name")]
         public string Name

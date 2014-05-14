@@ -16,8 +16,8 @@ namespace Amoeba.Windows
         private bool _isExpanded = true;
         private bool _isUpdated;
 
-        private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
+        private volatile object _thisLock;
 
         [DataMember(Name = "UploadSignature")]
         public string Signature
