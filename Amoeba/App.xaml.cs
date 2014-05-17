@@ -48,6 +48,8 @@ namespace Amoeba
 
         public App()
         {
+            App.AmoebaVersion = new Version(2, 0, 65);
+
             {
                 OperatingSystem osInfo = Environment.OSVersion;
 
@@ -62,8 +64,6 @@ namespace Amoeba
                         "System.Security.Cryptography.SHA512Cng");
                 }
             }
-
-            App.AmoebaVersion = new Version(2, 0, 64);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
