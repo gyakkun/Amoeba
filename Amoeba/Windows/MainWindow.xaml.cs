@@ -70,7 +70,7 @@ namespace Amoeba.Windows
         private Dictionary<string, string> _configrationDirectoryPaths = new Dictionary<string, string>();
         private string _logPath;
 
-        private volatile bool _isClose = false;
+        private volatile bool _closed = false;
         private bool _autoStop;
 
         private Thread _timerThread;
@@ -145,7 +145,7 @@ namespace Amoeba.Windows
                 _notifyIcon.Visible = false;
                 _notifyIcon.Click += (object sender2, EventArgs e2) =>
                 {
-                    if (_isClose) return;
+                    if (_closed) return;
 
                     try
                     {
@@ -274,7 +274,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(1000);
-                    if (_isClose) return;
+                    if (_closed) return;
 
                     {
                         if (_diskSpaceNotFoundException || _cacheSpaceNotFoundException)
@@ -535,83 +535,76 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(1000);
-                    if (_isClose) return;
+                    if (_closed) return;
 
                     if (Settings.Instance.Global_IsStart && stopwatch.Elapsed.TotalSeconds >= 120)
                     {
                         stopwatch.Restart();
 
-                        try
+                        // SearchSignaturesの更新
                         {
-                            // SearchSignaturesの更新
+                            var searchSignatures = new HashSet<string>();
+
+                            // クリップボード上にあるデータも考慮する。
                             {
-                                var searchSignatures = new HashSet<string>();
-
-                                // クリップボード上にあるデータも考慮する。
-                                {
-                                    var storeTreeItems = new List<StoreTreeItem>();
-                                    storeTreeItems.AddRange(Clipboard.GetStoreTreeItems());
-
-                                    {
-                                        var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
-                                        storeCategorizeTreeItems.AddRange(Clipboard.GetStoreCategorizeTreeItems());
-
-                                        for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
-                                        {
-                                            storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
-                                            storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
-                                        }
-                                    }
-
-                                    searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
-                                }
+                                var storeTreeItems = new List<StoreTreeItem>();
+                                storeTreeItems.AddRange(Clipboard.GetStoreTreeItems());
 
                                 {
-                                    var storeTreeItems = new List<StoreTreeItem>();
-
                                     var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
-                                    storeCategorizeTreeItems.Add(Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem);
+                                    storeCategorizeTreeItems.AddRange(Clipboard.GetStoreCategorizeTreeItems());
 
                                     for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
                                     {
                                         storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
                                         storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
                                     }
-
-                                    searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
                                 }
 
-                                foreach (var linkItem in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
-                                {
-                                    searchSignatures.Add(linkItem.Signature);
-                                    searchSignatures.UnionWith(linkItem.TrustSignatures);
-                                }
-
-                                lock (_amoebaManager.ThisLock)
-                                {
-                                    _amoebaManager.SetSearchSignatures(searchSignatures);
-                                }
+                                searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
                             }
 
-                            // TrustSignaturesの更新
-                            foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                             {
-                                var link = _amoebaManager.GetLink(item.Signature);
-                                if (link == null || CollectionUtilities.Equals(item.TrustSignatures, link.TrustSignatures)) continue;
+                                var storeTreeItems = new List<StoreTreeItem>();
 
-                                lock (item.ThisLock)
+                                var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
+                                storeCategorizeTreeItems.Add(Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem);
+
+                                for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
                                 {
-                                    lock (item.TrustSignatures.ThisLock)
-                                    {
-                                        item.TrustSignatures.Clear();
-                                        item.TrustSignatures.AddRange(link.TrustSignatures);
-                                    }
+                                    storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
+                                    storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
                                 }
+
+                                searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
+                            }
+
+                            foreach (var linkItem in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
+                            {
+                                searchSignatures.Add(linkItem.Signature);
+                                searchSignatures.UnionWith(linkItem.TrustSignatures);
+                            }
+
+                            lock (_amoebaManager.ThisLock)
+                            {
+                                _amoebaManager.SetSearchSignatures(searchSignatures);
                             }
                         }
-                        catch (Exception e)
+
+                        // TrustSignaturesの更新
+                        foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                         {
-                            Log.Warning(e);
+                            var link = _amoebaManager.GetLink(item.Signature);
+                            if (link == null || CollectionUtilities.Equals(item.TrustSignatures, link.TrustSignatures)) continue;
+
+                            lock (item.ThisLock)
+                            {
+                                lock (item.TrustSignatures.ThisLock)
+                                {
+                                    item.TrustSignatures.Clear();
+                                    item.TrustSignatures.AddRange(link.TrustSignatures);
+                                }
+                            }
                         }
                     }
                 }
@@ -629,7 +622,7 @@ namespace Amoeba.Windows
                 for (; ; )
                 {
                     Thread.Sleep(1000);
-                    if (_isClose) return;
+                    if (_closed) return;
 
                     var state = _amoebaManager.State;
                     var encodeState = _amoebaManager.EncodeState;
@@ -692,12 +685,12 @@ namespace Amoeba.Windows
 
         private void TrafficMonitorThread()
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
             try
             {
-                for (; ; )
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                while (!_closed)
                 {
                     Thread.Sleep(((int)Math.Max(2, 1000 - sw.ElapsedMilliseconds)) / 2);
                     if (sw.ElapsedMilliseconds < 1000) continue;
@@ -1141,8 +1134,8 @@ namespace Amoeba.Windows
 
                     Random random = new Random();
                     _amoebaManager.ListenUris.Clear();
-                    _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), random.Next(1024, 65536)));
-                    _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), random.Next(1024, 65536)));
+                    _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), random.Next(1024, ushort.MaxValue + 1)));
+                    _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), random.Next(1024, ushort.MaxValue + 1)));
 
                     var ipv4ConnectionFilter = new ConnectionFilter()
                     {
@@ -1466,7 +1459,7 @@ namespace Amoeba.Windows
                         {
                             if (isLogFlag)
                             {
-                                Log.Information(string.Format("Check Update: {0}", LanguagesManager.Instance.MainWindow_LatestVersion_Message));
+                                Log.Information(string.Format("Check update: {0}", LanguagesManager.Instance.MainWindow_LatestVersion_Message));
                             }
                         }
                         else
@@ -1509,7 +1502,7 @@ namespace Amoeba.Windows
                                 }
                             }
 
-                            Log.Information(string.Format("Check Update: {0}", seed.Name));
+                            Log.Information(string.Format("Check update: {0}", seed.Name));
 
                             bool flag = true;
 
@@ -1618,7 +1611,7 @@ namespace Amoeba.Windows
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (_isClose) return;
+            if (_closed) return;
 
             if (MessageBox.Show(
                 this,
@@ -1632,7 +1625,7 @@ namespace Amoeba.Windows
                 return;
             }
 
-            _isClose = true;
+            _closed = true;
 
             e.Cancel = true;
 
@@ -1650,11 +1643,14 @@ namespace Amoeba.Windows
                     _timerThread.Join();
                     _timerThread = null;
 
+                    _watchThread.Join();
+                    _watchThread = null;
+
                     _statusBarThread.Join();
                     _statusBarThread = null;
 
-                    _watchThread.Join();
-                    _watchThread = null;
+                    _trafficMonitorThread.Join();
+                    _trafficMonitorThread = null;
 
                     _catharsisManager.Save(_configrationDirectoryPaths["CatharsisManager"]);
                     _catharsisManager.Dispose();

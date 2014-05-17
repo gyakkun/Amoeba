@@ -17,8 +17,7 @@ namespace Amoeba
 
         public int GetHashCode(object obj)
         {
-            if (obj == null) return 0;
-            else return RuntimeHelpers.GetHashCode(obj);
+            return RuntimeHelpers.GetHashCode(obj);
         }
     }
 }

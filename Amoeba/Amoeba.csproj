@@ -379,8 +379,12 @@
     <None Include="Assembly\Polipo\polipo.conf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Properties\Amoeba.License" />
-    <None Include="Properties\Amoeba.Readme" />
+    <None Include="Properties\Amoeba.License">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Amoeba.Readme">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Assembly\Tor\torrc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

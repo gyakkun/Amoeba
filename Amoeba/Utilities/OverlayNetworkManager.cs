@@ -28,7 +28,7 @@ namespace Amoeba
         private object _samClientLock = new object();
 
         private SamListener _samListener;
-        private string _samHistory;
+        private string _oldSamBridgeUri;
         private object _samServerLock = new object();
 
         private Regex _regex = new Regex(@"(.*?):(.*):(\d*)");
@@ -39,8 +39,6 @@ namespace Amoeba
 
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
-
-        private const int _maxReceiveCount = 1024 * 1024 * 32;
 
         public OverlayNetworkManager(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
@@ -380,7 +378,7 @@ namespace Amoeba
                 {
                     checkSamStopwatch.Restart();
 
-                    if (_samHistory != this.SamBridgeUri)
+                    if (_oldSamBridgeUri != this.SamBridgeUri)
                     {
                         string i2pUri = null;
 
@@ -443,7 +441,7 @@ namespace Amoeba
                             if (i2pUri != _settings.I2pUri)
                             {
                                 if (this.RemoveUri(_settings.I2pUri))
-                                    Log.Information(string.Format("Remove Node Uri: {0}", _settings.I2pUri));
+                                    Log.Information(string.Format("Remove Node uri: {0}", _settings.I2pUri));
                             }
 
                             _settings.I2pUri = i2pUri;
@@ -451,10 +449,10 @@ namespace Amoeba
                             if (_settings.I2pUri != null)
                             {
                                 if (this.AddUri(_settings.I2pUri))
-                                    Log.Information(string.Format("Add Node Uri: {0}", _settings.I2pUri));
+                                    Log.Information(string.Format("Add Node uri: {0}", _settings.I2pUri));
                             }
 
-                            _samHistory = this.SamBridgeUri;
+                            _oldSamBridgeUri = this.SamBridgeUri;
                         }
                     }
                 }
@@ -516,7 +514,7 @@ namespace Amoeba
 
                     _samListener = null;
 
-                    _samHistory = null;
+                    _oldSamBridgeUri = null;
                 }
 
                 lock (this.ThisLock)
@@ -524,7 +522,7 @@ namespace Amoeba
                     if (_settings.I2pUri != null)
                     {
                         if (this.RemoveUri(_settings.I2pUri))
-                            Log.Information(string.Format("Remove Node Uri: {0}", _settings.I2pUri));
+                            Log.Information(string.Format("Remove Node uri: {0}", _settings.I2pUri));
                     }
                     _settings.I2pUri = null;
                 }

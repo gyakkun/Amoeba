@@ -770,14 +770,15 @@ namespace Amoeba.Windows
                                     ((Seed)_information["Seed"]).Rank);
                             }
                         }
-                        else if (_information.Contains("DecodeBytes") && _information.Contains("DecodingBytes") && _information.Contains("Rank")
+                        else if (_information.Contains("DecodeBytes") && _information.Contains("DecodingBytes") && _information.Contains("Rank") && _information.Contains("Seed")
                             && ((DownloadState)_information["State"] == DownloadState.ParityDecoding || (DownloadState)_information["State"] == DownloadState.Decoding))
                         {
-                            this.RateText = string.Format("{0}% {1}/{2} [{3}]",
+                            this.RateText = string.Format("{0}% {1}/{2} [{3}/{4}]",
                                 this.Rate,
                                 NetworkConverter.ToSizeString((long)_information["DecodingBytes"]),
                                 NetworkConverter.ToSizeString((long)_information["DecodeBytes"]),
-                                (int)_information["Rank"]);
+                                (int)_information["Rank"],
+                                ((Seed)_information["Seed"]).Rank);
                         }
                         else
                         {

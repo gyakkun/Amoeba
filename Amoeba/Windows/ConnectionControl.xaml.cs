@@ -56,10 +56,9 @@ namespace Amoeba.Windows
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ReceivedByteCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ConnectConnectionCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_CreateConnectionCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_AcceptConnectionCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_ConnectBlockedCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_AcceptBlockedCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_BlockedConnectionCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "ConnectionControl_SurroundingNodeCount" });
@@ -125,10 +124,9 @@ namespace Amoeba.Windows
                     dic["ConnectionControl_SentByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.SentByteCount);
                     dic["ConnectionControl_ReceivedByteCount"] = NetworkConverter.ToSizeString(_amoebaManager.ReceivedByteCount);
 
-                    dic["ConnectionControl_ConnectConnectionCount"] = ((long)information["ConnectConnectionCount"]).ToString();
+                    dic["ConnectionControl_CreateConnectionCount"] = ((long)information["CreateConnectionCount"]).ToString();
                     dic["ConnectionControl_AcceptConnectionCount"] = ((long)information["AcceptConnectionCount"]).ToString();
-                    dic["ConnectionControl_ConnectBlockedCount"] = ((long)information["ConnectBlockedCount"]).ToString();
-                    dic["ConnectionControl_AcceptBlockedCount"] = ((long)information["AcceptBlockedCount"]).ToString();
+                    dic["ConnectionControl_BlockedConnectionCount"] = ((long)information["BlockedConnectionCount"]).ToString();
 
                     dic["ConnectionControl_SurroundingNodeCount"] = ((int)information["SurroundingNodeCount"]).ToString();
                     dic["ConnectionControl_RelayBlockCount"] = ((long)information["RelayBlockCount"]).ToString();

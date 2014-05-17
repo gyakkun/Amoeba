@@ -37,7 +37,7 @@
   <Translate Key="MainWindow_Start" Value="Start" />
   <Translate Key="MainWindow_Stop" Value="Stop" />
   <Translate Key="MainWindow_LinkOptions" Value="Link options" />
-  <Translate Key="MainWindow_UpdateBaseNode" Value="Update Base Node Uri" />
+  <Translate Key="MainWindow_UpdateBaseNode" Value="Update base node uri" />
   <Translate Key="MainWindow_CoreOptions" Value="Core options" />
   <Translate Key="MainWindow_Cache" Value="Cache" />
   <Translate Key="MainWindow_CheckSeeds" Value="Check seeds" />
@@ -207,10 +207,9 @@
   <Translate Key="ConnectionControl_Name" Value="Name" />
   <Translate Key="ConnectionControl_Value" Value="Value" />
   <Translate Key="ConnectionControl_BufferManagerSize" Value="BufferManager Size" />
-  <Translate Key="ConnectionControl_ConnectConnectionCount" Value="Connect connection count" />
+  <Translate Key="ConnectionControl_CreateConnectionCount" Value="Create connection count" />
   <Translate Key="ConnectionControl_AcceptConnectionCount" Value="Accept connection count" />
-  <Translate Key="ConnectionControl_ConnectBlockedCount" Value="Connect blocked count" />
-  <Translate Key="ConnectionControl_AcceptBlockedCount" Value="Accept blocked count" />
+  <Translate Key="ConnectionControl_BlockedConnectionCount" Value="Blocked connection count" />
   <Translate Key="ConnectionControl_SurroundingNodeCount" Value="Surrounding node count" />
   <Translate Key="ConnectionControl_RelayBlockCount" Value="Relay block count" />
   <Translate Key="ConnectionControl_FreeSpace" Value="Free space" />

@@ -63,7 +63,7 @@ namespace Amoeba
                 }
             }
 
-            App.AmoebaVersion = new Version(2, 0, 63);
+            App.AmoebaVersion = new Version(2, 0, 64);
 
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
@@ -184,128 +184,106 @@ namespace Amoeba
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            if (e.Args.Length == 2 && e.Args[0] == "Relate")
+            try
             {
-                if (e.Args[1] == "on")
+                if (e.Args.Length == 2 && e.Args[0] == "Relate")
                 {
-                    try
+                    if (e.Args[1] == "on")
                     {
-                        string extension = ".box";
-                        string commandline = "\"" + Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe")) + "\" \"%1\"";
-                        string fileType = "Amoeba";
-                        string description = "Amoeba Box";
-                        string verb = "open";
-                        string iconPath = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Icons"], "Box.ico"));
-
-                        using (var regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension))
+                        try
                         {
-                            regkey.SetValue("", fileType);
-                        }
+                            string extension = ".box";
+                            string commandline = "\"" + Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe")) + "\" \"%1\"";
+                            string fileType = "Amoeba";
+                            string description = "Amoeba Box";
+                            string verb = "open";
+                            string iconPath = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Icons"], "Box.ico"));
 
-                        using (var shellkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType))
-                        {
-                            shellkey.SetValue("", description);
-
-                            using (var shellkey2 = shellkey.CreateSubKey("shell\\" + verb))
+                            using (var regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension))
                             {
-                                using (var shellkey3 = shellkey2.CreateSubKey("command"))
+                                regkey.SetValue("", fileType);
+                            }
+
+                            using (var shellkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType))
+                            {
+                                shellkey.SetValue("", description);
+
+                                using (var shellkey2 = shellkey.CreateSubKey("shell\\" + verb))
                                 {
-                                    shellkey3.SetValue("", commandline);
-                                    shellkey3.Close();
+                                    using (var shellkey3 = shellkey2.CreateSubKey("command"))
+                                    {
+                                        shellkey3.SetValue("", commandline);
+                                        shellkey3.Close();
+                                    }
                                 }
                             }
-                        }
 
-                        using (var iconkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType + "\\DefaultIcon"))
+                            using (var iconkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(fileType + "\\DefaultIcon"))
+                            {
+                                iconkey.SetValue("", "\"" + iconPath + "\"");
+                            }
+                        }
+                        catch (Exception)
                         {
-                            iconkey.SetValue("", "\"" + iconPath + "\"");
+
                         }
+
+                        this.Shutdown();
+
+                        return;
                     }
-                    catch (Exception)
+                    else if (e.Args[1] == "off")
                     {
+                        try
+                        {
+                            string extension = ".box";
+                            string fileType = "Amoeba";
 
+                            Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(extension);
+                            Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(fileType);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        this.Shutdown();
+
+                        return;
                     }
-
-                    this.Shutdown();
-
-                    return;
                 }
-                else if (e.Args[1] == "off")
+                if (e.Args.Length >= 2 && e.Args[0] == "Download")
                 {
                     try
-                    {
-                        string extension = ".box";
-                        string fileType = "Amoeba";
-
-                        Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(extension);
-                        Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(fileType);
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-
-                    this.Shutdown();
-
-                    return;
-                }
-            }
-            if (e.Args.Length >= 2 && e.Args[0] == "Download")
-            {
-                try
-                {
-                    if (!Directory.Exists(App.DirectoryPaths["Input"]))
-                        Directory.CreateDirectory(App.DirectoryPaths["Input"]);
-
-                    using (FileStream stream = App.GetUniqueFileStream(Path.Combine(App.DirectoryPaths["Input"], "seed.txt")))
-                    using (StreamWriter writer = new StreamWriter(stream))
-                    {
-                        foreach (var item in e.Args.Skip(1))
-                        {
-                            if (string.IsNullOrWhiteSpace(item)) continue;
-                            writer.WriteLine(item);
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-            else if (e.Args.Length == 1 && e.Args[0].EndsWith(".box") && File.Exists(e.Args[0]))
-            {
-                try
-                {
-                    if (Path.GetExtension(e.Args[0]).ToLower() == ".box")
                     {
                         if (!Directory.Exists(App.DirectoryPaths["Input"]))
                             Directory.CreateDirectory(App.DirectoryPaths["Input"]);
 
-                        File.Copy(e.Args[0], App.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["Input"], Path.GetRandomFileName() + "_temp.box")));
+                        using (FileStream stream = App.GetUniqueFileStream(Path.Combine(App.DirectoryPaths["Input"], "seed.txt")))
+                        using (StreamWriter writer = new StreamWriter(stream))
+                        {
+                            foreach (var item in e.Args.Skip(1))
+                            {
+                                if (string.IsNullOrWhiteSpace(item)) continue;
+                                writer.WriteLine(item);
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
                     }
                 }
-                catch (Exception)
+                else if (e.Args.Length == 1 && e.Args[0].EndsWith(".box") && File.Exists(e.Args[0]))
                 {
-
-                }
-            }
-
-            // 多重起動防止
-            {
-                Process currentProcess = Process.GetCurrentProcess();
-
-                // 同一パスのプロセスが存在する場合、終了する。
-                foreach (Process p in Process.GetProcessesByName(currentProcess.ProcessName))
-                {
-                    if (p.Id == currentProcess.Id) continue;
-
                     try
                     {
-                        if (p.MainModule.FileName == Path.GetFullPath(Assembly.GetEntryAssembly().Location))
+                        if (Path.GetExtension(e.Args[0]).ToLower() == ".box")
                         {
-                            this.Shutdown();
+                            if (!Directory.Exists(App.DirectoryPaths["Input"]))
+                                Directory.CreateDirectory(App.DirectoryPaths["Input"]);
 
-                            return;
+                            File.Copy(e.Args[0], App.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["Input"], Path.GetRandomFileName() + "_temp.box")));
                         }
                     }
                     catch (Exception)
@@ -314,165 +292,23 @@ namespace Amoeba
                     }
                 }
 
-                string updateInformationFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update");
-
-                // アップデート中の場合、終了する。
-                if (File.Exists(updateInformationFilePath))
+                // 多重起動防止
                 {
-                    using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Open))
-                    using (StreamReader reader = new StreamReader(stream, new UTF8Encoding(false)))
+                    Process currentProcess = Process.GetCurrentProcess();
+
+                    // 同一パスのプロセスが存在する場合、終了する。
+                    foreach (Process p in Process.GetProcessesByName(currentProcess.ProcessName))
                     {
-                        var updateExeFilePath = reader.ReadLine();
-
-                        foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(updateExeFilePath)))
-                        {
-                            try
-                            {
-                                if (Path.GetFileName(p.MainModule.FileName) == updateExeFilePath)
-                                {
-                                    this.Shutdown();
-
-                                    return;
-                                }
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-                    }
-
-                    File.Delete(updateInformationFilePath);
-                }
-            }
-
-            App.CheckProcess();
-
-            // アップデート
-            if (Directory.Exists(App.DirectoryPaths["Update"]))
-            {
-            Restart: ;
-
-                string zipFilePath = null;
-
-                {
-                    Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
-                    Version version = App.AmoebaVersion;
-
-                    foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
-                    {
-                        string name = Path.GetFileName(path);
-
-                        if (name.StartsWith("Amoeba"))
-                        {
-                            var match = regex.Match(name);
-
-                            if (match.Success)
-                            {
-                                var tempVersion = new Version(match.Groups[1].Value);
-
-                                if (version < tempVersion)
-                                {
-                                    version = tempVersion;
-                                    zipFilePath = path;
-                                }
-                                else
-                                {
-                                    if (File.Exists(path))
-                                        File.Delete(path);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (zipFilePath != null)
-                {
-                    string workDirectioryPath = App.DirectoryPaths["Work"];
-                    var tempCoreDirectoryPath = Path.Combine(workDirectioryPath, "Core");
-
-                    if (Directory.Exists(tempCoreDirectoryPath))
-                        Directory.Delete(tempCoreDirectoryPath, true);
-
-                    try
-                    {
-                        using (ZipFile zipfile = new ZipFile(zipFilePath))
-                        {
-                            zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                            zipfile.ExtractAll(tempCoreDirectoryPath);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        if (File.Exists(zipFilePath))
-                            File.Delete(zipFilePath);
-
-                        goto Restart;
-                    }
-
-                    var tempUpdateExeFilePath = Path.Combine(workDirectioryPath, "Library.Update.exe");
-
-                    if (File.Exists(tempUpdateExeFilePath))
-                        File.Delete(tempUpdateExeFilePath);
-
-                    File.Copy("Library.Update.exe", tempUpdateExeFilePath);
-
-                    ProcessStartInfo startInfo = new ProcessStartInfo();
-                    startInfo.FileName = tempUpdateExeFilePath;
-                    startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
-                        Process.GetCurrentProcess().Id,
-                        Path.Combine(tempCoreDirectoryPath, "Core"),
-                        Directory.GetCurrentDirectory(),
-                        Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"),
-                        Path.GetFullPath(zipFilePath));
-                    startInfo.WorkingDirectory = Path.GetDirectoryName(tempUpdateExeFilePath);
-
-                    var process = Process.Start(startInfo);
-                    process.WaitForInputIdle();
-
-                    string updateInformationFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update");
-
-                    using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Create))
-                    using (StreamWriter writer = new StreamWriter(stream))
-                    {
-                        writer.WriteLine(Path.GetFileName(tempUpdateExeFilePath));
-                    }
-
-                    this.Shutdown();
-
-                    return;
-                }
-            }
-
-            // バージョンアップ処理。
-            if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
-            {
-                Version version;
-
-                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
-                {
-                    version = new Version(reader.ReadLine());
-                }
-
-                if (version < new Version(2, 0, 20))
-                {
-                    if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path")))
-                    {
-                        string cachePath;
-
-                        using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"), new UTF8Encoding(false)))
-                        {
-                            cachePath = reader.ReadLine();
-                        }
-
-                        using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), false, new UTF8Encoding(false)))
-                        {
-                            writer.WriteLine(string.Format("{0} {1}", "Path", cachePath));
-                        }
+                        if (p.Id == currentProcess.Id) continue;
 
                         try
                         {
-                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"));
+                            if (p.MainModule.FileName == Path.GetFullPath(Assembly.GetEntryAssembly().Location))
+                            {
+                                this.Shutdown();
+
+                                return;
+                            }
                         }
                         catch (Exception)
                         {
@@ -480,94 +316,267 @@ namespace Amoeba
                         }
                     }
 
-                    {
-                        var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml");
-                        var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings");
+                    string updateInformationFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update");
 
-                        if (File.Exists(oldPath))
+                    // アップデート中の場合、終了する。
+                    if (File.Exists(updateInformationFilePath))
+                    {
+                        using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Open))
+                        using (StreamReader reader = new StreamReader(stream, new UTF8Encoding(false)))
                         {
+                            var updateExeFilePath = reader.ReadLine();
+
+                            foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(updateExeFilePath)))
+                            {
+                                try
+                                {
+                                    if (Path.GetFileName(p.MainModule.FileName) == updateExeFilePath)
+                                    {
+                                        this.Shutdown();
+
+                                        return;
+                                    }
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+                            }
+                        }
+
+                        File.Delete(updateInformationFilePath);
+                    }
+                }
+
+                App.CheckProcess();
+
+                // アップデート
+                if (Directory.Exists(App.DirectoryPaths["Update"]))
+                {
+                Restart: ;
+
+                    string zipFilePath = null;
+
+                    {
+                        Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
+                        Version version = App.AmoebaVersion;
+
+                        foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
+                        {
+                            string name = Path.GetFileName(path);
+
+                            if (name.StartsWith("Amoeba"))
+                            {
+                                var match = regex.Match(name);
+
+                                if (match.Success)
+                                {
+                                    var tempVersion = new Version(match.Groups[1].Value);
+
+                                    if (version < tempVersion)
+                                    {
+                                        version = tempVersion;
+                                        zipFilePath = path;
+                                    }
+                                    else
+                                    {
+                                        if (File.Exists(path))
+                                            File.Delete(path);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (zipFilePath != null)
+                    {
+                        string workDirectioryPath = App.DirectoryPaths["Work"];
+                        var tempCoreDirectoryPath = Path.Combine(workDirectioryPath, "Core");
+
+                        if (Directory.Exists(tempCoreDirectoryPath))
+                            Directory.Delete(tempCoreDirectoryPath, true);
+
+                        try
+                        {
+                            using (ZipFile zipfile = new ZipFile(zipFilePath))
+                            {
+                                zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
+                                zipfile.ExtractAll(tempCoreDirectoryPath);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            if (File.Exists(zipFilePath))
+                                File.Delete(zipFilePath);
+
+                            goto Restart;
+                        }
+
+                        var tempUpdateExeFilePath = Path.Combine(workDirectioryPath, "Library.Update.exe");
+
+                        if (File.Exists(tempUpdateExeFilePath))
+                            File.Delete(tempUpdateExeFilePath);
+
+                        File.Copy("Library.Update.exe", tempUpdateExeFilePath);
+
+                        ProcessStartInfo startInfo = new ProcessStartInfo();
+                        startInfo.FileName = tempUpdateExeFilePath;
+                        startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
+                            Process.GetCurrentProcess().Id,
+                            Path.Combine(tempCoreDirectoryPath, "Core"),
+                            Directory.GetCurrentDirectory(),
+                            Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"),
+                            Path.GetFullPath(zipFilePath));
+                        startInfo.WorkingDirectory = Path.GetDirectoryName(tempUpdateExeFilePath);
+
+                        var process = Process.Start(startInfo);
+                        process.WaitForInputIdle();
+
+                        string updateInformationFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.update");
+
+                        using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Create))
+                        using (StreamWriter writer = new StreamWriter(stream))
+                        {
+                            writer.WriteLine(Path.GetFileName(tempUpdateExeFilePath));
+                        }
+
+                        this.Shutdown();
+
+                        return;
+                    }
+                }
+
+                // バージョンアップ処理。
+                if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))
+                {
+                    Version version;
+
+                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+                    {
+                        version = new Version(reader.ReadLine());
+                    }
+
+                    if (version < new Version(2, 0, 20))
+                    {
+                        if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path")))
+                        {
+                            string cachePath;
+
+                            using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"), new UTF8Encoding(false)))
+                            {
+                                cachePath = reader.ReadLine();
+                            }
+
+                            using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), false, new UTF8Encoding(false)))
+                            {
+                                writer.WriteLine(string.Format("{0} {1}", "Path", cachePath));
+                            }
+
                             try
                             {
-                                File.Move(oldPath, newPath);
+                                File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"));
                             }
                             catch (Exception)
                             {
 
                             }
                         }
-                    }
-                }
 
-                if (version < new Version(2, 0, 28))
-                {
-                    {
-                        var torWorkDirectoryPath = Path.Combine(App.DirectoryPaths["Work"], "Tor");
-
-                        if (Directory.Exists(torWorkDirectoryPath))
                         {
-                            try
-                            {
-                                Directory.Delete(torWorkDirectoryPath, true);
-                            }
-                            catch (Exception)
-                            {
+                            var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml");
+                            var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings");
 
+                            if (File.Exists(oldPath))
+                            {
+                                try
+                                {
+                                    File.Move(oldPath, newPath);
+                                }
+                                catch (Exception)
+                                {
+
+                                }
                             }
+                        }
+                    }
+
+                    if (version < new Version(2, 0, 28))
+                    {
+                        {
+                            var torWorkDirectoryPath = Path.Combine(App.DirectoryPaths["Work"], "Tor");
+
+                            if (Directory.Exists(torWorkDirectoryPath))
+                            {
+                                try
+                                {
+                                    Directory.Delete(torWorkDirectoryPath, true);
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+                            }
+                        }
+                    }
+
+                    if (version < new Version(2, 0, 52))
+                    {
+                        try
+                        {
+                            // Startup.settingsを初期化。
+                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+                    if (version < new Version(2, 0, 58))
+                    {
+                        try
+                        {
+                            // Catharsis.settingsを初期化。
+                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+                    if (version < new Version(2, 0, 61))
+                    {
+                        try
+                        {
+                            var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library/Net/Amoeba/AmoebaManager/ConnectionManager");
+                            var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library/Net/Amoeba/AmoebaManager/ConnectionsManager");
+
+                            if (Directory.Exists(oldPath))
+                            {
+                                Directory.Move(oldPath, newPath);
+                            }
+                        }
+                        catch (Exception)
+                        {
+
                         }
                     }
                 }
 
-                if (version < new Version(2, 0, 52))
-                {
-                    try
-                    {
-                        // Startup.settingsを初期化。
-                        File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
-                    }
-                    catch (Exception)
-                    {
+                App.StartupSettings();
+                App.CatharsisSettings();
+                App.CacheSettings();
+                App.ColorsSettings();
 
-                    }
-                }
-
-                if (version < new Version(2, 0, 58))
-                {
-                    try
-                    {
-                        // Catharsis.settingsを初期化。
-                        File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"));
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-
-                if (version < new Version(2, 0, 61))
-                {
-                    try
-                    {
-                        var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library/Net/Amoeba/AmoebaManager/ConnectionManager");
-                        var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library/Net/Amoeba/AmoebaManager/ConnectionsManager");
-
-                        if (Directory.Exists(oldPath))
-                        {
-                            Directory.Move(oldPath, newPath);
-                        }
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
+                this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
 
-            App.StartupSettings();
-            App.CatharsisSettings();
-            App.CacheSettings();
-            App.ColorsSettings();
-
-            this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
+                this.Shutdown();
+            }
         }
 
         private static void CheckProcess()
