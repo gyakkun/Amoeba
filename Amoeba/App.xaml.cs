@@ -48,7 +48,7 @@ namespace Amoeba
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 65);
+            App.AmoebaVersion = new Version(2, 0, 66);
 
             {
                 OperatingSystem osInfo = Environment.OSVersion;
