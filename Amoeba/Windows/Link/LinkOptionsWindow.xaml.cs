@@ -100,7 +100,7 @@ namespace Amoeba.Windows
                 if (Clipboard.ContainsText())
                 {
                     var line = Clipboard.GetText().Split('\r', '\n');
-                    flag = Signature.HasSignature(line[0]);
+                    flag = Signature.IsSignature(line[0]);
                 }
 
                 _downloadLinkListViewPasteMenuItem.IsEnabled = flag;
@@ -137,7 +137,7 @@ namespace Amoeba.Windows
         {
             foreach (var signature in Clipboard.GetText().Split('\r', '\n'))
             {
-                if (!Signature.HasSignature(signature)) continue;
+                if (!Signature.IsSignature(signature)) continue;
 
                 var item = new LinkViewModel()
                 {
@@ -257,7 +257,7 @@ namespace Amoeba.Windows
                     if (Clipboard.ContainsText())
                     {
                         var line = Clipboard.GetText().Split('\r', '\n');
-                        flag = Signature.HasSignature(line[0]);
+                        flag = Signature.IsSignature(line[0]);
                     }
 
                     _uploadTrustSignatureListViewPasteMenuItem.IsEnabled = flag;
@@ -301,7 +301,7 @@ namespace Amoeba.Windows
 
             foreach (var signature in Clipboard.GetText().Split('\r', '\n'))
             {
-                if (!Signature.HasSignature(signature)) continue;
+                if (!Signature.IsSignature(signature)) continue;
 
                 if (viewModel.TrustSignatures.Contains(signature)) continue;
                 viewModel.TrustSignatures.Add(signature);

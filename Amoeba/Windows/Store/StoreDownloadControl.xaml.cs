@@ -953,7 +953,7 @@ namespace Amoeba.Windows
                 if (Clipboard.ContainsText())
                 {
                     var line = Clipboard.GetText().Split('\r', '\n');
-                    flag = Signature.HasSignature(line[0]);
+                    flag = Signature.IsSignature(line[0]);
                 }
 
                 storeCategorizeTreeViewItemPasteMenuItem.IsEnabled = flag || Clipboard.ContainsStoreCategorizeTreeItems() || Clipboard.ContainsStoreTreeItems();
@@ -1071,7 +1071,7 @@ namespace Amoeba.Windows
 
             foreach (var signature in Clipboard.GetText().Split('\r', '\n'))
             {
-                if (!Signature.HasSignature(signature)
+                if (!Signature.IsSignature(signature)
                     || selectTreeViewItem.Value.StoreTreeItems.Any(n => n.Signature == signature)) continue;
 
                 var storeTreeItem = new StoreTreeItem();

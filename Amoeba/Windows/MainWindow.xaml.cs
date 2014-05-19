@@ -1058,7 +1058,7 @@ namespace Amoeba.Windows
                     Directory.CreateDirectory(Path.Combine(@"..\", "Download"));
                     _amoebaManager.DownloadDirectory = Path.Combine(@"..\", "Download");
 
-                    _amoebaManager.ConnectionCountLimit = 25;
+                    _amoebaManager.ConnectionCountLimit = 32;
 
                     Settings.Instance.Global_UploadKeywords.Clear();
                     Settings.Instance.Global_UploadKeywords.Add("Document");
@@ -1270,9 +1270,9 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (version < new Version(2, 0, 61))
+                    if (version < new Version(2, 0, 68))
                     {
-                        _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 100), 25);
+                        _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 256), 32);
                     }
                 }
 

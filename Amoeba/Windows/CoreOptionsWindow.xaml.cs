@@ -1441,7 +1441,7 @@ namespace Amoeba.Windows
                 _amoebaManager.SetOtherNodes(_otherNodes.Where(n => n != null && n.Id != null && n.Uris.Count() != 0));
 
                 int count = CoreOptionsWindow.GetStringToInt(_bandwidthConnectionCountTextBox.Text);
-                _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 100), 25);
+                _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 256), 32);
 
                 int bandwidthLimit = (int)NetworkConverter.FromSizeString("0");
 

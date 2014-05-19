@@ -48,7 +48,7 @@ namespace Amoeba
 
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 66);
+            App.AmoebaVersion = new Version(2, 0, 68);
 
             {
                 OperatingSystem osInfo = Environment.OSVersion;
@@ -62,6 +62,15 @@ namespace Amoeba
                         "SHA512Cng",
                         "System.Security.Cryptography.SHA512",
                         "System.Security.Cryptography.SHA512Cng");
+                }
+                else
+                {
+                    // SHA512Managedをデフォルトで使うように設定する。
+                    CryptoConfig.AddAlgorithm(typeof(SHA512Managed),
+                        "SHA512",
+                        "SHA512Managed",
+                        "System.Security.Cryptography.SHA512",
+                        "System.Security.Cryptography.SHA512Managed");
                 }
             }
 
