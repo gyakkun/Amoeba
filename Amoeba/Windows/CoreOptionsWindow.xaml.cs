@@ -324,9 +324,13 @@ namespace Amoeba.Windows
                 }
             }
 
-            var random = RandomNumberGenerator.Create();
             byte[] buffer = new byte[64];
-            random.GetBytes(buffer);
+
+            using (var random = RandomNumberGenerator.Create())
+            {
+                random.GetBytes(buffer);
+            }
+
             _baseNode_Id = buffer;
 
             _baseNodeUpdate();
@@ -405,9 +409,13 @@ namespace Amoeba.Windows
             if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _baseNode_Uris.Any(n => n == uri)) return;
             _baseNode_Uris.Add(uri);
 
-            var random = RandomNumberGenerator.Create();
             byte[] buffer = new byte[64];
-            random.GetBytes(buffer);
+
+            using (var random = RandomNumberGenerator.Create())
+            {
+                random.GetBytes(buffer);
+            }
+
             _baseNode_Id = buffer;
 
             _baseNodeUpdate();
@@ -427,9 +435,13 @@ namespace Amoeba.Windows
 
             _baseNodeUrisListView.SelectedIndex = selectIndex;
 
-            var random = RandomNumberGenerator.Create();
             byte[] buffer = new byte[64];
-            random.GetBytes(buffer);
+
+            using (var random = RandomNumberGenerator.Create())
+            {
+                random.GetBytes(buffer);
+            }
+
             _baseNode_Id = buffer;
 
             _baseNodeUpdate();
@@ -445,9 +457,13 @@ namespace Amoeba.Windows
                 _baseNode_Uris.Remove(item);
             }
 
-            var random = RandomNumberGenerator.Create();
             byte[] buffer = new byte[64];
-            random.GetBytes(buffer);
+
+            using (var random = RandomNumberGenerator.Create())
+            {
+                random.GetBytes(buffer);
+            }
+
             _baseNode_Id = buffer;
 
             _baseNodeUpdate();

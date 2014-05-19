@@ -81,17 +81,13 @@ namespace Amoeba
                 lock (_amoebaManager.ThisLock)
                 {
                     var baseNode = _amoebaManager.BaseNode;
-                    var random = RandomNumberGenerator.Create();
-
-                    byte[] id = new byte[64];
-                    random.GetBytes(id);
 
                     var uris = new List<string>(baseNode.Uris);
                     if (uris.Contains(uri)) return false;
 
                     uris.Add(uri);
 
-                    _amoebaManager.SetBaseNode(new Node(id, uris));
+                    _amoebaManager.SetBaseNode(new Node(baseNode.Id, uris));
                 }
             }
 
@@ -105,15 +101,11 @@ namespace Amoeba
                 lock (_amoebaManager.ThisLock)
                 {
                     var baseNode = _amoebaManager.BaseNode;
-                    var random = RandomNumberGenerator.Create();
-
-                    byte[] id = new byte[64];
-                    random.GetBytes(id);
 
                     var uris = new List<string>(baseNode.Uris);
                     if (!uris.Remove(uri)) return false;
 
-                    _amoebaManager.SetBaseNode(new Node(id, uris));
+                    _amoebaManager.SetBaseNode(new Node(baseNode.Id, uris));
                 }
             }
 

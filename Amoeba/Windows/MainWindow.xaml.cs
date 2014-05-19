@@ -64,6 +64,8 @@ namespace Amoeba.Windows
         private TransfarLimitManager _transferLimitManager;
         private CatharsisManager _catharsisManager;
 
+        private Random _random = new Random();
+
         private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
         private WindowState _windowState;
 
@@ -1127,15 +1129,18 @@ namespace Amoeba.Windows
 
                     {
                         byte[] buffer = new byte[64];
-                        RandomNumberGenerator.Create().GetBytes(buffer);
+
+                        using (var random = RandomNumberGenerator.Create())
+                        {
+                            random.GetBytes(buffer);
+                        }
 
                         _amoebaManager.SetBaseNode(new Node(buffer, null));
                     }
 
-                    Random random = new Random();
                     _amoebaManager.ListenUris.Clear();
-                    _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), random.Next(1024, ushort.MaxValue + 1)));
-                    _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), random.Next(1024, ushort.MaxValue + 1)));
+                    _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), _random.Next(1024, ushort.MaxValue + 1)));
+                    _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), _random.Next(1024, ushort.MaxValue + 1)));
 
                     var ipv4ConnectionFilter = new ConnectionFilter()
                     {
