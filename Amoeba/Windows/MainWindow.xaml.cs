@@ -104,8 +104,6 @@ namespace Amoeba.Windows
         {
             try
             {
-                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
-
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
 
@@ -1707,15 +1705,6 @@ namespace Amoeba.Windows
             else
             {
                 _windowState = this.WindowState;
-            }
-
-            if (this.WindowState == System.Windows.WindowState.Minimized)
-            {
-                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Idle;
-            }
-            else
-            {
-                Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.BelowNormal;
             }
         }
 

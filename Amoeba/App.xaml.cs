@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
@@ -37,8 +38,8 @@ namespace Amoeba
         private static List<Process> _processList = new List<Process>();
 
         // Catharsis
-        private static List<Ipv4AddressFilter> _ipv4AddressFilters = new List<Ipv4AddressFilter>();
-        public static List<Ipv4AddressFilter> Ipv4AddressFilters { get { return _ipv4AddressFilters; } }
+        private static ReadOnlyCollection<Ipv4AddressFilter> _ipv4AddressFilters;
+        public static IEnumerable<Ipv4AddressFilter> Ipv4AddressFilters { get { return _ipv4AddressFilters; } }
 
         // Colors
         public static AmoebaColors Colors { get; private set; }
@@ -46,12 +47,21 @@ namespace Amoeba
         // Cache
         public static string Cache_Path { get; private set; }
 
+        static class NativeMethods
+        {
+            [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            public static extern bool SetPriorityClass(IntPtr handle, uint priorityClass);
+
+            public const uint PROCESS_MODE_BACKGROUND_BEGIN = 0x00100000;
+            public const uint PROCESS_MODE_BACKGROUND_END = 0x00200000;
+        }
+
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 69);
+            App.AmoebaVersion = new Version(2, 0, 71);
 
             {
-                OperatingSystem osInfo = Environment.OSVersion;
+                OperatingSystem osInfo = System.Environment.OSVersion;
 
                 // Windows Vista以上。
                 if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version >= new Version(6, 0))
@@ -573,6 +583,7 @@ namespace Amoeba
                     }
                 }
 
+                App.EnvironmentSettings();
                 App.StartupSettings();
                 App.CatharsisSettings();
                 App.CacheSettings();
@@ -585,6 +596,56 @@ namespace Amoeba
                 MessageBox.Show(ex.Message);
 
                 this.Shutdown();
+            }
+        }
+
+        private static void EnvironmentSettings()
+        {
+            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings")))
+            {
+                using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings"), false, new UTF8Encoding(false)))
+                {
+                    writer.WriteLine(string.Format("{0} {1}", "WorkingSet", "1024 MB"));
+                }
+            }
+
+            long workingSet = (long)NetworkConverter.FromSizeString("1024 MB");
+
+            {
+                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings"), new UTF8Encoding(false)))
+                {
+                    string line;
+
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var index = line.IndexOf(' ');
+                        var name = line.Substring(0, index);
+                        var value = line.Substring(index + 1, line.Length - (index + 1));
+
+                        if (name == "WorkingSet")
+                        {
+                            workingSet = (long)NetworkConverter.FromSizeString(value);
+                        }
+                    }
+                }
+            }
+
+            {
+                OperatingSystem osInfo = System.Environment.OSVersion;
+
+                // Windows Vista以上。
+                if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version >= new Version(6, 0))
+                {
+                    var process = Process.GetCurrentProcess();
+                    NativeMethods.SetPriorityClass(process.Handle, NativeMethods.PROCESS_MODE_BACKGROUND_BEGIN);
+                    process.MaxWorkingSet = (IntPtr)workingSet;
+                }
+                else
+                {
+                    var process = Process.GetCurrentProcess();
+                    process.PriorityClass = ProcessPriorityClass.Idle;
+                    process.MaxWorkingSet = (IntPtr)workingSet;
+                }
             }
         }
 
@@ -866,6 +927,8 @@ namespace Amoeba
                 }
             }
 
+            List<Ipv4AddressFilter> ipv4AddressFilters = new List<Ipv4AddressFilter>();
+
             using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"), new UTF8Encoding(false)))
             using (XmlTextReader xml = new XmlTextReader(r))
             {
@@ -934,11 +997,13 @@ namespace Amoeba
                                 }
                             }
 
-                            App.Ipv4AddressFilters.Add(new Ipv4AddressFilter(proxyUri, urls));
+                            ipv4AddressFilters.Add(new Ipv4AddressFilter(proxyUri, urls));
                         }
                     }
                 }
             }
+
+            _ipv4AddressFilters = new ReadOnlyCollection<Ipv4AddressFilter>(ipv4AddressFilters);
         }
 
         private static void CacheSettings()
@@ -960,9 +1025,9 @@ namespace Amoeba
 
                     while ((line = reader.ReadLine()) != null)
                     {
-                        var items = line.Split(' ');
-                        var name = items[0].Trim();
-                        var value = items[1].Trim();
+                        var index = line.IndexOf(' ');
+                        var name = line.Substring(0, index);
+                        var value = line.Substring(index + 1, line.Length - (index + 1));
 
                         if (name == "Path")
                         {
@@ -1002,9 +1067,9 @@ namespace Amoeba
 
                     while ((line = reader.ReadLine()) != null)
                     {
-                        var items = line.Split(' ');
-                        var name = items[0].Trim();
-                        var value = items[1].Trim();
+                        var index = line.IndexOf(' ');
+                        var name = line.Substring(0, index);
+                        var value = line.Substring(index + 1, line.Length - (index + 1));
 
                         var property = type.GetProperty(name);
                         property.SetValue(App.Colors, (Color)ColorConverter.ConvertFromString(value), null);
@@ -1028,6 +1093,11 @@ namespace Amoeba
                 }
             });
         }
+    }
+
+    class AmoebaEnvironment
+    {
+        public long WorkingSet { get; set; }
     }
 
     class AmoebaColors
