@@ -47,18 +47,11 @@ namespace Amoeba
         // Cache
         public static string Cache_Path { get; private set; }
 
-        static class NativeMethods
-        {
-            [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            public static extern bool SetPriorityClass(IntPtr handle, uint priorityClass);
-
-            public const uint PROCESS_MODE_BACKGROUND_BEGIN = 0x00100000;
-            public const uint PROCESS_MODE_BACKGROUND_END = 0x00200000;
-        }
-
         public App()
         {
-            App.AmoebaVersion = new Version(2, 0, 71);
+            App.AmoebaVersion = new Version(2, 0, 72);
+
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Idle;
 
             {
                 OperatingSystem osInfo = System.Environment.OSVersion;
@@ -581,9 +574,21 @@ namespace Amoeba
 
                         }
                     }
+
+                    if (version < new Version(2, 0, 72))
+                    {
+                        try
+                        {
+                            // Environment.settingsを削除。
+                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings"));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
                 }
 
-                App.EnvironmentSettings();
                 App.StartupSettings();
                 App.CatharsisSettings();
                 App.CacheSettings();
@@ -596,56 +601,6 @@ namespace Amoeba
                 MessageBox.Show(ex.Message);
 
                 this.Shutdown();
-            }
-        }
-
-        private static void EnvironmentSettings()
-        {
-            if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings")))
-            {
-                using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings"), false, new UTF8Encoding(false)))
-                {
-                    writer.WriteLine(string.Format("{0} {1}", "WorkingSet", "1024 MB"));
-                }
-            }
-
-            long workingSet = (long)NetworkConverter.FromSizeString("1024 MB");
-
-            {
-                using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings"), new UTF8Encoding(false)))
-                {
-                    string line;
-
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var index = line.IndexOf(' ');
-                        var name = line.Substring(0, index);
-                        var value = line.Substring(index + 1, line.Length - (index + 1));
-
-                        if (name == "WorkingSet")
-                        {
-                            workingSet = (long)NetworkConverter.FromSizeString(value);
-                        }
-                    }
-                }
-            }
-
-            {
-                OperatingSystem osInfo = System.Environment.OSVersion;
-
-                // Windows Vista以上。
-                if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version >= new Version(6, 0))
-                {
-                    var process = Process.GetCurrentProcess();
-                    NativeMethods.SetPriorityClass(process.Handle, NativeMethods.PROCESS_MODE_BACKGROUND_BEGIN);
-                    process.MaxWorkingSet = (IntPtr)workingSet;
-                }
-                else
-                {
-                    var process = Process.GetCurrentProcess();
-                    process.PriorityClass = ProcessPriorityClass.Idle;
-                    process.MaxWorkingSet = (IntPtr)workingSet;
-                }
             }
         }
 
