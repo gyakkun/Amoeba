@@ -32,9 +32,9 @@ namespace Amoeba
                 stream = new MemoryStream();
 
                 using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(wrapperStream, new UTF8Encoding(false)))
+                using (XmlDictionaryWriter xmlDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(wrapperStream, new UTF8Encoding(false)))
                 {
-                    ds.WriteObject(textDictionaryWriter, item);
+                    ds.WriteObject(xmlDictionaryWriter, item);
                 }
             }
             catch (Exception)
@@ -50,9 +50,9 @@ namespace Amoeba
         {
             var ds = new DataContractSerializer(typeof(T));
 
-            using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
+            using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
             {
-                return (T)ds.ReadObject(textDictionaryReader);
+                return (T)ds.ReadObject(xmlDictionaryReader);
             }
         }
 

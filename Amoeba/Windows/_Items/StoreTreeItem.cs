@@ -102,16 +102,16 @@ namespace Amoeba.Windows
                 using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
                     using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                    using (XmlDictionaryWriter textDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
+                    using (XmlDictionaryWriter xmlDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
                     {
-                        ds.WriteObject(textDictionaryWriter, this);
+                        ds.WriteObject(xmlDictionaryWriter, this);
                     }
 
                     stream.Position = 0;
 
-                    using (XmlDictionaryReader textDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
+                    using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
-                        return (StoreTreeItem)ds.ReadObject(textDictionaryReader);
+                        return (StoreTreeItem)ds.ReadObject(xmlDictionaryReader);
                     }
                 }
             }

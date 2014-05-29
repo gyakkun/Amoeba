@@ -1652,7 +1652,7 @@ namespace Amoeba.Windows
             using (System.Windows.Forms.SaveFileDialog dialog = new System.Windows.Forms.SaveFileDialog())
             {
                 dialog.RestoreDirectory = true;
-                dialog.FileName = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.Signature);
+                dialog.FileName = "Store - " + Signature.GetNickname(selectTreeViewItem.Value.Signature);
                 dialog.DefaultExt = ".box";
                 dialog.Filter = "Box (*.box)|*.box";
 
@@ -1661,22 +1661,33 @@ namespace Amoeba.Windows
                     var fileName = dialog.FileName;
 
                     var box = new Box();
-                    box.Name = "Store - " + Signature.GetSignatureNickname(selectTreeViewItem.Value.Signature);
+                    box.Name = "Store - " + Signature.GetNickname(selectTreeViewItem.Value.Signature);
                     box.Boxes.AddRange(selectTreeViewItem.Value.Boxes);
                     box.CreationTime = DateTime.UtcNow;
 
-                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                    using (Stream directoryStream = AmoebaConverter.ToBoxStream(box))
+                    using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+                    using (Stream boxStream = AmoebaConverter.ToBoxStream(box))
                     {
-                        int i = -1;
-                        byte[] buffer = _bufferManager.TakeBuffer(1024);
+                        byte[] buffer = null;
 
-                        while ((i = directoryStream.Read(buffer, 0, buffer.Length)) > 0)
+                        try
                         {
-                            stream.Write(buffer, 0, i);
-                        }
+                            buffer = _bufferManager.TakeBuffer(1024 * 4);
 
-                        _bufferManager.ReturnBuffer(buffer);
+                            int i = -1;
+
+                            while ((i = boxStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fileStream.Write(buffer, 0, i);
+                            }
+                        }
+                        finally
+                        {
+                            if (buffer != null)
+                            {
+                                _bufferManager.ReturnBuffer(buffer);
+                            }
+                        }
                     }
 
                     this.Update();
@@ -1980,18 +1991,29 @@ namespace Amoeba.Windows
                 {
                     var fileName = dialog.FileName;
 
-                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                    using (Stream directoryStream = AmoebaConverter.ToBoxStream(selectTreeViewItem.Value))
+                    using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+                    using (Stream boxStream = AmoebaConverter.ToBoxStream(selectTreeViewItem.Value))
                     {
-                        int i = -1;
-                        byte[] buffer = _bufferManager.TakeBuffer(1024);
+                        byte[] buffer = null;
 
-                        while ((i = directoryStream.Read(buffer, 0, buffer.Length)) > 0)
+                        try
                         {
-                            stream.Write(buffer, 0, i);
-                        }
+                            buffer = _bufferManager.TakeBuffer(1024 * 4);
 
-                        _bufferManager.ReturnBuffer(buffer);
+                            int i = -1;
+
+                            while ((i = boxStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fileStream.Write(buffer, 0, i);
+                            }
+                        }
+                        finally
+                        {
+                            if (buffer != null)
+                            {
+                                _bufferManager.ReturnBuffer(buffer);
+                            }
+                        }
                     }
 
                     this.Update();
@@ -2155,7 +2177,7 @@ namespace Amoeba.Windows
                             foreach (var item in _treeView.GetAncestors(selectTreeViewItem))
                             {
                                 if (item is StoreCategorizeTreeViewItem) path.Add(((StoreCategorizeTreeViewItem)item).Value.Name);
-                                else if (item is StoreTreeViewItem) path.Add(Signature.GetSignatureNickname(((StoreTreeViewItem)item).Value.Signature));
+                                else if (item is StoreTreeViewItem) path.Add(Signature.GetNickname(((StoreTreeViewItem)item).Value.Signature));
                                 else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
                             }
 
@@ -2607,7 +2629,7 @@ namespace Amoeba.Windows
                 foreach (var item in _treeView.GetAncestors(selectTreeViewItem))
                 {
                     if (item is StoreCategorizeTreeViewItem) path.Add(((StoreCategorizeTreeViewItem)item).Value.Name);
-                    else if (item is StoreTreeViewItem) path.Add(Signature.GetSignatureNickname(((StoreTreeViewItem)item).Value.Signature));
+                    else if (item is StoreTreeViewItem) path.Add(Signature.GetNickname(((StoreTreeViewItem)item).Value.Signature));
                     else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
                 }
 

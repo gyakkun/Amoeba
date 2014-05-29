@@ -142,7 +142,7 @@ namespace Amoeba
                 var ipv4AddressSet = new HashSet<uint>();
                 var ipv4AddressRangeSet = new HashSet<SearchRange<uint>>();
 
-                foreach (var ipv4AddressFilter in App.Ipv4AddressFilters)
+                foreach (var ipv4AddressFilter in App.Catharsis.Ipv4AddressFilters)
                 {
                     string proxyScheme = null;
                     string proxyHost = null;

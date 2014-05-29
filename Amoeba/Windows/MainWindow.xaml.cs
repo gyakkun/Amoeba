@@ -389,9 +389,9 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            if (!string.IsNullOrWhiteSpace(App.Cache_Path))
+                            if (!string.IsNullOrWhiteSpace(App.Cache.Path))
                             {
-                                DriveInfo drive = new DriveInfo(Path.GetDirectoryName(Path.GetFullPath(App.Cache_Path)));
+                                DriveInfo drive = new DriveInfo(Path.GetDirectoryName(Path.GetFullPath(App.Cache.Path)));
 
                                 if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
                                 {
@@ -1015,7 +1015,7 @@ namespace Amoeba.Windows
             {
                 bool initFlag = false;
 
-                _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.bitmap"), App.Cache_Path, _bufferManager);
+                _amoebaManager = new AmoebaManager(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.bitmap"), App.Cache.Path, _bufferManager);
                 _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
 
                 if (!File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version")))

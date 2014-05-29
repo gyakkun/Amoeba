@@ -1021,18 +1021,29 @@ namespace Amoeba.Windows
                 {
                     var fileName = dialog.FileName;
 
-                    using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                    using (Stream directoryStream = AmoebaConverter.ToBoxStream(box))
+                    using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+                    using (Stream boxStream = AmoebaConverter.ToBoxStream(box))
                     {
-                        int i = -1;
-                        byte[] buffer = _bufferManager.TakeBuffer(1024);
+                        byte[] buffer = null;
 
-                        while ((i = directoryStream.Read(buffer, 0, buffer.Length)) > 0)
+                        try
                         {
-                            stream.Write(buffer, 0, i);
-                        }
+                            buffer = _bufferManager.TakeBuffer(1024 * 4);
 
-                        _bufferManager.ReturnBuffer(buffer);
+                            int i = -1;
+
+                            while ((i = boxStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fileStream.Write(buffer, 0, i);
+                            }
+                        }
+                        finally
+                        {
+                            if (buffer != null)
+                            {
+                                _bufferManager.ReturnBuffer(buffer);
+                            }
+                        }
                     }
 
                     this.Update();

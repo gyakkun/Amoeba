@@ -292,18 +292,29 @@ namespace Amoeba.Windows
 
                     try
                     {
-                        using (FileStream stream = new FileStream(fileName, FileMode.Create))
-                        using (Stream signatureStream = DigitalSignatureConverter.ToDigitalSignatureStream(signature))
+                        using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+                        using (Stream digitalSignatureStream = DigitalSignatureConverter.ToDigitalSignatureStream(signature))
                         {
-                            int i = -1;
-                            byte[] buffer = _bufferManager.TakeBuffer(1024);
+                            byte[] buffer = null;
 
-                            while ((i = signatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                            try
                             {
-                                stream.Write(buffer, 0, i);
-                            }
+                                buffer = _bufferManager.TakeBuffer(1024 * 4);
 
-                            _bufferManager.ReturnBuffer(buffer);
+                                int i = -1;
+
+                                while ((i = digitalSignatureStream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    fileStream.Write(buffer, 0, i);
+                                }
+                            }
+                            finally
+                            {
+                                if (buffer != null)
+                                {
+                                    _bufferManager.ReturnBuffer(buffer);
+                                }
+                            }
                         }
                     }
                     catch (Exception)
@@ -575,7 +586,7 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_Update_Url = _updateUrlTextBox.Text;
             Settings.Instance.Global_Update_ProxyUri = _updateProxyUriTextBox.Text;
-            if (Signature.IsSignature(_updateSignatureTextBox.Text)) Settings.Instance.Global_Update_Signature = _updateSignatureTextBox.Text;
+            if (Signature.Check(_updateSignatureTextBox.Text)) Settings.Instance.Global_Update_Signature = _updateSignatureTextBox.Text;
 
             if (_updateOptionNoneRadioButton.IsChecked.Value)
             {
