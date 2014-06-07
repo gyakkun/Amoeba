@@ -48,11 +48,11 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(2, 0, 73);
+            App.AmoebaVersion = new Version(2, 0, 74);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
-               
+
                 currentProcess.PriorityClass = ProcessPriorityClass.Idle;
                 currentProcess.SetMemoryPriority(3);
             }
@@ -548,19 +548,6 @@ namespace Amoeba
                         }
                     }
 
-                    if (version < new Version(2, 0, 58))
-                    {
-                        try
-                        {
-                            // Catharsis.settingsを初期化。
-                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"));
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }
-
                     if (version < new Version(2, 0, 61))
                     {
                         try
@@ -585,6 +572,19 @@ namespace Amoeba
                         {
                             // Environment.settingsを削除。
                             File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings"));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+                    if (version < new Version(2, 0, 74))
+                    {
+                        try
+                        {
+                            // Catharsis.settingsを初期化。
+                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"));
                         }
                         catch (Exception)
                         {
@@ -876,6 +876,8 @@ namespace Amoeba
                             xml.WriteComment(@"<Url>http://list.iblocklist.com/lists/bluetack/level-1</Url>");
                             xml.WriteComment(@"<Url>http://list.iblocklist.com/lists/tbg/primary-threats</Url>");
 
+                            xml.WriteElementString("Path", @"Catharsis.txt");
+
                             xml.WriteEndElement(); //Targets
                         }
 
@@ -902,6 +904,7 @@ namespace Amoeba
                         {
                             string proxyUri = null;
                             List<string> urls = new List<string>();
+                            List<string> paths = new List<string>();
 
                             using (var xmlSubtree = xml.ReadSubtree())
                             {
@@ -951,6 +954,17 @@ namespace Amoeba
 
                                                             }
                                                         }
+                                                        else if (xmlSubtree2.LocalName == "Path")
+                                                        {
+                                                            try
+                                                            {
+                                                                paths.Add(xmlSubtree2.ReadString());
+                                                            }
+                                                            catch (Exception)
+                                                            {
+
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -959,7 +973,7 @@ namespace Amoeba
                                 }
                             }
 
-                            App.Catharsis.Ipv4AddressFilters.Add(new Ipv4AddressFilter(proxyUri, urls));
+                            App.Catharsis.Ipv4AddressFilters.Add(new Ipv4AddressFilter(proxyUri, urls, paths));
                         }
                     }
                 }

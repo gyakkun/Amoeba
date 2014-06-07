@@ -13,11 +13,13 @@ namespace Amoeba
     {
         private string _proxyUri;
         private List<string> _urls;
+        private List<string> _paths;
 
-        public Ipv4AddressFilter(string proxyUri, IEnumerable<string> urls)
+        public Ipv4AddressFilter(string proxyUri, IEnumerable<string> urls, IEnumerable<string> paths)
         {
             this.ProxyUri = proxyUri;
             this.ProtectedUrls.AddRange(urls);
+            this.ProtectedPaths.AddRange(paths);
         }
 
         [DataMember(Name = "ProxyUri")]
@@ -55,6 +57,31 @@ namespace Amoeba
                     _urls = new List<string>();
 
                 return _urls;
+            }
+        }
+
+        private volatile ReadOnlyCollection<string> _readOnlyPaths;
+
+        public IEnumerable<string> Paths
+        {
+            get
+            {
+                if (_readOnlyPaths == null)
+                    _readOnlyPaths = new ReadOnlyCollection<string>(this.ProtectedPaths);
+
+                return _readOnlyPaths;
+            }
+        }
+
+        [DataMember(Name = "Paths")]
+        private List<string> ProtectedPaths
+        {
+            get
+            {
+                if (_paths == null)
+                    _paths = new List<string>();
+
+                return _paths;
             }
         }
     }

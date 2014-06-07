@@ -144,80 +144,119 @@ namespace Amoeba
 
                 foreach (var ipv4AddressFilter in App.Catharsis.Ipv4AddressFilters)
                 {
-                    string proxyScheme = null;
-                    string proxyHost = null;
-                    int proxyPort = -1;
-
                     {
-                        var match = _regex.Match(ipv4AddressFilter.ProxyUri);
-
-                        if (match.Success)
+                        foreach (var path in ipv4AddressFilter.Paths)
                         {
-                            proxyScheme = match.Groups[1].Value;
-                            proxyHost = match.Groups[2].Value;
-                            proxyPort = int.Parse(match.Groups[3].Value);
-                        }
-                        else
-                        {
-                            var match2 = _regex2.Match(ipv4AddressFilter.ProxyUri);
-
-                            if (match2.Success)
+                            using (var stream = new FileStream(Path.Combine(App.DirectoryPaths["Configuration"], path), FileMode.OpenOrCreate))
+                            using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
                             {
-                                proxyScheme = match2.Groups[1].Value;
-                                proxyHost = match2.Groups[2].Value;
-                                proxyPort = 80;
+                                string line;
+
+                                while ((line = reader.ReadLine()) != null)
+                                {
+                                    var index = line.LastIndexOf(':');
+                                    if (index == -1) continue;
+
+                                    var ips = CatharsisManager.GetStringToIpv4(line.Substring(index + 1));
+                                    if (ips == null) continue;
+
+                                    if (ips[0] == ips[1])
+                                    {
+                                        ipv4AddressSet.Add(ips[0]);
+                                    }
+                                    else if (ips[0] < ips[1])
+                                    {
+                                        var range = new SearchRange<uint>(ips[0], ips[1]);
+                                        ipv4AddressRangeSet.Add(range);
+                                    }
+                                    else
+                                    {
+                                        var range = new SearchRange<uint>(ips[1], ips[0]);
+                                        ipv4AddressRangeSet.Add(range);
+                                    }
+                                }
                             }
                         }
                     }
 
-                    if (proxyHost == null) continue;
-
-                    WebProxy proxy = new WebProxy(proxyHost, proxyPort);
-
-                    foreach (var url in ipv4AddressFilter.Urls)
                     {
-                        for (int i = 0; i < 3; i++)
+                        string proxyScheme = null;
+                        string proxyHost = null;
+                        int proxyPort = -1;
+
                         {
-                            try
+                            var match = _regex.Match(ipv4AddressFilter.ProxyUri);
+
+                            if (match.Success)
                             {
-                                using (var stream = CatharsisManager.GetStream(url, proxy))
-                                using (var gzipStream = new Ionic.Zlib.GZipStream(stream, Ionic.Zlib.CompressionMode.Decompress))
-                                using (var reader = new StreamReader(gzipStream))
-                                {
-                                    string line;
-
-                                    while ((line = reader.ReadLine()) != null)
-                                    {
-                                        var index = line.LastIndexOf(':');
-                                        if (index == -1) continue;
-
-                                        var ips = CatharsisManager.GetStringToIpv4(line.Substring(index + 1));
-                                        if (ips == null) continue;
-
-                                        if (ips[0] == ips[1])
-                                        {
-                                            ipv4AddressSet.Add(ips[0]);
-                                        }
-                                        else if (ips[0] < ips[1])
-                                        {
-                                            var range = new SearchRange<uint>(ips[0], ips[1]);
-                                            ipv4AddressRangeSet.Add(range);
-                                        }
-                                        else
-                                        {
-                                            var range = new SearchRange<uint>(ips[1], ips[0]);
-                                            ipv4AddressRangeSet.Add(range);
-                                        }
-                                    }
-                                }
-
-                                break;
+                                proxyScheme = match.Groups[1].Value;
+                                proxyHost = match.Groups[2].Value;
+                                proxyPort = int.Parse(match.Groups[3].Value);
                             }
-                            catch (Exception e)
+                            else
                             {
-                                Log.Warning(e);
+                                var match2 = _regex2.Match(ipv4AddressFilter.ProxyUri);
+
+                                if (match2.Success)
+                                {
+                                    proxyScheme = match2.Groups[1].Value;
+                                    proxyHost = match2.Groups[2].Value;
+                                    proxyPort = 80;
+                                }
                             }
                         }
+
+                        if (proxyHost == null) goto End;
+
+                        WebProxy proxy = new WebProxy(proxyHost, proxyPort);
+
+                        foreach (var url in ipv4AddressFilter.Urls)
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                try
+                                {
+                                    using (var stream = CatharsisManager.GetStream(url, proxy))
+                                    using (var gzipStream = new Ionic.Zlib.GZipStream(stream, Ionic.Zlib.CompressionMode.Decompress))
+                                    using (var reader = new StreamReader(gzipStream))
+                                    {
+                                        string line;
+
+                                        while ((line = reader.ReadLine()) != null)
+                                        {
+                                            var index = line.LastIndexOf(':');
+                                            if (index == -1) continue;
+
+                                            var ips = CatharsisManager.GetStringToIpv4(line.Substring(index + 1));
+                                            if (ips == null) continue;
+
+                                            if (ips[0] == ips[1])
+                                            {
+                                                ipv4AddressSet.Add(ips[0]);
+                                            }
+                                            else if (ips[0] < ips[1])
+                                            {
+                                                var range = new SearchRange<uint>(ips[0], ips[1]);
+                                                ipv4AddressRangeSet.Add(range);
+                                            }
+                                            else
+                                            {
+                                                var range = new SearchRange<uint>(ips[1], ips[0]);
+                                                ipv4AddressRangeSet.Add(range);
+                                            }
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.Warning(e);
+                                }
+                            }
+                        }
+
+                    End: ;
                     }
                 }
 
