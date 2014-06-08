@@ -48,7 +48,7 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(2, 0, 74);
+            App.AmoebaVersion = new Version(2, 0, 76);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -535,19 +535,6 @@ namespace Amoeba
                         }
                     }
 
-                    if (version < new Version(2, 0, 52))
-                    {
-                        try
-                        {
-                            // Startup.settingsを初期化。
-                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }
-
                     if (version < new Version(2, 0, 61))
                     {
                         try
@@ -579,12 +566,40 @@ namespace Amoeba
                         }
                     }
 
-                    if (version < new Version(2, 0, 74))
+                    if (version < new Version(2, 0, 75))
+                    {
+                        try
+                        {
+                            // Startup.settingsを初期化。
+                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+
+                    if (version < new Version(2, 0, 76))
                     {
                         try
                         {
                             // Catharsis.settingsを初期化。
                             File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        try
+                        {
+                            var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.txt");
+                            var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis_Ipv4.txt");
+
+                            if (File.Exists(oldPath))
+                            {
+                                File.Move(oldPath, newPath);
+                            }
                         }
                         catch (Exception)
                         {
@@ -623,9 +638,9 @@ namespace Amoeba
                     {
                         xml.WriteStartElement("Process");
 
-                        xml.WriteElementString("Path", @"Assembly\Tor\tor.exe");
+                        xml.WriteElementString("Path", @"Assemblies\Tor\tor.exe");
                         xml.WriteElementString("Arguments", "-f torrc DataDirectory " + @"..\..\..\Work\Tor");
-                        xml.WriteElementString("WorkingDirectory", @"Assembly\Tor");
+                        xml.WriteElementString("WorkingDirectory", @"Assemblies\Tor");
 
                         xml.WriteEndElement(); //Process
                     }
@@ -633,9 +648,9 @@ namespace Amoeba
                     {
                         xml.WriteStartElement("Process");
 
-                        xml.WriteElementString("Path", @"Assembly\Polipo\polipo.exe");
+                        xml.WriteElementString("Path", @"Assemblies\Polipo\polipo.exe");
                         xml.WriteElementString("Arguments", "-c polipo.conf");
-                        xml.WriteElementString("WorkingDirectory", @"Assembly\Polipo");
+                        xml.WriteElementString("WorkingDirectory", @"Assemblies\Polipo");
 
                         xml.WriteEndElement(); //Process
                     }
@@ -876,7 +891,7 @@ namespace Amoeba
                             xml.WriteComment(@"<Url>http://list.iblocklist.com/lists/bluetack/level-1</Url>");
                             xml.WriteComment(@"<Url>http://list.iblocklist.com/lists/tbg/primary-threats</Url>");
 
-                            xml.WriteElementString("Path", @"Catharsis.txt");
+                            xml.WriteElementString("Path", @"Catharsis_Ipv4.txt");
 
                             xml.WriteEndElement(); //Targets
                         }

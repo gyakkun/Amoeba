@@ -144,6 +144,7 @@ namespace Amoeba
 
                 foreach (var ipv4AddressFilter in App.Catharsis.Ipv4AddressFilters)
                 {
+                    // path
                     {
                         foreach (var path in ipv4AddressFilter.Paths)
                         {
@@ -179,6 +180,8 @@ namespace Amoeba
                         }
                     }
 
+                    // Url
+                    if (!string.IsNullOrWhiteSpace(ipv4AddressFilter.ProxyUri))
                     {
                         string proxyScheme = null;
                         string proxyHost = null;
