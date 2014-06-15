@@ -1987,6 +1987,22 @@ namespace Amoeba.Windows
             _checkUpdateMenuItem.IsEnabled = _checkUpdateMenuItem_IsEnabled;
         }
 
+        private void _viewHelpMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            string language = "en";
+
+            if (LanguagesManager.Instance.CurrentLanguage == "Japanese"
+                && Directory.Exists(Path.Combine(App.DirectoryPaths["Help"], "ja")))
+            {
+                language = "ja";
+            }
+
+            var path = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Help"], language, "Index.html"));
+            if (!File.Exists(path)) return;
+
+            Process.Start(path);
+        }
+
         private void _manualSiteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("http://lyrise.web.fc2.com/index.html");

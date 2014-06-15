@@ -20,7 +20,7 @@ namespace Amoeba.Properties
     {
         private static LanguagesManager _defaultInstance = new LanguagesManager();
         private static Dictionary<string, Dictionary<string, string>> _dic = new Dictionary<string, Dictionary<string, string>>();
-        private static string _usingLanguage;
+        private static string _currentLanguage;
         private static ObjectDataProvider _provider;
         private readonly object _thisLock = new object();
 
@@ -84,11 +84,11 @@ namespace Amoeba.Properties
 
             if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Any(n => n == "Japanese"))
             {
-                _usingLanguage = "Japanese";
+                _currentLanguage = "Japanese";
             }
             else if (_dic.Keys.Any(n => n == "English"))
             {
-                _usingLanguage = "English";
+                _currentLanguage = "English";
             }
         }
 
@@ -113,7 +113,7 @@ namespace Amoeba.Properties
         {
             if (!_dic.ContainsKey(language)) throw new ArgumentException();
 
-            _usingLanguage = language;
+            _currentLanguage = language;
             LanguagesManager.ResourceProvider.Refresh();
 
             LanguagesManager.OnUsingLanguageChangedEvent();
@@ -126,14 +126,32 @@ namespace Amoeba.Properties
         {
             get
             {
-                var list = _dic.Keys.ToList();
+                var dic = new Dictionary<string, string>();
 
-                list.Sort((x, y) =>
+                foreach (var path in _dic.Keys.ToList())
                 {
-                    return System.IO.Path.GetFileNameWithoutExtension(x).CompareTo(System.IO.Path.GetFileNameWithoutExtension(y));
+                    dic[System.IO.Path.GetFileNameWithoutExtension(path)] = path;
+                }
+
+                var pairs = dic.ToList();
+
+                pairs.Sort((x, y) =>
+                {
+                    return x.Key.CompareTo(y.Key);
                 });
 
-                return list.ToArray();
+                return pairs.Select(n => n.Value).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 現在使用している言語
+        /// </summary>
+        public string CurrentLanguage
+        {
+            get
+            {
+                return _currentLanguage;
             }
         }
 
@@ -150,16 +168,18 @@ namespace Amoeba.Properties
             }
         }
 
-        public string Translate(string value)
+        public string Translate(string key)
         {
-            if (_usingLanguage != null && _dic[_usingLanguage].ContainsKey(value))
+            if (_currentLanguage == null) return null;
+
+            string result;
+
+            if (_dic[_currentLanguage].TryGetValue(key, out result))
             {
-                return _dic[_usingLanguage][value];
+                return result;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         #region Property
@@ -638,6 +658,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Help");
+                }
+            }
+        }
+
+        public string MainWindow_ViewHelp
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_ViewHelp");
                 }
             }
         }

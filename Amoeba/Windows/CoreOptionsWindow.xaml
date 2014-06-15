@@ -64,12 +64,12 @@
             <TreeView HorizontalAlignment="Stretch" Name="_treeView" VerticalAlignment="Stretch">
                 <TreeViewItem Name="_baseNodeTreeViewItem" Header="{Binding Path=CoreOptionsWindow_BaseNode, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_otherNodesTreeViewItem" Header="{Binding Path=CoreOptionsWindow_OtherNodes, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
-                <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=CoreOptionsWindow_Client, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
+                <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=CoreOptionsWindow_Client, Source={StaticResource ResourcesInstance}}" IsSelected="True" />
                 <TreeViewItem Name="_serverTreeViewItem" Header="{Binding Path=CoreOptionsWindow_Server, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_dataTreeViewItem" Header="{Binding Path=CoreOptionsWindow_Data, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_bandwidthTreeViewItem" Header="{Binding Path=CoreOptionsWindow_Bandwidth, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
                 <TreeViewItem Name="_transferTreeViewItem" Header="{Binding Path=CoreOptionsWindow_Transfer, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
-                <TreeViewItem Name="_eventsTreeViewItem" Header="{Binding Path=CoreOptionsWindow_Events, Source={StaticResource ResourcesInstance}}" IsSelected="False" />
+                <TreeViewItem Name="_eventsTreeViewItem" Header="{Binding Path=CoreOptionsWindow_Events, Source={StaticResource ResourcesInstance}}" />
             </TreeView>
 
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="3" />
@@ -258,17 +258,17 @@
             </Grid>
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_eventsTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <GroupBox Header="{Binding Path=CoreOptionsWindow_Events_Connection, Source={StaticResource ResourcesInstance}}" Height="113" Margin="6,6,6,0" VerticalAlignment="Top">
+                <GroupBox Header="{Binding Path=CoreOptionsWindow_Events_Connection, Source={StaticResource ResourcesInstance}}" Height="109" Margin="6,6,6,0" VerticalAlignment="Top">
                     <Grid>
                         <CheckBox Content="{Binding Path=CoreOptionsWindow_Events_OpenPortAndGetIpAddress, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_eventOpenPortAndGetIpAddressCheckBox" VerticalAlignment="Top" />
                         <CheckBox Content="{Binding Path=CoreOptionsWindow_Events_UseI2p, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,28,0,0" Name="_eventUseI2pCheckBox" VerticalAlignment="Top" />
                         <Label Content="{Binding Path=CoreOptionsWindow_Events_UseI2p_SamBridgeUri, Source={StaticResource ResourcesInstance}}"  Height="24" HorizontalAlignment="Left" Margin="38,50,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
-                        <TextBox Height="24" HorizontalAlignment="Left" Margin="284,50,0,0" Name="_eventSamBridgeUriTextBox" VerticalAlignment="Top" Width="200" IsEnabled="{Binding ElementName=_eventUseI2pCheckBox, Path=IsChecked}" VerticalContentAlignment="Center" />
+                        <TextBox Height="24" Margin="284,50,6,0" Name="_eventSamBridgeUriTextBox" VerticalAlignment="Top" IsEnabled="{Binding ElementName=_eventUseI2pCheckBox, Path=IsChecked}" VerticalContentAlignment="Center" />
                     </Grid>
                 </GroupBox>
             </Grid>
         </Grid>
-        
+
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=CoreOptionsWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" IsDefault="True" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=CoreOptionsWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" IsCancel="True" />
     </Grid>

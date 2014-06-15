@@ -454,4 +454,8 @@ call "$(SolutionDir)Languages.bat" "$(ProjectDir)Properties\LanguagesManager.cs"
 call "$(SolutionDir)Increment.bat" "$(ProjectPath)" "$(ProjectDir)Properties\AssemblyInfo.cs"
 </PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

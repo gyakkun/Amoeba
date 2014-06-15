@@ -57,6 +57,8 @@
                 <MenuItem Name="_viewOptionsMenuItem" Header="{Binding Path=MainWindow_ViewOptions, Source={StaticResource ResourcesInstance}}" Click="_viewOptionsMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_helpMenuItem" Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_helpMenuItem_SubmenuOpened">
+                <MenuItem Name="_viewHelpMenuItem" Header="{Binding Path=MainWindow_ViewHelp, Source={StaticResource ResourcesInstance}}" Click="_viewHelpMenuItem_Click" />
+                <Separator />
                 <MenuItem Name="_manualSiteMenuItem" Header="{Binding Path=MainWindow_ManualSite, Source={StaticResource ResourcesInstance}}" Click="_manualSiteMenuItem_Click" />
                 <MenuItem Name="_developerSiteMenuItem" Header="{Binding Path=MainWindow_DeveloperSite, Source={StaticResource ResourcesInstance}}" Click="_developerSiteMenuItem_Click" />
                 <Separator />
@@ -72,7 +74,7 @@
             <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource ResourcesInstance}}" Name="_uploadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource ResourcesInstance}}" Name="_storeTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem" >
+            <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="438*" />
