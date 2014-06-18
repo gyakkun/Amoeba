@@ -323,7 +323,7 @@ namespace Amoeba.Windows
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", this.Contains, this.Value);
+            return string.Format("Contains = {0}, Value = {1}", this.Contains, this.Value);
         }
     }
 
@@ -415,7 +415,7 @@ namespace Amoeba.Windows
 
         public override string ToString()
         {
-            return string.Format("{0} {1}", this.IsIgnoreCase, this.Value);
+            return this.Value;
         }
     }
 
