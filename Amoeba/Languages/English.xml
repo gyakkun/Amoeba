@@ -3,7 +3,7 @@
 
   <Translate Key="FontFamily" Value="Segoe UI, Meiryo UI, Verdana" />
   <Translate Key="FontSize" Value="12" />
-  <Translate Key="DateTime_StringFormat" Value="yyyy/MM/dd&#x00A0;HH:mm:ss" />
+  <Translate Key="DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
 
   <Translate Key="Languages_English" Value="English" />
   <Translate Key="Languages_Japanese" Value="Japanese" />
