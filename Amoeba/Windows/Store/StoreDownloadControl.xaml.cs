@@ -54,6 +54,8 @@ namespace Amoeba.Windows
         private Thread _cacheThread;
         private Thread _watchThread;
 
+        private const HashAlgorithm _hashAlgorithm = HashAlgorithm.Sha512;
+
         public StoreDownloadControl(StoreControl storeControl, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _storeControl = storeControl;
@@ -214,28 +216,18 @@ namespace Amoeba.Windows
 
                         foreach (var box in boxes)
                         {
-                            var text = (box.Name ?? "").ToLower();
-                            if (words != null && !words.All(n => text.Contains(n))) continue;
+                            if (words != null && words.Length != 0)
+                            {
+                                var text = (box.Name ?? "").ToLower();
+                                if (!words.All(n => text.Contains(n))) continue;
+                            }
 
                             var boxesListViewItem = new BoxListViewItem();
                             boxesListViewItem.Index = newList.Count;
                             boxesListViewItem.Name = box.Name;
                             if (box.Certificate != null) boxesListViewItem.Signature = box.Certificate.ToString();
-
-                            {
-                                List<Box> boxList = new List<Box>();
-                                boxList.Add(box);
-
-                                for (int i = 0; i < boxList.Count; i++)
-                                {
-                                    boxList.AddRange(boxList[i].Boxes);
-                                }
-
-                                boxesListViewItem.CreationTime = boxList.Max(n => n.CreationTime);
-                            }
-
-                            boxesListViewItem.Length = StoreDownloadControl.GetBoxLength(box);
-                            //boxesListViewItem.Comment = box.Comment;
+                            boxesListViewItem.Length = BoxUtilities.GetBoxLength(box);
+                            boxesListViewItem.CreationTime = BoxUtilities.GetBoxCreationTime(box);
                             boxesListViewItem.Value = box;
 
                             newList.Add(boxesListViewItem);
@@ -243,18 +235,20 @@ namespace Amoeba.Windows
 
                         foreach (var seed in seeds)
                         {
-                            var text = (seed.Name ?? "").ToLower();
-                            if (words != null && !words.All(n => text.Contains(n))) continue;
+                            if (words != null && words.Length != 0)
+                            {
+                                var text = (seed.Name ?? "").ToLower();
+                                if (!words.All(n => text.Contains(n))) continue;
+                            }
 
                             var seedListViewItem = new SeedListViewItem();
                             seedListViewItem.Index = newList.Count;
                             seedListViewItem.Name = seed.Name;
                             if (seed.Certificate != null) seedListViewItem.Signature = seed.Certificate.ToString();
+                            seedListViewItem.Length = seed.Length;
                             seedListViewItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                             seedListViewItem.CreationTime = seed.CreationTime;
-                            seedListViewItem.Length = seed.Length;
-                            //seedListViewItem.Comment = seed.Comment;
-                            //if (seed.Key != null && seed.Key.Hash != null) seedListViewItem.Id = NetworkConverter.ToHexString(seed.Key.Hash);
+                            seedListViewItem.Id = NetworkConverter.ToHexString(SeedUtilities.GetHash(seed));
 
                             SearchState state;
 
@@ -562,23 +556,6 @@ namespace Amoeba.Windows
             {
                 return false;
             }
-        }
-
-        private static long GetBoxLength(Box box)
-        {
-            long length = 0;
-
-            foreach (var item in box.Seeds)
-            {
-                length += item.Length;
-            }
-
-            foreach (var item in box.Boxes)
-            {
-                length += StoreDownloadControl.GetBoxLength(item);
-            }
-
-            return length;
         }
 
         private static string GetNormalizedPath(string path)
@@ -1652,12 +1629,11 @@ namespace Amoeba.Windows
             public int Index { get; set; }
             public string Name { get; set; }
             public string Signature { get; set; }
+            public long Length { get; set; }
             public string Keywords { get { return null; } }
             public DateTime CreationTime { get; set; }
-            public long Length { get; set; }
-            //public string Comment { get; set; }
-            //public string Id { get { return null; } }
-            public SearchState State { get; set; }
+            public SearchState State { get { return (SearchState)0; } }
+            public string Id { get { return null; } }
             public Box Value { get; set; }
 
             public override int GetHashCode()
@@ -1681,11 +1657,10 @@ namespace Amoeba.Windows
                 if (this.Index != other.Index
                     || this.Name != other.Name
                     || this.Signature != other.Signature
-                    || this.CreationTime != other.CreationTime
                     || this.Length != other.Length
-                    //|| this.Comment != other.Comment
-                    //|| this.Id != other.Id
+                    || this.CreationTime != other.CreationTime
                     || this.State != other.State
+                    || this.Id != other.Id
                     || this.Value != other.Value)
                 {
                     return false;
@@ -1701,13 +1676,12 @@ namespace Amoeba.Windows
             public int Index { get; set; }
             public string Name { get; set; }
             public string Signature { get; set; }
+            public long Length { get; set; }
             public string Keywords { get; set; }
             public DateTime CreationTime { get; set; }
-            public long Length { get; set; }
-            //public string Comment { get; set; }
-            //public string Id { get; set; }
-            public Seed Value { get; set; }
             public SearchState State { get; set; }
+            public string Id { get; set; }
+            public Seed Value { get; set; }
 
             public override int GetHashCode()
             {
@@ -1730,13 +1704,12 @@ namespace Amoeba.Windows
                 if (this.Index != other.Index
                     || this.Name != other.Name
                     || this.Signature != other.Signature
+                    || this.Length != other.Length
                     || this.Keywords != other.Keywords
                     || this.CreationTime != other.CreationTime
-                    || this.Length != other.Length
-                    //|| this.Comment != other.Comment
-                    //|| this.Id != other.Id
-                    || this.Value != other.Value
-                    || this.State != other.State)
+                    || this.State != other.State
+                    || this.Id != other.Id
+                    || this.Value != other.Value)
                 {
                     return false;
                 }

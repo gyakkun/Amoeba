@@ -1,0 +1,86 @@
+<UserControl x:Class="Amoeba.Windows.InformationControl"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prop="clr-namespace:Amoeba.Properties"     
+        xmlns:local="clr-namespace:Amoeba.Windows" 
+        Height="300" Width="569">
+    
+    <UserControl.Resources>
+        <DataTemplate x:Key="_myTemplate_Uri">
+            <TextBlock Text="{Binding Path=Uri, Mode=OneWay}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Priority">
+            <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_ReceivedByteCount">
+            <TextBlock Text="{Binding Path=ReceivedByteCount, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_SentByteCount">
+            <TextBlock Text="{Binding Path=SentByteCount, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Direction">
+            <TextBlock Text="{Binding Path=Direction, Mode=OneWay, Converter={StaticResource _connectDirectionToStringConverter}}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Name">
+            <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
+        </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Value">
+            <TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
+        <CommandBinding Command="Paste" Executed="Execute_Paste" />
+    </UserControl.CommandBindings>
+
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="CTRL+C" Command="Copy" />
+        <KeyBinding Gesture="CTRL+V" Command="Paste" />
+    </UserControl.InputBindings>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="{Binding Path=InformationControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
+        </Grid.ColumnDefinitions>
+
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+
+        <local:ListViewEx x:Name="_infomationListView" Grid.Column="2" SelectionMode="Single">
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=InformationControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                            Width="{Binding Path=InformationControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=InformationControl_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Value}" 
+                            Width="{Binding Path=InformationControl_GridViewColumn_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                </GridView>
+            </ListView.View>
+        </local:ListViewEx>
+        <local:ListViewEx x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.ContextMenu>
+                <ContextMenu Name="_listViewContextMenu" >
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=InformationControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=InformationControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=InformationControl_Direction, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Direction}" 
+                            Width="{Binding Path=InformationControl_GridViewColumn_Direction_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=InformationControl_Uri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Uri}" 
+                            Width="{Binding Path=InformationControl_GridViewColumn_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=InformationControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
+                            Width="{Binding Path=InformationControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=InformationControl_SentByteCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SentByteCount}" 
+                            Width="{Binding Path=InformationControl_GridViewColumn_SentByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=InformationControl_ReceivedByteCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ReceivedByteCount}" 
+                            Width="{Binding Path=InformationControl_GridViewColumn_ReceivedByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                </GridView>
+            </ListView.View>
+        </local:ListViewEx>
+    </Grid>
+</UserControl>

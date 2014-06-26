@@ -43,7 +43,7 @@ namespace Amoeba.Windows
 
     enum MainWindowTabType
     {
-        Connection,
+        Information,
         Search,
         Download,
         Upload,
@@ -188,10 +188,10 @@ namespace Amoeba.Windows
                 _logRowDefinition.Height = new GridLength(0);
 #endif
 
-                Debug.WriteLineIf(System.Runtime.GCSettings.IsServerGC, "GCSettings.IsServerGC");
-
                 sw.Stop();
                 Debug.WriteLine("StartUp {0}", sw.ElapsedMilliseconds);
+
+                LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
             }
             catch (Exception e)
             {
@@ -199,6 +199,11 @@ namespace Amoeba.Windows
 
                 throw;
             }
+        }
+
+        void LanguagesManager_UsingLanguageChangedEvent(object sender)
+        {
+            this.Settings_Help();
         }
 
         public MainWindowTabType SelectedTab
@@ -1563,10 +1568,10 @@ namespace Amoeba.Windows
                 return this.PointToScreen(new Point(0, 0)).X;
             };
 
-            ConnectionControl connectionControl = new ConnectionControl(_amoebaManager, _bufferManager);
-            connectionControl.Height = Double.NaN;
-            connectionControl.Width = Double.NaN;
-            _connectionTabItem.Content = connectionControl;
+            InformationControl informationControl = new InformationControl(_amoebaManager, _bufferManager);
+            informationControl.Height = Double.NaN;
+            informationControl.Width = Double.NaN;
+            _informationTabItem.Content = informationControl;
 
             SearchControl searchControl = new SearchControl(_amoebaManager, _bufferManager);
             searchControl.Height = Double.NaN;
@@ -1593,6 +1598,8 @@ namespace Amoeba.Windows
             storeControl.Width = Double.NaN;
             _storeTabItem.Content = storeControl;
 
+            this.Settings_Help();
+
             if (Settings.Instance.Global_IsStart)
             {
                 _startMenuItem_Click(null, null);
@@ -1610,6 +1617,69 @@ namespace Amoeba.Windows
             }
 
             this.GarbageCollect();
+        }
+
+        private void Settings_Help()
+        {
+            try
+            {
+                if (_helpTabItem.Content != null)
+                {
+                    ((WebBrowser)_helpTabItem.Content).Dispose();
+                }
+
+                {
+                    var helpWebBrowser = SilentWebBrowser.Create();
+                    helpWebBrowser.Navigating += _helpWebBrowser_Navigating;
+                    _helpTabItem.Content = helpWebBrowser;
+
+                    string language = "en";
+
+                    if (LanguagesManager.Instance.CurrentLanguage == "Japanese"
+                        && Directory.Exists(Path.Combine(App.DirectoryPaths["Help"], "ja")))
+                    {
+                        language = "ja";
+                    }
+
+                    var path = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Help"], language, "Index.html"));
+                    if (!File.Exists(path)) return;
+
+                    helpWebBrowser.Navigate(new Uri(path));
+                }
+            }
+            catch (Exception)
+            {
+                _helpTabItem.Content = null;
+            }
+        }
+
+        private void _helpWebBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            try
+            {
+                string language = "en";
+
+                if (LanguagesManager.Instance.CurrentLanguage == "Japanese"
+                    && Directory.Exists(Path.Combine(App.DirectoryPaths["Help"], "ja")))
+                {
+                    language = "ja";
+                }
+
+                var path = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Help"], language, "Index.html"));
+
+                if (e.Uri.IsFile && e.Uri.LocalPath == path)
+                {
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
+            }
+            catch (Exception)
+            {
+                e.Cancel = true;
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1712,9 +1782,9 @@ namespace Amoeba.Windows
         {
             if (e.OriginalSource != _tabControl) return;
 
-            if (_tabControl.SelectedItem == _connectionTabItem)
+            if (_tabControl.SelectedItem == _informationTabItem)
             {
-                this.SelectedTab = MainWindowTabType.Connection;
+                this.SelectedTab = MainWindowTabType.Information;
             }
             else if (_tabControl.SelectedItem == _searchTabItem)
             {
@@ -1814,19 +1884,6 @@ namespace Amoeba.Windows
                     _updateBaseNodeMenuItem_IsEnabled = true;
                 }
             });
-        }
-
-        private void _coreOptionsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            CoreOptionsWindow window = new CoreOptionsWindow(
-                _amoebaManager,
-                _autoBaseNodeSettingManager,
-                _overlayNetworkManager,
-                _transferLimitManager,
-                _bufferManager);
-
-            window.Owner = this;
-            window.ShowDialog();
         }
 
         private void _cacheMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
@@ -1975,9 +2032,15 @@ namespace Amoeba.Windows
             Settings.Instance.Global_IsConvertStart = false;
         }
 
-        private void _viewOptionsMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _optionsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ViewOptionsWindow window = new ViewOptionsWindow(_bufferManager);
+            OptionsWindow window = new OptionsWindow(
+                _amoebaManager,
+                _autoBaseNodeSettingManager,
+                _overlayNetworkManager,
+                _transferLimitManager,
+                _bufferManager);
+
             window.Owner = this;
             window.ShowDialog();
         }
@@ -1985,22 +2048,6 @@ namespace Amoeba.Windows
         private void _helpMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             _checkUpdateMenuItem.IsEnabled = _checkUpdateMenuItem_IsEnabled;
-        }
-
-        private void _viewHelpMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            string language = "en";
-
-            if (LanguagesManager.Instance.CurrentLanguage == "Japanese"
-                && Directory.Exists(Path.Combine(App.DirectoryPaths["Help"], "ja")))
-            {
-                language = "ja";
-            }
-
-            var path = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Help"], language, "Index.html"));
-            if (!File.Exists(path)) return;
-
-            Process.Start(path);
         }
 
         private void _manualSiteMenuItem_Click(object sender, RoutedEventArgs e)

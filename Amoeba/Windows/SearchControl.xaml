@@ -37,15 +37,12 @@
         <DataTemplate x:Key="_myTemplate_CreationTime">
             <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
         </DataTemplate>
-        <!--<DataTemplate x:Key="_myTemplate_Comment">
-            <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>-->
+        <DataTemplate x:Key="_myTemplate_Id">
+            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
+        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_State">
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
-        <!--<DataTemplate x:Key="_myTemplate_Id">
-            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
-        </DataTemplate>-->
     </UserControl.Resources>
 
     <UserControl.CommandBindings>
@@ -145,12 +142,10 @@
                             Width="{Binding Path=SearchControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=SearchControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <!--<GridViewColumn Header="{Binding Path=SearchControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
-                            Width="{Binding Path=SearchControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />-->
                     <GridViewColumn Header="{Binding Path=SearchControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <!--<GridViewColumn Header="{Binding Path=SearchControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
-                            Width="{Binding Path=SearchControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />-->
+                    <GridViewColumn Header="{Binding Path=SearchControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
+                            Width="{Binding Path=SearchControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

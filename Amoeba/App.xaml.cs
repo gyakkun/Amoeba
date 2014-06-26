@@ -48,7 +48,7 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(2, 0, 78);
+            App.AmoebaVersion = new Version(2, 0, 79);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -445,7 +445,7 @@ namespace Amoeba
                             }
 
                             var tempUpdateExeFilePath = Path.Combine(workDirectioryPath, "Library.Update.exe");
-                            
+
                             File.Copy("Library.Update.exe", tempUpdateExeFilePath);
 
                             ProcessStartInfo startInfo = new ProcessStartInfo();

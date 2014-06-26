@@ -50,6 +50,8 @@ namespace Amoeba.Windows
         private Thread _searchThread;
         private Thread _cacheThread;
 
+        private const HashAlgorithm _hashAlgorithm = HashAlgorithm.Sha512;
+
         public SearchControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
@@ -238,7 +240,8 @@ namespace Amoeba.Windows
                         {
                             if (!searchContains.Contains)
                             {
-                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) && n == searchContains.Value)) return false;
+                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) 
+                                    && n.Contains(searchContains.Value, StringComparison.OrdinalIgnoreCase))) return false;
                             }
                         }
 
@@ -262,7 +265,7 @@ namespace Amoeba.Windows
                             if (!searchContains.Contains)
                             {
                                 if (searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
-                                    .All(n => item.Value.Name.Contains(n))) return false;
+                                    .All(n => item.Value.Name.Contains(n, StringComparison.OrdinalIgnoreCase))) return false;
                             }
                         }
 
@@ -317,7 +320,8 @@ namespace Amoeba.Windows
                         {
                             if (searchContains.Contains)
                             {
-                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) && n == searchContains.Value)) return true;
+                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) 
+                                    && n.Contains(searchContains.Value, StringComparison.OrdinalIgnoreCase))) return true;
                                 flag = true;
                             }
                         }
@@ -343,7 +347,7 @@ namespace Amoeba.Windows
                             if (searchContains.Contains)
                             {
                                 if (searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
-                                     .All(n => item.Value.Name.Contains(n))) return true;
+                                    .All(n => item.Value.Name.Contains(n, StringComparison.OrdinalIgnoreCase))) return true;
                                 flag = true;
                             }
                         }
@@ -622,13 +626,14 @@ namespace Amoeba.Windows
                             {
                                 searchItem.Name = seed.Name;
                                 if (seed.Certificate != null) searchItem.Signature = seed.Certificate.ToString();
+                                searchItem.Length = seed.Length;
                                 searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                                 searchItem.CreationTime = seed.CreationTime;
-                                searchItem.Length = seed.Length;
-                                //searchItem.Comment = seed.Comment;
-                                searchItem.Value = seed;
-                                searchItem.Seeds = value.Seeds;
                                 searchItem.State = value.State;
+                                searchItem.Id = NetworkConverter.ToHexString(SeedUtilities.GetHash(seed));
+                                searchItem.Value = seed;
+
+                                searchItem.Seeds = value.Seeds;
                                 searchItem.UploadIds = value.UploadIds;
                                 searchItem.DownloadIds = value.DownloadIds;
                                 //if (seed.Key != null && seed.Key.Hash != null) searchItem.Id = NetworkConverter.ToHexString(seed.Key.Hash);
@@ -1913,13 +1918,12 @@ namespace Amoeba.Windows
             public int Index { get { return this.Length.GetHashCode(); } }
             public string Name { get; set; }
             public string Signature { get; set; }
+            public long Length { get; set; }
             public string Keywords { get; set; }
             public DateTime CreationTime { get; set; }
-            public long Length { get; set; }
-            //public string Comment { get; set; }
-            //public string Id { get; set; }
-            public Seed Value { get; set; }
             public SearchState State { get; set; }
+            public string Id { get; set; }
+            public Seed Value { get; set; }
 
             public SmallList<Seed> Seeds { get; set; }
             public SmallList<int> DownloadIds { get; set; }
@@ -1945,13 +1949,12 @@ namespace Amoeba.Windows
 
                 if (this.Name != other.Name
                     || this.Signature != other.Signature
+                    || this.Length != other.Length
                     || this.Keywords != other.Keywords
                     || this.CreationTime != other.CreationTime
-                    || this.Length != other.Length
-                    //|| this.Comment != other.Comment
-                    //|| this.Id != other.Id
-                    || this.Value != other.Value
+                    || this.Id != other.Id
                     || this.State != other.State
+                    || this.Value != other.Value
 
                     || (this.Seeds == null) != (other.Seeds == null)
                     || (this.DownloadIds == null) != (other.DownloadIds == null)

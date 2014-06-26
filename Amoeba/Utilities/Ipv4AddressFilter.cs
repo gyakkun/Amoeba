@@ -42,7 +42,7 @@ namespace Amoeba
             get
             {
                 if (_readOnlyUrls == null)
-                    _readOnlyUrls = new ReadOnlyCollection<string>(this.ProtectedUrls);
+                    _readOnlyUrls = new ReadOnlyCollection<string>(this.ProtectedUrls.ToArray());
 
                 return _readOnlyUrls;
             }
@@ -67,7 +67,7 @@ namespace Amoeba
             get
             {
                 if (_readOnlyPaths == null)
-                    _readOnlyPaths = new ReadOnlyCollection<string>(this.ProtectedPaths);
+                    _readOnlyPaths = new ReadOnlyCollection<string>(this.ProtectedPaths.ToArray());
 
                 return _readOnlyPaths;
             }

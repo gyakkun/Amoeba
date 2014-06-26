@@ -16,24 +16,21 @@
         <DataTemplate x:Key="_myTemplate_Signature">
             <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
+        <DataTemplate x:Key="_myTemplate_Length">
+            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+        </DataTemplate>
         <DataTemplate x:Key="_myTemplate_Keywords">
             <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
         </DataTemplate>
         <DataTemplate x:Key="_myTemplate_CreationTime">
             <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
         </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Length">
-            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <!--<DataTemplate x:Key="_myTemplate_Comment">
-            <TextBlock Text="{Binding Path=Comment, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>-->
         <DataTemplate x:Key="_myTemplate_State">
             <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
         </DataTemplate>
-        <!--<DataTemplate x:Key="_myTemplate_Id">
+        <DataTemplate x:Key="_myTemplate_Id">
             <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
-        </DataTemplate>-->
+        </DataTemplate>
 
         <ContextMenu x:Key="_storeCategorizeTreeViewItemContextMenu">
             <MenuItem Name="_storeCategorizeTreeViewItemNewStoreMenuItem" Header="{Binding Path=StoreUploadControl_NewStore, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemNewStoreMenuItem_Click"/>
@@ -168,12 +165,10 @@
                             Width="{Binding Path=SearchControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <!--<GridViewColumn Header="{Binding Path=StoreUploadControl_Comment, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Comment}" 
-                            Width="{Binding Path=SearchControl_GridViewColumn_Comment_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />-->
                     <GridViewColumn Header="{Binding Path=StoreUploadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <!--<GridViewColumn Header="{Binding Path=StoreUploadControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
-                            Width="{Binding Path=SearchControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />-->
+                    <GridViewColumn Header="{Binding Path=StoreUploadControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
+                            Width="{Binding Path=SearchControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

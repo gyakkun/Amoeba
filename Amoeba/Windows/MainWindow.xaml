@@ -42,7 +42,6 @@
                 <MenuItem Name="_linkOptionsMenuItem" Header="{Binding Path=MainWindow_LinkOptions, Source={StaticResource ResourcesInstance}}" Click="_linkOptionsMenuItem_Click" />
                 <Separator />
                 <MenuItem Name="_updateBaseNodeMenuItem" Header="{Binding Path=MainWindow_UpdateBaseNode, Source={StaticResource ResourcesInstance}}" Click="_updateBaseNodeMenuItem_Click" />
-                <MenuItem Name="_coreOptionsMenuItem" Header="{Binding Path=MainWindow_CoreOptions, Source={StaticResource ResourcesInstance}}" Click="_coreOptionsMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_cacheMenuItem" Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_cacheMenuItem_SubmenuOpened">
                 <MenuItem Name="_encodeAndDecodeStartMenuItem" Header="{Binding Path=MainWindow_ConvertStart, Source={StaticResource ResourcesInstance}}" Click="_encodeAndDecodeStartMenuItem_Click" />
@@ -51,14 +50,12 @@
                 <MenuItem Name="_checkInternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckInternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkInternalBlocksMenuItem_Click" />
                 <MenuItem Name="_checkExternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckExternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkExternalBlocksMenuItem_Click" />
             </MenuItem>
-            <MenuItem Name="_viewMenuItem" Header="{Binding Path=MainWindow_View, Source={StaticResource ResourcesInstance}}">
+            <MenuItem Name="_toolsMenuItem" Header="{Binding Path=MainWindow_Tools, Source={StaticResource ResourcesInstance}}">
                 <MenuItem Name="_languagesMenuItem" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />
                 <Separator />
-                <MenuItem Name="_viewOptionsMenuItem" Header="{Binding Path=MainWindow_ViewOptions, Source={StaticResource ResourcesInstance}}" Click="_viewOptionsMenuItem_Click" />
+                <MenuItem Name="_optionsMenuItem" Header="{Binding Path=MainWindow_Options, Source={StaticResource ResourcesInstance}}" Click="_optionsMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_helpMenuItem" Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_helpMenuItem_SubmenuOpened">
-                <MenuItem Name="_viewHelpMenuItem" Header="{Binding Path=MainWindow_ViewHelp, Source={StaticResource ResourcesInstance}}" Click="_viewHelpMenuItem_Click" />
-                <Separator />
                 <MenuItem Name="_manualSiteMenuItem" Header="{Binding Path=MainWindow_ManualSite, Source={StaticResource ResourcesInstance}}" Click="_manualSiteMenuItem_Click" />
                 <MenuItem Name="_developerSiteMenuItem" Header="{Binding Path=MainWindow_DeveloperSite, Source={StaticResource ResourcesInstance}}" Click="_developerSiteMenuItem_Click" />
                 <Separator />
@@ -68,12 +65,13 @@
             </MenuItem>
         </Menu>
         <TabControl Margin="0,28,0,0" Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
-            <TabItem Header="{Binding Path=MainWindow_Connection, Source={StaticResource ResourcesInstance}}" Name="_connectionTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Information, Source={StaticResource ResourcesInstance}}" Name="_informationTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Search, Source={StaticResource ResourcesInstance}}" Name="_searchTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Download, Source={StaticResource ResourcesInstance}}" Name="_downloadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource ResourcesInstance}}" Name="_uploadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource ResourcesInstance}}" Name="_storeTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}" Name="_helpTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem">
                 <Grid>
                     <Grid.RowDefinitions>

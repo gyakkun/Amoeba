@@ -23,7 +23,7 @@
   <Translate Key="Box_CreationTime" Value="Creation time" />
   <Translate Key="Box_Comment" Value="Comment" />
 
-  <Translate Key="MainWindow_Connection" Value="Connection" />
+  <Translate Key="MainWindow_Information" Value="Information" />
   <Translate Key="MainWindow_Search" Value="Search" />
   <Translate Key="MainWindow_Download" Value="Download" />
   <Translate Key="MainWindow_Upload" Value="Upload" />
@@ -36,23 +36,20 @@
   <Translate Key="MainWindow_Stopping" Value="Stopping" />
   <Translate Key="MainWindow_Start" Value="Start" />
   <Translate Key="MainWindow_Stop" Value="Stop" />
-  <Translate Key="MainWindow_LinkOptions" Value="Link options" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="Update base node uri" />
-  <Translate Key="MainWindow_CoreOptions" Value="Core options" />
   <Translate Key="MainWindow_Cache" Value="Cache" />
-  <Translate Key="MainWindow_CheckSeeds" Value="Check seeds" />
   <Translate Key="MainWindow_CheckInternalBlocks" Value="Check internal blocks" />
   <Translate Key="MainWindow_CheckExternalBlocks" Value="Check external blocks" />
   <Translate Key="MainWindow_ConvertStart" Value="Convert start" />
   <Translate Key="MainWindow_ConvertStop" Value="Convert stop" />
-  <Translate Key="MainWindow_View" Value="View" />
   <Translate Key="MainWindow_Languages" Value="Languages" />
-  <Translate Key="MainWindow_ViewOptions" Value="View options" />
+  <Translate Key="MainWindow_Tools" Value="Tools" />
+  <Translate Key="MainWindow_LinkOptions" Value="Link options" />
+  <Translate Key="MainWindow_Options" Value="Options" />
   <Translate Key="MainWindow_Help" Value="Help" />
-  <Translate Key="MainWindow_ViewHelp" Value="View help" />
   <Translate Key="MainWindow_ManualSite" Value="Documentation" />
   <Translate Key="MainWindow_DeveloperSite" Value="Source code" />
-  <Translate Key="MainWindow_CheckUpdate" Value="Check update" />
+  <Translate Key="MainWindow_CheckUpdate" Value="Check for Update" />
   <Translate Key="MainWindow_VersionInformation" Value="Version information" />
   <Translate Key="MainWindow_SendSpeed" Value="Send:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="Receive:" />
@@ -84,57 +81,76 @@
   <Translate Key="LinkOptionsWindow_Ok" Value="Ok" />
   <Translate Key="LinkOptionsWindow_Cancel" Value="Cancel" />
 
-  <Translate Key="CoreOptionsWindow_Title" Value="Core options" />
-  <Translate Key="CoreOptionsWindow_BaseNode" Value="Base node" />
-  <Translate Key="CoreOptionsWindow_Node" Value="Node" />
-  <Translate Key="CoreOptionsWindow_Uris" Value="Uris" />
-  <Translate Key="CoreOptionsWindow_Uri" Value="Uri" />
-  <Translate Key="CoreOptionsWindow_OtherNodes" Value="Other nodes" />
-  <Translate Key="CoreOptionsWindow_Nodes" Value="Nodes" />
-  <Translate Key="CoreOptionsWindow_Client" Value="Client" />
-  <Translate Key="CoreOptionsWindow_Filters" Value="Filters" />
-  <Translate Key="CoreOptionsWindow_ConnectionType" Value="Connection type" />
-  <Translate Key="CoreOptionsWindow_ProxyUri" Value="Proxy uri" />
-  <Translate Key="CoreOptionsWindow_UriCondition" Value="Uri condition" />
-  <Translate Key="CoreOptionsWindow_Option" Value="Option" />
-  <Translate Key="CoreOptionsWindow_Type" Value="Type" />
-  <Translate Key="CoreOptionsWindow_Host" Value="Host" />
-  <Translate Key="CoreOptionsWindow_Server" Value="Server" />
-  <Translate Key="CoreOptionsWindow_ListenUris" Value="Listen uris" />
-  <Translate Key="CoreOptionsWindow_Data" Value="Data" />
-  <Translate Key="CoreOptionsWindow_Bandwidth" Value="Bandwidth" />
-  <Translate Key="CoreOptionsWindow_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
-  <Translate Key="CoreOptionsWindow_Transfer" Value="Transfer" />
-  <Translate Key="CoreOptionsWindow_TransferLimitType" Value="Limit type" />
-  <Translate Key="CoreOptionsWindow_TransferLimitSpan" Value="Limit span (day)" />
-  <Translate Key="CoreOptionsWindow_TransferLimitSize" Value="Limit size" />
-  <Translate Key="CoreOptionsWindow_TransferInformation" Value="Transfer information" />
-  <Translate Key="CoreOptionsWindow_Downloaded" Value="Downloaded" />
-  <Translate Key="CoreOptionsWindow_Uploaded" Value="Uploaded" />
-  <Translate Key="CoreOptionsWindow_Total" Value="Total" />
-  <Translate Key="CoreOptionsWindow_Reset" Value="Reset" />
-  <Translate Key="CoreOptionsWindow_ConnectionCount" Value="Connection count" />
-  <Translate Key="CoreOptionsWindow_DownloadDirectory" Value="Download directory" />
-  <Translate Key="CoreOptionsWindow_CacheSize" Value="Cache size" />
-  <Translate Key="CoreOptionsWindow_Events" Value="Events" />
-  <Translate Key="CoreOptionsWindow_Events_Connection" Value="Connection" />
-  <Translate Key="CoreOptionsWindow_Events_OpenPortAndGetIpAddress" Value="Open port and get IP address." />
-  <Translate Key="CoreOptionsWindow_Events_UseI2p" Value="Use I2P." />
-  <Translate Key="CoreOptionsWindow_Events_UseI2p_SamBridgeUri" Value="Sam bridge uri:" />
-  <Translate Key="CoreOptionsWindow_Tor" Value="Tor" />
-  <Translate Key="CoreOptionsWindow_Ipv4" Value="Ipv4" />
-  <Translate Key="CoreOptionsWindow_Ipv6" Value="Ipv6" />
-  <Translate Key="CoreOptionsWindow_Up" Value="Up" />
-  <Translate Key="CoreOptionsWindow_Down" Value="Down" />
-  <Translate Key="CoreOptionsWindow_Add" Value="Add" />
-  <Translate Key="CoreOptionsWindow_Edit" Value="Edit" />
-  <Translate Key="CoreOptionsWindow_Delete" Value="Delete" />
-  <Translate Key="CoreOptionsWindow_Ok" Value="Ok" />
-  <Translate Key="CoreOptionsWindow_Cancel" Value="Cancel" />
-  <Translate Key="CoreOptionsWindow_Cut" Value="Cut" />
-  <Translate Key="CoreOptionsWindow_Copy" Value="Copy" />
-  <Translate Key="CoreOptionsWindow_Paste" Value="Paste" />
-  <Translate Key="CoreOptionsWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
+  <Translate Key="OptionsWindow_Title" Value="Options" />
+  <Translate Key="OptionsWindow_Core" Value="Core" />
+  <Translate Key="OptionsWindow_View" Value="View" />
+  <Translate Key="OptionsWindow_BaseNode" Value="Base node" />
+  <Translate Key="OptionsWindow_Node" Value="Node" />
+  <Translate Key="OptionsWindow_Uris" Value="Uris" />
+  <Translate Key="OptionsWindow_Uri" Value="Uri" />
+  <Translate Key="OptionsWindow_OtherNodes" Value="Other nodes" />
+  <Translate Key="OptionsWindow_Nodes" Value="Nodes" />
+  <Translate Key="OptionsWindow_Client" Value="Client" />
+  <Translate Key="OptionsWindow_Filters" Value="Filters" />
+  <Translate Key="OptionsWindow_ConnectionType" Value="Connection type" />
+  <Translate Key="OptionsWindow_ProxyUri" Value="Proxy uri" />
+  <Translate Key="OptionsWindow_UriCondition" Value="Uri condition" />
+  <Translate Key="OptionsWindow_Option" Value="Option" />
+  <Translate Key="OptionsWindow_Type" Value="Type" />
+  <Translate Key="OptionsWindow_Host" Value="Host" />
+  <Translate Key="OptionsWindow_Server" Value="Server" />
+  <Translate Key="OptionsWindow_ListenUris" Value="Listen uris" />
+  <Translate Key="OptionsWindow_Data" Value="Data" />
+  <Translate Key="OptionsWindow_Bandwidth" Value="Bandwidth" />
+  <Translate Key="OptionsWindow_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
+  <Translate Key="OptionsWindow_Transfer" Value="Transfer" />
+  <Translate Key="OptionsWindow_TransferLimitType" Value="Limit type" />
+  <Translate Key="OptionsWindow_TransferLimitSpan" Value="Limit span (day)" />
+  <Translate Key="OptionsWindow_TransferLimitSize" Value="Limit size" />
+  <Translate Key="OptionsWindow_TransferInformation" Value="Transfer information" />
+  <Translate Key="OptionsWindow_Downloaded" Value="Downloaded" />
+  <Translate Key="OptionsWindow_Uploaded" Value="Uploaded" />
+  <Translate Key="OptionsWindow_Total" Value="Total" />
+  <Translate Key="OptionsWindow_Reset" Value="Reset" />
+  <Translate Key="OptionsWindow_ConnectionCount" Value="Connection count" />
+  <Translate Key="OptionsWindow_DownloadDirectory" Value="Download directory" />
+  <Translate Key="OptionsWindow_DownloadDirectory_Description" Value="Download directory" />
+  <Translate Key="OptionsWindow_CacheSize" Value="Cache size" />
+  <Translate Key="OptionsWindow_Events" Value="Events" />
+  <Translate Key="OptionsWindow_Events_Connection" Value="Connection" />
+  <Translate Key="OptionsWindow_Events_OpenPortAndGetIpAddress" Value="Open port and get IP address." />
+  <Translate Key="OptionsWindow_Events_UseI2p" Value="Use I2P." />
+  <Translate Key="OptionsWindow_Events_UseI2p_SamBridgeUri" Value="Sam bridge uri:" />
+  <Translate Key="OptionsWindow_Tor" Value="Tor" />
+  <Translate Key="OptionsWindow_Ipv4" Value="Ipv4" />
+  <Translate Key="OptionsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="OptionsWindow_Update" Value="Update" />
+  <Translate Key="OptionsWindow_UpdateUrl" Value="Update url" />
+  <Translate Key="OptionsWindow_Signature" Value="Signature" />
+  <Translate Key="OptionsWindow_Signatures" Value="Signatures" />
+  <Translate Key="OptionsWindow_Keywords" Value="Keywords" />
+  <Translate Key="OptionsWindow_Box" Value="Box" />
+  <Translate Key="OptionsWindow_RelateBoxFile" Value="Box file is related." />
+  <Translate Key="OptionsWindow_OpenBox" Value="Open a box file that downloaded." />
+  <Translate Key="OptionsWindow_ExtractTo" Value="Extract to path" />
+  <Translate Key="OptionsWindow_UpdateOption" Value="Update option" />
+  <Translate Key="OptionsWindow_None" Value="None" />
+  <Translate Key="OptionsWindow_AutoCheck" Value="Auto check" />
+  <Translate Key="OptionsWindow_AutoUpdate" Value="Auto update" />
+  <Translate Key="OptionsWindow_Value" Value="Value" />
+  <Translate Key="OptionsWindow_Import" Value="Import" />
+  <Translate Key="OptionsWindow_Export" Value="Export" />
+  <Translate Key="OptionsWindow_Up" Value="Up" />
+  <Translate Key="OptionsWindow_Down" Value="Down" />
+  <Translate Key="OptionsWindow_Add" Value="Add" />
+  <Translate Key="OptionsWindow_Edit" Value="Edit" />
+  <Translate Key="OptionsWindow_Delete" Value="Delete" />
+  <Translate Key="OptionsWindow_Ok" Value="Ok" />
+  <Translate Key="OptionsWindow_Cancel" Value="Cancel" />
+  <Translate Key="OptionsWindow_Cut" Value="Cut" />
+  <Translate Key="OptionsWindow_Copy" Value="Copy" />
+  <Translate Key="OptionsWindow_Paste" Value="Paste" />
+  <Translate Key="OptionsWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
 
   <Translate Key="ConnectionType_None" Value="None" />
   <Translate Key="ConnectionType_Tcp" Value="Tcp" />
@@ -151,37 +167,6 @@
   <Translate Key="ProgressWindow_Title" Value="Progress state - {0}" />
   <Translate Key="ProgressWindow_Cancel" Value="Cancel" />
   <Translate Key="ProgressWindow_Ok" Value="Ok" />
-
-  <Translate Key="ViewOptionsWindow_Title" Value="View options" />
-  <Translate Key="ViewOptionsWindow_Update" Value="Update" />
-  <Translate Key="ViewOptionsWindow_UpdateUrl" Value="Update url" />
-  <Translate Key="ViewOptionsWindow_ProxyUri" Value="Proxy uri" />
-  <Translate Key="ViewOptionsWindow_Signature" Value="Signature" />
-  <Translate Key="ViewOptionsWindow_Signatures" Value="Signatures" />
-  <Translate Key="ViewOptionsWindow_Keywords" Value="Keywords" />
-  <Translate Key="ViewOptionsWindow_Miscellaneous" Value="Miscellaneous" />
-  <Translate Key="ViewOptionsWindow_Box" Value="Box" />
-  <Translate Key="ViewOptionsWindow_RelateBoxFile" Value="Box file is related." />
-  <Translate Key="ViewOptionsWindow_Events" Value="Events" />
-  <Translate Key="ViewOptionsWindow_OpenBox" Value="Open a box file that downloaded." />
-  <Translate Key="ViewOptionsWindow_ExtractTo" Value="Extract to path" />
-  <Translate Key="ViewOptionsWindow_UpdateOption" Value="Update option" />
-  <Translate Key="ViewOptionsWindow_None" Value="None" />
-  <Translate Key="ViewOptionsWindow_AutoCheck" Value="Auto check" />
-  <Translate Key="ViewOptionsWindow_AutoUpdate" Value="Auto update" />
-  <Translate Key="ViewOptionsWindow_Value" Value="Value" />
-  <Translate Key="ViewOptionsWindow_Import" Value="Import" />
-  <Translate Key="ViewOptionsWindow_Export" Value="Export" />
-  <Translate Key="ViewOptionsWindow_Up" Value="Up" />
-  <Translate Key="ViewOptionsWindow_Down" Value="Down" />
-  <Translate Key="ViewOptionsWindow_Add" Value="Add" />
-  <Translate Key="ViewOptionsWindow_Edit" Value="Edit" />
-  <Translate Key="ViewOptionsWindow_Delete" Value="Delete" />
-  <Translate Key="ViewOptionsWindow_Ok" Value="Ok" />
-  <Translate Key="ViewOptionsWindow_Cancel" Value="Cancel" />
-  <Translate Key="ViewOptionsWindow_Cut" Value="Cut" />
-  <Translate Key="ViewOptionsWindow_Copy" Value="Copy" />
-  <Translate Key="ViewOptionsWindow_Paste" Value="Paste" />
 
   <Translate Key="VersionInformationWindow_Title" Value="Version information" />
   <Translate Key="VersionInformationWindow_FileName" Value="File name" />
@@ -200,42 +185,42 @@
   <Translate Key="NameWindow_Ok" Value="Ok" />
   <Translate Key="NameWindow_Cancel" Value="Cancel" />
 
-  <Translate Key="ConnectionControl_Direction" Value="Direction" />
-  <Translate Key="ConnectionControl_Uri" Value="Uri" />
-  <Translate Key="ConnectionControl_Priority" Value="Priority" />
-  <Translate Key="ConnectionControl_SentByteCount" Value="Sent byte count" />
-  <Translate Key="ConnectionControl_ReceivedByteCount" Value="Received byte count" />
-  <Translate Key="ConnectionControl_Name" Value="Name" />
-  <Translate Key="ConnectionControl_Value" Value="Value" />
-  <Translate Key="ConnectionControl_BufferManagerSize" Value="BufferManager Size" />
-  <Translate Key="ConnectionControl_CreateConnectionCount" Value="Create connection count" />
-  <Translate Key="ConnectionControl_AcceptConnectionCount" Value="Accept connection count" />
-  <Translate Key="ConnectionControl_BlockedConnectionCount" Value="Blocked connection count" />
-  <Translate Key="ConnectionControl_SurroundingNodeCount" Value="Surrounding node count" />
-  <Translate Key="ConnectionControl_RelayBlockCount" Value="Relay block count" />
-  <Translate Key="ConnectionControl_FreeSpace" Value="Free space" />
-  <Translate Key="ConnectionControl_LockSpace" Value="Lock space" />
-  <Translate Key="ConnectionControl_UsingSpace" Value="Using space" />
-  <Translate Key="ConnectionControl_NodeCount" Value="Node count" />
-  <Translate Key="ConnectionControl_SeedCount" Value="Seed count" />
-  <Translate Key="ConnectionControl_BlockCount" Value="Block count" />
-  <Translate Key="ConnectionControl_DownloadCount" Value="Download count" />
-  <Translate Key="ConnectionControl_UploadCount" Value="Upload count" />
-  <Translate Key="ConnectionControl_ShareCount" Value="Share count" />
-  <Translate Key="ConnectionControl_PushNodeCount" Value="PushNode count" />
-  <Translate Key="ConnectionControl_PushBlockLinkCount" Value="PushBlockLink count" />
-  <Translate Key="ConnectionControl_PushBlockRequestCount" Value="PushBlockRequest count" />
-  <Translate Key="ConnectionControl_PushBlockCount" Value="PushBlock count" />
-  <Translate Key="ConnectionControl_PushSeedRequestCount" Value="PushSeedRequest count" />
-  <Translate Key="ConnectionControl_PushSeedCount" Value="PushSeed count" />
-  <Translate Key="ConnectionControl_PullNodeCount" Value="PullNode count" />
-  <Translate Key="ConnectionControl_PullBlockLinkCount" Value="PullBlocksLink count" />
-  <Translate Key="ConnectionControl_PullBlockRequestCount" Value="PullBlockRequest count" />
-  <Translate Key="ConnectionControl_PullBlockCount" Value="PullBlock count" />
-  <Translate Key="ConnectionControl_PullSeedRequestCount" Value="PullSeedRequest count" />
-  <Translate Key="ConnectionControl_PullSeedCount" Value="PullSeed count" />
-  <Translate Key="ConnectionControl_Copy" Value="Copy" />
-  <Translate Key="ConnectionControl_Paste" Value="Paste" />
+  <Translate Key="InformationControl_Direction" Value="Direction" />
+  <Translate Key="InformationControl_Uri" Value="Uri" />
+  <Translate Key="InformationControl_Priority" Value="Priority" />
+  <Translate Key="InformationControl_SentByteCount" Value="Sent byte count" />
+  <Translate Key="InformationControl_ReceivedByteCount" Value="Received byte count" />
+  <Translate Key="InformationControl_Name" Value="Name" />
+  <Translate Key="InformationControl_Value" Value="Value" />
+  <Translate Key="InformationControl_BufferManagerSize" Value="BufferManager Size" />
+  <Translate Key="InformationControl_CreateConnectionCount" Value="Create connection count" />
+  <Translate Key="InformationControl_AcceptConnectionCount" Value="Accept connection count" />
+  <Translate Key="InformationControl_BlockedConnectionCount" Value="Blocked connection count" />
+  <Translate Key="InformationControl_SurroundingNodeCount" Value="Surrounding node count" />
+  <Translate Key="InformationControl_RelayBlockCount" Value="Relay block count" />
+  <Translate Key="InformationControl_FreeSpace" Value="Free space" />
+  <Translate Key="InformationControl_LockSpace" Value="Lock space" />
+  <Translate Key="InformationControl_UsingSpace" Value="Using space" />
+  <Translate Key="InformationControl_NodeCount" Value="Node count" />
+  <Translate Key="InformationControl_SeedCount" Value="Seed count" />
+  <Translate Key="InformationControl_BlockCount" Value="Block count" />
+  <Translate Key="InformationControl_DownloadCount" Value="Download count" />
+  <Translate Key="InformationControl_UploadCount" Value="Upload count" />
+  <Translate Key="InformationControl_ShareCount" Value="Share count" />
+  <Translate Key="InformationControl_PushNodeCount" Value="PushNode count" />
+  <Translate Key="InformationControl_PushBlockLinkCount" Value="PushBlockLink count" />
+  <Translate Key="InformationControl_PushBlockRequestCount" Value="PushBlockRequest count" />
+  <Translate Key="InformationControl_PushBlockCount" Value="PushBlock count" />
+  <Translate Key="InformationControl_PushSeedRequestCount" Value="PushSeedRequest count" />
+  <Translate Key="InformationControl_PushSeedCount" Value="PushSeed count" />
+  <Translate Key="InformationControl_PullNodeCount" Value="PullNode count" />
+  <Translate Key="InformationControl_PullBlockLinkCount" Value="PullBlocksLink count" />
+  <Translate Key="InformationControl_PullBlockRequestCount" Value="PullBlockRequest count" />
+  <Translate Key="InformationControl_PullBlockCount" Value="PullBlock count" />
+  <Translate Key="InformationControl_PullSeedRequestCount" Value="PullSeedRequest count" />
+  <Translate Key="InformationControl_PullSeedCount" Value="PullSeed count" />
+  <Translate Key="InformationControl_Copy" Value="Copy" />
+  <Translate Key="InformationControl_Paste" Value="Paste" />
 
   <Translate Key="StoreControl_Download" Value="Download" />
   <Translate Key="StoreControl_Upload" Value="Upload" />
