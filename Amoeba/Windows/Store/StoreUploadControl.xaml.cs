@@ -52,8 +52,6 @@ namespace Amoeba.Windows
         private Thread _searchThread;
         private Thread _cacheThread;
 
-        private const HashAlgorithm _hashAlgorithm = HashAlgorithm.Sha512;
-
         public StoreUploadControl(StoreControl storeControl, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _storeControl = storeControl;
@@ -2163,9 +2161,21 @@ namespace Amoeba.Windows
 
                         var seed = seedListViewItem.Value;
 
-                        _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
+                        ThreadPool.QueueUserWorkItem((object wstate) =>
+                        {
+                            Thread.CurrentThread.IsBackground = true;
 
-                        this.Update_Cache(false);
+                            try
+                            {
+                                _amoebaManager.Download(seed, baseDirectory, 3);
+
+                                this.Update_Cache(false);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        });
                     }
                 }
             }
@@ -2613,31 +2623,55 @@ namespace Amoeba.Windows
                 baseDirectory = System.IO.Path.Combine(path.ToArray());
             }
 
-            foreach (var seed in _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value))
+            var list = new List<KeyValuePair<Seed, string>>();
+
             {
-                _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
+                foreach (var seed in _listView.SelectedItems.OfType<SeedListViewItem>().Select(n => n.Value))
+                {
+                    list.Add(new KeyValuePair<Seed, string>(seed.Clone(), baseDirectory));
+                }
+
+                foreach (var box in _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value))
+                {
+                    this.BoxDownload(box, baseDirectory, ref list);
+                }
             }
 
-            foreach (var box in _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value))
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
-                this.BoxDownload(baseDirectory, box);
-            }
+                Thread.CurrentThread.IsBackground = true;
 
-            this.Update_Cache(false);
+                try
+                {
+                    foreach (var pair in list)
+                    {
+                        var seed = pair.Key;
+                        var path = pair.Value;
+
+                        _amoebaManager.Download(seed, path, 3);
+                    }
+
+                    this.Update_Cache(false);
+                }
+                catch (Exception)
+                {
+
+                }
+            });
         }
 
-        private void BoxDownload(string baseDirectory, Box rootBox)
+        private void BoxDownload(Box currentBox, string baseDirectory, ref List<KeyValuePair<Seed, string>> list)
         {
-            baseDirectory = System.IO.Path.Combine(baseDirectory, rootBox.Name);
+            baseDirectory = System.IO.Path.Combine(baseDirectory, currentBox.Name);
 
-            foreach (var seed in rootBox.Seeds)
+            foreach (var seed in currentBox.Seeds)
             {
-                _amoebaManager.Download(seed.Clone(), baseDirectory, 3);
+                list.Add(new KeyValuePair<Seed, string>(seed.Clone(), baseDirectory));
             }
 
-            foreach (var box in rootBox.Boxes)
+            foreach (var box in currentBox.Boxes)
             {
-                this.BoxDownload(baseDirectory, box);
+                this.BoxDownload(box, baseDirectory, ref list);
             }
         }
 

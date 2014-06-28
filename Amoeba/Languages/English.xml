@@ -69,7 +69,7 @@
 
   <Translate Key="LinkOptionsWindow_Title" Value="Link options" />
   <Translate Key="LinkOptionsWindow_Download" Value="Download" />
-  <Translate Key="LinkOptionsWindow_Upload" Value="Uplojad" />
+  <Translate Key="LinkOptionsWindow_Upload" Value="Upload" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="Linker signature" />
   <Translate Key="LinkOptionsWindow_TrustSignature" Value="Trust signature" />
   <Translate Key="LinkOptionsWindow_New" Value="New" />

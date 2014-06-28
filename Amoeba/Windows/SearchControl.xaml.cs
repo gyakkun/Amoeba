@@ -240,7 +240,7 @@ namespace Amoeba.Windows
                         {
                             if (!searchContains.Contains)
                             {
-                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) 
+                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n)
                                     && n.Contains(searchContains.Value, StringComparison.OrdinalIgnoreCase))) return false;
                             }
                         }
@@ -320,7 +320,7 @@ namespace Amoeba.Windows
                         {
                             if (searchContains.Contains)
                             {
-                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n) 
+                                if (item.Value.Keywords.Any(n => !string.IsNullOrWhiteSpace(n)
                                     && n.Contains(searchContains.Value, StringComparison.OrdinalIgnoreCase))) return true;
                                 flag = true;
                             }
@@ -1067,12 +1067,35 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
+            var list = new HashSet<Seed>();
+
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
-                _amoebaManager.Download(item.Value, 3);
+                if (item.Value == null) continue;
+
+                list.Add(item.Value);
             }
 
-            this.Update_Cache(false);
+            if (list.Count == 0) return;
+
+            ThreadPool.QueueUserWorkItem((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var seed in list)
+                    {
+                        _amoebaManager.Download(seed, 3);
+                    }
+
+                    this.Update_Cache(false);
+                }
+                catch (Exception)
+                {
+
+                }
+            });
         }
 
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -1214,21 +1237,9 @@ namespace Amoeba.Windows
                         _amoebaManager.RemoveUpload(item);
                     }
 
-                    foreach (var item in list)
-                    {
-                        for (; ; )
-                        {
-                            if (!_amoebaManager.DownloadedSeeds.Remove(item)) break;
-                        }
-                    }
+                    _amoebaManager.DownloadedSeeds.RemoveAll(n => list.Contains(n));
 
-                    foreach (var item in list)
-                    {
-                        for (; ; )
-                        {
-                            if (!_amoebaManager.UploadedSeeds.Remove(item)) break;
-                        }
-                    }
+                    _amoebaManager.UploadedSeeds.RemoveAll(n => list.Contains(n));
 
                     this.Update_Cache();
                 }
@@ -1236,10 +1247,8 @@ namespace Amoeba.Windows
                 {
 
                 }
-                finally
-                {
-                    _listViewDeleteMenuItem_IsEnabled = true;
-                }
+
+                _listViewDeleteMenuItem_IsEnabled = true;
             });
         }
 
@@ -1281,10 +1290,8 @@ namespace Amoeba.Windows
                 {
 
                 }
-                finally
-                {
-                    _listViewDeleteCacheMenuItem_IsEnabled = true;
-                }
+
+                _listViewDeleteCacheMenuItem_IsEnabled = true;
             });
         }
 
@@ -1326,10 +1333,8 @@ namespace Amoeba.Windows
                 {
 
                 }
-                finally
-                {
-                    _listViewDeleteDownloadMenuItem_IsEnabled = true;
-                }
+
+                _listViewDeleteDownloadMenuItem_IsEnabled = true;
             });
         }
 
@@ -1371,10 +1376,8 @@ namespace Amoeba.Windows
                 {
 
                 }
-                finally
-                {
-                    _listViewDeleteUploadMenuItem_IsEnabled = true;
-                }
+
+                _listViewDeleteUploadMenuItem_IsEnabled = true;
             });
         }
 
@@ -1405,13 +1408,7 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    foreach (var item in list)
-                    {
-                        for (; ; )
-                        {
-                            if (!_amoebaManager.DownloadedSeeds.Remove(item)) break;
-                        }
-                    }
+                    _amoebaManager.DownloadedSeeds.RemoveAll(n => list.Contains(n));
 
                     this.Update_Cache();
                 }
@@ -1419,10 +1416,8 @@ namespace Amoeba.Windows
                 {
 
                 }
-                finally
-                {
-                    _listViewDeleteDownloadHistoryMenuItem_IsEnabled = true;
-                }
+
+                _listViewDeleteDownloadHistoryMenuItem_IsEnabled = true;
             });
         }
 
@@ -1453,13 +1448,7 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    foreach (var item in list)
-                    {
-                        for (; ; )
-                        {
-                            if (!_amoebaManager.UploadedSeeds.Remove(item)) break;
-                        }
-                    }
+                    _amoebaManager.UploadedSeeds.RemoveAll(n => list.Contains(n));
 
                     this.Update_Cache();
                 }
@@ -1467,10 +1456,8 @@ namespace Amoeba.Windows
                 {
 
                 }
-                finally
-                {
-                    _listViewDeleteUploadHistoryMenuItem_IsEnabled = true;
-                }
+
+                _listViewDeleteUploadHistoryMenuItem_IsEnabled = true;
             });
         }
 
@@ -1479,12 +1466,35 @@ namespace Amoeba.Windows
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
 
+            var list = new HashSet<Seed>();
+
             foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
-                _amoebaManager.Download(item.Value, 3);
+                if (item.Value == null) continue;
+
+                list.Add(item.Value);
             }
 
-            this.Update_Cache(false);
+            if (list.Count == 0) return;
+
+            ThreadPool.QueueUserWorkItem((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var seed in list)
+                    {
+                        _amoebaManager.Download(seed, 3);
+                    }
+
+                    this.Update_Cache(false);
+                }
+                catch (Exception)
+                {
+
+                }
+            });
         }
 
         private void _listViewSearchSignatureMenuItem_Click(object sender, RoutedEventArgs e)

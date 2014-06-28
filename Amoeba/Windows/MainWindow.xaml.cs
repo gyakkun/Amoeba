@@ -190,8 +190,6 @@ namespace Amoeba.Windows
 
                 sw.Stop();
                 Debug.WriteLine("StartUp {0}", sw.ElapsedMilliseconds);
-
-                LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
             }
             catch (Exception e)
             {
@@ -199,11 +197,6 @@ namespace Amoeba.Windows
 
                 throw;
             }
-        }
-
-        void LanguagesManager_UsingLanguageChangedEvent(object sender)
-        {
-            this.Settings_Help();
         }
 
         public MainWindowTabType SelectedTab
@@ -461,21 +454,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (compactionStopwatch.Elapsed.TotalMinutes >= 3)
-                    {
-                        compactionStopwatch.Restart();
-
-                        try
-                        {
-                            this.Compaction();
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Warning(e);
-                        }
-                    }
-
-                    if (garbageCollectStopwatch.Elapsed.TotalSeconds >= 60)
+                    if (garbageCollectStopwatch.Elapsed.TotalMinutes >= 12)
                     {
                         garbageCollectStopwatch.Restart();
 
@@ -496,6 +475,20 @@ namespace Amoeba.Windows
             }
         }
 
+        private void GarbageCollect()
+        {
+            try
+            {
+                this.Compaction();
+
+                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
         private void Compaction()
         {
             // LargeObjectHeapCompactionModeの設定を試みる。(.net 4.5.1以上で可能)
@@ -511,18 +504,6 @@ namespace Amoeba.Windows
 
                     Debug.WriteLine("Set GCLargeObjectHeapCompactionMode.CompactOnce");
                 }
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        private void GarbageCollect()
-        {
-            try
-            {
-                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
             }
             catch (Exception)
             {
@@ -1598,8 +1579,6 @@ namespace Amoeba.Windows
             storeControl.Width = Double.NaN;
             _storeTabItem.Content = storeControl;
 
-            this.Settings_Help();
-
             if (Settings.Instance.Global_IsStart)
             {
                 _startMenuItem_Click(null, null);
@@ -1617,69 +1596,6 @@ namespace Amoeba.Windows
             }
 
             this.GarbageCollect();
-        }
-
-        private void Settings_Help()
-        {
-            try
-            {
-                if (_helpTabItem.Content != null)
-                {
-                    ((WebBrowser)_helpTabItem.Content).Dispose();
-                }
-
-                {
-                    var helpWebBrowser = SilentWebBrowser.Create();
-                    helpWebBrowser.Navigating += _helpWebBrowser_Navigating;
-                    _helpTabItem.Content = helpWebBrowser;
-
-                    string language = "en";
-
-                    if (LanguagesManager.Instance.CurrentLanguage == "Japanese"
-                        && Directory.Exists(Path.Combine(App.DirectoryPaths["Help"], "ja")))
-                    {
-                        language = "ja";
-                    }
-
-                    var path = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Help"], language, "Index.html"));
-                    if (!File.Exists(path)) return;
-
-                    helpWebBrowser.Navigate(new Uri(path));
-                }
-            }
-            catch (Exception)
-            {
-                _helpTabItem.Content = null;
-            }
-        }
-
-        private void _helpWebBrowser_Navigating(object sender, NavigatingCancelEventArgs e)
-        {
-            try
-            {
-                string language = "en";
-
-                if (LanguagesManager.Instance.CurrentLanguage == "Japanese"
-                    && Directory.Exists(Path.Combine(App.DirectoryPaths["Help"], "ja")))
-                {
-                    language = "ja";
-                }
-
-                var path = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Help"], language, "Index.html"));
-
-                if (e.Uri.IsFile && e.Uri.LocalPath == path)
-                {
-                    e.Cancel = false;
-                }
-                else
-                {
-                    e.Cancel = true;
-                }
-            }
-            catch (Exception)
-            {
-                e.Cancel = true;
-            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -71,7 +71,6 @@
             <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource ResourcesInstance}}" Name="_uploadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource ResourcesInstance}}" Name="_shareTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource ResourcesInstance}}" Name="_storeTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}" Name="_helpTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource ResourcesInstance}}" Name="_logTabItem">
                 <Grid>
                     <Grid.RowDefinitions>

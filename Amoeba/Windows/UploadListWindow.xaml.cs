@@ -149,6 +149,7 @@ namespace Amoeba.Windows
 
             public UploadListViewItem()
             {
+
             }
 
             public string Path

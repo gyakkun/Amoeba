@@ -360,10 +360,24 @@ namespace Amoeba.Windows
 
         private void _listViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var item in Clipboard.GetSeeds())
+            var list = new HashSet<Seed>(Clipboard.GetSeeds());
+
+            ThreadPool.QueueUserWorkItem((object wstate) =>
             {
-                _amoebaManager.Download(item, 3);
-            }
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var item in list)
+                    {
+                        _amoebaManager.Download(item, 3);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            });
         }
 
         private void SetPriority(int i)
