@@ -48,12 +48,13 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(2, 0, 80);
+            App.AmoebaVersion = new Version(2, 0, 81);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
 
                 currentProcess.PriorityClass = ProcessPriorityClass.BelowNormal;
+                currentProcess.SetMemoryPriority(3);
             }
 
             {
@@ -94,7 +95,6 @@ namespace Amoeba
             App.DirectoryPaths["Core"] = @".\";
             App.DirectoryPaths["Icons"] = "Icons";
             App.DirectoryPaths["Languages"] = "Languages";
-            App.DirectoryPaths["Help"] = "Help";
 
             foreach (var item in App.DirectoryPaths.Values)
             {
