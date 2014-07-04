@@ -422,17 +422,17 @@ namespace Amoeba
 
                         if (zipFilePath != null)
                         {
-                            var tempCoreDirectoryPath = Path.Combine(workDirectioryPath, "Core");
+                            var tempUpdateDirectoryPath = Path.Combine(workDirectioryPath, "Update");
 
-                            if (Directory.Exists(tempCoreDirectoryPath))
-                                Directory.Delete(tempCoreDirectoryPath, true);
+                            if (Directory.Exists(tempUpdateDirectoryPath))
+                                Directory.Delete(tempUpdateDirectoryPath, true);
 
                             try
                             {
                                 using (ZipFile zipfile = new ZipFile(zipFilePath))
                                 {
                                     zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                                    zipfile.ExtractAll(tempCoreDirectoryPath);
+                                    zipfile.ExtractAll(tempUpdateDirectoryPath);
                                 }
                             }
                             catch (Exception)
@@ -451,7 +451,7 @@ namespace Amoeba
                             startInfo.FileName = tempUpdateExeFilePath;
                             startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
                                 Process.GetCurrentProcess().Id,
-                                tempCoreDirectoryPath,
+                                Path.Combine(tempUpdateDirectoryPath, "Core"),
                                 Directory.GetCurrentDirectory(),
                                 Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"),
                                 Path.GetFullPath(zipFilePath));
