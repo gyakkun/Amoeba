@@ -12,25 +12,25 @@ namespace Amoeba
         {
             if (window.WindowState != WindowState.Normal) return;
 
-            foreach (var n in System.Windows.Forms.Screen.AllScreens)
-            {
-                if (n.WorkingArea.Left <= (window.Left + (window.ActualWidth / 2)) && (window.Left + (window.ActualWidth / 2)) <= (n.WorkingArea.Left + n.WorkingArea.Width)
-                    && n.WorkingArea.Top <= window.Top && window.Top <= (n.WorkingArea.Top + n.WorkingArea.Height))
+            var n = System.Windows.Forms.Screen.AllScreens
+                .OrderBy(m =>
                 {
-                    var maxLeft = n.WorkingArea.Left;
-                    var maxTop = n.WorkingArea.Top;
-                    var maxRight = (n.WorkingArea.Left + n.WorkingArea.Width) - window.ActualWidth;
-                    var maxBottom = (n.WorkingArea.Top + n.WorkingArea.Height) - window.ActualHeight;
+                    return Math.Abs((m.WorkingArea.Left + (m.WorkingArea.Width / 2)) - (window.Left + (window.ActualWidth / 2)))
+                    + Math.Abs((m.WorkingArea.Top + (m.WorkingArea.Height / 2)) - (window.Top + (window.ActualHeight / 2)));
+                })
+                .First();
 
-                    window.Left = Math.Min(Math.Max(maxLeft, window.Left), maxRight);
-                    window.Top = Math.Min(Math.Max(maxTop, window.Top), maxBottom);
+            {
+                var maxLeft = n.WorkingArea.Left;
+                var maxTop = n.WorkingArea.Top;
+                var maxRight = (n.WorkingArea.Left + n.WorkingArea.Width) - window.ActualWidth;
+                var maxBottom = (n.WorkingArea.Top + n.WorkingArea.Height) - window.ActualHeight;
 
-                    return;
-                }
+                window.Left = Math.Min(Math.Max(maxLeft, window.Left), maxRight);
+                window.Top = Math.Min(Math.Max(maxTop, window.Top), maxBottom);
+
+                return;
             }
-
-            window.Top = 0;
-            window.Left = 0;
         }
     }
 }

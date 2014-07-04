@@ -48,7 +48,7 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(2, 0, 81);
+            App.AmoebaVersion = new Version(2, 0, 82);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -451,7 +451,7 @@ namespace Amoeba
                             startInfo.FileName = tempUpdateExeFilePath;
                             startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
                                 Process.GetCurrentProcess().Id,
-                                Path.Combine(tempCoreDirectoryPath, "Core"),
+                                tempCoreDirectoryPath,
                                 Directory.GetCurrentDirectory(),
                                 Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"),
                                 Path.GetFullPath(zipFilePath));

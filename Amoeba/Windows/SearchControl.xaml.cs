@@ -92,7 +92,7 @@ namespace Amoeba.Windows
             _cacheThread = new Thread(this.Cache);
             _cacheThread.Priority = ThreadPriority.Highest;
             _cacheThread.IsBackground = true;
-            _cacheThread.Name = "LibraryControl_CacheThread";
+            _cacheThread.Name = "SearchControl_CacheThread";
             _cacheThread.Start();
 
             _searchRowDefinition.Height = new GridLength(0);

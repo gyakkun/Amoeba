@@ -423,11 +423,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public ObservableCollectionEx<string> TrustSignatures
-            {
-                get;
-                private set;
-            }
+            public ObservableCollectionEx<string> TrustSignatures { get; private set; }
         }
     }
 }
