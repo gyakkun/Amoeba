@@ -268,7 +268,7 @@ namespace Amoeba
                         return;
                     }
                 }
-                if (e.Args.Length >= 2 && e.Args[0] == "Download")
+                else if (e.Args.Length >= 2 && e.Args[0] == "Download")
                 {
                     try
                     {
@@ -299,7 +299,18 @@ namespace Amoeba
                             if (!Directory.Exists(App.DirectoryPaths["Input"]))
                                 Directory.CreateDirectory(App.DirectoryPaths["Input"]);
 
-                            File.Copy(e.Args[0], App.GetUniqueFilePath(Path.Combine(App.DirectoryPaths["Input"], Path.GetRandomFileName() + "_temp.box")));
+                            using (var inStream = new FileStream(e.Args[0], FileMode.Open, FileAccess.Read, FileShare.Read))
+                            using (var outStream = App.GetUniqueFileStream(Path.Combine(App.DirectoryPaths["Input"], Path.GetRandomFileName() + "_temp.box")))
+                            {
+                                byte[] buffer = new byte[1024 * 4];
+
+                                int length = 0;
+
+                                while ((length = inStream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    outStream.Write(buffer, 0, length);
+                                }
+                            }
                         }
                     }
                     catch (Exception)
