@@ -1326,7 +1326,7 @@ namespace Amoeba.Windows
 
             if (window.ShowDialog() == true)
             {
-                selectTreeViewItem.Value.Name = window.Name;
+                selectTreeViewItem.Value.Name = window.Text;
                 selectTreeViewItem.Update();
             }
 

@@ -25,21 +25,7 @@ namespace Amoeba.Windows
         private string _text;
 
         public NameWindow()
-            : this(null)
         {
-
-        }
-
-        public NameWindow(int maxLength)
-            : this(null)
-        {
-            _textBox.MaxLength = maxLength;
-        }
-
-        public NameWindow(string text)
-        {
-            _text = text;
-
             InitializeComponent();
 
             {
@@ -52,13 +38,28 @@ namespace Amoeba.Windows
 
                 this.Icon = icon;
             }
+        }
+
+        public NameWindow(string text)
+            : this()
+        {
+            _text = text;
 
             _textBox.Text = _text;
         }
 
-        public NameWindow(string text, int maxLength)
-            : this(text)
+        public NameWindow(int maxLength)
+            : this()
         {
+            _textBox.MaxLength = maxLength;
+        }
+
+        public NameWindow(string text, int maxLength)
+            : this()
+        {
+            _text = text;
+
+            _textBox.Text = _text;
             _textBox.MaxLength = maxLength;
         }
 
@@ -90,9 +91,9 @@ namespace Amoeba.Windows
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-
             _text = _textBox.Text;
+
+            this.DialogResult = true;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

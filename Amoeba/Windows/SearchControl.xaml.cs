@@ -1911,6 +1911,20 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
+            else if (sortBy == LanguagesManager.Instance.SearchControl_Id)
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.Id.CompareTo(y.Id);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+                    c = x.Index.CompareTo(y.Index);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
 
             if (direction == ListSortDirection.Descending)
             {
