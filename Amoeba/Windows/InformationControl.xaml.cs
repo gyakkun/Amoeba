@@ -620,6 +620,9 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
+                    if (_information.Contains("Direction")) this.Direction = (ConnectDirection)_information["Direction"];
+                    else this.Direction = 0;
+
                     if (_information.Contains("Uri")) this.Uri = (string)_information["Uri"];
                     else this.Uri = null;
 
@@ -631,9 +634,6 @@ namespace Amoeba.Windows
 
                     if (_information.Contains("SentByteCount")) this.SentByteCount = (long)_information["SentByteCount"];
                     else this.SentByteCount = 0;
-
-                    if (_information.Contains("Direction")) this.Direction = (ConnectDirection)_information["Direction"];
-                    else this.Direction = 0;
                 }
             }
 
