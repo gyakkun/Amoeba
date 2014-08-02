@@ -5,8 +5,11 @@
   <Translate Key="FontSize" Value="12" />
   <Translate Key="DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
 
-  <Translate Key="Languages_English" Value="英語" />
-  <Translate Key="Languages_Japanese" Value="日本語" />
+  <Translate Key="Languages_English" Value="英語 (English)" />
+  <Translate Key="Languages_Japanese" Value="日本語 (Japanese)" />
+  <Translate Key="Languages_Chinese" Value="繁体字中国語 (Chinese (Taiwan))" />
+  <Translate Key="Languages_Ukrainian" Value="ウクライナ語 (Ukrainian)" />
+  <Translate Key="Languages_Russian" Value="ロシア語 (Russian)" />
 
   <Translate Key="ConnectDirection_In" Value="In" />
   <Translate Key="ConnectDirection_Out" Value="Out" />

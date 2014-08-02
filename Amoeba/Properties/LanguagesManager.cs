@@ -240,6 +240,39 @@ namespace Amoeba.Properties
             }
         }
 
+        public string Languages_Chinese
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Languages_Chinese");
+                }
+            }
+        }
+
+        public string Languages_Ukrainian
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Languages_Ukrainian");
+                }
+            }
+        }
+
+        public string Languages_Russian
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Languages_Russian");
+                }
+            }
+        }
+
 
         public string ConnectDirection_In
         {

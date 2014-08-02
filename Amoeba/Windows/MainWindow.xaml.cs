@@ -553,13 +553,15 @@ namespace Amoeba.Windows
                             {
                                 var storeTreeItems = new List<StoreTreeItem>();
 
-                                var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
-                                storeCategorizeTreeItems.Add(Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem);
-
-                                for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
                                 {
-                                    storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
-                                    storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
+                                    var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
+                                    storeCategorizeTreeItems.Add(Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem);
+
+                                    for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
+                                    {
+                                        storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
+                                        storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
+                                    }
                                 }
 
                                 searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
