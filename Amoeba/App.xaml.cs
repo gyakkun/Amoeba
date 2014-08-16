@@ -150,7 +150,7 @@ namespace Amoeba
                 }
                 catch (IOException)
                 {
-                    throw;
+
                 }
             }
 
