@@ -33,7 +33,7 @@ namespace Amoeba
 
         private Regex _regex = new Regex(@"(.*?):(.*):(\d*)");
 
-        private volatile Thread _watchThread;
+        private Thread _watchThread;
 
         private volatile ManagerState _state = ManagerState.Stop;
 

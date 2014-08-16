@@ -21,7 +21,7 @@ namespace Amoeba
         private long _uploadSize;
         private long _downloadSize;
 
-        private volatile Thread _watchThread;
+        private Thread _watchThread;
 
         private volatile ManagerState _state = ManagerState.Stop;
 
