@@ -454,7 +454,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (garbageCollectStopwatch.Elapsed.TotalMinutes >= 12)
+                    if (garbageCollectStopwatch.Elapsed.TotalSeconds >= 60)
                     {
                         garbageCollectStopwatch.Restart();
 
@@ -477,20 +477,6 @@ namespace Amoeba.Windows
 
         private void GarbageCollect()
         {
-            try
-            {
-                this.Compaction();
-
-                GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        private void Compaction()
-        {
             // LargeObjectHeapCompactionModeの設定を試みる。(.net 4.5.1以上で可能)
             try
             {
@@ -504,6 +490,17 @@ namespace Amoeba.Windows
 
                     Debug.WriteLine("Set GCLargeObjectHeapCompactionMode.CompactOnce");
                 }
+            }
+            catch (Exception)
+            {
+
+            }
+
+            try
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
             }
             catch (Exception)
             {
