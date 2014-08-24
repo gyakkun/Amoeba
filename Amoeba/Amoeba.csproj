@@ -317,7 +317,7 @@
     <Content Include="Languages\Ukrainian.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Languages\Chinese_Simplified.xml">
+    <Content Include="Languages\Chinese_Traditional.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Languages\English.xml">
@@ -340,7 +340,7 @@
     <Content Include="Assemblies\Tor\tor.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Languages\Chinese_Traditional.xml">
+    <Content Include="Languages\Chinese_Simplified.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Nodes.txt">
