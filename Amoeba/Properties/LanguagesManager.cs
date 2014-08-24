@@ -240,13 +240,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string Languages_Chinese
+        public string Languages_Chinese_Traditional
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("Languages_Chinese");
+                    return this.Translate("Languages_Chinese_Traditional");
+                }
+            }
+        }
+
+        public string Languages_Chinese_Simplified
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Languages_Chinese_Simplified");
                 }
             }
         }

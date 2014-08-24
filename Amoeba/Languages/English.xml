@@ -7,7 +7,8 @@
 
   <Translate Key="Languages_English" Value="English" />
   <Translate Key="Languages_Japanese" Value="Japanese" />
-  <Translate Key="Languages_Chinese" Value="Chinese (Taiwan)" />
+  <Translate Key="Languages_Chinese_Traditional" Value="Chinese (Traditional)" />
+  <Translate Key="Languages_Chinese_Simplified" Value="Chinese (Simplified)" />
   <Translate Key="Languages_Ukrainian" Value="Ukrainian" />
   <Translate Key="Languages_Russian" Value="Russian" />
 

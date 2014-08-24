@@ -1269,26 +1269,23 @@ namespace Amoeba.Windows
                     writer.WriteLine(App.AmoebaVersion.ToString());
                 }
 
-#if DEBUG
-                if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Debug_NodeId.txt")))
+                // Node.txtにあるノード情報を追加する。
+                if (File.Exists(Path.Combine(App.DirectoryPaths["Core"], "Nodes.txt")))
                 {
-                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Debug_NodeId.txt"), new UTF8Encoding(false)))
+                    var list = new List<Node>();
+
+                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Core"], "Nodes.txt"), new UTF8Encoding(false)))
                     {
-                        byte[] buffer = new byte[64];
+                        string line;
 
-                        byte b = byte.Parse(reader.ReadLine());
-
-                        for (int i = 0; i < 64; i++)
+                        while ((line = reader.ReadLine()) != null)
                         {
-                            buffer[i] = b;
+                            list.Add(AmoebaConverter.FromNodeString(line));
                         }
-
-                        var baseNode = _amoebaManager.BaseNode;
-
-                        _amoebaManager.SetBaseNode(new Node(buffer, baseNode.Uris));
                     }
+
+                    _amoebaManager.SetOtherNodes(list);
                 }
-#endif
 
                 _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
                 _autoBaseNodeSettingManager.Load(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
