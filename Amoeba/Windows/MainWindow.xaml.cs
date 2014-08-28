@@ -1203,6 +1203,46 @@ namespace Amoeba.Windows
                         Settings.Instance.LibraryControl_Box = box;
                         Settings.Instance.LibraryControl_ExpandedPath.Add(route);
                     }
+
+                    // Links.txtにあるノード情報を追加する。
+                    if (File.Exists(Path.Combine(App.DirectoryPaths["Settings"], "Links.txt")))
+                    {
+                        var list = new List<string>();
+
+                        using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Settings"], "Links.txt"), new UTF8Encoding(false)))
+                        {
+                            string line;
+
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                list.Add(line);
+                            }
+                        }
+
+                        foreach (var signature in list)
+                        {
+                            if (Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Any(n => n.Signature == signature)) continue;
+                            Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Add(new LinkItem() { Signature = signature });
+                        }
+                    }
+
+                    // Nodes.txtにあるノード情報を追加する。
+                    if (File.Exists(Path.Combine(App.DirectoryPaths["Settings"], "Nodes.txt")))
+                    {
+                        var list = new List<Node>();
+
+                        using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Settings"], "Nodes.txt"), new UTF8Encoding(false)))
+                        {
+                            string line;
+
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                list.Add(AmoebaConverter.FromNodeString(line));
+                            }
+                        }
+
+                        _amoebaManager.SetOtherNodes(list);
+                    }
                 }
                 else
                 {
@@ -1267,24 +1307,6 @@ namespace Amoeba.Windows
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
                 {
                     writer.WriteLine(App.AmoebaVersion.ToString());
-                }
-
-                // Node.txtにあるノード情報を追加する。
-                if (File.Exists(Path.Combine(App.DirectoryPaths["Core"], "Nodes.txt")))
-                {
-                    var list = new List<Node>();
-
-                    using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Core"], "Nodes.txt"), new UTF8Encoding(false)))
-                    {
-                        string line;
-
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            list.Add(AmoebaConverter.FromNodeString(line));
-                        }
-                    }
-
-                    _amoebaManager.SetOtherNodes(list);
                 }
 
                 _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
