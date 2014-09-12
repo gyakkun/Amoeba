@@ -453,32 +453,16 @@ namespace Amoeba.Windows
                         foreach (var storeTreeViewItem in storeTreeViewItems)
                         {
                             var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
+                            if (store == null || CollectionUtilities.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
 
-                            if (store != null)
+                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                             {
-                                if (CollectionUtilities.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
+                                storeTreeViewItem.Value.Boxes.Clear();
+                                storeTreeViewItem.Value.Boxes.AddRange(store.Boxes);
+                                storeTreeViewItem.Value.IsUpdated = true;
 
-                                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
-                                {
-                                    storeTreeViewItem.Value.Boxes.Clear();
-                                    storeTreeViewItem.Value.Boxes.AddRange(store.Boxes);
-                                    storeTreeViewItem.Value.IsUpdated = true;
-
-                                    storeTreeViewItem.Update();
-                                }));
-                            }
-                            else
-                            {
-                                if (storeTreeViewItem.Value.Boxes.Count == 0) continue;
-
-                                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
-                                {
-                                    storeTreeViewItem.Value.Boxes.Clear();
-                                    storeTreeViewItem.Value.IsUpdated = true;
-
-                                    storeTreeViewItem.Update();
-                                }));
-                            }
+                                storeTreeViewItem.Update();
+                            }));
 
                             updateFlag = true;
                         }
