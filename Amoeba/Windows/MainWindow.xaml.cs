@@ -580,14 +580,30 @@ namespace Amoeba.Windows
                         foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
                         {
                             var link = _amoebaManager.GetLink(item.Signature);
-                            if (link == null || CollectionUtilities.Equals(item.TrustSignatures, link.TrustSignatures)) continue;
 
-                            lock (item.ThisLock)
+                            if (link != null)
                             {
-                                lock (item.TrustSignatures.ThisLock)
+                                if (CollectionUtilities.Equals(item.TrustSignatures, link.TrustSignatures)) continue;
+
+                                lock (item.ThisLock)
                                 {
-                                    item.TrustSignatures.Clear();
-                                    item.TrustSignatures.AddRange(link.TrustSignatures);
+                                    lock (item.TrustSignatures.ThisLock)
+                                    {
+                                        item.TrustSignatures.Clear();
+                                        item.TrustSignatures.AddRange(link.TrustSignatures);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (item.TrustSignatures.Count == 0) continue;
+
+                                lock (item.ThisLock)
+                                {
+                                    lock (item.TrustSignatures.ThisLock)
+                                    {
+                                        item.TrustSignatures.Clear();
+                                    }
                                 }
                             }
                         }

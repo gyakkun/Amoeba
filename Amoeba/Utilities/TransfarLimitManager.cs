@@ -358,7 +358,6 @@ namespace Amoeba
                         return (TransferLimit)this["TransferLimit"];
                     }
                 }
-
                 set
                 {
                     lock (_thisLock)
@@ -377,7 +376,6 @@ namespace Amoeba
                         return (LockedHashDictionary<DateTime, long>)this["UploadTransferSizeList"];
                     }
                 }
-
                 set
                 {
                     lock (_thisLock)
@@ -396,7 +394,6 @@ namespace Amoeba
                         return (LockedHashDictionary<DateTime, long>)this["DownloadTransferSizeList"];
                     }
                 }
-
                 set
                 {
                     lock (_thisLock)

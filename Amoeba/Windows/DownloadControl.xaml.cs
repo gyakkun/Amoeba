@@ -563,8 +563,8 @@ namespace Amoeba.Windows
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Rate)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
-                _listView.Items.SortDescriptions.Add(new SortDescription("Rank", direction));
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Rank", direction));
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
             {
@@ -624,9 +624,9 @@ namespace Amoeba.Windows
                 {
                     int c = x.State.CompareTo(y.State);
                     if (c != 0) return c;
-                    c = x.Rank.CompareTo(y.Rank);
-                    if (c != 0) return c;
                     c = x.Rate.CompareTo(y.Rate);
+                    if (c != 0) return c;
+                    c = x.Rank.CompareTo(y.Rank);
                     if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
