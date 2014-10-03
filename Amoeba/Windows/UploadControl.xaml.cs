@@ -71,14 +71,14 @@ namespace Amoeba.Windows
                     if (_mainWindow.SelectedTab != MainWindowTabType.Upload) continue;
 
                     var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
-                    SortedDictionary<int, Information> dic = new SortedDictionary<int, Information>();
+                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
 
                     foreach (var item in uploadingInformation.ToArray())
                     {
                         dic[(int)item["Id"]] = item;
                     }
 
-                    SortedDictionary<int, UploadListViewItem> dic2 = new SortedDictionary<int, UploadListViewItem>();
+                    Dictionary<int, UploadListViewItem> dic2 = new Dictionary<int, UploadListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
