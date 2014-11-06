@@ -35,7 +35,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<string>() { Name = "Global_BoxExtractTo_Path", Value = "Box/Temp" },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Url", Value = "http://lyrise.web.fc2.com/update/Amoeba" },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:18118" },
-                new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Signature", Value = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A" },
+                new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Signature", Value = "Lyrise@OTAhpWvmegu50LT-p5dZ16og7U6bdpO4z5TInZxGsCs" },
                 new Library.Configuration.SettingContent<UpdateOption>() { Name = "Global_Update_Option", Value = UpdateOption.AutoCheck },
 
                 new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Top", Value = 120 },

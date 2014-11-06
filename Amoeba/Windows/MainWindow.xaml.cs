@@ -1252,56 +1252,6 @@ namespace Amoeba.Windows
                     {
                         version = new Version(reader.ReadLine());
                     }
-
-                    if (version <= new Version(0, 1, 49))
-                    {
-                        if (Settings.Instance.Global_Update_ProxyUri == "tcp:127.0.0.1:8118")
-                            Settings.Instance.Global_Update_ProxyUri = "tcp:127.0.0.1:18118";
-
-                        var torConnectionFilter = new ConnectionFilter()
-                        {
-                            ConnectionType = ConnectionType.Socks5Proxy,
-                            ProxyUri = "tcp:127.0.0.1:19050",
-                            UriCondition = new UriCondition()
-                            {
-                                Value = @"tor:.*",
-                            },
-                        };
-
-                        _amoebaManager.Filters.Add(torConnectionFilter);
-                    }
-
-                    if (version < new Version(1, 0, 0))
-                    {
-                        Settings.Instance.Global_Update_Signature = "Lyrise@7seiSbhOCkls6gPxjJYjptxskzlSulgIe3dSfj1KxnJJ6eejKjuJ3R1Ec8yFuKpr4uNcwF7bFh5OrmxnY25y7A";
-                    }
-
-                    if (version < new Version(2, 0, 0))
-                    {
-                        Settings.Instance.SearchControl_SearchTreeItem = Settings.Instance.CacheControl_SearchTreeItem;
-                        Settings.Instance.StoreUploadControl_StoreCategorizeTreeItem.StoreTreeItems.AddRange(Settings.Instance.StoreControl_StoreTreeItems);
-                        Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem.StoreTreeItems.AddRange(Settings.Instance.SearchControl_StoreTreeItems);
-
-                        if (Settings.Instance.BoxControl_Box != null)
-                        {
-                            Settings.Instance.LibraryControl_Box = Settings.Instance.BoxControl_Box;
-                        }
-                    }
-
-                    if (version < new Version(2, 0, 3))
-                    {
-                        var lockFilePath = Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.lock");
-
-                        if (File.Exists(lockFilePath))
-                        {
-                            File.Delete(lockFilePath);
-                        }
-                    }
-
-                    if (version < new Version(2, 0, 68))
-                    {
-                        _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(_amoebaManager.ConnectionCountLimit, 256), 32);
-                    }
                 }
 
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))

@@ -50,7 +50,7 @@ namespace Amoeba.Windows
         private Thread _searchThread;
         private Thread _cacheThread;
 
-        private const HashAlgorithm _hashAlgorithm = HashAlgorithm.Sha512;
+        private const HashAlgorithm _hashAlgorithm = HashAlgorithm.Sha256;
 
         public SearchControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {

@@ -38,6 +38,8 @@ namespace Amoeba.Windows
 
         private Thread _showUploadItemThread;
 
+        private volatile bool _shareAddIsRunning = false;
+
         public UploadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
@@ -208,27 +210,51 @@ namespace Amoeba.Windows
         private void _listView_PreviewDrop(object sender, DragEventArgs e)
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            var result = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
 
-            var filePaths = new HashSet<string>();
+            ThreadPool.QueueUserWorkItem((object wstate) =>
+            {
+                if (_shareAddIsRunning) return;
+                _shareAddIsRunning = true;
 
-            foreach (var item in (string[])e.Data.GetData(DataFormats.FileDrop))
-            {
-                if (File.Exists(item)) filePaths.Add(item);
-                else if (Directory.Exists(item)) filePaths.UnionWith(Directory.GetFiles(item, "*", SearchOption.AllDirectories));
-            }
+                Thread.CurrentThread.IsBackground = true;
 
-            if (filePaths.Count == 1)
-            {
-                UploadWindow window = new UploadWindow(filePaths.First(), false, _amoebaManager);
-                window.Owner = _mainWindow;
-                window.ShowDialog();
-            }
-            else if (filePaths.Count > 1)
-            {
-                UploadListWindow window = new UploadListWindow(filePaths, false, _amoebaManager);
-                window.Owner = _mainWindow;
-                window.ShowDialog();
-            }
+                try
+                {
+                    var filePaths = new HashSet<string>();
+
+                    foreach (var item in result)
+                    {
+                        if (File.Exists(item)) filePaths.Add(item);
+                        else if (Directory.Exists(item)) filePaths.UnionWith(Directory.GetFiles(item, "*", SearchOption.AllDirectories));
+                    }
+
+                    foreach (var informaiton in _amoebaManager.ShareInformation)
+                    {
+                        filePaths.Remove((string)informaiton["Path"]);
+                    }
+
+                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    {
+                        if (filePaths.Count == 1)
+                        {
+                            UploadWindow window = new UploadWindow(filePaths.First(), false, _amoebaManager);
+                            window.Owner = _mainWindow;
+                            window.ShowDialog();
+                        }
+                        else if (filePaths.Count > 1)
+                        {
+                            UploadListWindow window = new UploadListWindow(filePaths, false, _amoebaManager);
+                            window.Owner = _mainWindow;
+                            window.ShowDialog();
+                        }
+                    }));
+                }
+                finally
+                {
+                    _shareAddIsRunning = false;
+                }
+            });
         }
 
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -257,18 +283,41 @@ namespace Amoeba.Windows
             {
                 var filePaths = new HashSet<string>(dialog.FileNames);
 
-                if (filePaths.Count == 1)
+                ThreadPool.QueueUserWorkItem((object wstate) =>
                 {
-                    UploadWindow window = new UploadWindow(filePaths.First(), false, _amoebaManager);
-                    window.Owner = _mainWindow;
-                    window.ShowDialog();
-                }
-                else if (filePaths.Count > 1)
-                {
-                    UploadListWindow window = new UploadListWindow(filePaths, false, _amoebaManager);
-                    window.Owner = _mainWindow;
-                    window.ShowDialog();
-                }
+                    if (_shareAddIsRunning) return;
+                    _shareAddIsRunning = true;
+
+                    Thread.CurrentThread.IsBackground = true;
+
+                    try
+                    {
+                        foreach (var informaiton in _amoebaManager.ShareInformation)
+                        {
+                            filePaths.Remove((string)informaiton["Path"]);
+                        }
+
+                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        {
+                            if (filePaths.Count == 1)
+                            {
+                                UploadWindow window = new UploadWindow(filePaths.First(), false, _amoebaManager);
+                                window.Owner = _mainWindow;
+                                window.ShowDialog();
+                            }
+                            else if (filePaths.Count > 1)
+                            {
+                                UploadListWindow window = new UploadListWindow(filePaths, false, _amoebaManager);
+                                window.Owner = _mainWindow;
+                                window.ShowDialog();
+                            }
+                        }));
+                    }
+                    finally
+                    {
+                        _shareAddIsRunning = false;
+                    }
+                });
             }
         }
 

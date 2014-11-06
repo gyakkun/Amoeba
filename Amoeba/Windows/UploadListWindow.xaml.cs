@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,10 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using Amoeba.Properties;
-using Library.Net.Amoeba;
 using Library.Net;
+using Library.Net.Amoeba;
 using Library.Security;
-using System.Collections.ObjectModel;
 
 namespace Amoeba.Windows
 {
@@ -81,19 +81,6 @@ namespace Amoeba.Windows
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             WindowPosition.Move(this);
-        }
-
-        private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var selectItems = _listView.SelectedItems;
-            if (selectItems == null || selectItems.Count == 0) return;
-
-            if (MessageBox.Show(this, LanguagesManager.Instance.MainWindow_Delete_Message, "Upload", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
-
-            foreach (var item in selectItems.Cast<UploadListViewItem>().ToArray())
-            {
-                _filePaths.Remove(item);
-            }
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
@@ -172,11 +159,6 @@ namespace Amoeba.Windows
                     return _name;
                 }
             }
-        }
-
-        private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
-        {
-            _listViewDeleteMenuItem_Click(null, null);
         }
     }
 }

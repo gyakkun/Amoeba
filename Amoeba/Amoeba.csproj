@@ -114,6 +114,9 @@
     <Compile Include="Utilities\SeedUtilities.cs" />
     <Compile Include="Utilities\Ipv4AddressFilter.cs" />
     <Compile Include="Utilities\CatharsisManager.cs" />
+    <Compile Include="Windows\UploadWindow.xaml.cs">
+      <DependentUpon>UploadWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\_Controls\ObservableCollectionEx.cs" />
     <Compile Include="Utilities\OverlayNetworkManager.cs" />
     <Compile Include="Windows\Link\LinkOptionsWindow.xaml.cs">
@@ -186,9 +189,6 @@
     </Compile>
     <Compile Include="Windows\UploadListWindow.xaml.cs">
       <DependentUpon>UploadListWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\UploadWindow.xaml.cs">
-      <DependentUpon>UploadWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\_Items\StoreTreeItem.cs" />
     <Compile Include="Windows\_Controls\StoreTreeViewItem.cs" />

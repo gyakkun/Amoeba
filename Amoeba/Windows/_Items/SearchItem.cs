@@ -77,7 +77,7 @@ namespace Amoeba.Windows
             }
         }
 
-        [DataMember(Name = "SearchSignatureCollection 2")]
+        [DataMember(Name = "SearchSignatureCollection")]
         public List<SearchContains<SearchRegex>> SearchSignatureCollection
         {
             get

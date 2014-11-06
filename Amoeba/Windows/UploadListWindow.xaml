@@ -14,14 +14,14 @@
         Width="{Binding Path=UploadWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Loaded="Window_Loaded">
-
-    <Window.CommandBindings>
-        <CommandBinding Command="Delete" Executed="Execute_Delete" />
-    </Window.CommandBindings>
-  
-    <Window.InputBindings>
-        <KeyBinding Gesture="Delete" Command="Delete" />
-    </Window.InputBindings>
+    <Window.Resources>
+        <DataTemplate x:Key="_myTemplate_Name">
+            <Grid>
+                <Image Width="16" Height="16" Source="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
+                <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
 
     <Grid>
         <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
@@ -42,17 +42,10 @@
         <Label Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
         <local:ListViewEx x:Name="_listView" Margin="138,72,12,41"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <ListView.ContextMenu>
-                <ContextMenu Name="_listViewContextMenu" >
-                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
-                </ContextMenu>
-            </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Name}" 
+                    <GridViewColumn Header="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}"
                             Width="{Binding Path=UploadWindow_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadWindow_Path, Source={StaticResource ResourcesInstance}}" DisplayMemberBinding="{Binding Path=Path}" 
-                            Width="{Binding Path=UploadWindow_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

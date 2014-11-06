@@ -88,11 +88,29 @@ namespace Amoeba.Windows
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null) return null;
-            var key = value.GetType().Name.ToString();
 
             try
             {
-                if (value is Seed)
+                if (value is string)
+                {
+                    var path = (string)value;
+
+                    var ext = Path.GetExtension(path);
+                    if (string.IsNullOrWhiteSpace(ext)) return null;
+
+                    BitmapSource icon;
+
+                    if (!_icon.TryGetValue(ext, out icon))
+                    {
+                        icon = IconUtilities.FileAssociatedImage(ext, false, false);
+                        if (icon.CanFreeze) icon.Freeze();
+
+                        _icon[ext] = icon;
+                    }
+
+                    return icon;
+                }
+                else if (value is Seed)
                 {
                     Seed seed = (Seed)value;
                     if (string.IsNullOrWhiteSpace(seed.Name)) return null;

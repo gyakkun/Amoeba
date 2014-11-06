@@ -575,6 +575,9 @@ namespace Amoeba.Windows
                 {
                     var textBlock = (TextBlock)item.Header;
 
+                    textBlock.ClearValue(TextBlock.FontWeightProperty);
+                    textBlock.ClearValue(TextBlock.ForegroundProperty);
+
                     if (hitItems.Contains(item))
                     {
                         textBlock.FontWeight = FontWeights.ExtraBlack;
@@ -582,23 +585,6 @@ namespace Amoeba.Windows
                         if (selectTreeViewItem != item)
                         {
                             textBlock.Foreground = new SolidColorBrush(App.Colors.Tree_Hit);
-                        }
-                        else
-                        {
-                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
-                        }
-                    }
-                    else
-                    {
-                        textBlock.FontWeight = FontWeights.Normal;
-
-                        if (selectTreeViewItem != item)
-                        {
-                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF));
-                        }
-                        else
-                        {
-                            textBlock.Foreground = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
                         }
                     }
                 }

@@ -34,7 +34,7 @@ namespace Amoeba
 
                     using (var stream = swap.Export(BufferManager.Instance))
                     {
-                        return Sha512.ComputeHash(stream);
+                        return Sha256.ComputeHash(stream);
                     }
                 });
         }

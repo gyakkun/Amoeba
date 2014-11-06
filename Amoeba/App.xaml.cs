@@ -23,6 +23,7 @@ using Ionic.Zip;
 using Library;
 using Library.Io;
 using Library.Net.Amoeba;
+using Library.Security;
 
 namespace Amoeba
 {
@@ -48,7 +49,7 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(2, 0, 102);
+            App.AmoebaVersion = new Version(3, 0, 0);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -63,21 +64,21 @@ namespace Amoeba
                 // Windows Vista以上。
                 if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version >= new Version(6, 0))
                 {
-                    // SHA512Cngをデフォルトで使うように設定する。
-                    CryptoConfig.AddAlgorithm(typeof(SHA512Cng),
-                        "SHA512",
-                        "SHA512Cng",
-                        "System.Security.Cryptography.SHA512",
-                        "System.Security.Cryptography.SHA512Cng");
+                    // SHA256Cngをデフォルトで使うように設定する。
+                    CryptoConfig.AddAlgorithm(typeof(SHA256Cng),
+                        "SHA256",
+                        "SHA256Cng",
+                        "System.Security.Cryptography.SHA256",
+                        "System.Security.Cryptography.SHA256Cng");
                 }
                 else
                 {
-                    // SHA512Managedをデフォルトで使うように設定する。
-                    CryptoConfig.AddAlgorithm(typeof(SHA512Managed),
-                        "SHA512",
-                        "SHA512Managed",
-                        "System.Security.Cryptography.SHA512",
-                        "System.Security.Cryptography.SHA512Managed");
+                    // SHA256Managedをデフォルトで使うように設定する。
+                    CryptoConfig.AddAlgorithm(typeof(SHA256Managed),
+                        "SHA256",
+                        "SHA256Managed",
+                        "System.Security.Cryptography.SHA256",
+                        "System.Security.Cryptography.SHA256Managed");
                 }
             }
 
@@ -497,139 +498,9 @@ namespace Amoeba
                         version = new Version(reader.ReadLine());
                     }
 
-                    if (version < new Version(2, 0, 20))
+                    if (version < new Version(3, 0, 0))
                     {
-                        if (File.Exists(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path")))
-                        {
-                            string cachePath;
-
-                            using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"), new UTF8Encoding(false)))
-                            {
-                                cachePath = reader.ReadLine();
-                            }
-
-                            using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.settings"), false, new UTF8Encoding(false)))
-                            {
-                                writer.WriteLine(string.Format("{0} {1}", "Path", cachePath));
-                            }
-
-                            try
-                            {
-                                File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Cache.path"));
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-
-                        {
-                            var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Run.xml");
-                            var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings");
-
-                            if (File.Exists(oldPath))
-                            {
-                                try
-                                {
-                                    File.Move(oldPath, newPath);
-                                }
-                                catch (Exception)
-                                {
-
-                                }
-                            }
-                        }
-                    }
-
-                    if (version < new Version(2, 0, 28))
-                    {
-                        {
-                            var torWorkDirectoryPath = Path.Combine(App.DirectoryPaths["Work"], "Tor");
-
-                            if (Directory.Exists(torWorkDirectoryPath))
-                            {
-                                try
-                                {
-                                    Directory.Delete(torWorkDirectoryPath, true);
-                                }
-                                catch (Exception)
-                                {
-
-                                }
-                            }
-                        }
-                    }
-
-                    if (version < new Version(2, 0, 61))
-                    {
-                        try
-                        {
-                            var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library/Net/Amoeba/AmoebaManager/ConnectionManager");
-                            var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Library/Net/Amoeba/AmoebaManager/ConnectionsManager");
-
-                            if (Directory.Exists(oldPath))
-                            {
-                                Directory.Move(oldPath, newPath);
-                            }
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }
-
-                    if (version < new Version(2, 0, 72))
-                    {
-                        try
-                        {
-                            // Environment.settingsを削除。
-                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Environment.settings"));
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }
-
-                    if (version < new Version(2, 0, 75))
-                    {
-                        try
-                        {
-                            // Startup.settingsを初期化。
-                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Startup.settings"));
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    }
-
-                    if (version < new Version(2, 0, 76))
-                    {
-                        try
-                        {
-                            // Catharsis.settingsを初期化。
-                            File.Delete(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"));
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-
-                        try
-                        {
-                            var oldPath = Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.txt");
-                            var newPath = Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis_Ipv4.txt");
-
-                            if (File.Exists(oldPath))
-                            {
-                                File.Move(oldPath, newPath);
-                            }
-                        }
-                        catch (Exception)
-                        {
-
-                        }
+                        throw new NotSupportedException("Not supported configuration.");
                     }
                 }
 

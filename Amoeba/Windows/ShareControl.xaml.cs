@@ -39,7 +39,7 @@ namespace Amoeba.Windows
 
         private Thread _showShareItemThread;
 
-        volatile bool _shareAddIsRunning = false;
+        private volatile bool _shareAddIsRunning = false;
 
         public ShareControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
