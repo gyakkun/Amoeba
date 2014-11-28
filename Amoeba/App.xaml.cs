@@ -113,7 +113,7 @@ namespace Amoeba
                 }
             }
 
-            Thread.GetDomain().UnhandledException += App_UnhandledException;
+            Thread.GetDomain().UnhandledException += this.App_UnhandledException;
         }
 
         private static string GetUniqueFilePath(string path)
@@ -992,7 +992,7 @@ namespace Amoeba
 
     class CatharsisSettings
     {
-        private static List<Ipv4AddressFilter> _ipv4AddressFilters;
+        private List<Ipv4AddressFilter> _ipv4AddressFilters;
 
         public List<Ipv4AddressFilter> Ipv4AddressFilters
         {

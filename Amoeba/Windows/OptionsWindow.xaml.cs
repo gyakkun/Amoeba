@@ -403,7 +403,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            byte[] buffer = new byte[64];
+            byte[] buffer = new byte[32];
 
             using (var random = RandomNumberGenerator.Create())
             {
@@ -488,7 +488,7 @@ namespace Amoeba.Windows
             if (!Regex.IsMatch(uri, @"^(.+?):(.+)$") || _baseNode_Uris.Any(n => n == uri)) return;
             _baseNode_Uris.Add(uri);
 
-            byte[] buffer = new byte[64];
+            byte[] buffer = new byte[32];
 
             using (var random = RandomNumberGenerator.Create())
             {
@@ -514,7 +514,7 @@ namespace Amoeba.Windows
 
             _baseNodeUrisListView.SelectedIndex = selectIndex;
 
-            byte[] buffer = new byte[64];
+            byte[] buffer = new byte[32];
 
             using (var random = RandomNumberGenerator.Create())
             {
@@ -536,7 +536,7 @@ namespace Amoeba.Windows
                 _baseNode_Uris.Remove(item);
             }
 
-            byte[] buffer = new byte[64];
+            byte[] buffer = new byte[32];
 
             using (var random = RandomNumberGenerator.Create())
             {

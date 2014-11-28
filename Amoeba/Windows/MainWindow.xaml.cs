@@ -1111,7 +1111,7 @@ namespace Amoeba.Windows
                     });
 
                     {
-                        byte[] buffer = new byte[64];
+                        byte[] buffer = new byte[32];
 
                         using (var random = RandomNumberGenerator.Create())
                         {
