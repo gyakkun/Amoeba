@@ -536,7 +536,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Sort(headerClicked, direction);
+                this.Sort(headerClicked, direction);
 
                 Settings.Instance.UploadControl_LastHeaderClicked = headerClicked;
                 Settings.Instance.UploadControl_ListSortDirection = direction;
@@ -547,7 +547,7 @@ namespace Amoeba.Windows
 
                 if (Settings.Instance.UploadControl_LastHeaderClicked != null)
                 {
-                    var list = Sort(_listViewItemCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
+                    var list = this.Sort(_listViewItemCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
 
                     for (int i = 0; i < list.Count; i++)
                     {

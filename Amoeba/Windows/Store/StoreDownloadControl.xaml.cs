@@ -1586,7 +1586,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Sort(headerClicked, direction);
+                this.Sort(headerClicked, direction);
 
                 Settings.Instance.StoreDownloadControl_LastHeaderClicked = headerClicked;
                 Settings.Instance.StoreDownloadControl_ListSortDirection = direction;
@@ -1595,7 +1595,7 @@ namespace Amoeba.Windows
             {
                 if (Settings.Instance.StoreDownloadControl_LastHeaderClicked != null)
                 {
-                    Sort(Settings.Instance.StoreDownloadControl_LastHeaderClicked, Settings.Instance.StoreDownloadControl_ListSortDirection);
+                    this.Sort(Settings.Instance.StoreDownloadControl_LastHeaderClicked, Settings.Instance.StoreDownloadControl_ListSortDirection);
                 }
             }
         }

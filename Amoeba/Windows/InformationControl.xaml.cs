@@ -377,7 +377,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Sort(headerClicked, direction);
+                this.Sort(headerClicked, direction);
 
                 Settings.Instance.InformationControl_LastHeaderClicked = headerClicked;
                 Settings.Instance.InformationControl_ListSortDirection = direction;
@@ -388,7 +388,7 @@ namespace Amoeba.Windows
 
                 if (Settings.Instance.InformationControl_LastHeaderClicked != null)
                 {
-                    var list = Sort(_listViewItemCollection, Settings.Instance.InformationControl_LastHeaderClicked, Settings.Instance.InformationControl_ListSortDirection).ToList();
+                    var list = this.Sort(_listViewItemCollection, Settings.Instance.InformationControl_LastHeaderClicked, Settings.Instance.InformationControl_ListSortDirection).ToList();
 
                     for (int i = 0; i < list.Count; i++)
                     {

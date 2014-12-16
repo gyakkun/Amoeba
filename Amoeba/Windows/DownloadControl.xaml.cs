@@ -521,7 +521,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Sort(headerClicked, direction);
+                this.Sort(headerClicked, direction);
 
                 Settings.Instance.DownloadControl_LastHeaderClicked = headerClicked;
                 Settings.Instance.DownloadControl_ListSortDirection = direction;

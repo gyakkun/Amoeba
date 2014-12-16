@@ -2714,7 +2714,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Sort(headerClicked, direction);
+                this.Sort(headerClicked, direction);
 
                 Settings.Instance.StoreUploadControl_LastHeaderClicked = headerClicked;
                 Settings.Instance.StoreUploadControl_ListSortDirection = direction;
@@ -2723,7 +2723,7 @@ namespace Amoeba.Windows
             {
                 if (Settings.Instance.StoreUploadControl_LastHeaderClicked != null)
                 {
-                    Sort(Settings.Instance.StoreUploadControl_LastHeaderClicked, Settings.Instance.StoreUploadControl_ListSortDirection);
+                    this.Sort(Settings.Instance.StoreUploadControl_LastHeaderClicked, Settings.Instance.StoreUploadControl_ListSortDirection);
                 }
             }
         }

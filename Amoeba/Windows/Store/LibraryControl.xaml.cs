@@ -1800,7 +1800,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Sort(headerClicked, direction);
+                this.Sort(headerClicked, direction);
 
                 Settings.Instance.LibraryControl_LastHeaderClicked = headerClicked;
                 Settings.Instance.LibraryControl_ListSortDirection = direction;
@@ -1809,7 +1809,7 @@ namespace Amoeba.Windows
             {
                 if (Settings.Instance.LibraryControl_LastHeaderClicked != null)
                 {
-                    Sort(Settings.Instance.LibraryControl_LastHeaderClicked, Settings.Instance.LibraryControl_ListSortDirection);
+                    this.Sort(Settings.Instance.LibraryControl_LastHeaderClicked, Settings.Instance.LibraryControl_ListSortDirection);
                 }
             }
         }
