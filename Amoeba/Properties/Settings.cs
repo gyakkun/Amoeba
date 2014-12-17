@@ -256,7 +256,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<DigitalSignature>)this["Global_DigitalSignatureCollection"];
+                    return (LockedList<DigitalSignature>)this["Global_DigitalSignatureCollection"];
                 }
             }
             set
@@ -274,7 +274,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<string>)this["Global_SearchKeywords"];
+                    return (LockedList<string>)this["Global_SearchKeywords"];
                 }
             }
             set
@@ -292,7 +292,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<string>)this["Global_UploadKeywords"];
+                    return (LockedList<string>)this["Global_UploadKeywords"];
                 }
             }
             set
@@ -310,7 +310,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["Global_UseLanguage"];
+                    return (string)this["Global_UseLanguage"];
                 }
             }
             set
@@ -328,7 +328,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (bool)this["Global_IsStart"];
+                    return (bool)this["Global_IsStart"];
                 }
             }
             set
@@ -346,7 +346,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (bool)this["Global_IsConvertStart"];
+                    return (bool)this["Global_IsConvertStart"];
                 }
             }
             set
@@ -364,7 +364,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (bool)this["Global_AutoBaseNodeSetting_IsEnabled"];
+                    return (bool)this["Global_AutoBaseNodeSetting_IsEnabled"];
                 }
             }
             set
@@ -382,7 +382,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (bool)this["Global_I2p_SamBridge_IsEnabled"];
+                    return (bool)this["Global_I2p_SamBridge_IsEnabled"];
                 }
             }
             set
@@ -400,7 +400,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (bool)this["Global_OpenBox_IsEnabled"];
+                    return (bool)this["Global_OpenBox_IsEnabled"];
                 }
             }
             set
@@ -418,7 +418,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (bool)this["Global_RelateBoxFile_IsEnabled"];
+                    return (bool)this["Global_RelateBoxFile_IsEnabled"];
                 }
             }
             set
@@ -436,7 +436,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["Global_BoxExtractTo_Path"];
+                    return (string)this["Global_BoxExtractTo_Path"];
                 }
             }
             set
@@ -454,7 +454,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["Global_Update_Url"];
+                    return (string)this["Global_Update_Url"];
                 }
             }
             set
@@ -472,7 +472,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["Global_Update_ProxyUri"];
+                    return (string)this["Global_Update_ProxyUri"];
                 }
             }
             set
@@ -490,7 +490,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["Global_Update_Signature"];
+                    return (string)this["Global_Update_Signature"];
                 }
             }
             set
@@ -508,7 +508,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (UpdateOption)this["Global_Update_Option"];
+                    return (UpdateOption)this["Global_Update_Option"];
                 }
             }
             set
@@ -527,7 +527,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["MainWindow_Top"];
+                    return (double)this["MainWindow_Top"];
                 }
             }
             set
@@ -545,7 +545,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["MainWindow_Left"];
+                    return (double)this["MainWindow_Left"];
                 }
             }
             set
@@ -563,7 +563,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["MainWindow_Height"];
+                    return (double)this["MainWindow_Height"];
                 }
             }
             set
@@ -581,7 +581,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["MainWindow_Width"];
+                    return (double)this["MainWindow_Width"];
                 }
             }
             set
@@ -599,7 +599,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["MainWindow_WindowState"];
+                    return (WindowState)this["MainWindow_WindowState"];
                 }
             }
             set
@@ -618,7 +618,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Top"];
+                    return (double)this["OptionsWindow_Top"];
                 }
             }
             set
@@ -636,7 +636,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Left"];
+                    return (double)this["OptionsWindow_Left"];
                 }
             }
             set
@@ -654,7 +654,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Height"];
+                    return (double)this["OptionsWindow_Height"];
                 }
             }
             set
@@ -672,7 +672,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Width"];
+                    return (double)this["OptionsWindow_Width"];
                 }
             }
             set
@@ -690,7 +690,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["OptionsWindow_WindowState"];
+                    return (WindowState)this["OptionsWindow_WindowState"];
                 }
             }
             set
@@ -708,7 +708,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_BaseNode_Uris_Uri_Width"];
+                    return (double)this["OptionsWindow_BaseNode_Uris_Uri_Width"];
                 }
             }
             set
@@ -726,7 +726,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_OtherNodes_Node_Width"];
+                    return (double)this["OptionsWindow_OtherNodes_Node_Width"];
                 }
             }
             set
@@ -744,7 +744,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Client_Filters_GridViewColumn_ConnectionType_Width"];
+                    return (double)this["OptionsWindow_Client_Filters_GridViewColumn_ConnectionType_Width"];
                 }
             }
             set
@@ -762,7 +762,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Client_Filters_GridViewColumn_ProxyUri_Width"];
+                    return (double)this["OptionsWindow_Client_Filters_GridViewColumn_ProxyUri_Width"];
                 }
             }
             set
@@ -780,7 +780,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Client_Filters_GridViewColumn_UriCondition_Width"];
+                    return (double)this["OptionsWindow_Client_Filters_GridViewColumn_UriCondition_Width"];
                 }
             }
             set
@@ -798,7 +798,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Client_Filters_GridViewColumn_Option_Width"];
+                    return (double)this["OptionsWindow_Client_Filters_GridViewColumn_Option_Width"];
                 }
             }
             set
@@ -816,7 +816,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Server_ListenUris_GridViewColumn_Uri_Width"];
+                    return (double)this["OptionsWindow_Server_ListenUris_GridViewColumn_Uri_Width"];
                 }
             }
             set
@@ -834,7 +834,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Grid_ColumnDefinitions_Width"];
+                    return (double)this["OptionsWindow_Grid_ColumnDefinitions_Width"];
                 }
             }
             set
@@ -852,7 +852,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["OptionsWindow_BandwidthLimit_Unit"];
+                    return (string)this["OptionsWindow_BandwidthLimit_Unit"];
                 }
             }
             set
@@ -870,7 +870,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["OptionsWindow_TransferLimit_Unit"];
+                    return (string)this["OptionsWindow_TransferLimit_Unit"];
                 }
             }
             set
@@ -888,7 +888,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["OptionsWindow_DataCacheSize_Unit"];
+                    return (string)this["OptionsWindow_DataCacheSize_Unit"];
                 }
             }
             set
@@ -906,7 +906,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Signature_GridViewColumn_Value_Width"];
+                    return (double)this["OptionsWindow_Signature_GridViewColumn_Value_Width"];
                 }
             }
             set
@@ -924,7 +924,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["OptionsWindow_Keyword_GridViewColumn_Value_Width"];
+                    return (double)this["OptionsWindow_Keyword_GridViewColumn_Value_Width"];
                 }
             }
             set
@@ -943,7 +943,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LinkOptionsWindow_Top"];
+                    return (double)this["LinkOptionsWindow_Top"];
                 }
             }
             set
@@ -961,7 +961,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LinkOptionsWindow_Left"];
+                    return (double)this["LinkOptionsWindow_Left"];
                 }
             }
             set
@@ -979,7 +979,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LinkOptionsWindow_Height"];
+                    return (double)this["LinkOptionsWindow_Height"];
                 }
             }
             set
@@ -997,7 +997,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LinkOptionsWindow_Width"];
+                    return (double)this["LinkOptionsWindow_Width"];
                 }
             }
             set
@@ -1015,7 +1015,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["LinkOptionsWindow_WindowState"];
+                    return (WindowState)this["LinkOptionsWindow_WindowState"];
                 }
             }
             set
@@ -1033,7 +1033,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"];
+                    return (double)this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"];
                 }
             }
             set
@@ -1051,7 +1051,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"];
+                    return (double)this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"];
                 }
             }
             set
@@ -1069,7 +1069,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"];
+                    return (double)this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"];
                 }
             }
             set
@@ -1087,7 +1087,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<LinkItem>)this["LinkOptionsWindow_DownloadLinkItems"];
+                    return (LockedList<LinkItem>)this["LinkOptionsWindow_DownloadLinkItems"];
                 }
             }
             set
@@ -1105,7 +1105,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<LinkItem>)this["LinkOptionsWindow_UploadLinkItems"];
+                    return (LockedList<LinkItem>)this["LinkOptionsWindow_UploadLinkItems"];
                 }
             }
             set
@@ -1124,7 +1124,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["VersionInformationWindow_Top"];
+                    return (double)this["VersionInformationWindow_Top"];
                 }
             }
             set
@@ -1142,7 +1142,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["VersionInformationWindow_Left"];
+                    return (double)this["VersionInformationWindow_Left"];
                 }
             }
             set
@@ -1160,7 +1160,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["VersionInformationWindow_Height"];
+                    return (double)this["VersionInformationWindow_Height"];
                 }
             }
             set
@@ -1178,7 +1178,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["VersionInformationWindow_Width"];
+                    return (double)this["VersionInformationWindow_Width"];
                 }
             }
             set
@@ -1196,7 +1196,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["VersionInformationWindow_WindowState"];
+                    return (WindowState)this["VersionInformationWindow_WindowState"];
                 }
             }
             set
@@ -1214,7 +1214,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["VersionInformationWindow_GridViewColumn_FileName_Width"];
+                    return (double)this["VersionInformationWindow_GridViewColumn_FileName_Width"];
                 }
             }
             set
@@ -1232,7 +1232,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["VersionInformationWindow_GridViewColumn_Version_Width"];
+                    return (double)this["VersionInformationWindow_GridViewColumn_Version_Width"];
                 }
             }
             set
@@ -1251,7 +1251,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["InformationControl_LastHeaderClicked"];
+                    return (string)this["InformationControl_LastHeaderClicked"];
                 }
             }
             set
@@ -1269,7 +1269,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["InformationControl_ListSortDirection"];
+                    return (ListSortDirection)this["InformationControl_ListSortDirection"];
                 }
             }
             set
@@ -1287,7 +1287,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["InformationControl_Grid_ColumnDefinitions_Width"];
+                    return (double)this["InformationControl_Grid_ColumnDefinitions_Width"];
                 }
             }
             set
@@ -1305,7 +1305,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["InformationControl_GridViewColumn_Direction_Width"];
+                    return (double)this["InformationControl_GridViewColumn_Direction_Width"];
                 }
             }
             set
@@ -1323,7 +1323,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["InformationControl_GridViewColumn_Uri_Width"];
+                    return (double)this["InformationControl_GridViewColumn_Uri_Width"];
                 }
             }
             set
@@ -1341,7 +1341,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["InformationControl_GridViewColumn_Priority_Width"];
+                    return (double)this["InformationControl_GridViewColumn_Priority_Width"];
                 }
             }
             set
@@ -1359,7 +1359,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["InformationControl_GridViewColumn_ReceivedByteCount_Width"];
+                    return (double)this["InformationControl_GridViewColumn_ReceivedByteCount_Width"];
                 }
             }
             set
@@ -1377,7 +1377,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["InformationControl_GridViewColumn_SentByteCount_Width"];
+                    return (double)this["InformationControl_GridViewColumn_SentByteCount_Width"];
                 }
             }
             set
@@ -1395,7 +1395,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["InformationControl_GridViewColumn_Name_Width"];
+                    return (double)this["InformationControl_GridViewColumn_Name_Width"];
                 }
             }
             set
@@ -1413,7 +1413,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["InformationControl_GridViewColumn_Value_Width"];
+                    return (double)this["InformationControl_GridViewColumn_Value_Width"];
                 }
             }
             set
@@ -1432,7 +1432,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (Windows.SearchTreeItem)this["SearchControl_SearchTreeItem"];
+                    return (Windows.SearchTreeItem)this["SearchControl_SearchTreeItem"];
                 }
             }
             set
@@ -1450,7 +1450,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["SearchControl_LastHeaderClicked"];
+                    return (string)this["SearchControl_LastHeaderClicked"];
                 }
             }
             set
@@ -1468,7 +1468,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["SearchControl_ListSortDirection"];
+                    return (ListSortDirection)this["SearchControl_ListSortDirection"];
                 }
             }
             set
@@ -1486,7 +1486,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_Grid_ColumnDefinitions_Width"];
+                    return (double)this["SearchControl_Grid_ColumnDefinitions_Width"];
                 }
             }
             set
@@ -1504,7 +1504,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Name_Width"];
+                    return (double)this["SearchControl_GridViewColumn_Name_Width"];
                 }
             }
             set
@@ -1522,7 +1522,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Signature_Width"];
+                    return (double)this["SearchControl_GridViewColumn_Signature_Width"];
                 }
             }
             set
@@ -1540,7 +1540,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_State_Width"];
+                    return (double)this["SearchControl_GridViewColumn_State_Width"];
                 }
             }
             set
@@ -1558,7 +1558,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Keywords_Width"];
+                    return (double)this["SearchControl_GridViewColumn_Keywords_Width"];
                 }
             }
             set
@@ -1576,7 +1576,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_CreationTime_Width"];
+                    return (double)this["SearchControl_GridViewColumn_CreationTime_Width"];
                 }
             }
             set
@@ -1594,7 +1594,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Length_Width"];
+                    return (double)this["SearchControl_GridViewColumn_Length_Width"];
                 }
             }
             set
@@ -1612,7 +1612,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Comment_Width"];
+                    return (double)this["SearchControl_GridViewColumn_Comment_Width"];
                 }
             }
             set
@@ -1630,7 +1630,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchControl_GridViewColumn_Id_Width"];
+                    return (double)this["SearchControl_GridViewColumn_Id_Width"];
                 }
             }
             set
@@ -1649,7 +1649,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["DownloadControl_LastHeaderClicked"];
+                    return (string)this["DownloadControl_LastHeaderClicked"];
                 }
             }
             set
@@ -1667,7 +1667,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["DownloadControl_ListSortDirection"];
+                    return (ListSortDirection)this["DownloadControl_ListSortDirection"];
                 }
             }
             set
@@ -1685,7 +1685,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["DownloadControl_GridViewColumn_Index_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_Index_Width"];
                 }
             }
             set
@@ -1703,7 +1703,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["DownloadControl_GridViewColumn_Name_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_Name_Width"];
                 }
             }
             set
@@ -1721,7 +1721,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["DownloadControl_GridViewColumn_State_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_State_Width"];
                 }
             }
             set
@@ -1739,7 +1739,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["DownloadControl_GridViewColumn_Length_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_Length_Width"];
                 }
             }
             set
@@ -1757,7 +1757,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["DownloadControl_GridViewColumn_Priority_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_Priority_Width"];
                 }
             }
             set
@@ -1775,7 +1775,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["DownloadControl_GridViewColumn_Rank_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_Rank_Width"];
                 }
             }
             set
@@ -1793,7 +1793,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["DownloadControl_GridViewColumn_Rate_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_Rate_Width"];
                 }
             }
             set
@@ -1811,7 +1811,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["DownloadControl_GridViewColumn_Path_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_Path_Width"];
                 }
             }
             set
@@ -1830,7 +1830,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["UploadControl_LastHeaderClicked"];
+                    return (string)this["UploadControl_LastHeaderClicked"];
                 }
             }
             set
@@ -1848,7 +1848,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["UploadControl_ListSortDirection"];
+                    return (ListSortDirection)this["UploadControl_ListSortDirection"];
                 }
             }
             set
@@ -1866,7 +1866,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadControl_GridViewColumn_Index_Width"];
+                    return (double)this["UploadControl_GridViewColumn_Index_Width"];
                 }
             }
             set
@@ -1884,7 +1884,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadControl_GridViewColumn_Name_Width"];
+                    return (double)this["UploadControl_GridViewColumn_Name_Width"];
                 }
             }
             set
@@ -1902,7 +1902,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadControl_GridViewColumn_State_Width"];
+                    return (double)this["UploadControl_GridViewColumn_State_Width"];
                 }
             }
             set
@@ -1920,7 +1920,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadControl_GridViewColumn_Length_Width"];
+                    return (double)this["UploadControl_GridViewColumn_Length_Width"];
                 }
             }
             set
@@ -1938,7 +1938,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadControl_GridViewColumn_Priority_Width"];
+                    return (double)this["UploadControl_GridViewColumn_Priority_Width"];
                 }
             }
             set
@@ -1956,7 +1956,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadControl_GridViewColumn_Rank_Width"];
+                    return (double)this["UploadControl_GridViewColumn_Rank_Width"];
                 }
             }
             set
@@ -1974,7 +1974,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadControl_GridViewColumn_Rate_Width"];
+                    return (double)this["UploadControl_GridViewColumn_Rate_Width"];
                 }
             }
             set
@@ -1993,7 +1993,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["ShareControl_LastHeaderClicked"];
+                    return (string)this["ShareControl_LastHeaderClicked"];
                 }
             }
             set
@@ -2011,7 +2011,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["ShareControl_ListSortDirection"];
+                    return (ListSortDirection)this["ShareControl_ListSortDirection"];
                 }
             }
             set
@@ -2029,7 +2029,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ShareControl_GridViewColumn_Index_Width"];
+                    return (double)this["ShareControl_GridViewColumn_Index_Width"];
                 }
             }
             set
@@ -2047,7 +2047,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ShareControl_GridViewColumn_Name_Width"];
+                    return (double)this["ShareControl_GridViewColumn_Name_Width"];
                 }
             }
             set
@@ -2065,7 +2065,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ShareControl_GridViewColumn_BlockCount_Width"];
+                    return (double)this["ShareControl_GridViewColumn_BlockCount_Width"];
                 }
             }
             set
@@ -2083,7 +2083,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ShareControl_GridViewColumn_Path_Width"];
+                    return (double)this["ShareControl_GridViewColumn_Path_Width"];
                 }
             }
             set
@@ -2102,7 +2102,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (StoreCategorizeTreeItem)this["StoreDownloadControl_StoreCategorizeTreeItem"];
+                    return (StoreCategorizeTreeItem)this["StoreDownloadControl_StoreCategorizeTreeItem"];
                 }
             }
             set
@@ -2120,7 +2120,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["StoreDownloadControl_LastHeaderClicked"];
+                    return (string)this["StoreDownloadControl_LastHeaderClicked"];
                 }
             }
             set
@@ -2138,7 +2138,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["StoreDownloadControl_ListSortDirection"];
+                    return (ListSortDirection)this["StoreDownloadControl_ListSortDirection"];
                 }
             }
             set
@@ -2156,7 +2156,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedHashSet<Route>)this["StoreDownloadControl_ExpandedPath"];
+                    return (LockedHashSet<Route>)this["StoreDownloadControl_ExpandedPath"];
                 }
             }
             set
@@ -2175,7 +2175,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (StoreCategorizeTreeItem)this["StoreUploadControl_StoreCategorizeTreeItem"];
+                    return (StoreCategorizeTreeItem)this["StoreUploadControl_StoreCategorizeTreeItem"];
                 }
             }
             set
@@ -2193,7 +2193,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["StoreUploadControl_LastHeaderClicked"];
+                    return (string)this["StoreUploadControl_LastHeaderClicked"];
                 }
             }
             set
@@ -2211,7 +2211,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["StoreUploadControl_ListSortDirection"];
+                    return (ListSortDirection)this["StoreUploadControl_ListSortDirection"];
                 }
             }
             set
@@ -2229,7 +2229,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedHashSet<Route>)this["StoreUploadControl_ExpandedPath"];
+                    return (LockedHashSet<Route>)this["StoreUploadControl_ExpandedPath"];
                 }
             }
             set
@@ -2248,7 +2248,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (string)this["LibraryControl_LastHeaderClicked"];
+                    return (string)this["LibraryControl_LastHeaderClicked"];
                 }
             }
             set
@@ -2266,7 +2266,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (ListSortDirection)this["LibraryControl_ListSortDirection"];
+                    return (ListSortDirection)this["LibraryControl_ListSortDirection"];
                 }
             }
             set
@@ -2284,7 +2284,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (Box)this["LibraryControl_Box"];
+                    return (Box)this["LibraryControl_Box"];
                 }
             }
             set
@@ -2302,7 +2302,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedHashSet<Route>)this["LibraryControl_ExpandedPath"];
+                    return (LockedHashSet<Route>)this["LibraryControl_ExpandedPath"];
                 }
             }
             set
@@ -2321,7 +2321,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["ProgressWindow_Width"];
+                    return (double)this["ProgressWindow_Width"];
                 }
             }
             set
@@ -2339,7 +2339,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["ProgressWindow_WindowState"];
+                    return (WindowState)this["ProgressWindow_WindowState"];
                 }
             }
             set
@@ -2358,7 +2358,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SignatureWindow_Top"];
+                    return (double)this["SignatureWindow_Top"];
                 }
             }
             set
@@ -2376,7 +2376,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SignatureWindow_Left"];
+                    return (double)this["SignatureWindow_Left"];
                 }
             }
             set
@@ -2394,7 +2394,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SignatureWindow_Width"];
+                    return (double)this["SignatureWindow_Width"];
                 }
             }
             set
@@ -2412,7 +2412,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["SignatureWindow_WindowState"];
+                    return (WindowState)this["SignatureWindow_WindowState"];
                 }
             }
             set
@@ -2431,7 +2431,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["NameWindow_Top"];
+                    return (double)this["NameWindow_Top"];
                 }
             }
             set
@@ -2449,7 +2449,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["NameWindow_Left"];
+                    return (double)this["NameWindow_Left"];
                 }
             }
             set
@@ -2467,7 +2467,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["NameWindow_Width"];
+                    return (double)this["NameWindow_Width"];
                 }
             }
             set
@@ -2485,7 +2485,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["NameWindow_WindowState"];
+                    return (WindowState)this["NameWindow_WindowState"];
                 }
             }
             set
@@ -2504,7 +2504,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_Top"];
+                    return (double)this["SearchItemEditWindow_Top"];
                 }
             }
             set
@@ -2522,7 +2522,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_Left"];
+                    return (double)this["SearchItemEditWindow_Left"];
                 }
             }
             set
@@ -2540,7 +2540,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_Height"];
+                    return (double)this["SearchItemEditWindow_Height"];
                 }
             }
             set
@@ -2558,7 +2558,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_Width"];
+                    return (double)this["SearchItemEditWindow_Width"];
                 }
             }
             set
@@ -2576,7 +2576,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["SearchItemEditWindow_WindowState"];
+                    return (WindowState)this["SearchItemEditWindow_WindowState"];
                 }
             }
             set
@@ -2594,7 +2594,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Name_Contains_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Name_Contains_Width"];
                 }
             }
             set
@@ -2612,7 +2612,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Name_Value_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Name_Value_Width"];
                 }
             }
             set
@@ -2630,7 +2630,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Contains_Width"];
                 }
             }
             set
@@ -2648,7 +2648,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_IsIgnoreCase_Width"];
                 }
             }
             set
@@ -2666,7 +2666,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_NameRegex_Value_Value_Width"];
                 }
             }
             set
@@ -2684,7 +2684,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Contains_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Contains_Width"];
                 }
             }
             set
@@ -2702,7 +2702,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_IsIgnoreCase_Width"];
                 }
             }
             set
@@ -2720,7 +2720,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Signature_Value_Value_Width"];
                 }
             }
             set
@@ -2738,7 +2738,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Contains_Width"];
                 }
             }
             set
@@ -2756,7 +2756,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Value_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Keyword_Value_Width"];
                 }
             }
             set
@@ -2774,7 +2774,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Contains_Width"];
                 }
             }
             set
@@ -2792,7 +2792,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Max_Width"];
                 }
             }
             set
@@ -2810,7 +2810,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_CreationTimeRange_Value_Min_Width"];
                 }
             }
             set
@@ -2828,7 +2828,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Contains_Width"];
                 }
             }
             set
@@ -2846,7 +2846,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Max_Width"];
                 }
             }
             set
@@ -2864,7 +2864,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_LengthRange_Value_Min_Width"];
                 }
             }
             set
@@ -2882,7 +2882,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Contains_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Contains_Width"];
                 }
             }
             set
@@ -2900,7 +2900,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Value_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_Seed_Value_Width"];
                 }
             }
             set
@@ -2918,7 +2918,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_SearchState_Contains_Width"];
                 }
             }
             set
@@ -2936,7 +2936,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SearchItemEditWindow_GridViewColumn_SearchState_Value_Width"];
+                    return (double)this["SearchItemEditWindow_GridViewColumn_SearchState_Value_Width"];
                 }
             }
             set
@@ -2955,7 +2955,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Top"];
+                    return (double)this["UploadWindow_Top"];
                 }
             }
             set
@@ -2973,7 +2973,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Left"];
+                    return (double)this["UploadWindow_Left"];
                 }
             }
             set
@@ -2991,7 +2991,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Height"];
+                    return (double)this["UploadWindow_Height"];
                 }
             }
             set
@@ -3009,7 +3009,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_Width"];
+                    return (double)this["UploadWindow_Width"];
                 }
             }
             set
@@ -3027,7 +3027,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["UploadWindow_WindowState"];
+                    return (WindowState)this["UploadWindow_WindowState"];
                 }
             }
             set
@@ -3045,7 +3045,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_GridViewColumn_Name_Width"];
+                    return (double)this["UploadWindow_GridViewColumn_Name_Width"];
                 }
             }
             set
@@ -3063,7 +3063,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["UploadWindow_GridViewColumn_Path_Width"];
+                    return (double)this["UploadWindow_GridViewColumn_Path_Width"];
                 }
             }
             set
@@ -3082,7 +3082,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["BoxEditWindow_Top"];
+                    return (double)this["BoxEditWindow_Top"];
                 }
             }
             set
@@ -3100,7 +3100,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["BoxEditWindow_Left"];
+                    return (double)this["BoxEditWindow_Left"];
                 }
             }
             set
@@ -3118,7 +3118,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["BoxEditWindow_Height"];
+                    return (double)this["BoxEditWindow_Height"];
                 }
             }
             set
@@ -3136,7 +3136,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["BoxEditWindow_Width"];
+                    return (double)this["BoxEditWindow_Width"];
                 }
             }
             set
@@ -3154,7 +3154,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["BoxEditWindow_WindowState"];
+                    return (WindowState)this["BoxEditWindow_WindowState"];
                 }
             }
             set
@@ -3173,7 +3173,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SeedEditWindow_Top"];
+                    return (double)this["SeedEditWindow_Top"];
                 }
             }
             set
@@ -3191,7 +3191,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SeedEditWindow_Left"];
+                    return (double)this["SeedEditWindow_Left"];
                 }
             }
             set
@@ -3209,7 +3209,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SeedEditWindow_Height"];
+                    return (double)this["SeedEditWindow_Height"];
                 }
             }
             set
@@ -3227,7 +3227,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (double)this["SeedEditWindow_Width"];
+                    return (double)this["SeedEditWindow_Width"];
                 }
             }
             set
@@ -3245,7 +3245,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (WindowState)this["SeedEditWindow_WindowState"];
+                    return (WindowState)this["SeedEditWindow_WindowState"];
                 }
             }
             set
@@ -3265,7 +3265,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (Windows.SearchTreeItem)this["CacheControl_SearchTreeItem"];
+                    return (Windows.SearchTreeItem)this["CacheControl_SearchTreeItem"];
                 }
             }
             set
@@ -3284,7 +3284,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<StoreTreeItem>)this["SearchControl_StoreTreeItems"];
+                    return (LockedList<StoreTreeItem>)this["SearchControl_StoreTreeItems"];
                 }
             }
             set
@@ -3303,7 +3303,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (LockedList<StoreTreeItem>)this["StoreControl_StoreTreeItems"];
+                    return (LockedList<StoreTreeItem>)this["StoreControl_StoreTreeItems"];
                 }
             }
             set
@@ -3322,7 +3322,7 @@ namespace Amoeba.Properties
             {
                 lock (this.ThisLock)
                 {
-                   return (Box)this["BoxControl_Box"];
+                    return (Box)this["BoxControl_Box"];
                 }
             }
             set
