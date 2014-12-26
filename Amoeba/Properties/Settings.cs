@@ -207,11 +207,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "SeedEditWindow_Height", Value = 500 },
                 new Library.Configuration.SettingContent<double>() { Name = "SeedEditWindow_Width", Value = 700 },
                 new Library.Configuration.SettingContent<WindowState>() { Name = "SeedEditWindow_WindowState", Value = WindowState.Normal },
-         
-                new Library.Configuration.SettingContent<Windows.SearchTreeItem>() { Name = "CacheControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } }, // [Obsolete]
-                new Library.Configuration.SettingContent<LockedList<StoreTreeItem>>() { Name = "SearchControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() }, // [Obsolete]
-                new Library.Configuration.SettingContent<LockedList<StoreTreeItem>>() { Name = "StoreControl_StoreTreeItems", Value = new LockedList<StoreTreeItem>() }, // [Obsolete]
-                new Library.Configuration.SettingContent<Box>() { Name = "BoxControl_Box", Value = null }, // [Obsolete]
             })
         {
 
@@ -3253,83 +3248,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["SeedEditWindow_WindowState"] = value;
-                }
-            }
-        }
-
-
-        [Obsolete]
-        public Windows.SearchTreeItem CacheControl_SearchTreeItem
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (Windows.SearchTreeItem)this["CacheControl_SearchTreeItem"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["CacheControl_SearchTreeItem"] = value;
-                }
-            }
-        }
-
-        [Obsolete]
-        public LockedList<StoreTreeItem> SearchControl_StoreTreeItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (LockedList<StoreTreeItem>)this["SearchControl_StoreTreeItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchControl_StoreTreeItems"] = value;
-                }
-            }
-        }
-
-        [Obsolete]
-        public LockedList<StoreTreeItem> StoreControl_StoreTreeItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (LockedList<StoreTreeItem>)this["StoreControl_StoreTreeItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["StoreControl_StoreTreeItems"] = value;
-                }
-            }
-        }
-
-        [Obsolete]
-        public Box BoxControl_Box
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (Box)this["BoxControl_Box"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["BoxControl_Box"] = value;
                 }
             }
         }
