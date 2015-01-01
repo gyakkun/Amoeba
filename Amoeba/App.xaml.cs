@@ -215,7 +215,7 @@ namespace Amoeba
                             string fileType = "Amoeba";
                             string description = "Amoeba Box";
                             string verb = "open";
-                            string iconPath = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Icons"], "Box.ico"));
+                            string iconPath = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Icons"], @"Files\Box.ico"));
 
                             using (var regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension))
                             {

@@ -308,7 +308,7 @@
     <Content Include="Icons\Amoeba.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Icons\Box.ico">
+    <Content Include="Icons\Files\Box.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Languages\Russian.xml">
