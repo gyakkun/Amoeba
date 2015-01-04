@@ -55,7 +55,7 @@
   <Translate Key="MainWindow_DeveloperSite" Value="原始碼" />
   <Translate Key="MainWindow_CheckUpdate" Value="檢查更新" />
   <Translate Key="MainWindow_VersionInformation" Value="版本資訊" />
-  <Translate Key="MainWindow_SendSpeed" Value="傳送:" />
+  <Translate Key="MainWindow_SendingSpeed" Value="傳送:" />
   <Translate Key="MainWindow_ReceiveSpeed" Value="接收:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="沒有磁碟空間。" />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="沒有發現暫存空間。" />

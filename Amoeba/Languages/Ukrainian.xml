@@ -55,8 +55,8 @@
   <Translate Key="MainWindow_DeveloperSite" Value="Вихідний код" />
   <Translate Key="MainWindow_CheckUpdate" Value="Перевірити оновлення" />
   <Translate Key="MainWindow_VersionInformation" Value="Інформація про версію" />
-  <Translate Key="MainWindow_SendSpeed" Value="Швидкість відправки:" />
-  <Translate Key="MainWindow_ReceiveSpeed" Value="Швидкість прийняття:" />
+  <Translate Key="MainWindow_sendingSpeed" Value="Швидкість відправки:" />
+  <Translate Key="MainWindow_receivingSpeed" Value="Швидкість прийняття:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="На диску не вистачає вільного простору." />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Бракує вільного простору для кеша." />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Перевірка внутрішніх блоків" />

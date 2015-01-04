@@ -55,8 +55,8 @@
   <Translate Key="MainWindow_DeveloperSite" Value="源代码" />
   <Translate Key="MainWindow_CheckUpdate" Value="检查更新" />
   <Translate Key="MainWindow_VersionInformation" Value="版本信息" />
-  <Translate Key="MainWindow_SendSpeed" Value="传送:" />
-  <Translate Key="MainWindow_ReceiveSpeed" Value="接收:" />
+  <Translate Key="MainWindow_sendingSpeed" Value="传送:" />
+  <Translate Key="MainWindow_receivingSpeed" Value="接收:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="没有磁盘空间。" />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="没有发现缓存空间。" />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="检查内部区块" />

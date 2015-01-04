@@ -55,8 +55,8 @@
   <Translate Key="MainWindow_DeveloperSite" Value="Исходный код" />
   <Translate Key="MainWindow_CheckUpdate" Value="Проверить обновления" />
   <Translate Key="MainWindow_VersionInformation" Value="Информация о версии" />
-  <Translate Key="MainWindow_SendSpeed" Value="Скорость отправки:" />
-  <Translate Key="MainWindow_ReceiveSpeed" Value="Скорость принятия:" />
+  <Translate Key="MainWindow_sendingSpeed" Value="Скорость отправки:" />
+  <Translate Key="MainWindow_receivingSpeed" Value="Скорость принятия:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="На диске не хватает свободного пространства." />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Не хватает свободного пространства для кэша." />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Проверка внутренних блоков" />

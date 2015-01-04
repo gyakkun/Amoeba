@@ -55,8 +55,8 @@
   <Translate Key="MainWindow_DeveloperSite" Value="ソースコード" />
   <Translate Key="MainWindow_CheckUpdate" Value="更新チェック" />
   <Translate Key="MainWindow_VersionInformation" Value="バージョン情報" />
-  <Translate Key="MainWindow_SendSpeed" Value="送信:" />
-  <Translate Key="MainWindow_ReceiveSpeed" Value="受信:" />
+  <Translate Key="MainWindow_sendingSpeed" Value="送信:" />
+  <Translate Key="MainWindow_receivingSpeed" Value="受信:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="内部ブロックの破損チェック" />

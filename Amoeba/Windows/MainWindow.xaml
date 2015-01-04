@@ -34,7 +34,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="438*" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="23" />
         </Grid.RowDefinitions>
         <Menu Name="_menu" Height="24" VerticalAlignment="Top">
