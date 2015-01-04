@@ -103,10 +103,10 @@
             </StatusBarItem>
             <StatusBarItem HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Path=MainWindow_SendSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,6,0" />
-                    <TextBlock Name="_sendSpeedTextBlock" Margin="0,0,6,0" MinWidth="80" />
-                    <TextBlock Text="{Binding Path=MainWindow_ReceiveSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,6,0" />
-                    <TextBlock Name="_receiveSpeedTextBlock"  Margin="0,0,6,0" MinWidth="80" />
+                    <TextBlock Text="{Binding Path=MainWindow_SendingSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,6,0" />
+                    <TextBlock Name="_sendingSpeedTextBlock" Margin="0,0,6,0" MinWidth="80" />
+                    <TextBlock Text="{Binding Path=MainWindow_ReceivingSpeed, Source={StaticResource ResourcesInstance}}" Margin="0,0,6,0" />
+                    <TextBlock Name="_receivingSpeedTextBlock"  Margin="0,0,6,0" MinWidth="80" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>

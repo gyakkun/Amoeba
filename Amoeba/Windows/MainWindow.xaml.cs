@@ -631,8 +631,8 @@ namespace Amoeba.Windows
                                 receivedAverageTraffic = _receivedInfomation.AverageTrafficList.Sum() / _receivedInfomation.AverageTrafficList.Length;
                             }
 
-                            _sendSpeedTextBlock.Text = NetworkConverter.ToSizeString(sentAverageTraffic) + "/s";
-                            _receiveSpeedTextBlock.Text = NetworkConverter.ToSizeString(receivedAverageTraffic) + "/s";
+                            _sendingSpeedTextBlock.Text = NetworkConverter.ToSizeString(sentAverageTraffic) + "/s";
+                            _receivingSpeedTextBlock.Text = NetworkConverter.ToSizeString(receivedAverageTraffic) + "/s";
                         }
                         catch (Exception)
                         {

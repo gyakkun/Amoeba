@@ -728,24 +728,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_SendSpeed
+        public string MainWindow_sendingSpeed
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_SendSpeed");
+                    return this.Translate("MainWindow_sendingSpeed");
                 }
             }
         }
 
-        public string MainWindow_ReceiveSpeed
+        public string MainWindow_receivingSpeed
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_ReceiveSpeed");
+                    return this.Translate("MainWindow_receivingSpeed");
                 }
             }
         }
