@@ -728,24 +728,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_sendingSpeed
+        public string MainWindow_SendingSpeed
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_sendingSpeed");
+                    return this.Translate("MainWindow_SendingSpeed");
                 }
             }
         }
 
-        public string MainWindow_receivingSpeed
+        public string MainWindow_ReceivingSpeed
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_receivingSpeed");
+                    return this.Translate("MainWindow_ReceivingSpeed");
                 }
             }
         }
@@ -1056,17 +1056,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("OptionsWindow_Core");
-                }
-            }
-        }
-
-        public string OptionsWindow_View
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("OptionsWindow_View");
                 }
             }
         }
@@ -1507,6 +1496,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("OptionsWindow_Ipv6");
+                }
+            }
+        }
+
+        public string OptionsWindow_View
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("OptionsWindow_View");
                 }
             }
         }
@@ -2063,17 +2063,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("NameWindow_Title");
-                }
-            }
-        }
-
-        public string NameWindow_Title_Category
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("NameWindow_Title_Category");
                 }
             }
         }

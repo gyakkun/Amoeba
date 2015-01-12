@@ -119,7 +119,7 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.BandWidthLimit, Settings.Instance.OptionsWindow_BandwidthLimit_Unit);
+                    _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.BandwidthLimit, Settings.Instance.OptionsWindow_BandwidthLimit_Unit);
                 }
                 catch (Exception)
                 {
@@ -181,7 +181,7 @@ namespace Amoeba.Windows
                 _updateOptionAutoUpdateRadioButton.IsChecked = true;
             }
 
-            _signatureListViewItemCollection = new ObservableCollectionEx<SignatureListViewItem>(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n.Clone())));
+            _signatureListViewItemCollection = new ObservableCollectionEx<SignatureListViewItem>(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n)));
             _signatureListView.ItemsSource = _signatureListViewItemCollection;
             _signatureListViewUpdate();
 
@@ -349,9 +349,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _baseNodeUrisListView.SelectedItems;
 
-            _baseNodeUrisListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _baseNodeUrisListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _baseNodeUrisListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _baseNodeUrisListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _baseNodeUrisListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _baseNodeUrisListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 var line = Clipboard.GetText().Split('\r', '\n');
@@ -587,7 +587,7 @@ namespace Amoeba.Windows
         {
             var selectItems = _otherNodesListView.SelectedItems;
 
-            _otherNodesCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _otherNodesCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
             _otherNodesPasteMenuItem.IsEnabled = Clipboard.ContainsNodes();
         }
 
@@ -763,9 +763,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _clientFiltersListView.SelectedItems;
 
-            _clientFiltersListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _clientFiltersListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _clientFiltersListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _clientFiltersListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _clientFiltersListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _clientFiltersListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 var line = Clipboard.GetText().Split('\r', '\n');
@@ -1165,9 +1165,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _serverListenUrisListView.SelectedItems;
 
-            _serverListenUrisListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _serverListenUrisListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _serverListenUrisListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _serverListenUrisListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _serverListenUrisListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _serverListenUrisListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 var line = Clipboard.GetText().Split('\r', '\n');
@@ -1528,7 +1528,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        #region Signature
+        #region Signatures
 
         private void _signatureTextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1629,7 +1629,7 @@ namespace Amoeba.Windows
         {
             var selectItems = _signatureListView.SelectedItems;
 
-            _signatureListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _signatureListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
         }
 
         private void _signatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1793,7 +1793,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        #region Keyword
+        #region Keywords
 
         private void _keywordTextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1877,9 +1877,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _keywordListView.SelectedItems;
 
-            _keywordListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _keywordListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _keywordListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _keywordListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _keywordListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _keywordListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             _keywordListViewPasteMenuItem.IsEnabled = !string.IsNullOrWhiteSpace(Clipboard.GetText());
         }
@@ -2047,7 +2047,7 @@ namespace Amoeba.Windows
                     bandwidthLimit = int.MaxValue;
                 }
 
-                _amoebaManager.BandWidthLimit = bandwidthLimit;
+                _amoebaManager.BandwidthLimit = bandwidthLimit;
 
                 _amoebaManager.Filters.Clear();
                 _amoebaManager.Filters.AddRange(_clientFilters.Select(n => n.Clone()));
@@ -2119,21 +2119,23 @@ namespace Amoeba.Windows
             Settings.Instance.Global_DigitalSignatureCollection.Clear();
             Settings.Instance.Global_DigitalSignatureCollection.AddRange(_signatureListViewItemCollection.Select(n => n.Value));
 
-            Settings.Instance.Global_Update_Url = _updateUrlTextBox.Text;
-            Settings.Instance.Global_Update_ProxyUri = _updateProxyUriTextBox.Text;
-            if (Signature.Check(_updateSignatureTextBox.Text)) Settings.Instance.Global_Update_Signature = _updateSignatureTextBox.Text;
+            {
+                Settings.Instance.Global_Update_Url = _updateUrlTextBox.Text;
+                Settings.Instance.Global_Update_ProxyUri = _updateProxyUriTextBox.Text;
+                if (Signature.Check(_updateSignatureTextBox.Text)) Settings.Instance.Global_Update_Signature = _updateSignatureTextBox.Text;
 
-            if (_updateOptionNoneRadioButton.IsChecked.Value)
-            {
-                Settings.Instance.Global_Update_Option = UpdateOption.None;
-            }
-            else if (_updateOptionAutoCheckRadioButton.IsChecked.Value)
-            {
-                Settings.Instance.Global_Update_Option = UpdateOption.AutoCheck;
-            }
-            else if (_updateOptionAutoUpdateRadioButton.IsChecked.Value)
-            {
-                Settings.Instance.Global_Update_Option = UpdateOption.AutoUpdate;
+                if (_updateOptionNoneRadioButton.IsChecked.Value)
+                {
+                    Settings.Instance.Global_Update_Option = UpdateOption.None;
+                }
+                else if (_updateOptionAutoCheckRadioButton.IsChecked.Value)
+                {
+                    Settings.Instance.Global_Update_Option = UpdateOption.AutoCheck;
+                }
+                else if (_updateOptionAutoUpdateRadioButton.IsChecked.Value)
+                {
+                    Settings.Instance.Global_Update_Option = UpdateOption.AutoUpdate;
+                }
             }
 
             Settings.Instance.Global_BoxExtractTo_Path = _boxExtractToTextBox.Text;

@@ -17,20 +17,18 @@
         Width="{Binding Path=VersionInformationWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=VersionInformationWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" 
         Loaded="Window_Loaded">
-    
-    <Window.Resources>
-        <DataTemplate x:Key="_myTemplate_FileName">
-            <TextBlock Text="{Binding Path=FileName, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Version">
-            <TextBlock Text="{Binding Path=Version, Mode=OneWay}" />
-        </DataTemplate>
-    </Window.Resources>
-    
     <Grid>
         <Label Height="37" Margin="12,12,12,0" VerticalAlignment="Top" Content="Amoeba" FontSize="20" HorizontalAlignment="Center" />
         <Label Margin="12,55,12,0" Content="Copyright © Lyrise, alrde 2009-2014" Height="28" VerticalAlignment="Top" HorizontalAlignment="Center" />
         <local:ListViewEx Margin="12,89,12,41" x:Name="_versionListView" SelectionMode="Single" >
+            <ListView.Resources>
+                <DataTemplate x:Key="_myTemplate_FileName">
+                    <TextBlock Text="{Binding Path=FileName, Mode=OneWay}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Version">
+                    <TextBlock Text="{Binding Path=Version, Mode=OneWay}" />
+                </DataTemplate>
+            </ListView.Resources>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=VersionInformationWindow_FileName, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_FileName}" 

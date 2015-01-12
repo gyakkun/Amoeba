@@ -189,9 +189,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _nameListView.SelectedItems;
 
-            _nameListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _nameListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _nameListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _nameListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _nameListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _nameListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -421,9 +421,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _nameRegexListView.SelectedItems;
 
-            _nameRegexListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _nameRegexListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _nameRegexListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _nameRegexListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _nameRegexListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _nameRegexListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -667,9 +667,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _signatureListView.SelectedItems;
 
-            _signatureListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _signatureListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _signatureListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _signatureListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _signatureListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _signatureListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -911,9 +911,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _keywordListView.SelectedItems;
 
-            _keywordListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _keywordListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _keywordListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _keywordListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _keywordListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _keywordListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -1157,9 +1157,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _creationTimeRangeListView.SelectedItems;
 
-            _creationTimeRangeListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _creationTimeRangeListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _creationTimeRangeListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _creationTimeRangeListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _creationTimeRangeListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _creationTimeRangeListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -1428,9 +1428,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _lengthRangeListView.SelectedItems;
 
-            _lengthRangeListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _lengthRangeListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _lengthRangeListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _lengthRangeListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _lengthRangeListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _lengthRangeListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -1683,9 +1683,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _seedListView.SelectedItems;
 
-            _seedListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _seedListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _seedListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _seedListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _seedListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _seedListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -1951,9 +1951,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _stateListView.SelectedItems;
 
-            _stateListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _stateListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _stateListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _stateListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _stateListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _stateListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;

@@ -9,18 +9,6 @@
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="300">
 
-    <UserControl.Resources>
-        <DataTemplate x:Key="_myTemplate_Name">
-            <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Path">
-            <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_BlockCount">
-            <TextBlock Text="{Binding Path=BlockCount, Mode=OneWay, StringFormat=\{0:#\,0\}}" />
-        </DataTemplate>
-    </UserControl.Resources>
-
     <UserControl.CommandBindings>
         <CommandBinding Command="New" Executed="Execute_New" />
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
@@ -34,6 +22,17 @@
     <Grid>
         <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Resources>
+                <DataTemplate x:Key="_myTemplate_Name">
+                    <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Path">
+                    <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_BlockCount">
+                    <TextBlock Text="{Binding Path=BlockCount, Mode=OneWay, StringFormat=\{0:#\,0\}}" />
+                </DataTemplate>
+            </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=ShareControl_Add, Source={StaticResource ResourcesInstance}}" Click="_listViewAddMenuItem_Click" />

@@ -9,30 +9,6 @@
         mc:Ignorable="d" 
         d:DesignHeight="500" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <DataTemplate x:Key="_myTemplate_Name">
-            <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_State">
-            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _downloadStateToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Length">
-            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Priority">
-            <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Rate">
-            <Grid>
-                <ProgressBar Value="{Binding Path=Rate, Mode=OneWay}" />
-                <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Path">
-            <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-    </UserControl.Resources>
-
     <UserControl.CommandBindings>
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
         <CommandBinding Command="Copy" Executed="Execute_Copy" />
@@ -48,6 +24,29 @@
     <Grid>
         <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Resources>
+                <DataTemplate x:Key="_myTemplate_Name">
+                    <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_State">
+                    <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _downloadStateToStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Length">
+                    <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Priority">
+                    <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Rate">
+                    <Grid>
+                        <ProgressBar Value="{Binding Path=Rate, Mode=OneWay}" />
+                        <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Path">
+                    <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+            </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=DownloadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />

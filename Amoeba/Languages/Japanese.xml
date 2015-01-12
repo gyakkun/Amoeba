@@ -55,8 +55,8 @@
   <Translate Key="MainWindow_DeveloperSite" Value="ソースコード" />
   <Translate Key="MainWindow_CheckUpdate" Value="更新チェック" />
   <Translate Key="MainWindow_VersionInformation" Value="バージョン情報" />
-  <Translate Key="MainWindow_sendingSpeed" Value="送信:" />
-  <Translate Key="MainWindow_receivingSpeed" Value="受信:" />
+  <Translate Key="MainWindow_SendingSpeed" Value="送信:" />
+  <Translate Key="MainWindow_ReceivingSpeed" Value="受信:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="キャッシュに空き領域がありません。" />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="内部ブロックの破損チェック" />
@@ -87,7 +87,6 @@
 
   <Translate Key="OptionsWindow_Title" Value="オプション" />
   <Translate Key="OptionsWindow_Core" Value="基本" />
-  <Translate Key="OptionsWindow_View" Value="表示" />
   <Translate Key="OptionsWindow_BaseNode" Value="基礎ノード" />
   <Translate Key="OptionsWindow_Node" Value="ノード" />
   <Translate Key="OptionsWindow_Uris" Value="Uris" />
@@ -128,6 +127,7 @@
   <Translate Key="OptionsWindow_Tor" Value="Tor" />
   <Translate Key="OptionsWindow_Ipv4" Value="Ipv4" />
   <Translate Key="OptionsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="OptionsWindow_View" Value="表示" />
   <Translate Key="OptionsWindow_Update" Value="アップデート" />
   <Translate Key="OptionsWindow_UpdateUrl" Value="アップデート Url" />
   <Translate Key="OptionsWindow_Signature" Value="サイン" />
@@ -184,7 +184,6 @@
   <Translate Key="SignatureWindow_Cancel" Value="キャンセル" />
 
   <Translate Key="NameWindow_Title" Value="名前設定" />
-  <Translate Key="NameWindow_Title_Category" Value="カテゴリ名" />
   <Translate Key="NameWindow_Name" Value="名前" />
   <Translate Key="NameWindow_Ok" Value="Ok" />
   <Translate Key="NameWindow_Cancel" Value="キャンセル" />

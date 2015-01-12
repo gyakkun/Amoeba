@@ -315,7 +315,7 @@ namespace Amoeba.Windows
         {
             var selectItems = _listView.SelectedItems;
 
-            _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _listViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
             _listViewPasteMenuItem.IsEnabled = Clipboard.ContainsNodes();
         }
 

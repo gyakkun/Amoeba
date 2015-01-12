@@ -1288,7 +1288,6 @@ namespace Amoeba.Windows
             }
 
             NameWindow window = new NameWindow(name);
-            window.Title = LanguagesManager.Instance.NameWindow_Title_Category;
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)
@@ -1307,7 +1306,6 @@ namespace Amoeba.Windows
             if (selectTreeViewItem == null) return;
 
             NameWindow window = new NameWindow(selectTreeViewItem.Value.Name);
-            window.Title = LanguagesManager.Instance.NameWindow_Title_Category;
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)
@@ -2184,12 +2182,12 @@ namespace Amoeba.Windows
                 var selectItems = _listView.SelectedItems;
 
                 _listViewNewBoxMenuItem.IsEnabled = true;
-                _listViewEditMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+                _listViewEditMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewCopyInfoMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewDownloadMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
                 // Paste
                 {

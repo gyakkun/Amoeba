@@ -18,36 +18,6 @@
         WindowState="{Binding Path=OptionsWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Loaded="Window_Loaded">
 
-    <Window.Resources>
-        <DataTemplate x:Key="_myTemplate_Node">
-            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _nodeToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_ConnectionFilter_ConnectionType">
-            <TextBlock Text="{Binding Path=ConnectionType, Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_ConnectionFilter_ProxyUri">
-            <TextBlock Text="{Binding Path=ProxyUri, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_ConnectionFilter_UriCondition_Value">
-            <TextBlock Text="{Binding Path=UriCondition.Value, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_ConnectionFilter_Option">
-            <TextBlock Text="{Binding Path=Option, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_ConnectionFilter">
-            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_TransferLimitType">
-            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _transferLimitTypeToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Keyword">
-            <TextBlock Text="{Binding Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Signature">
-            <TextBlock Text="{Binding Path=Text, Mode=OneWay}" />
-        </DataTemplate>
-    </Window.Resources>
-
     <Window.CommandBindings>
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
         <CommandBinding Command="Cut" Executed="Execute_Cut" />
@@ -133,6 +103,11 @@
                 <GroupBox Header="{Binding Path=OptionsWindow_Nodes, Source={StaticResource ResourcesInstance}}" Margin="0,36,0,0">
                     <Grid>
                         <local:ListViewEx x:Name="_otherNodesListView" Margin="6" ContextMenuOpening="_otherNodesListView_ContextMenuOpening" PreviewMouseLeftButtonDown="_otherNodesListView_PreviewMouseLeftButtonDown" SelectionChanged="_otherNodesListView_SelectionChanged">
+                            <ListView.Resources>
+                                <DataTemplate x:Key="_myTemplate_Node">
+                                    <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _nodeToStringConverter}}" />
+                                </DataTemplate>
+                            </ListView.Resources>
                             <ListView.ContextMenu>
                                 <ContextMenu Name="_otherNodesContextMenu" >
                                     <MenuItem Name="_otherNodesCopyMenuItem" Header="{Binding Path=OptionsWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_otherNodesCopyMenuItem_Click"/>
@@ -156,6 +131,20 @@
                 <GroupBox Header="{Binding Path=OptionsWindow_Filters, Source={StaticResource ResourcesInstance}}">
                     <Grid>
                         <local:ListViewEx Margin="6,6,6,229" x:Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" ContextMenuOpening="_clientFiltersListView_ContextMenuOpening">
+                            <ListView.Resources>
+                                <DataTemplate x:Key="_myTemplate_ConnectionFilter_ConnectionType">
+                                    <TextBlock Text="{Binding Path=ConnectionType, Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
+                                </DataTemplate>
+                                <DataTemplate x:Key="_myTemplate_ConnectionFilter_ProxyUri">
+                                    <TextBlock Text="{Binding Path=ProxyUri, Mode=OneWay}" />
+                                </DataTemplate>
+                                <DataTemplate x:Key="_myTemplate_ConnectionFilter_UriCondition_Value">
+                                    <TextBlock Text="{Binding Path=UriCondition.Value, Mode=OneWay}" />
+                                </DataTemplate>
+                                <DataTemplate x:Key="_myTemplate_ConnectionFilter_Option">
+                                    <TextBlock Text="{Binding Path=Option, Mode=OneWay}" />
+                                </DataTemplate>
+                            </ListView.Resources>
                             <ListView.ContextMenu>
                                 <ContextMenu Name="_clientFiltersListViewContextMenu" >
                                     <MenuItem Name="_clientFiltersListViewDeleteMenuItem" Header="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewDeleteMenuItem_Click"/>
@@ -179,7 +168,13 @@
                             </ListView.View>
                         </local:ListViewEx>
                         <Label Margin="6,0,0,199" HorizontalAlignment="Left" Width="120" Content="{Binding Path=OptionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
-                        <ComboBox Margin="132,0,6,199" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" VerticalContentAlignment="Center" ItemTemplate="{StaticResource _myTemplate_ConnectionFilter}"/>
+                        <ComboBox Margin="132,0,6,199" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" VerticalContentAlignment="Center">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                         <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,169" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
                         <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="132,0,6,169" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_clientFiltersProxyUriTextBox_KeyDown" />
                         <Label Content="{Binding Path=OptionsWindow_Option, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Width="120" />
@@ -208,6 +203,11 @@
                 <GroupBox Header="{Binding Path=OptionsWindow_ListenUris, Source={StaticResource ResourcesInstance}}" Name="groupBox3">
                     <Grid>
                         <local:ListViewEx Margin="6,6,6,95" x:Name="_serverListenUrisListView" PreviewMouseLeftButtonDown="_serverListenUrisListView_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUrisListView_SelectionChanged" ContextMenuOpening="_serverListenUrisListView_ContextMenuOpening">
+                            <ListView.Resources>
+                                <DataTemplate x:Key="_myTemplate_Node">
+                                    <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _nodeToStringConverter}}" />
+                                </DataTemplate>
+                            </ListView.Resources>
                             <ListView.ContextMenu>
                                 <ContextMenu Name="_serverListenUrisListViewContextMenu" >
                                     <MenuItem Name="_serverListenUrisListViewDeleteMenuItem" Header="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_serverListenUrisListViewDeleteMenuItem_Click"/>
@@ -257,7 +257,13 @@
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_transferTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
                 <Label Content="{Binding Path=OptionsWindow_TransferLimitType, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
-                <ComboBox Height="23" Margin="132,7,6,0" Name="_transferLimitTypeComboBox" VerticalAlignment="Top" ItemTemplate="{StaticResource _myTemplate_TransferLimitType}" SelectionChanged="_transferLimitTypeComboBox_SelectionChanged" HorizontalAlignment="Right" Width="120" />
+                <ComboBox Height="23" Margin="132,7,6,0" Name="_transferLimitTypeComboBox" VerticalAlignment="Top" SelectionChanged="_transferLimitTypeComboBox_SelectionChanged" HorizontalAlignment="Right" Width="120">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _transferLimitTypeToStringConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Label Content="{Binding Path=OptionsWindow_TransferLimitSpan, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
                 <TextBox Height="23" Margin="132,38,6,0" Name="_transferLimitSpanTextBox" VerticalAlignment="Top" TextChanged="_transferLimitSpanTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
                 <Label Content="{Binding Path=OptionsWindow_TransferLimitSize, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,67,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
@@ -305,6 +311,11 @@
 
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_signatureTextBox}" Visibility="{Binding ElementName=_signaturesTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
                 <local:ListViewEx x:Name="_signatureListView" SelectionMode="Single" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" Margin="0,0,0,64" ContextMenuOpening="_signatureListView_ContextMenuOpening" PreviewDragOver="_signatureListView_PreviewDragOver" PreviewDrop="_signatureListView_PreviewDrop">
+                    <ListView.Resources>
+                        <DataTemplate x:Key="_myTemplate_Signature">
+                            <TextBlock Text="{Binding Path=Text, Mode=OneWay}" />
+                        </DataTemplate>
+                    </ListView.Resources>
                     <ListView.ContextMenu>
                         <ContextMenu Name="_signatureListViewContextMenu">
                             <MenuItem Name="_signatureListViewCopyMenuItem" Header="{Binding Path=OptionsWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewCopyMenuItem_Click" />
@@ -328,6 +339,11 @@
 
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_keywordTextBox}" Visibility="{Binding ElementName=_keywordsTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
                 <local:ListViewEx x:Name="_keywordListView" SelectionChanged="_keywordListView_SelectionChanged" PreviewMouseLeftButtonDown="_keywordListView_PreviewMouseLeftButtonDown" Margin="0,0,0,64" Grid.ColumnSpan="2" ContextMenuOpening="_keywordListView_ContextMenuOpening">
+                    <ListView.Resources>
+                        <DataTemplate x:Key="_myTemplate_Keyword">
+                            <TextBlock Text="{Binding Mode=OneWay}" />
+                        </DataTemplate>
+                    </ListView.Resources>
                     <ListView.ContextMenu>
                         <ContextMenu Name="_keywordListViewContextMenu" >
                             <MenuItem Name="_keywordListViewDeleteMenuItem" Header="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewDeleteMenuItem_Click"/>

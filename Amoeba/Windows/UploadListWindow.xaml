@@ -17,15 +17,6 @@
         Width="{Binding Path=UploadWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Loaded="Window_Loaded">
-    <Window.Resources>
-        <DataTemplate x:Key="_myTemplate_Name">
-            <Grid>
-                <Image Width="16" Height="16" Source="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
-                <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-            </Grid>
-        </DataTemplate>
-    </Window.Resources>
-
     <Grid>
         <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
         <Grid Height="24" Margin="138,12,12,0" Name="grid1" VerticalAlignment="Top">
@@ -45,6 +36,14 @@
         <Label Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
         <local:ListViewEx x:Name="_listView" Margin="138,72,12,41"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Resources>
+                <DataTemplate x:Key="_myTemplate_Name">
+                    <Grid>
+                        <Image Width="16" Height="16" Source="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
+                        <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.Resources>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}"

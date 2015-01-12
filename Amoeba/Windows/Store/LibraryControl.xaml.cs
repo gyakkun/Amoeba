@@ -1423,12 +1423,12 @@ namespace Amoeba.Windows
                 var selectItems = _listView.SelectedItems;
 
                 _listViewNewBoxMenuItem.IsEnabled = true;
-                _listViewEditMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewCopyInfoMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _listViewDownloadMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+                _listViewEditMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewCopyInfoMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewDownloadMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
                 // Paste
                 {

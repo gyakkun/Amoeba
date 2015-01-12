@@ -44,7 +44,6 @@
             <local:DownloadStateToStringConverter x:Key="_downloadStateToStringConverter"/>
             <local:UploadStateToStringConverter x:Key="_uploadStateToStringConverter"/>
             <local:ConnectionTypeToStringConverter x:Key="_connectionTypeToStringConverter"/>
-            <local:ExpanderToBooleanConverter x:Key="_expanderToBooleanConverter"/>
             <local:TransferLimitTypeToStringConverter x:Key="_transferLimitTypeToStringConverter"/>
             <local:ConnectDirectionToStringConverter x:Key="_connectDirectionToStringConverter"/>
 

@@ -9,45 +9,6 @@
         mc:Ignorable="d" 
         d:DesignHeight="500" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <ContextMenu x:Key="_treeViewItemContextMenu">
-            <MenuItem Name="_treeViewItemNewMenuItem" Header="{Binding Path=SearchControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemNewMenuItem_Click"/>
-            <MenuItem Name="_treeViewItemEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemEditMenuItem_Click"/>
-            <MenuItem Name="_treeViewItemDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemDeleteMenuItem_Click"/>
-            <Separator />
-            <MenuItem Name="_treeViewItemCutMenuItem" Header="{Binding Path=SearchControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCutMenuItem_Click" />
-            <MenuItem Name="_treeViewItemCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCopyMenuItem_Click" />
-            <MenuItem Name="_treeViewItemPasteMenuItem" Header="{Binding Path=SearchControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemPasteMenuItem_Click" />
-            <Separator />
-            <MenuItem Name="_treeViewItemExportMenuItem" Header="{Binding Path=SearchControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemExportMenuItem_Click" />
-        </ContextMenu>
-
-        <DataTemplate x:Key="_myTemplate_Name">
-            <Grid>
-                <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
-                <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Signature">
-            <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Length">
-            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Keywords">
-            <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_CreationTime">
-            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Id">
-            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_State">
-            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
-        </DataTemplate>
-    </UserControl.Resources>
-
     <UserControl.CommandBindings>
         <CommandBinding Command="New" Executed="Execute_New" />
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
@@ -90,6 +51,18 @@
                 SelectedItemChanged="_treeView_SelectedItemChanged"
                 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <TreeView.Resources>
+                <ContextMenu x:Key="_treeViewItemContextMenu">
+                    <MenuItem Name="_treeViewItemNewMenuItem" Header="{Binding Path=SearchControl_New, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemNewMenuItem_Click"/>
+                    <MenuItem Name="_treeViewItemEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemEditMenuItem_Click"/>
+                    <MenuItem Name="_treeViewItemDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemDeleteMenuItem_Click"/>
+                    <Separator />
+                    <MenuItem Name="_treeViewItemCutMenuItem" Header="{Binding Path=SearchControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCutMenuItem_Click" />
+                    <MenuItem Name="_treeViewItemCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_treeViewItemPasteMenuItem" Header="{Binding Path=SearchControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemPasteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_treeViewItemExportMenuItem" Header="{Binding Path=SearchControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemExportMenuItem_Click" />
+                </ContextMenu>
+
                 <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
                     <Setter Property="ContextMenu" Value="{StaticResource _treeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_treeViewItemContextMenu_ContextMenuOpening" />
@@ -102,6 +75,32 @@
                 PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick" 
                 ContextMenuOpening="_listView_ContextMenuOpening" 
                 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Resources>
+                <DataTemplate x:Key="_myTemplate_Name">
+                    <Grid>
+                        <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
+                        <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Signature">
+                    <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Length">
+                    <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Keywords">
+                    <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_CreationTime">
+                    <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Id">
+                    <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_State">
+                    <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
+                </DataTemplate>
+            </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu" >
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />

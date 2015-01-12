@@ -9,75 +9,6 @@
         mc:Ignorable="d" 
         d:DesignHeight="500" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <DataTemplate x:Key="_myTemplate_Name">
-            <Grid>
-                <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
-                <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Signature">
-            <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Length">
-            <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Keywords">
-            <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_CreationTime">
-            <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_State">
-            <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_Id">
-            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
-        </DataTemplate>
-
-        <ContextMenu x:Key="_storeCategorizeTreeViewItemContextMenu">
-            <MenuItem Name="_storeCategorizeTreeViewItemNewStoreMenuItem" Header="{Binding Path=StoreUploadControl_NewStore, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemNewStoreMenuItem_Click"/>
-            <Separator />
-            <MenuItem Name="_storeCategorizeTreeViewItemNewCategoryMenuItem" Header="{Binding Path=StoreUploadControl_NewCategory, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemNewCategoryMenuItem_Click"/>
-            <MenuItem Name="_storeCategorizeTreeViewItemEditMenuItem" Header="{Binding Path=StoreUploadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemEditMenuItem_Click"/>
-            <MenuItem Name="_storeCategorizeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreUploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemDeleteMenuItem_Click"/>
-            <Separator />
-            <MenuItem Name="_storeCategorizeTreeViewItemCutMenuItem" Header="{Binding Path=StoreUploadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemCutMenuItem_Click" />
-            <MenuItem Name="_storeCategorizeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreUploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemCopyMenuItem_Click" />
-            <MenuItem Name="_storeCategorizeTreeViewItemPasteMenuItem" Header="{Binding Path=StoreUploadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemPasteMenuItem_Click" />
-            <Separator />
-            <MenuItem Name="_storeCategorizeTreeViewItemUploadMenuItem" Header="{Binding Path=StoreUploadControl_Upload, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemUploadMenuItem_Click" />
-        </ContextMenu>
-
-        <ContextMenu x:Key="_storeTreeViewItemContextMenu">
-            <MenuItem Name="_storeTreeViewItemNewBoxMenuItem" Header="{Binding Path=StoreUploadControl_NewBox, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemNewBoxMenuItem_Click"/>
-            <MenuItem Name="_storeTreeViewItemEditMenuItem" Header="{Binding Path=StoreUploadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemEditMenuItem_Click"/>
-            <MenuItem Name="_storeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreUploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemDeleteMenuItem_Click"/>
-            <Separator />
-            <MenuItem Name="_storeTreeViewItemCutMenuItem" Header="{Binding Path=StoreUploadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemCutMenuItem_Click" />
-            <MenuItem Name="_storeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreUploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemCopyMenuItem_Click" />
-            <MenuItem Name="_storeTreeViewItemPasteMenuItem" Header="{Binding Path=StoreUploadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemPasteMenuItem_Click" />
-            <Separator />
-            <MenuItem Name="_storeTreeViewItemImportMenuItem" Header="{Binding Path=StoreUploadControl_Import, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemImportMenuItem_Click" />
-            <MenuItem Name="_storeTreeViewItemExportMenuItem" Header="{Binding Path=StoreUploadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemExportMenuItem_Click" />
-            <Separator />
-            <MenuItem Name="_storeTreeViewItemUploadMenuItem" Header="{Binding Path=StoreUploadControl_Upload, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemUploadMenuItem_Click" />
-        </ContextMenu>
-
-        <ContextMenu x:Key="_boxTreeViewItemContextMenu" >
-            <MenuItem Name="_boxTreeViewItemNewBoxMenuItem" Header="{Binding Path=StoreUploadControl_NewBox, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemNewBoxMenuItem_Click" />
-            <MenuItem Name="_boxTreeViewItemEditMenuItem" Header="{Binding Path=StoreUploadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemEditMenuItem_Click" />
-            <MenuItem Name="_boxTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreUploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemDeleteMenuItem_Click" />
-            <Separator />
-            <MenuItem Name="_boxTreeViewItemCutMenuItem" Header="{Binding Path=StoreUploadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemCutMenuItem_Click" />
-            <MenuItem Name="_boxTreeViewItemCopyMenuItem" Header="{Binding Path=StoreUploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemCopyMenuItem_Click" />
-            <MenuItem Name="_boxTreeViewItemPasteMenuItem" Header="{Binding Path=StoreUploadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemPasteMenuItem_Click" />
-            <Separator />
-            <MenuItem Name="_boxTreeViewItemImportMenuItem" Header="{Binding Path=StoreUploadControl_Import, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemImportMenuItem_Click" />
-            <MenuItem Name="_boxTreeViewItemExportMenuItem" Header="{Binding Path=StoreUploadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemExportMenuItem_Click" />
-        </ContextMenu>
-    </UserControl.Resources>
-
     <UserControl.CommandBindings>
         <CommandBinding Command="New" Executed="Execute_New" />
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
@@ -118,14 +49,55 @@
                 TreeViewItem.Expanded="_treeView_Expanded" TreeViewItem.Collapsed="_treeView_Collapsed"
                 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <TreeView.Resources>
+                <ContextMenu x:Key="_storeCategorizeTreeViewItemContextMenu">
+                    <MenuItem Name="_storeCategorizeTreeViewItemNewStoreMenuItem" Header="{Binding Path=StoreUploadControl_NewStore, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemNewStoreMenuItem_Click"/>
+                    <Separator />
+                    <MenuItem Name="_storeCategorizeTreeViewItemNewCategoryMenuItem" Header="{Binding Path=StoreUploadControl_NewCategory, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemNewCategoryMenuItem_Click"/>
+                    <MenuItem Name="_storeCategorizeTreeViewItemEditMenuItem" Header="{Binding Path=StoreUploadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemEditMenuItem_Click"/>
+                    <MenuItem Name="_storeCategorizeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreUploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemDeleteMenuItem_Click"/>
+                    <Separator />
+                    <MenuItem Name="_storeCategorizeTreeViewItemCutMenuItem" Header="{Binding Path=StoreUploadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemCutMenuItem_Click" />
+                    <MenuItem Name="_storeCategorizeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreUploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_storeCategorizeTreeViewItemPasteMenuItem" Header="{Binding Path=StoreUploadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemPasteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_storeCategorizeTreeViewItemUploadMenuItem" Header="{Binding Path=StoreUploadControl_Upload, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemUploadMenuItem_Click" />
+                </ContextMenu>
                 <Style TargetType="{x:Type local:StoreCategorizeTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
                     <Setter Property="ContextMenu" Value="{StaticResource _storeCategorizeTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_storeCategorizeTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
+
+                <ContextMenu x:Key="_storeTreeViewItemContextMenu">
+                    <MenuItem Name="_storeTreeViewItemNewBoxMenuItem" Header="{Binding Path=StoreUploadControl_NewBox, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemNewBoxMenuItem_Click"/>
+                    <MenuItem Name="_storeTreeViewItemEditMenuItem" Header="{Binding Path=StoreUploadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemEditMenuItem_Click"/>
+                    <MenuItem Name="_storeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreUploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemDeleteMenuItem_Click"/>
+                    <Separator />
+                    <MenuItem Name="_storeTreeViewItemCutMenuItem" Header="{Binding Path=StoreUploadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemCutMenuItem_Click" />
+                    <MenuItem Name="_storeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreUploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_storeTreeViewItemPasteMenuItem" Header="{Binding Path=StoreUploadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemPasteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_storeTreeViewItemImportMenuItem" Header="{Binding Path=StoreUploadControl_Import, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemImportMenuItem_Click" />
+                    <MenuItem Name="_storeTreeViewItemExportMenuItem" Header="{Binding Path=StoreUploadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemExportMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_storeTreeViewItemUploadMenuItem" Header="{Binding Path=StoreUploadControl_Upload, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemUploadMenuItem_Click" />
+                </ContextMenu>
                 <Style TargetType="{x:Type local:StoreTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
                     <Setter Property="ContextMenu" Value="{StaticResource _storeTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_storeTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
+
+                <ContextMenu x:Key="_boxTreeViewItemContextMenu" >
+                    <MenuItem Name="_boxTreeViewItemNewBoxMenuItem" Header="{Binding Path=StoreUploadControl_NewBox, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemNewBoxMenuItem_Click" />
+                    <MenuItem Name="_boxTreeViewItemEditMenuItem" Header="{Binding Path=StoreUploadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemEditMenuItem_Click" />
+                    <MenuItem Name="_boxTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreUploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemDeleteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_boxTreeViewItemCutMenuItem" Header="{Binding Path=StoreUploadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemCutMenuItem_Click" />
+                    <MenuItem Name="_boxTreeViewItemCopyMenuItem" Header="{Binding Path=StoreUploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_boxTreeViewItemPasteMenuItem" Header="{Binding Path=StoreUploadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemPasteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_boxTreeViewItemImportMenuItem" Header="{Binding Path=StoreUploadControl_Import, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemImportMenuItem_Click" />
+                    <MenuItem Name="_boxTreeViewItemExportMenuItem" Header="{Binding Path=StoreUploadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemExportMenuItem_Click" />
+                </ContextMenu>
                 <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
                     <Setter Property="ContextMenu" Value="{StaticResource _boxTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_boxTreeViewItemContextMenu_ContextMenuOpening" />
@@ -142,6 +114,32 @@
                 GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
                 ContextMenuOpening="_listView_ContextMenuOpening" 
                 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Resources>
+                <DataTemplate x:Key="_myTemplate_Name">
+                    <Grid>
+                        <Image Width="16" Height="16" Source="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToImageConverter}}" HorizontalAlignment="Left" />
+                        <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Signature">
+                    <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Length">
+                    <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Keywords">
+                    <TextBlock Text="{Binding Path=Keywords, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_CreationTime">
+                    <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_State">
+                    <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Id">
+                    <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
+                </DataTemplate>
+            </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewNewBoxMenuItem" Header="{Binding Path=StoreUploadControl_NewBox, Source={StaticResource ResourcesInstance}}" Click="_listViewNewBoxMenuItem_Click" />

@@ -256,7 +256,7 @@ namespace Amoeba.Windows
             var selectItems = _listView.SelectedItems;
 
             if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
-            else _listViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            else _listViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             if (!_listViewCheckExistMenuItem_IsEnabled) _listViewCheckExistMenuItem.IsEnabled = false;
             else _listViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);

@@ -17,21 +17,11 @@
         Width="{Binding Path=LinkOptionsWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=LinkOptionsWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Loaded="Window_Loaded" d:DesignHeight="594" d:DesignWidth="899" >
-
-    <Window.Resources>
-        <DataTemplate x:Key="_myTemplate_Linker_Signature">
-            <TextBlock Text="{Binding Path=Signature, Mode=OneWay}" />
-        </DataTemplate>
-        <DataTemplate x:Key="_myTemplate_String">
-            <TextBlock Text="{Binding Mode=OneWay}" />
-        </DataTemplate>
-    </Window.Resources>
-
     <Grid>
         <Button Content="{Binding Path=LinkOptionsWindow_Ok, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Click="_okButton_Click" IsDefault="True" />
         <Button Content="{Binding Path=LinkOptionsWindow_Cancel, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Click="_cancelButton_Click" IsCancel="True" />
       
-        <TabControl Name="tabControl1" Margin="0,0,0,41">
+        <TabControl Margin="0,0,0,41">
             <TabItem Header="{Binding Path=LinkOptionsWindow_Download, Source={StaticResource ResourcesInstance}}" Name="_downloadTabItem">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -42,6 +32,11 @@
 
                     <local:ListViewEx x:Name="_downloadLinkListView" 
                             ContextMenuOpening="_downloadLinkListView_ContextMenuOpening">
+                        <ListView.Resources>
+                            <DataTemplate x:Key="_myTemplate_Linker_Signature">
+                                <TextBlock Text="{Binding Path=Signature, Mode=OneWay}" />
+                            </DataTemplate>
+                        </ListView.Resources>
                         <ListView.ContextMenu>
                             <ContextMenu Name="_downloadLinkListViewContextMenu" >
                                 <MenuItem Name="_downloadLinkListViewDeleteMenuItem" Header="{Binding Path=LinkOptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_downloadLinkListViewDeleteMenuItem_Click"/>
@@ -63,6 +58,11 @@
 
                     <local:ListViewEx x:Name="_downloadTrustSignatureListView" Grid.Column="2" ItemsSource="{Binding SelectedItem.TrustSignatures, ElementName=_downloadLinkListView}"
                             ContextMenuOpening="_downloadTrustSignatureListView_ContextMenuOpening">
+                        <ListView.Resources>
+                            <DataTemplate x:Key="_myTemplate_String">
+                                <TextBlock Text="{Binding Mode=OneWay}" />
+                            </DataTemplate>
+                        </ListView.Resources>
                         <ListView.ContextMenu>
                             <ContextMenu Name="_downloadTrustSignatureListViewContextMenu" >
                                 <MenuItem Name="_downloadTrustSignatureListViewCopyMenuItem" Header="{Binding Path=LinkOptionsWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_downloadTrustSignatureListViewCopyMenuItem_Click"/>
@@ -87,6 +87,11 @@
 
                     <local:ListViewEx x:Name="_uploadLinkListView" 
                             ContextMenuOpening="_uploadLinkListView_ContextMenuOpening">
+                        <ListView.Resources>
+                            <DataTemplate x:Key="_myTemplate_Linker_Signature">
+                                <TextBlock Text="{Binding Path=Signature, Mode=OneWay}" />
+                            </DataTemplate>
+                        </ListView.Resources>
                         <ListView.ContextMenu>
                             <ContextMenu Name="_uploadLinkListViewContextMenu" >
                                 <MenuItem Name="_uploadLinkListViewNewMenuItem" Header="{Binding Path=LinkOptionsWindow_New, Source={StaticResource ResourcesInstance}}" Click="_uploadLinkListViewNemMenuItem_Click"/>
@@ -107,6 +112,11 @@
 
                     <local:ListViewEx x:Name="_uploadTrustSignatureListView" Grid.Column="2" ItemsSource="{Binding SelectedItem.TrustSignatures, ElementName=_uploadLinkListView}"
                             ContextMenuOpening="_uploadTrustSignatureListView_ContextMenuOpening">
+                        <ListView.Resources>
+                            <DataTemplate x:Key="_myTemplate_String">
+                                <TextBlock Text="{Binding Mode=OneWay}" />
+                            </DataTemplate>
+                        </ListView.Resources>
                         <ListView.ContextMenu>
                             <ContextMenu Name="_uploadTrustSignatureListViewContextMenu" >
                                 <MenuItem Name="_uploadTrustSignatureListViewDeleteMenuItem" Header="{Binding Path=LinkOptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_uploadTrustSignatureListViewDeleteMenuItem_Click"/>
@@ -118,7 +128,7 @@
                         </ListView.ContextMenu>
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
-                                <GridViewColumn x:Name="_uploadTrustSignatureGridViewColumn" Header="{Binding Path=LinkOptionsWindow_TrustSignature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_String}"
+                                <GridViewColumn Header="{Binding Path=LinkOptionsWindow_TrustSignature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_String}"
                                     Width="{Binding Path=LinkOptionsWindow_GridViewColumn_TrustSignature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>

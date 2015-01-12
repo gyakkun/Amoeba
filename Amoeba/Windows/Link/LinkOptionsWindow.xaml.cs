@@ -90,9 +90,9 @@ namespace Amoeba.Windows
         {
             var selectItems = _downloadLinkListView.SelectedItems;
 
-            _downloadLinkListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _downloadLinkListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _downloadLinkListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _downloadLinkListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _downloadLinkListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _downloadLinkListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -163,7 +163,7 @@ namespace Amoeba.Windows
             {
                 var selectItems = _downloadTrustSignatureListView.SelectedItems;
 
-                _downloadTrustSignatureListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+                _downloadTrustSignatureListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
             }
         }
 
@@ -187,8 +187,8 @@ namespace Amoeba.Windows
         {
             var selectItems = _uploadLinkListView.SelectedItems;
 
-            _uploadLinkListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-            _uploadLinkListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _uploadLinkListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _uploadLinkListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
         }
 
         private void _uploadLinkListViewNemMenuItem_Click(object sender, RoutedEventArgs e)
@@ -247,9 +247,9 @@ namespace Amoeba.Windows
             {
                 var selectItems = _uploadTrustSignatureListView.SelectedItems;
 
-                _uploadTrustSignatureListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _uploadTrustSignatureListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
-                _uploadTrustSignatureListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+                _uploadTrustSignatureListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _uploadTrustSignatureListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _uploadTrustSignatureListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
                 {
                     bool flag = false;

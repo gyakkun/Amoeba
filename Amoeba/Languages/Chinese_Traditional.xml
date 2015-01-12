@@ -87,7 +87,6 @@
 
   <Translate Key="OptionsWindow_Title" Value="選項" />
   <Translate Key="OptionsWindow_Core" Value="核心" />
-  <Translate Key="OptionsWindow_View" Value="檢視" />
   <Translate Key="OptionsWindow_BaseNode" Value="基本節點" />
   <Translate Key="OptionsWindow_Node" Value="節點" />
   <Translate Key="OptionsWindow_Uris" Value="位址" />
@@ -128,6 +127,7 @@
   <Translate Key="OptionsWindow_Tor" Value="Tor" />
   <Translate Key="OptionsWindow_Ipv4" Value="Ipv4" />
   <Translate Key="OptionsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="OptionsWindow_View" Value="檢視" />
   <Translate Key="OptionsWindow_Update" Value="更新" />
   <Translate Key="OptionsWindow_UpdateUrl" Value="更新網址" />
   <Translate Key="OptionsWindow_Signature" Value="簽名" />
@@ -184,7 +184,6 @@
   <Translate Key="SignatureWindow_Cancel" Value="取消" />
 
   <Translate Key="NameWindow_Title" Value="名稱設定" />
-  <Translate Key="NameWindow_Title_Category" Value="分類名稱" />
   <Translate Key="NameWindow_Name" Value="名稱" />
   <Translate Key="NameWindow_Ok" Value="確定" />
   <Translate Key="NameWindow_Cancel" Value="取消" />

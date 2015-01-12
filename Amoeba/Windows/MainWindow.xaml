@@ -18,11 +18,6 @@
         StateChanged="Window_StateChanged"
         Loaded="Window_Loaded"
         Closing="Window_Closing">
-    <Window.Resources>
-        <DataTemplate x:Key="_logListBox_Template">
-            <TextBlock Text="{Binding Mode=OneWay}" TextWrapping="Wrap"/>
-        </DataTemplate>
-    </Window.Resources>
 
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="Execute_Copy" />
@@ -80,8 +75,12 @@
                         <RowDefinition Height="438*" />
                         <RowDefinition Name="_logRowDefinition" Height="29" />
                     </Grid.RowDefinitions>
-                    <local:ListBoxEx x:Name="_logListBox" SelectionMode="Extended" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" Loaded="_logListBox_Loaded"
-                            ItemTemplate="{StaticResource _logListBox_Template}" >
+                    <local:ListBoxEx x:Name="_logListBox" SelectionMode="Extended" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible" Loaded="_logListBox_Loaded">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Mode=OneWay}" TextWrapping="Wrap"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                         <ListBox.ContextMenu>
                             <ContextMenu Name="_logListBoxContextMenu" >
                                 <MenuItem Name="_logListBoxCopyMenuItem" Header="{Binding Path=MainWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_logListBoxCopyMenuItem_Click" />

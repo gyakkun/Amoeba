@@ -55,8 +55,8 @@
   <Translate Key="MainWindow_DeveloperSite" Value="Исходный код" />
   <Translate Key="MainWindow_CheckUpdate" Value="Проверить обновления" />
   <Translate Key="MainWindow_VersionInformation" Value="Информация о версии" />
-  <Translate Key="MainWindow_sendingSpeed" Value="Скорость отправки:" />
-  <Translate Key="MainWindow_receivingSpeed" Value="Скорость принятия:" />
+  <Translate Key="MainWindow_SendingSpeed" Value="Скорость отправки:" />
+  <Translate Key="MainWindow_ReceivingSpeed" Value="Скорость принятия:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="На диске не хватает свободного пространства." />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Не хватает свободного пространства для кэша." />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Проверка внутренних блоков" />
@@ -87,7 +87,6 @@
 
   <Translate Key="OptionsWindow_Title" Value="Настройки" />
   <Translate Key="OptionsWindow_Core" Value="Главные" />
-  <Translate Key="OptionsWindow_View" Value="Вид" />
   <Translate Key="OptionsWindow_BaseNode" Value="Базовый узел" />
   <Translate Key="OptionsWindow_Node" Value="Нода" />
   <Translate Key="OptionsWindow_Uris" Value="Узлы" />
@@ -128,6 +127,7 @@
   <Translate Key="OptionsWindow_Tor" Value="Tor" />
   <Translate Key="OptionsWindow_Ipv4" Value="Ipv4" />
   <Translate Key="OptionsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="OptionsWindow_View" Value="Вид" />
   <Translate Key="OptionsWindow_Update" Value="Обновление" />
   <Translate Key="OptionsWindow_UpdateUrl" Value="Адрес для обновления" />
   <Translate Key="OptionsWindow_Signature" Value="Подпись" />
@@ -184,7 +184,6 @@
   <Translate Key="SignatureWindow_Cancel" Value="Закрыть" />
 
   <Translate Key="NameWindow_Title" Value="Name setting" />
-  <Translate Key="NameWindow_Title_Category" Value="Название категории" />
   <Translate Key="NameWindow_Name" Value="Название" />
   <Translate Key="NameWindow_Ok" Value="Ok" />
   <Translate Key="NameWindow_Cancel" Value="Закрыть" />

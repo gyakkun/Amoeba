@@ -55,8 +55,8 @@
   <Translate Key="MainWindow_DeveloperSite" Value="Вихідний код" />
   <Translate Key="MainWindow_CheckUpdate" Value="Перевірити оновлення" />
   <Translate Key="MainWindow_VersionInformation" Value="Інформація про версію" />
-  <Translate Key="MainWindow_sendingSpeed" Value="Швидкість відправки:" />
-  <Translate Key="MainWindow_receivingSpeed" Value="Швидкість прийняття:" />
+  <Translate Key="MainWindow_SendingSpeed" Value="Швидкість відправки:" />
+  <Translate Key="MainWindow_ReceivingSpeed" Value="Швидкість прийняття:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="На диску не вистачає вільного простору." />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Бракує вільного простору для кеша." />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Перевірка внутрішніх блоків" />
@@ -87,7 +87,6 @@
 
   <Translate Key="OptionsWindow_Title" Value="Опції" />
   <Translate Key="OptionsWindow_Core" Value="Головні" />
-  <Translate Key="OptionsWindow_View" Value="Вид" />
   <Translate Key="OptionsWindow_BaseNode" Value="Базовий вузол" />
   <Translate Key="OptionsWindow_Node" Value="Вузол" />
   <Translate Key="OptionsWindow_Uris" Value="Адреси" />
@@ -128,6 +127,7 @@
   <Translate Key="OptionsWindow_Tor" Value="Tor" />
   <Translate Key="OptionsWindow_Ipv4" Value="Ipv4" />
   <Translate Key="OptionsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="OptionsWindow_View" Value="Вид" />
   <Translate Key="OptionsWindow_Update" Value="Оновлення" />
   <Translate Key="OptionsWindow_UpdateUrl" Value="Адреса для оновлення" />
   <Translate Key="OptionsWindow_Signature" Value="Підпис" />
@@ -184,7 +184,6 @@
   <Translate Key="SignatureWindow_Cancel" Value="Закрити" />
 
   <Translate Key="NameWindow_Title" Value="Name setting" />
-  <Translate Key="NameWindow_Title_Category" Value="Назва категорії" />
   <Translate Key="NameWindow_Name" Value="Назва" />
   <Translate Key="NameWindow_Ok" Value="Ok" />
   <Translate Key="NameWindow_Cancel" Value="Закрити" />

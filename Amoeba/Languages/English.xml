@@ -87,7 +87,6 @@
 
   <Translate Key="OptionsWindow_Title" Value="Options" />
   <Translate Key="OptionsWindow_Core" Value="Core" />
-  <Translate Key="OptionsWindow_View" Value="View" />
   <Translate Key="OptionsWindow_BaseNode" Value="Base node" />
   <Translate Key="OptionsWindow_Node" Value="Node" />
   <Translate Key="OptionsWindow_Uris" Value="Uris" />
@@ -128,6 +127,7 @@
   <Translate Key="OptionsWindow_Tor" Value="Tor" />
   <Translate Key="OptionsWindow_Ipv4" Value="Ipv4" />
   <Translate Key="OptionsWindow_Ipv6" Value="Ipv6" />
+  <Translate Key="OptionsWindow_View" Value="View" />
   <Translate Key="OptionsWindow_Update" Value="Update" />
   <Translate Key="OptionsWindow_UpdateUrl" Value="Update url" />
   <Translate Key="OptionsWindow_Signature" Value="Signature" />
@@ -184,7 +184,6 @@
   <Translate Key="SignatureWindow_Cancel" Value="Cancel" />
 
   <Translate Key="NameWindow_Title" Value="Name setting" />
-  <Translate Key="NameWindow_Title_Category" Value="Category name" />
   <Translate Key="NameWindow_Name" Value="Name" />
   <Translate Key="NameWindow_Ok" Value="Ok" />
   <Translate Key="NameWindow_Cancel" Value="Cancel" />
