@@ -55,8 +55,8 @@
   <Translate Key="MainWindow_DeveloperSite" Value="Source code" />
   <Translate Key="MainWindow_CheckUpdate" Value="Check for Update" />
   <Translate Key="MainWindow_VersionInformation" Value="Version information" />
-  <Translate Key="MainWindow_sendingSpeed" Value="Send:" />
-  <Translate Key="MainWindow_receivingSpeed" Value="Receive:" />
+  <Translate Key="MainWindow_SendingSpeed" Value="Send:" />
+  <Translate Key="MainWindow_ReceivingSpeed" Value="Receive:" />
   <Translate Key="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
   <Translate Key="MainWindow_CacheSpaceNotFound_Message" Value="Space of cache not found." />
   <Translate Key="MainWindow_CheckInternalBlocks_Message" Value="Check internal blocks" />
