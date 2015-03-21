@@ -11,6 +11,7 @@ using Library;
 using System.Windows;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Amoeba.Properties
 {
@@ -176,7 +177,7 @@ namespace Amoeba.Properties
 
             if (_dic[_currentLanguage].TryGetValue(key, out result))
             {
-                return result;
+                return Regex.Unescape(result);
             }
 
             return null;

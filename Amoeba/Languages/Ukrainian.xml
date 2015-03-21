@@ -95,7 +95,7 @@
   <Translate Key="OptionsWindow_Nodes" Value="Вузли" />
   <Translate Key="OptionsWindow_Client" Value="Клієнт" />
   <Translate Key="OptionsWindow_Filters" Value="Фільтри" />
-  <Translate Key="OptionsWindow_ConnectionType" Value="Тип з&#x0027;єднання" />
+  <Translate Key="OptionsWindow_ConnectionType" Value="Тип з&apos;єднання" />
   <Translate Key="OptionsWindow_ProxyUri" Value="Адреса проксі" />
   <Translate Key="OptionsWindow_UriCondition" Value="Uri condition" />
   <Translate Key="OptionsWindow_Option" Value="Параметри" />
@@ -118,7 +118,7 @@
   <Translate Key="OptionsWindow_ConnectionCount" Value="Максимальна кількість підключень" />
   <Translate Key="OptionsWindow_DownloadDirectory" Value="Каталог для завантажень" />
   <Translate Key="OptionsWindow_DownloadDirectory_Description" Value="Каталог для завантажень" />
-  <Translate Key="OptionsWindow_CacheSize" Value="Об&#x0027;єм кешу" />
+  <Translate Key="OptionsWindow_CacheSize" Value="Об&apos;єм кешу" />
   <Translate Key="OptionsWindow_Events" Value="Події" />
   <Translate Key="OptionsWindow_Events_Connection" Value="Підключення" />
   <Translate Key="OptionsWindow_Events_OpenPortAndGetIpAddress" Value="Відкрити порт та відправити IP-адресу." />
