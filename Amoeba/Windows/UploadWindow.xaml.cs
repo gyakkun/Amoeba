@@ -40,6 +40,12 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
+            _nameTextBox.MaxLength = Seed.MaxNameLength;
+            _keywordsComboBox1.MaxLength = KeywordCollection.MaxKeywordLength;
+            _keywordsComboBox2.MaxLength = KeywordCollection.MaxKeywordLength;
+            _keywordsComboBox3.MaxLength = KeywordCollection.MaxKeywordLength;
+            _commentTextBox.MaxLength = Seed.MaxCommentLength;
+            
             {
                 var icon = new BitmapImage();
 
