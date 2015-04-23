@@ -1252,6 +1252,31 @@ namespace Amoeba.Windows
                     {
                         version = new Version(reader.ReadLine());
                     }
+
+                    if (version <= new Version(3, 0, 2))
+                    {
+                        // Links.txtにあるリンク情報を追加する。
+                        if (File.Exists(Path.Combine(App.DirectoryPaths["Settings"], "Links.txt")))
+                        {
+                            var list = new List<string>();
+
+                            using (StreamReader reader = new StreamReader(Path.Combine(App.DirectoryPaths["Settings"], "Links.txt"), new UTF8Encoding(false)))
+                            {
+                                string line;
+
+                                while ((line = reader.ReadLine()) != null)
+                                {
+                                    list.Add(line);
+                                }
+                            }
+
+                            foreach (var signature in list)
+                            {
+                                if (Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Any(n => n.Signature == signature)) continue;
+                                Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Add(new LinkItem() { Signature = signature });
+                            }
+                        }
+                    }
                 }
 
                 using (StreamWriter writer = new StreamWriter(Path.Combine(App.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
