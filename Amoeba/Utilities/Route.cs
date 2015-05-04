@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Library;
 using Library.Collections;
 
-namespace Library.Net.Amoeba
+namespace Amoeba
 {
     class Route : LockedList<string>
     {
