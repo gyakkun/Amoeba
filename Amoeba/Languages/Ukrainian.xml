@@ -7,8 +7,9 @@
 
   <Translate Key="Languages_English" Value="Англійська (English)" />
   <Translate Key="Languages_Japanese" Value="Японська (Japanese)" />
-  <Translate Key="Languages_Chinese_Traditional" Value="традиційний китайський (Chinese (Traditional))" />
-  <Translate Key="Languages_Chinese_Simplified" Value="спрощена китайська (Chinese (Simplified))" />
+  <Translate Key="Languages_Chinese_Traditional" Value="Традиційний китайський (Chinese (Traditional))" />
+  <Translate Key="Languages_Chinese_Simplified" Value="Спрощена китайська (Chinese (Simplified))" />
+  <Translate Key="Languages_Korean" Value="Корейська (Korean)" />
   <Translate Key="Languages_Ukrainian" Value="Українська (Ukrainian)" />
   <Translate Key="Languages_Russian" Value="Російська (Russian)" />
 

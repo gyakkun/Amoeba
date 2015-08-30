@@ -312,6 +312,9 @@
     <Content Include="Icons\Files\Box.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Languages\Korean.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Languages\Russian.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -320,6 +323,7 @@
     </Content>
     <Content Include="Languages\Chinese_Traditional.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Languages\English.xml">
       <SubType>Designer</SubType>

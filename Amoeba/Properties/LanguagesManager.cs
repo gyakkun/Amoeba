@@ -263,6 +263,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string Languages_Korean
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("Languages_Korean");
+                }
+            }
+        }
+
         public string Languages_Ukrainian
         {
             get
