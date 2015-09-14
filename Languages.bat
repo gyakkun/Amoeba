@@ -1,3 +1,5 @@
 set BATDIR=%~dp0
 cd %BATDIR%
-call "..\Library\Library.Tools\bin\Debug\Library.Tools.exe" "languages" %1 %2
+
+set TOOL="C:\Local\Projects\Alliance-Network\Library\Library.Tools\bin\Debug\Library.Tools.exe"
+IF EXIST %TOOL% call %TOOL% "languages" %1 %2
