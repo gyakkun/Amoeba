@@ -38,7 +38,7 @@ namespace Amoeba.Properties
         static LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:\Local\Project\Alliance-Network\Amoeba\Amoeba\bin\Debug\Core\Languages";
+            string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba\bin\Debug\Core\Languages";
 
             if (!Directory.Exists(path))
                 path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
