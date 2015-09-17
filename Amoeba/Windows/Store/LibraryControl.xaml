@@ -100,7 +100,7 @@
                     <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
                 </DataTemplate>
                 <DataTemplate x:Key="_myTemplate_Id">
-                    <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
+                    <TextBlock Text="{Binding Path=Id, Mode=OneWay, Converter={StaticResource _bytesToHexStringConverter}}" />
                 </DataTemplate>
             </ListView.Resources>
             <ListView.ContextMenu>

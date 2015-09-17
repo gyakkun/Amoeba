@@ -238,7 +238,7 @@ namespace Amoeba.Windows
                             seedListViewItem.Length = seed.Length;
                             seedListViewItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                             seedListViewItem.CreationTime = seed.CreationTime;
-                            seedListViewItem.Id = NetworkConverter.ToHexString(SeedUtilities.GetHash(seed));
+                            seedListViewItem.Id = SeedUtilities.GetHash(seed);
 
                             SearchState state;
 
@@ -2761,11 +2761,42 @@ namespace Amoeba.Windows
             }
             else if (sortBy == LanguagesManager.Instance.StoreUploadControl_Id)
             {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
+                ListCollectionView view = (ListCollectionView)CollectionViewSource.GetDefaultView(_listView.ItemsSource);
+                view.CustomSort = new ComparerListener<dynamic>((x, y) =>
+                {
+                    int c = Unsafe.Compare(x.Id, y.Id);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+                    c = x.Index.CompareTo(y.Index);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
             }
 
             _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
+        }
+
+        private class ComparerListener<T> : IComparer<T>, IComparer
+        {
+            private Comparison<T> _comparison;
+
+            public ComparerListener(Comparison<T> comparison)
+            {
+                _comparison = comparison;
+            }
+
+            public int Compare(T x, T y)
+            {
+                return _comparison(x, y);
+            }
+
+            public int Compare(object x, object y)
+            {
+                return _comparison((T)x, (T)y);
+            }
         }
 
         #endregion
@@ -2780,7 +2811,7 @@ namespace Amoeba.Windows
             public string Keywords { get { return null; } }
             public DateTime CreationTime { get; set; }
             public SearchState State { get { return (SearchState)0; } }
-            public string Id { get { return null; } }
+            public byte[] Id { get { return null; } }
             public Box Value { get; set; }
 
             public override int GetHashCode()
@@ -2827,7 +2858,7 @@ namespace Amoeba.Windows
             public string Keywords { get; set; }
             public DateTime CreationTime { get; set; }
             public SearchState State { get; set; }
-            public string Id { get; set; }
+            public byte[] Id { get; set; }
             public Seed Value { get; set; }
 
             public override int GetHashCode()

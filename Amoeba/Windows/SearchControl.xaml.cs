@@ -619,7 +619,7 @@ namespace Amoeba.Windows
                                 searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                                 searchItem.CreationTime = seed.CreationTime;
                                 searchItem.State = value.State;
-                                searchItem.Id = NetworkConverter.ToHexString(SeedUtilities.GetHash(seed));
+                                searchItem.Id = SeedUtilities.GetHash(seed);
                                 searchItem.Value = seed;
 
                                 searchItem.Seeds = value.Seeds;
@@ -1904,7 +1904,7 @@ namespace Amoeba.Windows
             {
                 list.Sort((x, y) =>
                 {
-                    int c = x.Id.CompareTo(y.Id);
+                    int c = Unsafe.Compare(x.Id, y.Id);
                     if (c != 0) return c;
                     c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
@@ -1935,7 +1935,7 @@ namespace Amoeba.Windows
             public string Keywords { get; set; }
             public DateTime CreationTime { get; set; }
             public SearchState State { get; set; }
-            public string Id { get; set; }
+            public byte[] Id { get; set; }
             public Seed Value { get; set; }
 
             public SmallList<Seed> Seeds { get; set; }
