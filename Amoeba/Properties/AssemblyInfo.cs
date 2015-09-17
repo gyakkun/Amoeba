@@ -9,9 +9,9 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Amoeba")]
-[assembly: AssemblyCopyright("Copyright © Lyrise 2010-2014")]
+[assembly: AssemblyCopyright("Copyright © Lyrise 2010-2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
-[assembly: AssemblyVersion("0.0.0.6944")] // AlUve+W/kVUgKe+v0ibTfWtCXAAzpLgy9xofFNbKKoM=
+[assembly: AssemblyVersion("0.0.0.6946")] // pGE3TUdVfg1C9nrMxjRT6QkTf4XNbSmnEvFBfNcc98c=

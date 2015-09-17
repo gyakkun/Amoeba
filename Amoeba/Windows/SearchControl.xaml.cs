@@ -172,7 +172,7 @@ namespace Amoeba.Windows
                         }));
                     }
 
-                    var sortList = this.Sort(newList, 1024 * 64);
+                    var sortList = this.Sort(newList, 100000);
 
                     this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                     {
@@ -180,18 +180,7 @@ namespace Amoeba.Windows
                         _refresh = false;
 
                         _listView.Items.Clear();
-
-                        foreach (var item in sortList)
-                        {
-                            _listView.Items.Add(item);
-
-                            if ((_listView.Items.Count % 1024) == 0)
-                            {
-                                if (_refresh) return;
-
-                                this.DoEvents();
-                            }
-                        }
+                        _listView.Items.AddRange(sortList);
 
                         this.Update_Title();
                     }));
