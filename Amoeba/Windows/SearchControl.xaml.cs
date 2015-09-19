@@ -45,6 +45,7 @@ namespace Amoeba.Windows
         private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
 
         private SearchTreeViewItem _treeViewItem;
+        private ObservableCollectionEx<SearchListViewItem> _listViewItemCollection = new ObservableCollectionEx<SearchListViewItem>();
         private LockedList<SearchListViewItem> _searchingCache = new LockedList<SearchListViewItem>();
 
         private Thread _searchThread;
@@ -71,6 +72,8 @@ namespace Amoeba.Windows
             //{
 
             //}
+
+            _listView.ItemsSource = _listViewItemCollection;
 
             _mainWindow._tabControl.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
             {
@@ -179,8 +182,8 @@ namespace Amoeba.Windows
                         if (tempTreeViewItem != _treeView.SelectedItem) return;
                         _refresh = false;
 
-                        _listView.Items.Clear();
-                        _listView.Items.AddRange(sortList);
+                        _listViewItemCollection.Clear();
+                        _listViewItemCollection.AddRange(sortList);
 
                         this.Update_Title();
                     }));
@@ -993,7 +996,7 @@ namespace Amoeba.Windows
             box.Name = selectTreeViewItem.Value.SearchItem.Name;
             box.CreationTime = DateTime.UtcNow;
 
-            foreach (var seed in _listView.Items.Cast<SearchListViewItem>().Select(n => n.Value))
+            foreach (var seed in _listViewItemCollection.Cast<SearchListViewItem>().Select(n => n.Value))
             {
                 box.Seeds.Add(seed);
             }

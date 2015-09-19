@@ -48,6 +48,7 @@ namespace Amoeba.Windows
         private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
 
         private StoreCategorizeTreeViewItem _treeViewItem;
+        private ObservableCollectionEx<object> _listViewItemCollection = new ObservableCollectionEx<object>();
         private LockedHashDictionary<Seed, SearchState> _seedsDictionary = new LockedHashDictionary<Seed, SearchState>();
 
         private Thread _searchThread;
@@ -74,6 +75,8 @@ namespace Amoeba.Windows
             //{
 
             //}
+
+            _listView.ItemsSource = _listViewItemCollection;
 
             foreach (var path in Settings.Instance.StoreDownloadControl_ExpandedPath.ToArray())
             {
@@ -171,7 +174,7 @@ namespace Amoeba.Windows
                             if (tempTreeViewItem != _treeView.SelectedItem) return;
                             _refresh = false;
 
-                            _listView.Items.Clear();
+                            _listViewItemCollection.Clear();
 
                             this.Update_Title();
                         }));
@@ -202,7 +205,7 @@ namespace Amoeba.Windows
 
                         this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
                         {
-                            oldList.UnionWith(_listView.Items.OfType<object>());
+                            oldList.UnionWith(_listViewItemCollection.OfType<object>());
 
                             var searchText = _searchTextBox.Text;
 
@@ -286,11 +289,11 @@ namespace Amoeba.Windows
                             {
                                 sortFlag = true;
 
-                                _listView.Items.Clear();
+                                _listViewItemCollection.Clear();
 
                                 foreach (var item in newList)
                                 {
-                                    _listView.Items.Add(item);
+                                    _listViewItemCollection.Add(item);
                                 }
                             }
                             else
@@ -300,12 +303,12 @@ namespace Amoeba.Windows
 
                                 foreach (var item in addList)
                                 {
-                                    _listView.Items.Add(item);
+                                    _listViewItemCollection.Add(item);
                                 }
 
                                 foreach (var item in removeList)
                                 {
-                                    _listView.Items.Remove(item);
+                                    _listViewItemCollection.Remove(item);
                                 }
                             }
 
@@ -1283,7 +1286,7 @@ namespace Amoeba.Windows
                     if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
                         && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                     {
-                        var posithonItem = _listView.Items[posithonIndex];
+                        var posithonItem = _listViewItemCollection[posithonIndex];
 
                         if (_listView.SelectedItems.Cast<object>().Any(n => object.ReferenceEquals(n, posithonItem)))
                         {
@@ -1304,7 +1307,7 @@ namespace Amoeba.Windows
                     if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
                         && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                     {
-                        var posithonItem = _listView.Items[posithonIndex];
+                        var posithonItem = _listViewItemCollection[posithonIndex];
 
                         _listView.SelectedItems.Clear();
                         _listView.SelectedItems.Add(posithonItem);
@@ -1323,7 +1326,7 @@ namespace Amoeba.Windows
 
                 if (selectItem is StoreTreeViewItem)
                 {
-                    var listViewItem = _listView.Items[posithonIndex];
+                    var listViewItem = _listViewItemCollection[posithonIndex];
 
                     if (listViewItem is BoxListViewItem)
                     {
@@ -1345,7 +1348,7 @@ namespace Amoeba.Windows
                 }
                 else if (selectItem is BoxTreeViewItem)
                 {
-                    var listViewItem = _listView.Items[posithonIndex];
+                    var listViewItem = _listViewItemCollection[posithonIndex];
 
                     if (listViewItem is BoxListViewItem)
                     {
@@ -1601,73 +1604,105 @@ namespace Amoeba.Windows
         private void Sort(string sortBy, ListSortDirection direction)
         {
             _listView.Items.SortDescriptions.Clear();
-            _listView.Items.SortDescriptions.Add(new SortDescription("Type", direction));
 
-            if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Name)
-            {
-
-            }
-            else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Signature)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Signature", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_Length)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_Keywords)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Keywords", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_CreationTime)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("CreationTime", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Comment)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Comment", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_State)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Id)
+            if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Id)
             {
                 ListCollectionView view = (ListCollectionView)CollectionViewSource.GetDefaultView(_listView.ItemsSource);
                 view.CustomSort = new ComparerListener<dynamic>((x, y) =>
                 {
-                    int c = Unsafe.Compare(x.Id, y.Id);
-                    if (c != 0) return c;
-                    c = x.Name.CompareTo(y.Name);
-                    if (c != 0) return c;
-                    c = x.Index.CompareTo(y.Index);
-                    if (c != 0) return c;
+                    {
+                        int c = x.Type.CompareTo(y.Type);
+                        if (c != 0) return c;
+                    }
+
+                    {
+                        if (x.Id != null && y.Id != null)
+                        {
+                            int c = Unsafe.Compare(x.Id, y.Id);
+                            if (c != 0) return c;
+                        }
+                        else if (x.Id == null && y.Id != null)
+                        {
+                            return -1;
+                        }
+                        else if (x.Id != null && y.Id == null)
+                        {
+                            return 1;
+                        }
+                    }
+
+                    {
+                        int c = x.Name.CompareTo(y.Name);
+                        if (c != 0) return c;
+                        c = x.Index.CompareTo(y.Index);
+                        if (c != 0) return c;
+                    }
 
                     return 0;
-                });
-            }
+                }, direction);
 
-            _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
-            _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
+                view.Refresh();
+            }
+            else
+            {
+                _listView.Items.SortDescriptions.Add(new SortDescription("Type", direction));
+
+                if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Name)
+                {
+
+                }
+                else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Signature)
+                {
+                    _listView.Items.SortDescriptions.Add(new SortDescription("Signature", direction));
+                }
+                else if (sortBy == LanguagesManager.Instance.SearchControl_Length)
+                {
+                    _listView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
+                }
+                else if (sortBy == LanguagesManager.Instance.SearchControl_Keywords)
+                {
+                    _listView.Items.SortDescriptions.Add(new SortDescription("Keywords", direction));
+                }
+                else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_CreationTime)
+                {
+                    _listView.Items.SortDescriptions.Add(new SortDescription("CreationTime", direction));
+                }
+                else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_Comment)
+                {
+                    _listView.Items.SortDescriptions.Add(new SortDescription("Comment", direction));
+                }
+                else if (sortBy == LanguagesManager.Instance.StoreDownloadControl_State)
+                {
+                    _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
+                }
+
+                _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Index", direction));
+            }
         }
 
         private class ComparerListener<T> : IComparer<T>, IComparer
         {
             private Comparison<T> _comparison;
+            private ListSortDirection _direction;
 
-            public ComparerListener(Comparison<T> comparison)
+            public ComparerListener(Comparison<T> comparison, ListSortDirection direction)
             {
                 _comparison = comparison;
+                _direction = direction;
             }
 
             public int Compare(T x, T y)
             {
-                return _comparison(x, y);
+                if (_direction == ListSortDirection.Ascending) return _comparison(x, y);
+                else if (_direction == ListSortDirection.Descending) return -1 * _comparison(x, y);
+
+                return 0;
             }
 
             public int Compare(object x, object y)
             {
-                return _comparison((T)x, (T)y);
+                return this.Compare((T)x, (T)y);
             }
         }
 

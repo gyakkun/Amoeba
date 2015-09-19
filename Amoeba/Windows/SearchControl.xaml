@@ -95,7 +95,7 @@
                     <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
                 </DataTemplate>
                 <DataTemplate x:Key="_myTemplate_Id">
-                    <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
+                    <TextBlock Text="{Binding Path=Id, Mode=OneWay, Converter={StaticResource _bytesToHexStringConverter}}" />
                 </DataTemplate>
                 <DataTemplate x:Key="_myTemplate_State">
                     <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
