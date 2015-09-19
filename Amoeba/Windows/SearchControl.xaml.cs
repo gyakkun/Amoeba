@@ -121,7 +121,7 @@ namespace Amoeba.Windows
 
                     SearchTreeViewItem tempTreeViewItem = null;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         tempTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
                     }));
@@ -135,7 +135,7 @@ namespace Amoeba.Windows
                     {
                         string searchText = null;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             searchText = _searchTextBox.Text;
                         }));
@@ -159,7 +159,7 @@ namespace Amoeba.Windows
 
                     List<SearchTreeViewItem> searchTreeViewItems = new List<SearchTreeViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         searchTreeViewItems.AddRange(_treeView.GetAncestors(tempTreeViewItem).OfType<SearchTreeViewItem>());
                     }));
@@ -168,7 +168,7 @@ namespace Amoeba.Windows
                     {
                         SearchControl.Filter(ref newList, searchTreeViewItem.Value.SearchItem);
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             searchTreeViewItem.Hit = newList.Count;
                             searchTreeViewItem.Update();
@@ -177,7 +177,7 @@ namespace Amoeba.Windows
 
                     var sortList = this.Sort(newList, 100000);
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         if (tempTreeViewItem != _treeView.SelectedItem) return;
                         _refresh = false;
@@ -642,7 +642,7 @@ namespace Amoeba.Windows
                     {
                         _cacheUpdate = false;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             this.Update();
                         }));

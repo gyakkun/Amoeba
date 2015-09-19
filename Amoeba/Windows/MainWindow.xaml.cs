@@ -215,7 +215,7 @@ namespace Amoeba.Windows
         {
             if (_autoStop && !Settings.Instance.Global_IsStart)
             {
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
                     _startMenuItem_Click(sender, null);
                 }));
@@ -226,7 +226,7 @@ namespace Amoeba.Windows
         {
             Log.Information(LanguagesManager.Instance.MainWindow_TransferLimit_Message);
 
-            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
                 _stopMenuItem_Click(sender, null);
             }));
@@ -277,7 +277,7 @@ namespace Amoeba.Windows
                     {
                         if (_diskSpaceNotFoundException || _cacheSpaceNotFoundException)
                         {
-                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
                                 _stopMenuItem_Click(null, null);
                                 _encodeAndDecodeStopMenuItem_Click(null, null);
@@ -336,7 +336,7 @@ namespace Amoeba.Windows
                         {
                             Log.Warning(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
 
-                            this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
+                            this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                             {
                                 MessageBox.Show(
                                     this,
@@ -353,7 +353,7 @@ namespace Amoeba.Windows
                         {
                             Log.Warning(LanguagesManager.Instance.MainWindow_CacheSpaceNotFound_Message);
 
-                            this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
+                            this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                             {
                                 MessageBox.Show(
                                     this,
@@ -878,7 +878,7 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                     {
                         if (_logCheckBox.IsChecked.Value)
                         {
@@ -909,7 +909,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    this.Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                     {
                         if (_debugCheckBox.IsChecked.Value)
                         {
@@ -1499,7 +1499,7 @@ namespace Amoeba.Windows
 
                                 if (Settings.Instance.Global_Update_Option != UpdateOption.AutoUpdate)
                                 {
-                                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                                     {
                                         if (MessageBox.Show(
                                             this,
@@ -1839,7 +1839,7 @@ namespace Amoeba.Windows
 
                 _amoebaManager.CheckInternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         try
                         {
@@ -1855,7 +1855,7 @@ namespace Amoeba.Windows
                     isStop = flag;
                 });
 
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
                     try
                     {
@@ -1901,7 +1901,7 @@ namespace Amoeba.Windows
 
                 _amoebaManager.CheckExternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         try
                         {
@@ -1917,7 +1917,7 @@ namespace Amoeba.Windows
                     isStop = flag;
                 });
 
-                this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
                     try
                     {

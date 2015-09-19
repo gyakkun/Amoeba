@@ -82,7 +82,7 @@ namespace Amoeba.Windows
 
                     Dictionary<int, UploadListViewItem> dic2 = new Dictionary<int, UploadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
@@ -92,7 +92,7 @@ namespace Amoeba.Windows
 
                     List<UploadListViewItem> removeList = new List<UploadListViewItem>();
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
@@ -122,7 +122,7 @@ namespace Amoeba.Windows
 
                         HashSet<int> hid = new HashSet<int>();
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             hid.UnionWith(_listView.SelectedItems.OfType<UploadListViewItem>().Select(n => n.Id));
                         }));
@@ -158,7 +158,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         bool sortFlag = false;
 
@@ -234,7 +234,7 @@ namespace Amoeba.Windows
                         filePaths.Remove((string)informaiton["Path"]);
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         if (filePaths.Count == 1)
                         {
@@ -297,7 +297,7 @@ namespace Amoeba.Windows
                             filePaths.Remove((string)informaiton["Path"]);
                         }
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             if (filePaths.Count == 1)
                             {

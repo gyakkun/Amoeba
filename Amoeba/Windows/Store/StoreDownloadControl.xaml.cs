@@ -161,7 +161,7 @@ namespace Amoeba.Windows
 
                     TreeViewItem tempTreeViewItem = null;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         tempTreeViewItem = (TreeViewItem)_treeView.SelectedItem;
                         _listView.ContextMenu.IsOpen = false;
@@ -169,7 +169,7 @@ namespace Amoeba.Windows
 
                     if (tempTreeViewItem is StoreCategorizeTreeViewItem)
                     {
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             if (tempTreeViewItem != _treeView.SelectedItem) return;
                             _refresh = false;
@@ -203,7 +203,7 @@ namespace Amoeba.Windows
 
                         string[] words = new string[] { };
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             oldList.UnionWith(_listViewItemCollection.OfType<object>());
 
@@ -276,7 +276,7 @@ namespace Amoeba.Windows
                             if (!oldList.Contains(item)) addList.Add(item);
                         }
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             if (tempTreeViewItem != _treeView.SelectedItem) return;
                             _refresh = false;
@@ -410,7 +410,7 @@ namespace Amoeba.Windows
                     {
                         _cacheUpdate = false;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             this.Update();
                         }));
@@ -439,7 +439,7 @@ namespace Amoeba.Windows
 
                         var storeTreeViewItems = new List<StoreTreeViewItem>();
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             var categorizeStoreTreeViewItems = new List<StoreCategorizeTreeViewItem>();
                             categorizeStoreTreeViewItems.Add(_treeViewItem);
@@ -458,7 +458,7 @@ namespace Amoeba.Windows
                             var store = _amoebaManager.GetStore(storeTreeViewItem.Value.Signature);
                             if (store == null || CollectionUtilities.Equals(storeTreeViewItem.Value.Boxes, store.Boxes)) continue;
 
-                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
                                 storeTreeViewItem.Value.Boxes.Clear();
                                 storeTreeViewItem.Value.Boxes.AddRange(store.Boxes);
@@ -472,7 +472,7 @@ namespace Amoeba.Windows
 
                         if (updateFlag)
                         {
-                            this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
                                 this.Update();
                             }));

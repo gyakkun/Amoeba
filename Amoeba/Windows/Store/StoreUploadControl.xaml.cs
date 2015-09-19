@@ -153,7 +153,7 @@ namespace Amoeba.Windows
 
                     TreeViewItem tempTreeViewItem = null;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         tempTreeViewItem = (TreeViewItem)_treeView.SelectedItem;
                         _listView.ContextMenu.IsOpen = false;
@@ -161,7 +161,7 @@ namespace Amoeba.Windows
 
                     if (tempTreeViewItem is StoreCategorizeTreeViewItem)
                     {
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             if (tempTreeViewItem != _treeView.SelectedItem) return;
                             _refresh = false;
@@ -195,7 +195,7 @@ namespace Amoeba.Windows
 
                         string[] words = new string[] { };
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             oldList.UnionWith(_listViewItemCollection.OfType<object>());
 
@@ -268,7 +268,7 @@ namespace Amoeba.Windows
                             if (!oldList.Contains(item)) addList.Add(item);
                         }
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             if (tempTreeViewItem != _treeView.SelectedItem) return;
                             _refresh = false;
@@ -402,7 +402,7 @@ namespace Amoeba.Windows
                     {
                         _cacheUpdate = false;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             this.Update();
                         }));

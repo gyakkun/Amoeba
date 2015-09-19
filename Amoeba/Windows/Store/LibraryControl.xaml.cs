@@ -149,7 +149,7 @@ namespace Amoeba.Windows
 
                     BoxTreeViewItem tempTreeViewItem = null;
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         tempTreeViewItem = _treeView.SelectedItem as BoxTreeViewItem;
                         _listView.ContextMenu.IsOpen = false;
@@ -164,7 +164,7 @@ namespace Amoeba.Windows
                     {
                         string searchText = null;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             searchText = _searchTextBox.Text;
                         }));
@@ -225,7 +225,7 @@ namespace Amoeba.Windows
 
                     HashSet<object> oldList = new HashSet<object>(new ReferenceEqualityComparer());
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         oldList.UnionWith(_listViewItemCollection.OfType<object>());
                     }));
@@ -243,7 +243,7 @@ namespace Amoeba.Windows
                         if (!oldList.Contains(item)) addList.Add(item);
                     }
 
-                    this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         if (tempTreeViewItem != _treeView.SelectedItem) return;
                         _refresh = false;
@@ -376,7 +376,7 @@ namespace Amoeba.Windows
                     {
                         _cacheUpdate = false;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             this.Update();
                         }));
@@ -443,7 +443,7 @@ namespace Amoeba.Windows
                         var box = AmoebaConverter.FromBoxStream(stream);
                         if (box == null) continue;
 
-                        this.Dispatcher.Invoke(DispatcherPriority.ContextIdle, new Action(() =>
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             try
                             {
