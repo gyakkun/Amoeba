@@ -333,18 +333,17 @@ namespace Amoeba.Windows
                 {
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 
-                    if (_mainWindow.SelectedTab != MainWindowTabType.Store || _storeControl.SelectedTab != StoreControlTabType.Download)
+                    while (_mainWindow.SelectedTab != MainWindowTabType.Store || _storeControl.SelectedTab != StoreControlTabType.Download)
                     {
-                        continue;
+                        Thread.Sleep(1000);
                     }
 
-                    lock (_seedsDictionary.ThisLock)
-                    {
-                        _seedsDictionary.Clear();
+                    Dictionary<Seed, SearchState> seedsDictionary = new Dictionary<Seed, SearchState>();
 
+                    {
                         foreach (var seed in _amoebaManager.CacheSeeds)
                         {
-                            _seedsDictionary[seed] = SearchState.Cache;
+                            seedsDictionary[seed] = SearchState.Cache;
                         }
 
                         foreach (var information in _amoebaManager.UploadingInformation)
@@ -352,14 +351,16 @@ namespace Amoeba.Windows
                             if (information.Contains("Seed") && ((UploadState)information["State"]) != UploadState.Completed)
                             {
                                 var seed = (Seed)information["Seed"];
+                                SearchState state;
 
-                                if (!_seedsDictionary.ContainsKey(seed))
+                                if (seedsDictionary.TryGetValue(seed, out state))
                                 {
-                                    _seedsDictionary[seed] = SearchState.Uploading;
+                                    state |= SearchState.Uploading;
+                                    seedsDictionary[seed] = state;
                                 }
                                 else
                                 {
-                                    _seedsDictionary[seed] |= SearchState.Uploading;
+                                    seedsDictionary.Add(seed, SearchState.Uploading);
                                 }
                             }
                         }
@@ -369,40 +370,58 @@ namespace Amoeba.Windows
                             if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed)
                             {
                                 var seed = (Seed)information["Seed"];
+                                SearchState state;
 
-                                if (!_seedsDictionary.ContainsKey(seed))
+                                if (seedsDictionary.TryGetValue(seed, out state))
                                 {
-                                    _seedsDictionary[seed] = SearchState.Downloading;
+                                    state |= SearchState.Downloading;
+                                    seedsDictionary[seed] = state;
                                 }
                                 else
                                 {
-                                    _seedsDictionary[seed] |= SearchState.Downloading;
+                                    seedsDictionary.Add(seed, SearchState.Downloading);
                                 }
                             }
                         }
 
                         foreach (var seed in _amoebaManager.UploadedSeeds)
                         {
-                            if (!_seedsDictionary.ContainsKey(seed))
+                            SearchState state;
+
+                            if (seedsDictionary.TryGetValue(seed, out state))
                             {
-                                _seedsDictionary[seed] = SearchState.Uploaded;
+                                state |= SearchState.Uploaded;
+                                seedsDictionary[seed] = state;
                             }
                             else
                             {
-                                _seedsDictionary[seed] |= SearchState.Uploaded;
+                                seedsDictionary.Add(seed, SearchState.Uploaded);
                             }
                         }
 
                         foreach (var seed in _amoebaManager.DownloadedSeeds)
                         {
-                            if (!_seedsDictionary.ContainsKey(seed))
+                            SearchState state;
+
+                            if (seedsDictionary.TryGetValue(seed, out state))
                             {
-                                _seedsDictionary[seed] = SearchState.Downloaded;
+                                state |= SearchState.Downloaded;
+                                seedsDictionary[seed] = state;
                             }
                             else
                             {
-                                _seedsDictionary[seed] |= SearchState.Downloaded;
+                                seedsDictionary.Add(seed, SearchState.Downloaded);
                             }
+                        }
+                    }
+
+                    lock (_seedsDictionary.ThisLock)
+                    {
+                        _seedsDictionary.Clear();
+
+                        foreach (var pair in seedsDictionary)
+                        {
+                            _seedsDictionary.Add(pair.Key, pair.Value);
                         }
                     }
 
@@ -585,8 +604,7 @@ namespace Amoeba.Windows
 
         private void Update_Cache()
         {
-            _cacheUpdate = true;
-            _autoResetEvent.Set();
+            this.Update_Cache(true);
         }
 
         private void Update_Cache(bool update)

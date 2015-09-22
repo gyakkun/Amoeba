@@ -684,8 +684,7 @@ namespace Amoeba.Windows
 
         private void Update_Cache()
         {
-            _cacheUpdate = true;
-            _autoResetEvent.Set();
+            this.Update_Cache(true);
         }
 
         private void Update_Cache(bool update)
