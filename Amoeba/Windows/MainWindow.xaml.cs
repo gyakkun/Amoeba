@@ -790,7 +790,15 @@ namespace Amoeba.Windows
                         case 2:
                             osName = "Windows 8";
                             break;
+
+                        case 3:
+                            osName = "Windows 8.1";
+                            break;
                     }
+                }
+                else if (osInfo.Version.Major == 10)
+                {
+                    osName = "Windows 10";
                 }
             }
             else if (osInfo.Platform == PlatformID.WinCE)

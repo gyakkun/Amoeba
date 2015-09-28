@@ -1304,7 +1304,7 @@ namespace Amoeba.Windows
                     if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
                         && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                     {
-                        var posithonItem = _listViewItemCollection[posithonIndex];
+                        var posithonItem = _listView.Items[posithonIndex];
 
                         if (_listView.SelectedItems.Cast<object>().Any(n => object.ReferenceEquals(n, posithonItem)))
                         {
@@ -1325,7 +1325,7 @@ namespace Amoeba.Windows
                     if (!System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)
                         && !System.Windows.Input.Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
                     {
-                        var posithonItem = _listViewItemCollection[posithonIndex];
+                        var posithonItem = _listView.Items[posithonIndex];
 
                         _listView.SelectedItems.Clear();
                         _listView.SelectedItems.Add(posithonItem);
@@ -1344,7 +1344,7 @@ namespace Amoeba.Windows
 
                 if (selectItem is StoreTreeViewItem)
                 {
-                    var listViewItem = _listViewItemCollection[posithonIndex];
+                    var listViewItem = _listView.Items[posithonIndex];
 
                     if (listViewItem is BoxListViewItem)
                     {
@@ -1366,7 +1366,7 @@ namespace Amoeba.Windows
                 }
                 else if (selectItem is BoxTreeViewItem)
                 {
-                    var listViewItem = _listViewItemCollection[posithonIndex];
+                    var listViewItem = _listView.Items[posithonIndex];
 
                     if (listViewItem is BoxListViewItem)
                     {
