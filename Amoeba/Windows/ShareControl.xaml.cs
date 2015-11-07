@@ -50,7 +50,7 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            _showShareItemThread = new Thread(ShowShareItem);
+            _showShareItemThread = new Thread(this.ShowShareItem);
             _showShareItemThread.Priority = ThreadPriority.Highest;
             _showShareItemThread.IsBackground = true;
             _showShareItemThread.Name = "ShareControl_ShowShareItemThread";
