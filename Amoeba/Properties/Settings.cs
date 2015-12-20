@@ -216,14 +216,7 @@ namespace Amoeba.Properties
         {
             lock (this.ThisLock)
             {
-                try
-                {
-                    base.Load(directoryPath);
-                }
-                catch (Exception)
-                {
-
-                }
+                base.Load(directoryPath);
             }
         }
 
