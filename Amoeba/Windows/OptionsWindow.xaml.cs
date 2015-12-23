@@ -101,7 +101,7 @@ namespace Amoeba.Windows
                 _baseNode_Id = baseNode.Id;
                 _baseNode_Uris = new ObservableCollectionEx<string>(baseNode.Uris);
                 _otherNodes = new ObservableCollectionEx<Node>(_amoebaManager.OtherNodes);
-                _clientFilters = new ObservableCollectionEx<ConnectionFilter>(_amoebaManager.Filters.Select(n => n.Clone()));
+                _clientFilters = new ObservableCollectionEx<ConnectionFilter>(_amoebaManager.Filters);
                 _serverListenUris = new ObservableCollectionEx<string>(_amoebaManager.ListenUris);
 
                 try
@@ -814,7 +814,7 @@ namespace Amoeba.Windows
                     if (!match.Success) continue;
 
                     var connectionType = (ConnectionType)Enum.Parse(typeof(ConnectionType), match.Groups[1].Value);
-                    var uriCondition = new UriCondition() { Value = match.Groups[3].Value };
+                    var uriCondition = new UriCondition(match.Groups[3].Value);
 
                     string proxyUri = null;
 
@@ -832,12 +832,7 @@ namespace Amoeba.Windows
                         if (proxyUri == null) return;
                     }
 
-                    var connectionFilter = new ConnectionFilter()
-                    {
-                        ConnectionType = connectionType,
-                        ProxyUri = proxyUri,
-                        UriCondition = uriCondition,
-                    };
+                    var connectionFilter = new ConnectionFilter(connectionType, proxyUri, uriCondition, null);
 
                     if (_clientFilters.Any(n => n == connectionFilter)) continue;
                     _clientFilters.Add(connectionFilter);
@@ -955,7 +950,7 @@ namespace Amoeba.Windows
             {
                 var connectionType = (ConnectionType)_clientFiltersConnectionTypeComboBox.SelectedItem;
 
-                var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };
+                var uriCondition = new UriCondition(_clientFiltersConditionTextBox.Text);
                 string proxyUri = null;
                 string option = null;
 
@@ -978,13 +973,7 @@ namespace Amoeba.Windows
                     option = _clientFiltersOptionTextBox.Text;
                 }
 
-                var connectionFilter = new ConnectionFilter()
-                {
-                    ConnectionType = connectionType,
-                    ProxyUri = proxyUri,
-                    UriCondition = uriCondition,
-                    Option = option,
-                };
+                var connectionFilter = new ConnectionFilter(connectionType, proxyUri, uriCondition, option);
 
                 if (_clientFilters.Any(n => n == connectionFilter)) return;
                 _clientFilters.Add(connectionFilter);
@@ -1009,7 +998,7 @@ namespace Amoeba.Windows
                 var connectionType = (ConnectionType)_clientFiltersConnectionTypeComboBox.SelectedItem;
 
                 string proxyUri = null;
-                var uriCondition = new UriCondition() { Value = _clientFiltersConditionTextBox.Text };
+                var uriCondition = new UriCondition(_clientFiltersConditionTextBox.Text);
                 string option = null;
 
                 if (!string.IsNullOrWhiteSpace(_clientFiltersProxyUriTextBox.Text))
@@ -1030,13 +1019,7 @@ namespace Amoeba.Windows
                     option = _clientFiltersOptionTextBox.Text;
                 }
 
-                var connectionFilter = new ConnectionFilter()
-                {
-                    ConnectionType = connectionType,
-                    ProxyUri = proxyUri,
-                    UriCondition = uriCondition,
-                    Option = option,
-                };
+                var connectionFilter = new ConnectionFilter(connectionType, proxyUri, uriCondition, option);
 
                 if (_clientFilters.Any(n => n == connectionFilter)) return;
                 _clientFilters.Set(selectIndex, connectionFilter);
@@ -2050,7 +2033,7 @@ namespace Amoeba.Windows
                 _amoebaManager.BandwidthLimit = bandwidthLimit;
 
                 _amoebaManager.Filters.Clear();
-                _amoebaManager.Filters.AddRange(_clientFilters.Select(n => n.Clone()));
+                _amoebaManager.Filters.AddRange(_clientFilters);
 
                 if (!CollectionUtilities.Equals(_amoebaManager.ListenUris, _serverListenUris))
                 {

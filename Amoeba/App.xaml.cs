@@ -49,13 +49,13 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(3, 0, 12);
+            App.AmoebaVersion = new Version(3, 0, 13);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
 
                 currentProcess.PriorityClass = ProcessPriorityClass.BelowNormal;
-                currentProcess.SetMemoryPriority(4);
+                currentProcess.SetMemoryPriority(5);
             }
 
             {

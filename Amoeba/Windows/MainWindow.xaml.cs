@@ -1133,51 +1133,11 @@ namespace Amoeba.Windows
                     _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), _random.Next(1024, ushort.MaxValue + 1)));
                     _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), _random.Next(1024, ushort.MaxValue + 1)));
 
-                    var ipv4ConnectionFilter = new ConnectionFilter()
-                    {
-                        ConnectionType = ConnectionType.Tcp,
-                        UriCondition = new UriCondition()
-                        {
-                            Value = @"tcp:([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}).*",
-                        },
-                    };
-
-                    var ipv6ConnectionFilter = new ConnectionFilter()
-                    {
-                        ConnectionType = ConnectionType.Tcp,
-                        UriCondition = new UriCondition()
-                        {
-                            Value = @"tcp:\[(\d|:)*\].*",
-                        },
-                    };
-
-                    var tcpConnectionFilter = new ConnectionFilter()
-                    {
-                        ConnectionType = ConnectionType.Tcp,
-                        UriCondition = new UriCondition()
-                        {
-                            Value = @"tcp:.*",
-                        },
-                    };
-
-                    var torConnectionFilter = new ConnectionFilter()
-                    {
-                        ConnectionType = ConnectionType.Socks5Proxy,
-                        ProxyUri = "tcp:127.0.0.1:19050",
-                        UriCondition = new UriCondition()
-                        {
-                            Value = @"tor:.*",
-                        },
-                    };
-
-                    var i2pConnectionFilter = new ConnectionFilter()
-                    {
-                        ConnectionType = ConnectionType.None,
-                        UriCondition = new UriCondition()
-                        {
-                            Value = @"i2p:.*",
-                        },
-                    };
+                    var ipv4ConnectionFilter = new ConnectionFilter(ConnectionType.Tcp, null, new UriCondition(@"tcp:([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3}).*"), null);
+                    var ipv6ConnectionFilter = new ConnectionFilter(ConnectionType.Tcp, null, new UriCondition(@"tcp:\[(\d|:)*\].*"), null);
+                    var tcpConnectionFilter = new ConnectionFilter(ConnectionType.Tcp, null, new UriCondition(@"tcp:.*"), null);
+                    var torConnectionFilter = new ConnectionFilter(ConnectionType.Socks5Proxy, "tcp:127.0.0.1:19050", new UriCondition(@"tor:.*"), null);
+                    var i2pConnectionFilter = new ConnectionFilter(ConnectionType.None, null, new UriCondition(@"i2p:.*"), null);
 
                     _amoebaManager.Filters.Clear();
                     _amoebaManager.Filters.Add(ipv4ConnectionFilter);
@@ -1617,6 +1577,8 @@ namespace Amoeba.Windows
         {
             if (_closed) return;
 
+            e.Cancel = true;
+
             if (MessageBox.Show(
                 this,
                 LanguagesManager.Instance.MainWindow_Close_Message,
@@ -1624,14 +1586,10 @@ namespace Amoeba.Windows
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Information) == MessageBoxResult.No)
             {
-                e.Cancel = true;
-
                 return;
             }
 
             _closed = true;
-
-            e.Cancel = true;
 
             var thread = new Thread(() =>
             {
