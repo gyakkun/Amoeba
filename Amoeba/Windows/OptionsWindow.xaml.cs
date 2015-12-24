@@ -1979,7 +1979,7 @@ namespace Amoeba.Windows
 
             lock (_amoebaManager.ThisLock)
             {
-                long size = (long)NetworkConverter.FromSizeString("50 GB");
+                long size = (long)NetworkConverter.FromSizeString("256GB");
 
                 try
                 {
@@ -1987,11 +1987,11 @@ namespace Amoeba.Windows
                 }
                 catch (Exception)
                 {
-                    size = long.MaxValue;
+
                 }
 
 #if !DEBUG
-                size = Math.Max((long)NetworkConverter.FromSizeString("50 GB"), size);
+                size = Math.Max((long)NetworkConverter.FromSizeString("32GB"), size);
 #endif
 
                 if (_amoebaManager.Size != size)
@@ -2062,7 +2062,7 @@ namespace Amoeba.Windows
                     int day = OptionsWindow.GetStringToInt(_transferLimitSpanTextBox.Text);
                     _transferLimitManager.TransferLimit.Span = Math.Max(Math.Min(day, 31), 1);
 
-                    long size = (long)NetworkConverter.FromSizeString("32 GB");
+                    long size = (long)NetworkConverter.FromSizeString("32GB");
 
                     try
                     {
@@ -2070,7 +2070,7 @@ namespace Amoeba.Windows
                     }
                     catch (Exception)
                     {
-                        size = long.MaxValue;
+
                     }
 
                     _transferLimitManager.TransferLimit.Size = size;
