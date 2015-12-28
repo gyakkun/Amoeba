@@ -90,7 +90,7 @@ namespace Amoeba.Windows
                         ds.WriteObject(xmlDictionaryWriter, this);
                     }
 
-                    stream.Position = 0;
+                    stream.Seek(0, SeekOrigin.Begin);
 
                     using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {

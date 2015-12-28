@@ -99,9 +99,6 @@
                 <DataTemplate x:Key="_myTemplate_State">
                     <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _searchStateToStringConverter}}" />
                 </DataTemplate>
-                <DataTemplate x:Key="_myTemplate_Id">
-                    <TextBlock Text="{Binding Path=Id, Mode=OneWay, Converter={StaticResource _bytesToHexStringConverter}}" />
-                </DataTemplate>
             </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
@@ -131,8 +128,6 @@
                             Width="{Binding Path=SearchControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=LibraryControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=LibraryControl_Id, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Id}" 
-                            Width="{Binding Path=SearchControl_GridViewColumn_Id_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>

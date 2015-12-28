@@ -148,7 +148,7 @@ namespace Amoeba.Windows
 
                     foreach (var item in _searchingCache)
                     {
-                        if (words != null && words.Length != 0)
+                        if (words != null)
                         {
                             var text = (item.Name ?? "").ToLower();
                             if (!words.All(n => text.Contains(n))) continue;
@@ -622,7 +622,6 @@ namespace Amoeba.Windows
                                 searchItem.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                                 searchItem.CreationTime = seed.CreationTime;
                                 searchItem.State = value.State;
-                                searchItem.Id = SeedUtilities.GetHash(seed);
                                 searchItem.Value = seed;
 
                                 searchItem.Seeds = value.Seeds;
@@ -1902,20 +1901,6 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
-            else if (sortBy == LanguagesManager.Instance.SearchControl_Id)
-            {
-                list.Sort((x, y) =>
-                {
-                    int c = Unsafe.Compare(x.Id, y.Id);
-                    if (c != 0) return c;
-                    c = x.Name.CompareTo(y.Name);
-                    if (c != 0) return c;
-                    c = x.Index.CompareTo(y.Index);
-                    if (c != 0) return c;
-
-                    return 0;
-                });
-            }
 
             if (direction == ListSortDirection.Descending)
             {
@@ -1937,7 +1922,6 @@ namespace Amoeba.Windows
             public string Keywords { get; set; }
             public DateTime CreationTime { get; set; }
             public SearchState State { get; set; }
-            public byte[] Id { get; set; }
             public Seed Value { get; set; }
 
             public SmallList<Seed> Seeds { get; set; }
@@ -1967,7 +1951,6 @@ namespace Amoeba.Windows
                     || this.Length != other.Length
                     || this.Keywords != other.Keywords
                     || this.CreationTime != other.CreationTime
-                    || this.Id != other.Id
                     || this.State != other.State
                     || this.Value != other.Value
 

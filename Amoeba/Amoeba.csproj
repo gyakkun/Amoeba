@@ -111,7 +111,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Utilities\BoxUtilities.cs" />
-    <Compile Include="Utilities\SeedUtilities.cs" />
     <Compile Include="Utilities\Ipv4AddressFilter.cs" />
     <Compile Include="Utilities\CatharsisManager.cs" />
     <Compile Include="Windows\UploadWindow.xaml.cs">

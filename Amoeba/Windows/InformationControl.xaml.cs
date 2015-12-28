@@ -346,58 +346,51 @@ namespace Amoeba.Windows
 
         private void Sort()
         {
-            this.GridViewColumnHeaderClickedHandler(null, null);
+            _listView.Items.SortDescriptions.Clear();
+
+            if (Settings.Instance.InformationControl_LastHeaderClicked != null)
+            {
+                var list = this.Sort(_listViewItemCollection, Settings.Instance.InformationControl_LastHeaderClicked, Settings.Instance.InformationControl_ListSortDirection).ToList();
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var o = _listViewItemCollection.IndexOf(list[i]);
+
+                    if (i != o) _listViewItemCollection.Move(o, i);
+                }
+            }
         }
 
         private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
-            if (e != null)
+            var item = e.OriginalSource as GridViewColumnHeader;
+            if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
+
+            string headerClicked = item.Column.Header as string;
+            if (headerClicked == null) return;
+
+            ListSortDirection direction;
+
+            if (headerClicked != Settings.Instance.InformationControl_LastHeaderClicked)
             {
-                var item = e.OriginalSource as GridViewColumnHeader;
-                if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
-
-                string headerClicked = item.Column.Header as string;
-                if (headerClicked == null) return;
-
-                ListSortDirection direction;
-
-                if (headerClicked != Settings.Instance.InformationControl_LastHeaderClicked)
-                {
-                    direction = ListSortDirection.Ascending;
-                }
-                else
-                {
-                    if (Settings.Instance.InformationControl_ListSortDirection == ListSortDirection.Ascending)
-                    {
-                        direction = ListSortDirection.Descending;
-                    }
-                    else
-                    {
-                        direction = ListSortDirection.Ascending;
-                    }
-                }
-
-                this.Sort(headerClicked, direction);
-
-                Settings.Instance.InformationControl_LastHeaderClicked = headerClicked;
-                Settings.Instance.InformationControl_ListSortDirection = direction;
+                direction = ListSortDirection.Ascending;
             }
             else
             {
-                _listView.Items.SortDescriptions.Clear();
-
-                if (Settings.Instance.InformationControl_LastHeaderClicked != null)
+                if (Settings.Instance.InformationControl_ListSortDirection == ListSortDirection.Ascending)
                 {
-                    var list = this.Sort(_listViewItemCollection, Settings.Instance.InformationControl_LastHeaderClicked, Settings.Instance.InformationControl_ListSortDirection).ToList();
-
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        var o = _listViewItemCollection.IndexOf(list[i]);
-
-                        if (i != o) _listViewItemCollection.Move(o, i);
-                    }
+                    direction = ListSortDirection.Descending;
+                }
+                else
+                {
+                    direction = ListSortDirection.Ascending;
                 }
             }
+
+            this.Sort(headerClicked, direction);
+
+            Settings.Instance.InformationControl_LastHeaderClicked = headerClicked;
+            Settings.Instance.InformationControl_ListSortDirection = direction;
         }
 
         private void Sort(string sortBy, ListSortDirection direction)

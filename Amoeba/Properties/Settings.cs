@@ -104,7 +104,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_CreationTime_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Comment_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "SearchControl_GridViewColumn_Id_Width", Value = 120 },
 
                 new Library.Configuration.SettingContent<string>() { Name = "DownloadControl_LastHeaderClicked", Value = "Rate" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "DownloadControl_ListSortDirection", Value = ListSortDirection.Descending },
@@ -1608,24 +1607,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["SearchControl_GridViewColumn_Comment_Width"] = value;
-                }
-            }
-        }
-
-        public double SearchControl_GridViewColumn_Id_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (double)this["SearchControl_GridViewColumn_Id_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["SearchControl_GridViewColumn_Id_Width"] = value;
                 }
             }
         }
