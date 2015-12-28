@@ -1409,7 +1409,7 @@ namespace Amoeba.Windows
 
             MenuItem storeTreeViewItemPasteMenuItem = contextMenu.GetMenuItem("_storeTreeViewItemPasteMenuItem");
 
-            storeTreeViewItemPasteMenuItem.IsEnabled = Clipboard.ContainsStoreTreeItems();
+            storeTreeViewItemPasteMenuItem.IsEnabled = Clipboard.ContainsBoxes();
         }
 
         private void _storeTreeViewItemNewBoxMenuItem_Click(object sender, RoutedEventArgs e)
