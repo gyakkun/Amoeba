@@ -37,9 +37,9 @@
                 <MenuItem Name="_startMenuItem" Header="{Binding Path=MainWindow_Start, Source={StaticResource ResourcesInstance}}" Click="_startMenuItem_Click" />
                 <MenuItem Name="_stopMenuItem" Header="{Binding Path=MainWindow_Stop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_stopMenuItem_Click" />
                 <Separator />
-                <MenuItem Name="_linkOptionsMenuItem" Header="{Binding Path=MainWindow_LinkOptions, Source={StaticResource ResourcesInstance}}" Click="_linkOptionsMenuItem_Click" />
-                <Separator />
                 <MenuItem Name="_updateBaseNodeMenuItem" Header="{Binding Path=MainWindow_UpdateBaseNode, Source={StaticResource ResourcesInstance}}" Click="_updateBaseNodeMenuItem_Click" />
+                <Separator />
+                <MenuItem Name="_linkOptionsMenuItem" Header="{Binding Path=MainWindow_LinkOptions, Source={StaticResource ResourcesInstance}}" Click="_linkOptionsMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_cacheMenuItem" Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_cacheMenuItem_SubmenuOpened">
                 <MenuItem Name="_encodeAndDecodeStartMenuItem" Header="{Binding Path=MainWindow_ConvertStart, Source={StaticResource ResourcesInstance}}" Click="_encodeAndDecodeStartMenuItem_Click" />

@@ -1731,13 +1731,6 @@ namespace Amoeba.Windows
             Settings.Instance.Global_IsStart = false;
         }
 
-        private void _linkOptionsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            LinkOptionsWindow window = new LinkOptionsWindow(_amoebaManager);
-            window.Owner = this;
-            window.ShowDialog();
-        }
-
         volatile bool _updateBaseNodeMenuItem_IsEnabled = true;
 
         private void _updateBaseNodeMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1773,6 +1766,13 @@ namespace Amoeba.Windows
                     _updateBaseNodeMenuItem_IsEnabled = true;
                 }
             });
+        }
+
+        private void _linkOptionsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            LinkOptionsWindow window = new LinkOptionsWindow(_amoebaManager);
+            window.Owner = this;
+            window.ShowDialog();
         }
 
         private void _cacheMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
