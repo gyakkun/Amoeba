@@ -42,8 +42,6 @@ namespace Amoeba
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        private const int _maxReceiveCount = 1024 * 1024 * 32;
-
         public CatharsisManager(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _amoebaManager = amoebaManager;
