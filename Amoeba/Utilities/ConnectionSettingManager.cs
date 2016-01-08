@@ -15,7 +15,7 @@ using System.Security.Cryptography;
 
 namespace Amoeba
 {
-    class AutoBaseNodeSettingManager : StateManagerBase, Library.Configuration.ISettings, IThisLock
+    class ConnectionSettingManager : StateManagerBase, Library.Configuration.ISettings, IThisLock
     {
         private AmoebaManager _amoebaManager;
 
@@ -26,7 +26,7 @@ namespace Amoeba
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public AutoBaseNodeSettingManager(AmoebaManager amoebaManager)
+        public ConnectionSettingManager(AmoebaManager amoebaManager)
         {
             _amoebaManager = amoebaManager;
 
@@ -44,26 +44,44 @@ namespace Amoeba
         private static IEnumerable<IPAddress> GetIpAddresses()
         {
             var list = new HashSet<IPAddress>();
-            list.UnionWith(Dns.GetHostAddresses(Dns.GetHostName()));
 
-            string query = "SELECT * FROM Win32_NetworkAdapterConfiguration";
-
-            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
+            try
             {
-                ManagementObjectCollection queryCollection = searcher.Get();
+                list.UnionWith(Dns.GetHostAddresses(Dns.GetHostName()));
+            }
+            catch (Exception)
+            {
 
-                foreach (ManagementObject mo in queryCollection)
+            }
+
+            try
+            {
+                string query = "SELECT * FROM Win32_NetworkAdapterConfiguration";
+
+                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
                 {
-                    if ((bool)mo["IPEnabled"])
-                    {
-                        foreach (string ip in (string[])mo["IPAddress"])
-                        {
-                            if (ip != null) continue;
+                    ManagementObjectCollection queryCollection = searcher.Get();
 
-                            list.Add(IPAddress.Parse(ip));
+                    foreach (ManagementObject mo in queryCollection)
+                    {
+                        if ((bool)mo["IPEnabled"])
+                        {
+                            foreach (string ip in (string[])mo["IPAddress"])
+                            {
+                                IPAddress value;
+
+                                if (IPAddress.TryParse(ip, out value))
+                                {
+                                    list.Add(value);
+                                }
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception)
+            {
+
             }
 
             return list;
@@ -131,7 +149,7 @@ namespace Amoeba
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        List<IPAddress> myIpAddresses = new List<IPAddress>(AutoBaseNodeSettingManager.GetIpAddresses());
+                        List<IPAddress> myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
 
                         foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
                         {
@@ -141,23 +159,23 @@ namespace Amoeba
                             {
                                 continue;
                             }
-                            if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
-                                && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
+                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
+                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
-                                && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
+                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
+                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
-                                && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
+                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
+                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
-                                && AutoBaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
+                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
+                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
                             {
                                 continue;
                             }
@@ -200,7 +218,7 @@ namespace Amoeba
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        List<IPAddress> myIpAddresses = new List<IPAddress>(AutoBaseNodeSettingManager.GetIpAddresses());
+                        List<IPAddress> myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
 
                         foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6))
                         {

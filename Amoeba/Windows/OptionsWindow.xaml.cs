@@ -26,7 +26,7 @@ namespace Amoeba.Windows
     partial class OptionsWindow : Window
     {
         private AmoebaManager _amoebaManager;
-        private AutoBaseNodeSettingManager _autoBaseNodeSettingManager;
+        private ConnectionSettingManager _connectionSettingManager;
         private OverlayNetworkManager _overlayNetworkManager;
         private TransfarLimitManager _transferLimitManager;
         private BufferManager _bufferManager;
@@ -40,10 +40,10 @@ namespace Amoeba.Windows
         private ObservableCollectionEx<SignatureListViewItem> _signatureListViewItemCollection;
         private ObservableCollectionEx<string> _keywordCollection;
 
-        public OptionsWindow(AmoebaManager amoebaManager, AutoBaseNodeSettingManager autoBaseNodeSettingManager, OverlayNetworkManager overlayNetworkManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
+        public OptionsWindow(AmoebaManager amoebaManager, ConnectionSettingManager connectionSettingManager, OverlayNetworkManager overlayNetworkManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
         {
             _amoebaManager = amoebaManager;
-            _autoBaseNodeSettingManager = autoBaseNodeSettingManager;
+            _connectionSettingManager = connectionSettingManager;
             _overlayNetworkManager = overlayNetworkManager;
             _transferLimitManager = transfarLimitManager;
             _bufferManager = bufferManager;
@@ -2078,11 +2078,11 @@ namespace Amoeba.Windows
             }
 
             if (flag && _eventOpenPortAndGetIpAddressCheckBox.IsChecked.Value
-                && _autoBaseNodeSettingManager.State == ManagerState.Start)
+                && _connectionSettingManager.State == ManagerState.Start)
             {
                 ThreadPool.QueueUserWorkItem((object state) =>
                 {
-                    _autoBaseNodeSettingManager.Update();
+                    _connectionSettingManager.Update();
                 });
             }
 

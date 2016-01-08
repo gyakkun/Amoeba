@@ -301,7 +301,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\Settings.cs" />
-    <Compile Include="Utilities\AutoBaseNodeSettingManager.cs" />
+    <Compile Include="Utilities\ConnectionSettingManager.cs" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

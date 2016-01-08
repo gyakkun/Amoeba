@@ -59,7 +59,7 @@ namespace Amoeba.Windows
     {
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
-        private AutoBaseNodeSettingManager _autoBaseNodeSettingManager;
+        private ConnectionSettingManager _connectionSettingManager;
         private OverlayNetworkManager _overlayNetworkManager;
         private TransfarLimitManager _transferLimitManager;
         private CatharsisManager _catharsisManager;
@@ -113,7 +113,7 @@ namespace Amoeba.Windows
 
                 _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
                 _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
-                _configrationDirectoryPaths.Add("AutoBaseNodeSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/AutoBaseNodeSettingManager"));
+                _configrationDirectoryPaths.Add("ConnectionSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/ConnectionSettingManager"));
                 _configrationDirectoryPaths.Add("OverlayNetworkManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/OverlayNetworkManager"));
                 _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
                 _configrationDirectoryPaths.Add("CatharsisManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/CatharsisManager"));
@@ -284,15 +284,15 @@ namespace Amoeba.Windows
                             }));
                         }
 
-                        if (_autoBaseNodeSettingManager.State == ManagerState.Stop
+                        if (_connectionSettingManager.State == ManagerState.Stop
                             && (Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
                         {
-                            _autoBaseNodeSettingManager.Start();
+                            _connectionSettingManager.Start();
                         }
-                        else if (_autoBaseNodeSettingManager.State == ManagerState.Start
+                        else if (_connectionSettingManager.State == ManagerState.Start
                             && (!Settings.Instance.Global_IsStart || !Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
                         {
-                            _autoBaseNodeSettingManager.Stop();
+                            _connectionSettingManager.Stop();
                         }
 
                         if (_overlayNetworkManager.State == ManagerState.Stop
@@ -412,7 +412,7 @@ namespace Amoeba.Windows
                             _catharsisManager.Save(_configrationDirectoryPaths["CatharsisManager"]);
                             _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                             _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
-                            _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+                            _connectionSettingManager.Save(_configrationDirectoryPaths["ConnectionSettingManager"]);
                             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                             Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
                         }
@@ -446,7 +446,7 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            _autoBaseNodeSettingManager.Update();
+                            _connectionSettingManager.Update();
                         }
                         catch (Exception e)
                         {
@@ -1252,8 +1252,8 @@ namespace Amoeba.Windows
                     writer.WriteLine(App.AmoebaVersion.ToString());
                 }
 
-                _autoBaseNodeSettingManager = new AutoBaseNodeSettingManager(_amoebaManager);
-                _autoBaseNodeSettingManager.Load(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+                _connectionSettingManager = new ConnectionSettingManager(_amoebaManager);
+                _connectionSettingManager.Load(_configrationDirectoryPaths["ConnectionSettingManager"]);
 
                 _overlayNetworkManager = new OverlayNetworkManager(_amoebaManager, _bufferManager);
                 _overlayNetworkManager.Load(_configrationDirectoryPaths["OverlayNetworkManager"]);
@@ -1270,7 +1270,7 @@ namespace Amoeba.Windows
                     _catharsisManager.Save(_configrationDirectoryPaths["CatharsisManager"]);
                     _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                     _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
-                    _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
+                    _connectionSettingManager.Save(_configrationDirectoryPaths["ConnectionSettingManager"]);
                     _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
                     Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
                 }
@@ -1621,9 +1621,9 @@ namespace Amoeba.Windows
                     _transferLimitManager.Save(_configrationDirectoryPaths["TransfarLimitManager"]);
                     _transferLimitManager.Dispose();
 
-                    _autoBaseNodeSettingManager.Stop();
-                    _autoBaseNodeSettingManager.Save(_configrationDirectoryPaths["AutoBaseNodeSettingManager"]);
-                    _autoBaseNodeSettingManager.Dispose();
+                    _connectionSettingManager.Stop();
+                    _connectionSettingManager.Save(_configrationDirectoryPaths["ConnectionSettingManager"]);
+                    _connectionSettingManager.Dispose();
 
                     _overlayNetworkManager.Stop();
                     _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
@@ -1749,7 +1749,7 @@ namespace Amoeba.Windows
                     sw.Start();
 #endif
 
-                    _autoBaseNodeSettingManager.Update();
+                    _connectionSettingManager.Update();
                     _overlayNetworkManager.Restart();
 
 #if DEBUG
@@ -1925,7 +1925,7 @@ namespace Amoeba.Windows
         {
             OptionsWindow window = new OptionsWindow(
                 _amoebaManager,
-                _autoBaseNodeSettingManager,
+                _connectionSettingManager,
                 _overlayNetworkManager,
                 _transferLimitManager,
                 _bufferManager);
