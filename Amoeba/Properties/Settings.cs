@@ -28,7 +28,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<string>() { Name = "Global_UseLanguage", Value = "English" },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_IsStart", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_IsConvertStart", Value = true },
-                new Library.Configuration.SettingContent<bool>() { Name = "Global_AutoBaseNodeSetting_IsEnabled", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_ConnectionSetting_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_I2p_SamBridge_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
@@ -345,20 +345,20 @@ namespace Amoeba.Properties
             }
         }
 
-        public bool Global_AutoBaseNodeSetting_IsEnabled
+        public bool Global_ConnectionSetting_IsEnabled
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return (bool)this["Global_AutoBaseNodeSetting_IsEnabled"];
+                    return (bool)this["Global_ConnectionSetting_IsEnabled"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["Global_AutoBaseNodeSetting_IsEnabled"] = value;
+                    this["Global_ConnectionSetting_IsEnabled"] = value;
                 }
             }
         }

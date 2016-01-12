@@ -285,12 +285,12 @@ namespace Amoeba.Windows
                         }
 
                         if (_connectionSettingManager.State == ManagerState.Stop
-                            && (Settings.Instance.Global_IsStart && Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
+                            && (Settings.Instance.Global_IsStart && Settings.Instance.Global_ConnectionSetting_IsEnabled))
                         {
                             _connectionSettingManager.Start();
                         }
                         else if (_connectionSettingManager.State == ManagerState.Start
-                            && (!Settings.Instance.Global_IsStart || !Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled))
+                            && (!Settings.Instance.Global_IsStart || !Settings.Instance.Global_ConnectionSetting_IsEnabled))
                         {
                             _connectionSettingManager.Stop();
                         }
@@ -1710,7 +1710,7 @@ namespace Amoeba.Windows
         private void _coreMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsStart && _updateBaseNodeMenuItem_IsEnabled
-                && (Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled || Settings.Instance.Global_I2p_SamBridge_IsEnabled);
+                && (Settings.Instance.Global_ConnectionSetting_IsEnabled || Settings.Instance.Global_I2p_SamBridge_IsEnabled);
         }
 
         private void _startMenuItem_Click(object sender, RoutedEventArgs e)

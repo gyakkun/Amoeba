@@ -156,7 +156,7 @@ namespace Amoeba.Windows
                 _transferInfoTotalLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize + _transferLimitManager.TotalDownloadSize);
             }
 
-            _eventOpenPortAndGetIpAddressCheckBox.IsChecked = Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled;
+            _eventOpenPortAndGetIpAddressCheckBox.IsChecked = Settings.Instance.Global_ConnectionSetting_IsEnabled;
             _eventUseI2pCheckBox.IsChecked = Settings.Instance.Global_I2p_SamBridge_IsEnabled;
 
             lock (_overlayNetworkManager.ThisLock)
@@ -2091,7 +2091,7 @@ namespace Amoeba.Windows
                 _overlayNetworkManager.SamBridgeUri = _eventSamBridgeUriTextBox.Text;
             }
 
-            Settings.Instance.Global_AutoBaseNodeSetting_IsEnabled = _eventOpenPortAndGetIpAddressCheckBox.IsChecked.Value;
+            Settings.Instance.Global_ConnectionSetting_IsEnabled = _eventOpenPortAndGetIpAddressCheckBox.IsChecked.Value;
             Settings.Instance.Global_I2p_SamBridge_IsEnabled = _eventUseI2pCheckBox.IsChecked.Value;
             Settings.Instance.OptionsWindow_DataCacheSize_Unit = (string)_dataCacheSizeComboBox.SelectedItem;
             Settings.Instance.OptionsWindow_BandwidthLimit_Unit = (string)_bandwidthLimitComboBox.SelectedItem;
