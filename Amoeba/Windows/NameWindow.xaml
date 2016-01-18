@@ -20,7 +20,7 @@
         d:DesignWidth="600">
 
     <Grid FocusManager.FocusedElement="{Binding ElementName=_textBox}">
-        <Label Content="{Binding Path=NameWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+        <Label Content="{Binding Path=NameWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />
         <Button Content="{Binding Path=NameWindow_Ok, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,42,93,0" Name="_okButton" VerticalAlignment="Top" Width="75" Click="_okButton_Click" IsDefault="True" IsEnabled="False" />
         <Button Content="{Binding Path=NameWindow_Cancel, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,42,12,12" Name="_cancelButton" VerticalAlignment="Top" Width="75" Click="_cancelButton_Click" IsCancel="True" />
         <TextBox Height="24" Margin="138,12,12,0" Name="_textBox" VerticalAlignment="Top" TextChanged="_textBox_TextChanged" />

@@ -48,7 +48,7 @@
                 TreeViewItem.Expanded="_treeView_Expanded" TreeViewItem.Collapsed="_treeView_Collapsed"
                 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <TreeView.Resources>
-                <ContextMenu x:Key="_treeViewItemContextMenu" >
+                <ContextMenu x:Key="_treeViewItemContextMenu">
                     <MenuItem Name="_treeViewItemNewBoxMenuItem" Header="{Binding Path=LibraryControl_NewBox, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemNewBoxMenuItem_Click" />
                     <MenuItem Name="_treeViewItemEditMenuItem" Header="{Binding Path=LibraryControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemEditMenuItem_Click" />
                     <MenuItem Name="_treeViewItemDeleteMenuItem" Header="{Binding Path=LibraryControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemDeleteMenuItem_Click" />
@@ -61,7 +61,7 @@
                     <MenuItem Name="_treeViewItemExportMenuItem" Header="{Binding Path=LibraryControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemExportMenuItem_Click" />
                 </ContextMenu>
                 
-                <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="ContextMenu" Value="{StaticResource _treeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_treeViewItemContextMenu_ContextMenuOpening" />
                 </Style>

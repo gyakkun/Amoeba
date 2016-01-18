@@ -62,13 +62,13 @@
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="3" />
 
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_baseNodeUriTextBox}" Visibility="{Binding ElementName=_baseNodeTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <TextBox Name="_baseNodeTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" IsReadOnly="True" VerticalContentAlignment="Center" />
-                <Label Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=OptionsWindow_Node, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+                <TextBox Name="_baseNodeTextBox" Height="24" Margin="132,6,6,0" VerticalAlignment="Top" IsReadOnly="True" />
+                <Label Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=OptionsWindow_Node, Source={StaticResource ResourcesInstance}}" />
                 <GroupBox Header="{Binding Path=OptionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Margin="0,36,0,0">
                     <Grid>
                         <local:ListViewEx x:Name="_baseNodeUrisListView" Margin="6,6,6,95" SelectionChanged="_baseNodeUrisListView_SelectionChanged" PreviewMouseLeftButtonDown="_baseNodeUrisListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_baseNodeUrisListView_ContextMenuOpening">
                             <ListView.ContextMenu>
-                                <ContextMenu Name="_baseNodeUrisListViewContextMenu" >
+                                <ContextMenu Name="_baseNodeUrisListViewContextMenu">
                                     <MenuItem Name="_baseNodeUrisListViewDeleteMenuItem" Header="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_baseNodeUrisListViewDeleteMenuItem_Click"/>
                                     <Separator />
                                     <MenuItem Name="_baseNodeUrisListViewCutMenuItem" Header="{Binding Path=OptionsWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_baseNodeUrisListViewCutMenuItem_Click"/>
@@ -83,9 +83,9 @@
                                 </GridView>
                             </ListView.View>
                         </local:ListViewEx>
-                        <TextBox Name="_baseNodeUriTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_baseNodeUriTextBox_KeyDown" />
-                        <Label Content="{Binding Path=OptionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120" VerticalContentAlignment="Center" />
-                        <ComboBox Height="24" Margin="132,0,6,65" Name="_baseNodeUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_baseNodeUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_baseNodeUriSchemeComboBox_SelectionChanged" VerticalContentAlignment="Center">
+                        <TextBox Name="_baseNodeUriTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" KeyDown="_baseNodeUriTextBox_KeyDown" />
+                        <Label Content="{Binding Path=OptionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120" />
+                        <ComboBox Height="24" Margin="132,0,6,65" Name="_baseNodeUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_baseNodeUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_baseNodeUriSchemeComboBox_SelectionChanged">
                             <ComboBoxItem Content="tcp" IsSelected="True" />
                             <ComboBoxItem Content="tor" />
                             <ComboBoxItem Content="i2p" />
@@ -109,7 +109,7 @@
                                 </DataTemplate>
                             </ListView.Resources>
                             <ListView.ContextMenu>
-                                <ContextMenu Name="_otherNodesContextMenu" >
+                                <ContextMenu Name="_otherNodesContextMenu">
                                     <MenuItem Name="_otherNodesCopyMenuItem" Header="{Binding Path=OptionsWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_otherNodesCopyMenuItem_Click"/>
                                     <MenuItem Name="_otherNodesPasteMenuItem" Header="{Binding Path=OptionsWindow_Paste, Source={StaticResource ResourcesInstance}}" Click="_otherNodesPasteMenuItem_Click"/>
                                 </ContextMenu>
@@ -123,8 +123,8 @@
                         </local:ListViewEx>
                     </Grid>
                 </GroupBox>
-                <TextBox Height="24" IsReadOnly="True" Margin="132,6,6,0" Name="_otherNodesUrisTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <Label Content="{Binding Path=OptionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+                <TextBox Height="24" IsReadOnly="True" Margin="132,6,6,0" Name="_otherNodesUrisTextBox" VerticalAlignment="Top" />
+                <Label Content="{Binding Path=OptionsWindow_Uris, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
             </Grid>
 
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_clientFiltersConditionTextBox}" Visibility="{Binding ElementName=_clientTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
@@ -146,7 +146,7 @@
                                 </DataTemplate>
                             </ListView.Resources>
                             <ListView.ContextMenu>
-                                <ContextMenu Name="_clientFiltersListViewContextMenu" >
+                                <ContextMenu Name="_clientFiltersListViewContextMenu">
                                     <MenuItem Name="_clientFiltersListViewDeleteMenuItem" Header="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewDeleteMenuItem_Click"/>
                                     <Separator />
                                     <MenuItem Name="_clientFiltersListViewCutMenuItem" Header="{Binding Path=OptionsWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_clientFiltersListViewCutMenuItem_Click"/>
@@ -167,23 +167,23 @@
                                 </GridView>
                             </ListView.View>
                         </local:ListViewEx>
-                        <Label Margin="6,0,0,199" HorizontalAlignment="Left" Width="120" Content="{Binding Path=OptionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
-                        <ComboBox Margin="132,0,6,199" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged" VerticalContentAlignment="Center">
+                        <Label Margin="6,0,0,199" HorizontalAlignment="Left" Width="120" Content="{Binding Path=OptionsWindow_ConnectionType, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Bottom" />
+                        <ComboBox Margin="132,0,6,199" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,169" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
-                        <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="132,0,6,169" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_clientFiltersProxyUriTextBox_KeyDown" />
-                        <Label Content="{Binding Path=OptionsWindow_Option, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Width="120" />
-                        <TextBox Height="24" Margin="132,0,6,139" Name="_clientFiltersOptionTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" />
+                        <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,169" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" />
+                        <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="132,0,6,169" VerticalAlignment="Bottom" KeyDown="_clientFiltersProxyUriTextBox_KeyDown" />
+                        <Label Content="{Binding Path=OptionsWindow_Option, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" Width="120" />
+                        <TextBox Height="24" Margin="132,0,6,139" Name="_clientFiltersOptionTextBox" VerticalAlignment="Bottom" />
                         <GroupBox Header="{Binding Path=OptionsWindow_UriCondition, Source={StaticResource ResourcesInstance}}" Margin="6,0,6,35" Height="98" VerticalAlignment="Bottom">
                             <Grid>
-                                <Label HorizontalAlignment="Left" Margin="6,6,0,0" Width="120" Height="24" VerticalAlignment="Top" Content="{Binding Path=OptionsWindow_Type, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
-                                <TextBox Margin="6,36,6,0" Name="_clientFiltersConditionTextBox" Height="24" VerticalAlignment="Top" VerticalContentAlignment="Center" KeyDown="_clientFiltersConditionTextBox_KeyDown" />
-                                <ComboBox Margin="132,6,6,0" Name="_clientFiltersConditionSchemeComboBox" Height="24" VerticalAlignment="Top" PreviewMouseLeftButtonDown="_clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConditionSchemeComboBox_SelectionChanged" VerticalContentAlignment="Center">
+                                <Label HorizontalAlignment="Left" Margin="6,6,0,0" Width="120" Height="24" VerticalAlignment="Top" Content="{Binding Path=OptionsWindow_Type, Source={StaticResource ResourcesInstance}}" />
+                                <TextBox Margin="6,36,6,0" Name="_clientFiltersConditionTextBox" Height="24" VerticalAlignment="Top" KeyDown="_clientFiltersConditionTextBox_KeyDown" />
+                                <ComboBox Margin="132,6,6,0" Name="_clientFiltersConditionSchemeComboBox" Height="24" VerticalAlignment="Top" PreviewMouseLeftButtonDown="_clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConditionSchemeComboBox_SelectionChanged">
                                     <ComboBoxItem Content="tcp" IsSelected="True" />
                                     <ComboBoxItem Content="tor" />
                                     <ComboBoxItem Content="i2p" />
@@ -209,7 +209,7 @@
                                 </DataTemplate>
                             </ListView.Resources>
                             <ListView.ContextMenu>
-                                <ContextMenu Name="_serverListenUrisListViewContextMenu" >
+                                <ContextMenu Name="_serverListenUrisListViewContextMenu">
                                     <MenuItem Name="_serverListenUrisListViewDeleteMenuItem" Header="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_serverListenUrisListViewDeleteMenuItem_Click"/>
                                     <Separator />
                                     <MenuItem Name="_serverListenUrisListViewCutMenuItem" Header="{Binding Path=OptionsWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_serverListenUrisListViewCutMenuItem_Click"/>
@@ -224,9 +224,9 @@
                                 </GridView>
                             </ListView.View>
                         </local:ListViewEx>
-                        <TextBox Height="24" Margin="6,0,6,35" Name="_serverListenUriTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_serverListenUriTextBox_KeyDown" />
-                        <Label Content="{Binding Path=OptionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,65" Name="label4" VerticalAlignment="Bottom" Width="120" VerticalContentAlignment="Center" />
-                        <ComboBox Height="24" Margin="132,0,6,65" Name="_serverListenUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_serverListenUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUriSchemeComboBox_SelectionChanged" VerticalContentAlignment="Center">
+                        <TextBox Height="24" Margin="6,0,6,35" Name="_serverListenUriTextBox" VerticalAlignment="Bottom" KeyDown="_serverListenUriTextBox_KeyDown" />
+                        <Label Content="{Binding Path=OptionsWindow_Type, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,65" Name="label4" VerticalAlignment="Bottom" Width="120" />
+                        <ComboBox Height="24" Margin="132,0,6,65" Name="_serverListenUriSchemeComboBox" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_serverListenUriSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_serverListenUriSchemeComboBox_SelectionChanged">
                             <ComboBoxItem Content="tcp" IsSelected="True" />
                         </ComboBox>
                         <Button Name="_serverListenUriUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=OptionsWindow_Up, Source={StaticResource ResourcesInstance}}" Click="_serverListenUriUpButton_Click" IsEnabled="False" />
@@ -239,24 +239,24 @@
             </Grid>
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_dataTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <Label Content="{Binding Path=OptionsWindow_CacheSize, Source={StaticResource ResourcesInstance}}" Height="22" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
-                <TextBox Height="24" Margin="0,36,72,0" Name="_dataCacheSizeTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" TextChanged="_dataCacheSizeTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
+                <Label Content="{Binding Path=OptionsWindow_CacheSize, Source={StaticResource ResourcesInstance}}" Height="22" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="0,36,72,0" Name="_dataCacheSizeTextBox" VerticalAlignment="Top" TextChanged="_dataCacheSizeTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
                 <ComboBox Height="24" Margin="0,36,6,0" Name="_dataCacheSizeComboBox" VerticalAlignment="Top" HorizontalAlignment="Right" Width="60" SelectionChanged="_dataCacheSizeComboBox_SelectionChanged" />
-                <Label Content="{Binding Path=OptionsWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
-                <TextBox Name="_dataDownloadDirectoryTextBox" Height="24" Margin="252,6,36,0" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=OptionsWindow_DownloadDirectory, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Name="_dataDownloadDirectoryTextBox" Height="24" Margin="252,6,36,0" VerticalAlignment="Top" />
                 <Button Name="_dataDownloadDirectoryButton" HorizontalAlignment="Right" Height="24" Margin="0,6,6,0" VerticalAlignment="Top" Width="24" Click="_dataDownloadDirectoryButton_Click"/>
             </Grid>
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_bandwidthTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <Label Content="{Binding Path=OptionsWindow_ConnectionCount, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
-                <TextBox Height="24" Margin="0,6,6,0" Name="_bandwidthConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_bandwidthConnectionCountTextBox_TextChanged" VerticalContentAlignment="Center" HorizontalAlignment="Right" Width="120" />
-                <Label Content="{Binding Path=OptionsWindow_BandwidthLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
-                <TextBox Height="24" Margin="0,36,72,0" Name="_bandwidthLimitTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" TextChanged="_bandwidthLimitTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
+                <Label Content="{Binding Path=OptionsWindow_ConnectionCount, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="0,6,6,0" Name="_bandwidthConnectionCountTextBox" VerticalAlignment="Top" TextChanged="_bandwidthConnectionCountTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
+                <Label Content="{Binding Path=OptionsWindow_BandwidthLimit, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="0,36,72,0" Name="_bandwidthLimitTextBox" VerticalAlignment="Top" TextChanged="_bandwidthLimitTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
                 <ComboBox Height="24" HorizontalAlignment="Right" Margin="0,36,6,0" Name="_bandwidthLimitComboBox" VerticalAlignment="Top" Width="60" SelectionChanged="_bandwidthLimitComboBox_SelectionChanged" />
             </Grid>
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_transferTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <Label Content="{Binding Path=OptionsWindow_TransferLimitType, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=OptionsWindow_TransferLimitType, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" />
                 <ComboBox Height="23" Margin="132,7,6,0" Name="_transferLimitTypeComboBox" VerticalAlignment="Top" SelectionChanged="_transferLimitTypeComboBox_SelectionChanged" HorizontalAlignment="Right" Width="120">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -264,19 +264,19 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <Label Content="{Binding Path=OptionsWindow_TransferLimitSpan, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
+                <Label Content="{Binding Path=OptionsWindow_TransferLimitSpan, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="240" />
                 <TextBox Height="23" Margin="132,38,6,0" Name="_transferLimitSpanTextBox" VerticalAlignment="Top" TextChanged="_transferLimitSpanTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
-                <Label Content="{Binding Path=OptionsWindow_TransferLimitSize, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,67,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
-                <TextBox Height="24" Margin="0,67,72,0" Name="_transferLimitSizeTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" TextChanged="_transferLimitSizeTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
+                <Label Content="{Binding Path=OptionsWindow_TransferLimitSize, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,67,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="0,67,72,0" Name="_transferLimitSizeTextBox" VerticalAlignment="Top" TextChanged="_transferLimitSizeTextBox_TextChanged" HorizontalAlignment="Right" Width="120" />
                 <ComboBox Height="24" HorizontalAlignment="Right" Margin="0,67,6,0" Name="_transferLimitSizeComboBox" VerticalAlignment="Top" Width="60" SelectionChanged="_transferLimitSizeComboBox_SelectionChanged" />
                 <GroupBox Header="{Binding Path=OptionsWindow_TransferInformation, Source={StaticResource ResourcesInstance}}" Margin="6,97,6,0" Height="156" VerticalAlignment="Top">
                     <Grid>
-                        <Label Content="{Binding Path=OptionsWindow_Uploaded, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
-                        <Label Content="{Binding Path=OptionsWindow_Downloaded, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
-                        <Label Content="{Binding Path=OptionsWindow_Total, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
-                        <Label Height="24" Margin="132,6,6,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Name="_transferInfoUploadedLabel" />
-                        <Label Height="24" Margin="132,36,6,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Name="_transferInfoDownloadedLabel" />
-                        <Label Height="24" Margin="132,66,6,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Name="_transferInfoTotalLabel" />
+                        <Label Content="{Binding Path=OptionsWindow_Uploaded, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
+                        <Label Content="{Binding Path=OptionsWindow_Downloaded, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="120" />
+                        <Label Content="{Binding Path=OptionsWindow_Total, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="120" />
+                        <Label Height="24" Margin="132,6,6,0" VerticalAlignment="Top" Name="_transferInfoUploadedLabel" />
+                        <Label Height="24" Margin="132,36,6,0" VerticalAlignment="Top" Name="_transferInfoDownloadedLabel" />
+                        <Label Height="24" Margin="132,66,6,0" VerticalAlignment="Top" Name="_transferInfoTotalLabel" />
                         <Button Content="{Binding Path=OptionsWindow_Reset, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,96,6,0" Name="_resetButton" VerticalAlignment="Top" Width="75" Click="_resetButton_Click" />
                     </Grid>
                 </GroupBox>
@@ -287,19 +287,19 @@
                     <Grid>
                         <CheckBox Content="{Binding Path=OptionsWindow_Events_OpenPortAndGetIpAddress, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_eventOpenPortAndGetIpAddressCheckBox" VerticalAlignment="Top" />
                         <CheckBox Content="{Binding Path=OptionsWindow_Events_UseI2p, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,28,0,0" Name="_eventUseI2pCheckBox" VerticalAlignment="Top" />
-                        <Label Content="{Binding Path=OptionsWindow_Events_UseI2p_SamBridgeUri, Source={StaticResource ResourcesInstance}}"  Height="24" HorizontalAlignment="Left" Margin="38,50,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
-                        <TextBox Height="24" Margin="284,50,6,0" Name="_eventSamBridgeUriTextBox" VerticalAlignment="Top" IsEnabled="{Binding ElementName=_eventUseI2pCheckBox, Path=IsChecked}" VerticalContentAlignment="Center" />
+                        <Label Content="{Binding Path=OptionsWindow_Events_UseI2p_SamBridgeUri, Source={StaticResource ResourcesInstance}}"  Height="24" HorizontalAlignment="Left" Margin="38,50,0,0" VerticalAlignment="Top" Width="240" />
+                        <TextBox Height="24" Margin="284,50,6,0" Name="_eventSamBridgeUriTextBox" VerticalAlignment="Top" IsEnabled="{Binding ElementName=_eventUseI2pCheckBox, Path=IsChecked}" />
                     </Grid>
                 </GroupBox>
             </Grid>
 
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_updateUrlTextBox}" Visibility="{Binding ElementName=_updateTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <Label Content="{Binding Path=OptionsWindow_UpdateUrl, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
-                <TextBox Height="24" Margin="132,6,6,0" Name="_updateUrlTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <Label Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
-                <TextBox Height="24" Margin="132,36,6,0" Name="_updateProxyUriTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-                <Label Content="{Binding Path=OptionsWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="120" />
-                <TextBox Height="24" Margin="132,66,6,0" Name="_updateSignatureTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=OptionsWindow_UpdateUrl, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
+                <TextBox Height="24" Margin="132,6,6,0" Name="_updateUrlTextBox" VerticalAlignment="Top" />
+                <Label Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="120" />
+                <TextBox Height="24" Margin="132,36,6,0" Name="_updateProxyUriTextBox" VerticalAlignment="Top" />
+                <Label Content="{Binding Path=OptionsWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="120" />
+                <TextBox Height="24" Margin="132,66,6,0" Name="_updateSignatureTextBox" VerticalAlignment="Top" />
                 <GroupBox Header="{Binding Path=OptionsWindow_UpdateOption, Source={StaticResource ResourcesInstance}}" Height="103" Margin="6,96,6,0" Name="groupBox1" VerticalAlignment="Top">
                     <Grid>
                         <RadioButton Content="{Binding Path=OptionsWindow_None, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_updateOptionNoneRadioButton" VerticalAlignment="Top" />
@@ -334,7 +334,7 @@
                 <Button Name="_signatureDownButton" Height="23" Margin="0,0,168,6" VerticalAlignment="Bottom" Content="{Binding Path=OptionsWindow_Down, Source={StaticResource ResourcesInstance}}" Click="_signatureDownButton_Click" HorizontalAlignment="Right" Width="75" IsEnabled="False" />
                 <Button Name="_signatureAddButton" Height="23" Margin="0,0,87,6" VerticalAlignment="Bottom" Content="{Binding Path=OptionsWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_signatureAddButton_Click" HorizontalAlignment="Right" Width="75" />
                 <Button Name="_signatureDeleteButton" Height="23" Margin="0,0,6,6" VerticalAlignment="Bottom" Content="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureDeleteButton_Click" HorizontalAlignment="Right" Width="75" />
-                <TextBox Height="23" Margin="6,0,6,35" Name="_signatureTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_signatureTextBox_KeyDown" />
+                <TextBox Height="23" Margin="6,0,6,35" Name="_signatureTextBox" VerticalAlignment="Bottom" KeyDown="_signatureTextBox_KeyDown" />
             </Grid>
 
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_keywordTextBox}" Visibility="{Binding ElementName=_keywordsTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
@@ -345,7 +345,7 @@
                         </DataTemplate>
                     </ListView.Resources>
                     <ListView.ContextMenu>
-                        <ContextMenu Name="_keywordListViewContextMenu" >
+                        <ContextMenu Name="_keywordListViewContextMenu">
                             <MenuItem Name="_keywordListViewDeleteMenuItem" Header="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewDeleteMenuItem_Click"/>
                             <Separator />
                             <MenuItem Name="_keywordListViewCutMenuItem" Header="{Binding Path=OptionsWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewCutMenuItem_Click"/>
@@ -365,14 +365,14 @@
                 <Button Name="_keywordAddButton" Height="23" Margin="0,0,168,6" VerticalAlignment="Bottom" Content="{Binding Path=OptionsWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_keywordAddButton_Click" HorizontalAlignment="Right" Width="75" Grid.Column="1" />
                 <Button Name="_keywordEditButton" Height="23" Margin="0,0,87,6" VerticalAlignment="Bottom" Content="{Binding Path=OptionsWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_keywordEditButton_Click" HorizontalAlignment="Right" Width="75" Grid.Column="1" />
                 <Button Name="_keywordDeleteButton" Height="23" Margin="0,0,6,6" VerticalAlignment="Bottom" Content="{Binding Path=OptionsWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordDeleteButton_Click" HorizontalAlignment="Right" Width="75" Grid.Column="1" />
-                <TextBox Margin="6,0,6,35" Name="_keywordTextBox" VerticalAlignment="Bottom" VerticalContentAlignment="Center" Height="23" Grid.ColumnSpan="2" KeyDown="_keywordTextBox_KeyDown" />
+                <TextBox Margin="6,0,6,35" Name="_keywordTextBox" VerticalAlignment="Bottom" Height="23" Grid.ColumnSpan="2" KeyDown="_keywordTextBox_KeyDown" />
             </Grid>
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_boxTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
                 <CheckBox Content="{Binding Path=OptionsWindow_RelateBoxFile, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_boxRelateFileCheckBox" VerticalAlignment="Top" />
                 <CheckBox Content="{Binding Path=OptionsWindow_OpenBox, Source={StaticResource ResourcesInstance}}" Height="16" HorizontalAlignment="Left" Margin="6,28,0,0" Name="_boxOpenCheckBox" VerticalAlignment="Top" />
-                <Label Content="{Binding Path=OptionsWindow_ExtractTo, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,50,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="240" />
-                <TextBox Height="24" Margin="252,50,6,0" Name="_boxExtractToTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                <Label Content="{Binding Path=OptionsWindow_ExtractTo, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="6,50,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="252,50,6,0" Name="_boxExtractToTextBox" VerticalAlignment="Top" />
             </Grid>
         </Grid>
 

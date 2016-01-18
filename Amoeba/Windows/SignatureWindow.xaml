@@ -20,8 +20,8 @@
         d:DesignWidth="600">
 
     <Grid FocusManager.FocusedElement="{Binding ElementName=_signatureComboBox}">
-        <Label Content="{Binding Path=SignatureWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-        <ComboBox Height="24" Margin="138,12,12,0" Name="_signatureComboBox" VerticalAlignment="Top" VerticalContentAlignment="Center" SelectionChanged="_signatureComboBox_SelectionChanged"  />
+        <Label Content="{Binding Path=SignatureWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />
+        <ComboBox Height="24" Margin="138,12,12,0" Name="_signatureComboBox" VerticalAlignment="Top" SelectionChanged="_signatureComboBox_SelectionChanged"  />
         <Button Content="{Binding Path=SignatureWindow_Ok, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,42,93,0" Name="_okButton" VerticalAlignment="Top" Width="75" Click="_okButton_Click" IsDefault="True" IsEnabled="False" />
         <Button Content="{Binding Path=SignatureWindow_Cancel, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,42,12,12" Name="_cancelButton" VerticalAlignment="Top" Width="75" Click="_cancelButton_Click" IsCancel="True" />
     </Grid>

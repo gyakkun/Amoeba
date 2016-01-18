@@ -5,7 +5,11 @@ File: Themes/ExpressionDark.xaml
 Url: http://wpf.codeplex.com/wikipage?title=WPF%20Themes
 License: Microsoft Public License
 
-Directory: Tor
+File: Assemblies/Ionic.Zip.dll
+Url: https://dotnetzip.codeplex.com/
+License: Microsoft Public License
+
+Directory: Assemblies/Tor
 Url: https://www.torproject.org/
 License:
                     This file contains the license for Tor,
@@ -121,7 +125,7 @@ If you got Tor as a static binary with OpenSSL included, then you should know:
  for use in the OpenSSL Toolkit (http://www.openssl.org/)"
 ===============================================================================
 
-Directory: Polipo
+Directory: Assemblies/Polipo
 Url: https://www.torproject.org/
 License:MIT
 

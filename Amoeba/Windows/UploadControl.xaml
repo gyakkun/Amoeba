@@ -48,14 +48,14 @@
                 </DataTemplate>
             </ListView.Resources>
             <ListView.ContextMenu>
-                <ContextMenu Name="_listViewContextMenu" >
+                <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=UploadControl_Add, Source={StaticResource ResourcesInstance}}" Click="_listViewAddMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=UploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
                     <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=UploadControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewPriorityMenuItem" Header="{Binding Path=UploadControl_Priority, Source={StaticResource ResourcesInstance}}" >
+                    <MenuItem Name="_listViewPriorityMenuItem" Header="{Binding Path=UploadControl_Priority, Source={StaticResource ResourcesInstance}}">
                         <MenuItem Name="_listViewPriority0MenuItem" Header="{Binding Path=UploadControl_Priority0, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority0MenuItem_Click"/>
                         <MenuItem Name="_listViewPriority1MenuItem" Header="{Binding Path=UploadControl_Priority1, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority1MenuItem_Click"/>
                         <MenuItem Name="_listViewPriority2MenuItem" Header="{Binding Path=UploadControl_Priority2, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority2MenuItem_Click"/>

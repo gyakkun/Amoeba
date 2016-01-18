@@ -19,11 +19,11 @@
         Loaded="Window_Loaded">
 
     <Grid FocusManager.FocusedElement="{Binding ElementName=_nameTextBox}">
-        <Label Content="{Binding Path=BoxEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Content="{Binding Path=BoxEditWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
-        <ComboBox Height="24" Margin="138,42,12,0" Name="_signatureComboBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Content="{Binding Path=BoxEditWindow_Comment, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" VerticalContentAlignment="Center" />
+        <Label Content="{Binding Path=BoxEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />
+        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" />
+        <Label Content="{Binding Path=BoxEditWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" />
+        <ComboBox Height="24" Margin="138,42,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
+        <Label Content="{Binding Path=BoxEditWindow_Comment, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" />
         <TextBox AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" Margin="138,72,12,41" Name="_commentTextBox" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" />
         <Button Content="{Binding Path=BoxEditWindow_Ok, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Click="_okButton_Click" IsDefault="True" />
         <Button Content="{Binding Path=BoxEditWindow_Cancel, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Click="_cancelButton_Click" IsCancel="True" />

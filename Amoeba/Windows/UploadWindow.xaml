@@ -19,9 +19,9 @@
         Loaded="Window_Loaded">
 
     <Grid>
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
-        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" TextChanged="_nameTextBox_TextChanged" />
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" />
+        <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" TextChanged="_nameTextBox_TextChanged" />
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" />
         <Grid Height="24" Margin="138,42,12,0" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -30,13 +30,13 @@
                 <ColumnDefinition Width="3" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <local:ComboBoxEx x:Name="_keywordsComboBox1" IsEditable="True" VerticalContentAlignment="Center" />
-            <local:ComboBoxEx x:Name="_keywordsComboBox2" IsEditable="True" Grid.Column="2" VerticalContentAlignment="Center" />
-            <local:ComboBoxEx x:Name="_keywordsComboBox3" IsEditable="True" Grid.Column="4" VerticalContentAlignment="Center" />
+            <local:ComboBoxEx x:Name="_keywordsComboBox1" IsEditable="True" />
+            <local:ComboBoxEx x:Name="_keywordsComboBox2" IsEditable="True" Grid.Column="2" />
+            <local:ComboBoxEx x:Name="_keywordsComboBox3" IsEditable="True" Grid.Column="4" />
         </Grid>
-        <Label HorizontalAlignment="Left" Margin="12,72,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <ComboBox Height="24" Margin="138,72,12,0" Name="_signatureComboBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Comment, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+        <Label HorizontalAlignment="Left" Margin="12,72,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Top" />
+        <ComboBox Height="24" Margin="138,72,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Comment, Source={StaticResource ResourcesInstance}}" />
         <TextBox Margin="138,102,12,41" Name="_commentTextBox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" />
         <Button Name="_cancelButton" Grid.Row="2" Height="23" Margin="0,0,12,12"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Content="{Binding Path=UploadWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" IsCancel="True" />
         <Button Name="_okButton" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" VerticalAlignment="Bottom" Width="75" Grid.Row="2" Content="{Binding Path=UploadWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" IsDefault="True" />

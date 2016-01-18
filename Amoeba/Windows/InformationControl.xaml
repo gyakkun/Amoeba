@@ -66,7 +66,7 @@
                 </DataTemplate>
             </ListView.Resources>
             <ListView.ContextMenu>
-                <ContextMenu Name="_listViewContextMenu" >
+                <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=InformationControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
                     <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=InformationControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
                 </ContextMenu>

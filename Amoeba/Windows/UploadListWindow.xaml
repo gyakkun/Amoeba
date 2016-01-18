@@ -18,7 +18,7 @@
         WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Loaded="Window_Loaded">
     <Grid>
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" />
         <Grid Height="24" Margin="138,12,12,0" Name="grid1" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -27,13 +27,13 @@
                 <ColumnDefinition Width="3" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <local:ComboBoxEx x:Name="_keywordsComboBox1" IsEditable="True" VerticalContentAlignment="Center" />
-            <local:ComboBoxEx x:Name="_keywordsComboBox2" IsEditable="True" Grid.Column="2" VerticalContentAlignment="Center" />
-            <local:ComboBoxEx x:Name="_keywordsComboBox3" IsEditable="True" Grid.Column="4" VerticalContentAlignment="Center" />
+            <local:ComboBoxEx x:Name="_keywordsComboBox1" IsEditable="True" />
+            <local:ComboBoxEx x:Name="_keywordsComboBox2" IsEditable="True" Grid.Column="2" />
+            <local:ComboBoxEx x:Name="_keywordsComboBox3" IsEditable="True" Grid.Column="4" />
         </Grid>
-        <Label HorizontalAlignment="Left" Margin="12,42,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <ComboBox Height="24" Margin="138,42,12,0" Name="_signatureComboBox" VerticalAlignment="Top" VerticalContentAlignment="Center" />
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
+        <Label HorizontalAlignment="Left" Margin="12,42,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Top" />
+        <ComboBox Height="24" Margin="138,42,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" />
         <local:ListViewEx x:Name="_listView" Margin="138,72,12,41"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>

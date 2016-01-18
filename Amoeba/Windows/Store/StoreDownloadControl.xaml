@@ -58,7 +58,7 @@
                     <MenuItem Name="_storeCategorizeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemCopyMenuItem_Click" />
                     <MenuItem Name="_storeCategorizeTreeViewItemPasteMenuItem" Header="{Binding Path=StoreDownloadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemPasteMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:StoreCategorizeTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                <Style TargetType="{x:Type local:StoreCategorizeTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="ContextMenu" Value="{StaticResource _storeCategorizeTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_storeCategorizeTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
@@ -71,17 +71,17 @@
                     <Separator />
                     <MenuItem Name="_storeTreeViewItemExportMenuItem" Header="{Binding Path=StoreDownloadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemExportMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:StoreTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                <Style TargetType="{x:Type local:StoreTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="ContextMenu" Value="{StaticResource _storeTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_storeTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
 
-                <ContextMenu x:Key="_boxTreeViewItemContextMenu" >
+                <ContextMenu x:Key="_boxTreeViewItemContextMenu">
                     <MenuItem Name="_boxTreeViewItemCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemCopyMenuItem_Click" />
                     <Separator />
                     <MenuItem Name="_boxTreeViewItemExportMenuItem" Header="{Binding Path=StoreDownloadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemExportMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="ContextMenu" Value="{StaticResource _boxTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_boxTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>

@@ -34,7 +34,7 @@
                 </DataTemplate>
             </ListView.Resources>
             <ListView.ContextMenu>
-                <ContextMenu Name="_listViewContextMenu" >
+                <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=ShareControl_Add, Source={StaticResource ResourcesInstance}}" Click="_listViewAddMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=ShareControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />

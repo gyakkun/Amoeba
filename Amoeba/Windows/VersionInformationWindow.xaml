@@ -20,7 +20,7 @@
     <Grid>
         <Label Height="37" Margin="12,12,12,0" VerticalAlignment="Top" Content="Amoeba" FontSize="20" HorizontalAlignment="Center" />
         <Label Margin="12,55,12,0" Content="Copyright © Lyrise, alrde 2009-2016" Height="28" VerticalAlignment="Top" HorizontalAlignment="Center" />
-        <local:ListViewEx Margin="12,89,12,41" x:Name="_versionListView" SelectionMode="Single" >
+        <local:ListViewEx Margin="12,89,12,41" x:Name="_versionListView" SelectionMode="Single">
             <ListView.Resources>
                 <DataTemplate x:Key="_myTemplate_FileName">
                     <TextBlock Text="{Binding Path=FileName, Mode=OneWay}" />

@@ -41,7 +41,7 @@
 
         <GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
         
-        <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" VerticalContentAlignment="Center" />
+        <TextBox Name="_textBox" KeyDown="_textBox_KeyDown" />
 
         <TreeView Name="_treeView" Grid.Row="1" Grid.RowSpan="2" AllowDrop="True"
                 PreviewDragOver="_treeView_PreviewDragOver"
@@ -63,7 +63,7 @@
                     <MenuItem Name="_treeViewItemExportMenuItem" Header="{Binding Path=SearchControl_Export, Source={StaticResource ResourcesInstance}}" Click="_treeViewItemExportMenuItem_Click" />
                 </ContextMenu>
 
-                <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                <Style TargetType="{x:Type local:SearchTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="ContextMenu" Value="{StaticResource _treeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_treeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
@@ -99,7 +99,7 @@
                 </DataTemplate>
             </ListView.Resources>
             <ListView.ContextMenu>
-                <ContextMenu Name="_listViewContextMenu" >
+                <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
                     <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
@@ -112,13 +112,13 @@
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
                     <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=SearchControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewSearchMenuItem" Header="{Binding Path=SearchControl_Search, Source={StaticResource ResourcesInstance}}" >
+                    <MenuItem Name="_listViewSearchMenuItem" Header="{Binding Path=SearchControl_Search, Source={StaticResource ResourcesInstance}}">
                         <MenuItem Name="_listViewSearchSignatureMenuItem" Header="{Binding Path=SearchControl_SearchSignature, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchSignatureMenuItem_Click" />
                         <MenuItem Name="_listViewSearchKeywordMenuItem" Header="{Binding Path=SearchControl_SearchKeyword, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchKeywordMenuItem_Click" />
                         <MenuItem Name="_listViewSearchCreationTimeRangeMenuItem" Header="{Binding Path=SearchControl_SearchCreationTimeRange, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchCreationTimeRangeMenuItem_Click" />
                         <MenuItem Name="_listViewSearchStateMenuItem" Header="{Binding Path=SearchControl_SearchState, Source={StaticResource ResourcesInstance}}" Click="_listViewSearchStateMenuItem_Click" />
                     </MenuItem>
-                    <MenuItem Name="_listViewFilterMenuItem" Header="{Binding Path=SearchControl_Filter, Source={StaticResource ResourcesInstance}}" >
+                    <MenuItem Name="_listViewFilterMenuItem" Header="{Binding Path=SearchControl_Filter, Source={StaticResource ResourcesInstance}}">
                         <MenuItem Name="_listViewFilterNameMenuItem" Header="{Binding Path=SearchControl_FilterName, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterNameMenuItem_Click" />
                         <MenuItem Name="_listViewFilterSignatureMenuItem" Header="{Binding Path=SearchControl_FilterSignature, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterSignatureMenuItem_Click" />
                         <MenuItem Name="_listViewFilterKeywordMenuItem" Header="{Binding Path=SearchControl_FilterKeyword, Source={StaticResource ResourcesInstance}}" Click="_listViewFilterKeywordMenuItem_Click" />
@@ -130,7 +130,7 @@
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
-                <GridView x:Name="_gridView" AllowsColumnReorder="False" >
+                <GridView x:Name="_gridView" AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=SearchControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=SearchControl_Signature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Signature}" 

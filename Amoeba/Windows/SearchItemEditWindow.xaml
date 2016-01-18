@@ -33,8 +33,8 @@
     </Window.InputBindings>
 
     <Grid FocusManager.FocusedElement="{Binding ElementName=_searchTreeViewItemNameTextBox}">
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" VerticalContentAlignment="Center" />
-        <TextBox Height="24" Margin="138,12,12,0" Name="_searchTreeViewItemNameTextBox" VerticalAlignment="Top" VerticalContentAlignment="Center" TextChanged="_searchTreeViewItemNameTextBox_TextChanged" />
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=SearchItemEditWindow_Name, Source={StaticResource ResourcesInstance}}" />
+        <TextBox Height="24" Margin="138,12,12,0" Name="_searchTreeViewItemNameTextBox" VerticalAlignment="Top" TextChanged="_searchTreeViewItemNameTextBox_TextChanged" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" IsDefault="True" />
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" IsCancel="True" />
         <TabControl Margin="0,42,0,41">
@@ -45,7 +45,7 @@
                     <Button Name="_nameAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_nameAddButton_Click" />
                     <Button Name="_nameEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_nameEditButton_Click"/>
                     <Button Name="_nameDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameDeleteButton_Click" />
-                    <TextBox Name="_nameTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_nameTextBox_KeyDown" />
+                    <TextBox Name="_nameTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" KeyDown="_nameTextBox_KeyDown" />
                     <CheckBox Name="_nameContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_nameListView" Margin="0,0,0,87" SelectionChanged="_nameListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_nameListView_ContextMenuOpening">
                         <ListView.Resources>
@@ -57,7 +57,7 @@
                             </DataTemplate>
                         </ListView.Resources>
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_nameListViewContextMenu" >
+                            <ContextMenu Name="_nameListViewContextMenu">
                                 <MenuItem Name="_nameListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameListViewDeleteMenuItem_Click"/>
                                 <Separator />
                                 <MenuItem Name="_nameListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_nameListViewCutMenuItem_Click"/>
@@ -83,7 +83,7 @@
                     <Button Name="_nameRegexAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_nameRegexAddButton_Click" />
                     <Button Name="_nameRegexEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_nameRegexEditButton_Click"/>
                     <Button Name="_nameRegexDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameRegexDeleteButton_Click" />
-                    <TextBox Name="_nameRegexTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_nameRegexTextBox_KeyDown" />
+                    <TextBox Name="_nameRegexTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" KeyDown="_nameRegexTextBox_KeyDown" />
                     <CheckBox Name="_nameRegexContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_nameRegexListView" Margin="0,0,0,87" SelectionChanged="_nameRegexListView_SelectionChanged" PreviewMouseLeftButtonDown="_nameRegexListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_nameRegexListView_ContextMenuOpening">
                         <ListView.Resources>
@@ -98,7 +98,7 @@
                             </DataTemplate>
                         </ListView.Resources>
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_nameRegexListViewContextMenu" >
+                            <ContextMenu Name="_nameRegexListViewContextMenu">
                                 <MenuItem Name="_nameRegexListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_nameRegexListViewDeleteMenuItem_Click"/>
                                 <Separator />
                                 <MenuItem Name="_nameRegexListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_nameRegexListViewCutMenuItem_Click"/>
@@ -127,7 +127,7 @@
                     <Button Name="_signatureAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_signatureAddButton_Click" />
                     <Button Name="_signatureEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_signatureEditButton_Click"/>
                     <Button Name="_signatureDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureDeleteButton_Click" />
-                    <TextBox Name="_signatureTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_signatureTextBox_KeyDown" />
+                    <TextBox Name="_signatureTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" KeyDown="_signatureTextBox_KeyDown" />
                     <CheckBox Name="_signatureContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_signatureListView" Margin="0,0,0,87" SelectionChanged="_signatureListView_SelectionChanged" PreviewMouseLeftButtonDown="_signatureListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_signatureListView_ContextMenuOpening">
                         <ListView.Resources>
@@ -142,7 +142,7 @@
                             </DataTemplate>
                         </ListView.Resources>
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_signatureListViewContextMenu" >
+                            <ContextMenu Name="_signatureListViewContextMenu">
                                 <MenuItem Name="_signatureListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewDeleteMenuItem_Click"/>
                                 <Separator />
                                 <MenuItem Name="_signatureListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_signatureListViewCutMenuItem_Click"/>
@@ -171,7 +171,7 @@
                     <Button Name="_keywordAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_keywordAddButton_Click" />
                     <Button Name="_keywordEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_keywordEditButton_Click"/>
                     <Button Name="_keywordDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordDeleteButton_Click" />
-                    <TextBox Name="_keywordTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_keywordTextBox_KeyDown" />
+                    <TextBox Name="_keywordTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" KeyDown="_keywordTextBox_KeyDown" />
                     <CheckBox Name="_keywordContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_keywordListView" Margin="0,0,0,87" SelectionChanged="_keywordListView_SelectionChanged" PreviewMouseLeftButtonDown="_keywordListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_keywordListView_ContextMenuOpening">
                         <ListView.Resources>
@@ -183,7 +183,7 @@
                             </DataTemplate>
                         </ListView.Resources>
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_keywordListViewContextMenu" >
+                            <ContextMenu Name="_keywordListViewContextMenu">
                                 <MenuItem Name="_keywordListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewDeleteMenuItem_Click"/>
                                 <Separator />
                                 <MenuItem Name="_keywordListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_keywordListViewCutMenuItem_Click"/>
@@ -213,8 +213,8 @@
                     <Button Name="_creationTimeRangeAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeAddButton_Click" Grid.ColumnSpan="2"  />
                     <Button Name="_creationTimeRangeEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeEditButton_Click" Grid.ColumnSpan="2" />
                     <Button Name="_creationTimeRangeDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeDeleteButton_Click" Grid.ColumnSpan="2" />
-                    <TextBox Name="_creationTimeRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" Text="0001/01/01 00:00:00" VerticalContentAlignment="Center" KeyDown="_creationTimeRangeMinTextBox_KeyDown" />
-                    <TextBox Name="_creationTimeRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" Text="0001/01/01 00:00:00" VerticalContentAlignment="Center" KeyDown="_creationTimeRangeMaxTextBox_KeyDown" />
+                    <TextBox Name="_creationTimeRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" Text="0001/01/01 00:00:00" KeyDown="_creationTimeRangeMinTextBox_KeyDown" />
+                    <TextBox Name="_creationTimeRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" Text="0001/01/01 00:00:00" KeyDown="_creationTimeRangeMaxTextBox_KeyDown" />
                     <CheckBox Grid.ColumnSpan="2" Name="_creationTimeRangeContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_creationTimeRangeListView" Margin="0,0,0,87" SelectionChanged="_creationTimeRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_creationTimeRangeListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_creationTimeRangeListView_ContextMenuOpening"  Grid.ColumnSpan="2">
                         <ListView.Resources>
@@ -229,7 +229,7 @@
                             </DataTemplate>
                         </ListView.Resources>
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_creationTimeRangeListViewContextMenu" >
+                            <ContextMenu Name="_creationTimeRangeListViewContextMenu">
                                 <MenuItem Name="_creationTimeRangeListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeListViewDeleteMenuItem_Click"/>
                                 <Separator />
                                 <MenuItem Name="_creationTimeRangeListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_creationTimeRangeListViewCutMenuItem_Click"/>
@@ -261,8 +261,8 @@
                     <Button Name="_lengthRangeAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeAddButton_Click" Grid.ColumnSpan="2" />
                     <Button Name="_lengthRangeEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeEditButton_Click" Grid.ColumnSpan="2" />
                     <Button Name="_lengthRangeDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeDeleteButton_Click" Grid.ColumnSpan="2" />
-                    <TextBox Name="_lengthRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_lengthRangeMinTextBox_KeyDown" />
-                    <TextBox Name="_lengthRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" VerticalContentAlignment="Center" KeyDown="_lengthRangeMaxTextBox_KeyDown" />
+                    <TextBox Name="_lengthRangeMinTextBox" Height="24" Margin="6,0,0,35" VerticalAlignment="Bottom" KeyDown="_lengthRangeMinTextBox_KeyDown" />
+                    <TextBox Name="_lengthRangeMaxTextBox" Height="24" Margin="0,0,6,35" VerticalAlignment="Bottom" Grid.Column="1" KeyDown="_lengthRangeMaxTextBox_KeyDown" />
                     <CheckBox Grid.ColumnSpan="2" Name="_lengthRangeContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_lengthRangeListView" Margin="0,0,0,87" SelectionChanged="_lengthRangeListView_SelectionChanged" PreviewMouseLeftButtonDown="_lengthRangeListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_lengthRangeListView_ContextMenuOpening" Grid.ColumnSpan="2">
                         <ListView.Resources>
@@ -277,7 +277,7 @@
                             </DataTemplate>
                         </ListView.Resources>
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_lengthRangeListViewContextMenu" >
+                            <ContextMenu Name="_lengthRangeListViewContextMenu">
                                 <MenuItem Name="_lengthRangeListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeListViewDeleteMenuItem_Click"/>
                                 <Separator />
                                 <MenuItem Name="_lengthRangeListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_lengthRangeListViewCutMenuItem_Click"/>
@@ -305,7 +305,7 @@
                     <Button Name="_seedAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_seedAddButton_Click" />
                     <Button Name="_seedEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_seedEditButton_Click" />
                     <Button Name="_seedDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_seedDeleteButton_Click" />
-                    <TextBox Name="_seedTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_seedTextBox_KeyDown" />
+                    <TextBox Name="_seedTextBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" KeyDown="_seedTextBox_KeyDown" />
                     <CheckBox Name="_seedContainsCheckBox" Height="16" HorizontalAlignment="Left" Margin="6,0,0,65" VerticalAlignment="Bottom" Width="120"  Content="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource ResourcesInstance}}" />
                     <local:ListViewEx x:Name="_seedListView" Margin="0,0,0,87" SelectionChanged="_seedListView_SelectionChanged" PreviewMouseLeftButtonDown="_seedListView_PreviewMouseLeftButtonDown" ContextMenuOpening="_seedListView_ContextMenuOpening">
                         <ListView.Resources>
@@ -317,7 +317,7 @@
                             </DataTemplate>
                         </ListView.Resources>
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_seedListViewContextMenu" >
+                            <ContextMenu Name="_seedListViewContextMenu">
                                 <MenuItem Name="_seedListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_seedListViewDeleteMenuItem_Click"/>
                                 <Separator />
                                 <MenuItem Name="_seedListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_seedListViewCutMenuItem_Click"/>
@@ -343,7 +343,7 @@
                     <Button Name="_stateAddButton" Height="23" HorizontalAlignment="Right" Margin="0,0,168,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Add, Source={StaticResource ResourcesInstance}}" Click="_stateAddButton_Click" />
                     <Button Name="_stateEditButton" Height="23" HorizontalAlignment="Right" Margin="0,0,87,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Edit, Source={StaticResource ResourcesInstance}}" Click="_stateEditButton_Click" />
                     <Button Name="_stateDeleteButton" Height="23" HorizontalAlignment="Right" Margin="0,0,6,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_stateDeleteButton_Click" />
-                    <ComboBox Name="_stateComboBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" VerticalContentAlignment="Center" KeyDown="_stateComboBox_KeyDown">
+                    <ComboBox Name="_stateComboBox" Height="24" Margin="6,0,6,35" VerticalAlignment="Bottom" KeyDown="_stateComboBox_KeyDown">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _searchStateFlagToStringConverter}}" />
@@ -361,7 +361,7 @@
                             </DataTemplate>
                         </ListView.Resources>
                         <ListView.ContextMenu>
-                            <ContextMenu Name="_stateListViewContextMenu" >
+                            <ContextMenu Name="_stateListViewContextMenu">
                                 <MenuItem Name="_stateListViewDeleteMenuItem" Header="{Binding Path=SearchItemEditWindow_Delete, Source={StaticResource ResourcesInstance}}" Click="_stateListViewDeleteMenuItem_Click"/>
                                 <Separator />
                                 <MenuItem Name="_stateListViewCutMenuItem" Header="{Binding Path=SearchItemEditWindow_Cut, Source={StaticResource ResourcesInstance}}" Click="_stateListViewCutMenuItem_Click"/>

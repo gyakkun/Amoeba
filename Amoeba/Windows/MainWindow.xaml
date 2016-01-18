@@ -82,7 +82,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                         <ListBox.ContextMenu>
-                            <ContextMenu Name="_logListBoxContextMenu" >
+                            <ContextMenu Name="_logListBoxContextMenu">
                                 <MenuItem Name="_logListBoxCopyMenuItem" Header="{Binding Path=MainWindow_Copy, Source={StaticResource ResourcesInstance}}" Click="_logListBoxCopyMenuItem_Click" />
                             </ContextMenu>
                         </ListBox.ContextMenu>
@@ -94,7 +94,7 @@
         </TabControl>
         <StatusBar Grid.Row="1" 
                     FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
-                    FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}" >
+                    FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}">
             <StatusBarItem>
                 <Grid>
                     <TextBlock Name="_stateTextBlock" Margin="6,0,0,0" />

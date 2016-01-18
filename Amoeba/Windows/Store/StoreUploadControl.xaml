@@ -62,7 +62,7 @@
                     <Separator />
                     <MenuItem Name="_storeCategorizeTreeViewItemUploadMenuItem" Header="{Binding Path=StoreUploadControl_Upload, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemUploadMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:StoreCategorizeTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                <Style TargetType="{x:Type local:StoreCategorizeTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="ContextMenu" Value="{StaticResource _storeCategorizeTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_storeCategorizeTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
@@ -81,12 +81,12 @@
                     <Separator />
                     <MenuItem Name="_storeTreeViewItemUploadMenuItem" Header="{Binding Path=StoreUploadControl_Upload, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemUploadMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:StoreTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                <Style TargetType="{x:Type local:StoreTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="ContextMenu" Value="{StaticResource _storeTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_storeTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
 
-                <ContextMenu x:Key="_boxTreeViewItemContextMenu" >
+                <ContextMenu x:Key="_boxTreeViewItemContextMenu">
                     <MenuItem Name="_boxTreeViewItemNewBoxMenuItem" Header="{Binding Path=StoreUploadControl_NewBox, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemNewBoxMenuItem_Click" />
                     <MenuItem Name="_boxTreeViewItemEditMenuItem" Header="{Binding Path=StoreUploadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemEditMenuItem_Click" />
                     <MenuItem Name="_boxTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreUploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemDeleteMenuItem_Click" />
@@ -98,7 +98,7 @@
                     <MenuItem Name="_boxTreeViewItemImportMenuItem" Header="{Binding Path=StoreUploadControl_Import, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemImportMenuItem_Click" />
                     <MenuItem Name="_boxTreeViewItemExportMenuItem" Header="{Binding Path=StoreUploadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemExportMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}" >
+                <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
                     <Setter Property="ContextMenu" Value="{StaticResource _boxTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_boxTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>

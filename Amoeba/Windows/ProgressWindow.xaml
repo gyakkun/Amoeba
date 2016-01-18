@@ -20,7 +20,7 @@
         d:DesignWidth="600">
 
     <Grid>
-        <Label Height="24" Margin="12,12,12,0" Name="_label" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+        <Label Height="24" Margin="12,12,12,0" Name="_label" VerticalAlignment="Top" HorizontalContentAlignment="Center" />
         <ProgressBar Height="24" Name="_progressBar" VerticalAlignment="Top" Margin="12,42,12,0" />
         <Button Content="" HorizontalAlignment="Center" Margin="0,72,0,12" Name="_button" Width="76" Click="_button_Click" Height="23" VerticalAlignment="Top" IsCancel="True" IsDefault="True" />
     </Grid>

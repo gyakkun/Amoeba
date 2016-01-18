@@ -197,6 +197,10 @@
     <Compile Include="Windows\VersionInformationWindow.xaml.cs">
       <DependentUpon>VersionInformationWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Themes\Amoeba.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Link\LinkOptionsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
