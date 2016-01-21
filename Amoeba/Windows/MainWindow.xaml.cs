@@ -1569,8 +1569,6 @@ namespace Amoeba.Windows
             {
                 this.CheckUpdate(false);
             }
-
-            this.GarbageCollect();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

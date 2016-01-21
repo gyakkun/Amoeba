@@ -17,28 +17,21 @@ namespace Amoeba.Windows
         {
             base.OnPreviewMouseLeftButtonDown(e);
 
-            Point lposition = e.GetPosition(this);
-
-            if ((this.ActualWidth - lposition.X) < 15
-                || (this.ActualHeight - lposition.Y) < 15)
+            if (e.OriginalSource is ContentControl)
             {
-                return;
-            }
-
-            var posithonIndex = this.GetCurrentIndex(e.GetPosition);
-
-            if (posithonIndex == -1 || lposition.Y < 25)
-            {
-                try
+                if (this.GetCurrentIndex(e.GetPosition) == -1)
                 {
-                    this.UnselectAll();
-                }
-                catch (Exception)
-                {
+                    try
+                    {
+                        this.UnselectAll();
+                    }
+                    catch (Exception)
+                    {
 
-                }
+                    }
 
-                base.Focus();
+                    base.Focus();
+                }
             }
         }
 
@@ -46,28 +39,21 @@ namespace Amoeba.Windows
         {
             base.OnPreviewMouseRightButtonDown(e);
 
-            Point lposition = e.GetPosition(this);
-
-            if ((this.ActualWidth - lposition.X) < 15
-                || (this.ActualHeight - lposition.Y) < 15)
+            if (e.OriginalSource is ContentControl)
             {
-                return;
-            }
-
-            var posithonIndex = this.GetCurrentIndex(e.GetPosition);
-
-            if (posithonIndex == -1 || lposition.Y < 25)
-            {
-                try
+                if (this.GetCurrentIndex(e.GetPosition) == -1)
                 {
-                    this.UnselectAll();
-                }
-                catch (Exception)
-                {
+                    try
+                    {
+                        this.UnselectAll();
+                    }
+                    catch (Exception)
+                    {
 
-                }
+                    }
 
-                base.Focus();
+                    base.Focus();
+                }
             }
         }
     }

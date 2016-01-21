@@ -20,7 +20,7 @@ md "Amoeba\bin\Debug_4"
 rd /s /q "Amoeba\bin\Debug_4\Core"
 xcopy %TARGET% "Amoeba\bin\Debug_4\Core" /c /s /e /q /h /i /k /r /y
 
-IF EXIST %TOOL% call %TOOL% "run" "Amoeba\bin\Debug_1\Core\Amoeba.exe" "Amoeba\bin\Debug_1\Core"
-IF EXIST %TOOL% call %TOOL% "run" "Amoeba\bin\Debug_2\Core\Amoeba.exe" "Amoeba\bin\Debug_2\Core"
-IF EXIST %TOOL% call %TOOL% "run" "Amoeba\bin\Debug_3\Core\Amoeba.exe" "Amoeba\bin\Debug_3\Core"
-IF EXIST %TOOL% call %TOOL% "run" "Amoeba\bin\Debug_4\Core\Amoeba.exe" "Amoeba\bin\Debug_4\Core"
+IF EXIST %TOOL% call %TOOL% "Run" "Amoeba\bin\Debug_1\Core\Amoeba.exe" "Amoeba\bin\Debug_1\Core"
+IF EXIST %TOOL% call %TOOL% "Run" "Amoeba\bin\Debug_2\Core\Amoeba.exe" "Amoeba\bin\Debug_2\Core"
+IF EXIST %TOOL% call %TOOL% "Run" "Amoeba\bin\Debug_3\Core\Amoeba.exe" "Amoeba\bin\Debug_3\Core"
+IF EXIST %TOOL% call %TOOL% "Run" "Amoeba\bin\Debug_4\Core\Amoeba.exe" "Amoeba\bin\Debug_4\Core"
