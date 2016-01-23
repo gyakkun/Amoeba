@@ -35,22 +35,22 @@
   <Translate Key="MainWindow_Share" Value="Share" />
   <Translate Key="MainWindow_Store" Value="Store" />
   <Translate Key="MainWindow_Log" Value="Log" />
-  <Translate Key="MainWindow_Core" Value="Core" />
   <Translate Key="MainWindow_StatesBar" Value="Connect: {0}  Convert: {1}" />
   <Translate Key="MainWindow_Running" Value="Running" />
   <Translate Key="MainWindow_Stopping" Value="Stopping" />
-  <Translate Key="MainWindow_Start" Value="Start" />
-  <Translate Key="MainWindow_Stop" Value="Stop" />
+  <Translate Key="MainWindow_Core" Value="Core" />
+  <Translate Key="MainWindow_ConnectStart" Value="Connect start" />
+  <Translate Key="MainWindow_ConnectStop" Value="Connect stop" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="Update base node uri" />
   <Translate Key="MainWindow_Cache" Value="Cache" />
-  <Translate Key="MainWindow_CheckInternalBlocks" Value="Check internal blocks" />
-  <Translate Key="MainWindow_CheckExternalBlocks" Value="Check external blocks" />
   <Translate Key="MainWindow_ConvertStart" Value="Convert start" />
   <Translate Key="MainWindow_ConvertStop" Value="Convert stop" />
-  <Translate Key="MainWindow_Languages" Value="Languages" />
+  <Translate Key="MainWindow_CheckInternalBlocks" Value="Check internal blocks" />
+  <Translate Key="MainWindow_CheckExternalBlocks" Value="Check external blocks" />
   <Translate Key="MainWindow_Tools" Value="Tools" />
   <Translate Key="MainWindow_LinkOptions" Value="Link options" />
   <Translate Key="MainWindow_Options" Value="Options" />
+  <Translate Key="MainWindow_Languages" Value="Languages" />
   <Translate Key="MainWindow_Help" Value="Help" />
   <Translate Key="MainWindow_ManualSite" Value="Documentation" />
   <Translate Key="MainWindow_DeveloperSite" Value="Source code" />

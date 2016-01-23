@@ -34,25 +34,24 @@
         </Grid.RowDefinitions>
         <Menu Name="_menu" Height="24" VerticalAlignment="Top">
             <MenuItem Name="_coreMenuItem" Header="{Binding Path=MainWindow_Core, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_coreMenuItem_SubmenuOpened">
-                <MenuItem Name="_startMenuItem" Header="{Binding Path=MainWindow_Start, Source={StaticResource ResourcesInstance}}" Click="_startMenuItem_Click" />
-                <MenuItem Name="_stopMenuItem" Header="{Binding Path=MainWindow_Stop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_stopMenuItem_Click" />
+                <MenuItem Name="_connectStartMenuItem" Header="{Binding Path=MainWindow_ConnectStart, Source={StaticResource ResourcesInstance}}" Click="_connectStartMenuItem_Click" />
+                <MenuItem Name="_connectStopMenuItem" Header="{Binding Path=MainWindow_ConnectStop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_connectStopMenuItem_Click" />
                 <Separator />
                 <MenuItem Name="_updateBaseNodeMenuItem" Header="{Binding Path=MainWindow_UpdateBaseNode, Source={StaticResource ResourcesInstance}}" Click="_updateBaseNodeMenuItem_Click" />
-                <Separator />
-                <MenuItem Name="_linkOptionsMenuItem" Header="{Binding Path=MainWindow_LinkOptions, Source={StaticResource ResourcesInstance}}" Click="_linkOptionsMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_cacheMenuItem" Header="{Binding Path=MainWindow_Cache, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_cacheMenuItem_SubmenuOpened">
-                <MenuItem Name="_encodeAndDecodeStartMenuItem" Header="{Binding Path=MainWindow_ConvertStart, Source={StaticResource ResourcesInstance}}" Click="_encodeAndDecodeStartMenuItem_Click" />
-                <MenuItem Name="_encodeAndDecodeStopMenuItem" Header="{Binding Path=MainWindow_ConvertStop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_encodeAndDecodeStopMenuItem_Click" />
+                <MenuItem Name="_convertStartMenuItem" Header="{Binding Path=MainWindow_ConvertStart, Source={StaticResource ResourcesInstance}}" Click="_convertStartMenuItem_Click" />
+                <MenuItem Name="_convertStopMenuItem" Header="{Binding Path=MainWindow_ConvertStop, Source={StaticResource ResourcesInstance}}" IsEnabled="False"  Click="_convertStopMenuItem_Click" />
                 <Separator />
                 <MenuItem Name="_checkInternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckInternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkInternalBlocksMenuItem_Click" />
                 <MenuItem Name="_checkExternalBlocksMenuItem" Header="{Binding Path=MainWindow_CheckExternalBlocks, Source={StaticResource ResourcesInstance}}" Click="_checkExternalBlocksMenuItem_Click" />
             </MenuItem>
             <MenuItem Name="_toolsMenuItem" Header="{Binding Path=MainWindow_Tools, Source={StaticResource ResourcesInstance}}">
-                <MenuItem Name="_languagesMenuItem" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />
+                <MenuItem Name="_linkOptionsMenuItem" Header="{Binding Path=MainWindow_LinkOptions, Source={StaticResource ResourcesInstance}}" Click="_linkOptionsMenuItem_Click" />
                 <Separator />
                 <MenuItem Name="_optionsMenuItem" Header="{Binding Path=MainWindow_Options, Source={StaticResource ResourcesInstance}}" Click="_optionsMenuItem_Click" />
             </MenuItem>
+            <MenuItem Name="_languagesMenuItem" Header="{Binding Path=MainWindow_Languages, Source={StaticResource ResourcesInstance}}" />
             <MenuItem Name="_helpMenuItem" Header="{Binding Path=MainWindow_Help, Source={StaticResource ResourcesInstance}}" SubmenuOpened="_helpMenuItem_SubmenuOpened">
                 <MenuItem Name="_manualSiteMenuItem" Header="{Binding Path=MainWindow_ManualSite, Source={StaticResource ResourcesInstance}}" Click="_manualSiteMenuItem_Click" />
                 <MenuItem Name="_developerSiteMenuItem" Header="{Binding Path=MainWindow_DeveloperSite, Source={StaticResource ResourcesInstance}}" Click="_developerSiteMenuItem_Click" />

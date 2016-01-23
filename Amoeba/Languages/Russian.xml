@@ -35,22 +35,22 @@
   <Translate Key="MainWindow_Share" Value="Шары" />
   <Translate Key="MainWindow_Store" Value="Хранилище" />
   <Translate Key="MainWindow_Log" Value="Лог" />
-  <Translate Key="MainWindow_Core" Value="Главная" />
   <Translate Key="MainWindow_StatesBar" Value="Подключение: {0}  Конвертирование: {1}" />
   <Translate Key="MainWindow_Running" Value="Работает" />
   <Translate Key="MainWindow_Stopping" Value="Остановлено" />
-  <Translate Key="MainWindow_Start" Value="Старт" />
-  <Translate Key="MainWindow_Stop" Value="Стоп" />
+  <Translate Key="MainWindow_Core" Value="Главная" />
+  <Translate Key="MainWindow_ConnectStart" Value="Старт" />
+  <Translate Key="MainWindow_ConnectStop" Value="Стоп" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="Обновить базовую ноду" />
   <Translate Key="MainWindow_Cache" Value="Кеш" />
-  <Translate Key="MainWindow_CheckInternalBlocks" Value="Проверить внутренние блоки" />
-  <Translate Key="MainWindow_CheckExternalBlocks" Value="Проверить внешние блоки" />
   <Translate Key="MainWindow_ConvertStart" Value="Начать конвертирование" />
   <Translate Key="MainWindow_ConvertStop" Value="Остановить конвертирование" />
-  <Translate Key="MainWindow_Languages" Value="Выбрать язык" />
+  <Translate Key="MainWindow_CheckInternalBlocks" Value="Проверить внутренние блоки" />
+  <Translate Key="MainWindow_CheckExternalBlocks" Value="Проверить внешние блоки" />
   <Translate Key="MainWindow_Tools" Value="Настройки" />
   <Translate Key="MainWindow_LinkOptions" Value="Настройки линковки" />
   <Translate Key="MainWindow_Options" Value="Настройки" />
+  <Translate Key="MainWindow_Languages" Value="Выбрать язык" />
   <Translate Key="MainWindow_Help" Value="Справка" />
   <Translate Key="MainWindow_ManualSite" Value="Документация" />
   <Translate Key="MainWindow_DeveloperSite" Value="Исходный код" />

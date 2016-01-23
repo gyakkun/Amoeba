@@ -509,17 +509,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_Core
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_Core");
-                }
-            }
-        }
-
         public string MainWindow_StatesBar
         {
             get
@@ -553,24 +542,35 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_Start
+        public string MainWindow_Core
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Start");
+                    return this.Translate("MainWindow_Core");
                 }
             }
         }
 
-        public string MainWindow_Stop
+        public string MainWindow_ConnectStart
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Stop");
+                    return this.Translate("MainWindow_ConnectStart");
+                }
+            }
+        }
+
+        public string MainWindow_ConnectStop
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_ConnectStop");
                 }
             }
         }
@@ -597,28 +597,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_CheckInternalBlocks
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_CheckInternalBlocks");
-                }
-            }
-        }
-
-        public string MainWindow_CheckExternalBlocks
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("MainWindow_CheckExternalBlocks");
-                }
-            }
-        }
-
         public string MainWindow_ConvertStart
         {
             get
@@ -641,13 +619,24 @@ namespace Amoeba.Properties
             }
         }
 
-        public string MainWindow_Languages
+        public string MainWindow_CheckInternalBlocks
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("MainWindow_Languages");
+                    return this.Translate("MainWindow_CheckInternalBlocks");
+                }
+            }
+        }
+
+        public string MainWindow_CheckExternalBlocks
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_CheckExternalBlocks");
                 }
             }
         }
@@ -681,6 +670,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Options");
+                }
+            }
+        }
+
+        public string MainWindow_Languages
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Languages");
                 }
             }
         }

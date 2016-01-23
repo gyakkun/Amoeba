@@ -35,22 +35,22 @@
   <Translate Key="MainWindow_Share" Value="공유" />
   <Translate Key="MainWindow_Store" Value="스토어" />
   <Translate Key="MainWindow_Log" Value="로그" />
-  <Translate Key="MainWindow_Core" Value="코어" />
   <Translate Key="MainWindow_StatesBar" Value="연결: {0}  변환: {1}" />
   <Translate Key="MainWindow_Running" Value="실행중" />
   <Translate Key="MainWindow_Stopping" Value="정지중" />
-  <Translate Key="MainWindow_Start" Value="시작" />
-  <Translate Key="MainWindow_Stop" Value="정지" />
+  <Translate Key="MainWindow_Core" Value="코어" />
+  <Translate Key="MainWindow_ConnectStart" Value="시작" />
+  <Translate Key="MainWindow_ConnectStop" Value="정지" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="베이스 노드 Uri을 업데이트" />
   <Translate Key="MainWindow_Cache" Value="캐쉬" />
-  <Translate Key="MainWindow_CheckInternalBlocks" Value="내부 블록 손상 확인" />
-  <Translate Key="MainWindow_CheckExternalBlocks" Value="외부 블록 손상 확인" />
   <Translate Key="MainWindow_ConvertStart" Value="변환 시작" />
   <Translate Key="MainWindow_ConvertStop" Value="변환 정지" />
-  <Translate Key="MainWindow_Languages" Value="언어" />
+  <Translate Key="MainWindow_CheckInternalBlocks" Value="내부 블록 손상 확인" />
+  <Translate Key="MainWindow_CheckExternalBlocks" Value="외부 블록 손상 확인" />
   <Translate Key="MainWindow_Tools" Value="도구" />
   <Translate Key="MainWindow_LinkOptions" Value="링크 설정" />
   <Translate Key="MainWindow_Options" Value="설정" />
+  <Translate Key="MainWindow_Languages" Value="언어" />
   <Translate Key="MainWindow_Help" Value="도움" />
   <Translate Key="MainWindow_ManualSite" Value="설명서" />
   <Translate Key="MainWindow_DeveloperSite" Value="소스 코드" />

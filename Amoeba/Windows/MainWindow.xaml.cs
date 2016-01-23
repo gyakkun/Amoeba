@@ -213,11 +213,11 @@ namespace Amoeba.Windows
 
         void _transferLimitManager_StartEvent(object sender, EventArgs e)
         {
-            if (_autoStop && !Settings.Instance.Global_IsStart)
+            if (_autoStop && !Settings.Instance.Global_IsConnectRunning)
             {
                 this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    _startMenuItem_Click(sender, null);
+                    _connectStartMenuItem_Click(sender, null);
                 }));
             }
         }
@@ -226,9 +226,11 @@ namespace Amoeba.Windows
         {
             Log.Information(LanguagesManager.Instance.MainWindow_TransferLimit_Message);
 
+            _autoStop = true;
+
             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                _stopMenuItem_Click(sender, null);
+                _connectStopMenuItem_Click(sender, null);
             }));
         }
 
@@ -279,54 +281,56 @@ namespace Amoeba.Windows
                         {
                             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
-                                _stopMenuItem_Click(null, null);
-                                _encodeAndDecodeStopMenuItem_Click(null, null);
+                                _connectStopMenuItem_Click(null, null);
+                                _convertStopMenuItem_Click(null, null);
                             }));
                         }
 
                         if (_connectionSettingManager.State == ManagerState.Stop
-                            && (Settings.Instance.Global_IsStart && Settings.Instance.Global_ConnectionSetting_IsEnabled))
+                            && (Settings.Instance.Global_IsConnectRunning && Settings.Instance.Global_ConnectionSetting_IsEnabled))
                         {
                             _connectionSettingManager.Start();
                         }
                         else if (_connectionSettingManager.State == ManagerState.Start
-                            && (!Settings.Instance.Global_IsStart || !Settings.Instance.Global_ConnectionSetting_IsEnabled))
+                            && (!Settings.Instance.Global_IsConnectRunning || !Settings.Instance.Global_ConnectionSetting_IsEnabled))
                         {
                             _connectionSettingManager.Stop();
                         }
 
                         if (_overlayNetworkManager.State == ManagerState.Stop
-                            && (Settings.Instance.Global_IsStart && Settings.Instance.Global_I2p_SamBridge_IsEnabled))
+                            && (Settings.Instance.Global_IsConnectRunning && Settings.Instance.Global_I2p_SamBridge_IsEnabled))
                         {
                             _overlayNetworkManager.Start();
                         }
                         else if (_overlayNetworkManager.State == ManagerState.Start
-                            && (!Settings.Instance.Global_IsStart || !Settings.Instance.Global_I2p_SamBridge_IsEnabled))
+                            && (!Settings.Instance.Global_IsConnectRunning || !Settings.Instance.Global_I2p_SamBridge_IsEnabled))
                         {
                             _overlayNetworkManager.Stop();
                         }
 
                         if (_amoebaManager.State == ManagerState.Stop
-                            && Settings.Instance.Global_IsStart)
+                            && Settings.Instance.Global_IsConnectRunning)
                         {
                             _amoebaManager.Start();
 
                             Log.Information("Start");
                         }
                         else if (_amoebaManager.State == ManagerState.Start
-                            && !Settings.Instance.Global_IsStart)
+                            && !Settings.Instance.Global_IsConnectRunning)
                         {
                             _amoebaManager.Stop();
 
                             Log.Information("Stop");
                         }
 
-                        if (Settings.Instance.Global_IsConvertStart)
+                        if ((_amoebaManager.EncodeState == ManagerState.Stop && _amoebaManager.DecodeState == ManagerState.Stop)
+                            && Settings.Instance.Global_IsConvertRunning)
                         {
                             _amoebaManager.EncodeStart();
                             _amoebaManager.DecodeStart();
                         }
-                        else if (!Settings.Instance.Global_IsConvertStart)
+                        else if ((_amoebaManager.EncodeState == ManagerState.Start && _amoebaManager.DecodeState == ManagerState.Start)
+                            && !Settings.Instance.Global_IsConvertRunning)
                         {
                             _amoebaManager.EncodeStop();
                             _amoebaManager.DecodeStop();
@@ -367,7 +371,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (Settings.Instance.Global_IsStart && spaceCheckStopwatch.Elapsed.TotalMinutes >= 1)
+                    if (Settings.Instance.Global_IsConnectRunning && spaceCheckStopwatch.Elapsed.TotalMinutes >= 1)
                     {
                         spaceCheckStopwatch.Restart();
 
@@ -520,7 +524,7 @@ namespace Amoeba.Windows
                     Thread.Sleep(1000);
                     if (_closed) return;
 
-                    if (Settings.Instance.Global_IsStart && stopwatch.Elapsed.TotalSeconds >= 120)
+                    if (Settings.Instance.Global_IsConnectRunning && stopwatch.Elapsed.TotalSeconds >= 120)
                     {
                         stopwatch.Restart();
 
@@ -641,16 +645,16 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            string coreText = null;
+                            string connectText = null;
                             string convertText = null;
 
-                            if (state == ManagerState.Start) coreText = LanguagesManager.Instance.MainWindow_Running;
-                            else coreText = LanguagesManager.Instance.MainWindow_Stopping;
+                            if (state == ManagerState.Start) connectText = LanguagesManager.Instance.MainWindow_Running;
+                            else connectText = LanguagesManager.Instance.MainWindow_Stopping;
 
                             if (encodeState == ManagerState.Start && decodeState == ManagerState.Start) convertText = LanguagesManager.Instance.MainWindow_Running;
                             else convertText = LanguagesManager.Instance.MainWindow_Stopping;
 
-                            _stateTextBlock.Text = string.Format(LanguagesManager.Instance.MainWindow_StatesBar, coreText, convertText);
+                            _stateTextBlock.Text = string.Format(LanguagesManager.Instance.MainWindow_StatesBar, connectText, convertText);
                         }
                         catch (Exception)
                         {
@@ -880,7 +884,7 @@ namespace Amoeba.Windows
             {
                 if (e.Exception != null && e.Exception.GetType().ToString() == "Library.Net.Amoeba.SpaceNotFoundException")
                 {
-                    if (Settings.Instance.Global_IsStart)
+                    if (Settings.Instance.Global_IsConnectRunning)
                         _cacheSpaceNotFoundException = true;
                 }
 
@@ -1048,11 +1052,6 @@ namespace Amoeba.Windows
                     Settings.Instance.Global_SearchKeywords.Add("Document");
                     Settings.Instance.Global_SearchKeywords.Add("Executable");
 
-                    Directory.CreateDirectory(Path.Combine(@"..\", "Download"));
-                    _amoebaManager.DownloadDirectory = Path.Combine(@"..\", "Download");
-
-                    _amoebaManager.ConnectionCountLimit = 32;
-
                     Settings.Instance.Global_UploadKeywords.Clear();
                     Settings.Instance.Global_UploadKeywords.Add("Document");
 
@@ -1118,6 +1117,8 @@ namespace Amoeba.Windows
                         SearchItem = ExecutableSearchItem
                     });
 
+                    _amoebaManager.ConnectionCountLimit = 32;
+
                     {
                         byte[] buffer = new byte[32];
 
@@ -1145,6 +1146,9 @@ namespace Amoeba.Windows
                     _amoebaManager.Filters.Add(tcpConnectionFilter);
                     _amoebaManager.Filters.Add(torConnectionFilter);
                     _amoebaManager.Filters.Add(i2pConnectionFilter);
+
+                    Directory.CreateDirectory(Path.Combine(@"..\", "Download"));
+                    _amoebaManager.DownloadDirectory = Path.Combine(@"..\", "Download");
 
                     if (CultureInfo.CurrentUICulture.Name == "ja-JP")
                     {
@@ -1554,14 +1558,14 @@ namespace Amoeba.Windows
             storeControl.Width = Double.NaN;
             _storeTabItem.Content = storeControl;
 
-            if (Settings.Instance.Global_IsStart)
+            if (Settings.Instance.Global_IsConnectRunning)
             {
-                _startMenuItem_Click(null, null);
+                _connectStartMenuItem_Click(null, null);
             }
 
-            if (Settings.Instance.Global_IsConvertStart)
+            if (Settings.Instance.Global_IsConvertRunning)
             {
-                _encodeAndDecodeStartMenuItem_Click(null, null);
+                _convertStartMenuItem_Click(null, null);
             }
 
             if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
@@ -1707,26 +1711,24 @@ namespace Amoeba.Windows
 
         private void _coreMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsStart && _updateBaseNodeMenuItem_IsEnabled
+            _updateBaseNodeMenuItem.IsEnabled = Settings.Instance.Global_IsConnectRunning && _updateBaseNodeMenuItem_IsEnabled
                 && (Settings.Instance.Global_ConnectionSetting_IsEnabled || Settings.Instance.Global_I2p_SamBridge_IsEnabled);
         }
 
-        private void _startMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _connectStartMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _startMenuItem.IsEnabled = false;
-            _stopMenuItem.IsEnabled = true;
+            _connectStartMenuItem.IsEnabled = false;
+            _connectStopMenuItem.IsEnabled = true;
 
-            Settings.Instance.Global_IsStart = true;
+            Settings.Instance.Global_IsConnectRunning = true;
         }
 
-        private void _stopMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _connectStopMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (sender != null) _autoStop = (sender.GetType() == typeof(TransfarLimitManager));
+            _connectStartMenuItem.IsEnabled = true;
+            _connectStopMenuItem.IsEnabled = false;
 
-            _startMenuItem.IsEnabled = true;
-            _stopMenuItem.IsEnabled = false;
-
-            Settings.Instance.Global_IsStart = false;
+            Settings.Instance.Global_IsConnectRunning = false;
         }
 
         volatile bool _updateBaseNodeMenuItem_IsEnabled = true;
@@ -1766,17 +1768,26 @@ namespace Amoeba.Windows
             });
         }
 
-        private void _linkOptionsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            LinkOptionsWindow window = new LinkOptionsWindow(_amoebaManager);
-            window.Owner = this;
-            window.ShowDialog();
-        }
-
         private void _cacheMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
             _checkInternalBlocksMenuItem.IsEnabled = _checkInternalBlocksMenuItem_IsEnabled;
             _checkExternalBlocksMenuItem.IsEnabled = _checkExternalBlocksMenuItem_IsEnabled;
+        }
+
+        private void _convertStartMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _convertStartMenuItem.IsEnabled = false;
+            _convertStopMenuItem.IsEnabled = true;
+
+            Settings.Instance.Global_IsConvertRunning = true;
+        }
+
+        private void _convertStopMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _convertStartMenuItem.IsEnabled = true;
+            _convertStopMenuItem.IsEnabled = false;
+
+            Settings.Instance.Global_IsConvertRunning = false;
         }
 
         volatile bool _checkInternalBlocksMenuItem_IsEnabled = true;
@@ -1903,20 +1914,11 @@ namespace Amoeba.Windows
             window.Show();
         }
 
-        private void _encodeAndDecodeStartMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _linkOptionsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _encodeAndDecodeStartMenuItem.IsEnabled = false;
-            _encodeAndDecodeStopMenuItem.IsEnabled = true;
-
-            Settings.Instance.Global_IsConvertStart = true;
-        }
-
-        private void _encodeAndDecodeStopMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            _encodeAndDecodeStartMenuItem.IsEnabled = true;
-            _encodeAndDecodeStopMenuItem.IsEnabled = false;
-
-            Settings.Instance.Global_IsConvertStart = false;
+            LinkOptionsWindow window = new LinkOptionsWindow(_amoebaManager);
+            window.Owner = this;
+            window.ShowDialog();
         }
 
         private void _optionsMenuItem_Click(object sender, RoutedEventArgs e)

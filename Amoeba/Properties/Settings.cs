@@ -26,8 +26,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_SearchKeywords", Value = new LockedList<string>() },
                 new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_UploadKeywords", Value = new LockedList<string>() },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_UseLanguage", Value = "English" },
-                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsStart", Value = true },
-                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsConvertStart", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsConnectRunning", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsConvertRunning", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_ConnectionSetting_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_I2p_SamBridge_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
@@ -43,6 +43,17 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Height", Value = 500 },
                 new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Width", Value = 700 },
                 new Library.Configuration.SettingContent<WindowState>() { Name = "MainWindow_WindowState", Value = WindowState.Maximized },
+
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "LinkOptionsWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Grid_ColumnDefinitions_Width", Value = 300 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
+                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "LinkOptionsWindow_DownloadLinkItems", Value = new LockedList<LinkItem>() },
+                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "LinkOptionsWindow_UploadLinkItems", Value = new LockedList<LinkItem>() },
 
                 new Library.Configuration.SettingContent<double>() { Name = "OptionsWindow_Top", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "OptionsWindow_Left", Value = 120 },
@@ -62,17 +73,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<string>() { Name = "OptionsWindow_DataCacheSize_Unit", Value = "GB" },
                 new Library.Configuration.SettingContent<double>() { Name = "OptionsWindow_Signature_GridViewColumn_Value_Width", Value = 400 },
                 new Library.Configuration.SettingContent<double>() { Name = "OptionsWindow_Keyword_GridViewColumn_Value_Width", Value = 400 },
-
-                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Top", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Left", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Height", Value = 500 },
-                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Width", Value = 700 },
-                new Library.Configuration.SettingContent<WindowState>() { Name = "LinkOptionsWindow_WindowState", Value = WindowState.Normal },
-                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Grid_ColumnDefinitions_Width", Value = 300 },
-                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
-                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "LinkOptionsWindow_DownloadLinkItems", Value = new LockedList<LinkItem>() },
-                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "LinkOptionsWindow_UploadLinkItems", Value = new LockedList<LinkItem>() },
 
                 new Library.Configuration.SettingContent<double>() { Name = "VersionInformationWindow_Top", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "VersionInformationWindow_Left", Value = 120 },
@@ -309,38 +309,38 @@ namespace Amoeba.Properties
             }
         }
 
-        public bool Global_IsStart
+        public bool Global_IsConnectRunning
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return (bool)this["Global_IsStart"];
+                    return (bool)this["Global_IsConnectRunning"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["Global_IsStart"] = value;
+                    this["Global_IsConnectRunning"] = value;
                 }
             }
         }
 
-        public bool Global_IsConvertStart
+        public bool Global_IsConvertRunning
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return (bool)this["Global_IsConvertStart"];
+                    return (bool)this["Global_IsConvertRunning"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["Global_IsConvertStart"] = value;
+                    this["Global_IsConvertRunning"] = value;
                 }
             }
         }
@@ -594,6 +594,187 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["MainWindow_WindowState"] = value;
+                }
+            }
+        }
+
+
+        public double LinkOptionsWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkOptionsWindow_Top"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double LinkOptionsWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkOptionsWindow_Left"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double LinkOptionsWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkOptionsWindow_Height"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double LinkOptionsWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkOptionsWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState LinkOptionsWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (WindowState)this["LinkOptionsWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double LinkOptionsWindow_Grid_ColumnDefinitions_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"] = value;
+                }
+            }
+        }
+
+        public double LinkOptionsWindow_GridViewColumn_LinkerSignature_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"] = value;
+                }
+            }
+        }
+
+        public double LinkOptionsWindow_GridViewColumn_TrustSignature_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"] = value;
+                }
+            }
+        }
+
+        public LockedList<LinkItem> LinkOptionsWindow_DownloadLinkItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (LockedList<LinkItem>)this["LinkOptionsWindow_DownloadLinkItems"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_DownloadLinkItems"] = value;
+                }
+            }
+        }
+
+        public LockedList<LinkItem> LinkOptionsWindow_UploadLinkItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (LockedList<LinkItem>)this["LinkOptionsWindow_UploadLinkItems"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_UploadLinkItems"] = value;
                 }
             }
         }
@@ -919,187 +1100,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["OptionsWindow_Keyword_GridViewColumn_Value_Width"] = value;
-                }
-            }
-        }
-
-
-        public double LinkOptionsWindow_Top
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (double)this["LinkOptionsWindow_Top"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_Top"] = value;
-                }
-            }
-        }
-
-        public double LinkOptionsWindow_Left
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (double)this["LinkOptionsWindow_Left"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_Left"] = value;
-                }
-            }
-        }
-
-        public double LinkOptionsWindow_Height
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (double)this["LinkOptionsWindow_Height"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_Height"] = value;
-                }
-            }
-        }
-
-        public double LinkOptionsWindow_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (double)this["LinkOptionsWindow_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_Width"] = value;
-                }
-            }
-        }
-
-        public WindowState LinkOptionsWindow_WindowState
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (WindowState)this["LinkOptionsWindow_WindowState"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_WindowState"] = value;
-                }
-            }
-        }
-
-        public double LinkOptionsWindow_Grid_ColumnDefinitions_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (double)this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"] = value;
-                }
-            }
-        }
-
-        public double LinkOptionsWindow_GridViewColumn_LinkerSignature_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (double)this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"] = value;
-                }
-            }
-        }
-
-        public double LinkOptionsWindow_GridViewColumn_TrustSignature_Width
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (double)this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"] = value;
-                }
-            }
-        }
-
-        public LockedList<LinkItem> LinkOptionsWindow_DownloadLinkItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (LockedList<LinkItem>)this["LinkOptionsWindow_DownloadLinkItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_DownloadLinkItems"] = value;
-                }
-            }
-        }
-
-        public LockedList<LinkItem> LinkOptionsWindow_UploadLinkItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (LockedList<LinkItem>)this["LinkOptionsWindow_UploadLinkItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_UploadLinkItems"] = value;
                 }
             }
         }

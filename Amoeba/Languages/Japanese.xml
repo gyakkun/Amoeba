@@ -35,22 +35,22 @@
   <Translate Key="MainWindow_Share" Value="シェア" />
   <Translate Key="MainWindow_Store" Value="ストア" />
   <Translate Key="MainWindow_Log" Value="ログ" />
-  <Translate Key="MainWindow_Core" Value="コア" />
   <Translate Key="MainWindow_StatesBar" Value="接続: {0}  変換: {1}" />
   <Translate Key="MainWindow_Running" Value="実行中" />
   <Translate Key="MainWindow_Stopping" Value="停止中" />
-  <Translate Key="MainWindow_Start" Value="開始" />
-  <Translate Key="MainWindow_Stop" Value="停止" />
+  <Translate Key="MainWindow_Core" Value="コア" />
+  <Translate Key="MainWindow_ConnectStart" Value="接続の開始" />
+  <Translate Key="MainWindow_ConnectStop" Value="接続の停止" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="基礎ノード情報の更新" />
   <Translate Key="MainWindow_Cache" Value="キャッシュ" />
-  <Translate Key="MainWindow_CheckInternalBlocks" Value="内部ブロックの破損チェック" />
-  <Translate Key="MainWindow_CheckExternalBlocks" Value="外部ブロックの破損チェック" />
   <Translate Key="MainWindow_ConvertStart" Value="変換の開始" />
   <Translate Key="MainWindow_ConvertStop" Value="変換の停止" />
-  <Translate Key="MainWindow_Languages" Value="言語" />
+  <Translate Key="MainWindow_CheckInternalBlocks" Value="内部ブロックの破損チェック" />
+  <Translate Key="MainWindow_CheckExternalBlocks" Value="外部ブロックの破損チェック" />
   <Translate Key="MainWindow_Tools" Value="ツール" />
   <Translate Key="MainWindow_LinkOptions" Value="リンクの設定" />
   <Translate Key="MainWindow_Options" Value="オプション" />
+  <Translate Key="MainWindow_Languages" Value="言語" />
   <Translate Key="MainWindow_Help" Value="ヘルプ" />
   <Translate Key="MainWindow_ManualSite" Value="ドキュメント" />
   <Translate Key="MainWindow_DeveloperSite" Value="ソースコード" />

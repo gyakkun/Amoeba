@@ -35,22 +35,22 @@
   <Translate Key="MainWindow_Share" Value="分享" />
   <Translate Key="MainWindow_Store" Value="收藏" />
   <Translate Key="MainWindow_Log" Value="紀錄" />
-  <Translate Key="MainWindow_Core" Value="核心" />
   <Translate Key="MainWindow_StatesBar" Value="連線: {0}  轉換: {1}" />
   <Translate Key="MainWindow_Running" Value="執行中" />
   <Translate Key="MainWindow_Stopping" Value="停止中" />
-  <Translate Key="MainWindow_Start" Value="開始" />
-  <Translate Key="MainWindow_Stop" Value="停止" />
+  <Translate Key="MainWindow_Core" Value="核心" />
+  <Translate Key="MainWindow_ConnectStart" Value="開始" />
+  <Translate Key="MainWindow_ConnectStop" Value="停止" />
   <Translate Key="MainWindow_UpdateBaseNode" Value="更新基本節點網址" />
   <Translate Key="MainWindow_Cache" Value="暫存" />
-  <Translate Key="MainWindow_CheckInternalBlocks" Value="檢查內部區塊" />
-  <Translate Key="MainWindow_CheckExternalBlocks" Value="檢查外部區塊" />
   <Translate Key="MainWindow_ConvertStart" Value="開始轉換" />
   <Translate Key="MainWindow_ConvertStop" Value="停止轉換" />
-  <Translate Key="MainWindow_Languages" Value="語言" />
+  <Translate Key="MainWindow_CheckInternalBlocks" Value="檢查內部區塊" />
+  <Translate Key="MainWindow_CheckExternalBlocks" Value="檢查外部區塊" />
   <Translate Key="MainWindow_Tools" Value="工具" />
   <Translate Key="MainWindow_LinkOptions" Value="連結選項" />
   <Translate Key="MainWindow_Options" Value="選項" />
+  <Translate Key="MainWindow_Languages" Value="語言" />
   <Translate Key="MainWindow_Help" Value="說明" />
   <Translate Key="MainWindow_ManualSite" Value="文件" />
   <Translate Key="MainWindow_DeveloperSite" Value="原始碼" />
