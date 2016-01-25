@@ -75,7 +75,7 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            foreach (var path in Settings.Instance.LibraryControl_ExpandedPath.ToArray())
+            foreach (var path in Settings.Instance.LibraryControl_ExpandedPaths.ToArray())
             {
                 if (path.Count == 0 || path[0] != _treeViewItem.Value.Name) goto End;
                 TreeViewItem treeViewItem = _treeViewItem;
@@ -91,7 +91,7 @@ namespace Amoeba.Windows
 
             End: ;
 
-                Settings.Instance.LibraryControl_ExpandedPath.Remove(path);
+                Settings.Instance.LibraryControl_ExpandedPaths.Remove(path);
             }
 
             SelectionChangedEventHandler selectionChanged = (object sender, SelectionChangedEventArgs e) =>
@@ -950,7 +950,7 @@ namespace Amoeba.Windows
                 if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
             }
 
-            Settings.Instance.LibraryControl_ExpandedPath.Add(path);
+            Settings.Instance.LibraryControl_ExpandedPaths.Add(path);
         }
 
         private void _treeView_Collapsed(object sender, RoutedEventArgs e)
@@ -965,7 +965,7 @@ namespace Amoeba.Windows
                 if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
             }
 
-            Settings.Instance.LibraryControl_ExpandedPath.Remove(path);
+            Settings.Instance.LibraryControl_ExpandedPaths.Remove(path);
         }
 
         private void _treeViewItemContextMenu_ContextMenuOpening(object sender, ContextMenuEventArgs e)

@@ -1173,7 +1173,7 @@ namespace Amoeba.Windows
                         route.Add(box.Name);
 
                         Settings.Instance.LibraryControl_Box = box;
-                        Settings.Instance.LibraryControl_ExpandedPath.Add(route);
+                        Settings.Instance.LibraryControl_ExpandedPaths.Add(route);
                     }
 
                     // Links.txtにあるリンク情報を追加する。

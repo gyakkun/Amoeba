@@ -78,7 +78,7 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _listViewItemCollection;
 
-            foreach (var path in Settings.Instance.StoreDownloadControl_ExpandedPath.ToArray())
+            foreach (var path in Settings.Instance.StoreDownloadControl_ExpandedPaths.ToArray())
             {
                 if (path.Count == 0 || _treeViewItem.Value.Name != path[0]) goto End;
 
@@ -103,7 +103,7 @@ namespace Amoeba.Windows
 
             End: ;
 
-                Settings.Instance.StoreDownloadControl_ExpandedPath.Remove(path);
+                Settings.Instance.StoreDownloadControl_ExpandedPaths.Remove(path);
             }
 
             SelectionChangedEventHandler selectionChanged = (object sender, SelectionChangedEventArgs e) =>
@@ -765,7 +765,7 @@ namespace Amoeba.Windows
                 else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
             }
 
-            Settings.Instance.StoreDownloadControl_ExpandedPath.Add(path);
+            Settings.Instance.StoreDownloadControl_ExpandedPaths.Add(path);
         }
 
         private void _treeView_Collapsed(object sender, RoutedEventArgs e)
@@ -782,7 +782,7 @@ namespace Amoeba.Windows
                 else if (item is BoxTreeViewItem) path.Add(((BoxTreeViewItem)item).Value.Name);
             }
 
-            Settings.Instance.StoreDownloadControl_ExpandedPath.Remove(path);
+            Settings.Instance.StoreDownloadControl_ExpandedPaths.Remove(path);
         }
 
         private void _treeView_PreviewDragOver(object sender, DragEventArgs e)

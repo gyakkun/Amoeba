@@ -71,8 +71,8 @@ namespace Amoeba.Windows
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_NodeCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_SeedCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_BlockCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_SeedCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_DownloadCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_UploadCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_ShareCount" });
@@ -136,8 +136,8 @@ namespace Amoeba.Windows
                     dic["InformationControl_UsingSpace"] = NetworkConverter.ToSizeString(((long)information["UsingSpace"])).ToString();
 
                     dic["InformationControl_NodeCount"] = ((int)information["OtherNodeCount"]).ToString();
-                    dic["InformationControl_SeedCount"] = ((int)information["SeedCount"]).ToString();
                     dic["InformationControl_BlockCount"] = ((int)information["BlockCount"]).ToString();
+                    dic["InformationControl_SeedCount"] = ((int)information["SeedCount"]).ToString();
                     dic["InformationControl_DownloadCount"] = ((int)information["DownloadingCount"]).ToString();
                     dic["InformationControl_UploadCount"] = ((int)information["UploadingCount"]).ToString();
                     dic["InformationControl_ShareCount"] = ((int)information["ShareCount"]).ToString();

@@ -136,17 +136,17 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<StoreCategorizeTreeItem>() { Name = "StoreDownloadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
                 new Library.Configuration.SettingContent<string>() { Name = "StoreDownloadControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "StoreDownloadControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "StoreDownloadControl_ExpandedPath", Value = new LockedHashSet<Route>() },
+                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "StoreDownloadControl_ExpandedPaths", Value = new LockedHashSet<Route>() },
 
                 new Library.Configuration.SettingContent<StoreCategorizeTreeItem>() { Name = "StoreUploadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
                 new Library.Configuration.SettingContent<string>() { Name = "StoreUploadControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "StoreUploadControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "StoreUploadControl_ExpandedPath", Value = new LockedHashSet<Route>() },
+                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "StoreUploadControl_ExpandedPaths", Value = new LockedHashSet<Route>() },
 
                 new Library.Configuration.SettingContent<string>() { Name = "LibraryControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "LibraryControl_ListSortDirection", Value = ListSortDirection.Ascending },
                 new Library.Configuration.SettingContent<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
-                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "LibraryControl_ExpandedPath", Value = new LockedHashSet<Route>() },
+                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "LibraryControl_ExpandedPaths", Value = new LockedHashSet<Route>() },
 
                 new Library.Configuration.SettingContent<double>() { Name = "ProgressWindow_Width", Value = 700 },
                 new Library.Configuration.SettingContent<WindowState>() { Name = "ProgressWindow_WindowState", Value = WindowState.Normal },
@@ -2119,20 +2119,20 @@ namespace Amoeba.Properties
             }
         }
 
-        public LockedHashSet<Route> StoreDownloadControl_ExpandedPath
+        public LockedHashSet<Route> StoreDownloadControl_ExpandedPaths
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return (LockedHashSet<Route>)this["StoreDownloadControl_ExpandedPath"];
+                    return (LockedHashSet<Route>)this["StoreDownloadControl_ExpandedPaths"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["StoreDownloadControl_ExpandedPath"] = value;
+                    this["StoreDownloadControl_ExpandedPaths"] = value;
                 }
             }
         }
@@ -2192,20 +2192,20 @@ namespace Amoeba.Properties
             }
         }
 
-        public LockedHashSet<Route> StoreUploadControl_ExpandedPath
+        public LockedHashSet<Route> StoreUploadControl_ExpandedPaths
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return (LockedHashSet<Route>)this["StoreUploadControl_ExpandedPath"];
+                    return (LockedHashSet<Route>)this["StoreUploadControl_ExpandedPaths"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["StoreUploadControl_ExpandedPath"] = value;
+                    this["StoreUploadControl_ExpandedPaths"] = value;
                 }
             }
         }
@@ -2265,20 +2265,20 @@ namespace Amoeba.Properties
             }
         }
 
-        public LockedHashSet<Route> LibraryControl_ExpandedPath
+        public LockedHashSet<Route> LibraryControl_ExpandedPaths
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return (LockedHashSet<Route>)this["LibraryControl_ExpandedPath"];
+                    return (LockedHashSet<Route>)this["LibraryControl_ExpandedPaths"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["LibraryControl_ExpandedPath"] = value;
+                    this["LibraryControl_ExpandedPaths"] = value;
                 }
             }
         }
