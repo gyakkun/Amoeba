@@ -49,7 +49,7 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(3, 0, 20);
+            App.AmoebaVersion = new Version(3, 0, 21);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -967,6 +967,8 @@ namespace Amoeba
                         var value = line.Substring(index + 1);
 
                         var property = type.GetProperty(name);
+                        if (property == null) continue;
+
                         property.SetValue(App.Colors, (Color)ColorConverter.ConvertFromString(value), null);
                     }
                 }
