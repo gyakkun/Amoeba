@@ -2121,8 +2121,6 @@ namespace Amoeba.Windows
                 }
             }
 
-            Settings.Instance.Global_BoxExtractTo_Path = _boxExtractToTextBox.Text;
-
             if (Settings.Instance.Global_RelateBoxFile_IsEnabled != _boxRelateFileCheckBox.IsChecked.Value)
             {
                 Settings.Instance.Global_RelateBoxFile_IsEnabled = _boxRelateFileCheckBox.IsChecked.Value;
@@ -2178,6 +2176,7 @@ namespace Amoeba.Windows
             }
 
             Settings.Instance.Global_OpenBox_IsEnabled = _boxOpenCheckBox.IsChecked.Value;
+            Settings.Instance.Global_BoxExtractTo_Path = _boxExtractToTextBox.Text;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

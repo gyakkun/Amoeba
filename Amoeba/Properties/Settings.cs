@@ -30,8 +30,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_IsConvertRunning", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_ConnectionSetting_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_I2p_SamBridge_IsEnabled", Value = true },
-                new Library.Configuration.SettingContent<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
+                new Library.Configuration.SettingContent<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_BoxExtractTo_Path", Value = "Box/Temp" },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Url", Value = "http://lyrise.web.fc2.com/update/Amoeba" },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:18118" },
@@ -381,24 +381,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public bool Global_OpenBox_IsEnabled
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (bool)this["Global_OpenBox_IsEnabled"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["Global_OpenBox_IsEnabled"] = value;
-                }
-            }
-        }
-
         public bool Global_RelateBoxFile_IsEnabled
         {
             get
@@ -413,6 +395,24 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["Global_RelateBoxFile_IsEnabled"] = value;
+                }
+            }
+        }
+
+        public bool Global_OpenBox_IsEnabled
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (bool)this["Global_OpenBox_IsEnabled"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_OpenBox_IsEnabled"] = value;
                 }
             }
         }

@@ -1043,79 +1043,98 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    Settings.Instance.Global_SearchKeywords.Clear();
-                    Settings.Instance.Global_SearchKeywords.Add("Box");
-                    Settings.Instance.Global_SearchKeywords.Add("Picture");
-                    Settings.Instance.Global_SearchKeywords.Add("Movie");
-                    Settings.Instance.Global_SearchKeywords.Add("Music");
-                    Settings.Instance.Global_SearchKeywords.Add("Archive");
-                    Settings.Instance.Global_SearchKeywords.Add("Document");
-                    Settings.Instance.Global_SearchKeywords.Add("Executable");
+                    {
+                        Settings.Instance.Global_SearchKeywords.Clear();
+                        Settings.Instance.Global_SearchKeywords.Add("Box");
+                        Settings.Instance.Global_SearchKeywords.Add("Picture");
+                        Settings.Instance.Global_SearchKeywords.Add("Movie");
+                        Settings.Instance.Global_SearchKeywords.Add("Music");
+                        Settings.Instance.Global_SearchKeywords.Add("Archive");
+                        Settings.Instance.Global_SearchKeywords.Add("Document");
+                        Settings.Instance.Global_SearchKeywords.Add("Executable");
 
-                    Settings.Instance.Global_UploadKeywords.Clear();
-                    Settings.Instance.Global_UploadKeywords.Add("Document");
+                        Settings.Instance.Global_UploadKeywords.Clear();
+                        Settings.Instance.Global_UploadKeywords.Add("Document");
 
-                    SearchItem pictureSearchItem = new SearchItem()
-                    {
-                        Name = "Keyword - \"Picture\""
-                    };
-                    pictureSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Picture"));
+                        SearchItem pictureSearchItem = new SearchItem()
+                        {
+                            Name = "Keyword - \"Picture\""
+                        };
+                        pictureSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Picture"));
 
-                    SearchItem movieSearchItem = new SearchItem()
-                    {
-                        Name = "Keyword - \"Movie\""
-                    };
-                    movieSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Movie"));
+                        SearchItem movieSearchItem = new SearchItem()
+                        {
+                            Name = "Keyword - \"Movie\""
+                        };
+                        movieSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Movie"));
 
-                    SearchItem musicSearchItem = new SearchItem()
-                    {
-                        Name = "Keyword - \"Music\""
-                    };
-                    musicSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Music"));
+                        SearchItem musicSearchItem = new SearchItem()
+                        {
+                            Name = "Keyword - \"Music\""
+                        };
+                        musicSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Music"));
 
-                    SearchItem archiveSearchItem = new SearchItem()
-                    {
-                        Name = "Keyword - \"Archive\""
-                    };
-                    archiveSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Archive"));
+                        SearchItem archiveSearchItem = new SearchItem()
+                        {
+                            Name = "Keyword - \"Archive\""
+                        };
+                        archiveSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Archive"));
 
-                    SearchItem documentSearchItem = new SearchItem()
-                    {
-                        Name = "Keyword - \"Document\""
-                    };
-                    documentSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Document"));
+                        SearchItem documentSearchItem = new SearchItem()
+                        {
+                            Name = "Keyword - \"Document\""
+                        };
+                        documentSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Document"));
 
-                    SearchItem ExecutableSearchItem = new SearchItem()
-                    {
-                        Name = "Keyword - \"Executable\""
-                    };
-                    ExecutableSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Executable"));
+                        SearchItem ExecutableSearchItem = new SearchItem()
+                        {
+                            Name = "Keyword - \"Executable\""
+                        };
+                        ExecutableSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Executable"));
 
-                    Settings.Instance.SearchControl_SearchTreeItem.Children.Clear();
-                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Clear();
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                        {
+                            SearchItem = pictureSearchItem
+                        });
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                        {
+                            SearchItem = movieSearchItem
+                        });
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                        {
+                            SearchItem = musicSearchItem
+                        });
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                        {
+                            SearchItem = archiveSearchItem
+                        });
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                        {
+                            SearchItem = documentSearchItem
+                        });
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
+                        {
+                            SearchItem = ExecutableSearchItem
+                        });
+                    }
+
                     {
-                        SearchItem = pictureSearchItem
-                    });
-                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                    {
-                        SearchItem = movieSearchItem
-                    });
-                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                    {
-                        SearchItem = musicSearchItem
-                    });
-                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                    {
-                        SearchItem = archiveSearchItem
-                    });
-                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                    {
-                        SearchItem = documentSearchItem
-                    });
-                    Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                    {
-                        SearchItem = ExecutableSearchItem
-                    });
+                        Box tempBox = new Box();
+                        tempBox.Name = "Temp";
+                        tempBox.CreationTime = DateTime.UtcNow;
+
+                        Box box = new Box();
+                        box.Name = "Box";
+                        box.Boxes.Add(tempBox);
+                        box.CreationTime = DateTime.UtcNow;
+
+                        var route = new Route();
+                        route.Add(box.Name);
+
+                        Settings.Instance.LibraryControl_Box = box;
+                        Settings.Instance.LibraryControl_ExpandedPaths.Add(route);
+                    }
 
                     _amoebaManager.ConnectionCountLimit = 32;
 
@@ -1157,23 +1176,6 @@ namespace Amoeba.Windows
                     else
                     {
                         Settings.Instance.Global_UseLanguage = "English";
-                    }
-
-                    {
-                        Box tempBox = new Box();
-                        tempBox.Name = "Temp";
-                        tempBox.CreationTime = DateTime.UtcNow;
-
-                        Box box = new Box();
-                        box.Name = "Box";
-                        box.Boxes.Add(tempBox);
-                        box.CreationTime = DateTime.UtcNow;
-
-                        var route = new Route();
-                        route.Add(box.Name);
-
-                        Settings.Instance.LibraryControl_Box = box;
-                        Settings.Instance.LibraryControl_ExpandedPaths.Add(route);
                     }
 
                     // Links.txtにあるリンク情報を追加する。
