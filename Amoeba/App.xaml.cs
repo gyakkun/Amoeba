@@ -49,7 +49,7 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(3, 0, 21);
+            App.AmoebaVersion = new Version(3, 0, 22);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -403,7 +403,7 @@ namespace Amoeba
                         string zipFilePath = null;
 
                         {
-                            Regex regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*)).*\.zip");
+                            Regex regex = new Regex(@"Amoeba.*?((\d*)\.(\d*)\.(\d*)).*?\.zip");
                             Version version = App.AmoebaVersion;
 
                             foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
