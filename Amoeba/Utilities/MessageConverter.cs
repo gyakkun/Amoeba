@@ -18,7 +18,7 @@ namespace Amoeba
     {
         public static string ToInfoMessage(Library.Net.Amoeba.Seed seed)
         {
-            if (seed == null) throw new ArgumentNullException("seed");
+            if (seed == null) throw new ArgumentNullException(nameof(seed));
             
             try
             {
@@ -44,7 +44,7 @@ namespace Amoeba
 
         public static string ToInfoMessage(Library.Net.Amoeba.Box box)
         {
-            if (box == null) throw new ArgumentNullException("box");
+            if (box == null) throw new ArgumentNullException(nameof(box));
             
             try
             {

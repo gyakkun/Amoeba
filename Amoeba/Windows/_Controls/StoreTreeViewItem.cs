@@ -20,7 +20,7 @@ namespace Amoeba.Windows
         public StoreTreeViewItem(StoreTreeItem value)
             : base()
         {
-            if (value == null) throw new ArgumentNullException("value");
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             this.ItemsSource = _listViewItemCollection;
             base.Header = _header;

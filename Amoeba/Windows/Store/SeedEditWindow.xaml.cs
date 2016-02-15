@@ -33,7 +33,7 @@ namespace Amoeba.Windows
 
         public SeedEditWindow(IEnumerable<Seed> seeds)
         {
-            if (seeds.Count() == 0) throw new ArgumentOutOfRangeException("seeds");
+            if (seeds.Count() == 0) throw new ArgumentOutOfRangeException(nameof(seeds));
 
             _seeds = seeds.ToList();
 

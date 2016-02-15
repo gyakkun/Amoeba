@@ -20,7 +20,7 @@ namespace Amoeba.Windows
         public SearchTreeViewItem(SearchTreeItem value)
             : base()
         {
-            if (value == null) throw new ArgumentNullException("value");
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             base.ItemsSource = _listViewItemCollection;
             base.Header = _header;
