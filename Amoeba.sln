@@ -1,5 +1,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba", "Amoeba\Amoeba.csproj", "{7C83E92E-62BE-49E6-870A-DEB9D5340664}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Amoeba", "..\Library\Library.Net.Amoeba\Library.Net.Amoeba.csproj", "{82230C99-6599-4130-AAC9-FC926ABC0724}"
