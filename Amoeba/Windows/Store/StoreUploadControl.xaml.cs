@@ -99,7 +99,7 @@ namespace Amoeba.Windows
                 treeViewItem.IsExpanded = true;
                 continue;
 
-            End: ;
+                End:;
 
                 Settings.Instance.StoreUploadControl_ExpandedPaths.Remove(path);
             }
@@ -146,7 +146,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(100);
                     if (!_refresh) continue;
@@ -280,7 +280,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 

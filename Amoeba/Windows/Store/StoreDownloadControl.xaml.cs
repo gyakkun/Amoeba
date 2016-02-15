@@ -101,7 +101,7 @@ namespace Amoeba.Windows
                 treeViewItem.IsExpanded = true;
                 continue;
 
-            End: ;
+                End:;
 
                 Settings.Instance.StoreDownloadControl_ExpandedPaths.Remove(path);
             }
@@ -154,7 +154,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(100);
                     if (!_refresh) continue;
@@ -288,7 +288,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 
@@ -407,7 +407,7 @@ namespace Amoeba.Windows
             {
                 Stopwatch refreshStopwatch = new Stopwatch();
 
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(1000);
 
@@ -846,7 +846,7 @@ namespace Amoeba.Windows
                 storeTreeViewItem.Value.IsUpdated = false;
                 storeTreeViewItem.Update();
 
-            End: ;
+                End:;
             }
 
             if (item.IsSelected == true)

@@ -169,7 +169,7 @@ namespace Amoeba
                     }
                 }
 
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(1000 * 1);
                     if (this.State == ManagerState.Stop) return;
@@ -324,7 +324,7 @@ namespace Amoeba
             private object _thisLock;
 
             public Settings(object lockObject)
-                : base(new List<Library.Configuration.ISettingContent>() { 
+                : base(new List<Library.Configuration.ISettingContent>() {
                 new Library.Configuration.SettingContent<TransferLimit>() { Name = "TransferLimit", Value = new TransferLimit() },
                 new Library.Configuration.SettingContent<LockedHashDictionary<DateTime, long>>() { Name = "UploadTransferSizeList", Value = new LockedHashDictionary<DateTime, long>() },
                 new Library.Configuration.SettingContent<LockedHashDictionary<DateTime, long>>() { Name = "DownloadTransferSizeList", Value = new LockedHashDictionary<DateTime, long>() },

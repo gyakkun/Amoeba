@@ -361,7 +361,7 @@ namespace Amoeba
             Stopwatch checkSamStopwatch = new Stopwatch();
             checkSamStopwatch.Start();
 
-            for (; ; )
+            for (;;)
             {
                 Thread.Sleep(1000);
                 if (this.State == ManagerState.Stop) return;
@@ -546,7 +546,7 @@ namespace Amoeba
             private object _thisLock;
 
             public Settings(object lockObject)
-                : base(new List<Library.Configuration.ISettingContent>() { 
+                : base(new List<Library.Configuration.ISettingContent>() {
                     new Library.Configuration.SettingContent<string>() { Name = "SamBridgeUri", Value = "tcp:127.0.0.1:7656" },
                     new Library.Configuration.SettingContent<string>() { Name = "I2pUri", Value = "" },
                 })

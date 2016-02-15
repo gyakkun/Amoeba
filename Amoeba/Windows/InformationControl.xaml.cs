@@ -112,7 +112,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     var information = _amoebaManager.Information;
                     var dic = new Dictionary<string, string>();
@@ -177,7 +177,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Information) continue;

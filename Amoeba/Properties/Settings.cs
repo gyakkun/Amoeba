@@ -132,7 +132,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_Name_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
-    
+
                 new Library.Configuration.SettingContent<StoreCategorizeTreeItem>() { Name = "StoreDownloadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
                 new Library.Configuration.SettingContent<string>() { Name = "StoreDownloadControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "StoreDownloadControl_ListSortDirection", Value = ListSortDirection.Ascending },
@@ -155,7 +155,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "SignatureWindow_Left", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "SignatureWindow_Width", Value = 700 },
                 new Library.Configuration.SettingContent<WindowState>() { Name = "SignatureWindow_WindowState", Value = WindowState.Normal },
-              
+
                 new Library.Configuration.SettingContent<double>() { Name = "NameWindow_Top", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "NameWindow_Left", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "NameWindow_Width", Value = 700 },

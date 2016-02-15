@@ -114,7 +114,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(100);
                     if (!_refresh) continue;
@@ -375,7 +375,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 

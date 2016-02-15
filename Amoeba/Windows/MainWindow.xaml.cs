@@ -271,7 +271,7 @@ namespace Amoeba.Windows
                 compactionStopwatch.Start();
                 garbageCollectStopwatch.Start();
 
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(1000);
                     if (_closed) return;
@@ -519,7 +519,7 @@ namespace Amoeba.Windows
                 Stopwatch stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(1000);
                     if (_closed) return;
@@ -608,7 +608,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(1000);
                     if (_closed) return;

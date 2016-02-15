@@ -61,7 +61,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Share) continue;

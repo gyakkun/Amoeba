@@ -157,7 +157,7 @@ namespace Amoeba
                 var targetList = new LinkedList<TreeViewItemEx>();
                 targetList.AddFirst((TreeViewItemEx)childItem);
 
-                for (; ; )
+                for (;;)
                 {
                     var parent = targetList.First.Value.Parent;
                     if (parent == null) break;
@@ -210,7 +210,7 @@ namespace Amoeba
                 var targetList = new LinkedList<TreeViewItemEx>();
                 targetList.AddFirst((TreeViewItemEx)childItem);
 
-                for (; ; )
+                for (;;)
                 {
                     var parent = targetList.First.Value.Parent;
                     if (parent == null) break;

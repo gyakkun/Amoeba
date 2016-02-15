@@ -89,7 +89,7 @@ namespace Amoeba.Windows
                 treeViewItem.IsExpanded = true;
                 continue;
 
-            End: ;
+                End:;
 
                 Settings.Instance.LibraryControl_ExpandedPaths.Remove(path);
             }
@@ -142,7 +142,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(100);
                     if (!_refresh) continue;
@@ -246,7 +246,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     _autoResetEvent.WaitOne(1000 * 60 * 3);
 
@@ -363,7 +363,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                for (; ; )
+                for (;;)
                 {
                     Thread.Sleep(1000 * 3);
 

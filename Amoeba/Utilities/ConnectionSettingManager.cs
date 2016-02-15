@@ -443,7 +443,7 @@ namespace Amoeba
             private object _thisLock;
 
             public Settings(object lockObject)
-                : base(new List<Library.Configuration.ISettingContent>() { 
+                : base(new List<Library.Configuration.ISettingContent>() {
                     new Library.Configuration.SettingContent<string>() { Name = "Ipv4Uri", Value = null },
                     new Library.Configuration.SettingContent<string>() { Name = "Ipv6Uri", Value = null },
                     new Library.Configuration.SettingContent<string>() { Name = "UpnpUri", Value = null },

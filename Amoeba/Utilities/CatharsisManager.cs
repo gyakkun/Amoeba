@@ -257,7 +257,7 @@ namespace Amoeba
                             }
                         }
 
-                    End: ;
+                        End:;
                     }
                 }
 
@@ -516,7 +516,7 @@ namespace Amoeba
             private object _thisLock;
 
             public Settings(object lockObject)
-                : base(new List<Library.Configuration.ISettingContent>() { 
+                : base(new List<Library.Configuration.ISettingContent>() {
                     new Library.Configuration.SettingContent<HashSet<uint>>() { Name = "Ipv4AddressSet", Value = new HashSet<uint>() },
                     new Library.Configuration.SettingContent<HashSet<SearchRange<uint>>>() { Name = "Ipv4AddressRangeSet", Value = new HashSet<SearchRange<uint>>() },
                 })

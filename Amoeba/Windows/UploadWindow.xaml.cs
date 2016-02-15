@@ -45,7 +45,7 @@ namespace Amoeba.Windows
             _keywordsComboBox2.MaxLength = KeywordCollection.MaxKeywordLength;
             _keywordsComboBox3.MaxLength = KeywordCollection.MaxKeywordLength;
             _commentTextBox.MaxLength = Seed.MaxCommentLength;
-            
+
             {
                 var icon = new BitmapImage();
 

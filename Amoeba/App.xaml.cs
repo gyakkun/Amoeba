@@ -398,7 +398,7 @@ namespace Amoeba
 
                     if (Directory.Exists(App.DirectoryPaths["Update"]))
                     {
-                    Restart: ;
+                        Restart:;
 
                         string zipFilePath = null;
 
