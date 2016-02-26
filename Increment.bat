@@ -1,5 +1,10 @@
+set LIBRARY_INCREMENT="C:\Local\Projects\Alliance-Network\Library\Increment.bat"
+IF EXIST %LIBRARY_INCREMENT% call %LIBRARY_INCREMENT%
+
 set BATDIR=%~dp0
 cd %BATDIR%
 
 set TOOL="C:\Local\Projects\Alliance-Network\Library\Library.Tools\bin\Debug\Library.Tools.exe"
-IF EXIST %TOOL% call %TOOL% "Increment" %1 %2
+IF NOT EXIST %TOOL% exit
+
+call %TOOL% "Increment" Amoeba\Amoeba.csproj Amoeba\Properties\AssemblyInfo.cs
