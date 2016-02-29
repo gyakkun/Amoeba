@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -404,7 +404,7 @@ namespace Amoeba.Windows
             var item = value as bool?;
             if (item == null) return null;
 
-            return item.Value ? "＋" : "－";
+            return item.Value ? "+" : "-";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

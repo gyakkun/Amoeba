@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -71,7 +71,7 @@ namespace Amoeba.Windows
             {
                 ProcessStartInfo info = new ProcessStartInfo();
                 info.FileName = "notepad.exe";
-                info.Arguments = @"Properties\Amoeba.License";
+                info.Arguments = @"Properties/Amoeba.License";
                 info.UseShellExecute = true;
 
                 using (Process process = Process.Start(info))

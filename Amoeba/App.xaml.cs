@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -86,14 +86,14 @@ namespace Amoeba
 
             App.DirectoryPaths = new Dictionary<string, string>();
 
-            App.DirectoryPaths["Base"] = @"..\";
-            App.DirectoryPaths["Configuration"] = Path.Combine(@"..\", "Configuration");
-            App.DirectoryPaths["Update"] = Path.GetFullPath(Path.Combine(@"..\", "Update"));
-            App.DirectoryPaths["Log"] = Path.Combine(@"..\", "Log");
-            App.DirectoryPaths["Input"] = Path.Combine(@"..\", "Input");
-            App.DirectoryPaths["Work"] = Path.Combine(@"..\", "Work");
+            App.DirectoryPaths["Base"] = @"../";
+            App.DirectoryPaths["Configuration"] = @"../Configuration";
+            App.DirectoryPaths["Update"] = Path.GetFullPath(@"../Update");
+            App.DirectoryPaths["Log"] = @"../Log";
+            App.DirectoryPaths["Input"] = @"../Input";
+            App.DirectoryPaths["Work"] = @"../Work";
 
-            App.DirectoryPaths["Core"] = @".\";
+            App.DirectoryPaths["Core"] = @"./";
             App.DirectoryPaths["Icons"] = "Icons";
             App.DirectoryPaths["Languages"] = "Languages";
             App.DirectoryPaths["Settings"] = "Settings";
@@ -125,7 +125,7 @@ namespace Amoeba
 
             for (int index = 1; ; index++)
             {
-                string text = string.Format(@"{0}\{1} ({2}){3}",
+                string text = string.Format(@"{0}/{1} ({2}){3}",
                     Path.GetDirectoryName(path),
                     Path.GetFileNameWithoutExtension(path),
                     index,
@@ -159,7 +159,7 @@ namespace Amoeba
             for (int index = 1, count = 0; ; index++)
             {
                 string text = string.Format(
-                    @"{0}\{1} ({2}){3}",
+                    @"{0}/{1} ({2}){3}",
                     Path.GetDirectoryName(path),
                     Path.GetFileNameWithoutExtension(path),
                     index,
@@ -215,7 +215,7 @@ namespace Amoeba
                             string fileType = "Amoeba";
                             string description = "Amoeba Box";
                             string verb = "open";
-                            string iconPath = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Icons"], @"Files\Box.ico"));
+                            string iconPath = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Icons"], @"Files/Box.ico"));
 
                             using (var regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension))
                             {
@@ -461,14 +461,14 @@ namespace Amoeba
                             File.Copy("Library.Update.exe", tempUpdateExeFilePath);
 
                             ProcessStartInfo startInfo = new ProcessStartInfo();
-                            startInfo.FileName = tempUpdateExeFilePath;
+                            startInfo.FileName = Path.GetFullPath(tempUpdateExeFilePath);
                             startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
                                 Process.GetCurrentProcess().Id,
                                 Path.Combine(tempUpdateDirectoryPath, "Core"),
                                 Directory.GetCurrentDirectory(),
                                 Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.exe"),
                                 Path.GetFullPath(zipFilePath));
-                            startInfo.WorkingDirectory = Path.GetDirectoryName(tempUpdateExeFilePath);
+                            startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName(tempUpdateExeFilePath));
 
                             var process = Process.Start(startInfo);
                             process.WaitForInputIdle();
@@ -534,9 +534,9 @@ namespace Amoeba
                     {
                         xml.WriteStartElement("Process");
 
-                        xml.WriteElementString("Path", @"Assemblies\Tor\tor.exe");
-                        xml.WriteElementString("Arguments", "-f torrc DataDirectory " + @"..\..\..\Work\Tor");
-                        xml.WriteElementString("WorkingDirectory", @"Assemblies\Tor");
+                        xml.WriteElementString("Path", @"Assemblies/Tor/tor.exe");
+                        xml.WriteElementString("Arguments", "-f torrc DataDirectory " + @"../../../Work/Tor");
+                        xml.WriteElementString("WorkingDirectory", @"Assemblies/Tor");
 
                         xml.WriteEndElement(); //Process
                     }
@@ -544,9 +544,9 @@ namespace Amoeba
                     {
                         xml.WriteStartElement("Process");
 
-                        xml.WriteElementString("Path", @"Assemblies\Polipo\polipo.exe");
+                        xml.WriteElementString("Path", @"Assemblies/Polipo/polipo.exe");
                         xml.WriteElementString("Arguments", "-c polipo.conf");
-                        xml.WriteElementString("WorkingDirectory", @"Assemblies\Polipo");
+                        xml.WriteElementString("WorkingDirectory", @"Assemblies/Polipo");
 
                         xml.WriteEndElement(); //Process
                     }
@@ -632,9 +632,9 @@ namespace Amoeba
                 try
                 {
                     Process process = new Process();
-                    process.StartInfo.FileName = item.Path;
+                    process.StartInfo.FileName = Path.GetFullPath(item.Path);
                     process.StartInfo.Arguments = item.Arguments;
-                    process.StartInfo.WorkingDirectory = item.WorkingDirectory;
+                    process.StartInfo.WorkingDirectory = Path.GetFullPath(item.WorkingDirectory);
                     process.StartInfo.CreateNoWindow = true;
                     process.StartInfo.UseShellExecute = false;
                     process.Start();

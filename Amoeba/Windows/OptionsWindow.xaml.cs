@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -2129,7 +2129,7 @@ namespace Amoeba.Windows
                 {
                     System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
                     p.UseShellExecute = true;
-                    p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
+                    p.FileName = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe"));
                     p.Arguments = "Relate on";
 
                     OperatingSystem osInfo = Environment.OSVersion;
@@ -2153,7 +2153,7 @@ namespace Amoeba.Windows
                 {
                     System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
                     p.UseShellExecute = true;
-                    p.FileName = Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe");
+                    p.FileName = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe"));
                     p.Arguments = "Relate off";
 
                     OperatingSystem osInfo = Environment.OSVersion;
