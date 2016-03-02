@@ -29,7 +29,6 @@
 
     <Grid Name="_grid" AllowDrop="True" PreviewDragOver="_grid_PreviewDragOver" PreviewDrop="_grid_PreviewDrop">
         <Grid.RowDefinitions>
-            <RowDefinition Height="23" />
             <RowDefinition Height="*" />
             <RowDefinition Name="_searchRowDefinition" Height="24" />
         </Grid.RowDefinitions>
