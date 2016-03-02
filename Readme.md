@@ -4,6 +4,9 @@
 
 Amoebaは、純粋P2Pのファイル共有ソフトです。
 
+## 特徴
+Amoeba=Freenet+DHT+Search+WoT
+
 ## 目的
 
 権力による抑圧に対抗することが最終的な目標です。
