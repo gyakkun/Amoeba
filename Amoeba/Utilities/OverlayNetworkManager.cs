@@ -24,12 +24,8 @@ namespace Amoeba
 
         private Settings _settings;
 
-        private SamV3Session _samSession;
-        private object _samClientLock = new object();
-
-        private SamListener _samListener;
         private string _oldSamBridgeUri;
-        private object _samServerLock = new object();
+        private SamManager _samManager;
 
         private Regex _regex = new Regex(@"(.*?):(.*):(\d*)");
 
@@ -99,92 +95,21 @@ namespace Amoeba
 
                     if (scheme == "i2p")
                     {
-                        SamV3Connector connector = null;
+                        Socket socket = null;
 
                         try
                         {
-                            SamV3Session session;
-
-                            lock (_samClientLock)
-                            {
-                                session = _samSession;
-
-                                if (session == null)
-                                {
-                                    Socket proxySocket = null;
-
-                                    try
-                                    {
-                                        proxySocket = OverlayNetworkManager.Connect(new IPEndPoint(OverlayNetworkManager.GetIpAddress(proxyHost), proxyPort), new TimeSpan(0, 0, 10));
-
-                                        string caption = "Amoeba_Client";
-                                        string[] options = new string[]
-                                        {
-                                            "inbound.nickname=" + caption,
-                                            "outbound.nickname=" + caption
-                                        };
-                                        string optionsString = string.Join(" ", options);
-
-                                        session = new SamV3Session(proxyHost, proxyPort, null, proxySocket);
-
-                                        session.Handshake();
-                                        session.Create(null, optionsString);
-
-                                        _samSession = session;
-                                    }
-                                    catch (Exception)
-                                    {
-                                        if (session != null) session.Dispose();
-                                        if (proxySocket != null) proxySocket.Dispose();
-
-                                        throw;
-                                    }
-                                }
-                            }
-
-                            connector = new SamV3Connector(session);
-                            connector.Handshake();
-                            connector.Connect(host);
+                            socket = _samManager.Connect(host);
                         }
-                        catch (SamBridgeErrorException ex)
-                        {
-                            bool isLog = true;
-                            if (connector != null) connector.Dispose();
-
-                            string result = ex.Reply.UniqueValue("RESULT", string.Empty).Value;
-
-                            if (result == SamBridgeErrorMessage.INVALID_ID)
-                            {
-                                lock (_samClientLock)
-                                {
-                                    if (_samSession != null)
-                                    {
-                                        _samSession.Dispose();
-                                        _samSession = null;
-                                    }
-                                }
-
-                                isLog = false;
-                            }
-                            else if (result == SamBridgeErrorMessage.CANT_REACH_PEER
-                                || result == SamBridgeErrorMessage.PEER_NOT_FOUND)
-                            {
-                                isLog = false;
-                            }
-
-                            if (isLog) Debug.WriteLine(ex);
-
-                            throw;
-                        }
-                        catch (SamException ex)
+                        catch (Exception ex)
                         {
                             Debug.WriteLine(ex);
-                            if (connector != null) connector.Dispose();
+                            if (socket != null) socket.Dispose();
 
                             throw;
                         }
 
-                        return new SocketCap(connector.BridgeSocket);
+                        return new SocketCap(socket);
                     }
                 }
             }
@@ -206,45 +131,24 @@ namespace Amoeba
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
 
-            lock (_samServerLock)
+            Socket socket = null;
+
+            try
             {
-                if (_samListener == null) return null;
+                string destination;
 
-                try
-                {
-                    _samListener.Update();
-                }
-                catch (SamException)
-                {
-                    return null;
-                }
+                socket = _samManager.Accept(out destination);
+                uri = string.Format("i2p:{0}", destination);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                if (socket != null) socket.Dispose();
 
-                if (_samListener.Pending())
-                {
-                    SamV3StatefulAcceptor acceptor = _samListener.Dequeue();
-
-                    try
-                    {
-                        acceptor.AcceptComplete();
-                    }
-                    catch (SamException ex)
-                    {
-                        Debug.WriteLine(ex);
-                        acceptor.Dispose();
-
-                        return null;
-                    }
-
-                    Socket socket = acceptor.BridgeSocket;
-                    string base64Address = acceptor.DestinationBase64;
-                    string base32Address = I2PEncoding.Base32Address.FromDestinationBase64(base64Address);
-                    uri = "i2p:" + base32Address;
-
-                    return new SocketCap(socket);
-                }
+                return null;
             }
 
-            return null;
+            return new SocketCap(socket);
         }
 
         public string SamBridgeUri
@@ -263,59 +167,6 @@ namespace Amoeba
                     _settings.SamBridgeUri = value;
                 }
             }
-        }
-
-        private static IPAddress GetIpAddress(string host)
-        {
-            IPAddress remoteIP = null;
-
-            if (!IPAddress.TryParse(host, out remoteIP))
-            {
-                IPHostEntry hostEntry = Dns.GetHostEntry(host);
-
-                if (hostEntry.AddressList.Length > 0)
-                {
-                    remoteIP = hostEntry.AddressList[0];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            return remoteIP;
-        }
-
-        private static Socket Connect(IPEndPoint remoteEndPoint, TimeSpan timeout)
-        {
-            Socket socket = null;
-
-            try
-            {
-                socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                socket.ReceiveTimeout = (int)timeout.TotalMilliseconds;
-                socket.SendTimeout = (int)timeout.TotalMilliseconds;
-
-                var asyncResult = socket.BeginConnect(remoteEndPoint, null, null);
-
-                if (!asyncResult.IsCompleted && !asyncResult.CompletedSynchronously)
-                {
-                    if (!asyncResult.AsyncWaitHandle.WaitOne(timeout, false))
-                    {
-                        throw new ConnectionException();
-                    }
-                }
-
-                socket.EndConnect(asyncResult);
-
-                return socket;
-            }
-            catch (Exception)
-            {
-                if (socket != null) socket.Dispose();
-            }
-
-            throw new OverlayNetworkManagerException();
         }
 
         private bool AddUri(string uri)
@@ -370,62 +221,44 @@ namespace Amoeba
                 {
                     checkSamStopwatch.Restart();
 
-                    if (_oldSamBridgeUri != this.SamBridgeUri)
+                    if ((_samManager != null && !_samManager.IsConnected)
+                        || _oldSamBridgeUri != this.SamBridgeUri)
                     {
                         string i2pUri = null;
 
-                        lock (_samServerLock)
+                        try
                         {
-                            if (_samListener != null)
-                            {
-                                _samListener.Dispose();
-                            }
+                            var match = _regex.Match(this.SamBridgeUri);
+                            if (!match.Success) throw new Exception();
 
-                            try
+                            if (match.Groups[1].Value == "tcp")
                             {
-                                var match = _regex.Match(this.SamBridgeUri);
-                                if (!match.Success) throw new Exception();
-
-                                if (match.Groups[1].Value == "tcp")
                                 {
-                                    SamListener listener = null;
-
-                                    try
+                                    if (_samManager != null)
                                     {
-                                        string caption = "Amoeba_Server";
-                                        string[] options = new string[]
-                                        {
-                                            "inbound.nickname=" + caption,
-                                            "outbound.nickname=" + caption
-                                        };
-
-                                        string optionsString = string.Join(" ", options);
-
-                                        listener = new SamListener(match.Groups[2].Value, int.Parse(match.Groups[3].Value), optionsString);
-
-                                        string base64Address = listener.Session.DestinationBase64;
-                                        string base32Address = I2PEncoding.Base32Address.FromDestinationBase64(base64Address);
-
-                                        Debug.WriteLine("New I2P BaseNode generated." + "\n" +
-                                            "i2p:" + base64Address + "\n" +
-                                            "i2p:" + base32Address);
-
-                                        i2pUri = string.Format("i2p:{0}", base32Address);
-
-                                        _samListener = listener;
+                                        _samManager.Dispose();
                                     }
-                                    catch (SamException ex)
-                                    {
-                                        Debug.WriteLine(ex);
 
-                                        if (listener != null) listener.Dispose();
-                                    }
+                                    var host = match.Groups[2].Value;
+                                    var port = int.Parse(match.Groups[3].Value);
+
+                                    if (_samManager != null) _samManager.Dispose();
+                                    _samManager = new SamManager(host, port, "Amoeba");
+                                }
+
+                                var base32Address = _samManager.Start();
+
+                                if (base32Address != null)
+                                {
+                                    i2pUri = string.Format("i2p:{0}", base32Address);
                                 }
                             }
-                            catch (Exception)
-                            {
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
 
-                            }
+                            if (_samManager != null) _samManager.Dispose();
                         }
 
                         lock (this.ThisLock)
@@ -488,26 +321,11 @@ namespace Amoeba
                     _state = ManagerState.Stop;
                 }
 
+                if (_samManager != null) _samManager.Dispose();
+                _samManager = null;
+
                 _watchThread.Join();
                 _watchThread = null;
-
-                lock (_samClientLock)
-                {
-                    if (_samSession != null)
-                        _samSession.Dispose();
-
-                    _samSession = null;
-                }
-
-                lock (_samServerLock)
-                {
-                    if (_samListener != null)
-                        _samListener.Dispose();
-
-                    _samListener = null;
-
-                    _oldSamBridgeUri = null;
-                }
 
                 lock (this.ThisLock)
                 {
@@ -614,8 +432,8 @@ namespace Amoeba
 
             if (disposing)
             {
-                if (_samSession != null) _samSession.Dispose();
-                if (_samListener != null) _samListener.Dispose();
+                if (_samManager != null) _samManager.Dispose();
+                _samManager = null;
             }
         }
 
