@@ -55,6 +55,8 @@ namespace Amoeba.Windows
             _showUploadItemThread.Name = "UploadControl_ShowUploadItemThread";
             _showUploadItemThread.Start();
 
+            _searchRowDefinition.Height = new GridLength(0);
+
             LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
         }
 
@@ -72,38 +74,54 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Upload) continue;
 
-                    var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
-                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+                    Dictionary<int, Information> informaitonDic = new Dictionary<int, Information>();
 
-                    foreach (var item in uploadingInformation.ToArray())
                     {
-                        dic[(int)item["Id"]] = item;
+                        string[] words = null;
+
+                        {
+                            string searchText = null;
+
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                            {
+                                searchText = _searchTextBox.Text;
+                            }));
+
+                            if (!string.IsNullOrWhiteSpace(searchText))
+                            {
+                                words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
+                            }
+                        }
+
+                        foreach (var item in _amoebaManager.UploadingInformation.ToArray())
+                        {
+                            if (words != null)
+                            {
+                                var text = ((string)item["Path"] ?? "").ToLower();
+                                if (!words.All(n => text.Contains(n))) continue;
+                            }
+
+                            informaitonDic[(int)item["Id"]] = item;
+                        }
                     }
 
-                    Dictionary<int, UploadListViewItem> dic2 = new Dictionary<int, UploadListViewItem>();
-
-                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                    {
-                        foreach (var item in _listViewItemCollection.ToArray())
-                        {
-                            dic2[item.Id] = item;
-                        }
-                    }));
-
+                    Dictionary<int, UploadListViewItem> listViewItemDic = new Dictionary<int, UploadListViewItem>();
                     List<UploadListViewItem> removeList = new List<UploadListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            if (!dic.ContainsKey(item.Id))
+                            listViewItemDic[item.Id] = item;
+
+                            if (!informaitonDic.ContainsKey(item.Id))
                             {
                                 removeList.Add(item);
                             }
                         }
                     }));
 
-                    List<UploadListViewItem> newList = new List<UploadListViewItem>();
+                    List<UploadListViewItem> resultList = new List<UploadListViewItem>();
                     Dictionary<UploadListViewItem, Information> updateDic = new Dictionary<UploadListViewItem, Information>();
 
                     bool clearFlag = false;
@@ -112,12 +130,13 @@ namespace Amoeba.Windows
                     if (removeList.Count > 100)
                     {
                         clearFlag = true;
+
                         removeList.Clear();
                         updateDic.Clear();
 
-                        foreach (var information in uploadingInformation)
+                        foreach (var information in informaitonDic.Values)
                         {
-                            newList.Add(new UploadListViewItem(information));
+                            resultList.Add(new UploadListViewItem(information));
                         }
 
                         HashSet<int> hid = new HashSet<int>();
@@ -127,7 +146,7 @@ namespace Amoeba.Windows
                             hid.UnionWith(_listView.SelectedItems.OfType<UploadListViewItem>().Select(n => n.Id));
                         }));
 
-                        foreach (var item in newList)
+                        foreach (var item in resultList)
                         {
                             if (hid.Contains(item.Id))
                             {
@@ -137,14 +156,11 @@ namespace Amoeba.Windows
                     }
                     else
                     {
-                        foreach (var information in uploadingInformation)
+                        foreach (var information in informaitonDic.Values)
                         {
-                            UploadListViewItem item = null;
+                            UploadListViewItem item;
 
-                            if (dic2.ContainsKey((int)information["Id"]))
-                                item = dic2[(int)information["Id"]];
-
-                            if (item != null)
+                            if (listViewItemDic.TryGetValue((int)information["Id"], out item))
                             {
                                 if (!CollectionUtilities.Equals(item.Information, information))
                                 {
@@ -153,7 +169,7 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                newList.Add(new UploadListViewItem(information));
+                                resultList.Add(new UploadListViewItem(information));
                             }
                         }
                     }
@@ -162,13 +178,13 @@ namespace Amoeba.Windows
                     {
                         bool sortFlag = false;
 
-                        if (newList.Count != 0) sortFlag = true;
+                        if (resultList.Count != 0) sortFlag = true;
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
                         if (clearFlag) _listViewItemCollection.Clear();
 
-                        foreach (var item in newList)
+                        foreach (var item in resultList)
                         {
                             _listViewItemCollection.Add(item);
                         }
@@ -395,6 +411,8 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
         }
 
+        #region Priority
+
         private void SetPriority(int i)
         {
             var uploadItems = _listView.SelectedItems;
@@ -412,8 +430,6 @@ namespace Amoeba.Windows
                 }
             }
         }
-
-        #region Priority
 
         private void _listViewPriority0MenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -676,6 +692,12 @@ namespace Amoeba.Windows
         }
 
         #endregion
+
+        private void _serachCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
+        }
 
         private class UploadListViewItem : INotifyPropertyChanged
         {
@@ -971,6 +993,12 @@ namespace Amoeba.Windows
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
             _listViewCopyMenuItem_Click(null, null);
+        }
+
+        private void Execute_Search(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(24);
+            _searchTextBox.Focus();
         }
     }
 }

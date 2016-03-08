@@ -12,15 +12,22 @@
     <UserControl.CommandBindings>
         <CommandBinding Command="New" Executed="Execute_New" />
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
+        <CommandBinding Command="Search"  Executed="Execute_Search" />
     </UserControl.CommandBindings>
 
     <UserControl.InputBindings>
         <KeyBinding Gesture="CTRL+N" Command="New" />
         <KeyBinding Gesture="Delete" Command="Delete" />
+        <KeyBinding Gesture="CTRL+F" Command="Search" />
     </UserControl.InputBindings>
     
     <Grid>
-        <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Name="_searchRowDefinition" Height="24" />
+        </Grid.RowDefinitions>
+
+        <local:ListViewEx Grid.Column="2" x:Name="_listView" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
                 <DataTemplate x:Key="_myTemplate_Name">
@@ -52,5 +59,8 @@
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
+
+        <TextBox Grid.Row="2" Margin="24,0,0,0" Name="_searchTextBox" />
+        <Button Content="×" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Click="_serachCloseButton_Click" />
     </Grid>
 </UserControl>

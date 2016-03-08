@@ -135,10 +135,10 @@ namespace Amoeba
 
             try
             {
-                string destination;
+                string base32Address;
 
-                socket = _samManager.Accept(out destination);
-                uri = string.Format("i2p:{0}", destination);
+                socket = _samManager.Accept(out base32Address);
+                uri = string.Format("i2p:{0}", base32Address);
             }
             catch (Exception ex)
             {

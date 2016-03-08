@@ -60,6 +60,8 @@ namespace Amoeba.Windows
             _watchThread.Name = "DownloadControl_WatchThread";
             _watchThread.Start();
 
+            _searchRowDefinition.Height = new GridLength(0);
+
             LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
         }
 
@@ -77,38 +79,54 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Download) continue;
 
-                    var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
-                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+                    Dictionary<int, Information> informaitonDic = new Dictionary<int, Information>();
 
-                    foreach (var item in downloadingInformation.ToArray())
                     {
-                        dic[(int)item["Id"]] = item;
+                        string[] words = null;
+
+                        {
+                            string searchText = null;
+
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                            {
+                                searchText = _searchTextBox.Text;
+                            }));
+
+                            if (!string.IsNullOrWhiteSpace(searchText))
+                            {
+                                words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
+                            }
+                        }
+
+                        foreach (var item in _amoebaManager.DownloadingInformation.ToArray())
+                        {
+                            if (words != null)
+                            {
+                                var text = ((string)item["Path"] ?? "").ToLower();
+                                if (!words.All(n => text.Contains(n))) continue;
+                            }
+
+                            informaitonDic[(int)item["Id"]] = item;
+                        }
                     }
 
-                    Dictionary<int, DownloadListViewItem> dic2 = new Dictionary<int, DownloadListViewItem>();
-
-                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                    {
-                        foreach (var item in _listViewItemCollection.ToArray())
-                        {
-                            dic2[item.Id] = item;
-                        }
-                    }));
-
+                    Dictionary<int, DownloadListViewItem> listViewItemDic = new Dictionary<int, DownloadListViewItem>();
                     List<DownloadListViewItem> removeList = new List<DownloadListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            if (!dic.ContainsKey(item.Id))
+                            listViewItemDic[item.Id] = item;
+
+                            if (!informaitonDic.ContainsKey(item.Id))
                             {
                                 removeList.Add(item);
                             }
                         }
                     }));
 
-                    List<DownloadListViewItem> newList = new List<DownloadListViewItem>();
+                    List<DownloadListViewItem> resultList = new List<DownloadListViewItem>();
                     Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
 
                     bool clearFlag = false;
@@ -117,12 +135,13 @@ namespace Amoeba.Windows
                     if (removeList.Count > 100)
                     {
                         clearFlag = true;
+
                         removeList.Clear();
                         updateDic.Clear();
 
-                        foreach (var information in downloadingInformation)
+                        foreach (var information in informaitonDic.Values)
                         {
-                            newList.Add(new DownloadListViewItem(information));
+                            resultList.Add(new DownloadListViewItem(information));
                         }
 
                         HashSet<int> hid = new HashSet<int>();
@@ -132,7 +151,7 @@ namespace Amoeba.Windows
                             hid.UnionWith(_listView.SelectedItems.OfType<DownloadListViewItem>().Select(n => n.Id));
                         }));
 
-                        foreach (var item in newList)
+                        foreach (var item in resultList)
                         {
                             if (hid.Contains(item.Id))
                             {
@@ -142,14 +161,11 @@ namespace Amoeba.Windows
                     }
                     else
                     {
-                        foreach (var information in downloadingInformation)
+                        foreach (var information in informaitonDic.Values)
                         {
-                            DownloadListViewItem item = null;
+                            DownloadListViewItem item;
 
-                            if (dic2.ContainsKey((int)information["Id"]))
-                                item = dic2[(int)information["Id"]];
-
-                            if (item != null)
+                            if (listViewItemDic.TryGetValue((int)information["Id"], out item))
                             {
                                 if (!CollectionUtilities.Equals(item.Information, information))
                                 {
@@ -158,7 +174,7 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                newList.Add(new DownloadListViewItem(information));
+                                resultList.Add(new DownloadListViewItem(information));
                             }
                         }
                     }
@@ -167,13 +183,13 @@ namespace Amoeba.Windows
                     {
                         bool sortFlag = false;
 
-                        if (newList.Count != 0) sortFlag = true;
+                        if (resultList.Count != 0) sortFlag = true;
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
                         if (clearFlag) _listViewItemCollection.Clear();
 
-                        foreach (var item in newList)
+                        foreach (var item in resultList)
                         {
                             _listViewItemCollection.Add(item);
                         }
@@ -380,6 +396,8 @@ namespace Amoeba.Windows
             });
         }
 
+        #region Priority
+
         private void SetPriority(int i)
         {
             var downloadItems = _listView.SelectedItems;
@@ -397,8 +415,6 @@ namespace Amoeba.Windows
                 }
             }
         }
-
-        #region Priority
 
         private void _listViewPriority0MenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -661,6 +677,12 @@ namespace Amoeba.Windows
         }
 
         #endregion
+
+        private void _serachCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
+        }
 
         private class DownloadListViewItem : INotifyPropertyChanged
         {
@@ -969,6 +991,12 @@ namespace Amoeba.Windows
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
             _listViewPasteMenuItem_Click(null, null);
+        }
+
+        private void Execute_Search(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(24);
+            _searchTextBox.Focus();
         }
     }
 }

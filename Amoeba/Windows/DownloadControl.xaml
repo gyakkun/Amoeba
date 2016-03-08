@@ -13,16 +13,23 @@
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
         <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Paste" Executed="Execute_Paste" />
+        <CommandBinding Command="Search"  Executed="Execute_Search" />
     </UserControl.CommandBindings>
 
     <UserControl.InputBindings>
         <KeyBinding Gesture="Delete" Command="Delete" />
         <KeyBinding Gesture="CTRL+C" Command="Copy" />
         <KeyBinding Gesture="CTRL+V" Command="Paste" />
+        <KeyBinding Gesture="CTRL+F" Command="Search" />
     </UserControl.InputBindings>
 
     <Grid>
-        <local:ListViewEx Grid.Column="2" x:Name="_listView" Grid.RowSpan="2" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Name="_searchRowDefinition" Height="24" />
+        </Grid.RowDefinitions>
+        
+        <local:ListViewEx Grid.Column="2" x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
                 <DataTemplate x:Key="_myTemplate_Name">
@@ -85,5 +92,8 @@
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
+
+        <TextBox Grid.Row="2" Margin="24,0,0,0" Name="_searchTextBox" />
+        <Button Content="×" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Click="_serachCloseButton_Click" />
     </Grid>
 </UserControl>

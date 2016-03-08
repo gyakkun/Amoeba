@@ -55,6 +55,15 @@ namespace Amoeba.Windows
             _showShareItemThread.IsBackground = true;
             _showShareItemThread.Name = "ShareControl_ShowShareItemThread";
             _showShareItemThread.Start();
+
+            _searchRowDefinition.Height = new GridLength(0);
+
+            LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
+        }
+
+        private void LanguagesManager_UsingLanguageChangedEvent(object sender)
+        {
+            _listView.Items.Refresh();
         }
 
         private void ShowShareItem()
@@ -66,38 +75,54 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Share) continue;
 
-                    var shareInformation = _amoebaManager.ShareInformation.ToArray();
-                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+                    Dictionary<int, Information> informaitonDic = new Dictionary<int, Information>();
 
-                    foreach (var item in shareInformation.ToArray())
                     {
-                        dic[(int)item["Id"]] = item;
+                        string[] words = null;
+
+                        {
+                            string searchText = null;
+
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                            {
+                                searchText = _searchTextBox.Text;
+                            }));
+
+                            if (!string.IsNullOrWhiteSpace(searchText))
+                            {
+                                words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
+                            }
+                        }
+
+                        foreach (var item in _amoebaManager.ShareInformation.ToArray())
+                        {
+                            if (words != null)
+                            {
+                                var text = ((string)item["Path"] ?? "").ToLower();
+                                if (!words.All(n => text.Contains(n))) continue;
+                            }
+
+                            informaitonDic[(int)item["Id"]] = item;
+                        }
                     }
 
-                    Dictionary<int, ShareListViewItem> dic2 = new Dictionary<int, ShareListViewItem>();
-
-                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                    {
-                        foreach (var item in _listViewItemCollection.ToArray())
-                        {
-                            dic2[item.Id] = item;
-                        }
-                    }));
-
+                    Dictionary<int, ShareListViewItem> listViewItemDic = new Dictionary<int, ShareListViewItem>();
                     List<ShareListViewItem> removeList = new List<ShareListViewItem>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         foreach (var item in _listViewItemCollection.ToArray())
                         {
-                            if (!dic.ContainsKey(item.Id))
+                            listViewItemDic[item.Id] = item;
+
+                            if (!informaitonDic.ContainsKey(item.Id))
                             {
                                 removeList.Add(item);
                             }
                         }
                     }));
 
-                    List<ShareListViewItem> newList = new List<ShareListViewItem>();
+                    List<ShareListViewItem> resultList = new List<ShareListViewItem>();
                     Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
 
                     bool clearFlag = false;
@@ -106,12 +131,13 @@ namespace Amoeba.Windows
                     if (removeList.Count > 100)
                     {
                         clearFlag = true;
+
                         removeList.Clear();
                         updateDic.Clear();
 
-                        foreach (var information in shareInformation)
+                        foreach (var information in informaitonDic.Values)
                         {
-                            newList.Add(new ShareListViewItem(information));
+                            resultList.Add(new ShareListViewItem(information));
                         }
 
                         HashSet<int> hid = new HashSet<int>();
@@ -121,7 +147,7 @@ namespace Amoeba.Windows
                             hid.UnionWith(_listView.SelectedItems.OfType<ShareListViewItem>().Select(n => n.Id));
                         }));
 
-                        foreach (var item in newList)
+                        foreach (var item in resultList)
                         {
                             if (hid.Contains(item.Id))
                             {
@@ -131,14 +157,11 @@ namespace Amoeba.Windows
                     }
                     else
                     {
-                        foreach (var information in shareInformation)
+                        foreach (var information in informaitonDic.Values)
                         {
-                            ShareListViewItem item = null;
+                            ShareListViewItem item;
 
-                            if (dic2.ContainsKey((int)information["Id"]))
-                                item = dic2[(int)information["Id"]];
-
-                            if (item != null)
+                            if (listViewItemDic.TryGetValue((int)information["Id"], out item))
                             {
                                 if (!CollectionUtilities.Equals(item.Information, information))
                                 {
@@ -147,7 +170,7 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                newList.Add(new ShareListViewItem(information));
+                                resultList.Add(new ShareListViewItem(information));
                             }
                         }
                     }
@@ -156,13 +179,13 @@ namespace Amoeba.Windows
                     {
                         bool sortFlag = false;
 
-                        if (newList.Count != 0) sortFlag = true;
+                        if (resultList.Count != 0) sortFlag = true;
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
                         if (clearFlag) _listViewItemCollection.Clear();
 
-                        foreach (var item in newList)
+                        foreach (var item in resultList)
                         {
                             _listViewItemCollection.Add(item);
                         }
@@ -517,6 +540,12 @@ namespace Amoeba.Windows
 
         #endregion
 
+        private void _serachCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
+        }
+
         private class ShareListViewItem : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -637,6 +666,12 @@ namespace Amoeba.Windows
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
             _listViewDeleteMenuItem_Click(null, null);
+        }
+
+        private void Execute_Search(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(24);
+            _searchTextBox.Focus();
         }
     }
 }

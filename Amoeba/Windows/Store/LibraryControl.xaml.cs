@@ -45,7 +45,7 @@ namespace Amoeba.Windows
         private AutoResetEvent _autoResetEvent = new AutoResetEvent(false);
 
         private BoxTreeViewItem _treeViewItem;
-        private ObservableCollectionEx<object> _listViewItemCollection = new ObservableCollectionEx<object>();
+        private ObservableCollectionEx<IListViewItem> _listViewItemCollection = new ObservableCollectionEx<IListViewItem>();
         private LockedHashDictionary<Seed, SearchState> _seedsDictionary = new LockedHashDictionary<Seed, SearchState>();
 
         private Thread _searchThread;
