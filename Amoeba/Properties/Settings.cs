@@ -93,7 +93,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "InformationControl_GridViewColumn_Name_Width", Value = double.NaN },
                 new Library.Configuration.SettingContent<double>() { Name = "InformationControl_GridViewColumn_Value_Width", Value = 100 },
 
-                new Library.Configuration.SettingContent<Windows.SearchTreeItem>() { Name = "SearchControl_SearchTreeItem", Value = new Windows.SearchTreeItem() { SearchItem = new Windows.SearchItem() { Name = "Search" } } },
+                new Library.Configuration.SettingContent<Windows.SearchTreeItem>() { Name = "SearchControl_SearchTreeItem", Value = new Windows.SearchTreeItem(new Windows.SearchItem() { Name = "Search" }) },
                 new Library.Configuration.SettingContent<string>() { Name = "SearchControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "SearchControl_ListSortDirection", Value = ListSortDirection.Ascending },
                 new Library.Configuration.SettingContent<double>() { Name = "SearchControl_Grid_ColumnDefinitions_Width", Value = 200 },

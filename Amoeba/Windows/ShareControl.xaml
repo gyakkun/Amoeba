@@ -13,12 +13,14 @@
         <CommandBinding Command="New" Executed="Execute_New" />
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
         <CommandBinding Command="Search"  Executed="Execute_Search" />
+        <CommandBinding Command="Close"  Executed="Execute_Close" />
     </UserControl.CommandBindings>
 
     <UserControl.InputBindings>
         <KeyBinding Gesture="CTRL+N" Command="New" />
         <KeyBinding Gesture="Delete" Command="Delete" />
         <KeyBinding Gesture="CTRL+F" Command="Search" />
+        <KeyBinding Gesture="Escape" Command="Close" />
     </UserControl.InputBindings>
     
     <Grid>
@@ -61,6 +63,6 @@
         </local:ListViewEx>
 
         <TextBox Grid.Row="2" Margin="24,0,0,0" Name="_searchTextBox" />
-        <Button Content="×" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Click="_serachCloseButton_Click" />
+        <Button Content="×" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Command="Close" />
     </Grid>
 </UserControl>

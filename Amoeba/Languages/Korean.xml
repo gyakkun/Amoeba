@@ -226,79 +226,6 @@
   <Translate Key="InformationControl_Copy" Value="복사" />
   <Translate Key="InformationControl_Paste" Value="붙여넣기" />
 
-  <Translate Key="StoreControl_Download" Value="다운로드" />
-  <Translate Key="StoreControl_Upload" Value="업로드" />
-  <Translate Key="StoreControl_Library" Value="라이브러리" />
-
-  <Translate Key="StoreDownloadControl_Name" Value="이름" />
-  <Translate Key="StoreDownloadControl_Signature" Value="서명" />
-  <Translate Key="StoreDownloadControl_Length" Value="길이" />
-  <Translate Key="StoreDownloadControl_Keywords" Value="키워드" />
-  <Translate Key="StoreDownloadControl_CreationTime" Value="만든 날짜" />
-  <Translate Key="StoreDownloadControl_Comment" Value="코멘트" />
-  <Translate Key="StoreDownloadControl_State" Value="상태" />
-  <Translate Key="StoreDownloadControl_Id" Value="ID" />
-  <Translate Key="StoreDownloadControl_Upload" Value="업로드" />
-  <Translate Key="StoreDownloadControl_NewStore" Value="새 저장소" />
-  <Translate Key="StoreDownloadControl_NewCategory" Value="새 카테고리" />
-  <Translate Key="StoreDownloadControl_NewBox" Value="새 상자" />
-  <Translate Key="StoreDownloadControl_Edit" Value="편집" />
-  <Translate Key="StoreDownloadControl_Delete" Value="삭제" />
-  <Translate Key="StoreDownloadControl_Cut" Value="잘라내기" />
-  <Translate Key="StoreDownloadControl_Copy" Value="복사" />
-  <Translate Key="StoreDownloadControl_Paste" Value="붙여넣기" />
-  <Translate Key="StoreDownloadControl_Import" Value="가져오기" />
-  <Translate Key="StoreDownloadControl_Export" Value="내보내기" />
-  <Translate Key="StoreDownloadControl_CopyInfo" Value="복사(상세 정보)" />
-  <Translate Key="StoreDownloadControl_Download" Value="다운로드" />
-  <Translate Key="StoreDownloadControl_DigitalSignatureAnnulled_Message" Value="상자의 서명을 해제됩니다." />
-  <Translate Key="StoreDownloadControl_DigitalSignatureError_Message" Value="로그인 오류" />
-
-  <Translate Key="StoreUploadControl_Name" Value="이름" />
-  <Translate Key="StoreUploadControl_Signature" Value="서명" />
-  <Translate Key="StoreUploadControl_Length" Value="길이" />
-  <Translate Key="StoreUploadControl_Keywords" Value="키워드" />
-  <Translate Key="StoreUploadControl_CreationTime" Value="만든 날짜" />
-  <Translate Key="StoreUploadControl_Comment" Value="코멘트" />
-  <Translate Key="StoreUploadControl_State" Value="상태" />
-  <Translate Key="StoreUploadControl_Id" Value="ID" />
-  <Translate Key="StoreUploadControl_Upload" Value="업로드" />
-  <Translate Key="StoreUploadControl_NewStore" Value="새 저장소" />
-  <Translate Key="StoreUploadControl_NewCategory" Value="새 카테고리" />
-  <Translate Key="StoreUploadControl_NewBox" Value="새 상자" />
-  <Translate Key="StoreUploadControl_Edit" Value="편집" />
-  <Translate Key="StoreUploadControl_Delete" Value="삭제" />
-  <Translate Key="StoreUploadControl_Cut" Value="잘라내기" />
-  <Translate Key="StoreUploadControl_Copy" Value="복사" />
-  <Translate Key="StoreUploadControl_Paste" Value="붙여넣기" />
-  <Translate Key="StoreUploadControl_Import" Value="가져오기" />
-  <Translate Key="StoreUploadControl_Export" Value="내보내기" />
-  <Translate Key="StoreUploadControl_CopyInfo" Value="복사(상세 정보)" />
-  <Translate Key="StoreUploadControl_Download" Value="다운로드" />
-  <Translate Key="StoreUploadControl_DigitalSignatureAnnulled_Message" Value="상자의 서명을 해제됩니다." />
-  <Translate Key="StoreUploadControl_DigitalSignatureError_Message" Value="로그인 오류" />
-
-  <Translate Key="LibraryControl_Name" Value="이름" />
-  <Translate Key="LibraryControl_Signature" Value="서명" />
-  <Translate Key="LibraryControl_Length" Value="길이" />
-  <Translate Key="LibraryControl_Keywords" Value="키워드" />
-  <Translate Key="LibraryControl_CreationTime" Value="만든 날짜" />
-  <Translate Key="LibraryControl_Comment" Value="코멘트" />
-  <Translate Key="LibraryControl_State" Value="상태" />
-  <Translate Key="LibraryControl_Id" Value="ID" />
-  <Translate Key="LibraryControl_NewBox" Value="새 상자" />
-  <Translate Key="LibraryControl_Edit" Value="편집" />
-  <Translate Key="LibraryControl_Delete" Value="삭제" />
-  <Translate Key="LibraryControl_Cut" Value="잘라내기" />
-  <Translate Key="LibraryControl_Copy" Value="복사" />
-  <Translate Key="LibraryControl_Paste" Value="붙여넣기" />
-  <Translate Key="LibraryControl_Import" Value="가져오기" />
-  <Translate Key="LibraryControl_Export" Value="내보내기" />
-  <Translate Key="LibraryControl_CopyInfo" Value="복사(상세 정보)" />
-  <Translate Key="LibraryControl_Download" Value="다운로드" />
-  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="상자의 서명이 해제됩니다." />
-  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="로그인 오류" />
-
   <Translate Key="SearchControl_Name" Value="이름" />
   <Translate Key="SearchControl_Signature" Value="서명" />
   <Translate Key="SearchControl_Length" Value="길이" />
@@ -315,6 +242,7 @@
   <Translate Key="SearchControl_CopyInfo" Value="복사(상세 정보)" />
   <Translate Key="SearchControl_Paste" Value="붙여넣기" />
   <Translate Key="SearchControl_Export" Value="내보내기" />
+  <Translate Key="SearchControl_DeleteAll" Value="Delete all" />
   <Translate Key="SearchControl_DeleteCache" Value="캐쉬 삭제" />
   <Translate Key="SearchControl_DeleteShare" Value="공유 삭제 " />
   <Translate Key="SearchControl_DeleteDownload" Value="다운로드 삭제 " />
@@ -333,6 +261,50 @@
   <Translate Key="SearchControl_FilterKeyword" Value="키워드 필터" />
   <Translate Key="SearchControl_FilterCreationTimeRange" Value="만든 날짜 필터" />
   <Translate Key="SearchControl_FilterSeed" Value="시드 필터" />
+
+  <Translate Key="SearchItemEditWindow_Title" Value="카테고리 편집" />
+  <Translate Key="SearchItemEditWindow_Name" Value="이름" />
+  <Translate Key="SearchItemEditWindow_NameRegex" Value="정규식 이름" />
+  <Translate Key="SearchItemEditWindow_Signature" Value="서명" />
+  <Translate Key="SearchItemEditWindow_Keyword" Value="키워드" />
+  <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="만든 날짜 범위" />
+  <Translate Key="SearchItemEditWindow_LengthRange" Value="크기 범위" />
+  <Translate Key="SearchItemEditWindow_Seed" Value="시드" />
+  <Translate Key="SearchItemEditWindow_SearchState" Value="상태" />
+  <Translate Key="SearchItemEditWindow_Contains" Value="유효성" />
+  <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="대소문자 무시" />
+  <Translate Key="SearchItemEditWindow_Value" Value="값" />
+  <Translate Key="SearchItemEditWindow_Min" Value="최소" />
+  <Translate Key="SearchItemEditWindow_Max" Value="최대" />
+  <Translate Key="SearchItemEditWindow_Up" Value="위" />
+  <Translate Key="SearchItemEditWindow_Down" Value="아래" />
+  <Translate Key="SearchItemEditWindow_Add" Value="추가" />
+  <Translate Key="SearchItemEditWindow_Edit" Value="편집" />
+  <Translate Key="SearchItemEditWindow_Delete" Value="삭제" />
+  <Translate Key="SearchItemEditWindow_Ok" Value="확인" />
+  <Translate Key="SearchItemEditWindow_Cancel" Value="취소" />
+  <Translate Key="SearchItemEditWindow_Cut" Value="잘라내기" />
+  <Translate Key="SearchItemEditWindow_Copy" Value="복사" />
+  <Translate Key="SearchItemEditWindow_Paste" Value="붙여넣기" />
+  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="링크" />
+  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="스토어" />
+  <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="캐쉬" />
+  <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="다운로드 중" />
+  <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="업로드 중" />
+  <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="다운로드 됨" />
+  <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="업로드 됨" />
+
+  <Translate Key="SearchState_Link" Value="L" />
+  <Translate Key="SearchState_Store" Value="S" />
+  <Translate Key="SearchState_Cache" Value="C" />
+  <Translate Key="SearchState_Downloading" Value="D" />
+  <Translate Key="SearchState_Uploading" Value="U" />
+  <Translate Key="SearchState_Downloaded" Value="DH" />
+  <Translate Key="SearchState_Uploaded" Value="UH" />
+
+  <Translate Key="StoreControl_Download" Value="다운로드" />
+  <Translate Key="StoreControl_Upload" Value="업로드" />
+  <Translate Key="StoreControl_Library" Value="라이브러리" />
 
   <Translate Key="DownloadControl_Name" Value="이름" />
   <Translate Key="DownloadControl_Length" Value="길이" />
@@ -406,45 +378,74 @@
   <Translate Key="UploadWindow_Ok" Value="확인" />
   <Translate Key="UploadWindow_Cancel" Value="취소" />
 
-  <Translate Key="SearchState_Link" Value="L" />
-  <Translate Key="SearchState_Store" Value="S" />
-  <Translate Key="SearchState_Cache" Value="C" />
-  <Translate Key="SearchState_Downloading" Value="D" />
-  <Translate Key="SearchState_Uploading" Value="U" />
-  <Translate Key="SearchState_Downloaded" Value="DH" />
-  <Translate Key="SearchState_Uploaded" Value="UH" />
+  <Translate Key="StoreDownloadControl_Name" Value="이름" />
+  <Translate Key="StoreDownloadControl_Signature" Value="서명" />
+  <Translate Key="StoreDownloadControl_Length" Value="길이" />
+  <Translate Key="StoreDownloadControl_Keywords" Value="키워드" />
+  <Translate Key="StoreDownloadControl_CreationTime" Value="만든 날짜" />
+  <Translate Key="StoreDownloadControl_Comment" Value="코멘트" />
+  <Translate Key="StoreDownloadControl_State" Value="상태" />
+  <Translate Key="StoreDownloadControl_Id" Value="ID" />
+  <Translate Key="StoreDownloadControl_Upload" Value="업로드" />
+  <Translate Key="StoreDownloadControl_NewStore" Value="새 저장소" />
+  <Translate Key="StoreDownloadControl_NewCategory" Value="새 카테고리" />
+  <Translate Key="StoreDownloadControl_NewBox" Value="새 상자" />
+  <Translate Key="StoreDownloadControl_Edit" Value="편집" />
+  <Translate Key="StoreDownloadControl_Delete" Value="삭제" />
+  <Translate Key="StoreDownloadControl_Cut" Value="잘라내기" />
+  <Translate Key="StoreDownloadControl_Copy" Value="복사" />
+  <Translate Key="StoreDownloadControl_Paste" Value="붙여넣기" />
+  <Translate Key="StoreDownloadControl_Import" Value="가져오기" />
+  <Translate Key="StoreDownloadControl_Export" Value="내보내기" />
+  <Translate Key="StoreDownloadControl_CopyInfo" Value="복사(상세 정보)" />
+  <Translate Key="StoreDownloadControl_Download" Value="다운로드" />
+  <Translate Key="StoreDownloadControl_DigitalSignatureAnnulled_Message" Value="상자의 서명을 해제됩니다." />
+  <Translate Key="StoreDownloadControl_DigitalSignatureError_Message" Value="로그인 오류" />
 
-  <Translate Key="SearchItemEditWindow_Title" Value="카테고리 편집" />
-  <Translate Key="SearchItemEditWindow_Name" Value="이름" />
-  <Translate Key="SearchItemEditWindow_NameRegex" Value="정규식 이름" />
-  <Translate Key="SearchItemEditWindow_Signature" Value="서명" />
-  <Translate Key="SearchItemEditWindow_Keyword" Value="키워드" />
-  <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="만든 날짜 범위" />
-  <Translate Key="SearchItemEditWindow_LengthRange" Value="크기 범위" />
-  <Translate Key="SearchItemEditWindow_Seed" Value="시드" />
-  <Translate Key="SearchItemEditWindow_SearchState" Value="상태" />
-  <Translate Key="SearchItemEditWindow_Contains" Value="유효성" />
-  <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="대소문자 무시" />
-  <Translate Key="SearchItemEditWindow_Value" Value="값" />
-  <Translate Key="SearchItemEditWindow_Min" Value="최소" />
-  <Translate Key="SearchItemEditWindow_Max" Value="최대" />
-  <Translate Key="SearchItemEditWindow_Up" Value="위" />
-  <Translate Key="SearchItemEditWindow_Down" Value="아래" />
-  <Translate Key="SearchItemEditWindow_Add" Value="추가" />
-  <Translate Key="SearchItemEditWindow_Edit" Value="편집" />
-  <Translate Key="SearchItemEditWindow_Delete" Value="삭제" />
-  <Translate Key="SearchItemEditWindow_Ok" Value="확인" />
-  <Translate Key="SearchItemEditWindow_Cancel" Value="취소" />
-  <Translate Key="SearchItemEditWindow_Cut" Value="잘라내기" />
-  <Translate Key="SearchItemEditWindow_Copy" Value="복사" />
-  <Translate Key="SearchItemEditWindow_Paste" Value="붙여넣기" />
-  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="링크" />
-  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="스토어" />
-  <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="캐쉬" />
-  <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="다운로드 중" />
-  <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="업로드 중" />
-  <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="다운로드 됨" />
-  <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="업로드 됨" />
+  <Translate Key="StoreUploadControl_Name" Value="이름" />
+  <Translate Key="StoreUploadControl_Signature" Value="서명" />
+  <Translate Key="StoreUploadControl_Length" Value="길이" />
+  <Translate Key="StoreUploadControl_Keywords" Value="키워드" />
+  <Translate Key="StoreUploadControl_CreationTime" Value="만든 날짜" />
+  <Translate Key="StoreUploadControl_Comment" Value="코멘트" />
+  <Translate Key="StoreUploadControl_State" Value="상태" />
+  <Translate Key="StoreUploadControl_Id" Value="ID" />
+  <Translate Key="StoreUploadControl_Upload" Value="업로드" />
+  <Translate Key="StoreUploadControl_NewStore" Value="새 저장소" />
+  <Translate Key="StoreUploadControl_NewCategory" Value="새 카테고리" />
+  <Translate Key="StoreUploadControl_NewBox" Value="새 상자" />
+  <Translate Key="StoreUploadControl_Edit" Value="편집" />
+  <Translate Key="StoreUploadControl_Delete" Value="삭제" />
+  <Translate Key="StoreUploadControl_Cut" Value="잘라내기" />
+  <Translate Key="StoreUploadControl_Copy" Value="복사" />
+  <Translate Key="StoreUploadControl_Paste" Value="붙여넣기" />
+  <Translate Key="StoreUploadControl_Import" Value="가져오기" />
+  <Translate Key="StoreUploadControl_Export" Value="내보내기" />
+  <Translate Key="StoreUploadControl_CopyInfo" Value="복사(상세 정보)" />
+  <Translate Key="StoreUploadControl_Download" Value="다운로드" />
+  <Translate Key="StoreUploadControl_DigitalSignatureAnnulled_Message" Value="상자의 서명을 해제됩니다." />
+  <Translate Key="StoreUploadControl_DigitalSignatureError_Message" Value="로그인 오류" />
+
+  <Translate Key="LibraryControl_Name" Value="이름" />
+  <Translate Key="LibraryControl_Signature" Value="서명" />
+  <Translate Key="LibraryControl_Length" Value="길이" />
+  <Translate Key="LibraryControl_Keywords" Value="키워드" />
+  <Translate Key="LibraryControl_CreationTime" Value="만든 날짜" />
+  <Translate Key="LibraryControl_Comment" Value="코멘트" />
+  <Translate Key="LibraryControl_State" Value="상태" />
+  <Translate Key="LibraryControl_Id" Value="ID" />
+  <Translate Key="LibraryControl_NewBox" Value="새 상자" />
+  <Translate Key="LibraryControl_Edit" Value="편집" />
+  <Translate Key="LibraryControl_Delete" Value="삭제" />
+  <Translate Key="LibraryControl_Cut" Value="잘라내기" />
+  <Translate Key="LibraryControl_Copy" Value="복사" />
+  <Translate Key="LibraryControl_Paste" Value="붙여넣기" />
+  <Translate Key="LibraryControl_Import" Value="가져오기" />
+  <Translate Key="LibraryControl_Export" Value="내보내기" />
+  <Translate Key="LibraryControl_CopyInfo" Value="복사(상세 정보)" />
+  <Translate Key="LibraryControl_Download" Value="다운로드" />
+  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="상자의 서명이 해제됩니다." />
+  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="로그인 오류" />
 
   <Translate Key="SeedEditWindow_Title" Value="시드 편집" />
   <Translate Key="SeedEditWindow_Name" Value="이름" />

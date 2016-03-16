@@ -311,6 +311,29 @@ namespace Amoeba.Windows
             }
         }
 
+        private void _infomationListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var selectItems = _infomationListView.SelectedItems;
+
+            _infomationListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+        }
+
+        private void _infomationListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectItems = _infomationListView.SelectedItems;
+            if (selectItems == null) return;
+
+            var sb = new StringBuilder();
+
+            foreach (var item in selectItems.OfType<AmoebaInfomationListViewItem>())
+            {
+                if (item.Id == null) sb.AppendLine();
+                else sb.AppendLine(string.Format("{0}: {1}", item.Name, item.Value));
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var selectItems = _listView.SelectedItems;

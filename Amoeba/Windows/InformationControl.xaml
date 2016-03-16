@@ -28,7 +28,7 @@
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
 
-        <local:ListViewEx x:Name="_infomationListView" Grid.Column="2" SelectionMode="Single">
+        <local:ListViewEx x:Name="_infomationListView" Grid.Column="2" ContextMenuOpening="_infomationListView_ContextMenuOpening">
             <ListView.Resources>
                 <DataTemplate x:Key="_myTemplate_Name">
                     <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
@@ -37,6 +37,11 @@
                     <TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
                 </DataTemplate>
             </ListView.Resources>
+            <ListView.ContextMenu>
+                <ContextMenu Name="_infomationListViewContextMenu">
+                    <MenuItem Name="_infomationListViewCopyMenuItem" Header="{Binding Path=InformationControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_infomationListViewCopyMenuItem_Click" />
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Header="{Binding Path=InformationControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 

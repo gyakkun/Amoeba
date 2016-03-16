@@ -540,12 +540,6 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private void _serachCloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            _searchRowDefinition.Height = new GridLength(0);
-            _searchTextBox.Text = "";
-        }
-
         private class ShareListViewItem : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
@@ -672,6 +666,12 @@ namespace Amoeba.Windows
         {
             _searchRowDefinition.Height = new GridLength(24);
             _searchTextBox.Focus();
+        }
+
+        private void Execute_Close(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
         }
     }
 }

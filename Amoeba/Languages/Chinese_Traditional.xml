@@ -226,79 +226,6 @@
   <Translate Key="InformationControl_Copy" Value="複製" />
   <Translate Key="InformationControl_Paste" Value="貼上" />
 
-  <Translate Key="StoreControl_Download" Value="下載" />
-  <Translate Key="StoreControl_Upload" Value="上傳" />
-  <Translate Key="StoreControl_Library" Value="收藏館" />
-
-  <Translate Key="StoreDownloadControl_Name" Value="名稱" />
-  <Translate Key="StoreDownloadControl_Signature" Value="簽名" />
-  <Translate Key="StoreDownloadControl_Length" Value="大小" />
-  <Translate Key="StoreDownloadControl_Keywords" Value="關鍵字" />
-  <Translate Key="StoreDownloadControl_CreationTime" Value="建立時間" />
-  <Translate Key="StoreDownloadControl_Comment" Value="評論" />
-  <Translate Key="StoreDownloadControl_State" Value="狀態" />
-  <Translate Key="StoreDownloadControl_Id" Value="ID" />
-  <Translate Key="StoreDownloadControl_Upload" Value="上傳" />
-  <Translate Key="StoreDownloadControl_NewStore" Value="新增儲存" />
-  <Translate Key="StoreDownloadControl_NewCategory" Value="新增分類" />
-  <Translate Key="StoreDownloadControl_NewBox" Value="新增 box" />
-  <Translate Key="StoreDownloadControl_Edit" Value="編輯" />
-  <Translate Key="StoreDownloadControl_Delete" Value="刪除" />
-  <Translate Key="StoreDownloadControl_Cut" Value="剪下" />
-  <Translate Key="StoreDownloadControl_Copy" Value="複製" />
-  <Translate Key="StoreDownloadControl_Paste" Value="貼上" />
-  <Translate Key="StoreDownloadControl_Import" Value="匯入" />
-  <Translate Key="StoreDownloadControl_Export" Value="匯出" />
-  <Translate Key="StoreDownloadControl_CopyInfo" Value="複製資訊" />
-  <Translate Key="StoreDownloadControl_Download" Value="下載" />
-  <Translate Key="StoreDownloadControl_DigitalSignatureAnnulled_Message" Value="box 的簽名已經廢止。" />
-  <Translate Key="StoreDownloadControl_DigitalSignatureError_Message" Value="數位簽名錯誤。" />
-
-  <Translate Key="StoreUploadControl_Name" Value="名稱" />
-  <Translate Key="StoreUploadControl_Signature" Value="簽名" />
-  <Translate Key="StoreUploadControl_Length" Value="大小" />
-  <Translate Key="StoreUploadControl_Keywords" Value="關鍵字" />
-  <Translate Key="StoreUploadControl_CreationTime" Value="建立時間" />
-  <Translate Key="StoreUploadControl_Comment" Value="評論" />
-  <Translate Key="StoreUploadControl_State" Value="狀態" />
-  <Translate Key="StoreUploadControl_Id" Value="ID" />
-  <Translate Key="StoreUploadControl_Upload" Value="上傳" />
-  <Translate Key="StoreUploadControl_NewStore" Value="新增儲存" />
-  <Translate Key="StoreUploadControl_NewCategory" Value="新增分類" />
-  <Translate Key="StoreUploadControl_NewBox" Value="新增 box" />
-  <Translate Key="StoreUploadControl_Edit" Value="編輯" />
-  <Translate Key="StoreUploadControl_Delete" Value="刪除" />
-  <Translate Key="StoreUploadControl_Cut" Value="剪下" />
-  <Translate Key="StoreUploadControl_Copy" Value="複製" />
-  <Translate Key="StoreUploadControl_Paste" Value="貼上" />
-  <Translate Key="StoreUploadControl_Import" Value="匯入" />
-  <Translate Key="StoreUploadControl_Export" Value="匯出" />
-  <Translate Key="StoreUploadControl_CopyInfo" Value="複製資訊" />
-  <Translate Key="StoreUploadControl_Download" Value="下載" />
-  <Translate Key="StoreUploadControl_DigitalSignatureAnnulled_Message" Value="box 的簽名已經廢止。" />
-  <Translate Key="StoreUploadControl_DigitalSignatureError_Message" Value="數位簽名錯誤。" />
-
-  <Translate Key="LibraryControl_Name" Value="名稱" />
-  <Translate Key="LibraryControl_Signature" Value="簽名" />
-  <Translate Key="LibraryControl_Length" Value="大小" />
-  <Translate Key="LibraryControl_Keywords" Value="關鍵字" />
-  <Translate Key="LibraryControl_CreationTime" Value="建立時間" />
-  <Translate Key="LibraryControl_Comment" Value="評論" />
-  <Translate Key="LibraryControl_State" Value="狀態" />
-  <Translate Key="LibraryControl_Id" Value="ID" />
-  <Translate Key="LibraryControl_NewBox" Value="新增 box" />
-  <Translate Key="LibraryControl_Edit" Value="編輯" />
-  <Translate Key="LibraryControl_Delete" Value="刪除" />
-  <Translate Key="LibraryControl_Cut" Value="剪下" />
-  <Translate Key="LibraryControl_Copy" Value="複製" />
-  <Translate Key="LibraryControl_Paste" Value="貼上" />
-  <Translate Key="LibraryControl_Import" Value="匯入" />
-  <Translate Key="LibraryControl_Export" Value="匯出" />
-  <Translate Key="LibraryControl_CopyInfo" Value="複製資訊" />
-  <Translate Key="LibraryControl_Download" Value="下載" />
-  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="box 的簽名已經廢止。" />
-  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="數位簽名錯誤。" />
-
   <Translate Key="SearchControl_Name" Value="名稱" />
   <Translate Key="SearchControl_Signature" Value="簽名" />
   <Translate Key="SearchControl_Length" Value="大小" />
@@ -315,6 +242,7 @@
   <Translate Key="SearchControl_CopyInfo" Value="複製資訊" />
   <Translate Key="SearchControl_Paste" Value="貼上" />
   <Translate Key="SearchControl_Export" Value="匯出" />
+  <Translate Key="SearchControl_DeleteAll" Value="Delete all" />
   <Translate Key="SearchControl_DeleteCache" Value="刪除暫存" />
   <Translate Key="SearchControl_DeleteShare" Value="刪除分享 " />
   <Translate Key="SearchControl_DeleteDownload" Value="刪除下載 " />
@@ -333,6 +261,50 @@
   <Translate Key="SearchControl_FilterKeyword" Value="過濾關鍵字" />
   <Translate Key="SearchControl_FilterCreationTimeRange" Value="過濾器建立時間範圍" />
   <Translate Key="SearchControl_FilterSeed" Value="過濾種子" />
+
+  <Translate Key="SearchItemEditWindow_Title" Value="編輯分類" />
+  <Translate Key="SearchItemEditWindow_Name" Value="名稱" />
+  <Translate Key="SearchItemEditWindow_NameRegex" Value="名稱正規運算式" />
+  <Translate Key="SearchItemEditWindow_Signature" Value="簽名" />
+  <Translate Key="SearchItemEditWindow_Keyword" Value="關鍵字" />
+  <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="建立時間範圍" />
+  <Translate Key="SearchItemEditWindow_LengthRange" Value="大小範圍" />
+  <Translate Key="SearchItemEditWindow_Seed" Value="種子" />
+  <Translate Key="SearchItemEditWindow_SearchState" Value="狀態" />
+  <Translate Key="SearchItemEditWindow_Contains" Value="包含" />
+  <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="忽略案例" />
+  <Translate Key="SearchItemEditWindow_Value" Value="值" />
+  <Translate Key="SearchItemEditWindow_Min" Value="最小" />
+  <Translate Key="SearchItemEditWindow_Max" Value="最大" />
+  <Translate Key="SearchItemEditWindow_Up" Value="上移" />
+  <Translate Key="SearchItemEditWindow_Down" Value="下移" />
+  <Translate Key="SearchItemEditWindow_Add" Value="新增" />
+  <Translate Key="SearchItemEditWindow_Edit" Value="編輯" />
+  <Translate Key="SearchItemEditWindow_Delete" Value="刪除" />
+  <Translate Key="SearchItemEditWindow_Ok" Value="確定" />
+  <Translate Key="SearchItemEditWindow_Cancel" Value="取消" />
+  <Translate Key="SearchItemEditWindow_Cut" Value="剪下" />
+  <Translate Key="SearchItemEditWindow_Copy" Value="複製" />
+  <Translate Key="SearchItemEditWindow_Paste" Value="貼上" />
+  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="連結" />
+  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="收藏" />
+  <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="暫存" />
+  <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="下載中" />
+  <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="上傳中" />
+  <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="已下載" />
+  <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="已上傳" />
+
+  <Translate Key="SearchState_Link" Value="L" />
+  <Translate Key="SearchState_Store" Value="S" />
+  <Translate Key="SearchState_Cache" Value="C" />
+  <Translate Key="SearchState_Downloading" Value="D" />
+  <Translate Key="SearchState_Uploading" Value="U" />
+  <Translate Key="SearchState_Downloaded" Value="DH" />
+  <Translate Key="SearchState_Uploaded" Value="UH" />
+
+  <Translate Key="StoreControl_Download" Value="下載" />
+  <Translate Key="StoreControl_Upload" Value="上傳" />
+  <Translate Key="StoreControl_Library" Value="收藏館" />
 
   <Translate Key="DownloadControl_Name" Value="名稱" />
   <Translate Key="DownloadControl_Length" Value="大小" />
@@ -406,45 +378,74 @@
   <Translate Key="UploadWindow_Ok" Value="確定" />
   <Translate Key="UploadWindow_Cancel" Value="取消" />
 
-  <Translate Key="SearchState_Link" Value="L" />
-  <Translate Key="SearchState_Store" Value="S" />
-  <Translate Key="SearchState_Cache" Value="C" />
-  <Translate Key="SearchState_Downloading" Value="D" />
-  <Translate Key="SearchState_Uploading" Value="U" />
-  <Translate Key="SearchState_Downloaded" Value="DH" />
-  <Translate Key="SearchState_Uploaded" Value="UH" />
+  <Translate Key="StoreDownloadControl_Name" Value="名稱" />
+  <Translate Key="StoreDownloadControl_Signature" Value="簽名" />
+  <Translate Key="StoreDownloadControl_Length" Value="大小" />
+  <Translate Key="StoreDownloadControl_Keywords" Value="關鍵字" />
+  <Translate Key="StoreDownloadControl_CreationTime" Value="建立時間" />
+  <Translate Key="StoreDownloadControl_Comment" Value="評論" />
+  <Translate Key="StoreDownloadControl_State" Value="狀態" />
+  <Translate Key="StoreDownloadControl_Id" Value="ID" />
+  <Translate Key="StoreDownloadControl_Upload" Value="上傳" />
+  <Translate Key="StoreDownloadControl_NewStore" Value="新增儲存" />
+  <Translate Key="StoreDownloadControl_NewCategory" Value="新增分類" />
+  <Translate Key="StoreDownloadControl_NewBox" Value="新增 box" />
+  <Translate Key="StoreDownloadControl_Edit" Value="編輯" />
+  <Translate Key="StoreDownloadControl_Delete" Value="刪除" />
+  <Translate Key="StoreDownloadControl_Cut" Value="剪下" />
+  <Translate Key="StoreDownloadControl_Copy" Value="複製" />
+  <Translate Key="StoreDownloadControl_Paste" Value="貼上" />
+  <Translate Key="StoreDownloadControl_Import" Value="匯入" />
+  <Translate Key="StoreDownloadControl_Export" Value="匯出" />
+  <Translate Key="StoreDownloadControl_CopyInfo" Value="複製資訊" />
+  <Translate Key="StoreDownloadControl_Download" Value="下載" />
+  <Translate Key="StoreDownloadControl_DigitalSignatureAnnulled_Message" Value="box 的簽名已經廢止。" />
+  <Translate Key="StoreDownloadControl_DigitalSignatureError_Message" Value="數位簽名錯誤。" />
 
-  <Translate Key="SearchItemEditWindow_Title" Value="編輯分類" />
-  <Translate Key="SearchItemEditWindow_Name" Value="名稱" />
-  <Translate Key="SearchItemEditWindow_NameRegex" Value="名稱正規運算式" />
-  <Translate Key="SearchItemEditWindow_Signature" Value="簽名" />
-  <Translate Key="SearchItemEditWindow_Keyword" Value="關鍵字" />
-  <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="建立時間範圍" />
-  <Translate Key="SearchItemEditWindow_LengthRange" Value="大小範圍" />
-  <Translate Key="SearchItemEditWindow_Seed" Value="種子" />
-  <Translate Key="SearchItemEditWindow_SearchState" Value="狀態" />
-  <Translate Key="SearchItemEditWindow_Contains" Value="包含" />
-  <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="忽略案例" />
-  <Translate Key="SearchItemEditWindow_Value" Value="值" />
-  <Translate Key="SearchItemEditWindow_Min" Value="最小" />
-  <Translate Key="SearchItemEditWindow_Max" Value="最大" />
-  <Translate Key="SearchItemEditWindow_Up" Value="上移" />
-  <Translate Key="SearchItemEditWindow_Down" Value="下移" />
-  <Translate Key="SearchItemEditWindow_Add" Value="新增" />
-  <Translate Key="SearchItemEditWindow_Edit" Value="編輯" />
-  <Translate Key="SearchItemEditWindow_Delete" Value="刪除" />
-  <Translate Key="SearchItemEditWindow_Ok" Value="確定" />
-  <Translate Key="SearchItemEditWindow_Cancel" Value="取消" />
-  <Translate Key="SearchItemEditWindow_Cut" Value="剪下" />
-  <Translate Key="SearchItemEditWindow_Copy" Value="複製" />
-  <Translate Key="SearchItemEditWindow_Paste" Value="貼上" />
-  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="連結" />
-  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="收藏" />
-  <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="暫存" />
-  <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="下載中" />
-  <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="上傳中" />
-  <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="已下載" />
-  <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="已上傳" />
+  <Translate Key="StoreUploadControl_Name" Value="名稱" />
+  <Translate Key="StoreUploadControl_Signature" Value="簽名" />
+  <Translate Key="StoreUploadControl_Length" Value="大小" />
+  <Translate Key="StoreUploadControl_Keywords" Value="關鍵字" />
+  <Translate Key="StoreUploadControl_CreationTime" Value="建立時間" />
+  <Translate Key="StoreUploadControl_Comment" Value="評論" />
+  <Translate Key="StoreUploadControl_State" Value="狀態" />
+  <Translate Key="StoreUploadControl_Id" Value="ID" />
+  <Translate Key="StoreUploadControl_Upload" Value="上傳" />
+  <Translate Key="StoreUploadControl_NewStore" Value="新增儲存" />
+  <Translate Key="StoreUploadControl_NewCategory" Value="新增分類" />
+  <Translate Key="StoreUploadControl_NewBox" Value="新增 box" />
+  <Translate Key="StoreUploadControl_Edit" Value="編輯" />
+  <Translate Key="StoreUploadControl_Delete" Value="刪除" />
+  <Translate Key="StoreUploadControl_Cut" Value="剪下" />
+  <Translate Key="StoreUploadControl_Copy" Value="複製" />
+  <Translate Key="StoreUploadControl_Paste" Value="貼上" />
+  <Translate Key="StoreUploadControl_Import" Value="匯入" />
+  <Translate Key="StoreUploadControl_Export" Value="匯出" />
+  <Translate Key="StoreUploadControl_CopyInfo" Value="複製資訊" />
+  <Translate Key="StoreUploadControl_Download" Value="下載" />
+  <Translate Key="StoreUploadControl_DigitalSignatureAnnulled_Message" Value="box 的簽名已經廢止。" />
+  <Translate Key="StoreUploadControl_DigitalSignatureError_Message" Value="數位簽名錯誤。" />
+
+  <Translate Key="LibraryControl_Name" Value="名稱" />
+  <Translate Key="LibraryControl_Signature" Value="簽名" />
+  <Translate Key="LibraryControl_Length" Value="大小" />
+  <Translate Key="LibraryControl_Keywords" Value="關鍵字" />
+  <Translate Key="LibraryControl_CreationTime" Value="建立時間" />
+  <Translate Key="LibraryControl_Comment" Value="評論" />
+  <Translate Key="LibraryControl_State" Value="狀態" />
+  <Translate Key="LibraryControl_Id" Value="ID" />
+  <Translate Key="LibraryControl_NewBox" Value="新增 box" />
+  <Translate Key="LibraryControl_Edit" Value="編輯" />
+  <Translate Key="LibraryControl_Delete" Value="刪除" />
+  <Translate Key="LibraryControl_Cut" Value="剪下" />
+  <Translate Key="LibraryControl_Copy" Value="複製" />
+  <Translate Key="LibraryControl_Paste" Value="貼上" />
+  <Translate Key="LibraryControl_Import" Value="匯入" />
+  <Translate Key="LibraryControl_Export" Value="匯出" />
+  <Translate Key="LibraryControl_CopyInfo" Value="複製資訊" />
+  <Translate Key="LibraryControl_Download" Value="下載" />
+  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="box 的簽名已經廢止。" />
+  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="數位簽名錯誤。" />
 
   <Translate Key="SeedEditWindow_Title" Value="編輯種子" />
   <Translate Key="SeedEditWindow_Name" Value="名稱" />

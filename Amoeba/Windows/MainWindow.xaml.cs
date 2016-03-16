@@ -1056,67 +1056,31 @@ namespace Amoeba.Windows
                         Settings.Instance.Global_UploadKeywords.Clear();
                         Settings.Instance.Global_UploadKeywords.Add("Document");
 
-                        SearchItem pictureSearchItem = new SearchItem()
-                        {
-                            Name = "Keyword - \"Picture\""
-                        };
-                        pictureSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Picture"));
+                        SearchItem pictureSearchItem = new SearchItem() { Name = "Type - \"Picture\"" };
+                        pictureSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(jpeg|jpg|jfif|gif|png|bmp)$", true)));
 
-                        SearchItem movieSearchItem = new SearchItem()
-                        {
-                            Name = "Keyword - \"Movie\""
-                        };
-                        movieSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Movie"));
+                        SearchItem movieSearchItem = new SearchItem() { Name = "Type - \"Movie\"" };
+                        movieSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(mpeg|mpg|avi|divx|asf|wmv|rm|ogm|mov|flv|vob)$", true)));
 
-                        SearchItem musicSearchItem = new SearchItem()
-                        {
-                            Name = "Keyword - \"Music\""
-                        };
-                        musicSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Music"));
+                        SearchItem musicSearchItem = new SearchItem() { Name = "Type - \"Music\"" };
+                        musicSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(mp3|wma|m4a|ogg|wav|mid|mod|flac|sid)$", true)));
 
-                        SearchItem archiveSearchItem = new SearchItem()
-                        {
-                            Name = "Keyword - \"Archive\""
-                        };
-                        archiveSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Archive"));
+                        SearchItem archiveSearchItem = new SearchItem() { Name = "Type - \"Archive\"" };
+                        archiveSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(zip|rar|7z|lzh|iso|gz|bz|xz|tar|tgz|tbz|txz)$", true)));
 
-                        SearchItem documentSearchItem = new SearchItem()
-                        {
-                            Name = "Keyword - \"Document\""
-                        };
-                        documentSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Document"));
+                        SearchItem documentSearchItem = new SearchItem() { Name = "Type - \"Document\"" };
+                        documentSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(doc|txt|pdf|odt|rtf)$", true)));
 
-                        SearchItem ExecutableSearchItem = new SearchItem()
-                        {
-                            Name = "Keyword - \"Executable\""
-                        };
-                        ExecutableSearchItem.SearchKeywordCollection.Add(new SearchContains<string>(true, "Executable"));
+                        SearchItem executableSearchItem = new SearchItem() { Name = "Type - \"Executable\"" };
+                        executableSearchItem.SearchNameRegexCollection.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(exe|jar|sh|bat)$", true)));
 
                         Settings.Instance.SearchControl_SearchTreeItem.Children.Clear();
-                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                        {
-                            SearchItem = pictureSearchItem
-                        });
-                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                        {
-                            SearchItem = movieSearchItem
-                        });
-                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                        {
-                            SearchItem = musicSearchItem
-                        });
-                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                        {
-                            SearchItem = archiveSearchItem
-                        });
-                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                        {
-                            SearchItem = documentSearchItem
-                        });
-                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem()
-                        {
-                            SearchItem = ExecutableSearchItem
-                        });
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem(pictureSearchItem));
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem(movieSearchItem));
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem(musicSearchItem));
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem(archiveSearchItem));
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem(documentSearchItem));
+                        Settings.Instance.SearchControl_SearchTreeItem.Children.Add(new SearchTreeItem(executableSearchItem));
                     }
 
                     {
@@ -1943,7 +1907,7 @@ namespace Amoeba.Windows
 
         private void _manualSiteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("http://lyrise.web.fc2.com/index.html");
+            Process.Start("http://alliance-network.github.io");
         }
 
         private void _developerSiteMenuItem_Click(object sender, RoutedEventArgs e)

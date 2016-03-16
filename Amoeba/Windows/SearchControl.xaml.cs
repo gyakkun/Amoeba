@@ -750,8 +750,7 @@ namespace Amoeba.Windows
 
                 if (string.IsNullOrWhiteSpace(_textBox.Text)) return;
 
-                var searchTreeItem = new SearchTreeItem();
-                searchTreeItem.SearchItem = new SearchItem();
+                var searchTreeItem = new SearchTreeItem(new SearchItem());
                 searchTreeItem.SearchItem.Name = string.Format("Name - \"{0}\"", _textBox.Text);
                 searchTreeItem.SearchItem.SearchNameCollection.Add(new SearchContains<string>(true, _textBox.Text));
 
@@ -940,12 +939,9 @@ namespace Amoeba.Windows
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null) return;
 
-            var searchTreeItem = new SearchTreeItem();
-            searchTreeItem.SearchItem = new SearchItem();
+            var searchTreeItem = new SearchTreeItem(new SearchItem());
 
-            var searchItem = searchTreeItem.SearchItem;
-
-            SearchItemEditWindow window = new SearchItemEditWindow(ref searchItem);
+            SearchItemEditWindow window = new SearchItemEditWindow(searchTreeItem.SearchItem);
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)
@@ -963,9 +959,7 @@ namespace Amoeba.Windows
             var selectTreeViewItem = _treeView.SelectedItem as SearchTreeViewItem;
             if (selectTreeViewItem == null) return;
 
-            var searchItem = selectTreeViewItem.Value.SearchItem;
-
-            SearchItemEditWindow window = new SearchItemEditWindow(ref searchItem);
+            SearchItemEditWindow window = new SearchItemEditWindow(selectTreeViewItem.Value.SearchItem);
             window.Owner = _mainWindow;
 
             if (window.ShowDialog() == true)
@@ -1214,28 +1208,9 @@ namespace Amoeba.Windows
             }
         }
 
-        private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Clipboard.SetSeeds(_listView.SelectedItems.OfType<SearchListViewItem>().Select(n => n.Value));
-        }
-
-        private void _listViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var sb = new StringBuilder();
-
-            foreach (var seed in _listView.SelectedItems.Cast<SearchListViewItem>().Select(n => n.Value))
-            {
-                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
-                sb.AppendLine(MessageConverter.ToInfoMessage(seed));
-                sb.AppendLine();
-            }
-
-            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
-        }
-
         volatile bool _listViewDeleteMenuItem_IsEnabled = true;
 
-        private void _listViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewDeleteAllMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var selectSearchListViewItems = _listView.SelectedItems;
             if (selectSearchListViewItems == null) return;
@@ -1504,40 +1479,23 @@ namespace Amoeba.Windows
             });
         }
 
-        private void _listViewDownloadMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _listViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var selectSearchListViewItems = _listView.SelectedItems;
-            if (selectSearchListViewItems == null) return;
+            Clipboard.SetSeeds(_listView.SelectedItems.OfType<SearchListViewItem>().Select(n => n.Value));
+        }
 
-            var list = new HashSet<Seed>();
+        private void _listViewCopyInfoMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
 
-            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            foreach (var seed in _listView.SelectedItems.Cast<SearchListViewItem>().Select(n => n.Value))
             {
-                if (item.Value == null) continue;
-
-                list.Add(item.Value);
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
+                sb.AppendLine(MessageConverter.ToInfoMessage(seed));
+                sb.AppendLine();
             }
 
-            if (list.Count == 0) return;
-
-            ThreadPool.QueueUserWorkItem((object wstate) =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                try
-                {
-                    foreach (var seed in list)
-                    {
-                        _amoebaManager.Download(seed, 3);
-                    }
-
-                    this.Update_Cache(false);
-                }
-                catch (Exception)
-                {
-
-                }
-            });
+            Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
         }
 
         private void _listViewSearchSignatureMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1550,8 +1508,7 @@ namespace Amoeba.Windows
 
             foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
-                var searchTreeItem = new SearchTreeItem();
-                searchTreeItem.SearchItem = new SearchItem();
+                var searchTreeItem = new SearchTreeItem(new SearchItem());
 
                 var signature = !string.IsNullOrWhiteSpace(listItem.Signature) ? listItem.Signature : "Anonymous";
 
@@ -1582,8 +1539,7 @@ namespace Amoeba.Windows
             {
                 foreach (var keyword in listItem.Value.Keywords)
                 {
-                    var searchTreeItem = new SearchTreeItem();
-                    searchTreeItem.SearchItem = new SearchItem();
+                    var searchTreeItem = new SearchTreeItem(new SearchItem());
 
                     var item = new SearchContains<string>(
                         true,
@@ -1611,8 +1567,7 @@ namespace Amoeba.Windows
 
             foreach (var listItem in selectSearchListViewItems.Cast<SearchListViewItem>())
             {
-                var searchTreeItem = new SearchTreeItem();
-                searchTreeItem.SearchItem = new SearchItem();
+                var searchTreeItem = new SearchTreeItem(new SearchItem());
 
                 var item = new SearchContains<SearchRange<DateTime>>(
                     true,
@@ -1654,8 +1609,7 @@ namespace Amoeba.Windows
 
             foreach (var state in states)
             {
-                var searchTreeItem = new SearchTreeItem();
-                searchTreeItem.SearchItem = new SearchItem();
+                var searchTreeItem = new SearchTreeItem(new SearchItem());
 
                 var item = new SearchContains<SearchState>(
                     true,
@@ -1791,6 +1745,42 @@ namespace Amoeba.Windows
             }
 
             this.Update();
+        }
+
+        private void _listViewDownloadMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewItems = _listView.SelectedItems;
+            if (selectSearchListViewItems == null) return;
+
+            var list = new HashSet<Seed>();
+
+            foreach (var item in selectSearchListViewItems.Cast<SearchListViewItem>())
+            {
+                if (item.Value == null) continue;
+
+                list.Add(item.Value);
+            }
+
+            if (list.Count == 0) return;
+
+            ThreadPool.QueueUserWorkItem((object wstate) =>
+            {
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    foreach (var seed in list)
+                    {
+                        _amoebaManager.Download(seed, 3);
+                    }
+
+                    this.Update_Cache(false);
+                }
+                catch (Exception)
+                {
+
+                }
+            });
         }
 
         #endregion
@@ -2046,7 +2036,7 @@ namespace Amoeba.Windows
             }
             else
             {
-                _listViewDeleteMenuItem_Click(null, null);
+                _listViewDeleteAllMenuItem_Click(null, null);
             }
         }
 
@@ -2083,6 +2073,14 @@ namespace Amoeba.Windows
         {
             _searchRowDefinition.Height = new GridLength(24);
             _searchTextBox.Focus();
+        }
+
+        private void Execute_Close(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
+
+            this.Update();
         }
     }
 }

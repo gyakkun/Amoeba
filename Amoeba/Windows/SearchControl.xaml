@@ -16,6 +16,7 @@
         <CommandBinding Command="Copy" Executed="Execute_Copy" />
         <CommandBinding Command="Paste" Executed="Execute_Paste" />
         <CommandBinding Command="Search"  Executed="Execute_Search" />
+        <CommandBinding Command="Close"  Executed="Execute_Close" />
     </UserControl.CommandBindings>
 
     <UserControl.InputBindings>
@@ -25,6 +26,7 @@
         <KeyBinding Gesture="CTRL+C" Command="Copy" />
         <KeyBinding Gesture="CTRL+V" Command="Paste" />
         <KeyBinding Gesture="CTRL+F" Command="Search" />
+        <KeyBinding Gesture="Escape" Command="Close" />
     </UserControl.InputBindings>
 
     <Grid>
@@ -101,13 +103,14 @@
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
                     <MenuItem Name="_listViewEditMenuItem" Header="{Binding Path=SearchControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_listViewEditMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
-                    <Separator />
-                    <MenuItem Name="_listViewDeleteCacheMenuItem" Header="{Binding Path=SearchControl_DeleteCache, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteCacheMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteDownloadMenuItem" Header="{Binding Path=SearchControl_DeleteDownload, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteDownloadMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteUploadMenuItem" Header="{Binding Path=SearchControl_DeleteUpload, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteUploadMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteDownloadHistoryMenuItem" Header="{Binding Path=SearchControl_DeleteDownloadHistory, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteDownloadHistoryMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteUploadHistoryMenuItem" Header="{Binding Path=SearchControl_DeleteUploadHistory, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteUploadHistoryMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=SearchControl_Delete, Source={StaticResource ResourcesInstance}}">
+                        <MenuItem Name="_listViewDeleteAllMenuItem" Header="{Binding Path=SearchControl_DeleteAll, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteAllMenuItem_Click" />
+                        <MenuItem Name="_listViewDeleteCacheMenuItem" Header="{Binding Path=SearchControl_DeleteCache, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteCacheMenuItem_Click" />
+                        <MenuItem Name="_listViewDeleteDownloadMenuItem" Header="{Binding Path=SearchControl_DeleteDownload, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteDownloadMenuItem_Click" />
+                        <MenuItem Name="_listViewDeleteUploadMenuItem" Header="{Binding Path=SearchControl_DeleteUpload, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteUploadMenuItem_Click" />
+                        <MenuItem Name="_listViewDeleteDownloadHistoryMenuItem" Header="{Binding Path=SearchControl_DeleteDownloadHistory, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteDownloadHistoryMenuItem_Click" />
+                        <MenuItem Name="_listViewDeleteUploadHistoryMenuItem" Header="{Binding Path=SearchControl_DeleteUploadHistory, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteUploadHistoryMenuItem_Click" />
+                    </MenuItem>
                     <Separator />
                     <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=SearchControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
                     <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=SearchControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />

@@ -34,7 +34,7 @@ namespace Amoeba.Windows
         private ObservableCollectionEx<SearchContains<Seed>> _seedCollection;
         private ObservableCollectionEx<SearchContains<SearchState>> _stateCollection;
 
-        public SearchItemEditWindow(ref SearchItem searchItem)
+        public SearchItemEditWindow(SearchItem searchItem)
         {
             _searchItem = searchItem;
 
@@ -1420,8 +1420,8 @@ namespace Amoeba.Windows
             if (item == null) return;
 
             _lengthRangeContainsCheckBox.IsChecked = item.Contains;
-            _lengthRangeMinTextBox.Text = item.Value.Min.ToString();
-            _lengthRangeMaxTextBox.Text = item.Value.Max.ToString();
+            _lengthRangeMinTextBox.Text = NetworkConverter.ToSizeString(item.Value.Min, "Byte");
+            _lengthRangeMaxTextBox.Text = NetworkConverter.ToSizeString(item.Value.Max, "Byte");
         }
 
         private void _lengthRangeListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -1456,7 +1456,7 @@ namespace Amoeba.Windows
 
             foreach (var item in _lengthRangeListView.SelectedItems.OfType<SearchContains<SearchRange<long>>>())
             {
-                sb.AppendLine(string.Format("{0} {1}, {2}", (item.Contains == true) ? "+" : "-", item.Value.Min, item.Value.Max));
+                sb.AppendLine(string.Format("{0} {1}, {2}", (item.Contains == true) ? "+" : "-", NetworkConverter.ToSizeString(item.Value.Min, "Byte"), NetworkConverter.ToSizeString(item.Value.Max, "Byte")));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -1479,8 +1479,8 @@ namespace Amoeba.Windows
                     var match = regex.Match(line);
                     if (!match.Success) continue;
 
-                    var min = Math.Max(0, long.Parse(match.Groups[2].Value));
-                    var max = Math.Max(0, long.Parse(match.Groups[3].Value));
+                    var min = Math.Max(0, (long)NetworkConverter.FromSizeString(match.Groups[2].Value));
+                    var max = Math.Max(0, (long)NetworkConverter.FromSizeString(match.Groups[3].Value));
 
                     var item = new SearchContains<SearchRange<long>>(
                         (match.Groups[1].Value == "+") ? true : false,
@@ -1532,8 +1532,8 @@ namespace Amoeba.Windows
 
             try
             {
-                var min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text));
-                var max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text));
+                var min = Math.Max(0, (long)NetworkConverter.FromSizeString(_lengthRangeMinTextBox.Text));
+                var max = Math.Max(0, (long)NetworkConverter.FromSizeString(_lengthRangeMaxTextBox.Text));
 
                 var item = new SearchContains<SearchRange<long>>(
                     _lengthRangeContainsCheckBox.IsChecked.Value,
@@ -1561,8 +1561,8 @@ namespace Amoeba.Windows
 
             try
             {
-                var min = Math.Max(0, long.Parse(_lengthRangeMinTextBox.Text));
-                var max = Math.Max(0, long.Parse(_lengthRangeMaxTextBox.Text));
+                var min = Math.Max(0, (long)NetworkConverter.FromSizeString(_lengthRangeMinTextBox.Text));
+                var max = Math.Max(0, (long)NetworkConverter.FromSizeString(_lengthRangeMaxTextBox.Text));
 
                 var item = new SearchContains<SearchRange<long>>(
                     _lengthRangeContainsCheckBox.IsChecked.Value,

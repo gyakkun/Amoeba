@@ -1469,7 +1469,7 @@ namespace Amoeba.Windows
 
                 foreach (var box in _listView.SelectedItems.OfType<BoxListViewItem>().Select(n => n.Value))
                 {
-                    this.BoxDownload(box, baseDirectory, ref list);
+                    this.BoxDownload(box, baseDirectory, list);
                 }
             }
 
@@ -1496,7 +1496,7 @@ namespace Amoeba.Windows
             });
         }
 
-        private void BoxDownload(Box currentBox, string baseDirectory, ref List<KeyValuePair<Seed, string>> list)
+        private void BoxDownload(Box currentBox, string baseDirectory, List<KeyValuePair<Seed, string>> list)
         {
             baseDirectory = System.IO.Path.Combine(baseDirectory, currentBox.Name);
 
@@ -1507,19 +1507,11 @@ namespace Amoeba.Windows
 
             foreach (var box in currentBox.Boxes)
             {
-                this.BoxDownload(box, baseDirectory, ref list);
+                this.BoxDownload(box, baseDirectory, list);
             }
         }
 
         #endregion
-
-        private void _serachCloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            _searchRowDefinition.Height = new GridLength(0);
-            _searchTextBox.Text = "";
-
-            this.Update();
-        }
 
         private void _searchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1899,6 +1891,14 @@ namespace Amoeba.Windows
         {
             _searchRowDefinition.Height = new GridLength(24);
             _searchTextBox.Focus();
+        }
+
+        private void Execute_Close(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
+
+            this.Update();
         }
     }
 }

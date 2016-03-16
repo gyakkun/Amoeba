@@ -21,6 +21,11 @@ namespace Amoeba.Windows
         private static readonly object _initializeLock = new object();
         private volatile object _thisLock;
 
+        public SearchTreeItem(SearchItem searchItem)
+        {
+            this.SearchItem = searchItem;
+        }
+
         [DataMember(Name = "SearchItem")]
         public SearchItem SearchItem
         {
@@ -31,7 +36,7 @@ namespace Amoeba.Windows
                     return _searchItem;
                 }
             }
-            set
+            private set
             {
                 lock (this.ThisLock)
                 {

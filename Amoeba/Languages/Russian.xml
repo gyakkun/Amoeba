@@ -226,79 +226,6 @@
   <Translate Key="InformationControl_Copy" Value="Копировать" />
   <Translate Key="InformationControl_Paste" Value="Вставить" />
 
-  <Translate Key="StoreControl_Download" Value="Скачки" />
-  <Translate Key="StoreControl_Upload" Value="Загрузки" />
-  <Translate Key="StoreControl_Library" Value="Library" />
-
-  <Translate Key="StoreDownloadControl_Name" Value="Название" />
-  <Translate Key="StoreDownloadControl_Signature" Value="Подпись" />
-  <Translate Key="StoreDownloadControl_Length" Value="Длина" />
-  <Translate Key="StoreDownloadControl_Keywords" Value="Ключевые слова" />
-  <Translate Key="StoreDownloadControl_CreationTime" Value="Время создания" />
-  <Translate Key="StoreDownloadControl_Comment" Value="Комментарий" />
-  <Translate Key="StoreDownloadControl_State" Value="Статус" />
-  <Translate Key="StoreDownloadControl_Id" Value="Номер" />
-  <Translate Key="StoreDownloadControl_Upload" Value="Раздача" />
-  <Translate Key="StoreDownloadControl_NewStore" Value="New store" />
-  <Translate Key="StoreDownloadControl_NewCategory" Value="Новая категория" />
-  <Translate Key="StoreDownloadControl_NewBox" Value="New box" />
-  <Translate Key="StoreDownloadControl_Edit" Value="Редактировать" />
-  <Translate Key="StoreDownloadControl_Delete" Value="Удалить" />
-  <Translate Key="StoreDownloadControl_Cut" Value="Вырезать" />
-  <Translate Key="StoreDownloadControl_Copy" Value="Копировать" />
-  <Translate Key="StoreDownloadControl_Paste" Value="Вставить" />
-  <Translate Key="StoreDownloadControl_Import" Value="Импорт" />
-  <Translate Key="StoreDownloadControl_Export" Value="Экспорт" />
-  <Translate Key="StoreDownloadControl_CopyInfo" Value="Копировать информацию" />
-  <Translate Key="StoreDownloadControl_Download" Value="Загрузки" />
-  <Translate Key="StoreDownloadControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
-  <Translate Key="StoreDownloadControl_DigitalSignatureError_Message" Value="Digital signature error" />
-
-  <Translate Key="StoreUploadControl_Name" Value="Название" />
-  <Translate Key="StoreUploadControl_Signature" Value="Подпись" />
-  <Translate Key="StoreUploadControl_Length" Value="Длина" />
-  <Translate Key="StoreUploadControl_Keywords" Value="Ключевые слова" />
-  <Translate Key="StoreUploadControl_CreationTime" Value="Время создания" />
-  <Translate Key="StoreUploadControl_Comment" Value="Комментарий" />
-  <Translate Key="StoreUploadControl_State" Value="Статус" />
-  <Translate Key="StoreUploadControl_Id" Value="Номер" />
-  <Translate Key="StoreUploadControl_Upload" Value="Раздача" />
-  <Translate Key="StoreUploadControl_NewStore" Value="New store" />
-  <Translate Key="StoreUploadControl_NewCategory" Value="Новая категория" />
-  <Translate Key="StoreUploadControl_NewBox" Value="New box" />
-  <Translate Key="StoreUploadControl_Edit" Value="Редактировать" />
-  <Translate Key="StoreUploadControl_Delete" Value="Удалить" />
-  <Translate Key="StoreUploadControl_Cut" Value="Вырезать" />
-  <Translate Key="StoreUploadControl_Copy" Value="Копировать" />
-  <Translate Key="StoreUploadControl_Paste" Value="Вставить" />
-  <Translate Key="StoreUploadControl_Import" Value="Импорт" />
-  <Translate Key="StoreUploadControl_Export" Value="Экспорт" />
-  <Translate Key="StoreUploadControl_CopyInfo" Value="Копировать информацию" />
-  <Translate Key="StoreUploadControl_Download" Value="Загрузки" />
-  <Translate Key="StoreUploadControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
-  <Translate Key="StoreUploadControl_DigitalSignatureError_Message" Value="Digital signature error" />
-
-  <Translate Key="LibraryControl_Name" Value="Название" />
-  <Translate Key="LibraryControl_Signature" Value="Подпись" />
-  <Translate Key="LibraryControl_Length" Value="Длина" />
-  <Translate Key="LibraryControl_Keywords" Value="Ключевые слова" />
-  <Translate Key="LibraryControl_CreationTime" Value="Время создания" />
-  <Translate Key="LibraryControl_Comment" Value="Комментарий" />
-  <Translate Key="LibraryControl_State" Value="Статус" />
-  <Translate Key="LibraryControl_Id" Value="Номер" />
-  <Translate Key="LibraryControl_NewBox" Value="New box" />
-  <Translate Key="LibraryControl_Edit" Value="Редактировать" />
-  <Translate Key="LibraryControl_Delete" Value="Удалить" />
-  <Translate Key="LibraryControl_Cut" Value="Вырезать" />
-  <Translate Key="LibraryControl_Copy" Value="Копировать" />
-  <Translate Key="LibraryControl_Paste" Value="Вставить" />
-  <Translate Key="LibraryControl_Import" Value="Импорт" />
-  <Translate Key="LibraryControl_Export" Value="Экспорт" />
-  <Translate Key="LibraryControl_CopyInfo" Value="Копировать информацию" />
-  <Translate Key="LibraryControl_Download" Value="Загрузки" />
-  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
-  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="Digital signature error" />
-
   <Translate Key="SearchControl_Name" Value="Название" />
   <Translate Key="SearchControl_Signature" Value="Подпись" />
   <Translate Key="SearchControl_Length" Value="Длина" />
@@ -315,6 +242,7 @@
   <Translate Key="SearchControl_CopyInfo" Value="Копировать информацию" />
   <Translate Key="SearchControl_Paste" Value="Вставить" />
   <Translate Key="SearchControl_Export" Value="Экспорт" />
+  <Translate Key="SearchControl_DeleteAll" Value="Delete all" />
   <Translate Key="SearchControl_DeleteCache" Value="Удалить кэш" />
   <Translate Key="SearchControl_DeleteShare" Value="Удалить раздачу" />
   <Translate Key="SearchControl_DeleteDownload" Value="Delete download " />
@@ -333,6 +261,50 @@
   <Translate Key="SearchControl_FilterKeyword" Value="Filter keyword" />
   <Translate Key="SearchControl_FilterCreationTimeRange" Value="Filter creation time range" />
   <Translate Key="SearchControl_FilterSeed" Value="Filter seed" />
+
+  <Translate Key="SearchItemEditWindow_Title" Value="Редактировать категорию" />
+  <Translate Key="SearchItemEditWindow_Name" Value="Название" />
+  <Translate Key="SearchItemEditWindow_NameRegex" Value="Регулярное выражение" />
+  <Translate Key="SearchItemEditWindow_Signature" Value="Подпись" />
+  <Translate Key="SearchItemEditWindow_Keyword" Value="Ключевые слова" />
+  <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="Creation time range" />
+  <Translate Key="SearchItemEditWindow_LengthRange" Value="Length range" />
+  <Translate Key="SearchItemEditWindow_Seed" Value="Seed" />
+  <Translate Key="SearchItemEditWindow_SearchState" Value="Статус" />
+  <Translate Key="SearchItemEditWindow_Contains" Value="Содержит" />
+  <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="Не учитывать регистр" />
+  <Translate Key="SearchItemEditWindow_Value" Value="Значение" />
+  <Translate Key="SearchItemEditWindow_Min" Value="Минимум" />
+  <Translate Key="SearchItemEditWindow_Max" Value="Максимум" />
+  <Translate Key="SearchItemEditWindow_Up" Value="↑Вверх" />
+  <Translate Key="SearchItemEditWindow_Down" Value="↓Вниз" />
+  <Translate Key="SearchItemEditWindow_Add" Value="Добавить" />
+  <Translate Key="SearchItemEditWindow_Edit" Value="Редактировать" />
+  <Translate Key="SearchItemEditWindow_Delete" Value="Удалить" />
+  <Translate Key="SearchItemEditWindow_Ok" Value="Ok" />
+  <Translate Key="SearchItemEditWindow_Cancel" Value="Закрыть" />
+  <Translate Key="SearchItemEditWindow_Cut" Value="Вырезать" />
+  <Translate Key="SearchItemEditWindow_Copy" Value="Копировать" />
+  <Translate Key="SearchItemEditWindow_Paste" Value="Вставить" />
+  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="Link" />
+  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="Store" />
+  <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="Кэш" />
+  <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="Скачивание" />
+  <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="Загрузка" />
+  <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="Скачано" />
+  <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="Загружено" />
+
+  <Translate Key="SearchState_Link" Value="L" />
+  <Translate Key="SearchState_Store" Value="S" />
+  <Translate Key="SearchState_Cache" Value="C" />
+  <Translate Key="SearchState_Downloading" Value="D" />
+  <Translate Key="SearchState_Uploading" Value="U" />
+  <Translate Key="SearchState_Downloaded" Value="DH" />
+  <Translate Key="SearchState_Uploaded" Value="UH" />
+
+  <Translate Key="StoreControl_Download" Value="Скачки" />
+  <Translate Key="StoreControl_Upload" Value="Загрузки" />
+  <Translate Key="StoreControl_Library" Value="Library" />
 
   <Translate Key="DownloadControl_Name" Value="Название" />
   <Translate Key="DownloadControl_Length" Value="Длина" />
@@ -406,45 +378,74 @@
   <Translate Key="UploadWindow_Ok" Value="Ok" />
   <Translate Key="UploadWindow_Cancel" Value="Закрыть" />
 
-  <Translate Key="SearchState_Link" Value="L" />
-  <Translate Key="SearchState_Store" Value="S" />
-  <Translate Key="SearchState_Cache" Value="C" />
-  <Translate Key="SearchState_Downloading" Value="D" />
-  <Translate Key="SearchState_Uploading" Value="U" />
-  <Translate Key="SearchState_Downloaded" Value="DH" />
-  <Translate Key="SearchState_Uploaded" Value="UH" />
+  <Translate Key="StoreDownloadControl_Name" Value="Название" />
+  <Translate Key="StoreDownloadControl_Signature" Value="Подпись" />
+  <Translate Key="StoreDownloadControl_Length" Value="Длина" />
+  <Translate Key="StoreDownloadControl_Keywords" Value="Ключевые слова" />
+  <Translate Key="StoreDownloadControl_CreationTime" Value="Время создания" />
+  <Translate Key="StoreDownloadControl_Comment" Value="Комментарий" />
+  <Translate Key="StoreDownloadControl_State" Value="Статус" />
+  <Translate Key="StoreDownloadControl_Id" Value="Номер" />
+  <Translate Key="StoreDownloadControl_Upload" Value="Раздача" />
+  <Translate Key="StoreDownloadControl_NewStore" Value="New store" />
+  <Translate Key="StoreDownloadControl_NewCategory" Value="Новая категория" />
+  <Translate Key="StoreDownloadControl_NewBox" Value="New box" />
+  <Translate Key="StoreDownloadControl_Edit" Value="Редактировать" />
+  <Translate Key="StoreDownloadControl_Delete" Value="Удалить" />
+  <Translate Key="StoreDownloadControl_Cut" Value="Вырезать" />
+  <Translate Key="StoreDownloadControl_Copy" Value="Копировать" />
+  <Translate Key="StoreDownloadControl_Paste" Value="Вставить" />
+  <Translate Key="StoreDownloadControl_Import" Value="Импорт" />
+  <Translate Key="StoreDownloadControl_Export" Value="Экспорт" />
+  <Translate Key="StoreDownloadControl_CopyInfo" Value="Копировать информацию" />
+  <Translate Key="StoreDownloadControl_Download" Value="Загрузки" />
+  <Translate Key="StoreDownloadControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
+  <Translate Key="StoreDownloadControl_DigitalSignatureError_Message" Value="Digital signature error" />
 
-  <Translate Key="SearchItemEditWindow_Title" Value="Редактировать категорию" />
-  <Translate Key="SearchItemEditWindow_Name" Value="Название" />
-  <Translate Key="SearchItemEditWindow_NameRegex" Value="Регулярное выражение" />
-  <Translate Key="SearchItemEditWindow_Signature" Value="Подпись" />
-  <Translate Key="SearchItemEditWindow_Keyword" Value="Ключевые слова" />
-  <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="Creation time range" />
-  <Translate Key="SearchItemEditWindow_LengthRange" Value="Length range" />
-  <Translate Key="SearchItemEditWindow_Seed" Value="Seed" />
-  <Translate Key="SearchItemEditWindow_SearchState" Value="Статус" />
-  <Translate Key="SearchItemEditWindow_Contains" Value="Содержит" />
-  <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="Не учитывать регистр" />
-  <Translate Key="SearchItemEditWindow_Value" Value="Значение" />
-  <Translate Key="SearchItemEditWindow_Min" Value="Минимум" />
-  <Translate Key="SearchItemEditWindow_Max" Value="Максимум" />
-  <Translate Key="SearchItemEditWindow_Up" Value="↑Вверх" />
-  <Translate Key="SearchItemEditWindow_Down" Value="↓Вниз" />
-  <Translate Key="SearchItemEditWindow_Add" Value="Добавить" />
-  <Translate Key="SearchItemEditWindow_Edit" Value="Редактировать" />
-  <Translate Key="SearchItemEditWindow_Delete" Value="Удалить" />
-  <Translate Key="SearchItemEditWindow_Ok" Value="Ok" />
-  <Translate Key="SearchItemEditWindow_Cancel" Value="Закрыть" />
-  <Translate Key="SearchItemEditWindow_Cut" Value="Вырезать" />
-  <Translate Key="SearchItemEditWindow_Copy" Value="Копировать" />
-  <Translate Key="SearchItemEditWindow_Paste" Value="Вставить" />
-  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="Link" />
-  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="Store" />
-  <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="Кэш" />
-  <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="Скачивание" />
-  <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="Загрузка" />
-  <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="Скачано" />
-  <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="Загружено" />
+  <Translate Key="StoreUploadControl_Name" Value="Название" />
+  <Translate Key="StoreUploadControl_Signature" Value="Подпись" />
+  <Translate Key="StoreUploadControl_Length" Value="Длина" />
+  <Translate Key="StoreUploadControl_Keywords" Value="Ключевые слова" />
+  <Translate Key="StoreUploadControl_CreationTime" Value="Время создания" />
+  <Translate Key="StoreUploadControl_Comment" Value="Комментарий" />
+  <Translate Key="StoreUploadControl_State" Value="Статус" />
+  <Translate Key="StoreUploadControl_Id" Value="Номер" />
+  <Translate Key="StoreUploadControl_Upload" Value="Раздача" />
+  <Translate Key="StoreUploadControl_NewStore" Value="New store" />
+  <Translate Key="StoreUploadControl_NewCategory" Value="Новая категория" />
+  <Translate Key="StoreUploadControl_NewBox" Value="New box" />
+  <Translate Key="StoreUploadControl_Edit" Value="Редактировать" />
+  <Translate Key="StoreUploadControl_Delete" Value="Удалить" />
+  <Translate Key="StoreUploadControl_Cut" Value="Вырезать" />
+  <Translate Key="StoreUploadControl_Copy" Value="Копировать" />
+  <Translate Key="StoreUploadControl_Paste" Value="Вставить" />
+  <Translate Key="StoreUploadControl_Import" Value="Импорт" />
+  <Translate Key="StoreUploadControl_Export" Value="Экспорт" />
+  <Translate Key="StoreUploadControl_CopyInfo" Value="Копировать информацию" />
+  <Translate Key="StoreUploadControl_Download" Value="Загрузки" />
+  <Translate Key="StoreUploadControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
+  <Translate Key="StoreUploadControl_DigitalSignatureError_Message" Value="Digital signature error" />
+
+  <Translate Key="LibraryControl_Name" Value="Название" />
+  <Translate Key="LibraryControl_Signature" Value="Подпись" />
+  <Translate Key="LibraryControl_Length" Value="Длина" />
+  <Translate Key="LibraryControl_Keywords" Value="Ключевые слова" />
+  <Translate Key="LibraryControl_CreationTime" Value="Время создания" />
+  <Translate Key="LibraryControl_Comment" Value="Комментарий" />
+  <Translate Key="LibraryControl_State" Value="Статус" />
+  <Translate Key="LibraryControl_Id" Value="Номер" />
+  <Translate Key="LibraryControl_NewBox" Value="New box" />
+  <Translate Key="LibraryControl_Edit" Value="Редактировать" />
+  <Translate Key="LibraryControl_Delete" Value="Удалить" />
+  <Translate Key="LibraryControl_Cut" Value="Вырезать" />
+  <Translate Key="LibraryControl_Copy" Value="Копировать" />
+  <Translate Key="LibraryControl_Paste" Value="Вставить" />
+  <Translate Key="LibraryControl_Import" Value="Импорт" />
+  <Translate Key="LibraryControl_Export" Value="Экспорт" />
+  <Translate Key="LibraryControl_CopyInfo" Value="Копировать информацию" />
+  <Translate Key="LibraryControl_Download" Value="Загрузки" />
+  <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="The signature of box is annulled." />
+  <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="Digital signature error" />
 
   <Translate Key="SeedEditWindow_Title" Value="Seed edit" />
   <Translate Key="SeedEditWindow_Name" Value="Название" />
