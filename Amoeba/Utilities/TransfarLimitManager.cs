@@ -116,18 +116,12 @@ namespace Amoeba
 
         protected virtual void OnStartEvent()
         {
-            if (_startEvent != null)
-            {
-                _startEvent(this, new EventArgs());
-            }
+            _startEvent?.Invoke(this, new EventArgs());
         }
 
         protected virtual void OnStopEvent()
         {
-            if (_stopEvent != null)
-            {
-                _stopEvent(this, new EventArgs());
-            }
+            _stopEvent?.Invoke(this, new EventArgs());
         }
 
         public void Reset()

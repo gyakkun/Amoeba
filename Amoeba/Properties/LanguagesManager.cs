@@ -29,10 +29,7 @@ namespace Amoeba.Properties
 
         protected static void OnUsingLanguageChangedEvent()
         {
-            if (LanguagesManager.UsingLanguageChangedEvent != null)
-            {
-                LanguagesManager.UsingLanguageChangedEvent(_defaultInstance);
-            }
+            LanguagesManager.UsingLanguageChangedEvent?.Invoke(_defaultInstance);
         }
 
         static LanguagesManager()
