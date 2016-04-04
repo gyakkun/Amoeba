@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -318,7 +319,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -378,7 +379,7 @@ namespace Amoeba.Windows
         {
             var list = new HashSet<Seed>(Clipboard.GetSeeds());
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -477,7 +478,7 @@ namespace Amoeba.Windows
         {
             _listViewDeleteCompleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 

@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -2080,7 +2081,7 @@ namespace Amoeba.Windows
             if (flag && _eventOpenPortAndGetIpAddressCheckBox.IsChecked.Value
                 && _connectionSettingManager.State == ManagerState.Start)
             {
-                ThreadPool.QueueUserWorkItem((object state) =>
+                Task.Run(() =>
                 {
                     _connectionSettingManager.Update();
                 });

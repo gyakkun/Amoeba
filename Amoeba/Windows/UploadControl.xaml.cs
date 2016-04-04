@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -38,7 +39,7 @@ namespace Amoeba.Windows
 
         private Thread _showUploadItemThread;
 
-        private volatile bool _shareAddIsRunning = false;
+        private volatile bool _uploadAddIsRunning = false;
 
         public UploadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
@@ -228,10 +229,10 @@ namespace Amoeba.Windows
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             var result = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
-                if (_shareAddIsRunning) return;
-                _shareAddIsRunning = true;
+                if (_uploadAddIsRunning) return;
+                _uploadAddIsRunning = true;
 
                 Thread.CurrentThread.IsBackground = true;
 
@@ -268,7 +269,7 @@ namespace Amoeba.Windows
                 }
                 finally
                 {
-                    _shareAddIsRunning = false;
+                    _uploadAddIsRunning = false;
                 }
             });
         }
@@ -299,10 +300,10 @@ namespace Amoeba.Windows
             {
                 var filePaths = new HashSet<string>(dialog.FileNames);
 
-                ThreadPool.QueueUserWorkItem((object wstate) =>
+                Task.Run(() =>
                 {
-                    if (_shareAddIsRunning) return;
-                    _shareAddIsRunning = true;
+                    if (_uploadAddIsRunning) return;
+                    _uploadAddIsRunning = true;
 
                     Thread.CurrentThread.IsBackground = true;
 
@@ -331,7 +332,7 @@ namespace Amoeba.Windows
                     }
                     finally
                     {
-                        _shareAddIsRunning = false;
+                        _uploadAddIsRunning = false;
                     }
                 });
             }
@@ -355,7 +356,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -492,7 +493,7 @@ namespace Amoeba.Windows
         {
             _listViewDeleteCompleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 

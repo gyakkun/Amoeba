@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Automation.Provider;
@@ -2125,7 +2126,7 @@ namespace Amoeba.Windows
 
                         var seed = seedListViewItem.Value;
 
-                        ThreadPool.QueueUserWorkItem((object wstate) =>
+                        Task.Run(() =>
                         {
                             Thread.CurrentThread.IsBackground = true;
 
@@ -2601,7 +2602,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 

@@ -229,7 +229,7 @@ namespace Amoeba.Windows
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             var result = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 if (_shareAddIsRunning) return;
                 _shareAddIsRunning = true;
@@ -298,7 +298,7 @@ namespace Amoeba.Windows
             {
                 var filePaths = new HashSet<string>(dialog.FileNames);
 
-                ThreadPool.QueueUserWorkItem((object wstate) =>
+                Task.Run(() =>
                 {
                     if (_shareAddIsRunning) return;
                     _shareAddIsRunning = true;
@@ -354,7 +354,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -380,7 +380,7 @@ namespace Amoeba.Windows
         {
             _listViewCheckExistMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 

@@ -15,6 +15,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
@@ -1325,7 +1326,7 @@ namespace Amoeba.Windows
             if (_checkUpdate_IsRunning) return;
             _checkUpdate_IsRunning = true;
 
-            ThreadPool.QueueUserWorkItem((object state) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1704,7 +1705,7 @@ namespace Amoeba.Windows
             if (!_updateBaseNodeMenuItem_IsEnabled) return;
             _updateBaseNodeMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object state) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1769,7 +1770,7 @@ namespace Amoeba.Windows
             window.Message = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
             window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Factory.StartNew(() =>
             {
                 bool flag = false;
 
@@ -1807,7 +1808,7 @@ namespace Amoeba.Windows
 
                     }
                 }));
-            });
+            }, TaskCreationOptions.LongRunning);
 
             window.Closed += (object sender2, EventArgs e2) =>
             {
@@ -1831,7 +1832,7 @@ namespace Amoeba.Windows
             window.Message = string.Format(LanguagesManager.Instance.MainWindow_CheckBlocks_State, 0, 0, 0);
             window.ButtonMessage = LanguagesManager.Instance.ProgressWindow_Cancel;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Factory.StartNew(() =>
             {
                 bool flag = false;
 
@@ -1869,7 +1870,7 @@ namespace Amoeba.Windows
 
                     }
                 }));
-            });
+            }, TaskCreationOptions.LongRunning);
 
             window.Closed += (object sender2, EventArgs e2) =>
             {

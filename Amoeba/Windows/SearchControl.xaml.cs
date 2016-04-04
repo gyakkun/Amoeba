@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation.Peers;
 using System.Windows.Automation.Provider;
@@ -1115,7 +1116,7 @@ namespace Amoeba.Windows
 
             if (list.Count == 0) return;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1234,7 +1235,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1291,7 +1292,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteCacheMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1334,7 +1335,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteDownloadMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1377,7 +1378,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteUploadMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1420,7 +1421,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteDownloadHistoryMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1460,7 +1461,7 @@ namespace Amoeba.Windows
 
             _listViewDeleteUploadHistoryMenuItem_IsEnabled = false;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
@@ -1763,7 +1764,7 @@ namespace Amoeba.Windows
 
             if (list.Count == 0) return;
 
-            ThreadPool.QueueUserWorkItem((object wstate) =>
+            Task.Run(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 

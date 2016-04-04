@@ -221,7 +221,7 @@ namespace Amoeba
                 {
                     checkSamStopwatch.Restart();
 
-                    if ((_samManager != null && !_samManager.IsConnected)
+                    if ((_samManager == null || !_samManager.IsConnected)
                         || _oldSamBridgeUri != this.SamBridgeUri)
                     {
                         string i2pUri = null;
@@ -237,6 +237,7 @@ namespace Amoeba
                                     if (_samManager != null)
                                     {
                                         _samManager.Dispose();
+                                        _samManager = null;
                                     }
 
                                     var host = match.Groups[2].Value;
@@ -321,11 +322,11 @@ namespace Amoeba
                     _state = ManagerState.Stop;
                 }
 
-                if (_samManager != null) _samManager.Dispose();
-                _samManager = null;
-
                 _watchThread.Join();
                 _watchThread = null;
+
+                if (_samManager != null) _samManager.Dispose();
+                _samManager = null;
 
                 lock (this.ThisLock)
                 {
