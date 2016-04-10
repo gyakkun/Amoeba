@@ -79,7 +79,7 @@
   <Translate Key="LinkOptionsWindow_Trust" Value="Trust" />
   <Translate Key="LinkOptionsWindow_Untrust" Value="Untrust" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="Linker signature" />
-  <Translate Key="LinkOptionsWindow_Signature" Value="signature" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="Signature" />
   <Translate Key="LinkOptionsWindow_New" Value="New" />
   <Translate Key="LinkOptionsWindow_Edit" Value="Edit" />
   <Translate Key="LinkOptionsWindow_Delete" Value="Delete" />
