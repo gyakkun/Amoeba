@@ -6,10 +6,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Amoeba.Properties;
 using Library;
 using Library.Net.Amoeba;
+using Library.Security;
 
 namespace Amoeba.Windows
 {
@@ -57,7 +59,7 @@ namespace Amoeba.Windows
 
             public static BitmapSource FileAssociatedImage(string path, bool isLarge, bool isExist)
             {
-                SHFILEINFO fileInfo = new SHFILEINFO();
+                var fileInfo = new SHFILEINFO();
                 uint flags = SHGFI_ICON;
                 if (!isLarge) flags |= SHGFI_SMALLICON;
                 if (!isExist) flags |= SHGFI_USEFILEATTRIBUTES;
@@ -112,7 +114,7 @@ namespace Amoeba.Windows
                 }
                 else if (value is Seed)
                 {
-                    Seed seed = (Seed)value;
+                    var seed = (Seed)value;
                     if (string.IsNullOrWhiteSpace(seed.Name)) return null;
 
                     var ext = Path.GetExtension(seed.Name);
@@ -149,6 +151,58 @@ namespace Amoeba.Windows
         }
     }
 
+    public class GetTreeColorConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var isSelected = (bool)values[0];
+            var isHit = values[1] as bool?;
+
+            if (isSelected)
+            {
+                return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#000000"));
+            }
+            else
+            {
+                if (isHit.HasValue && isHit.Value)
+                {
+                    return new SolidColorBrush(App.Colors.Tree_Hit);
+                }
+                else
+                {
+                    return new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"));
+                }
+            }
+        }
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    [ValueConversion(typeof(bool), typeof(FontWeight))]
+    class GetTreeWeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var isHit = value as bool?;
+
+            if (isHit.HasValue && isHit.Value)
+            {
+                return FontWeights.ExtraBlack;
+            }
+            else
+            {
+                return FontWeights.Normal;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     [ValueConversion(typeof(bool), typeof(System.Windows.Visibility))]
     class BoolToVisibilityConverter : IValueConverter
     {
@@ -174,7 +228,7 @@ namespace Amoeba.Windows
             var item = value as string;
             if (item == null) return null;
 
-            StringBuilder sb = new StringBuilder(item, item.Length);
+            var sb = new StringBuilder(item, item.Length);
             sb.Replace('\r', ' ');
             sb.Replace('\n', ' ');
             sb.Replace('\uFFFD', ' ');
@@ -472,7 +526,7 @@ namespace Amoeba.Windows
             if (!(value is SearchState)) return null;
             var item = (SearchState)value;
 
-            List<string> list = new List<string>();
+            var list = new List<string>();
 
             if (item.HasFlag(SearchState.Link))
             {

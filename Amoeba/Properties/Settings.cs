@@ -22,6 +22,8 @@ namespace Amoeba.Properties
         Settings()
             : base(new List<Library.Configuration.ISettingContent>()
             {
+                new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_TrustSignatures", Value = new LockedList<string>() },
+                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "Global_LinkItems", Value = new LockedList<LinkItem>() },
                 new Library.Configuration.SettingContent<LockedList<DigitalSignature>>() { Name = "Global_DigitalSignatureCollection", Value = new LockedList<DigitalSignature>() },
                 new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_SearchKeywords", Value = new LockedList<string>() },
                 new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_UploadKeywords", Value = new LockedList<string>() },
@@ -38,6 +40,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Signature", Value = "Lyrise@OTAhpWvmegu50LT-p5dZ16og7U6bdpO4z5TInZxGsCs" },
                 new Library.Configuration.SettingContent<UpdateOption>() { Name = "Global_Update_Option", Value = UpdateOption.AutoCheck },
 
+                new Library.Configuration.SettingContent<LockedHashDictionary<string, LinkItem>>() { Name = "Cache_LinkItems", Value = new LockedHashDictionary<string, LinkItem>() },
+
                 new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Top", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Left", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "MainWindow_Height", Value = 500 },
@@ -50,10 +54,9 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Width", Value = 700 },
                 new Library.Configuration.SettingContent<WindowState>() { Name = "LinkOptionsWindow_WindowState", Value = WindowState.Normal },
                 new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Grid_ColumnDefinitions_Width", Value = 300 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_Signature_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
-                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "LinkOptionsWindow_DownloadLinkItems", Value = new LockedList<LinkItem>() },
-                new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "LinkOptionsWindow_UploadLinkItems", Value = new LockedList<LinkItem>() },
 
                 new Library.Configuration.SettingContent<double>() { Name = "OptionsWindow_Top", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "OptionsWindow_Left", Value = 120 },
@@ -132,6 +135,15 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_Name_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_BlockCount_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "ShareControl_GridViewColumn_Path_Width", Value = 120 },
+
+                new Library.Configuration.SettingContent<double>() { Name = "LinkControl_Grid_ColumnDefinitions_Width", Value = 200 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkControl_GridViewColumn_Signature_Width", Value = 600 },
+                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "LinkControl_ExpandedPaths", Value = new LockedHashSet<Route>() },
+
+                new Library.Configuration.SettingContent<string>() { Name = "StoreReaderControl_LastHeaderClicked", Value = "Name" },
+                new Library.Configuration.SettingContent<ListSortDirection>() { Name = "StoreReaderControl_ListSortDirection", Value = ListSortDirection.Ascending },
+                new Library.Configuration.SettingContent<Box>() { Name = "StoreReaderControl_Box", Value = new Box() { Name = "Library" } },
+                new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "StoreReaderControl_ExpandedPaths", Value = new LockedHashSet<Route>() },
 
                 new Library.Configuration.SettingContent<StoreCategorizeTreeItem>() { Name = "StoreDownloadControl_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
                 new Library.Configuration.SettingContent<string>() { Name = "StoreDownloadControl_LastHeaderClicked", Value = "Name" },
@@ -236,6 +248,42 @@ namespace Amoeba.Properties
         }
 
         #region Property
+
+        public LockedList<string> Global_TrustSignatures
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (LockedList<string>)this["Global_TrustSignatures"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_TrustSignatures"] = value;
+                }
+            }
+        }
+
+        public LockedList<LinkItem> Global_LinkItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (LockedList<LinkItem>)this["Global_LinkItems"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Global_LinkItems"] = value;
+                }
+            }
+        }
 
         public LockedList<DigitalSignature> Global_DigitalSignatureCollection
         {
@@ -508,6 +556,25 @@ namespace Amoeba.Properties
         }
 
 
+        public LockedHashDictionary<string, LinkItem> Cache_LinkItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (LockedHashDictionary<string, LinkItem>)this["Cache_LinkItems"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["Cache_LinkItems"] = value;
+                }
+            }
+        }
+
+
         public double MainWindow_Top
         {
             get
@@ -707,6 +774,24 @@ namespace Amoeba.Properties
             }
         }
 
+        public double LinkOptionsWindow_GridViewColumn_Signature_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkOptionsWindow_GridViewColumn_Signature_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkOptionsWindow_GridViewColumn_Signature_Width"] = value;
+                }
+            }
+        }
+
         public double LinkOptionsWindow_GridViewColumn_LinkerSignature_Width
         {
             get
@@ -739,42 +824,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"] = value;
-                }
-            }
-        }
-
-        public LockedList<LinkItem> LinkOptionsWindow_DownloadLinkItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (LockedList<LinkItem>)this["LinkOptionsWindow_DownloadLinkItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_DownloadLinkItems"] = value;
-                }
-            }
-        }
-
-        public LockedList<LinkItem> LinkOptionsWindow_UploadLinkItems
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (LockedList<LinkItem>)this["LinkOptionsWindow_UploadLinkItems"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LinkOptionsWindow_UploadLinkItems"] = value;
                 }
             }
         }
@@ -2060,6 +2109,134 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["ShareControl_GridViewColumn_Path_Width"] = value;
+                }
+            }
+        }
+
+
+        public double LinkControl_Grid_ColumnDefinitions_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkControl_Grid_ColumnDefinitions_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkControl_Grid_ColumnDefinitions_Width"] = value;
+                }
+            }
+        }
+
+        public double LinkControl_GridViewColumn_Signature_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["LinkControl_GridViewColumn_Signature_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkControl_GridViewColumn_Signature_Width"] = value;
+                }
+            }
+        }
+
+        public LockedHashSet<Route> LinkControl_ExpandedPaths
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (LockedHashSet<Route>)this["LinkControl_ExpandedPaths"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LinkControl_ExpandedPaths"] = value;
+                }
+            }
+        }
+
+
+        public string StoreReaderControl_LastHeaderClicked
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (string)this["StoreReaderControl_LastHeaderClicked"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreReaderControl_LastHeaderClicked"] = value;
+                }
+            }
+        }
+
+        public ListSortDirection StoreReaderControl_ListSortDirection
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (ListSortDirection)this["StoreReaderControl_ListSortDirection"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreReaderControl_ListSortDirection"] = value;
+                }
+            }
+        }
+
+        public Box StoreReaderControl_Box
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (Box)this["StoreReaderControl_Box"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreReaderControl_Box"] = value;
+                }
+            }
+        }
+
+        public LockedHashSet<Route> StoreReaderControl_ExpandedPaths
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (LockedHashSet<Route>)this["StoreReaderControl_ExpandedPaths"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["StoreReaderControl_ExpandedPaths"] = value;
                 }
             }
         }

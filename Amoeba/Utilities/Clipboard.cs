@@ -288,7 +288,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.DataObject();
                 dataObject.SetData("Amoeba_Boxes", Clipboard.ToStream(boxes));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
@@ -299,7 +299,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.DataObject();
 
                 {
                     var sb = new StringBuilder();
@@ -350,7 +350,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.DataObject();
                 dataObject.SetData("Amoeba_SearchTreeItems", Clipboard.ToStream(items));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
@@ -389,7 +389,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.DataObject();
                 dataObject.SetData("Amoeba_StoreCategorizeTreeItems", Clipboard.ToStream(items));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
@@ -428,7 +428,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                System.Windows.DataObject dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.DataObject();
 
                 {
                     var sb = new StringBuilder();

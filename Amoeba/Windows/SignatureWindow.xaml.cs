@@ -24,34 +24,17 @@ namespace Amoeba.Windows
     {
         private DigitalSignature _digitalSignature;
 
+        private ObservableCollectionEx<DigitalSignature> _digitalSignatureCollection = new ObservableCollectionEx<DigitalSignature>();
+
         public SignatureWindow()
+            : this(null)
         {
-            var digitalSignatureCollection = new List<object>();
-            digitalSignatureCollection.Add(new ComboBoxItem() { Content = "" });
-            digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new DigitalSignatureComboBoxItem(n)).ToArray());
 
-            InitializeComponent();
-
-            {
-                var icon = new BitmapImage();
-
-                icon.BeginInit();
-                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
-                icon.EndInit();
-                if (icon.CanFreeze) icon.Freeze();
-
-                this.Icon = icon;
-            }
-
-            _signatureComboBox.ItemsSource = digitalSignatureCollection;
-            if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
         }
 
         public SignatureWindow(string signature)
         {
-            var digitalSignatureCollection = new List<object>();
-            digitalSignatureCollection.Add(new ComboBoxItem() { Content = "" });
-            digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new DigitalSignatureComboBoxItem(n)).ToArray());
+            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.ToArray());
 
             InitializeComponent();
 
@@ -66,15 +49,19 @@ namespace Amoeba.Windows
                 this.Icon = icon;
             }
 
-            _signatureComboBox.ItemsSource = digitalSignatureCollection;
+            _signatureComboBox_CollectionContainer.Collection = _digitalSignatureCollection;
+            if (_digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
 
-            for (int index = 0; index < Settings.Instance.Global_DigitalSignatureCollection.Count; index++)
+            if (signature != null)
             {
-                if (Settings.Instance.Global_DigitalSignatureCollection[index].ToString() == signature)
+                for (int index = 0; index < Settings.Instance.Global_DigitalSignatureCollection.Count; index++)
                 {
-                    _signatureComboBox.SelectedIndex = index + 1;
+                    if (Settings.Instance.Global_DigitalSignatureCollection[index].ToString() == signature)
+                    {
+                        _signatureComboBox.SelectedIndex = index + 1;
 
-                    break;
+                        break;
+                    }
                 }
             }
         }
@@ -97,17 +84,14 @@ namespace Amoeba.Windows
 
         private void _signatureComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _okButton.IsEnabled = _signatureComboBox.SelectedIndex != 0;
+            _okButton.IsEnabled = (_signatureComboBox.SelectedItem is DigitalSignature);
         }
 
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
 
-            var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
-            DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
-
-            _digitalSignature = digitalSignature;
+            _digitalSignature = _signatureComboBox.SelectedItem as DigitalSignature;
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

@@ -7,10 +7,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         mc:Ignorable="d" 
-        FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
-        FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}"
+        FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource _languages}, Converter={StaticResource _stringToFontFamilyConverter}}"
+        FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource _languages}, Converter={StaticResource _stringToDoubleConverter}}"
         Background="{DynamicResource WindowBackgroundBrush}"
-        Title="{Binding Path=VersionInformationWindow_Title, Source={StaticResource ResourcesInstance}}"
+        Title="{Binding Path=VersionInformationWindow_Title, Source={StaticResource _languages}}"
         Top="{Binding Path=VersionInformationWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _topRelativeDoubleConverter}}"
         Left="{Binding Path=VersionInformationWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Height="{Binding Path=VersionInformationWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
@@ -31,14 +31,14 @@
             </ListView.Resources>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=VersionInformationWindow_FileName, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_FileName}" 
+                    <GridViewColumn Header="{Binding Path=VersionInformationWindow_FileName, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_FileName}" 
                             Width="{Binding Path=VersionInformationWindow_GridViewColumn_FileName_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=VersionInformationWindow_Version, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Version}" 
+                    <GridViewColumn Header="{Binding Path=VersionInformationWindow_Version, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Version}" 
                             Width="{Binding Path=VersionInformationWindow_GridViewColumn_Version_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_licenseButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_License, Source={StaticResource ResourcesInstance}}" Click="_licenseButton_Click" />
-        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_closeButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_Close, Source={StaticResource ResourcesInstance}}" Click="_closeButton_Click" IsDefault="True" IsCancel="True" />
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_licenseButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_License, Source={StaticResource _languages}}" Click="_licenseButton_Click" />
+        <Button Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_closeButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=VersionInformationWindow_Close, Source={StaticResource _languages}}" Click="_closeButton_Click" IsDefault="True" IsCancel="True" />
     </Grid>
 </Window>

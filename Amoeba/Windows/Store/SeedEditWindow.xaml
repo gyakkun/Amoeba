@@ -7,10 +7,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         mc:Ignorable="d" 
-        FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
-        FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}"
+        FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource _languages}, Converter={StaticResource _stringToFontFamilyConverter}}"
+        FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource _languages}, Converter={StaticResource _stringToDoubleConverter}}"
         Background="{DynamicResource WindowBackgroundBrush}"
-        Title="{Binding Path=SeedEditWindow_Title, Source={StaticResource ResourcesInstance}}"
+        Title="{Binding Path=SeedEditWindow_Title, Source={StaticResource _languages}}"
         Top="{Binding Path=SeedEditWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _topRelativeDoubleConverter}}"
         Left="{Binding Path=SeedEditWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Height="{Binding Path=SeedEditWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
@@ -19,9 +19,9 @@
         Loaded="Window_Loaded">
 
     <Grid FocusManager.FocusedElement="{Binding ElementName=_nameTextBox}">
-        <Label Content="{Binding Path=SeedEditWindow_Name, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />
+        <Label Content="{Binding Path=SeedEditWindow_Name, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />
         <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" />
-        <Label Content="{Binding Path=SeedEditWindow_Keywords, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" />
+        <Label Content="{Binding Path=SeedEditWindow_Keywords, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" />
         <Grid Height="24" Margin="138,42,12,0" Name="grid1" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -34,11 +34,18 @@
             <local:ComboBoxEx x:Name="_keywordsComboBox2" IsEditable="True" Grid.Column="2" />
             <local:ComboBoxEx x:Name="_keywordsComboBox3" IsEditable="True" Grid.Column="4" />
         </Grid>
-        <Label Content="{Binding Path=SeedEditWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" />
-        <ComboBox Height="24" Margin="138,72,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
-        <Label Content="{Binding Path=SeedEditWindow_Comment, Source={StaticResource ResourcesInstance}}" Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" VerticalAlignment="Top" Width="120" />
+        <Label Content="{Binding Path=SeedEditWindow_Signature, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" />
+        <ComboBox Height="24" Margin="138,72,12,0" Name="_signatureComboBox" VerticalAlignment="Top">
+            <ComboBox.ItemsSource>
+                <CompositeCollection>
+                    <ComboBoxItem Content="" />
+                    <CollectionContainer x:Name="_signatureComboBox_CollectionContainer"/>
+                </CompositeCollection>
+            </ComboBox.ItemsSource>
+        </ComboBox>
+        <Label Content="{Binding Path=SeedEditWindow_Comment, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" VerticalAlignment="Top" Width="120" />
         <TextBox AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" Margin="138,102,12,41" Name="_commentTextBox" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" />
-        <Button Content="{Binding Path=SeedEditWindow_Ok, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Click="_okButton_Click" IsDefault="True" />
-        <Button Content="{Binding Path=SeedEditWindow_Cancel, Source={StaticResource ResourcesInstance}}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Click="_cancelButton_Click" IsCancel="True" />
+        <Button Content="{Binding Path=SeedEditWindow_Ok, Source={StaticResource _languages}}" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Click="_okButton_Click" IsDefault="True" />
+        <Button Content="{Binding Path=SeedEditWindow_Cancel, Source={StaticResource _languages}}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Click="_cancelButton_Click" IsCancel="True" />
     </Grid>
 </Window>

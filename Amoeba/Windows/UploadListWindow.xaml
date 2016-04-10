@@ -7,10 +7,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         mc:Ignorable="d" 
-        FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToFontFamilyConverter}}"
-        FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource ResourcesInstance}, Converter={StaticResource _stringToDoubleConverter}}"
+        FontFamily="{Binding Path=FontFamily, Mode=OneWay, Source={StaticResource _languages}, Converter={StaticResource _stringToFontFamilyConverter}}"
+        FontSize="{Binding Path=FontSize, Mode=OneWay, Source={StaticResource _languages}, Converter={StaticResource _stringToDoubleConverter}}"
         Background="{DynamicResource WindowBackgroundBrush}"
-        Title="{Binding Path=UploadWindow_Title, Source={StaticResource ResourcesInstance}}"
+        Title="{Binding Path=UploadWindow_Title, Source={StaticResource _languages}}"
         Top="{Binding Path=UploadWindow_Top, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _topRelativeDoubleConverter}}"
         Left="{Binding Path=UploadWindow_Left, Mode=TwoWay, Source={x:Static prop:Settings.Instance}, Converter={StaticResource _leftRelativeDoubleConverter}}"
         Height="{Binding Path=UploadWindow_Height, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
@@ -18,7 +18,7 @@
         WindowState="{Binding Path=UploadWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Loaded="Window_Loaded">
     <Grid>
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource ResourcesInstance}}" />
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_Keywords, Source={StaticResource _languages}}" />
         <Grid Height="24" Margin="138,12,12,0" Name="grid1" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -31,9 +31,16 @@
             <local:ComboBoxEx x:Name="_keywordsComboBox2" IsEditable="True" Grid.Column="2" />
             <local:ComboBoxEx x:Name="_keywordsComboBox3" IsEditable="True" Grid.Column="4" />
         </Grid>
-        <Label HorizontalAlignment="Left" Margin="12,42,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource ResourcesInstance}}" Height="24" VerticalAlignment="Top" />
-        <ComboBox Height="24" Margin="138,42,12,0" Name="_signatureComboBox" VerticalAlignment="Top" />
-        <Label Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource ResourcesInstance}}" />
+        <Label HorizontalAlignment="Left" Margin="12,42,0,0" Width="120" Content="{Binding Path=UploadWindow_Signature, Source={StaticResource _languages}}" Height="24" VerticalAlignment="Top" />
+        <ComboBox Height="24" Margin="138,42,12,0" Name="_signatureComboBox" VerticalAlignment="Top">
+            <ComboBox.ItemsSource>
+                <CompositeCollection>
+                    <ComboBoxItem Content="" />
+                    <CollectionContainer x:Name="_signatureComboBox_CollectionContainer"/>
+                </CompositeCollection>
+            </ComboBox.ItemsSource>
+        </ComboBox>
+        <Label Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" Content="{Binding Path=UploadWindow_List, Source={StaticResource _languages}}" />
         <local:ListViewEx x:Name="_listView" Margin="138,72,12,41"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
@@ -46,12 +53,12 @@
             </ListView.Resources>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=UploadWindow_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}"
+                    <GridViewColumn Header="{Binding Path=UploadWindow_Name, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Name}"
                             Width="{Binding Path=UploadWindow_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
-        <Button Name="_cancelButton" Grid.Row="2" Height="23" Margin="0,0,12,12"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Content="{Binding Path=UploadWindow_Cancel, Source={StaticResource ResourcesInstance}}" Click="_cancelButton_Click" IsCancel="True" />
-        <Button Name="_okButton" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" VerticalAlignment="Bottom" Width="75" Grid.Row="2" Content="{Binding Path=UploadWindow_Ok, Source={StaticResource ResourcesInstance}}" Click="_okButton_Click" IsDefault="True" />
+        <Button Name="_cancelButton" Grid.Row="2" Height="23" Margin="0,0,12,12"  VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Content="{Binding Path=UploadWindow_Cancel, Source={StaticResource _languages}}" Click="_cancelButton_Click" IsCancel="True" />
+        <Button Name="_okButton" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" VerticalAlignment="Bottom" Width="75" Grid.Row="2" Content="{Binding Path=UploadWindow_Ok, Source={StaticResource _languages}}" Click="_okButton_Click" IsDefault="True" />
     </Grid>
 </Window>

@@ -54,7 +54,7 @@ namespace Amoeba
 
             if (!uri.StartsWith("i2p:")) return null;
 
-            List<IDisposable> garbages = new List<IDisposable>();
+            var garbages = new List<IDisposable>();
 
             try
             {
@@ -62,7 +62,7 @@ namespace Amoeba
                 string host = null;
 
                 {
-                    Regex regex = new Regex(@"(.*?):(.*)");
+                    var regex = new Regex(@"(.*?):(.*)");
                     var match = regex.Match(uri);
 
                     if (match.Success)
@@ -80,7 +80,7 @@ namespace Amoeba
                     int proxyPort = -1;
 
                     {
-                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                        var regex = new Regex(@"(.*?):(.*):(\d*)");
                         var match = regex.Match(this.SamBridgeUri);
 
                         if (match.Success)
@@ -209,7 +209,7 @@ namespace Amoeba
 
         private void WatchThread()
         {
-            Stopwatch checkSamStopwatch = new Stopwatch();
+            var checkSamStopwatch = new Stopwatch();
             checkSamStopwatch.Start();
 
             for (;;)

@@ -25,6 +25,8 @@ namespace Amoeba.Windows
     {
         private List<Seed> _seeds;
 
+        private ObservableCollectionEx<DigitalSignature> _digitalSignatureCollection = new ObservableCollectionEx<DigitalSignature>();
+
         public SeedEditWindow(params Seed[] seeds)
             : this((IEnumerable<Seed>)seeds)
         {
@@ -37,9 +39,7 @@ namespace Amoeba.Windows
 
             _seeds = seeds.ToList();
 
-            var digitalSignatureCollection = new List<object>();
-            digitalSignatureCollection.Add(new ComboBoxItem() { Content = "" });
-            digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new DigitalSignatureComboBoxItem(n)).ToArray());
+            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.ToArray());
 
             InitializeComponent();
 
@@ -96,8 +96,8 @@ namespace Amoeba.Windows
                 _commentTextBox.Text = _seeds[0].Comment;
             }
 
-            _signatureComboBox.ItemsSource = digitalSignatureCollection;
-            if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
+            _signatureComboBox_CollectionContainer.Collection = _digitalSignatureCollection;
+            if (_digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
 
             _nameTextBox.TextChanged += _nameTextBox_TextChanged;
             _nameTextBox_TextChanged(null, null);
@@ -127,8 +127,7 @@ namespace Amoeba.Windows
             if (!string.IsNullOrWhiteSpace(_keywordsComboBox3.Text)) keywords.Add(_keywordsComboBox3.Text);
             keywords = new KeywordCollection(new HashSet<string>(keywords));
             string comment = string.IsNullOrWhiteSpace(_commentTextBox.Text) ? null : _commentTextBox.Text;
-            var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
-            DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
+            var digitalSignature = _signatureComboBox.SelectedItem as DigitalSignature;
 
             foreach (var seed in _seeds)
             {

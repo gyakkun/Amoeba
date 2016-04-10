@@ -49,7 +49,7 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(3, 0, 30);
+            App.AmoebaVersion = new Version(3, 0, 31);
 
             {
                 var currentProcess = Process.GetCurrentProcess();
@@ -403,7 +403,7 @@ namespace Amoeba
                         string zipFilePath = null;
 
                         {
-                            Regex regex = new Regex(@"Amoeba.*?((\d*)\.(\d*)\.(\d*)).*?\.zip");
+                            var regex = new Regex(@"Amoeba.*?((\d*)\.(\d*)\.(\d*)).*?\.zip");
                             Version version = App.AmoebaVersion;
 
                             foreach (var path in Directory.GetFiles(App.DirectoryPaths["Update"]))
@@ -460,7 +460,7 @@ namespace Amoeba
 
                             File.Copy("Library.Update.exe", tempUpdateExeFilePath);
 
-                            ProcessStartInfo startInfo = new ProcessStartInfo();
+                            var startInfo = new ProcessStartInfo();
                             startInfo.FileName = Path.GetFullPath(tempUpdateExeFilePath);
                             startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
                                 Process.GetCurrentProcess().Id,
@@ -631,7 +631,7 @@ namespace Amoeba
             {
                 try
                 {
-                    Process process = new Process();
+                    var process = new Process();
                     process.StartInfo.FileName = Path.GetFullPath(item.Path);
                     process.StartInfo.Arguments = item.Arguments;
                     process.StartInfo.WorkingDirectory = Path.GetFullPath(item.WorkingDirectory);
@@ -802,7 +802,7 @@ namespace Amoeba
                 }
             }
 
-            List<Ipv4AddressFilter> ipv4AddressFilters = new List<Ipv4AddressFilter>();
+            var ipv4AddressFilters = new List<Ipv4AddressFilter>();
 
             using (StreamReader r = new StreamReader(Path.Combine(App.DirectoryPaths["Configuration"], "Catharsis.settings"), new UTF8Encoding(false)))
             using (XmlTextReader xml = new XmlTextReader(r))
@@ -814,8 +814,8 @@ namespace Amoeba
                         if (xml.LocalName == "Ipv4AddressFilter")
                         {
                             string proxyUri = null;
-                            List<string> urls = new List<string>();
-                            List<string> paths = new List<string>();
+                            var urls = new List<string>();
+                            var paths = new List<string>();
 
                             using (var xmlSubtree = xml.ReadSubtree())
                             {

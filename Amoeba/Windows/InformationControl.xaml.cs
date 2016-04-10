@@ -32,8 +32,8 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollectionEx<AmoebaInfomationListViewItem> _infomationListViewItemCollection = new ObservableCollectionEx<AmoebaInfomationListViewItem>();
-        private ObservableCollectionEx<ConnectionListViewItem> _listViewItemCollection = new ObservableCollectionEx<ConnectionListViewItem>();
+        private ObservableCollectionEx<AmoebaInfomationListViewModel> _infomationListViewItemCollection = new ObservableCollectionEx<AmoebaInfomationListViewModel>();
+        private ObservableCollectionEx<ConnectionListViewModel> _listViewModelCollection = new ObservableCollectionEx<ConnectionListViewModel>();
 
         private Thread _showAmoebaInfomationThread;
         private Thread _showConnectionInfomationwThread;
@@ -45,53 +45,53 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _listView.ItemsSource = _listViewItemCollection;
+            _listView.ItemsSource = _listViewModelCollection;
 
 #if DEBUG
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_BufferManagerSize" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_BufferManagerSize" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel());
 #endif
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_SentByteCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_ReceivedByteCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_SentByteCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_ReceivedByteCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel());
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_CreateConnectionCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_AcceptConnectionCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_BlockedConnectionCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_CreateConnectionCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_AcceptConnectionCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_BlockedConnectionCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel());
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_SurroundingNodeCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_RelayBlockCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_SurroundingNodeCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_RelayBlockCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel());
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_LockSpace" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_FreeSpace" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_UsingSpace" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_LockSpace" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_FreeSpace" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_UsingSpace" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel());
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_NodeCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_BlockCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_SeedCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_DownloadCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_UploadCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_ShareCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_NodeCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_BlockCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_SeedCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_DownloadCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_UploadCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_ShareCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel());
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PushNodeCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PushBlockLinkCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PushBlockRequestCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PushBlockCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PushSeedRequestCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PushSeedCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem());
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushNodeCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushBlockLinkCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushBlockRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushBlockCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushSeedRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushSeedCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel());
 
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PullNodeCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PullBlockLinkCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PullBlockRequestCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PullBlockCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PullSeedRequestCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewItem() { Id = "InformationControl_PullSeedCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullNodeCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullBlockLinkCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullBlockRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullBlockCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullSeedRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullSeedCount" });
 
             _infomationListView.ItemsSource = _infomationListViewItemCollection;
 
@@ -183,28 +183,28 @@ namespace Amoeba.Windows
                     if (_mainWindow.SelectedTab != MainWindowTabType.Information) continue;
 
                     var connectionInformation = _amoebaManager.ConnectionInformation.ToArray();
-                    Dictionary<int, Information> dic = new Dictionary<int, Information>();
+                    var dic = new Dictionary<int, Information>();
 
                     foreach (var item in connectionInformation.ToArray())
                     {
                         dic[(int)item["Id"]] = item;
                     }
 
-                    Dictionary<int, ConnectionListViewItem> dic2 = new Dictionary<int, ConnectionListViewItem>();
+                    var dic2 = new Dictionary<int, ConnectionListViewModel>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
-                        foreach (var item in _listViewItemCollection.ToArray())
+                        foreach (var item in _listViewModelCollection.ToArray())
                         {
                             dic2[item.Id] = item;
                         }
                     }));
 
-                    List<ConnectionListViewItem> removeList = new List<ConnectionListViewItem>();
+                    var removeList = new List<ConnectionListViewModel>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
-                        foreach (var item in _listViewItemCollection.ToArray())
+                        foreach (var item in _listViewModelCollection.ToArray())
                         {
                             if (!dic.ContainsKey(item.Id))
                             {
@@ -213,11 +213,11 @@ namespace Amoeba.Windows
                         }
                     }));
 
-                    List<ConnectionListViewItem> newList = new List<ConnectionListViewItem>();
-                    Dictionary<ConnectionListViewItem, Information> updateDic = new Dictionary<ConnectionListViewItem, Information>();
+                    var newList = new List<ConnectionListViewModel>();
+                    var updateDic = new Dictionary<ConnectionListViewModel, Information>();
 
                     bool clearFlag = false;
-                    var selectItems = new List<ConnectionListViewItem>();
+                    var selectItems = new List<ConnectionListViewModel>();
 
                     if (removeList.Count > 100)
                     {
@@ -227,14 +227,14 @@ namespace Amoeba.Windows
 
                         foreach (var information in connectionInformation)
                         {
-                            newList.Add(new ConnectionListViewItem(information));
+                            newList.Add(new ConnectionListViewModel(information));
                         }
 
-                        HashSet<int> hid = new HashSet<int>();
+                        var hid = new HashSet<int>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<ConnectionListViewItem>().Select(n => n.Id));
+                            hid.UnionWith(_listView.SelectedItems.OfType<ConnectionListViewModel>().Select(n => n.Id));
                         }));
 
                         foreach (var item in newList)
@@ -249,7 +249,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var information in connectionInformation)
                         {
-                            ConnectionListViewItem item = null;
+                            ConnectionListViewModel item = null;
 
                             if (dic2.ContainsKey((int)information["Id"]))
                                 item = dic2[(int)information["Id"]];
@@ -263,7 +263,7 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                newList.Add(new ConnectionListViewItem(information));
+                                newList.Add(new ConnectionListViewModel(information));
                             }
                         }
                     }
@@ -276,16 +276,16 @@ namespace Amoeba.Windows
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
-                        if (clearFlag) _listViewItemCollection.Clear();
+                        if (clearFlag) _listViewModelCollection.Clear();
 
                         foreach (var item in newList)
                         {
-                            _listViewItemCollection.Add(item);
+                            _listViewModelCollection.Add(item);
                         }
 
                         foreach (var item in removeList)
                         {
-                            _listViewItemCollection.Remove(item);
+                            _listViewModelCollection.Remove(item);
                         }
 
                         foreach (var item in updateDic)
@@ -325,7 +325,7 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var item in selectItems.OfType<AmoebaInfomationListViewItem>())
+            foreach (var item in selectItems.OfType<AmoebaInfomationListViewModel>())
             {
                 if (item.Id == null) sb.AppendLine();
                 else sb.AppendLine(string.Format("{0}: {1}", item.Name, item.Value));
@@ -349,7 +349,7 @@ namespace Amoeba.Windows
 
             var nodes = new List<Node>();
 
-            foreach (var information in selectItems.OfType<ConnectionListViewItem>().Select(n => n.Information))
+            foreach (var information in selectItems.OfType<ConnectionListViewModel>().Select(n => n.Information))
             {
                 if (information.Contains("Node"))
                 {
@@ -373,23 +373,23 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.InformationControl_LastHeaderClicked != null)
             {
-                var list = this.Sort(_listViewItemCollection, Settings.Instance.InformationControl_LastHeaderClicked, Settings.Instance.InformationControl_ListSortDirection).ToList();
+                var list = this.Sort(_listViewModelCollection, Settings.Instance.InformationControl_LastHeaderClicked, Settings.Instance.InformationControl_ListSortDirection).ToList();
 
                 for (int i = 0; i < list.Count; i++)
                 {
-                    var o = _listViewItemCollection.IndexOf(list[i]);
+                    var o = _listViewModelCollection.IndexOf(list[i]);
 
-                    if (i != o) _listViewItemCollection.Move(o, i);
+                    if (i != o) _listViewModelCollection.Move(o, i);
                 }
             }
         }
 
-        private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        private void _listView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             var item = e.OriginalSource as GridViewColumnHeader;
             if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
 
-            string headerClicked = item.Column.Header as string;
+            var headerClicked = item.Column.Header as string;
             if (headerClicked == null) return;
 
             ListSortDirection direction;
@@ -444,9 +444,9 @@ namespace Amoeba.Windows
             _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
-        private IEnumerable<ConnectionListViewItem> Sort(IEnumerable<ConnectionListViewItem> collection, string sortBy, ListSortDirection direction)
+        private IEnumerable<ConnectionListViewModel> Sort(IEnumerable<ConnectionListViewModel> collection, string sortBy, ListSortDirection direction)
         {
-            List<ConnectionListViewItem> list = new List<ConnectionListViewItem>(collection);
+            var list = new List<ConnectionListViewModel>(collection);
 
             if (sortBy == LanguagesManager.Instance.InformationControl_Direction)
             {
@@ -519,7 +519,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private class AmoebaInfomationListViewItem : INotifyPropertyChanged
+        private class AmoebaInfomationListViewModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -531,7 +531,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public AmoebaInfomationListViewItem()
+            public AmoebaInfomationListViewModel()
             {
                 LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
             }
@@ -591,7 +591,7 @@ namespace Amoeba.Windows
             }
         }
 
-        private class ConnectionListViewItem : INotifyPropertyChanged
+        private class ConnectionListViewModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -611,7 +611,7 @@ namespace Amoeba.Windows
             private long _sentByteCount;
             private ConnectDirection _direction;
 
-            public ConnectionListViewItem(Information information)
+            public ConnectionListViewModel(Information information)
             {
                 this.Information = information;
 

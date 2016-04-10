@@ -33,6 +33,7 @@
   <Translate Key="MainWindow_Download" Value="다운로드" />
   <Translate Key="MainWindow_Upload" Value="업로드" />
   <Translate Key="MainWindow_Share" Value="공유" />
+  <Translate Key="MainWindow_Link" Value="Link" />
   <Translate Key="MainWindow_Store" Value="스토어" />
   <Translate Key="MainWindow_Log" Value="로그" />
   <Translate Key="MainWindow_StatesBar" Value="연결: {0}  변환: {1}" />
@@ -75,8 +76,10 @@
   <Translate Key="LinkOptionsWindow_Title" Value="링크 설정" />
   <Translate Key="LinkOptionsWindow_Download" Value="다운로드" />
   <Translate Key="LinkOptionsWindow_Upload" Value="업로드" />
+  <Translate Key="LinkOptionsWindow_Trust" Value="Trust" />
+  <Translate Key="LinkOptionsWindow_Untrust" Value="Untrust" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="링크 서명" />
-  <Translate Key="LinkOptionsWindow_TrustSignature" Value="신뢰 서명" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="signature" />
   <Translate Key="LinkOptionsWindow_New" Value="새 것" />
   <Translate Key="LinkOptionsWindow_Edit" Value="편집" />
   <Translate Key="LinkOptionsWindow_Delete" Value="삭제" />
@@ -377,6 +380,15 @@
   <Translate Key="UploadWindow_Path" Value="경로" />
   <Translate Key="UploadWindow_Ok" Value="확인" />
   <Translate Key="UploadWindow_Cancel" Value="취소" />
+
+  <Translate Key="LinkControl_Trust" Value="Trust" />
+  <Translate Key="LinkControl_Untrust" Value="Untrust" />
+  <Translate Key="LinkControl_Signature" Value="Signature" />
+  <Translate Key="LinkControl_Value" Value="Value" />
+  <Translate Key="LinkControl_Delete" Value="Delete" />
+  <Translate Key="LinkControl_Cut" Value="Cut" />
+  <Translate Key="LinkControl_Copy" Value="Copy" />
+  <Translate Key="LinkControl_Paste" Value="Paste" />
 
   <Translate Key="StoreDownloadControl_Name" Value="이름" />
   <Translate Key="StoreDownloadControl_Signature" Value="서명" />

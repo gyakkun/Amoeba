@@ -159,7 +159,7 @@ namespace Amoeba.Properties
             {
                 if (System.Windows.Application.Current != null)
                 {
-                    _provider = (ObjectDataProvider)System.Windows.Application.Current.FindResource("ResourcesInstance");
+                    _provider = (ObjectDataProvider)System.Windows.Application.Current.FindResource("_languages");
                 }
 
                 return _provider;
@@ -480,6 +480,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("MainWindow_Share");
+                }
+            }
+        }
+
+        public string MainWindow_Link
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("MainWindow_Link");
                 }
             }
         }
@@ -936,6 +947,28 @@ namespace Amoeba.Properties
             }
         }
 
+        public string LinkOptionsWindow_Trust
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkOptionsWindow_Trust");
+                }
+            }
+        }
+
+        public string LinkOptionsWindow_Untrust
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkOptionsWindow_Untrust");
+                }
+            }
+        }
+
         public string LinkOptionsWindow_LinkerSignature
         {
             get
@@ -947,13 +980,13 @@ namespace Amoeba.Properties
             }
         }
 
-        public string LinkOptionsWindow_TrustSignature
+        public string LinkOptionsWindow_Signature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return this.Translate("LinkOptionsWindow_TrustSignature");
+                    return this.Translate("LinkOptionsWindow_Signature");
                 }
             }
         }
@@ -4074,6 +4107,95 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("UploadWindow_Cancel");
+                }
+            }
+        }
+
+
+        public string LinkControl_Trust
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkControl_Trust");
+                }
+            }
+        }
+
+        public string LinkControl_Untrust
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkControl_Untrust");
+                }
+            }
+        }
+
+        public string LinkControl_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkControl_Signature");
+                }
+            }
+        }
+
+        public string LinkControl_Value
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkControl_Value");
+                }
+            }
+        }
+
+        public string LinkControl_Delete
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkControl_Delete");
+                }
+            }
+        }
+
+        public string LinkControl_Cut
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkControl_Cut");
+                }
+            }
+        }
+
+        public string LinkControl_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkControl_Copy");
+                }
+            }
+        }
+
+        public string LinkControl_Paste
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("LinkControl_Paste");
                 }
             }
         }

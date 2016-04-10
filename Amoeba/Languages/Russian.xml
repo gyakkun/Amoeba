@@ -33,6 +33,7 @@
   <Translate Key="MainWindow_Download" Value="Загрузки" />
   <Translate Key="MainWindow_Upload" Value="Раздачи" />
   <Translate Key="MainWindow_Share" Value="Шары" />
+  <Translate Key="MainWindow_Link" Value="Link" />
   <Translate Key="MainWindow_Store" Value="Хранилище" />
   <Translate Key="MainWindow_Log" Value="Лог" />
   <Translate Key="MainWindow_StatesBar" Value="Подключение: {0}  Конвертирование: {1}" />
@@ -75,8 +76,10 @@
   <Translate Key="LinkOptionsWindow_Title" Value="Настройки линковки" />
   <Translate Key="LinkOptionsWindow_Download" Value="Загрузки" />
   <Translate Key="LinkOptionsWindow_Upload" Value="Раздача" />
+  <Translate Key="LinkOptionsWindow_Trust" Value="Trust" />
+  <Translate Key="LinkOptionsWindow_Untrust" Value="Untrust" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="Подпись линковщика" />
-  <Translate Key="LinkOptionsWindow_TrustSignature" Value="Доверенная цифровая подпись" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="signature" />
   <Translate Key="LinkOptionsWindow_New" Value="Добавить новую подпись" />
   <Translate Key="LinkOptionsWindow_Edit" Value="Редактировать" />
   <Translate Key="LinkOptionsWindow_Delete" Value="Удалить" />
@@ -377,6 +380,15 @@
   <Translate Key="UploadWindow_Path" Value="Директория" />
   <Translate Key="UploadWindow_Ok" Value="Ok" />
   <Translate Key="UploadWindow_Cancel" Value="Закрыть" />
+
+  <Translate Key="LinkControl_Trust" Value="Trust" />
+  <Translate Key="LinkControl_Untrust" Value="Untrust" />
+  <Translate Key="LinkControl_Signature" Value="Signature" />
+  <Translate Key="LinkControl_Value" Value="Value" />
+  <Translate Key="LinkControl_Delete" Value="Delete" />
+  <Translate Key="LinkControl_Cut" Value="Cut" />
+  <Translate Key="LinkControl_Copy" Value="Copy" />
+  <Translate Key="LinkControl_Paste" Value="Paste" />
 
   <Translate Key="StoreDownloadControl_Name" Value="Название" />
   <Translate Key="StoreDownloadControl_Signature" Value="Подпись" />

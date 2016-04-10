@@ -15,6 +15,7 @@ namespace Amoeba.Windows
     {
         private string _signature;
         private SignatureCollection _trustSignatures;
+        private SignatureCollection _deleteSignatures;
 
         private static readonly object _initializeLock = new object();
         private volatile object _thisLock;
@@ -41,7 +42,8 @@ namespace Amoeba.Windows
             if (object.ReferenceEquals(this, other)) return true;
 
             if (this.Signature != other.Signature
-                || !CollectionUtilities.Equals(this.TrustSignatures, other.TrustSignatures))
+                || !CollectionUtilities.Equals(this.TrustSignatures, other.TrustSignatures)
+                || !CollectionUtilities.Equals(this.DeleteSignatures, other.DeleteSignatures))
             {
                 return false;
             }
@@ -79,6 +81,21 @@ namespace Amoeba.Windows
                         _trustSignatures = new SignatureCollection();
 
                     return _trustSignatures;
+                }
+            }
+        }
+
+        [DataMember(Name = "DeleteSignatures")]
+        public SignatureCollection DeleteSignatures
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    if (_deleteSignatures == null)
+                        _deleteSignatures = new SignatureCollection();
+
+                    return _deleteSignatures;
                 }
             }
         }

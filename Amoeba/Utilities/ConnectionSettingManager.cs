@@ -143,13 +143,13 @@ namespace Amoeba
                     {
                         string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:{0}:", IPAddress.Any.ToString())));
 
-                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                        var regex = new Regex(@"(.*?):(.*):(\d*)");
                         var match = regex.Match(uri);
                         if (!match.Success) throw new Exception();
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        List<IPAddress> myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
+                        var myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
 
                         foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
                         {
@@ -212,13 +212,13 @@ namespace Amoeba
                     {
                         string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:[{0}]:", IPAddress.IPv6Any.ToString())));
 
-                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                        var regex = new Regex(@"(.*?):(.*):(\d*)");
                         var match = regex.Match(uri);
                         if (!match.Success) throw new Exception();
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        List<IPAddress> myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
+                        var myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
 
                         foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6))
                         {
@@ -273,7 +273,7 @@ namespace Amoeba
                     {
                         string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:{0}:", IPAddress.Any.ToString())));
 
-                        Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                        var regex = new Regex(@"(.*?):(.*):(\d*)");
                         var match = regex.Match(uri);
                         if (!match.Success) throw new Exception();
 
@@ -367,7 +367,7 @@ namespace Amoeba
                         {
                             client.Connect(new TimeSpan(0, 0, 10));
 
-                            Regex regex = new Regex(@"(.*?):(.*):(\d*)");
+                            var regex = new Regex(@"(.*?):(.*):(\d*)");
                             var match = regex.Match(_settings.UpnpUri);
                             if (!match.Success) throw new Exception();
                             int port = int.Parse(match.Groups[3].Value);

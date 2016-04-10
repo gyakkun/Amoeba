@@ -209,7 +209,7 @@ namespace Amoeba
 
                         if (proxyHost == null) goto End;
 
-                        WebProxy proxy = new WebProxy(proxyHost, proxyPort);
+                        var proxy = new WebProxy(proxyHost, proxyPort);
 
                         foreach (var url in ipv4AddressFilter.Urls)
                         {
@@ -282,11 +282,11 @@ namespace Amoeba
 
             for (int i = 0; i < 10; i++)
             {
-                BufferStream bufferStream = new BufferStream(bufferManager);
+                var bufferStream = new BufferStream(bufferManager);
 
                 try
                 {
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                    var request = (HttpWebRequest)WebRequest.Create(url);
                     request.AllowAutoRedirect = true;
                     request.Proxy = proxy;
                     request.Headers.Add("Pragma", "no-cache");
@@ -351,7 +351,7 @@ namespace Amoeba
 
             fixed (uint* p = ip)
             {
-                byte* bp = (byte*)p;
+                var bp = (byte*)p;
 
                 if (BitConverter.IsLittleEndian)
                 {
@@ -405,7 +405,7 @@ namespace Amoeba
             }
 
             // save data to a rawStream
-            BufferStream rawStream = new BufferStream(bufferManager);
+            var rawStream = new BufferStream(bufferManager);
 
             {
                 byte[] buffer = null;

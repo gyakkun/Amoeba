@@ -42,59 +42,85 @@
 
         <GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
 
-        <TreeView Name="_treeView" Grid.RowSpan="2" AllowDrop="True" 
-                PreviewDragOver="_treeView_PreviewDragOver"
-                PreviewMouseMove="_treeView_PreviewMouseMove" 
-                PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown"
-                SelectedItemChanged="_treeView_SelectedItemChanged"
-                TreeViewItem.Expanded="_treeView_Expanded" TreeViewItem.Collapsed="_treeView_Collapsed"
-                VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
-            <TreeView.Resources>
+        <ContentControl Grid.RowSpan="2">
+            <ContentControl.Resources>
+                <Style x:Key="_baseTreeViewItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                    <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
+                    <EventSetter Event="MouseDown" Handler="TreeViewItem_MouseDown"/>
+                </Style>
+
                 <ContextMenu x:Key="_storeCategorizeTreeViewItemContextMenu">
-                    <MenuItem Name="_storeCategorizeTreeViewItemNewCategoryMenuItem" Header="{Binding Path=StoreDownloadControl_NewCategory, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemNewCategoryMenuItem_Click"/>
-                    <MenuItem Name="_storeCategorizeTreeViewItemEditMenuItem" Header="{Binding Path=StoreDownloadControl_Edit, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemEditMenuItem_Click"/>
-                    <MenuItem Name="_storeCategorizeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreDownloadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemDeleteMenuItem_Click"/>
+                    <MenuItem Name="_storeCategorizeTreeViewItemNewCategoryMenuItem" Header="{Binding Path=StoreDownloadControl_NewCategory, Source={StaticResource _languages}}" Click="_storeCategorizeTreeViewItemNewCategoryMenuItem_Click"/>
+                    <MenuItem Name="_storeCategorizeTreeViewItemEditMenuItem" Header="{Binding Path=StoreDownloadControl_Edit, Source={StaticResource _languages}}" Click="_storeCategorizeTreeViewItemEditMenuItem_Click"/>
+                    <MenuItem Name="_storeCategorizeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreDownloadControl_Delete, Source={StaticResource _languages}}" Click="_storeCategorizeTreeViewItemDeleteMenuItem_Click"/>
                     <Separator />
-                    <MenuItem Name="_storeCategorizeTreeViewItemCutMenuItem" Header="{Binding Path=StoreDownloadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemCutMenuItem_Click" />
-                    <MenuItem Name="_storeCategorizeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemCopyMenuItem_Click" />
-                    <MenuItem Name="_storeCategorizeTreeViewItemPasteMenuItem" Header="{Binding Path=StoreDownloadControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_storeCategorizeTreeViewItemPasteMenuItem_Click" />
+                    <MenuItem Name="_storeCategorizeTreeViewItemCutMenuItem" Header="{Binding Path=StoreDownloadControl_Cut, Source={StaticResource _languages}}" Click="_storeCategorizeTreeViewItemCutMenuItem_Click" />
+                    <MenuItem Name="_storeCategorizeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource _languages}}" Click="_storeCategorizeTreeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_storeCategorizeTreeViewItemPasteMenuItem" Header="{Binding Path=StoreDownloadControl_Paste, Source={StaticResource _languages}}" Click="_storeCategorizeTreeViewItemPasteMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:StoreCategorizeTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                <Style x:Key="_storeCategorizeTreeViewModelSytle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource _baseTreeViewItemStyle}">
                     <Setter Property="ContextMenu" Value="{StaticResource _storeCategorizeTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_storeCategorizeTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
 
                 <ContextMenu x:Key="_storeTreeViewItemContextMenu">
-                    <MenuItem Name="_storeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreDownloadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemDeleteMenuItem_Click"/>
+                    <MenuItem Name="_storeTreeViewItemDeleteMenuItem" Header="{Binding Path=StoreDownloadControl_Delete, Source={StaticResource _languages}}" Click="_storeTreeViewItemDeleteMenuItem_Click"/>
                     <Separator />
-                    <MenuItem Name="_storeTreeViewItemCutMenuItem" Header="{Binding Path=StoreDownloadControl_Cut, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemCutMenuItem_Click" />
-                    <MenuItem Name="_storeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_storeTreeViewItemCutMenuItem" Header="{Binding Path=StoreDownloadControl_Cut, Source={StaticResource _languages}}" Click="_storeTreeViewItemCutMenuItem_Click" />
+                    <MenuItem Name="_storeTreeViewItemCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource _languages}}" Click="_storeTreeViewItemCopyMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_storeTreeViewItemExportMenuItem" Header="{Binding Path=StoreDownloadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_storeTreeViewItemExportMenuItem_Click" />
+                    <MenuItem Name="_storeTreeViewItemExportMenuItem" Header="{Binding Path=StoreDownloadControl_Export, Source={StaticResource _languages}}" Click="_storeTreeViewItemExportMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:StoreTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                <Style x:Key="_storeTreeViewModelSytle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource _baseTreeViewItemStyle}">
                     <Setter Property="ContextMenu" Value="{StaticResource _storeTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_storeTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
 
                 <ContextMenu x:Key="_boxTreeViewItemContextMenu">
-                    <MenuItem Name="_boxTreeViewItemCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_boxTreeViewItemCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource _languages}}" Click="_boxTreeViewItemCopyMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_boxTreeViewItemExportMenuItem" Header="{Binding Path=StoreDownloadControl_Export, Source={StaticResource ResourcesInstance}}" Click="_boxTreeViewItemExportMenuItem_Click" />
+                    <MenuItem Name="_boxTreeViewItemExportMenuItem" Header="{Binding Path=StoreDownloadControl_Export, Source={StaticResource _languages}}" Click="_boxTreeViewItemExportMenuItem_Click" />
                 </ContextMenu>
-                <Style TargetType="{x:Type local:BoxTreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                <Style x:Key="_boxTreeViewModelSytle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource _baseTreeViewItemStyle}">
                     <Setter Property="ContextMenu" Value="{StaticResource _boxTreeViewItemContextMenu}" />
                     <EventSetter Event="ContextMenuOpening" Handler="_boxTreeViewItemContextMenu_ContextMenuOpening" />
                 </Style>
-            </TreeView.Resources>
-        </TreeView>
-             
+
+                <local:StoreControl_StyleSelector x:Key="_styleSelector" StoreCategorizeTreeViewModelStyle="{StaticResource _storeCategorizeTreeViewModelSytle}" StoreTreeViewModelStyle="{StaticResource _storeTreeViewModelSytle}" BoxTreeViewModelStyle="{StaticResource _boxTreeViewModelSytle}" />
+            </ContentControl.Resources>
+            
+            <TreeView Name="_treeView" AllowDrop="True" 
+                    PreviewDragOver="_treeView_PreviewDragOver"
+                    PreviewMouseMove="_treeView_PreviewMouseMove" 
+                    PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown"
+                    SelectedItemChanged="_treeView_SelectedItemChanged"
+                    TreeViewItem.Expanded="_treeView_Expanded" TreeViewItem.Collapsed="_treeView_Collapsed"
+                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                    ItemContainerStyleSelector="{StaticResource _styleSelector}">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type local:TreeViewModelBase}" ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Name}">
+                            <TextBlock.Foreground>
+                                <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
+                                    <Binding Path="IsSelected" />
+                                    <Binding Path="IsHit" />
+                                </MultiBinding>
+                            </TextBlock.Foreground>
+                            <TextBlock.FontWeight>
+                                <Binding Path="IsHit" Converter="{StaticResource _getTreeWeightConverter}" />
+                            </TextBlock.FontWeight>
+                        </TextBlock>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </ContentControl>
+
         <local:ListViewEx x:Name="_listView" Grid.Column="2" Grid.RowSpan="2"
                 PreviewDragOver="_listView_PreviewDragOver" 
-                PreviewMouseLeftButtonDown="_listView_PreviewMouseLeftButtonDown" 
-                PreviewMouseLeftButtonUp="_listView_PreviewMouseLeftButtonUp" 
                 PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick"
-                GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
+                GridViewColumnHeader.Click="_listView_GridViewColumnHeader_Click" 
                 ContextMenuOpening="_listView_ContextMenuOpening" 
                 VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
@@ -122,25 +148,25 @@
             </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
-                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
-                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=StoreDownloadControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=StoreDownloadControl_Copy, Source={StaticResource _languages}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=StoreDownloadControl_CopyInfo, Source={StaticResource _languages}}" Click="_listViewCopyInfoMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=StoreDownloadControl_Download, Source={StaticResource ResourcesInstance}}" Click="_listViewDownloadMenuItem_Click" />
+                    <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=StoreDownloadControl_Download, Source={StaticResource _languages}}" Click="_listViewDownloadMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_Name, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_Signature, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Signature}" 
+                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_Signature, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Signature}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Signature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
+                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_Length, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Length}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_Keywords, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Keywords}" 
+                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_Keywords, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Keywords}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_Keywords_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_CreationTime, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
+                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_CreationTime, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
+                    <GridViewColumn Header="{Binding Path=StoreDownloadControl_State, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=SearchControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

@@ -33,6 +33,7 @@
   <Translate Key="MainWindow_Download" Value="ダウンロード" />
   <Translate Key="MainWindow_Upload" Value="アップロード" />
   <Translate Key="MainWindow_Share" Value="シェア" />
+  <Translate Key="MainWindow_Link" Value="リンク" />
   <Translate Key="MainWindow_Store" Value="ストア" />
   <Translate Key="MainWindow_Log" Value="ログ" />
   <Translate Key="MainWindow_StatesBar" Value="接続: {0}  変換: {1}" />
@@ -75,8 +76,10 @@
   <Translate Key="LinkOptionsWindow_Title" Value="リンク設定" />
   <Translate Key="LinkOptionsWindow_Download" Value="ダウンロード" />
   <Translate Key="LinkOptionsWindow_Upload" Value="アップロード" />
+  <Translate Key="LinkOptionsWindow_Trust" Value="トラスト" />
+  <Translate Key="LinkOptionsWindow_Untrust" Value="アントラスト" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="リンカサイン" />
-  <Translate Key="LinkOptionsWindow_TrustSignature" Value="トラストサイン" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="サイン" />
   <Translate Key="LinkOptionsWindow_New" Value="新規" />
   <Translate Key="LinkOptionsWindow_Edit" Value="編集" />
   <Translate Key="LinkOptionsWindow_Delete" Value="削除" />
@@ -377,6 +380,15 @@
   <Translate Key="UploadWindow_Path" Value="パス" />
   <Translate Key="UploadWindow_Ok" Value="Ok" />
   <Translate Key="UploadWindow_Cancel" Value="キャンセル" />
+
+  <Translate Key="LinkControl_Trust" Value="トラスト" />
+  <Translate Key="LinkControl_Untrust" Value="アントラスト" />
+  <Translate Key="LinkControl_Signature" Value="サイン" />
+  <Translate Key="LinkControl_Value" Value="値" />
+  <Translate Key="LinkControl_Delete" Value="削除" />
+  <Translate Key="LinkControl_Cut" Value="切り取り" />
+  <Translate Key="LinkControl_Copy" Value="コピー" />
+  <Translate Key="LinkControl_Paste" Value="貼り付け" />
 
   <Translate Key="StoreDownloadControl_Name" Value="名前" />
   <Translate Key="StoreDownloadControl_Signature" Value="サイン" />

@@ -27,8 +27,9 @@ namespace Amoeba.Windows
     {
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollectionEx<LinkViewModel> _downloadCollection = new ObservableCollectionEx<LinkViewModel>();
-        private ObservableCollectionEx<LinkViewModel> _uploadCollection = new ObservableCollectionEx<LinkViewModel>();
+        private ObservableCollectionEx<string> _downloadSignatureCollection = new ObservableCollectionEx<string>();
+
+        private ObservableCollectionEx<LinkViewModel> _uploadLinkCollection = new ObservableCollectionEx<LinkViewModel>();
 
         public LinkOptionsWindow(AmoebaManager amoebaManager)
         {
@@ -36,33 +37,21 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            try
+            _downloadSignatureCollection.AddRange(Settings.Instance.Global_TrustSignatures);
+
+            _downloadSignatureListView.ItemsSource = _downloadSignatureCollection;
+
+            foreach (var item in Settings.Instance.Global_LinkItems)
             {
-                foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems)
-                {
-                    var viewModel = new LinkViewModel();
-                    viewModel.Signature = item.Signature;
-                    viewModel.TrustSignatures.AddRange(item.TrustSignatures);
+                var viewModel = new LinkViewModel();
+                viewModel.Signature = item.Signature;
+                viewModel.TrustSignatures.AddRange(item.TrustSignatures);
+                viewModel.DeleteSignatures.AddRange(item.DeleteSignatures);
 
-                    _downloadCollection.Add(viewModel);
-                }
-
-                foreach (var item in Settings.Instance.LinkOptionsWindow_UploadLinkItems)
-                {
-                    var viewModel = new LinkViewModel();
-                    viewModel.Signature = item.Signature;
-                    viewModel.TrustSignatures.AddRange(item.TrustSignatures);
-
-                    _uploadCollection.Add(viewModel);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
+                _uploadLinkCollection.Add(viewModel);
             }
 
-            _downloadLinkListView.ItemsSource = _downloadCollection;
-            _uploadLinkListView.ItemsSource = _uploadCollection;
+            _uploadLinkListView.ItemsSource = _uploadLinkCollection;
 
             this.Sort();
         }
@@ -74,25 +63,24 @@ namespace Amoeba.Windows
 
         private void Sort()
         {
-            _downloadLinkListView.Items.SortDescriptions.Clear();
-            _downloadLinkListView.Items.SortDescriptions.Add(new SortDescription("Signature", ListSortDirection.Ascending));
-            _downloadTrustSignatureListView.Items.SortDescriptions.Clear();
-            _downloadTrustSignatureListView.Items.SortDescriptions.Add(new SortDescription(null, ListSortDirection.Ascending));
+            _downloadSignatureListView.Items.SortDescriptions.Clear();
+            _downloadSignatureListView.Items.SortDescriptions.Add(new SortDescription(null, ListSortDirection.Ascending));
+
             _uploadLinkListView.Items.SortDescriptions.Clear();
             _uploadLinkListView.Items.SortDescriptions.Add(new SortDescription("Signature", ListSortDirection.Ascending));
             _uploadTrustSignatureListView.Items.SortDescriptions.Clear();
             _uploadTrustSignatureListView.Items.SortDescriptions.Add(new SortDescription(null, ListSortDirection.Ascending));
         }
 
-        #region _downloadLink
+        #region _downloadSignatureListView
 
-        private void _downloadLinkListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void _downloadSignatureListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var selectItems = _downloadLinkListView.SelectedItems;
+            var selectItems = _downloadSignatureListView.SelectedItems;
 
-            _downloadLinkListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
-            _downloadLinkListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
-            _downloadLinkListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+            _downloadSignatureListViewDeleteMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _downloadSignatureListViewCutMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
+            _downloadSignatureListViewCopyMenuItem.IsEnabled = (selectItems == null) ? false : (selectItems.Count > 0);
 
             {
                 bool flag = false;
@@ -103,85 +91,49 @@ namespace Amoeba.Windows
                     flag = Signature.Check(line[0]);
                 }
 
-                _downloadLinkListViewPasteMenuItem.IsEnabled = flag;
+                _downloadSignatureListViewPasteMenuItem.IsEnabled = flag;
             }
         }
 
-        private void _downloadLinkListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _downloadSignatureListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var item in _downloadLinkListView.SelectedItems.OfType<LinkViewModel>().ToArray())
+            foreach (var signature in _downloadSignatureListView.SelectedItems.OfType<string>().ToArray())
             {
-                _downloadCollection.Remove(item);
+                _downloadSignatureCollection.Remove(signature);
             }
         }
 
-        private void _downloadLinkListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _downloadSignatureListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _downloadLinkListViewCopyMenuItem_Click(null, null);
-            _downloadLinkListViewDeleteMenuItem_Click(null, null);
+            _downloadSignatureListViewCopyMenuItem_Click(null, null);
+            _downloadSignatureListViewDeleteMenuItem_Click(null, null);
         }
 
-        private void _downloadLinkListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _downloadSignatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var sb = new StringBuilder();
 
-            foreach (var item in _downloadLinkListView.SelectedItems.OfType<LinkViewModel>().ToArray())
+            foreach (var signature in _downloadSignatureListView.SelectedItems.OfType<string>().ToArray())
             {
-                sb.AppendLine(item.Signature);
+                sb.AppendLine(signature);
             }
 
             Clipboard.SetText(sb.ToString());
         }
 
-        private void _downloadLinkListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        private void _downloadSignatureListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             foreach (var signature in Clipboard.GetText().Split('\r', '\n'))
             {
                 if (!Signature.Check(signature)) continue;
 
-                var item = new LinkViewModel()
-                {
-                    Signature = signature,
-                };
-
-                if (_downloadCollection.Any(n => n.Signature == signature)) continue;
-                _downloadCollection.Add(item);
+                _downloadSignatureCollection.Add(signature);
             }
         }
 
         #endregion
 
-        #region _downloadTrustSignature
-
-        private void _downloadTrustSignatureListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            if (_downloadLinkListView.SelectedIndex == -1)
-            {
-                _downloadTrustSignatureListViewCopyMenuItem.IsEnabled = false;
-            }
-            else
-            {
-                var selectItems = _downloadTrustSignatureListView.SelectedItems;
-
-                _downloadTrustSignatureListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
-            }
-        }
-
-        private void _downloadTrustSignatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var sb = new StringBuilder();
-
-            foreach (var item in _downloadTrustSignatureListView.SelectedItems.OfType<string>().ToArray())
-            {
-                sb.AppendLine(item);
-            }
-
-            Clipboard.SetText(sb.ToString());
-        }
-
-        #endregion
-
-        #region _uploadLink
+        #region _uploadLinkListView
 
         private void _uploadLinkListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
@@ -193,7 +145,7 @@ namespace Amoeba.Windows
 
         private void _uploadLinkListViewNemMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            SignatureWindow window = new SignatureWindow();
+            var window = new SignatureWindow();
             window.Owner = this;
 
             if (window.ShowDialog() == true)
@@ -205,8 +157,8 @@ namespace Amoeba.Windows
                     Signature = signature,
                 };
 
-                if (_uploadCollection.Any(n => n.Signature == signature)) return;
-                _uploadCollection.Add(item);
+                if (_uploadLinkCollection.Any(n => n.Signature == signature)) return;
+                _uploadLinkCollection.Add(item);
             }
         }
 
@@ -214,7 +166,7 @@ namespace Amoeba.Windows
         {
             foreach (var item in _uploadLinkListView.SelectedItems.OfType<LinkViewModel>().ToArray())
             {
-                _uploadCollection.Remove(item);
+                _uploadLinkCollection.Remove(item);
             }
         }
 
@@ -232,7 +184,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        #region _uploadTrustSignature
+        #region _uploadTrustSignatureListView
 
         private void _uploadTrustSignatureListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
@@ -310,61 +262,122 @@ namespace Amoeba.Windows
 
         #endregion
 
+        #region _uploadUntrustSignatureListView
+
+        private void _uploadUntrustSignatureListView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (_uploadLinkListView.SelectedIndex == -1)
+            {
+                _uploadUntrustSignatureListViewDeleteMenuItem.IsEnabled = false;
+                _uploadUntrustSignatureListViewCutMenuItem.IsEnabled = false;
+                _uploadUntrustSignatureListViewCopyMenuItem.IsEnabled = false;
+                _uploadUntrustSignatureListViewPasteMenuItem.IsEnabled = false;
+            }
+            else
+            {
+                var selectItems = _uploadUntrustSignatureListView.SelectedItems;
+
+                _uploadUntrustSignatureListViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _uploadUntrustSignatureListViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _uploadUntrustSignatureListViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+
+                {
+                    bool flag = false;
+
+                    if (Clipboard.ContainsText())
+                    {
+                        var line = Clipboard.GetText().Split('\r', '\n');
+                        flag = Signature.Check(line[0]);
+                    }
+
+                    _uploadUntrustSignatureListViewPasteMenuItem.IsEnabled = flag;
+                }
+            }
+        }
+
+        private void _uploadUntrustSignatureListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = _uploadLinkListView.SelectedItem as LinkViewModel;
+            if (viewModel == null) return;
+
+            foreach (var item in _uploadUntrustSignatureListView.SelectedItems.OfType<string>().ToArray())
+            {
+                viewModel.DeleteSignatures.Remove(item);
+            }
+        }
+
+        private void _uploadUntrustSignatureListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _uploadUntrustSignatureListViewCopyMenuItem_Click(null, null);
+            _uploadUntrustSignatureListViewDeleteMenuItem_Click(null, null);
+        }
+
+        private void _uploadUntrustSignatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var item in _uploadUntrustSignatureListView.SelectedItems.OfType<string>().ToArray())
+            {
+                sb.AppendLine(item);
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
+
+        private void _uploadUntrustSignatureListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = _uploadLinkListView.SelectedItem as LinkViewModel;
+            if (viewModel == null) return;
+
+            foreach (var signature in Clipboard.GetText().Split('\r', '\n'))
+            {
+                if (!Signature.Check(signature)) continue;
+
+                if (viewModel.DeleteSignatures.Contains(signature)) continue;
+                viewModel.DeleteSignatures.Add(signature);
+            }
+        }
+
+        #endregion
+
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
+            lock (Settings.Instance.ThisLock)
             {
-                List<LinkItem> downloadCollection = new List<LinkItem>();
-                List<LinkItem> uploadCollection = new List<LinkItem>();
-
-                foreach (var item in _downloadCollection)
+                lock (Settings.Instance.Global_TrustSignatures.ThisLock)
                 {
-                    var LinkItem = new LinkItem();
-                    LinkItem.Signature = item.Signature;
-                    LinkItem.TrustSignatures.AddRange(item.TrustSignatures);
-                    LinkItem.TrustSignatures.Sort();
+                    Settings.Instance.Global_TrustSignatures.Clear();
+                    Settings.Instance.Global_TrustSignatures.AddRange(_downloadSignatureCollection);
+                }
+            }
 
-                    downloadCollection.Add(LinkItem);
+            lock (Settings.Instance.ThisLock)
+            {
+                var uploadLinkCollection = new List<LinkItem>();
+
+                foreach (var item in _uploadLinkCollection)
+                {
+                    var linkItem = new LinkItem();
+                    linkItem.Signature = item.Signature;
+                    linkItem.TrustSignatures.AddRange(item.TrustSignatures);
+                    linkItem.DeleteSignatures.AddRange(item.DeleteSignatures);
+
+                    uploadLinkCollection.Add(linkItem);
                 }
 
-                foreach (var item in _uploadCollection)
+                foreach (var item in Settings.Instance.Global_LinkItems.ToArray())
                 {
-                    var LinkItem = new LinkItem();
-                    LinkItem.Signature = item.Signature;
-                    LinkItem.TrustSignatures.AddRange(item.TrustSignatures);
-                    LinkItem.TrustSignatures.Sort();
-
-                    uploadCollection.Add(LinkItem);
-                }
-
-                foreach (var item in Settings.Instance.LinkOptionsWindow_DownloadLinkItems.ToArray())
-                {
-                    if (!downloadCollection.Contains(item))
+                    if (!uploadLinkCollection.Contains(item))
                     {
-                        Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Remove(item);
+                        Settings.Instance.Global_LinkItems.Remove(item);
                     }
                 }
 
-                foreach (var item in downloadCollection)
+                foreach (var item in uploadLinkCollection)
                 {
-                    if (!Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Contains(item))
+                    if (!Settings.Instance.Global_LinkItems.Contains(item))
                     {
-                        Settings.Instance.LinkOptionsWindow_DownloadLinkItems.Add(item);
-                    }
-                }
-
-                foreach (var item in Settings.Instance.LinkOptionsWindow_UploadLinkItems.ToArray())
-                {
-                    if (!uploadCollection.Contains(item))
-                    {
-                        Settings.Instance.LinkOptionsWindow_UploadLinkItems.Remove(item);
-                    }
-                }
-
-                foreach (var item in uploadCollection)
-                {
-                    if (!Settings.Instance.LinkOptionsWindow_UploadLinkItems.Contains(item))
-                    {
-                        Settings.Instance.LinkOptionsWindow_UploadLinkItems.Add(item);
+                        Settings.Instance.Global_LinkItems.Add(item);
 
                         {
                             var digitalSignature = Settings.Instance.Global_DigitalSignatureCollection.FirstOrDefault(n => n.ToString() == item.Signature);
@@ -372,6 +385,7 @@ namespace Amoeba.Windows
 
                             var link = new Link();
                             link.TrustSignatures.AddRange(item.TrustSignatures);
+                            link.DeleteSignatures.AddRange(item.DeleteSignatures);
 
                             _amoebaManager.Upload(link, digitalSignature);
                         }
@@ -387,7 +401,7 @@ namespace Amoeba.Windows
             this.DialogResult = false;
         }
 
-        private class LinkViewModel : INotifyPropertyChanged
+        class LinkViewModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -399,11 +413,12 @@ namespace Amoeba.Windows
                 }
             }
 
-            string _signature;
+            private string _signature;
 
             public LinkViewModel()
             {
                 this.TrustSignatures = new ObservableCollectionEx<string>();
+                this.DeleteSignatures = new ObservableCollectionEx<string>();
             }
 
             public string Signature
@@ -424,6 +439,7 @@ namespace Amoeba.Windows
             }
 
             public ObservableCollectionEx<string> TrustSignatures { get; private set; }
+            public ObservableCollectionEx<string> DeleteSignatures { get; private set; }
         }
     }
 }

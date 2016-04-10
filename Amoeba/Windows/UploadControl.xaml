@@ -31,7 +31,7 @@
             <RowDefinition Name="_searchRowDefinition" Height="24" />
         </Grid.RowDefinitions>
 
-        <local:ListViewEx Grid.Column="2" x:Name="_listView" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+        <local:ListViewEx Grid.Column="2" x:Name="_listView" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="_listView_GridViewColumnHeader_Click"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
                 <DataTemplate x:Key="_myTemplate_Name">
@@ -58,38 +58,38 @@
             </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
-                    <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=UploadControl_Add, Source={StaticResource ResourcesInstance}}" Click="_listViewAddMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
+                    <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=UploadControl_Add, Source={StaticResource _languages}}" Click="_listViewAddMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=UploadControl_Delete, Source={StaticResource _languages}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=UploadControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
-                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=UploadControl_CopyInfo, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyInfoMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=UploadControl_Copy, Source={StaticResource _languages}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=UploadControl_CopyInfo, Source={StaticResource _languages}}" Click="_listViewCopyInfoMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewPriorityMenuItem" Header="{Binding Path=UploadControl_Priority, Source={StaticResource ResourcesInstance}}">
-                        <MenuItem Name="_listViewPriority0MenuItem" Header="{Binding Path=UploadControl_Priority0, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority0MenuItem_Click"/>
-                        <MenuItem Name="_listViewPriority1MenuItem" Header="{Binding Path=UploadControl_Priority1, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority1MenuItem_Click"/>
-                        <MenuItem Name="_listViewPriority2MenuItem" Header="{Binding Path=UploadControl_Priority2, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority2MenuItem_Click"/>
-                        <MenuItem Name="_listViewPriority3MenuItem" Header="{Binding Path=UploadControl_Priority3, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority3MenuItem_Click"/>
-                        <MenuItem Name="_listViewPriority4MenuItem" Header="{Binding Path=UploadControl_Priority4, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority4MenuItem_Click"/>
-                        <MenuItem Name="_listViewPriority5MenuItem" Header="{Binding Path=UploadControl_Priority5, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority5MenuItem_Click"/>
-                        <MenuItem Name="_listViewPriority6MenuItem" Header="{Binding Path=UploadControl_Priority6, Source={StaticResource ResourcesInstance}}" Click="_listViewPriority6MenuItem_Click"/>
+                    <MenuItem Name="_listViewPriorityMenuItem" Header="{Binding Path=UploadControl_Priority, Source={StaticResource _languages}}">
+                        <MenuItem Name="_listViewPriority0MenuItem" Header="{Binding Path=UploadControl_Priority0, Source={StaticResource _languages}}" Click="_listViewPriority0MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority1MenuItem" Header="{Binding Path=UploadControl_Priority1, Source={StaticResource _languages}}" Click="_listViewPriority1MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority2MenuItem" Header="{Binding Path=UploadControl_Priority2, Source={StaticResource _languages}}" Click="_listViewPriority2MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority3MenuItem" Header="{Binding Path=UploadControl_Priority3, Source={StaticResource _languages}}" Click="_listViewPriority3MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority4MenuItem" Header="{Binding Path=UploadControl_Priority4, Source={StaticResource _languages}}" Click="_listViewPriority4MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority5MenuItem" Header="{Binding Path=UploadControl_Priority5, Source={StaticResource _languages}}" Click="_listViewPriority5MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority6MenuItem" Header="{Binding Path=UploadControl_Priority6, Source={StaticResource _languages}}" Click="_listViewPriority6MenuItem_Click"/>
                     </MenuItem>
-                    <MenuItem Name="_listViewResetMenuItem" Header="{Binding Path=UploadControl_Reset, Source={StaticResource ResourcesInstance}}" Click="_listViewResetMenuItem_Click"/>
-                    <MenuItem Name="_listViewDeleteCompleteMenuItem" Header="{Binding Path=UploadControl_DeleteComplete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteCompleteMenuItem_Click" />
+                    <MenuItem Name="_listViewResetMenuItem" Header="{Binding Path=UploadControl_Reset, Source={StaticResource _languages}}" Click="_listViewResetMenuItem_Click"/>
+                    <MenuItem Name="_listViewDeleteCompleteMenuItem" Header="{Binding Path=UploadControl_DeleteComplete, Source={StaticResource _languages}}" Click="_listViewDeleteCompleteMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=UploadControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                    <GridViewColumn Header="{Binding Path=UploadControl_Name, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadControl_Length, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Length}" 
+                    <GridViewColumn Header="{Binding Path=UploadControl_Length, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Length}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
+                    <GridViewColumn Header="{Binding Path=UploadControl_Priority, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadControl_Rate, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Rate}" 
+                    <GridViewColumn Header="{Binding Path=UploadControl_Rate, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Rate}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Rate_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadControl_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
+                    <GridViewColumn Header="{Binding Path=UploadControl_Path, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Path}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=UploadControl_State, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_State}" 
+                    <GridViewColumn Header="{Binding Path=UploadControl_State, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

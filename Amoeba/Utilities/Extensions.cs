@@ -24,14 +24,30 @@ namespace Amoeba
 
         public static void SetMemoryPriority(this Process process, int priority)
         {
-            uint memoryPriority = (uint)priority;
+            var memoryPriority = (uint)priority;
             ProcessExtensions.NtSetInformationProcess(process.Handle, ProcessExtensions.ProcessInformationMemoryPriority, ref memoryPriority, sizeof(uint));
         }
 
         public static void SetIoPriority(this Process process, int priority)
         {
-            uint ioPriority = (uint)priority;
+            var ioPriority = (uint)priority;
             ProcessExtensions.NtSetInformationProcess(process.Handle, ProcessExtensions.ProcessInformationIoPriority, ref ioPriority, sizeof(uint));
+        }
+    }
+
+    static class UIElementExtensions
+    {
+        public static TAncestor FindAncestor<TAncestor>(this UIElement element)
+            where TAncestor : class
+        {
+            var temp = element;
+
+            while ((temp != null) && !(temp is TAncestor))
+            {
+                temp = VisualTreeHelper.GetParent(temp) as UIElement;
+            }
+
+            return temp as TAncestor;
         }
     }
 
@@ -39,7 +55,7 @@ namespace Amoeba
     {
         public static MenuItem GetMenuItem(this ContextMenu thisContextMenu, string name)
         {
-            List<MenuItem> menus = new List<MenuItem>();
+            var menus = new List<MenuItem>();
             menus.AddRange(thisContextMenu.Items.OfType<MenuItem>());
 
             for (int i = 0; i < menus.Count; i++)
@@ -102,158 +118,6 @@ namespace Amoeba
         }
     }
 
-    static class TreeViewExtensions
-    {
-        public static object GetCurrentItem(this TreeView thisTreeView, GetPositionDelegate getPosition)
-        {
-            try
-            {
-                if (!TreeViewExtensions.IsMouseOverTarget(thisTreeView, getPosition)) return null;
-
-                var items = new List<TreeViewItem>();
-                items.AddRange(thisTreeView.Items.OfType<TreeViewItem>());
-
-                for (int i = 0; i < items.Count; i++)
-                {
-                    if (!items[i].IsExpanded) continue;
-
-                    foreach (TreeViewItem item in items[i].Items)
-                    {
-                        items.Add(item);
-                    }
-                }
-
-                items.Reverse();
-
-                foreach (var item in items)
-                {
-                    if (TreeViewExtensions.IsMouseOverTarget(item, getPosition))
-                    {
-                        return item;
-                    }
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-
-            return null;
-        }
-
-        private static bool IsMouseOverTarget(Visual target, GetPositionDelegate getPosition)
-        {
-            if (target == null) return false;
-
-            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
-            Point mousePos = MouseUtilities.GetMousePosition(target);
-            return bounds.Contains(mousePos);
-        }
-
-        public static IEnumerable<TreeViewItem> GetAncestors(this TreeView parentView, TreeViewItem childItem)
-        {
-            if (childItem is TreeViewItemEx)
-            {
-                var targetList = new LinkedList<TreeViewItemEx>();
-                targetList.AddFirst((TreeViewItemEx)childItem);
-
-                for (;;)
-                {
-                    var parent = targetList.First.Value.Parent;
-                    if (parent == null) break;
-
-                    targetList.AddFirst(parent);
-                }
-
-                return targetList;
-            }
-            else
-            {
-                var list = new List<TreeViewItem>();
-                list.AddRange(parentView.Items.Cast<TreeViewItem>());
-
-                for (int i = 0; i < list.Count; i++)
-                {
-                    foreach (TreeViewItem item in list[i].Items)
-                    {
-                        list.Add(item);
-                    }
-                }
-
-                var current = childItem;
-
-                var targetList = new LinkedList<TreeViewItem>();
-                targetList.AddFirst(current);
-
-                for (int i = list.Count - 1; i >= 0; i--)
-                {
-                    if (list[i].Items.Contains(current))
-                    {
-                        current = list[i];
-                        targetList.AddFirst(current);
-
-                        if (parentView.Items.Contains(current)) break;
-                    }
-                }
-
-                return targetList;
-            }
-        }
-    }
-
-    static class TreeViewItemExtensions
-    {
-        public static IEnumerable<TreeViewItem> GetAncestors(this TreeViewItem parentItem, TreeViewItem childItem)
-        {
-            if (childItem is TreeViewItemEx)
-            {
-                var targetList = new LinkedList<TreeViewItemEx>();
-                targetList.AddFirst((TreeViewItemEx)childItem);
-
-                for (;;)
-                {
-                    var parent = targetList.First.Value.Parent;
-                    if (parent == null) break;
-
-                    targetList.AddFirst(parent);
-                }
-
-                return targetList;
-            }
-            else
-            {
-                var list = new List<TreeViewItem>();
-                list.AddRange(parentItem.Items.Cast<TreeViewItem>());
-
-                for (int i = 0; i < list.Count; i++)
-                {
-                    foreach (TreeViewItem item in list[i].Items)
-                    {
-                        list.Add(item);
-                    }
-                }
-
-                var current = childItem;
-
-                var targetList = new LinkedList<TreeViewItem>();
-                targetList.AddFirst(current);
-
-                for (int i = list.Count - 1; i >= 0; i--)
-                {
-                    if (list[i].Items.Contains(current))
-                    {
-                        current = list[i];
-                        targetList.AddFirst(current);
-
-                        if (parentItem.Items.Contains(current)) break;
-                    }
-                }
-
-                return targetList;
-            }
-        }
-    }
-
     static class ItemCollectionExtensions
     {
         public static void AddRange(this ItemCollection itemCollection, IEnumerable<object> collection)
@@ -297,7 +161,7 @@ namespace Amoeba
         /// <param name="relativeTo">The Visual to which the mouse coordinates will be relative.</param>
         public static Point GetMousePosition(Visual relativeTo)
         {
-            Win32Point mouse = new Win32Point();
+            var mouse = new Win32Point();
             GetCursorPos(ref mouse);
             return relativeTo.PointFromScreen(new Point((double)mouse.X, (double)mouse.Y));
         }
@@ -519,6 +383,38 @@ namespace Amoeba
         {
             var panel = target as Panel;
             return panel != null && panel.IsItemsHost && generator == generator.GetItemContainerGeneratorForPanel(panel);
+        }
+
+        public static DependencyObject SearchContainerFromElement(this ItemsControl itemsControl, DependencyObject buttomControl)
+        {
+            ItemsControl target = itemsControl;
+
+            for (;;)
+            {
+                var temp = ItemsControl.ContainerFromElement(target, buttomControl) as ItemsControl;
+                if (temp == null) break;
+
+                target = temp;
+            }
+
+            return target;
+        }
+
+        public static object SearchItemFromElement(this ItemsControl itemsControl, DependencyObject buttomControl)
+        {
+            object parent = null;
+            ItemsControl target = itemsControl;
+
+            for (;;)
+            {
+                var temp = ItemsControl.ContainerFromElement(target, buttomControl) as ItemsControl;
+                if (temp == null) break;
+
+                parent = target.ItemContainerGenerator.ItemFromContainer(temp);
+                target = temp;
+            }
+
+            return parent;
         }
     }
 }

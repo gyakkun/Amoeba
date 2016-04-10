@@ -29,7 +29,7 @@
             <RowDefinition Name="_searchRowDefinition" Height="24" />
         </Grid.RowDefinitions>
 
-        <local:ListViewEx Grid.Column="2" x:Name="_listView" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
+        <local:ListViewEx Grid.Column="2" x:Name="_listView" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="_listView_GridViewColumnHeader_Click" 
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
                 <DataTemplate x:Key="_myTemplate_Name">
@@ -44,19 +44,19 @@
             </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
-                    <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=ShareControl_Add, Source={StaticResource ResourcesInstance}}" Click="_listViewAddMenuItem_Click" />
-                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=ShareControl_Delete, Source={StaticResource ResourcesInstance}}" Click="_listViewDeleteMenuItem_Click" />
+                    <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=ShareControl_Add, Source={StaticResource _languages}}" Click="_listViewAddMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=ShareControl_Delete, Source={StaticResource _languages}}" Click="_listViewDeleteMenuItem_Click" />
                     <Separator />
-                    <MenuItem Name="_listViewCheckExistMenuItem" Header="{Binding Path=ShareControl_CheckExist, Source={StaticResource ResourcesInstance}}" Click="_listViewCheckExistMenuItem_Click" />
+                    <MenuItem Name="_listViewCheckExistMenuItem" Header="{Binding Path=ShareControl_CheckExist, Source={StaticResource _languages}}" Click="_listViewCheckExistMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=ShareControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                    <GridViewColumn Header="{Binding Path=ShareControl_Name, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=ShareControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ShareControl_Path, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Path}" 
+                    <GridViewColumn Header="{Binding Path=ShareControl_Path, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Path}" 
                             Width="{Binding Path=ShareControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=ShareControl_BlockCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_BlockCount}" 
+                    <GridViewColumn Header="{Binding Path=ShareControl_BlockCount, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_BlockCount}" 
                             Width="{Binding Path=ShareControl_GridViewColumn_BlockCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

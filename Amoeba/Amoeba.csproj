@@ -113,6 +113,9 @@
     <Compile Include="Utilities\BoxUtilities.cs" />
     <Compile Include="Utilities\Ipv4AddressFilter.cs" />
     <Compile Include="Utilities\CatharsisManager.cs" />
+    <Compile Include="Windows\Link\LinkControl.xaml.cs">
+      <DependentUpon>LinkControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\UploadWindow.xaml.cs">
       <DependentUpon>UploadWindow.xaml</DependentUpon>
     </Compile>
@@ -151,17 +154,19 @@
     <Compile Include="Windows\DownloadControl.xaml.cs">
       <DependentUpon>DownloadControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\_Controls\BoxTreeViewItem.cs" />
+    <Compile Include="Windows\_Controls\BoxTreeViewModel.cs" />
     <Compile Include="Windows\_Controls\ListBoxEx.cs" />
-    <Compile Include="Windows\_Controls\StoreCategorizeTreeViewItem.cs" />
-    <Compile Include="Windows\_Controls\TreeViewItemEx.cs" />
+    <Compile Include="Windows\_Controls\SignatureTreeViewModel.cs" />
+    <Compile Include="Windows\_Controls\StoreCategorizeTreeViewModel.cs" />
+    <Compile Include="Windows\_Controls\StyleSelector.cs" />
+    <Compile Include="Windows\_Controls\TreeViewModelBase.cs" />
     <Compile Include="Windows\_Items\LinkItem.cs" />
     <Compile Include="Windows\_Items\SearchItem.cs" />
+    <Compile Include="Windows\_Items\SignatureTreeItem.cs" />
     <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />
-    <Compile Include="Windows\_Controls\DigitalSignatureComboBoxItem.cs" />
     <Compile Include="Windows\_Controls\LanguageMenuItem.cs" />
     <Compile Include="Windows\_Items\SearchTreeItem.cs" />
-    <Compile Include="Windows\_Controls\SearchTreeViewItem.cs" />
+    <Compile Include="Windows\_Controls\SearchTreeViewModel.cs" />
     <Compile Include="Windows\_Controls\ListViewEx.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -191,7 +196,7 @@
       <DependentUpon>UploadListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\_Items\StoreTreeItem.cs" />
-    <Compile Include="Windows\_Controls\StoreTreeViewItem.cs" />
+    <Compile Include="Windows\_Controls\StoreTreeViewModel.cs" />
     <Compile Include="Windows\_Items\UpdateOption.cs" />
     <Compile Include="Windows\_Controls\ValueConverter.cs" />
     <Compile Include="Windows\VersionInformationWindow.xaml.cs">
@@ -200,6 +205,10 @@
     <Page Include="Themes\Amoeba.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Link\LinkControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Link\LinkOptionsWindow.xaml">
       <SubType>Designer</SubType>
@@ -372,7 +381,7 @@
     <Content Include="Languages\Chinese_Simplified.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Settings\Links.txt">
+    <Content Include="Settings\Trust.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Settings\Nodes.txt">

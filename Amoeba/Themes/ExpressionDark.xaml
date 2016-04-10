@@ -1321,9 +1321,11 @@
     </ControlTemplate>
 
     <Style TargetType="{x:Type ComboBox}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Template" Value="{DynamicResource ComboBoxTemplate}" />
     </Style>
     <ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
@@ -1363,8 +1365,11 @@
     </ControlTemplate>
 
     <Style d:IsControlPart="True" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
@@ -1403,7 +1408,7 @@
                         <Rectangle x:Name="Background" Opacity="0.25" Fill="{StaticResource NormalBrush}" RadiusX="1" RadiusY="1" />
                         <Rectangle x:Name="HoverRectangle" Opacity="0" Fill="{StaticResource NormalBrush}" RadiusX="1" RadiusY="1" />
                         <Rectangle x:Name="SelectedRectangle" Opacity="0" Fill="{StaticResource SelectedBackgroundBrush}" RadiusX="1" RadiusY="1" />
-                        <ContentPresenter Margin="5,2,0,2" x:Name="contentPresenter" VerticalAlignment="Center" />
+                        <ContentPresenter Margin="5,2,0,2" x:Name="contentPresenter" VerticalAlignment="Stretch" />
                         <Rectangle x:Name="FocusVisualElement" Visibility="Collapsed" Stroke="{StaticResource HoverShineBrush}" StrokeThickness="1" RadiusX="1" RadiusY="1" />
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -2486,7 +2491,19 @@
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
-                        <MultiTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource HoverOff}" x:Name="HoverOff_BeginStoryboard"/>
+                            </MultiDataTrigger.ExitActions>
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource HoverOn}"/>
+                            </MultiDataTrigger.EnterActions>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ElementName=Selection_Border, Path=IsMouseOver}" Value="True" />
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                        </MultiDataTrigger>
+                        <!--<MultiTrigger>
                             <MultiTrigger.ExitActions>
                                 <BeginStoryboard Storyboard="{StaticResource HoverOff}" x:Name="HoverOff_BeginStoryboard"/>
                             </MultiTrigger.ExitActions>
@@ -2497,7 +2514,7 @@
                                 <Condition Property="IsMouseOver" SourceName="Selection_Border" Value="True" />
                                 <Condition Property="IsSelected" Value="False" />
                             </MultiTrigger.Conditions>
-                        </MultiTrigger>
+                        </MultiTrigger>-->
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsSelected" Value="true" />

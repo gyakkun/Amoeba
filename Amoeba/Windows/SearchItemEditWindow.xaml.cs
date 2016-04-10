@@ -231,7 +231,7 @@ namespace Amoeba.Windows
 
         private void _nameListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex("^([\\+-]) \"(.*)\"$");
+            var regex = new Regex("^([\\+-]) \"(.*)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -463,7 +463,7 @@ namespace Amoeba.Windows
 
         private void _nameRegexListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex("^([\\+-]) ([\\+-]) \"(.*)\"$");
+            var regex = new Regex("^([\\+-]) ([\\+-]) \"(.*)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -709,7 +709,7 @@ namespace Amoeba.Windows
 
         private void _signatureListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex("^([\\+-]) ([\\+-]) \"(.*)\"$");
+            var regex = new Regex("^([\\+-]) ([\\+-]) \"(.*)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -953,7 +953,7 @@ namespace Amoeba.Windows
 
         private void _keywordListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex("^([\\+-]) \"(.*)\"$");
+            var regex = new Regex("^([\\+-]) \"(.*)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1201,7 +1201,7 @@ namespace Amoeba.Windows
 
         private void _creationTimeRangeListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"^([\+-]) (.*), (.*)$");
+            var regex = new Regex(@"^([\+-]) (.*), (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1470,7 +1470,7 @@ namespace Amoeba.Windows
 
         private void _lengthRangeListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"^([\+-]) (.*), (.*)$");
+            var regex = new Regex(@"^([\+-]) (.*), (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1740,7 +1740,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            Regex regex = new Regex(@"^([\+-]) (.*)$");
+            var regex = new Regex(@"^([\+-]) (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1993,7 +1993,7 @@ namespace Amoeba.Windows
 
         private void _stateListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"^([\+-]) (.*)$");
+            var regex = new Regex(@"^([\+-]) (.*)$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {

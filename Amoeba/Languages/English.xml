@@ -33,6 +33,7 @@
   <Translate Key="MainWindow_Download" Value="Download" />
   <Translate Key="MainWindow_Upload" Value="Upload" />
   <Translate Key="MainWindow_Share" Value="Share" />
+  <Translate Key="MainWindow_Link" Value="Link" />
   <Translate Key="MainWindow_Store" Value="Store" />
   <Translate Key="MainWindow_Log" Value="Log" />
   <Translate Key="MainWindow_StatesBar" Value="Connect: {0}  Convert: {1}" />
@@ -75,8 +76,10 @@
   <Translate Key="LinkOptionsWindow_Title" Value="Link options" />
   <Translate Key="LinkOptionsWindow_Download" Value="Download" />
   <Translate Key="LinkOptionsWindow_Upload" Value="Upload" />
+  <Translate Key="LinkOptionsWindow_Trust" Value="Trust" />
+  <Translate Key="LinkOptionsWindow_Untrust" Value="Untrust" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="Linker signature" />
-  <Translate Key="LinkOptionsWindow_TrustSignature" Value="Trust signature" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="signature" />
   <Translate Key="LinkOptionsWindow_New" Value="New" />
   <Translate Key="LinkOptionsWindow_Edit" Value="Edit" />
   <Translate Key="LinkOptionsWindow_Delete" Value="Delete" />
@@ -377,6 +380,15 @@
   <Translate Key="UploadWindow_Path" Value="Path" />
   <Translate Key="UploadWindow_Ok" Value="Ok" />
   <Translate Key="UploadWindow_Cancel" Value="Cancel" />
+
+  <Translate Key="LinkControl_Trust" Value="Trust" />
+  <Translate Key="LinkControl_Untrust" Value="Untrust" />
+  <Translate Key="LinkControl_Signature" Value="Signature" />
+  <Translate Key="LinkControl_Value" Value="Value" />
+  <Translate Key="LinkControl_Delete" Value="Delete" />
+  <Translate Key="LinkControl_Cut" Value="Cut" />
+  <Translate Key="LinkControl_Copy" Value="Copy" />
+  <Translate Key="LinkControl_Paste" Value="Paste" />
 
   <Translate Key="StoreDownloadControl_Name" Value="Name" />
   <Translate Key="StoreDownloadControl_Signature" Value="Signature" />

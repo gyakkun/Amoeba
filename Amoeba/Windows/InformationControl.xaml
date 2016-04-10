@@ -39,19 +39,19 @@
             </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_infomationListViewContextMenu">
-                    <MenuItem Name="_infomationListViewCopyMenuItem" Header="{Binding Path=InformationControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_infomationListViewCopyMenuItem_Click" />
+                    <MenuItem Name="_infomationListViewCopyMenuItem" Header="{Binding Path=InformationControl_Copy, Source={StaticResource _languages}}" Click="_infomationListViewCopyMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=InformationControl_Name, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                    <GridViewColumn Header="{Binding Path=InformationControl_Name, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Name}" 
                             Width="{Binding Path=InformationControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=InformationControl_Value, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Value}" 
+                    <GridViewColumn Header="{Binding Path=InformationControl_Value, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Value}" 
                             Width="{Binding Path=InformationControl_GridViewColumn_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>
         </local:ListViewEx>
-        <local:ListViewEx x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler"
+        <local:ListViewEx x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="_listView_GridViewColumnHeader_Click"
                   VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
                 <DataTemplate x:Key="_myTemplate_Uri">
@@ -72,21 +72,21 @@
             </ListView.Resources>
             <ListView.ContextMenu>
                 <ContextMenu Name="_listViewContextMenu">
-                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=InformationControl_Copy, Source={StaticResource ResourcesInstance}}" Click="_listViewCopyMenuItem_Click" />
-                    <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=InformationControl_Paste, Source={StaticResource ResourcesInstance}}" Click="_listViewPasteMenuItem_Click" />
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=InformationControl_Copy, Source={StaticResource _languages}}" Click="_listViewCopyMenuItem_Click" />
+                    <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=InformationControl_Paste, Source={StaticResource _languages}}" Click="_listViewPasteMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Header="{Binding Path=InformationControl_Direction, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Direction}" 
+                    <GridViewColumn Header="{Binding Path=InformationControl_Direction, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Direction}" 
                             Width="{Binding Path=InformationControl_GridViewColumn_Direction_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=InformationControl_Uri, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Uri}" 
+                    <GridViewColumn Header="{Binding Path=InformationControl_Uri, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Uri}" 
                             Width="{Binding Path=InformationControl_GridViewColumn_Uri_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=InformationControl_Priority, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
+                    <GridViewColumn Header="{Binding Path=InformationControl_Priority, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
                             Width="{Binding Path=InformationControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=InformationControl_SentByteCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_SentByteCount}" 
+                    <GridViewColumn Header="{Binding Path=InformationControl_SentByteCount, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_SentByteCount}" 
                             Width="{Binding Path=InformationControl_GridViewColumn_SentByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                    <GridViewColumn Header="{Binding Path=InformationControl_ReceivedByteCount, Source={StaticResource ResourcesInstance}}" CellTemplate="{StaticResource _myTemplate_ReceivedByteCount}" 
+                    <GridViewColumn Header="{Binding Path=InformationControl_ReceivedByteCount, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_ReceivedByteCount}" 
                             Width="{Binding Path=InformationControl_GridViewColumn_ReceivedByteCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>
             </ListView.View>

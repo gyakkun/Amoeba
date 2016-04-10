@@ -11,9 +11,9 @@
 
     <Grid>
         <TabControl Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
-            <TabItem Header="{Binding Path=StoreControl_Download, Source={StaticResource ResourcesInstance}}" Name="_storeDownloadTabItem" />
-            <TabItem Header="{Binding Path=StoreControl_Upload, Source={StaticResource ResourcesInstance}}" Name="_storeUploadTabItem" />
-            <TabItem Header="{Binding Path=StoreControl_Library, Source={StaticResource ResourcesInstance}}" Name="_libraryTabItem" />
+            <TabItem Header="{Binding Path=StoreControl_Download, Source={StaticResource _languages}}" Name="_storeDownloadTabItem" />
+            <TabItem Header="{Binding Path=StoreControl_Upload, Source={StaticResource _languages}}" Name="_storeUploadTabItem" />
+            <TabItem Header="{Binding Path=StoreControl_Library, Source={StaticResource _languages}}" Name="_libraryTabItem" />
         </TabControl>
     </Grid>
 </UserControl>

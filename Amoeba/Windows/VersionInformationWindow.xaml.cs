@@ -40,7 +40,7 @@ namespace Amoeba.Windows
         {
             WindowPosition.Move(this);
 
-            List<VersionListViewItem> items = new List<VersionListViewItem>();
+            var items = new List<VersionListViewItem>();
             var files = new List<string>();
             files.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "*.dll", SearchOption.TopDirectoryOnly));
             files.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "*.exe", SearchOption.TopDirectoryOnly));
@@ -52,7 +52,7 @@ namespace Amoeba.Windows
             foreach (var path in files)
             {
                 var info = System.Diagnostics.FileVersionInfo.GetVersionInfo(path);
-                VersionListViewItem item = new VersionListViewItem();
+                var item = new VersionListViewItem();
                 item.FileName = System.IO.Path.GetFileName(path);
                 item.Version = info.FileVersion;
 
@@ -69,7 +69,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                ProcessStartInfo info = new ProcessStartInfo();
+                var info = new ProcessStartInfo();
                 info.FileName = "notepad.exe";
                 info.Arguments = @"Properties/Amoeba.License";
                 info.UseShellExecute = true;

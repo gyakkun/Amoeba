@@ -24,7 +24,7 @@ namespace Amoeba
             {
                 var keywords = seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)).ToList();
 
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
 
                 if (!string.IsNullOrWhiteSpace(seed.Name)) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.Seed_Name, seed.Name));
                 if (seed.Certificate != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.Seed_Signature, seed.Certificate.ToString()));
@@ -48,7 +48,7 @@ namespace Amoeba
 
             try
             {
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
 
                 if (!string.IsNullOrWhiteSpace(box.Name)) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.Box_Name, box.Name));
                 if (box.Certificate != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.Box_Signature, box.Certificate.ToString()));

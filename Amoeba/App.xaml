@@ -15,9 +15,11 @@
                 <ResourceDictionary Source="Themes/Amoeba.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <ObjectDataProvider x:Key="ResourcesInstance" ObjectType="{x:Type prop:LanguagesManager}" MethodName="GetInstance"/>
+            <ObjectDataProvider x:Key="_languages" ObjectType="{x:Type prop:LanguagesManager}" MethodName="GetInstance"/>
 
             <local:ObjectToImageConverter x:Key="_objectToImageConverter"/>
+            <local:GetTreeColorConverter x:Key="_getTreeColorConverter" />
+            <local:GetTreeWeightConverter x:Key="_getTreeWeightConverter" />
             <local:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter"/>
             <local:StringRegularizationConverter x:Key="_stringRegularizationConverter"/>
             <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter"/>

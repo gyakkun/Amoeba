@@ -34,7 +34,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollectionEx<DownloadListViewItem> _listViewItemCollection = new ObservableCollectionEx<DownloadListViewItem>();
+        private ObservableCollectionEx<DownloadListViewModel> _listViewModelCollection = new ObservableCollectionEx<DownloadListViewModel>();
         private object _listLock = new object();
 
         private Thread _showDownloadItemThread;
@@ -47,7 +47,7 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _listView.ItemsSource = _listViewItemCollection;
+            _listView.ItemsSource = _listViewModelCollection;
 
             _showDownloadItemThread = new Thread(this.ShowDownloadItem);
             _showDownloadItemThread.Priority = ThreadPriority.Highest;
@@ -80,7 +80,7 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Download) continue;
 
-                    Dictionary<int, Information> informaitonDic = new Dictionary<int, Information>();
+                    var informaitonDic = new Dictionary<int, Information>();
 
                     {
                         string[] words = null;
@@ -111,12 +111,12 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    Dictionary<int, DownloadListViewItem> listViewItemDic = new Dictionary<int, DownloadListViewItem>();
-                    List<DownloadListViewItem> removeList = new List<DownloadListViewItem>();
+                    var listViewItemDic = new Dictionary<int, DownloadListViewModel>();
+                    var removeList = new List<DownloadListViewModel>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
-                        foreach (var item in _listViewItemCollection.ToArray())
+                        foreach (var item in _listViewModelCollection.ToArray())
                         {
                             listViewItemDic[item.Id] = item;
 
@@ -127,11 +127,11 @@ namespace Amoeba.Windows
                         }
                     }));
 
-                    List<DownloadListViewItem> resultList = new List<DownloadListViewItem>();
-                    Dictionary<DownloadListViewItem, Information> updateDic = new Dictionary<DownloadListViewItem, Information>();
+                    var resultList = new List<DownloadListViewModel>();
+                    var updateDic = new Dictionary<DownloadListViewModel, Information>();
 
                     bool clearFlag = false;
-                    var selectItems = new List<DownloadListViewItem>();
+                    var selectItems = new List<DownloadListViewModel>();
 
                     if (removeList.Count > 100)
                     {
@@ -142,14 +142,14 @@ namespace Amoeba.Windows
 
                         foreach (var information in informaitonDic.Values)
                         {
-                            resultList.Add(new DownloadListViewItem(information));
+                            resultList.Add(new DownloadListViewModel(information));
                         }
 
-                        HashSet<int> hid = new HashSet<int>();
+                        var hid = new HashSet<int>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<DownloadListViewItem>().Select(n => n.Id));
+                            hid.UnionWith(_listView.SelectedItems.OfType<DownloadListViewModel>().Select(n => n.Id));
                         }));
 
                         foreach (var item in resultList)
@@ -164,7 +164,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var information in informaitonDic.Values)
                         {
-                            DownloadListViewItem item;
+                            DownloadListViewModel item;
 
                             if (listViewItemDic.TryGetValue((int)information["Id"], out item))
                             {
@@ -175,7 +175,7 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                resultList.Add(new DownloadListViewItem(information));
+                                resultList.Add(new DownloadListViewModel(information));
                             }
                         }
                     }
@@ -188,16 +188,16 @@ namespace Amoeba.Windows
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
-                        if (clearFlag) _listViewItemCollection.Clear();
+                        if (clearFlag) _listViewModelCollection.Clear();
 
                         foreach (var item in resultList)
                         {
-                            _listViewItemCollection.Add(item);
+                            _listViewModelCollection.Add(item);
                         }
 
                         foreach (var item in removeList)
                         {
-                            _listViewItemCollection.Remove(item);
+                            _listViewModelCollection.Remove(item);
                         }
 
                         foreach (var item in updateDic)
@@ -296,7 +296,7 @@ namespace Amoeba.Windows
             _listViewPriorityMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
-            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => n.State == DownloadState.Completed);
+            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewModelCollection.Any(n => n.State == DownloadState.Completed);
 
             _listViewPasteMenuItem.IsEnabled = Clipboard.ContainsSeeds();
         }
@@ -310,9 +310,9 @@ namespace Amoeba.Windows
 
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Download", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
-            List<int> ids = new List<int>();
+            var ids = new List<int>();
 
-            foreach (var item in selectItems.Cast<DownloadListViewItem>())
+            foreach (var item in selectItems.Cast<DownloadListViewModel>())
             {
                 ids.Add(item.Id);
             }
@@ -346,7 +346,7 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var seed in selectItems.Cast<DownloadListViewItem>().Select(n => n.Value))
+            foreach (var seed in selectItems.Cast<DownloadListViewModel>().Select(n => n.Value))
             {
                 if (seed == null) continue;
 
@@ -363,7 +363,7 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var seed in selectItems.Cast<DownloadListViewItem>().Select(n => n.Value))
+            foreach (var seed in selectItems.Cast<DownloadListViewModel>().Select(n => n.Value))
             {
                 if (seed == null) continue;
 
@@ -404,7 +404,7 @@ namespace Amoeba.Windows
             var downloadItems = _listView.SelectedItems;
             if (downloadItems == null) return;
 
-            foreach (var item in downloadItems.Cast<DownloadListViewItem>())
+            foreach (var item in downloadItems.Cast<DownloadListViewModel>())
             {
                 try
                 {
@@ -459,7 +459,7 @@ namespace Amoeba.Windows
             var downloadItems = _listView.SelectedItems;
             if (downloadItems == null) return;
 
-            foreach (var item in downloadItems.Cast<DownloadListViewItem>())
+            foreach (var item in downloadItems.Cast<DownloadListViewModel>())
             {
                 try
                 {
@@ -511,23 +511,23 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.DownloadControl_LastHeaderClicked != null)
             {
-                var list = Sort(_listViewItemCollection, Settings.Instance.DownloadControl_LastHeaderClicked, Settings.Instance.DownloadControl_ListSortDirection).ToList();
+                var list = Sort(_listViewModelCollection, Settings.Instance.DownloadControl_LastHeaderClicked, Settings.Instance.DownloadControl_ListSortDirection).ToList();
 
                 for (int i = 0; i < list.Count; i++)
                 {
-                    var o = _listViewItemCollection.IndexOf(list[i]);
+                    var o = _listViewModelCollection.IndexOf(list[i]);
 
-                    if (i != o) _listViewItemCollection.Move(o, i);
+                    if (i != o) _listViewModelCollection.Move(o, i);
                 }
             }
         }
 
-        private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        private void _listView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             var item = e.OriginalSource as GridViewColumnHeader;
             if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
 
-            string headerClicked = item.Column.Header as string;
+            var headerClicked = item.Column.Header as string;
             if (headerClicked == null) return;
 
             ListSortDirection direction;
@@ -588,9 +588,9 @@ namespace Amoeba.Windows
             _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
-        private IEnumerable<DownloadListViewItem> Sort(IEnumerable<DownloadListViewItem> collection, string sortBy, ListSortDirection direction)
+        private IEnumerable<DownloadListViewModel> Sort(IEnumerable<DownloadListViewModel> collection, string sortBy, ListSortDirection direction)
         {
-            List<DownloadListViewItem> list = new List<DownloadListViewItem>(collection);
+            var list = new List<DownloadListViewModel>(collection);
 
             if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
             {
@@ -679,7 +679,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private class DownloadListViewItem : INotifyPropertyChanged
+        private class DownloadListViewModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -703,7 +703,7 @@ namespace Amoeba.Windows
             private string _rateText;
             private Seed _value;
 
-            public DownloadListViewItem(Information information)
+            public DownloadListViewModel(Information information)
             {
                 this.Information = information;
 

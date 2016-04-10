@@ -27,7 +27,7 @@ namespace Amoeba
 
         public static DateTime GetBoxCreationTime(Box box)
         {
-            List<Box> boxList = new List<Box>();
+            var boxList = new List<Box>();
             boxList.Add(box);
 
             for (int i = 0; i < boxList.Count; i++)

@@ -49,17 +49,17 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            StoreDownloadControl storeDownloadControl = new StoreDownloadControl(this, _amoebaManager, _bufferManager);
+            var storeDownloadControl = new StoreDownloadControl(this, _amoebaManager, _bufferManager);
             storeDownloadControl.Height = Double.NaN;
             storeDownloadControl.Width = Double.NaN;
             _storeDownloadTabItem.Content = storeDownloadControl;
 
-            StoreUploadControl storeUploadControl = new StoreUploadControl(this, _amoebaManager, _bufferManager);
+            var storeUploadControl = new StoreUploadControl(this, _amoebaManager, _bufferManager);
             storeUploadControl.Height = Double.NaN;
             storeUploadControl.Width = Double.NaN;
             _storeUploadTabItem.Content = storeUploadControl;
 
-            LibraryControl libraryControl = new LibraryControl(this, _amoebaManager, _bufferManager);
+            var libraryControl = new LibraryControl(this, _amoebaManager, _bufferManager);
             libraryControl.Height = Double.NaN;
             libraryControl.Width = Double.NaN;
             _libraryTabItem.Content = libraryControl;

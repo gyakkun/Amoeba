@@ -33,6 +33,7 @@
   <Translate Key="MainWindow_Download" Value="下載" />
   <Translate Key="MainWindow_Upload" Value="上傳" />
   <Translate Key="MainWindow_Share" Value="分享" />
+  <Translate Key="MainWindow_Link" Value="Link" />
   <Translate Key="MainWindow_Store" Value="收藏" />
   <Translate Key="MainWindow_Log" Value="紀錄" />
   <Translate Key="MainWindow_StatesBar" Value="連線: {0}  轉換: {1}" />
@@ -75,8 +76,10 @@
   <Translate Key="LinkOptionsWindow_Title" Value="連結選項" />
   <Translate Key="LinkOptionsWindow_Download" Value="下載" />
   <Translate Key="LinkOptionsWindow_Upload" Value="上傳" />
+  <Translate Key="LinkOptionsWindow_Trust" Value="Trust" />
+  <Translate Key="LinkOptionsWindow_Untrust" Value="Untrust" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="連結器簽名" />
-  <Translate Key="LinkOptionsWindow_TrustSignature" Value="信任簽名" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="signature" />
   <Translate Key="LinkOptionsWindow_New" Value="新增" />
   <Translate Key="LinkOptionsWindow_Edit" Value="編輯" />
   <Translate Key="LinkOptionsWindow_Delete" Value="刪除" />
@@ -377,6 +380,15 @@
   <Translate Key="UploadWindow_Path" Value="路徑" />
   <Translate Key="UploadWindow_Ok" Value="確定" />
   <Translate Key="UploadWindow_Cancel" Value="取消" />
+
+  <Translate Key="LinkControl_Trust" Value="Trust" />
+  <Translate Key="LinkControl_Untrust" Value="Untrust" />
+  <Translate Key="LinkControl_Signature" Value="Signature" />
+  <Translate Key="LinkControl_Value" Value="Value" />
+  <Translate Key="LinkControl_Delete" Value="Delete" />
+  <Translate Key="LinkControl_Cut" Value="Cut" />
+  <Translate Key="LinkControl_Copy" Value="Copy" />
+  <Translate Key="LinkControl_Paste" Value="Paste" />
 
   <Translate Key="StoreDownloadControl_Name" Value="名稱" />
   <Translate Key="StoreDownloadControl_Signature" Value="簽名" />

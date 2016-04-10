@@ -26,6 +26,8 @@ namespace Amoeba.Windows
     {
         private AmoebaManager _amoebaManager;
 
+        private ObservableCollectionEx<DigitalSignature> _digitalSignatureCollection = new ObservableCollectionEx<DigitalSignature>();
+
         private ObservableCollectionEx<UploadListViewItem> _filePaths = new ObservableCollectionEx<UploadListViewItem>();
         private bool _isShare;
 
@@ -43,9 +45,7 @@ namespace Amoeba.Windows
 
             _isShare = isShare;
 
-            var digitalSignatureCollection = new List<object>();
-            digitalSignatureCollection.Add(new ComboBoxItem() { Content = "" });
-            digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new DigitalSignatureComboBoxItem(n)).ToArray());
+            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.ToArray());
 
             InitializeComponent();
 
@@ -78,8 +78,8 @@ namespace Amoeba.Windows
 
             _listView.ItemsSource = _filePaths;
 
-            _signatureComboBox.ItemsSource = digitalSignatureCollection;
-            if (digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
+            _signatureComboBox_CollectionContainer.Collection = _digitalSignatureCollection;
+            if (_digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -96,8 +96,7 @@ namespace Amoeba.Windows
             if (!string.IsNullOrWhiteSpace(_keywordsComboBox2.Text)) keywords.Add(_keywordsComboBox2.Text);
             if (!string.IsNullOrWhiteSpace(_keywordsComboBox3.Text)) keywords.Add(_keywordsComboBox3.Text);
             keywords = new KeywordCollection(new HashSet<string>(keywords));
-            var digitalSignatureComboBoxItem = _signatureComboBox.SelectedItem as DigitalSignatureComboBoxItem;
-            DigitalSignature digitalSignature = digitalSignatureComboBoxItem == null ? null : digitalSignatureComboBoxItem.Value;
+            var digitalSignature = _signatureComboBox.SelectedItem as DigitalSignature;
 
             if (!_isShare)
             {

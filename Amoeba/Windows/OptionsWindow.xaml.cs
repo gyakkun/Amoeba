@@ -326,7 +326,7 @@ namespace Amoeba.Windows
             {
                 _baseNodeUriTextBox.Text = item;
 
-                Regex regex = new Regex(@"^(.+?):(.*)$");
+                var regex = new Regex(@"^(.+?):(.*)$");
                 Match match = regex.Match(item);
 
                 if (match.Success)
@@ -359,7 +359,7 @@ namespace Amoeba.Windows
 
                 if (line.Length != 0)
                 {
-                    Regex regex = new Regex(@"(.+?):(.+)");
+                    var regex = new Regex(@"(.+?):(.+)");
 
                     _baseNodeUrisListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
                 }
@@ -435,8 +435,8 @@ namespace Amoeba.Windows
 
             try
             {
-                string scheme = (string)((ComboBoxItem)_baseNodeUriSchemeComboBox.SelectedItem).Content;
-                Regex regex = new Regex(@"^(.+?):(.*)$");
+                var scheme = (string)((ComboBoxItem)_baseNodeUriSchemeComboBox.SelectedItem).Content;
+                var regex = new Regex(@"^(.+?):(.*)$");
                 Match match = regex.Match(_baseNodeUriTextBox.Text);
 
                 if (!match.Success)
@@ -573,7 +573,7 @@ namespace Amoeba.Windows
                 return;
             }
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             foreach (var item in node.Uris)
             {
@@ -729,7 +729,7 @@ namespace Amoeba.Windows
             {
                 _clientFiltersConditionTextBox.Text = item.UriCondition.Value;
 
-                Regex regex = new Regex(@"(.+?):(.*)");
+                var regex = new Regex(@"(.+?):(.*)");
                 Match match = regex.Match(item.UriCondition.Value);
 
                 if (match.Success)
@@ -773,7 +773,7 @@ namespace Amoeba.Windows
 
                 if (line.Length != 0)
                 {
-                    Regex regex = new Regex("^(.+?) \"(.*?)\" \"(.+)\"$");
+                    var regex = new Regex("^(.+?) \"(.*?)\" \"(.+)\"$");
 
                     _clientFiltersListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
                 }
@@ -805,7 +805,7 @@ namespace Amoeba.Windows
 
         private void _clientFiltersListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex("^(.+?) \"(.*?)\" \"(.+)\"$");
+            var regex = new Regex("^(.+?) \"(.*?)\" \"(.+)\"$");
 
             foreach (var line in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -869,7 +869,7 @@ namespace Amoeba.Windows
 
                 string scheme = null;
                 int port = 0;
-                Regex regex = new Regex(@"(.+?):(.+):(\d*)");
+                var regex = new Regex(@"(.+?):(.+):(\d*)");
                 Match match = regex.Match(_clientFiltersProxyUriTextBox.Text);
 
                 if (connectionType == ConnectionType.Socks4Proxy
@@ -904,7 +904,7 @@ namespace Amoeba.Windows
         private void _clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             string scheme = Regex.Escape((string)((ComboBoxItem)_clientFiltersConditionSchemeComboBox.SelectedItem).Content);
-            Regex regex = new Regex(@"(.+?):(.+)");
+            var regex = new Regex(@"(.+?):(.+)");
             Match match = regex.Match(_clientFiltersConditionTextBox.Text);
 
             if (!match.Success)
@@ -1130,7 +1130,7 @@ namespace Amoeba.Windows
 
             _serverListenUriTextBox.Text = item;
 
-            Regex regex = new Regex(@"(.+?):(.*)");
+            var regex = new Regex(@"(.+?):(.*)");
             Match match = regex.Match(item);
 
             if (match.Success)
@@ -1158,7 +1158,7 @@ namespace Amoeba.Windows
 
                 if (line.Length != 0)
                 {
-                    Regex regex = new Regex(@"(.+?):(.+)");
+                    var regex = new Regex(@"(.+?):(.+)");
 
                     _serverListenUrisListViewPasteMenuItem.IsEnabled = regex.IsMatch(line[0]);
                 }
@@ -1190,7 +1190,7 @@ namespace Amoeba.Windows
 
         private void _serverListenUrisListViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Regex regex = new Regex(@"([\+-]) (.*)");
+            var regex = new Regex(@"([\+-]) (.*)");
 
             foreach (var uri in Clipboard.GetText().Split('\r', '\n'))
             {
@@ -1211,8 +1211,8 @@ namespace Amoeba.Windows
             var item = _serverListenUriSchemeComboBox.SelectedItem as ComboBoxItem;
             if (item == null) return;
 
-            string scheme = (string)((ComboBoxItem)_serverListenUriSchemeComboBox.SelectedItem).Content;
-            Regex regex = new Regex(@"(.+?):(.*)");
+            var scheme = (string)((ComboBoxItem)_serverListenUriSchemeComboBox.SelectedItem).Content;
+            var regex = new Regex(@"(.+?):(.*)");
             Match match = regex.Match(_serverListenUriTextBox.Text);
 
             if (!match.Success)
@@ -1301,7 +1301,7 @@ namespace Amoeba.Windows
         {
             if (string.IsNullOrWhiteSpace(_dataCacheSizeTextBox.Text)) return;
 
-            StringBuilder builder = new StringBuilder("");
+            var builder = new StringBuilder("");
 
             foreach (var item in _dataCacheSizeTextBox.Text)
             {
@@ -1312,7 +1312,7 @@ namespace Amoeba.Windows
             }
 
             var value = builder.ToString();
-            if (_dataCacheSizeTextBox.Text != value) _dataCacheSizeTextBox.Text = value;
+            _dataCacheSizeTextBox.Text = value;
         }
 
         private void _dataCacheSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1356,7 +1356,7 @@ namespace Amoeba.Windows
 
         private static int GetStringToInt(string value)
         {
-            StringBuilder builder = new StringBuilder("0");
+            var builder = new StringBuilder("0");
 
             foreach (var item in value)
             {
@@ -1384,7 +1384,7 @@ namespace Amoeba.Windows
         {
             if (string.IsNullOrWhiteSpace(_bandwidthConnectionCountTextBox.Text)) return;
 
-            StringBuilder builder = new StringBuilder("");
+            var builder = new StringBuilder("");
 
             foreach (var item in _bandwidthConnectionCountTextBox.Text)
             {
@@ -1395,14 +1395,14 @@ namespace Amoeba.Windows
             }
 
             var value = builder.ToString();
-            if (_bandwidthConnectionCountTextBox.Text != value) _bandwidthConnectionCountTextBox.Text = value;
+            _bandwidthConnectionCountTextBox.Text = value;
         }
 
         private void _bandwidthLimitTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(_bandwidthLimitTextBox.Text)) return;
 
-            StringBuilder builder = new StringBuilder("");
+            var builder = new StringBuilder("");
 
             foreach (var item in _bandwidthLimitTextBox.Text)
             {
@@ -1413,7 +1413,7 @@ namespace Amoeba.Windows
             }
 
             var value = builder.ToString();
-            if (_bandwidthLimitTextBox.Text != value) _bandwidthLimitTextBox.Text = value;
+            _bandwidthLimitTextBox.Text = value;
         }
 
         private void _bandwidthLimitComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1450,7 +1450,7 @@ namespace Amoeba.Windows
         {
             if (string.IsNullOrWhiteSpace(_transferLimitSpanTextBox.Text)) return;
 
-            StringBuilder builder = new StringBuilder("");
+            var builder = new StringBuilder("");
 
             foreach (var item in _transferLimitSpanTextBox.Text)
             {
@@ -1461,14 +1461,14 @@ namespace Amoeba.Windows
             }
 
             var value = builder.ToString();
-            if (_transferLimitSpanTextBox.Text != value) _transferLimitSpanTextBox.Text = value;
+            _transferLimitSpanTextBox.Text = value;
         }
 
         private void _transferLimitSizeTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(_transferLimitSizeTextBox.Text)) return;
 
-            StringBuilder builder = new StringBuilder("");
+            var builder = new StringBuilder("");
 
             foreach (var item in _transferLimitSizeTextBox.Text)
             {
@@ -1479,7 +1479,7 @@ namespace Amoeba.Windows
             }
 
             var value = builder.ToString();
-            if (_transferLimitSizeTextBox.Text != value) _transferLimitSizeTextBox.Text = value;
+            _transferLimitSizeTextBox.Text = value;
         }
 
         private void _transferLimitSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1980,7 +1980,7 @@ namespace Amoeba.Windows
 
             lock (_amoebaManager.ThisLock)
             {
-                long size = (long)NetworkConverter.FromSizeString("256GB");
+                var size = (long)NetworkConverter.FromSizeString("256GB");
 
                 try
                 {
@@ -2020,7 +2020,7 @@ namespace Amoeba.Windows
                 int count = OptionsWindow.GetStringToInt(_bandwidthConnectionCountTextBox.Text);
                 _amoebaManager.ConnectionCountLimit = Math.Max(Math.Min(count, 256), 32);
 
-                int bandwidthLimit = (int)NetworkConverter.FromSizeString("0");
+                var bandwidthLimit = (int)NetworkConverter.FromSizeString("0");
 
                 try
                 {
@@ -2063,7 +2063,7 @@ namespace Amoeba.Windows
                     int day = OptionsWindow.GetStringToInt(_transferLimitSpanTextBox.Text);
                     _transferLimitManager.TransferLimit.Span = Math.Max(Math.Min(day, 31), 1);
 
-                    long size = (long)NetworkConverter.FromSizeString("32GB");
+                    var size = (long)NetworkConverter.FromSizeString("32GB");
 
                     try
                     {
@@ -2128,7 +2128,7 @@ namespace Amoeba.Windows
 
                 if (Settings.Instance.Global_RelateBoxFile_IsEnabled)
                 {
-                    System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
+                    var p = new System.Diagnostics.ProcessStartInfo();
                     p.UseShellExecute = true;
                     p.FileName = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe"));
                     p.Arguments = "Relate on";
@@ -2152,7 +2152,7 @@ namespace Amoeba.Windows
                 }
                 else
                 {
-                    System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo();
+                    var p = new System.Diagnostics.ProcessStartInfo();
                     p.UseShellExecute = true;
                     p.FileName = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe"));
                     p.Arguments = "Relate off";

@@ -35,7 +35,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollectionEx<UploadListViewItem> _listViewItemCollection = new ObservableCollectionEx<UploadListViewItem>();
+        private ObservableCollectionEx<UploadListViewModel> _listViewModelCollection = new ObservableCollectionEx<UploadListViewModel>();
 
         private Thread _showUploadItemThread;
 
@@ -48,7 +48,7 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _listView.ItemsSource = _listViewItemCollection;
+            _listView.ItemsSource = _listViewModelCollection;
 
             _showUploadItemThread = new Thread(this.ShowUploadItem);
             _showUploadItemThread.Priority = ThreadPriority.Highest;
@@ -75,7 +75,7 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Upload) continue;
 
-                    Dictionary<int, Information> informaitonDic = new Dictionary<int, Information>();
+                    var informaitonDic = new Dictionary<int, Information>();
 
                     {
                         string[] words = null;
@@ -106,12 +106,12 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    Dictionary<int, UploadListViewItem> listViewItemDic = new Dictionary<int, UploadListViewItem>();
-                    List<UploadListViewItem> removeList = new List<UploadListViewItem>();
+                    var listViewItemDic = new Dictionary<int, UploadListViewModel>();
+                    var removeList = new List<UploadListViewModel>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
-                        foreach (var item in _listViewItemCollection.ToArray())
+                        foreach (var item in _listViewModelCollection.ToArray())
                         {
                             listViewItemDic[item.Id] = item;
 
@@ -122,11 +122,11 @@ namespace Amoeba.Windows
                         }
                     }));
 
-                    List<UploadListViewItem> resultList = new List<UploadListViewItem>();
-                    Dictionary<UploadListViewItem, Information> updateDic = new Dictionary<UploadListViewItem, Information>();
+                    var resultList = new List<UploadListViewModel>();
+                    var updateDic = new Dictionary<UploadListViewModel, Information>();
 
                     bool clearFlag = false;
-                    var selectItems = new List<UploadListViewItem>();
+                    var selectItems = new List<UploadListViewModel>();
 
                     if (removeList.Count > 100)
                     {
@@ -137,14 +137,14 @@ namespace Amoeba.Windows
 
                         foreach (var information in informaitonDic.Values)
                         {
-                            resultList.Add(new UploadListViewItem(information));
+                            resultList.Add(new UploadListViewModel(information));
                         }
 
-                        HashSet<int> hid = new HashSet<int>();
+                        var hid = new HashSet<int>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<UploadListViewItem>().Select(n => n.Id));
+                            hid.UnionWith(_listView.SelectedItems.OfType<UploadListViewModel>().Select(n => n.Id));
                         }));
 
                         foreach (var item in resultList)
@@ -159,7 +159,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var information in informaitonDic.Values)
                         {
-                            UploadListViewItem item;
+                            UploadListViewModel item;
 
                             if (listViewItemDic.TryGetValue((int)information["Id"], out item))
                             {
@@ -170,7 +170,7 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                resultList.Add(new UploadListViewItem(information));
+                                resultList.Add(new UploadListViewModel(information));
                             }
                         }
                     }
@@ -183,16 +183,16 @@ namespace Amoeba.Windows
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
-                        if (clearFlag) _listViewItemCollection.Clear();
+                        if (clearFlag) _listViewModelCollection.Clear();
 
                         foreach (var item in resultList)
                         {
-                            _listViewItemCollection.Add(item);
+                            _listViewModelCollection.Add(item);
                         }
 
                         foreach (var item in removeList)
                         {
-                            _listViewItemCollection.Remove(item);
+                            _listViewModelCollection.Remove(item);
                         }
 
                         foreach (var item in updateDic)
@@ -255,13 +255,13 @@ namespace Amoeba.Windows
                     {
                         if (filePaths.Count == 1)
                         {
-                            UploadWindow window = new UploadWindow(filePaths.First(), false, _amoebaManager);
+                            var window = new UploadWindow(filePaths.First(), false, _amoebaManager);
                             window.Owner = _mainWindow;
                             window.ShowDialog();
                         }
                         else if (filePaths.Count > 1)
                         {
-                            UploadListWindow window = new UploadListWindow(filePaths, false, _amoebaManager);
+                            var window = new UploadListWindow(filePaths, false, _amoebaManager);
                             window.Owner = _mainWindow;
                             window.ShowDialog();
                         }
@@ -287,12 +287,12 @@ namespace Amoeba.Windows
             _listViewPriorityMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
-            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewItemCollection.Any(n => n.State == UploadState.Completed);
+            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewModelCollection.Any(n => n.State == UploadState.Completed);
         }
 
         private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+            var dialog = new System.Windows.Forms.OpenFileDialog();
             dialog.Multiselect = true;
             dialog.RestoreDirectory = true;
 
@@ -318,13 +318,13 @@ namespace Amoeba.Windows
                         {
                             if (filePaths.Count == 1)
                             {
-                                UploadWindow window = new UploadWindow(filePaths.First(), false, _amoebaManager);
+                                var window = new UploadWindow(filePaths.First(), false, _amoebaManager);
                                 window.Owner = _mainWindow;
                                 window.ShowDialog();
                             }
                             else if (filePaths.Count > 1)
                             {
-                                UploadListWindow window = new UploadListWindow(filePaths, false, _amoebaManager);
+                                var window = new UploadListWindow(filePaths, false, _amoebaManager);
                                 window.Owner = _mainWindow;
                                 window.ShowDialog();
                             }
@@ -347,9 +347,9 @@ namespace Amoeba.Windows
 
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Upload", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
-            List<int> ids = new List<int>();
+            var ids = new List<int>();
 
-            foreach (var item in selectItems.Cast<UploadListViewItem>())
+            foreach (var item in selectItems.Cast<UploadListViewModel>())
             {
                 ids.Add(item.Id);
             }
@@ -383,7 +383,7 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var seed in selectItems.Cast<UploadListViewItem>().Select(n => n.Value))
+            foreach (var seed in selectItems.Cast<UploadListViewModel>().Select(n => n.Value))
             {
                 if (seed == null) continue;
 
@@ -400,7 +400,7 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var seed in selectItems.Cast<UploadListViewItem>().Select(n => n.Value))
+            foreach (var seed in selectItems.Cast<UploadListViewModel>().Select(n => n.Value))
             {
                 if (seed == null) continue;
 
@@ -419,7 +419,7 @@ namespace Amoeba.Windows
             var uploadItems = _listView.SelectedItems;
             if (uploadItems == null) return;
 
-            foreach (var item in uploadItems.Cast<UploadListViewItem>())
+            foreach (var item in uploadItems.Cast<UploadListViewModel>())
             {
                 try
                 {
@@ -474,7 +474,7 @@ namespace Amoeba.Windows
             var uploadItems = _listView.SelectedItems;
             if (uploadItems == null) return;
 
-            foreach (var item in uploadItems.Cast<UploadListViewItem>())
+            foreach (var item in uploadItems.Cast<UploadListViewModel>())
             {
                 try
                 {
@@ -526,23 +526,23 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.UploadControl_LastHeaderClicked != null)
             {
-                var list = this.Sort(_listViewItemCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
+                var list = this.Sort(_listViewModelCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
 
                 for (int i = 0; i < list.Count; i++)
                 {
-                    var o = _listViewItemCollection.IndexOf(list[i]);
+                    var o = _listViewModelCollection.IndexOf(list[i]);
 
-                    if (i != o) _listViewItemCollection.Move(o, i);
+                    if (i != o) _listViewModelCollection.Move(o, i);
                 }
             }
         }
 
-        private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        private void _listView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             var item = e.OriginalSource as GridViewColumnHeader;
             if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
 
-            string headerClicked = item.Column.Header as string;
+            var headerClicked = item.Column.Header as string;
             if (headerClicked == null) return;
 
             ListSortDirection direction;
@@ -603,9 +603,9 @@ namespace Amoeba.Windows
             _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
-        private IEnumerable<UploadListViewItem> Sort(IEnumerable<UploadListViewItem> collection, string sortBy, ListSortDirection direction)
+        private IEnumerable<UploadListViewModel> Sort(IEnumerable<UploadListViewModel> collection, string sortBy, ListSortDirection direction)
         {
-            List<UploadListViewItem> list = new List<UploadListViewItem>(collection);
+            var list = new List<UploadListViewModel>(collection);
 
             if (sortBy == LanguagesManager.Instance.UploadControl_Name)
             {
@@ -694,7 +694,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private class UploadListViewItem : INotifyPropertyChanged
+        private class UploadListViewModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -718,7 +718,7 @@ namespace Amoeba.Windows
             private string _rateText;
             private Seed _value;
 
-            public UploadListViewItem(Information information)
+            public UploadListViewModel(Information information)
             {
                 this.Information = information;
 

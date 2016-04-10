@@ -140,7 +140,7 @@ namespace Amoeba
         {
             try
             {
-                Stopwatch stopwatch = new Stopwatch();
+                var stopwatch = new Stopwatch();
 
                 var now = DateTime.Today;
 

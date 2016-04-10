@@ -33,6 +33,7 @@
   <Translate Key="MainWindow_Download" Value="Скачування" />
   <Translate Key="MainWindow_Upload" Value="Завантаження" />
   <Translate Key="MainWindow_Share" Value="Шари" />
+  <Translate Key="MainWindow_Link" Value="Link" />
   <Translate Key="MainWindow_Store" Value="Сховище" />
   <Translate Key="MainWindow_Log" Value="Журнал" />
   <Translate Key="MainWindow_StatesBar" Value="Підключення: {0} Конвертація: {1}" />
@@ -75,8 +76,10 @@
   <Translate Key="LinkOptionsWindow_Title" Value="Налаштування лінковки" />
   <Translate Key="LinkOptionsWindow_Download" Value="Скачування" />
   <Translate Key="LinkOptionsWindow_Upload" Value="Завантаження" />
+  <Translate Key="LinkOptionsWindow_Trust" Value="Trust" />
+  <Translate Key="LinkOptionsWindow_Untrust" Value="Untrust" />
   <Translate Key="LinkOptionsWindow_LinkerSignature" Value="Linker signature" />
-  <Translate Key="LinkOptionsWindow_TrustSignature" Value="Довірений цифровий підпис" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="signature" />
   <Translate Key="LinkOptionsWindow_New" Value="Додати новий підпис" />
   <Translate Key="LinkOptionsWindow_Edit" Value="Редагувати" />
   <Translate Key="LinkOptionsWindow_Delete" Value="Видалити" />
@@ -377,6 +380,15 @@
   <Translate Key="UploadWindow_Path" Value="Директорія" />
   <Translate Key="UploadWindow_Ok" Value="Ok" />
   <Translate Key="UploadWindow_Cancel" Value="Закрити" />
+
+  <Translate Key="LinkControl_Trust" Value="Trust" />
+  <Translate Key="LinkControl_Untrust" Value="Untrust" />
+  <Translate Key="LinkControl_Signature" Value="Signature" />
+  <Translate Key="LinkControl_Value" Value="Value" />
+  <Translate Key="LinkControl_Delete" Value="Delete" />
+  <Translate Key="LinkControl_Cut" Value="Cut" />
+  <Translate Key="LinkControl_Copy" Value="Copy" />
+  <Translate Key="LinkControl_Paste" Value="Paste" />
 
   <Translate Key="StoreDownloadControl_Name" Value="Назва" />
   <Translate Key="StoreDownloadControl_Signature" Value="Підпис" />

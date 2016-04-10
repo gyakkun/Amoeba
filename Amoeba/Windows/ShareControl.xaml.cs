@@ -35,7 +35,7 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollectionEx<ShareListViewItem> _listViewItemCollection = new ObservableCollectionEx<ShareListViewItem>();
+        private ObservableCollectionEx<ShareListViewModel> _listViewModelCollection = new ObservableCollectionEx<ShareListViewModel>();
 
         private Thread _showShareItemThread;
 
@@ -48,7 +48,7 @@ namespace Amoeba.Windows
 
             InitializeComponent();
 
-            _listView.ItemsSource = _listViewItemCollection;
+            _listView.ItemsSource = _listViewModelCollection;
 
             _showShareItemThread = new Thread(this.ShowShareItem);
             _showShareItemThread.Priority = ThreadPriority.Highest;
@@ -75,7 +75,7 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Share) continue;
 
-                    Dictionary<int, Information> informaitonDic = new Dictionary<int, Information>();
+                    var informaitonDic = new Dictionary<int, Information>();
 
                     {
                         string[] words = null;
@@ -106,12 +106,12 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    Dictionary<int, ShareListViewItem> listViewItemDic = new Dictionary<int, ShareListViewItem>();
-                    List<ShareListViewItem> removeList = new List<ShareListViewItem>();
+                    var listViewItemDic = new Dictionary<int, ShareListViewModel>();
+                    var removeList = new List<ShareListViewModel>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
-                        foreach (var item in _listViewItemCollection.ToArray())
+                        foreach (var item in _listViewModelCollection.ToArray())
                         {
                             listViewItemDic[item.Id] = item;
 
@@ -122,11 +122,11 @@ namespace Amoeba.Windows
                         }
                     }));
 
-                    List<ShareListViewItem> resultList = new List<ShareListViewItem>();
-                    Dictionary<ShareListViewItem, Information> updateDic = new Dictionary<ShareListViewItem, Information>();
+                    var resultList = new List<ShareListViewModel>();
+                    var updateDic = new Dictionary<ShareListViewModel, Information>();
 
                     bool clearFlag = false;
-                    var selectItems = new List<ShareListViewItem>();
+                    var selectItems = new List<ShareListViewModel>();
 
                     if (removeList.Count > 100)
                     {
@@ -137,14 +137,14 @@ namespace Amoeba.Windows
 
                         foreach (var information in informaitonDic.Values)
                         {
-                            resultList.Add(new ShareListViewItem(information));
+                            resultList.Add(new ShareListViewModel(information));
                         }
 
-                        HashSet<int> hid = new HashSet<int>();
+                        var hid = new HashSet<int>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<ShareListViewItem>().Select(n => n.Id));
+                            hid.UnionWith(_listView.SelectedItems.OfType<ShareListViewModel>().Select(n => n.Id));
                         }));
 
                         foreach (var item in resultList)
@@ -159,7 +159,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var information in informaitonDic.Values)
                         {
-                            ShareListViewItem item;
+                            ShareListViewModel item;
 
                             if (listViewItemDic.TryGetValue((int)information["Id"], out item))
                             {
@@ -170,7 +170,7 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                resultList.Add(new ShareListViewItem(information));
+                                resultList.Add(new ShareListViewModel(information));
                             }
                         }
                     }
@@ -183,16 +183,16 @@ namespace Amoeba.Windows
                         if (removeList.Count != 0) sortFlag = true;
                         if (updateDic.Count != 0) sortFlag = true;
 
-                        if (clearFlag) _listViewItemCollection.Clear();
+                        if (clearFlag) _listViewModelCollection.Clear();
 
                         foreach (var item in resultList)
                         {
-                            _listViewItemCollection.Add(item);
+                            _listViewModelCollection.Add(item);
                         }
 
                         foreach (var item in removeList)
                         {
-                            _listViewItemCollection.Remove(item);
+                            _listViewModelCollection.Remove(item);
                         }
 
                         foreach (var item in updateDic)
@@ -255,13 +255,13 @@ namespace Amoeba.Windows
                     {
                         if (filePaths.Count == 1)
                         {
-                            UploadWindow window = new UploadWindow(filePaths.First(), true, _amoebaManager);
+                            var window = new UploadWindow(filePaths.First(), true, _amoebaManager);
                             window.Owner = _mainWindow;
                             window.ShowDialog();
                         }
                         else if (filePaths.Count > 1)
                         {
-                            UploadListWindow window = new UploadListWindow(filePaths, true, _amoebaManager);
+                            var window = new UploadListWindow(filePaths, true, _amoebaManager);
                             window.Owner = _mainWindow;
                             window.ShowDialog();
                         }
@@ -282,15 +282,15 @@ namespace Amoeba.Windows
             else _listViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             if (!_listViewCheckExistMenuItem_IsEnabled) _listViewCheckExistMenuItem.IsEnabled = false;
-            else _listViewCheckExistMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
+            else _listViewCheckExistMenuItem.IsEnabled = (_listViewModelCollection.Count > 0);
 
             if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
-            else _listViewDeleteMenuItem.IsEnabled = (_listViewItemCollection.Count > 0);
+            else _listViewDeleteMenuItem.IsEnabled = (_listViewModelCollection.Count > 0);
         }
 
         private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+            var dialog = new System.Windows.Forms.OpenFileDialog();
             dialog.Multiselect = true;
             dialog.RestoreDirectory = true;
 
@@ -316,13 +316,13 @@ namespace Amoeba.Windows
                         {
                             if (filePaths.Count == 1)
                             {
-                                UploadWindow window = new UploadWindow(filePaths.First(), true, _amoebaManager);
+                                var window = new UploadWindow(filePaths.First(), true, _amoebaManager);
                                 window.Owner = _mainWindow;
                                 window.ShowDialog();
                             }
                             else if (filePaths.Count > 1)
                             {
-                                UploadListWindow window = new UploadListWindow(filePaths, true, _amoebaManager);
+                                var window = new UploadListWindow(filePaths, true, _amoebaManager);
                                 window.Owner = _mainWindow;
                                 window.ShowDialog();
                             }
@@ -345,9 +345,9 @@ namespace Amoeba.Windows
 
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Share", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
-            List<int> ids = new List<int>();
+            var ids = new List<int>();
 
-            foreach (var item in selectItems.Cast<ShareListViewItem>())
+            foreach (var item in selectItems.Cast<ShareListViewModel>())
             {
                 ids.Add(item.Id);
             }
@@ -387,7 +387,7 @@ namespace Amoeba.Windows
                 try
                 {
                     var shareInformation = _amoebaManager.ShareInformation.ToArray();
-                    StringBuilder sb = new StringBuilder();
+                    var sb = new StringBuilder();
                     sb.AppendLine("Share Delete");
 
                     foreach (var item in shareInformation)
@@ -425,23 +425,23 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.ShareControl_LastHeaderClicked != null)
             {
-                var list = this.Sort(_listViewItemCollection, Settings.Instance.ShareControl_LastHeaderClicked, Settings.Instance.ShareControl_ListSortDirection).ToList();
+                var list = this.Sort(_listViewModelCollection, Settings.Instance.ShareControl_LastHeaderClicked, Settings.Instance.ShareControl_ListSortDirection).ToList();
 
                 for (int i = 0; i < list.Count; i++)
                 {
-                    var o = _listViewItemCollection.IndexOf(list[i]);
+                    var o = _listViewModelCollection.IndexOf(list[i]);
 
-                    if (i != o) _listViewItemCollection.Move(o, i);
+                    if (i != o) _listViewModelCollection.Move(o, i);
                 }
             }
         }
 
-        private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        private void _listView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             var item = e.OriginalSource as GridViewColumnHeader;
             if (item == null || item.Role == GridViewColumnHeaderRole.Padding) return;
 
-            string headerClicked = item.Column.Header as string;
+            var headerClicked = item.Column.Header as string;
             if (headerClicked == null) return;
 
             ListSortDirection direction;
@@ -485,9 +485,9 @@ namespace Amoeba.Windows
             _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
-        private IEnumerable<ShareListViewItem> Sort(IEnumerable<ShareListViewItem> collection, string sortBy, ListSortDirection direction)
+        private IEnumerable<ShareListViewModel> Sort(IEnumerable<ShareListViewModel> collection, string sortBy, ListSortDirection direction)
         {
-            List<ShareListViewItem> list = new List<ShareListViewItem>(collection);
+            var list = new List<ShareListViewModel>(collection);
 
             if (sortBy == LanguagesManager.Instance.ShareControl_Name)
             {
@@ -540,7 +540,7 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private class ShareListViewItem : INotifyPropertyChanged
+        private class ShareListViewModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
@@ -558,7 +558,7 @@ namespace Amoeba.Windows
             private string _path;
             private int _blockCount;
 
-            public ShareListViewItem(Information information)
+            public ShareListViewModel(Information information)
             {
                 this.Information = information;
 
