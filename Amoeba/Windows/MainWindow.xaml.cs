@@ -470,7 +470,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (garbageCollectStopwatch.Elapsed.TotalSeconds >= 60)
+                    if (garbageCollectStopwatch.Elapsed.TotalMinutes >= 5)
                     {
                         garbageCollectStopwatch.Restart();
 
@@ -514,8 +514,6 @@ namespace Amoeba.Windows
 
             try
             {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
                 GC.Collect();
             }
             catch (Exception)
