@@ -37,8 +37,10 @@ namespace Amoeba.Windows
     partial class StoreControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
-        private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
+        private BufferManager _bufferManager;
+
+        private SeedStateCache _seedStateCache;
 
         private volatile StoreControlTabType _selectedTab;
 
@@ -46,6 +48,8 @@ namespace Amoeba.Windows
         {
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
+
+            _seedStateCache = new SeedStateCache(_amoebaManager);
 
             InitializeComponent();
 
@@ -63,6 +67,16 @@ namespace Amoeba.Windows
             libraryControl.Height = Double.NaN;
             libraryControl.Width = Double.NaN;
             _libraryTabItem.Content = libraryControl;
+        }
+
+        public SearchState GetState(Seed seed)
+        {
+            return _seedStateCache.GetState(seed);
+        }
+
+        public void SetState(Seed seed, SearchState state)
+        {
+            _seedStateCache.SetState(seed, state);
         }
 
         public StoreControlTabType SelectedTab

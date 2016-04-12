@@ -418,7 +418,7 @@ namespace Amoeba
                                     {
                                         var tempVersion = new Version(match.Groups[1].Value);
 
-                                        if (version < tempVersion)
+                                        if (version <= tempVersion)
                                         {
                                             version = tempVersion;
                                             zipFilePath = path;

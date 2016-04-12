@@ -87,8 +87,6 @@ namespace Amoeba.Windows
 
         private volatile MainWindowTabType _selectedTab;
 
-        private LockedHashDictionary<Seed, SearchState> _seedsDictionary = new LockedHashDictionary<Seed, SearchState>();
-
         [FlagsAttribute]
         enum ExecutionState : uint
         {
@@ -213,14 +211,6 @@ namespace Amoeba.Windows
             {
                 _selectedTab = value;
             }
-        }
-
-        public SearchState GetState(Seed seed)
-        {
-            SearchState state;
-            _seedsDictionary.TryGetValue(seed, out state);
-
-            return state;
         }
 
         void _transferLimitManager_StartEvent(object sender, EventArgs e)
@@ -597,108 +587,6 @@ namespace Amoeba.Windows
             catch (Exception e)
             {
                 Log.Error(e);
-            }
-        }
-
-        private void CacheThread()
-        {
-            try
-            {
-                for (;;)
-                {
-                    var seedsDictionary = new Dictionary<Seed, SearchState>();
-
-                    {
-                        foreach (var seed in _amoebaManager.CacheSeeds)
-                        {
-                            seedsDictionary[seed] = SearchState.Cache;
-                        }
-
-                        foreach (var information in _amoebaManager.UploadingInformation)
-                        {
-                            if (information.Contains("Seed") && ((UploadState)information["State"]) != UploadState.Completed)
-                            {
-                                var seed = (Seed)information["Seed"];
-                                SearchState state;
-
-                                if (seedsDictionary.TryGetValue(seed, out state))
-                                {
-                                    state |= SearchState.Uploading;
-                                    seedsDictionary[seed] = state;
-                                }
-                                else
-                                {
-                                    seedsDictionary.Add(seed, SearchState.Uploading);
-                                }
-                            }
-                        }
-
-                        foreach (var information in _amoebaManager.DownloadingInformation)
-                        {
-                            if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed)
-                            {
-                                var seed = (Seed)information["Seed"];
-                                SearchState state;
-
-                                if (seedsDictionary.TryGetValue(seed, out state))
-                                {
-                                    state |= SearchState.Downloading;
-                                    seedsDictionary[seed] = state;
-                                }
-                                else
-                                {
-                                    seedsDictionary.Add(seed, SearchState.Downloading);
-                                }
-                            }
-                        }
-
-                        foreach (var seed in _amoebaManager.UploadedSeeds)
-                        {
-                            SearchState state;
-
-                            if (seedsDictionary.TryGetValue(seed, out state))
-                            {
-                                state |= SearchState.Uploaded;
-                                seedsDictionary[seed] = state;
-                            }
-                            else
-                            {
-                                seedsDictionary.Add(seed, SearchState.Uploaded);
-                            }
-                        }
-
-                        foreach (var seed in _amoebaManager.DownloadedSeeds)
-                        {
-                            SearchState state;
-
-                            if (seedsDictionary.TryGetValue(seed, out state))
-                            {
-                                state |= SearchState.Downloaded;
-                                seedsDictionary[seed] = state;
-                            }
-                            else
-                            {
-                                seedsDictionary.Add(seed, SearchState.Downloaded);
-                            }
-                        }
-                    }
-
-                    lock (_seedsDictionary.ThisLock)
-                    {
-                        _seedsDictionary.Clear();
-
-                        foreach (var pair in seedsDictionary)
-                        {
-                            _seedsDictionary.Add(pair.Key, pair.Value);
-                        }
-                    }
-
-                    Thread.Sleep(1000 * 60);
-                }
-            }
-            catch (Exception)
-            {
-
             }
         }
 

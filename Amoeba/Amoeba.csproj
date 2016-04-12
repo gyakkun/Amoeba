@@ -113,6 +113,7 @@
     <Compile Include="Utilities\BoxUtilities.cs" />
     <Compile Include="Utilities\Ipv4AddressFilter.cs" />
     <Compile Include="Utilities\CatharsisManager.cs" />
+    <Compile Include="Utilities\SeedStateCache.cs" />
     <Compile Include="Windows\Link\LinkControl.xaml.cs">
       <DependentUpon>LinkControl.xaml</DependentUpon>
     </Compile>

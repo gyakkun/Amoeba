@@ -232,7 +232,7 @@ namespace Amoeba.Windows
                             seedListViewModel.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
                             seedListViewModel.CreationTime = seed.CreationTime;
 
-                            seedListViewModel.State = _mainWindow.GetState(seed);
+                            seedListViewModel.State = _storeControl.GetState(seed);
 
                             seedListViewModel.Value = seed;
 
@@ -1180,6 +1180,7 @@ namespace Amoeba.Windows
                             try
                             {
                                 _amoebaManager.Download(seed, baseDirectory, 3);
+                                _storeControl.SetState(seed, SearchState.Downloading);
                             }
                             catch (Exception)
                             {
@@ -1290,6 +1291,7 @@ namespace Amoeba.Windows
                         var path = pair.Value;
 
                         _amoebaManager.Download(seed, path, 3);
+                        _storeControl.SetState(seed, SearchState.Downloading);
                     }
                 }
                 catch (Exception)
