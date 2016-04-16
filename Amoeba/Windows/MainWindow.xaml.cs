@@ -460,7 +460,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (garbageCollectStopwatch.Elapsed.TotalMinutes >= 5)
+                    if (garbageCollectStopwatch.Elapsed.TotalMinutes >= 30)
                     {
                         garbageCollectStopwatch.Restart();
 
