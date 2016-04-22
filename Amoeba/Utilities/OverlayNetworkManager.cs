@@ -178,7 +178,7 @@ namespace Amoeba
                     var baseNode = _amoebaManager.BaseNode;
 
                     var uris = new List<string>(baseNode.Uris);
-                    if (uris.Contains(uri)) return false;
+                    if (uris.Contains(uri) || uris.Count >= Node.MaxUriCount) return false;
 
                     uris.Add(uri);
 

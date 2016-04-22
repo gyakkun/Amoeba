@@ -40,7 +40,7 @@
             <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
-        <GridSplitter Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Stretch" />
+        <GridSplitter Grid.Column="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" />
 
         <ContentControl Grid.RowSpan="2">
             <ContentControl.Resources>
@@ -133,7 +133,7 @@
             </TreeView>
         </ContentControl>
 
-        <local:ListViewEx x:Name="_listView" Grid.Column="2" Grid.RowSpan="2" AllowDrop="True"
+        <local:ListViewEx x:Name="_listView" Grid.Column="2" Grid.RowSpan="1" AllowDrop="True"
                 PreviewDragOver="_listView_PreviewDragOver"  
                 PreviewMouseMove="_listView_PreviewMouseMove"
                 PreviewMouseDoubleClick="_listView_PreviewMouseDoubleClick"

@@ -769,11 +769,11 @@ namespace Amoeba.Windows
                         {
                             this.Rate = Math.Round(((double)(int)_information["UploadBlockCount"] / (double)(int)_information["BlockCount"]) * 100, 2);
                         }
-                        else if (_information.Contains("EncodeBytes") && _information.Contains("EncodingBytes")
+                        else if (_information.Contains("EncodeLength") && _information.Contains("EncodeOffset")
                             && ((UploadState)_information["State"] == UploadState.ComputeHash || (UploadState)_information["State"] == UploadState.Encoding || (UploadState)_information["State"] == UploadState.ParityEncoding)
-                            && (long)_information["EncodingBytes"] != 0)
+                            && (long)_information["EncodeOffset"] != 0)
                         {
-                            this.Rate = Math.Round(((double)(long)_information["EncodingBytes"] / (double)(long)_information["EncodeBytes"]) * 100, 2);
+                            this.Rate = Math.Round(((double)(long)_information["EncodeOffset"] / (double)(long)_information["EncodeLength"]) * 100, 2);
                         }
                         else if ((UploadState)_information["State"] == UploadState.Completed)
                         {
@@ -799,13 +799,13 @@ namespace Amoeba.Windows
                                 (int)_information["UploadBlockCount"],
                                 (int)_information["BlockCount"]);
                         }
-                        else if (_information.Contains("EncodeBytes") && _information.Contains("EncodingBytes") && _information.Contains("Rank")
+                        else if (_information.Contains("EncodeLength") && _information.Contains("EncodeOffset") && _information.Contains("Rank")
                             && ((UploadState)_information["State"] == UploadState.ComputeHash || (UploadState)_information["State"] == UploadState.Encoding || (UploadState)_information["State"] == UploadState.ParityEncoding))
                         {
                             this.RateText = string.Format("{0}% {1}/{2} [{3}]",
                                 this.Rate,
-                                NetworkConverter.ToSizeString((long)_information["EncodingBytes"]),
-                                NetworkConverter.ToSizeString((long)_information["EncodeBytes"]),
+                                NetworkConverter.ToSizeString((long)_information["EncodeOffset"]),
+                                NetworkConverter.ToSizeString((long)_information["EncodeLength"]),
                                 (int)_information["Rank"]);
                         }
                         else

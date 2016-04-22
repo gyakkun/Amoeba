@@ -2012,7 +2012,7 @@ namespace Amoeba.Windows
 
                 if (!CollectionUtilities.Equals(_amoebaManager.BaseNode.Uris, _baseNode_Uris))
                 {
-                    _amoebaManager.SetBaseNode(new Node(_baseNode_Id, _baseNode_Uris));
+                    _amoebaManager.SetBaseNode(new Node(_baseNode_Id, _baseNode_Uris.Take(Node.MaxUriCount)));
                 }
 
                 _amoebaManager.SetOtherNodes(_otherNodes.Where(n => n != null && n.Id != null && n.Uris.Count() != 0));

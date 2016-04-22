@@ -753,11 +753,11 @@ namespace Amoeba.Windows
                         {
                             this.Rate = Math.Round(((double)(int)_information["DownloadBlockCount"] / (double)((int)_information["BlockCount"] - (int)_information["ParityBlockCount"])) * 100, 2);
                         }
-                        else if (_information.Contains("DecodeBytes") && _information.Contains("DecodingBytes")
+                        else if (_information.Contains("DecodeLength") && _information.Contains("DecodeOffset")
                             && ((DownloadState)_information["State"] == DownloadState.ParityDecoding || (DownloadState)_information["State"] == DownloadState.Decoding)
-                            && (long)_information["DecodingBytes"] != 0)
+                            && (long)_information["DecodeOffset"] != 0)
                         {
-                            this.Rate = Math.Round(((double)(long)_information["DecodingBytes"] / (double)(long)_information["DecodeBytes"]) * 100, 2);
+                            this.Rate = Math.Round(((double)(long)_information["DecodeOffset"] / (double)(long)_information["DecodeLength"]) * 100, 2);
                         }
                         else
                         {
@@ -794,13 +794,13 @@ namespace Amoeba.Windows
                                     ((Seed)_information["Seed"]).Rank);
                             }
                         }
-                        else if (_information.Contains("DecodeBytes") && _information.Contains("DecodingBytes") && _information.Contains("Rank") && _information.Contains("Seed")
+                        else if (_information.Contains("DecodeLength") && _information.Contains("DecodeOffset") && _information.Contains("Rank") && _information.Contains("Seed")
                             && ((DownloadState)_information["State"] == DownloadState.ParityDecoding || (DownloadState)_information["State"] == DownloadState.Decoding))
                         {
                             this.RateText = string.Format("{0}% {1}/{2} [{3}/{4}]",
                                 this.Rate,
-                                NetworkConverter.ToSizeString((long)_information["DecodingBytes"]),
-                                NetworkConverter.ToSizeString((long)_information["DecodeBytes"]),
+                                NetworkConverter.ToSizeString((long)_information["DecodeOffset"]),
+                                NetworkConverter.ToSizeString((long)_information["DecodeLength"]),
                                 (int)_information["Rank"],
                                 ((Seed)_information["Seed"]).Rank);
                         }

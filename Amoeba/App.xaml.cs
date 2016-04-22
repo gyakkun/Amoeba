@@ -49,7 +49,7 @@ namespace Amoeba
 
         App()
         {
-            App.AmoebaVersion = new Version(3, 0, 33);
+            App.AmoebaVersion = new Version(3, 0, 34);
 
             {
                 var currentProcess = Process.GetCurrentProcess();

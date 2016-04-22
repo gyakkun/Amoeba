@@ -1088,17 +1088,6 @@ namespace Amoeba.Windows
 
                     _amoebaManager.ConnectionCountLimit = 32;
 
-                    {
-                        byte[] buffer = new byte[32];
-
-                        using (var random = RandomNumberGenerator.Create())
-                        {
-                            random.GetBytes(buffer);
-                        }
-
-                        _amoebaManager.SetBaseNode(new Node(buffer, null));
-                    }
-
                     _amoebaManager.ListenUris.Clear();
                     _amoebaManager.ListenUris.Add(string.Format("tcp:{0}:{1}", IPAddress.Any.ToString(), _random.Next(1024, ushort.MaxValue + 1)));
                     _amoebaManager.ListenUris.Add(string.Format("tcp:[{0}]:{1}", IPAddress.IPv6Any.ToString(), _random.Next(1024, ushort.MaxValue + 1)));
