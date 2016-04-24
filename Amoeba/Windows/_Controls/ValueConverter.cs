@@ -228,10 +228,19 @@ namespace Amoeba.Windows
             var item = value as string;
             if (item == null) return null;
 
-            var sb = new StringBuilder(item, item.Length);
-            sb.Replace('\r', ' ');
-            sb.Replace('\n', ' ');
-            sb.Replace('\uFFFD', ' ');
+            var sb = new StringBuilder(item.Length);
+
+            for (int i = 0; i < item.Length; i++)
+            {
+                if (char.IsControl(item[i]) || item[i] == '\uFFFD')
+                {
+                    sb.Append(' ');
+                }
+                else
+                {
+                    sb.Append(item[i]);
+                }
+            }
 
             return sb.ToString();
         }

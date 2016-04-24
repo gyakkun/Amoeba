@@ -256,7 +256,7 @@ namespace Amoeba.Windows
         {
             if (_baseNode_Uris.Count > 0)
             {
-                var node = new Node(_baseNode_Id, _baseNode_Uris);
+                var node = new Node(_baseNode_Id, _baseNode_Uris.Take(Node.MaxUriCount));
 
                 _baseNodeTextBox.Text = AmoebaConverter.ToNodeString(node);
             }
