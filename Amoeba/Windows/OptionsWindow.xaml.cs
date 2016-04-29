@@ -1692,26 +1692,13 @@ namespace Amoeba.Windows
                     {
                         using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                         using (Stream digitalSignatureStream = DigitalSignatureConverter.ToDigitalSignatureStream(signature))
+                        using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                         {
-                            byte[] buffer = null;
+                            int length;
 
-                            try
+                            while ((length = digitalSignatureStream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
                             {
-                                buffer = _bufferManager.TakeBuffer(1024 * 4);
-
-                                int i = -1;
-
-                                while ((i = digitalSignatureStream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    fileStream.Write(buffer, 0, i);
-                                }
-                            }
-                            finally
-                            {
-                                if (buffer != null)
-                                {
-                                    _bufferManager.ReturnBuffer(buffer);
-                                }
+                                fileStream.Write(safeBuffer.Value, 0, length);
                             }
                         }
                     }

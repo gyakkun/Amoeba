@@ -298,29 +298,16 @@ namespace Amoeba
                     {
                         if (response.ContentLength > 1024 * 1024 * 32) throw new Exception("too large");
 
-                        byte[] buffer = null;
-
-                        try
+                        using (Stream stream = response.GetResponseStream())
+                        using (var safeBuffer = bufferManager.CreateSafeBuffer(1024 * 4))
                         {
-                            buffer = bufferManager.TakeBuffer(1024 * 4);
+                            int length;
 
-                            using (Stream stream = response.GetResponseStream())
+                            while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
                             {
-                                int length;
+                                bufferStream.Write(safeBuffer.Value, 0, length);
 
-                                while ((length = stream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    bufferStream.Write(buffer, 0, length);
-
-                                    if (bufferStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
-                                }
-                            }
-                        }
-                        finally
-                        {
-                            if (buffer != null)
-                            {
-                                bufferManager.ReturnBuffer(buffer);
+                                if (bufferStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
                             }
                         }
 
@@ -407,31 +394,16 @@ namespace Amoeba
             // save data to a rawStream
             var rawStream = new BufferStream(bufferManager);
 
+            using (Stream stream = w.GetResponseStream())
+            using (var safeBuffer = bufferManager.CreateSafeBuffer(1024 * 4))
             {
-                byte[] buffer = null;
+                int length;
 
-                try
+                while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
                 {
-                    buffer = bufferManager.TakeBuffer(1024 * 4);
+                    rawStream.Write(safeBuffer.Value, 0, length);
 
-                    using (Stream stream = w.GetResponseStream())
-                    {
-                        int length;
-
-                        while ((length = stream.Read(buffer, 0, buffer.Length)) > 0)
-                        {
-                            rawStream.Write(buffer, 0, length);
-
-                            if (rawStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
-                        }
-                    }
-                }
-                finally
-                {
-                    if (buffer != null)
-                    {
-                        bufferManager.ReturnBuffer(buffer);
-                    }
+                    if (rawStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
                 }
             }
 
