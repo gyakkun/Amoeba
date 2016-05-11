@@ -315,6 +315,7 @@
   <Translate Key="DownloadControl_Rank" Value="等级" />
   <Translate Key="DownloadControl_Rate" Value="进度" />
   <Translate Key="DownloadControl_Path" Value="路径" />
+  <Translate Key="DownloadControl_CreationTime" Value="Creation time" />
   <Translate Key="DownloadControl_State" Value="状态" />
   <Translate Key="DownloadControl_Delete" Value="删除" />
   <Translate Key="DownloadControl_Copy" Value="复制" />
@@ -342,6 +343,7 @@
   <Translate Key="UploadControl_Rank" Value="等级" />
   <Translate Key="UploadControl_Rate" Value="进度" />
   <Translate Key="UploadControl_Path" Value="路径" />
+  <Translate Key="UploadControl_CreationTime" Value="Creation time" />
   <Translate Key="UploadControl_State" Value="状态" />
   <Translate Key="UploadControl_Add" Value="新增" />
   <Translate Key="UploadControl_Delete" Value="删除" />

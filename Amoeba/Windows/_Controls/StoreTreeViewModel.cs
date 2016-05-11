@@ -32,7 +32,7 @@ namespace Amoeba.Windows
 
         public void Update()
         {
-            this.NotifyPropertyChanged("Name");
+            this.NotifyPropertyChanged(nameof(this.Name));
 
             foreach (var item in _children.OfType<BoxTreeViewModel>().ToArray())
             {
@@ -104,7 +104,7 @@ namespace Amoeba.Windows
                 {
                     _isSelected = value;
 
-                    this.NotifyPropertyChanged("IsSelected");
+                    this.NotifyPropertyChanged(nameof(this.IsSelected));
                 }
             }
         }
@@ -121,7 +121,7 @@ namespace Amoeba.Windows
                 {
                     _value.IsExpanded = value;
 
-                    this.NotifyPropertyChanged("IsExpanded");
+                    this.NotifyPropertyChanged(nameof(this.IsExpanded));
                 }
             }
         }
@@ -138,12 +138,12 @@ namespace Amoeba.Windows
                 {
                     _isHit = value;
 
-                    this.NotifyPropertyChanged("IsHit");
+                    this.NotifyPropertyChanged(nameof(this.IsHit));
                 }
             }
         }
 
-        public override ReadOnlyObservableCollection<TreeViewModelBase> Children
+        public override IReadOnlyCollection<TreeViewModelBase> Children
         {
             get
             {

@@ -3446,6 +3446,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string DownloadControl_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("DownloadControl_CreationTime");
+                }
+            }
+        }
+
         public string DownloadControl_State
         {
             get
@@ -3719,6 +3730,17 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("UploadControl_Path");
+                }
+            }
+        }
+
+        public string UploadControl_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("UploadControl_CreationTime");
                 }
             }
         }

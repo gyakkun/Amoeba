@@ -31,8 +31,8 @@ namespace Amoeba.Windows
 
         public void Update()
         {
-            this.NotifyPropertyChanged("Name");
-            this.NotifyPropertyChanged("IsExpanded");
+            this.NotifyPropertyChanged(nameof(this.Name));
+            this.NotifyPropertyChanged(nameof(this.IsExpanded));
 
             foreach (var item in _children.OfType<SearchTreeViewModel>().ToArray())
             {
@@ -95,7 +95,7 @@ namespace Amoeba.Windows
                 {
                     _isSelected = value;
 
-                    this.NotifyPropertyChanged("IsSelected");
+                    this.NotifyPropertyChanged(nameof(this.IsSelected));
                 }
             }
         }
@@ -112,7 +112,7 @@ namespace Amoeba.Windows
                 {
                     _value.IsExpanded = value;
 
-                    this.NotifyPropertyChanged("IsExpanded");
+                    this.NotifyPropertyChanged(nameof(this.IsExpanded));
                 }
             }
         }
@@ -129,13 +129,13 @@ namespace Amoeba.Windows
                 {
                     _count = value;
 
-                    this.NotifyPropertyChanged("Name");
-                    this.NotifyPropertyChanged("Count");
+                    this.NotifyPropertyChanged(nameof(this.Name));
+                    this.NotifyPropertyChanged(nameof(this.Count));
                 }
             }
         }
 
-        public override ReadOnlyObservableCollection<TreeViewModelBase> Children
+        public override IReadOnlyCollection<TreeViewModelBase> Children
         {
             get
             {

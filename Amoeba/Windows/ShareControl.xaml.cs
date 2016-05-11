@@ -75,7 +75,7 @@ namespace Amoeba.Windows
                     Thread.Sleep(100);
                     if (_mainWindow.SelectedTab != MainWindowTabType.Share) continue;
 
-                    var informaitonDic = new Dictionary<int, Information>();
+                    var informaitonDic = new Dictionary<string, Information>();
 
                     {
                         string[] words = null;
@@ -102,20 +102,20 @@ namespace Amoeba.Windows
                                 if (!words.All(n => text.Contains(n))) continue;
                             }
 
-                            informaitonDic[(int)item["Id"]] = item;
+                            informaitonDic[(string)item["Path"]] = item;
                         }
                     }
 
-                    var listViewItemDic = new Dictionary<int, ShareListViewModel>();
+                    var listViewModelDic = new Dictionary<string, ShareListViewModel>();
                     var removeList = new List<ShareListViewModel>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         foreach (var item in _listViewModelCollection.ToArray())
                         {
-                            listViewItemDic[item.Id] = item;
+                            listViewModelDic[item.Path] = item;
 
-                            if (!informaitonDic.ContainsKey(item.Id))
+                            if (!informaitonDic.ContainsKey(item.Path))
                             {
                                 removeList.Add(item);
                             }
@@ -140,16 +140,16 @@ namespace Amoeba.Windows
                             resultList.Add(new ShareListViewModel(information));
                         }
 
-                        var hid = new HashSet<int>();
+                        var hpath = new HashSet<string>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<ShareListViewModel>().Select(n => n.Id));
+                            hpath.UnionWith(_listView.SelectedItems.OfType<ShareListViewModel>().Select(n => n.Path));
                         }));
 
                         foreach (var item in resultList)
                         {
-                            if (hid.Contains(item.Id))
+                            if (hpath.Contains(item.Path))
                             {
                                 selectItems.Add(item);
                             }
@@ -161,7 +161,7 @@ namespace Amoeba.Windows
                         {
                             ShareListViewModel item;
 
-                            if (listViewItemDic.TryGetValue((int)information["Id"], out item))
+                            if (listViewModelDic.TryGetValue((string)information["Path"], out item))
                             {
                                 if (!CollectionUtilities.Equals(item.Information, information))
                                 {
@@ -345,11 +345,11 @@ namespace Amoeba.Windows
 
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Share", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
-            var ids = new List<int>();
+            var paths = new List<string>();
 
             foreach (var item in selectItems.Cast<ShareListViewModel>())
             {
-                ids.Add(item.Id);
+                paths.Add(item.Path);
             }
 
             _listViewDeleteMenuItem_IsEnabled = false;
@@ -360,9 +360,9 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    foreach (var item in ids)
+                    foreach (var path in paths)
                     {
-                        _amoebaManager.RemoveShare(item);
+                        _amoebaManager.RemoveShare(path);
                     }
                 }
                 catch (Exception)
@@ -396,7 +396,7 @@ namespace Amoeba.Windows
                         {
                             try
                             {
-                                _amoebaManager.RemoveShare((int)item["Id"]);
+                                _amoebaManager.RemoveShare((string)item["Path"]);
                                 sb.AppendLine((string)item["Path"]);
                             }
                             catch (Exception)
@@ -482,7 +482,6 @@ namespace Amoeba.Windows
             }
 
             _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
-            _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
         private IEnumerable<ShareListViewModel> Sort(IEnumerable<ShareListViewModel> collection, string sortBy, ListSortDirection direction)
@@ -495,7 +494,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
-                    c = x.Id.CompareTo(y.Id);
+                    c = x.Path.CompareTo(y.Path);
                     if (c != 0) return c;
 
                     return 0;
@@ -507,10 +506,6 @@ namespace Amoeba.Windows
                 {
                     int c = x.Path.CompareTo(y.Path);
                     if (c != 0) return c;
-                    c = x.Name.CompareTo(y.Name);
-                    if (c != 0) return c;
-                    c = x.Id.CompareTo(y.Id);
-                    if (c != 0) return c;
 
                     return 0;
                 });
@@ -521,9 +516,7 @@ namespace Amoeba.Windows
                 {
                     int c = x.BlockCount.CompareTo(y.BlockCount);
                     if (c != 0) return c;
-                    c = x.Name.CompareTo(y.Name);
-                    if (c != 0) return c;
-                    c = x.Id.CompareTo(y.Id);
+                    c = x.Path.CompareTo(y.Path);
                     if (c != 0) return c;
 
                     return 0;
@@ -552,7 +545,6 @@ namespace Amoeba.Windows
                 }
             }
 
-            private int _id;
             private Information _information;
             private string _name;
             private string _path;
@@ -561,16 +553,6 @@ namespace Amoeba.Windows
             public ShareListViewModel(Information information)
             {
                 this.Information = information;
-
-                _id = (int)this.Information["Id"];
-            }
-
-            public int Id
-            {
-                get
-                {
-                    return _id;
-                }
             }
 
             public Information Information
@@ -612,7 +594,7 @@ namespace Amoeba.Windows
                     {
                         _name = value;
 
-                        this.NotifyPropertyChanged("Name");
+                        this.NotifyPropertyChanged(nameof(this.Name));
                     }
                 }
             }
@@ -629,7 +611,7 @@ namespace Amoeba.Windows
                     {
                         _path = value;
 
-                        this.NotifyPropertyChanged("Path");
+                        this.NotifyPropertyChanged(nameof(this.Path));
                     }
                 }
             }
@@ -646,7 +628,7 @@ namespace Amoeba.Windows
                     {
                         _blockCount = value;
 
-                        this.NotifyPropertyChanged("BlockCount");
+                        this.NotifyPropertyChanged(nameof(this.BlockCount));
                     }
                 }
             }

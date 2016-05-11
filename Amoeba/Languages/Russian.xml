@@ -315,6 +315,7 @@
   <Translate Key="DownloadControl_Rank" Value="Ранг" />
   <Translate Key="DownloadControl_Rate" Value="Рейтинг" />
   <Translate Key="DownloadControl_Path" Value="Директория" />
+  <Translate Key="DownloadControl_CreationTime" Value="Creation time" />
   <Translate Key="DownloadControl_State" Value="Статус" />
   <Translate Key="DownloadControl_Delete" Value="Удалить" />
   <Translate Key="DownloadControl_Copy" Value="Копировать" />
@@ -342,6 +343,7 @@
   <Translate Key="UploadControl_Rank" Value="Ранг" />
   <Translate Key="UploadControl_Rate" Value="Рейтинг" />
   <Translate Key="UploadControl_Path" Value="Директория" />
+  <Translate Key="UploadControl_CreationTime" Value="Creation time" />
   <Translate Key="UploadControl_State" Value="Статус" />
   <Translate Key="UploadControl_Add" Value="Добавить" />
   <Translate Key="UploadControl_Delete" Value="Удалить" />

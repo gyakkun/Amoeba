@@ -433,7 +433,7 @@ namespace Amoeba.Windows
                     {
                         _signature = value;
 
-                        this.NotifyPropertyChanged("Signature");
+                        this.NotifyPropertyChanged(nameof(this.Signature));
                     }
                 }
             }

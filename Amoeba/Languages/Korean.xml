@@ -315,6 +315,7 @@
   <Translate Key="DownloadControl_Rank" Value="순위" />
   <Translate Key="DownloadControl_Rate" Value="속도" />
   <Translate Key="DownloadControl_Path" Value="경로" />
+  <Translate Key="DownloadControl_CreationTime" Value="Creation time" />
   <Translate Key="DownloadControl_State" Value="상태" />
   <Translate Key="DownloadControl_Delete" Value="삭제" />
   <Translate Key="DownloadControl_Copy" Value="복사" />
@@ -342,6 +343,7 @@
   <Translate Key="UploadControl_Rank" Value="순위" />
   <Translate Key="UploadControl_Rate" Value="속도" />
   <Translate Key="UploadControl_Path" Value="경로" />
+  <Translate Key="UploadControl_CreationTime" Value="Creation time" />
   <Translate Key="UploadControl_State" Value="상태" />
   <Translate Key="UploadControl_Add" Value="추가" />
   <Translate Key="UploadControl_Delete" Value="삭제" />

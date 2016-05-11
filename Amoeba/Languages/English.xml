@@ -315,6 +315,7 @@
   <Translate Key="DownloadControl_Rank" Value="Rank" />
   <Translate Key="DownloadControl_Rate" Value="Rate" />
   <Translate Key="DownloadControl_Path" Value="Path" />
+  <Translate Key="DownloadControl_CreationTime" Value="Creation time" />
   <Translate Key="DownloadControl_State" Value="State" />
   <Translate Key="DownloadControl_Delete" Value="Delete" />
   <Translate Key="DownloadControl_Copy" Value="Copy" />
@@ -342,6 +343,7 @@
   <Translate Key="UploadControl_Rank" Value="Rank" />
   <Translate Key="UploadControl_Rate" Value="Rate" />
   <Translate Key="UploadControl_Path" Value="Path" />
+  <Translate Key="UploadControl_CreationTime" Value="Creation time" />
   <Translate Key="UploadControl_State" Value="State" />
   <Translate Key="UploadControl_Add" Value="Add" />
   <Translate Key="UploadControl_Delete" Value="Delete" />

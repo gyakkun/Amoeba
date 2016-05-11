@@ -37,12 +37,6 @@
                 <DataTemplate x:Key="_myTemplate_Name">
                     <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
                 </DataTemplate>
-                <DataTemplate x:Key="_myTemplate_Path">
-                    <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
-                </DataTemplate>
-                <DataTemplate x:Key="_myTemplate_State">
-                    <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _uploadStateToStringConverter}}" />
-                </DataTemplate>
                 <DataTemplate x:Key="_myTemplate_Length">
                     <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
                 </DataTemplate>
@@ -50,10 +44,19 @@
                     <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
                 </DataTemplate>
                 <DataTemplate x:Key="_myTemplate_Rate">
-                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto">
+                    <Grid>
                         <ProgressBar Value="{Binding Path=Rate, Mode=OneWay}" />
                         <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Grid>
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Path">
+                    <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_CreationTime">
+                    <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_State">
+                    <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _downloadStateToStringConverter}}" />
                 </DataTemplate>
             </ListView.Resources>
             <ListView.ContextMenu>
@@ -89,6 +92,8 @@
                             Width="{Binding Path=DownloadControl_GridViewColumn_Rate_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=UploadControl_Path, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Path}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=UploadControl_CreationTime, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                     <GridViewColumn Header="{Binding Path=UploadControl_State, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_State}" 
                             Width="{Binding Path=DownloadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                 </GridView>

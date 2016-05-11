@@ -258,12 +258,12 @@
   <Translate Key="SearchControl_SearchKeyword" Value="このキーワードで検索" />
   <Translate Key="SearchControl_SearchCreationTimeRange" Value="この作成日で検索" />
   <Translate Key="SearchControl_SearchState" Value="この状態で検索" />
-  <Translate Key="SearchControl_Filter" Value="フィルタ" />
-  <Translate Key="SearchControl_FilterName" Value="この名前でフィルタ" />
-  <Translate Key="SearchControl_FilterSignature" Value="このサインでフィルタ" />
-  <Translate Key="SearchControl_FilterKeyword" Value="このキーワードでフィルタ" />
-  <Translate Key="SearchControl_FilterCreationTimeRange" Value="この作成日でフィルタ" />
-  <Translate Key="SearchControl_FilterSeed" Value="このシードでフィルタ" />
+  <Translate Key="SearchControl_Filter" Value="除外" />
+  <Translate Key="SearchControl_FilterName" Value="この名前を除外" />
+  <Translate Key="SearchControl_FilterSignature" Value="このサインを除外" />
+  <Translate Key="SearchControl_FilterKeyword" Value="このキーワードを除外" />
+  <Translate Key="SearchControl_FilterCreationTimeRange" Value="この作成日を除外" />
+  <Translate Key="SearchControl_FilterSeed" Value="このシードを除外" />
 
   <Translate Key="SearchItemEditWindow_Title" Value="検索アイテム編集" />
   <Translate Key="SearchItemEditWindow_Name" Value="名前" />
@@ -315,6 +315,7 @@
   <Translate Key="DownloadControl_Rank" Value="ランク" />
   <Translate Key="DownloadControl_Rate" Value="率" />
   <Translate Key="DownloadControl_Path" Value="パス" />
+  <Translate Key="DownloadControl_CreationTime" Value="作成日" />
   <Translate Key="DownloadControl_State" Value="状態" />
   <Translate Key="DownloadControl_Delete" Value="削除" />
   <Translate Key="DownloadControl_Copy" Value="コピー" />
@@ -342,6 +343,7 @@
   <Translate Key="UploadControl_Rank" Value="ランク" />
   <Translate Key="UploadControl_Rate" Value="率" />
   <Translate Key="UploadControl_Path" Value="パス" />
+  <Translate Key="UploadControl_CreationTime" Value="作成日" />
   <Translate Key="UploadControl_State" Value="状態" />
   <Translate Key="UploadControl_Add" Value="追加" />
   <Translate Key="UploadControl_Delete" Value="削除" />

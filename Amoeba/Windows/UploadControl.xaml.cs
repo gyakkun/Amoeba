@@ -106,14 +106,14 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    var listViewItemDic = new Dictionary<int, UploadListViewModel>();
+                    var listViewModelDic = new Dictionary<int, UploadListViewModel>();
                     var removeList = new List<UploadListViewModel>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
                         foreach (var item in _listViewModelCollection.ToArray())
                         {
-                            listViewItemDic[item.Id] = item;
+                            listViewModelDic[item.Id] = item;
 
                             if (!informaitonDic.ContainsKey(item.Id))
                             {
@@ -161,7 +161,7 @@ namespace Amoeba.Windows
                         {
                             UploadListViewModel item;
 
-                            if (listViewItemDic.TryGetValue((int)information["Id"], out item))
+                            if (listViewModelDic.TryGetValue((int)information["Id"], out item))
                             {
                                 if (!CollectionUtilities.Equals(item.Information, information))
                                 {
@@ -711,6 +711,7 @@ namespace Amoeba.Windows
             private int _rank;
             private string _name;
             private string _path;
+            private DateTime _creationTime;
             private UploadState _state = 0;
             private long _length;
             private int _priority;
@@ -751,6 +752,9 @@ namespace Amoeba.Windows
 
                     if (_information.Contains("Path")) this.Path = (string)_information["Path"];
                     else this.Path = null;
+
+                    if (_information.Contains("CreationTime")) this.CreationTime = (DateTime)_information["CreationTime"];
+                    else this.CreationTime = DateTime.MinValue;
 
                     if (_information.Contains("State")) this.State = (UploadState)_information["State"];
                     else this.State = 0;
@@ -835,7 +839,7 @@ namespace Amoeba.Windows
                     {
                         _rank = value;
 
-                        this.NotifyPropertyChanged("Rank");
+                        this.NotifyPropertyChanged(nameof(this.Rank));
                     }
                 }
             }
@@ -852,7 +856,7 @@ namespace Amoeba.Windows
                     {
                         _name = value;
 
-                        this.NotifyPropertyChanged("Name");
+                        this.NotifyPropertyChanged(nameof(this.Name));
                     }
                 }
             }
@@ -867,7 +871,24 @@ namespace Amoeba.Windows
                 {
                     if (value != _path)
                     {
-                        _path = value; this.NotifyPropertyChanged("Path");
+                        _path = value; this.NotifyPropertyChanged(nameof(this.Path));
+                    }
+                }
+            }
+
+            public DateTime CreationTime
+            {
+                get
+                {
+                    return _creationTime;
+                }
+                set
+                {
+                    if (value != _creationTime)
+                    {
+                        _creationTime = value;
+
+                        this.NotifyPropertyChanged(nameof(this.CreationTime));
                     }
                 }
             }
@@ -884,7 +905,7 @@ namespace Amoeba.Windows
                     {
                         _state = value;
 
-                        this.NotifyPropertyChanged("State");
+                        this.NotifyPropertyChanged(nameof(this.State));
                     }
                 }
             }
@@ -901,7 +922,7 @@ namespace Amoeba.Windows
                     {
                         _length = value;
 
-                        this.NotifyPropertyChanged("Length");
+                        this.NotifyPropertyChanged(nameof(this.Length));
                     }
                 }
             }
@@ -918,7 +939,7 @@ namespace Amoeba.Windows
                     {
                         _priority = value;
 
-                        this.NotifyPropertyChanged("Priority");
+                        this.NotifyPropertyChanged(nameof(this.Priority));
                     }
                 }
             }
@@ -935,7 +956,7 @@ namespace Amoeba.Windows
                     {
                         _rate = value;
 
-                        this.NotifyPropertyChanged("Rate");
+                        this.NotifyPropertyChanged(nameof(this.Rate));
                     }
                 }
             }
@@ -952,7 +973,7 @@ namespace Amoeba.Windows
                     {
                         _rateText = value;
 
-                        this.NotifyPropertyChanged("RateText");
+                        this.NotifyPropertyChanged(nameof(this.RateText));
                     }
                 }
             }
@@ -969,7 +990,7 @@ namespace Amoeba.Windows
                     {
                         _value = value;
 
-                        this.NotifyPropertyChanged("Value");
+                        this.NotifyPropertyChanged(nameof(this.Value));
                     }
                 }
             }

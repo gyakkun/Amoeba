@@ -538,7 +538,7 @@ namespace Amoeba.Windows
 
             void LanguagesManager_UsingLanguageChangedEvent(object sender)
             {
-                this.NotifyPropertyChanged("Name");
+                this.NotifyPropertyChanged(nameof(this.Name));
             }
 
             private string _id;
@@ -556,8 +556,8 @@ namespace Amoeba.Windows
                     {
                         _id = value;
 
-                        this.NotifyPropertyChanged("Id");
-                        this.NotifyPropertyChanged("Name");
+                        this.NotifyPropertyChanged(nameof(this.Id));
+                        this.NotifyPropertyChanged(nameof(this.Name));
                     }
                 }
             }
@@ -585,7 +585,7 @@ namespace Amoeba.Windows
                     {
                         _value = value;
 
-                        this.NotifyPropertyChanged("Value");
+                        this.NotifyPropertyChanged(nameof(this.Value));
                     }
                 }
             }
@@ -665,7 +665,7 @@ namespace Amoeba.Windows
                     {
                         _uri = value;
 
-                        this.NotifyPropertyChanged("Uri");
+                        this.NotifyPropertyChanged(nameof(this.Uri));
                     }
                 }
             }
@@ -682,7 +682,7 @@ namespace Amoeba.Windows
                     {
                         _priority = value;
 
-                        this.NotifyPropertyChanged("Priority");
+                        this.NotifyPropertyChanged(nameof(this.Priority));
                     }
                 }
             }
@@ -699,7 +699,7 @@ namespace Amoeba.Windows
                     {
                         _receivedByteCount = value;
 
-                        this.NotifyPropertyChanged("ReceivedByteCount");
+                        this.NotifyPropertyChanged(nameof(this.ReceivedByteCount));
                     }
                 }
             }
@@ -716,7 +716,7 @@ namespace Amoeba.Windows
                     {
                         _sentByteCount = value;
 
-                        this.NotifyPropertyChanged("SentByteCount");
+                        this.NotifyPropertyChanged(nameof(this.SentByteCount));
                     }
                 }
             }
@@ -733,7 +733,7 @@ namespace Amoeba.Windows
                     {
                         _direction = value;
 
-                        this.NotifyPropertyChanged("Direction");
+                        this.NotifyPropertyChanged(nameof(this.Direction));
                     }
                 }
             }

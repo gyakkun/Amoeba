@@ -50,6 +50,6 @@ namespace Amoeba.Windows
         public abstract bool IsSelected { get; set; }
 
         public TreeViewModelBase Parent { get { return _parent; } }
-        public abstract ReadOnlyObservableCollection<TreeViewModelBase> Children { get; }
+        public abstract IReadOnlyCollection<TreeViewModelBase> Children { get; }
     }
 }

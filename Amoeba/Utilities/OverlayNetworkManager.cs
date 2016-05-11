@@ -140,9 +140,8 @@ namespace Amoeba
                 socket = _samManager.Accept(out base32Address);
                 uri = string.Format("i2p:{0}", base32Address);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine(ex);
                 if (socket != null) socket.Dispose();
 
                 return null;
@@ -255,10 +254,8 @@ namespace Amoeba
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-                            Debug.WriteLine(ex);
-
                             if (_samManager != null) _samManager.Dispose();
                         }
 
