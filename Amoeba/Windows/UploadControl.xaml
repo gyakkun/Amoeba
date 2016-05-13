@@ -56,7 +56,7 @@
                     <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
                 </DataTemplate>
                 <DataTemplate x:Key="_myTemplate_State">
-                    <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _downloadStateToStringConverter}}" />
+                    <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _uploadStateToStringConverter}}" />
                 </DataTemplate>
             </ListView.Resources>
             <ListView.ContextMenu>
