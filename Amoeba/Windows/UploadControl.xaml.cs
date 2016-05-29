@@ -72,9 +72,6 @@ namespace Amoeba.Windows
             {
                 for (;;)
                 {
-                    Thread.Sleep(100);
-                    if (_mainWindow.SelectedTab != MainWindowTabType.Upload) continue;
-
                     var informaitonDic = new Dictionary<int, Information>();
 
                     {

@@ -41,7 +41,8 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private volatile bool _refresh;
+        private AutoResetEvent _updateEvent = new AutoResetEvent(false);
+        private volatile bool _refreshing = false;
 
         private BoxTreeViewModel _treeViewModel;
         private ObservableCollectionEx<IListViewModel> _listViewModelCollection = new ObservableCollectionEx<IListViewModel>();
@@ -88,7 +89,7 @@ namespace Amoeba.Windows
 
                 if (_mainWindow.SelectedTab == MainWindowTabType.Store && _storeControl.SelectedTab == StoreControlTabType.Library)
                 {
-                    if (!_refresh) this.Update_Title();
+                    this.Update_Title();
                 }
             };
 
@@ -125,91 +126,98 @@ namespace Amoeba.Windows
             {
                 for (;;)
                 {
-                    Thread.Sleep(100);
-                    if (!_refresh) continue;
+                    _updateEvent.WaitOne();
 
-                    BoxTreeViewModel tempTreeViewModel = null;
-
-                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                    try
                     {
-                        tempTreeViewModel = _treeView.SelectedItem as BoxTreeViewModel;
-                        _listView.ContextMenu.IsOpen = false;
-                    }));
+                        _refreshing = true;
 
-                    if (tempTreeViewModel == null) continue;
-
-                    var newList = new HashSet<IListViewModel>(new ReferenceEqualityComparer());
-
-                    string[] words = null;
-
-                    {
-                        string searchText = null;
+                        BoxTreeViewModel tempTreeViewModel = null;
 
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            searchText = _searchTextBox.Text;
+                            tempTreeViewModel = _treeView.SelectedItem as BoxTreeViewModel;
+                            _listView.ContextMenu.IsOpen = false;
                         }));
 
-                        if (!string.IsNullOrWhiteSpace(searchText))
+                        if (tempTreeViewModel == null) continue;
+
+                        var newList = new HashSet<IListViewModel>(new ReferenceEqualityComparer());
+
+                        string[] words = null;
+
                         {
-                            words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
-                        }
-                    }
+                            string searchText = null;
 
-                    foreach (var box in tempTreeViewModel.Value.Boxes)
-                    {
-                        if (words != null)
-                        {
-                            var text = (box.Name ?? "").ToLower();
-                            if (!words.All(n => text.Contains(n))) continue;
-                        }
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                            {
+                                searchText = _searchTextBox.Text;
+                            }));
 
-                        var boxesListViewModel = new BoxListViewModel();
-                        boxesListViewModel.Index = newList.Count;
-                        boxesListViewModel.Name = box.Name;
-                        if (box.Certificate != null) boxesListViewModel.Signature = box.Certificate.ToString();
-                        boxesListViewModel.Length = BoxUtilities.GetBoxLength(box);
-                        boxesListViewModel.CreationTime = BoxUtilities.GetBoxCreationTime(box);
-                        boxesListViewModel.Value = box;
-
-                        newList.Add(boxesListViewModel);
-                    }
-
-                    foreach (var seed in tempTreeViewModel.Value.Seeds)
-                    {
-                        if (words != null)
-                        {
-                            var text = (seed.Name ?? "").ToLower();
-                            if (!words.All(n => text.Contains(n))) continue;
+                            if (!string.IsNullOrWhiteSpace(searchText))
+                            {
+                                words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
+                            }
                         }
 
-                        var seedListViewModel = new SeedListViewModel();
-                        seedListViewModel.Index = newList.Count;
-                        seedListViewModel.Name = seed.Name;
-                        if (seed.Certificate != null) seedListViewModel.Signature = seed.Certificate.ToString();
-                        seedListViewModel.Length = seed.Length;
-                        seedListViewModel.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
-                        seedListViewModel.CreationTime = seed.CreationTime;
+                        foreach (var box in tempTreeViewModel.Value.Boxes)
+                        {
+                            if (words != null)
+                            {
+                                var text = (box.Name ?? "").ToLower();
+                                if (!words.All(n => text.Contains(n))) continue;
+                            }
 
-                        seedListViewModel.State = _storeControl.GetState(seed);
+                            var boxesListViewModel = new BoxListViewModel();
+                            boxesListViewModel.Index = newList.Count;
+                            boxesListViewModel.Name = box.Name;
+                            if (box.Certificate != null) boxesListViewModel.Signature = box.Certificate.ToString();
+                            boxesListViewModel.Length = BoxUtilities.GetBoxLength(box);
+                            boxesListViewModel.CreationTime = BoxUtilities.GetBoxCreationTime(box);
+                            boxesListViewModel.Value = box;
 
-                        seedListViewModel.Value = seed;
+                            newList.Add(boxesListViewModel);
+                        }
 
-                        newList.Add(seedListViewModel);
+                        foreach (var seed in tempTreeViewModel.Value.Seeds)
+                        {
+                            if (words != null)
+                            {
+                                var text = (seed.Name ?? "").ToLower();
+                                if (!words.All(n => text.Contains(n))) continue;
+                            }
+
+                            var seedListViewModel = new SeedListViewModel();
+                            seedListViewModel.Index = newList.Count;
+                            seedListViewModel.Name = seed.Name;
+                            if (seed.Certificate != null) seedListViewModel.Signature = seed.Certificate.ToString();
+                            seedListViewModel.Length = seed.Length;
+                            seedListViewModel.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
+                            seedListViewModel.CreationTime = seed.CreationTime;
+
+                            seedListViewModel.State = _storeControl.GetState(seed);
+
+                            seedListViewModel.Value = seed;
+
+                            newList.Add(seedListViewModel);
+                        }
+
+                        var sortList = this.Sort(newList, 100000);
+
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                        {
+                            if (tempTreeViewModel != _treeView.SelectedItem) return;
+
+                            _listViewModelCollection.Clear();
+                            _listViewModelCollection.AddRange(sortList);
+
+                            this.Update_Title();
+                        }));
                     }
-
-                    var sortList = this.Sort(newList, 100000);
-
-                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                    finally
                     {
-                        if (tempTreeViewModel != _treeView.SelectedItem) return;
-                        _refresh = false;
-
-                        _listViewModelCollection.Clear();
-                        _listViewModelCollection.AddRange(sortList);
-
-                        this.Update_Title();
-                    }));
+                        _refreshing = false;
+                    }
                 }
             }
             catch (Exception)
@@ -438,13 +446,11 @@ namespace Amoeba.Windows
         private void Update()
         {
             _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
-            _refresh = true;
+            _updateEvent.Set();
         }
 
         private void Update_Title()
         {
-            if (_refresh) return;
-
             if (_mainWindow.SelectedTab == MainWindowTabType.Store && _storeControl.SelectedTab == StoreControlTabType.Library)
             {
                 if (_treeView.SelectedItem is BoxTreeViewModel)
@@ -491,7 +497,7 @@ namespace Amoeba.Windows
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
                         || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (_refresh || _listView.SelectedItems.Count == 0) return;
+                    if (_refreshing || _listView.SelectedItems.Count == 0) return;
 
                     var data = new DataObject("ListViewModels", _listView.SelectedItems);
                     DragDrop.DoDragDrop(_grid, data, DragDropEffects.Move);
@@ -1178,7 +1184,7 @@ namespace Amoeba.Windows
         {
             _startPoint = new Point(-1, -1);
 
-            if (_refresh || _treeView.SelectedItem == null)
+            if (_refreshing || _treeView.SelectedItem == null)
             {
                 _listViewContextMenu.IsEnabled = false;
 

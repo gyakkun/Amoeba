@@ -43,7 +43,8 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private volatile bool _refresh;
+        private AutoResetEvent _updateEvent = new AutoResetEvent(false);
+        private volatile bool _refreshing = false;
 
         private StoreCategorizeTreeViewModel _treeViewModel;
         private ObservableCollectionEx<IListViewModel> _listViewModelCollection = new ObservableCollectionEx<IListViewModel>();
@@ -97,7 +98,7 @@ namespace Amoeba.Windows
 
                 if (_mainWindow.SelectedTab == MainWindowTabType.Store && _storeControl.SelectedTab == StoreControlTabType.Upload)
                 {
-                    if (!_refresh) this.Update_Title();
+                   this.Update_Title();
                 }
             };
 
@@ -127,120 +128,126 @@ namespace Amoeba.Windows
             {
                 for (;;)
                 {
-                    Thread.Sleep(100);
-                    if (!_refresh) continue;
+                    _updateEvent.WaitOne();
 
-                    TreeViewModelBase tempTreeViewModel = null;
-
-                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                    try
                     {
-                        tempTreeViewModel = (TreeViewModelBase)_treeView.SelectedItem;
-                        _listView.ContextMenu.IsOpen = false;
-                    }));
+                        _refreshing = true;
 
-                    if (tempTreeViewModel is StoreCategorizeTreeViewModel)
-                    {
+                        TreeViewModelBase tempTreeViewModel = null;
+
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            if (tempTreeViewModel != _treeView.SelectedItem) return;
-                            _refresh = false;
-
-                            _listViewModelCollection.Clear();
-
-                            this.Update_Title();
+                            tempTreeViewModel = (TreeViewModelBase)_treeView.SelectedItem;
+                            _listView.ContextMenu.IsOpen = false;
                         }));
-                    }
-                    else if (tempTreeViewModel is StoreTreeViewModel || tempTreeViewModel is BoxTreeViewModel)
-                    {
-                        var boxes = new BoxCollection();
-                        var seeds = new SeedCollection();
 
-                        if (tempTreeViewModel is StoreTreeViewModel)
+                        if (tempTreeViewModel is StoreCategorizeTreeViewModel)
                         {
-                            var storeTreeViewModel = (StoreTreeViewModel)tempTreeViewModel;
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                            {
+                                if (tempTreeViewModel != _treeView.SelectedItem) return;
 
-                            boxes.AddRange(storeTreeViewModel.Value.Boxes);
+                                _listViewModelCollection.Clear();
+
+                                this.Update_Title();
+                            }));
                         }
-                        else if (tempTreeViewModel is BoxTreeViewModel)
+                        else if (tempTreeViewModel is StoreTreeViewModel || tempTreeViewModel is BoxTreeViewModel)
                         {
-                            var boxTreeViewModel = (BoxTreeViewModel)tempTreeViewModel;
+                            var boxes = new BoxCollection();
+                            var seeds = new SeedCollection();
 
-                            boxes.AddRange(boxTreeViewModel.Value.Boxes);
-                            seeds.AddRange(boxTreeViewModel.Value.Seeds);
-                        }
+                            if (tempTreeViewModel is StoreTreeViewModel)
+                            {
+                                var storeTreeViewModel = (StoreTreeViewModel)tempTreeViewModel;
 
-                        var newList = new HashSet<IListViewModel>(new ReferenceEqualityComparer());
+                                boxes.AddRange(storeTreeViewModel.Value.Boxes);
+                            }
+                            else if (tempTreeViewModel is BoxTreeViewModel)
+                            {
+                                var boxTreeViewModel = (BoxTreeViewModel)tempTreeViewModel;
 
-                        string[] words = null;
+                                boxes.AddRange(boxTreeViewModel.Value.Boxes);
+                                seeds.AddRange(boxTreeViewModel.Value.Seeds);
+                            }
 
-                        {
-                            string searchText = null;
+                            var newList = new HashSet<IListViewModel>(new ReferenceEqualityComparer());
+
+                            string[] words = null;
+
+                            {
+                                string searchText = null;
+
+                                this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                                {
+                                    searchText = _searchTextBox.Text;
+                                }));
+
+                                if (!string.IsNullOrWhiteSpace(searchText))
+                                {
+                                    words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
+                                }
+                            }
+
+                            foreach (var box in boxes)
+                            {
+                                if (words != null)
+                                {
+                                    var text = (box.Name ?? "").ToLower();
+                                    if (!words.All(n => text.Contains(n))) continue;
+                                }
+
+                                var boxesListViewModel = new BoxListViewModel();
+                                boxesListViewModel.Index = newList.Count;
+                                boxesListViewModel.Name = box.Name;
+                                if (box.Certificate != null) boxesListViewModel.Signature = box.Certificate.ToString();
+                                boxesListViewModel.Length = BoxUtilities.GetBoxLength(box);
+                                boxesListViewModel.CreationTime = BoxUtilities.GetBoxCreationTime(box);
+                                boxesListViewModel.Value = box;
+
+                                newList.Add(boxesListViewModel);
+                            }
+
+                            foreach (var seed in seeds)
+                            {
+                                if (words != null)
+                                {
+                                    var text = (seed.Name ?? "").ToLower();
+                                    if (!words.All(n => text.Contains(n))) continue;
+                                }
+
+                                var seedListViewModel = new SeedListViewModel();
+                                seedListViewModel.Index = newList.Count;
+                                seedListViewModel.Name = seed.Name;
+                                if (seed.Certificate != null) seedListViewModel.Signature = seed.Certificate.ToString();
+                                seedListViewModel.Length = seed.Length;
+                                seedListViewModel.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
+                                seedListViewModel.CreationTime = seed.CreationTime;
+
+                                seedListViewModel.State = _storeControl.GetState(seed);
+
+                                seedListViewModel.Value = seed;
+
+                                newList.Add(seedListViewModel);
+                            }
+
+                            var sortList = this.Sort(newList, 100000);
 
                             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
-                                searchText = _searchTextBox.Text;
+                                if (tempTreeViewModel != _treeView.SelectedItem) return;
+
+                                _listViewModelCollection.Clear();
+                                _listViewModelCollection.AddRange(sortList);
+
+                                this.Update_Title();
                             }));
-
-                            if (!string.IsNullOrWhiteSpace(searchText))
-                            {
-                                words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
-                            }
                         }
-
-                        foreach (var box in boxes)
-                        {
-                            if (words != null)
-                            {
-                                var text = (box.Name ?? "").ToLower();
-                                if (!words.All(n => text.Contains(n))) continue;
-                            }
-
-                            var boxesListViewModel = new BoxListViewModel();
-                            boxesListViewModel.Index = newList.Count;
-                            boxesListViewModel.Name = box.Name;
-                            if (box.Certificate != null) boxesListViewModel.Signature = box.Certificate.ToString();
-                            boxesListViewModel.Length = BoxUtilities.GetBoxLength(box);
-                            boxesListViewModel.CreationTime = BoxUtilities.GetBoxCreationTime(box);
-                            boxesListViewModel.Value = box;
-
-                            newList.Add(boxesListViewModel);
-                        }
-
-                        foreach (var seed in seeds)
-                        {
-                            if (words != null)
-                            {
-                                var text = (seed.Name ?? "").ToLower();
-                                if (!words.All(n => text.Contains(n))) continue;
-                            }
-
-                            var seedListViewModel = new SeedListViewModel();
-                            seedListViewModel.Index = newList.Count;
-                            seedListViewModel.Name = seed.Name;
-                            if (seed.Certificate != null) seedListViewModel.Signature = seed.Certificate.ToString();
-                            seedListViewModel.Length = seed.Length;
-                            seedListViewModel.Keywords = string.Join(", ", seed.Keywords.Where(n => !string.IsNullOrWhiteSpace(n)));
-                            seedListViewModel.CreationTime = seed.CreationTime;
-
-                            seedListViewModel.State = _storeControl.GetState(seed);
-
-                            seedListViewModel.Value = seed;
-
-                            newList.Add(seedListViewModel);
-                        }
-
-                        var sortList = this.Sort(newList, 100000);
-
-                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                        {
-                            if (tempTreeViewModel != _treeView.SelectedItem) return;
-                            _refresh = false;
-
-                            _listViewModelCollection.Clear();
-                            _listViewModelCollection.AddRange(sortList);
-
-                            this.Update_Title();
-                        }));
+                    }
+                    finally
+                    {
+                        _refreshing = false;
                     }
                 }
             }
@@ -344,13 +351,11 @@ namespace Amoeba.Windows
             this.Update_TreeView_Color();
 
             _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
-            _refresh = true;
+            _updateEvent.Set();
         }
 
         private void Update_Title()
         {
-            if (_refresh) return;
-
             if (_mainWindow.SelectedTab == MainWindowTabType.Store && _storeControl.SelectedTab == StoreControlTabType.Upload)
             {
                 if (_treeView.SelectedItem is StoreCategorizeTreeViewModel)
@@ -446,7 +451,7 @@ namespace Amoeba.Windows
                 if (Math.Abs(position.X - _startPoint.X) > SystemParameters.MinimumHorizontalDragDistance
                     || Math.Abs(position.Y - _startPoint.Y) > SystemParameters.MinimumVerticalDragDistance)
                 {
-                    if (_refresh || _listView.SelectedItems.Count == 0) return;
+                    if (_refreshing || _listView.SelectedItems.Count == 0) return;
 
                     var data = new DataObject("ListViewModels", _listView.SelectedItems);
                     DragDrop.DoDragDrop(_grid, data, DragDropEffects.Move);
@@ -1927,7 +1932,7 @@ namespace Amoeba.Windows
         {
             _startPoint = new Point(-1, -1);
 
-            if (_refresh || (_treeView.SelectedItem == null || _treeView.SelectedItem is StoreCategorizeTreeViewModel))
+            if (_refreshing || (_treeView.SelectedItem == null || _treeView.SelectedItem is StoreCategorizeTreeViewModel))
             {
                 _listViewContextMenu.IsEnabled = false;
 

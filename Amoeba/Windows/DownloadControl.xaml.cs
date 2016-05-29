@@ -77,9 +77,6 @@ namespace Amoeba.Windows
             {
                 for (;;)
                 {
-                    Thread.Sleep(100);
-                    if (_mainWindow.SelectedTab != MainWindowTabType.Download) continue;
-
                     var informaitonDic = new Dictionary<int, Information>();
 
                     {

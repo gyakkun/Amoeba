@@ -179,9 +179,6 @@ namespace Amoeba.Windows
             {
                 for (;;)
                 {
-                    Thread.Sleep(100);
-                    if (_mainWindow.SelectedTab != MainWindowTabType.Information) continue;
-
                     var connectionInformation = _amoebaManager.ConnectionInformation.ToArray();
                     var dic = new Dictionary<int, Information>();
 

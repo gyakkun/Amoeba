@@ -72,9 +72,6 @@ namespace Amoeba.Windows
             {
                 for (;;)
                 {
-                    Thread.Sleep(100);
-                    if (_mainWindow.SelectedTab != MainWindowTabType.Share) continue;
-
                     var informaitonDic = new Dictionary<string, Information>();
 
                     {
