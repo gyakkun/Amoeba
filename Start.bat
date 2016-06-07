@@ -1,5 +1,5 @@
 set BATDIR=%~dp0
 cd %BATDIR%
 
-set Windows=true
+set OS=Windows
 start Amoeba.sln
