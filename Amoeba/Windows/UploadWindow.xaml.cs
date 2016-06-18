@@ -15,6 +15,8 @@ using Amoeba.Properties;
 using Library.Net.Amoeba;
 using Library.Net;
 using Library.Security;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Amoeba.Windows
 {
@@ -100,24 +102,36 @@ namespace Amoeba.Windows
             string comment = string.IsNullOrWhiteSpace(_commentTextBox.Text) ? null : _commentTextBox.Text;
             var digitalSignature = _signatureComboBox.SelectedItem as DigitalSignature;
 
-            if (!_isShare)
+            Task.Run(() =>
             {
-                _amoebaManager.Upload(_filePath,
-                    name,
-                    keywords,
-                    comment,
-                    digitalSignature,
-                    3);
-            }
-            else
-            {
-                _amoebaManager.Share(_filePath,
-                    name,
-                    keywords,
-                    comment,
-                    digitalSignature,
-                    3);
-            }
+                Thread.CurrentThread.IsBackground = true;
+
+                try
+                {
+                    if (!_isShare)
+                    {
+                        _amoebaManager.Upload(_filePath,
+                                name,
+                                keywords,
+                                comment,
+                                digitalSignature,
+                                3);
+                    }
+                    else
+                    {
+                        _amoebaManager.Share(_filePath,
+                                name,
+                                keywords,
+                                comment,
+                                digitalSignature,
+                                3);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            });
 
             Settings.Instance.Global_UploadKeywords.Clear();
             Settings.Instance.Global_UploadKeywords.AddRange(keywords);

@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -98,30 +100,42 @@ namespace Amoeba.Windows
             keywords = new KeywordCollection(new HashSet<string>(keywords));
             var digitalSignature = _signatureComboBox.SelectedItem as DigitalSignature;
 
-            if (!_isShare)
+            Task.Run(() =>
             {
-                foreach (var item in _filePaths)
+                Thread.CurrentThread.IsBackground = true;
+
+                try
                 {
-                    _amoebaManager.Upload(item.Path,
-                        item.Name,
-                        keywords,
-                        null,
-                        digitalSignature,
-                        3);
+                    if (!_isShare)
+                    {
+                        foreach (var item in _filePaths)
+                        {
+                            _amoebaManager.Upload(item.Path,
+                                item.Name,
+                                keywords,
+                                null,
+                                digitalSignature,
+                                3);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in _filePaths)
+                        {
+                            _amoebaManager.Share(item.Path,
+                                item.Name,
+                                keywords,
+                                null,
+                                digitalSignature,
+                                3);
+                        }
+                    }
                 }
-            }
-            else
-            {
-                foreach (var item in _filePaths)
+                catch (Exception)
                 {
-                    _amoebaManager.Share(item.Path,
-                        item.Name,
-                        keywords,
-                        null,
-                        digitalSignature,
-                        3);
+
                 }
-            }
+            });
 
             Settings.Instance.Global_UploadKeywords.Clear();
             Settings.Instance.Global_UploadKeywords.AddRange(keywords);

@@ -577,6 +577,10 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
             }
+            else if (sortBy == LanguagesManager.Instance.DownloadControl_CreationTime)
+            {
+                _listView.Items.SortDescriptions.Add(new SortDescription("CreationTime", direction));
+            }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_State)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
@@ -646,6 +650,18 @@ namespace Amoeba.Windows
                 list.Sort((x, y) =>
                 {
                     int c = x.Path.CompareTo(y.Path);
+                    if (c != 0) return c;
+                    c = x.Id.CompareTo(y.Id);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (sortBy == LanguagesManager.Instance.DownloadControl_CreationTime)
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.CreationTime.CompareTo(y.CreationTime);
                     if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;

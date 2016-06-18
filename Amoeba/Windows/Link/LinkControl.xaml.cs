@@ -108,7 +108,7 @@ namespace Amoeba.Windows
             }
             catch (Exception e)
             {
-                Log.Error(e);
+
             }
         }
 
