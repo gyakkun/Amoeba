@@ -218,6 +218,13 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "SeedEditWindow_Height", Value = 500 },
                 new Library.Configuration.SettingContent<double>() { Name = "SeedEditWindow_Width", Value = 700 },
                 new Library.Configuration.SettingContent<WindowState>() { Name = "SeedEditWindow_WindowState", Value = WindowState.Normal },
+
+                new Library.Configuration.SettingContent<double>() { Name = "SeedInformationWindow_Top", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SeedInformationWindow_Left", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "SeedInformationWindow_Height", Value = 500 },
+                new Library.Configuration.SettingContent<double>() { Name = "SeedInformationWindow_Width", Value = 700 },
+                new Library.Configuration.SettingContent<WindowState>() { Name = "SeedInformationWindow_WindowState", Value = WindowState.Normal },
+                new Library.Configuration.SettingContent<double>() { Name = "SeedInformationWindow_GridViewColumn_Signature_Width", Value = 600 },
             })
         {
 
@@ -3399,6 +3406,115 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["SeedEditWindow_WindowState"] = value;
+                }
+            }
+        }
+
+
+        public double SeedInformationWindow_Top
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["SeedInformationWindow_Top"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SeedInformationWindow_Top"] = value;
+                }
+            }
+        }
+
+        public double SeedInformationWindow_Left
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["SeedInformationWindow_Left"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SeedInformationWindow_Left"] = value;
+                }
+            }
+        }
+
+        public double SeedInformationWindow_Height
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["SeedInformationWindow_Height"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SeedInformationWindow_Height"] = value;
+                }
+            }
+        }
+
+        public double SeedInformationWindow_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["SeedInformationWindow_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SeedInformationWindow_Width"] = value;
+                }
+            }
+        }
+
+        public WindowState SeedInformationWindow_WindowState
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (WindowState)this["SeedInformationWindow_WindowState"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SeedInformationWindow_WindowState"] = value;
+                }
+            }
+        }
+
+        public double SeedInformationWindow_GridViewColumn_Signature_Width
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (double)this["SeedInformationWindow_GridViewColumn_Signature_Width"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["SeedInformationWindow_GridViewColumn_Signature_Width"] = value;
                 }
             }
         }

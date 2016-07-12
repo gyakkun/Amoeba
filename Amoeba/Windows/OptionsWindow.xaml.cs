@@ -160,7 +160,6 @@ namespace Amoeba.Windows
             _eventOpenPortAndGetIpAddressCheckBox.IsChecked = Settings.Instance.Global_ConnectionSetting_IsEnabled;
             _eventUseI2pCheckBox.IsChecked = Settings.Instance.Global_I2p_SamBridge_IsEnabled;
 
-            lock (_overlayNetworkManager.ThisLock)
             {
                 _eventSamBridgeUriTextBox.Text = _overlayNetworkManager.SamBridgeUri;
             }
@@ -2074,7 +2073,6 @@ namespace Amoeba.Windows
                 });
             }
 
-            lock (_overlayNetworkManager.ThisLock)
             {
                 _overlayNetworkManager.SamBridgeUri = _eventSamBridgeUriTextBox.Text;
             }

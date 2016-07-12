@@ -264,6 +264,7 @@
   <Translate Key="SearchControl_FilterKeyword" Value="過濾關鍵字" />
   <Translate Key="SearchControl_FilterCreationTimeRange" Value="過濾器建立時間範圍" />
   <Translate Key="SearchControl_FilterSeed" Value="過濾種子" />
+  <Translate Key="SearchControl_Information" Value="Information" />
 
   <Translate Key="SearchItemEditWindow_Title" Value="編輯分類" />
   <Translate Key="SearchItemEditWindow_Name" Value="名稱" />
@@ -475,5 +476,17 @@
   <Translate Key="BoxEditWindow_Comment" Value="評論" />
   <Translate Key="BoxEditWindow_Ok" Value="確定" />
   <Translate Key="BoxEditWindow_Cancel" Value="取消" />
+
+  <Translate Key="SeedInformationWindow_Title" Value="Seed information" />
+  <Translate Key="SeedInformationWindow_Property" Value="Property" />
+  <Translate Key="SeedInformationWindow_Name" Value="Name" />
+  <Translate Key="SeedInformationWindow_Keywords" Value="Keywords" />
+  <Translate Key="SeedInformationWindow_Signature" Value="Signature" />
+  <Translate Key="SeedInformationWindow_CreationTime" Value="Creation time" />
+  <Translate Key="SeedInformationWindow_Length" Value="Length" />
+  <Translate Key="SeedInformationWindow_Comment" Value="Comment" />
+  <Translate Key="SeedInformationWindow_Store" Value="Store" />
+  <Translate Key="SeedInformationWindow_Copy" Value="Copy" />
+  <Translate Key="SeedInformationWindow_Close" Value="Close" />
 
 </Configuration>

@@ -17,7 +17,7 @@ using Library.Net.I2p;
 
 namespace Amoeba
 {
-    class OverlayNetworkManager : StateManagerBase, Library.Configuration.ISettings, IThisLock
+    class OverlayNetworkManager : StateManagerBase, Library.Configuration.ISettings
     {
         private AmoebaManager _amoebaManager;
         private BufferManager _bufferManager;
@@ -41,7 +41,7 @@ namespace Amoeba
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
 
-            _settings = new Settings(this.ThisLock);
+            _settings = new Settings(_thisLock);
 
             _amoebaManager.CreateCapEvent = this.CreateCap;
             _amoebaManager.AcceptCapEvent = this.AcceptCap;
@@ -154,14 +154,14 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _settings.SamBridgeUri;
                 }
             }
             set
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _settings.SamBridgeUri = value;
                 }
@@ -170,7 +170,7 @@ namespace Amoeba
 
         private bool AddUri(string uri)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 lock (_amoebaManager.ThisLock)
                 {
@@ -190,7 +190,7 @@ namespace Amoeba
 
         private bool RemoveUri(string uri)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 lock (_amoebaManager.ThisLock)
                 {
@@ -242,7 +242,6 @@ namespace Amoeba
                                     var host = match.Groups[2].Value;
                                     var port = int.Parse(match.Groups[3].Value);
 
-                                    if (_samManager != null) _samManager.Dispose();
                                     _samManager = new SamManager(host, port, "Amoeba");
                                 }
 
@@ -259,7 +258,7 @@ namespace Amoeba
                             if (_samManager != null) _samManager.Dispose();
                         }
 
-                        lock (this.ThisLock)
+                        lock (_thisLock)
                         {
                             if (i2pUri != _settings.I2pUri)
                             {
@@ -296,7 +295,7 @@ namespace Amoeba
         {
             lock (_stateLock)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
@@ -313,7 +312,7 @@ namespace Amoeba
         {
             lock (_stateLock)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     if (this.State == ManagerState.Stop) return;
                     _state = ManagerState.Stop;
@@ -325,7 +324,7 @@ namespace Amoeba
                 if (_samManager != null) _samManager.Dispose();
                 _samManager = null;
 
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     if (_settings.I2pUri != null)
                     {
@@ -341,7 +340,7 @@ namespace Amoeba
 
         public void Load(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Load(directoryPath);
             }
@@ -349,7 +348,7 @@ namespace Amoeba
 
         public void Save(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Save(directoryPath);
             }
@@ -434,18 +433,6 @@ namespace Amoeba
                 _samManager = null;
             }
         }
-
-        #region IThisLock
-
-        public object ThisLock
-        {
-            get
-            {
-                return _thisLock;
-            }
-        }
-
-        #endregion
     }
 
     [Serializable]

@@ -1164,7 +1164,8 @@ namespace Amoeba.Windows
                 _listViewFilterMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
                 _listViewSearchMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
                 _listViewDownloadMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
-
+                _listViewInformationMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                
                 if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
                 else _listViewDeleteMenuItem.IsEnabled = (selectItems != null
                     && selectItems.OfType<SearchListViewModel>().Any(n => (n.State & (SearchState.Cache | SearchState.Downloading | SearchState.Uploading | SearchState.Downloaded | SearchState.Uploaded)) > 0));
@@ -1790,6 +1791,16 @@ namespace Amoeba.Windows
 
                 }
             });
+        }
+
+        private void _listViewInformationMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var selectSearchListViewModel = _listView.SelectedItem as SearchListViewModel;
+            if (selectSearchListViewModel == null) return;
+
+            var window = new SeedInformationWindow(selectSearchListViewModel.Value, _amoebaManager);
+            window.Owner = _mainWindow;
+            window.Show();
         }
 
         #endregion

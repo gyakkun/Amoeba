@@ -44,7 +44,7 @@
                 <TreeViewItem Name="_coreTreeViewItem" Header="{Binding Path=OptionsWindow_Core, Source={StaticResource _languages}}" IsExpanded="True">
                     <TreeViewItem Name="_baseNodeTreeViewItem" Header="{Binding Path=OptionsWindow_BaseNode, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_otherNodesTreeViewItem" Header="{Binding Path=OptionsWindow_OtherNodes, Source={StaticResource _languages}}" />
-                    <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=OptionsWindow_Client, Source={StaticResource _languages}}" />
+                    <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=OptionsWindow_Client, Source={StaticResource _languages}}" IsSelected="True" />
                     <TreeViewItem Name="_serverTreeViewItem" Header="{Binding Path=OptionsWindow_Server, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_dataTreeViewItem" Header="{Binding Path=OptionsWindow_Data, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_bandwidthTreeViewItem" Header="{Binding Path=OptionsWindow_Bandwidth, Source={StaticResource _languages}}" />
@@ -130,7 +130,7 @@
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_clientFiltersConditionTextBox}" Visibility="{Binding ElementName=_clientTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
                 <GroupBox Header="{Binding Path=OptionsWindow_Filters, Source={StaticResource _languages}}">
                     <Grid>
-                        <local:ListViewEx Margin="6,6,6,229" x:Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" ContextMenuOpening="_clientFiltersListView_ContextMenuOpening">
+                        <local:ListViewEx Margin="6,6,6,230" x:Name="_clientFiltersListView" PreviewMouseLeftButtonDown="_clientFiltersListView_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersListView_SelectionChanged" ContextMenuOpening="_clientFiltersListView_ContextMenuOpening">
                             <ListView.Resources>
                                 <DataTemplate x:Key="_myTemplate_ConnectionFilter_ConnectionType">
                                     <TextBlock Text="{Binding Path=ConnectionType, Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
@@ -167,22 +167,22 @@
                                 </GridView>
                             </ListView.View>
                         </local:ListViewEx>
-                        <Label Margin="6,0,0,199" HorizontalAlignment="Left" Width="120" Content="{Binding Path=OptionsWindow_ConnectionType, Source={StaticResource _languages}}" Height="24" VerticalAlignment="Bottom" />
-                        <ComboBox Margin="132,0,6,199" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged">
+                        <Label Margin="6,0,0,200" HorizontalAlignment="Left" Width="120" Content="{Binding Path=OptionsWindow_ConnectionType, Source={StaticResource _languages}}" Height="24" VerticalAlignment="Bottom" />
+                        <ComboBox Margin="132,0,6,200" Name="_clientFiltersConnectionTypeComboBox" Height="24" VerticalAlignment="Bottom" PreviewMouseLeftButtonDown="_clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConnectionTypeComboBox_SelectionChanged">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Mode=OneWay, Converter={StaticResource _connectionTypeToStringConverter}}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,169" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource _languages}}" />
-                        <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="132,0,6,169" VerticalAlignment="Bottom" KeyDown="_clientFiltersProxyUriTextBox_KeyDown" />
-                        <Label Content="{Binding Path=OptionsWindow_Option, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,139" VerticalAlignment="Bottom" Width="120" />
-                        <TextBox Height="24" Margin="132,0,6,139" Name="_clientFiltersOptionTextBox" VerticalAlignment="Bottom" />
-                        <GroupBox Header="{Binding Path=OptionsWindow_UriCondition, Source={StaticResource _languages}}" Margin="6,0,6,35" Height="98" VerticalAlignment="Bottom">
+                        <Label Height="24" HorizontalAlignment="Left" Margin="6,0,0,170" VerticalAlignment="Bottom" Width="120" Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource _languages}}" />
+                        <TextBox Name="_clientFiltersProxyUriTextBox" Height="24" Margin="132,0,6,170" VerticalAlignment="Bottom" KeyDown="_clientFiltersProxyUriTextBox_KeyDown" />
+                        <Label Content="{Binding Path=OptionsWindow_Option, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,0,0,140" VerticalAlignment="Bottom" Width="120" />
+                        <TextBox Height="24" Margin="132,0,6,140" Name="_clientFiltersOptionTextBox" VerticalAlignment="Bottom" />
+                        <GroupBox Header="{Binding Path=OptionsWindow_UriCondition, Source={StaticResource _languages}}" Margin="6,0,6,35" Height="99" VerticalAlignment="Bottom">
                             <Grid>
                                 <Label HorizontalAlignment="Left" Margin="6,6,0,0" Width="120" Height="24" VerticalAlignment="Top" Content="{Binding Path=OptionsWindow_Type, Source={StaticResource _languages}}" />
-                                <TextBox Margin="6,36,6,0" Name="_clientFiltersConditionTextBox" Height="24" VerticalAlignment="Top" KeyDown="_clientFiltersConditionTextBox_KeyDown" />
+                                <TextBox Margin="6,36,6,0" Name="_clientFiltersConditionTextBox" Height="23" VerticalAlignment="Top" KeyDown="_clientFiltersConditionTextBox_KeyDown" />
                                 <ComboBox Margin="132,6,6,0" Name="_clientFiltersConditionSchemeComboBox" Height="24" VerticalAlignment="Top" PreviewMouseLeftButtonDown="_clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown" SelectionChanged="_clientFiltersConditionSchemeComboBox_SelectionChanged">
                                     <ComboBoxItem Content="tcp" IsSelected="True" />
                                     <ComboBoxItem Content="tor" />

@@ -264,6 +264,7 @@
   <Translate Key="SearchControl_FilterKeyword" Value="Filter keyword" />
   <Translate Key="SearchControl_FilterCreationTimeRange" Value="Filter creation time range" />
   <Translate Key="SearchControl_FilterSeed" Value="Filter seed" />
+  <Translate Key="SearchControl_Information" Value="Information" />
 
   <Translate Key="SearchItemEditWindow_Title" Value="Редактировать категорию" />
   <Translate Key="SearchItemEditWindow_Name" Value="Название" />
@@ -475,5 +476,17 @@
   <Translate Key="BoxEditWindow_Comment" Value="Комментарий" />
   <Translate Key="BoxEditWindow_Ok" Value="Ok" />
   <Translate Key="BoxEditWindow_Cancel" Value="Закрыть" />
+
+  <Translate Key="SeedInformationWindow_Title" Value="Seed information" />
+  <Translate Key="SeedInformationWindow_Property" Value="Property" />
+  <Translate Key="SeedInformationWindow_Name" Value="Name" />
+  <Translate Key="SeedInformationWindow_Keywords" Value="Keywords" />
+  <Translate Key="SeedInformationWindow_Signature" Value="Signature" />
+  <Translate Key="SeedInformationWindow_CreationTime" Value="Creation time" />
+  <Translate Key="SeedInformationWindow_Length" Value="Length" />
+  <Translate Key="SeedInformationWindow_Comment" Value="Comment" />
+  <Translate Key="SeedInformationWindow_Store" Value="Store" />
+  <Translate Key="SeedInformationWindow_Copy" Value="Copy" />
+  <Translate Key="SeedInformationWindow_Close" Value="Close" />
 
 </Configuration>

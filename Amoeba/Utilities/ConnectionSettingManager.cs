@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Net;
-using System.Net.Sockets;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Library;
 using Library.Net.Amoeba;
 using Library.Net.Upnp;
-using System.Security.Cryptography;
 
 namespace Amoeba
 {
-    class ConnectionSettingManager : StateManagerBase, Library.Configuration.ISettings, IThisLock
+    class ConnectionSettingManager : StateManagerBase, Library.Configuration.ISettings
     {
         private AmoebaManager _amoebaManager;
 
@@ -30,7 +25,7 @@ namespace Amoeba
         {
             _amoebaManager = amoebaManager;
 
-            _settings = new Settings(this.ThisLock);
+            _settings = new Settings(_thisLock);
         }
 
         public override ManagerState State
@@ -94,7 +89,7 @@ namespace Amoeba
 
         private bool AddUri(string uri)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 lock (_amoebaManager.ThisLock)
                 {
@@ -114,7 +109,7 @@ namespace Amoeba
 
         private bool RemoveUri(string uri)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 lock (_amoebaManager.ThisLock)
                 {
@@ -132,7 +127,7 @@ namespace Amoeba
 
         public void Update()
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 if (this.State == ManagerState.Stop) return;
 
@@ -340,7 +335,7 @@ namespace Amoeba
 
         private void Shutdown()
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 if (_settings.Ipv4Uri != null)
                 {
@@ -392,7 +387,7 @@ namespace Amoeba
         {
             lock (_stateLock)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
@@ -406,7 +401,7 @@ namespace Amoeba
         {
             lock (_stateLock)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     if (this.State == ManagerState.Stop) return;
                     _state = ManagerState.Stop;
@@ -420,7 +415,7 @@ namespace Amoeba
 
         public void Load(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Load(directoryPath);
 
@@ -430,7 +425,7 @@ namespace Amoeba
 
         public void Save(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Save(directoryPath);
             }
@@ -533,17 +528,5 @@ namespace Amoeba
 
             }
         }
-
-        #region IThisLock
-
-        public object ThisLock
-        {
-            get
-            {
-                return _thisLock;
-            }
-        }
-
-        #endregion
     }
 }

@@ -2925,6 +2925,17 @@ namespace Amoeba.Properties
             }
         }
 
+        public string SearchControl_Information
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SearchControl_Information");
+                }
+            }
+        }
+
 
         public string SearchItemEditWindow_Title
         {
@@ -5092,6 +5103,128 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     return this.Translate("BoxEditWindow_Cancel");
+                }
+            }
+        }
+
+
+        public string SeedInformationWindow_Title
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Title");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Property
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Property");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Name
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Name");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Keywords
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Keywords");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Signature
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Signature");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_CreationTime
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_CreationTime");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Length
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Length");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Comment
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Comment");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Store
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Store");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Copy
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Copy");
+                }
+            }
+        }
+
+        public string SeedInformationWindow_Close
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return this.Translate("SeedInformationWindow_Close");
                 }
             }
         }

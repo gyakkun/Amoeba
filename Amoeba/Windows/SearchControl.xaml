@@ -140,6 +140,8 @@
                     </MenuItem>
                     <Separator />
                     <MenuItem Name="_listViewDownloadMenuItem" Header="{Binding Path=SearchControl_Download, Source={StaticResource _languages}}" Click="_listViewDownloadMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_listViewInformationMenuItem" Header="{Binding Path=SearchControl_Information, Source={StaticResource _languages}}" Click="_listViewInformationMenuItem_Click" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
