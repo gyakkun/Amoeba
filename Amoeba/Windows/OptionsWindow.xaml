@@ -44,7 +44,7 @@
                 <TreeViewItem Name="_coreTreeViewItem" Header="{Binding Path=OptionsWindow_Core, Source={StaticResource _languages}}" IsExpanded="True">
                     <TreeViewItem Name="_baseNodeTreeViewItem" Header="{Binding Path=OptionsWindow_BaseNode, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_otherNodesTreeViewItem" Header="{Binding Path=OptionsWindow_OtherNodes, Source={StaticResource _languages}}" />
-                    <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=OptionsWindow_Client, Source={StaticResource _languages}}" IsSelected="True" />
+                    <TreeViewItem Name="_clientTreeViewItem" Header="{Binding Path=OptionsWindow_Client, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_serverTreeViewItem" Header="{Binding Path=OptionsWindow_Server, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_dataTreeViewItem" Header="{Binding Path=OptionsWindow_Data, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_bandwidthTreeViewItem" Header="{Binding Path=OptionsWindow_Bandwidth, Source={StaticResource _languages}}" />
