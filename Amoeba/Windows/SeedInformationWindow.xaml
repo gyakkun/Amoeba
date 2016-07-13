@@ -21,18 +21,18 @@
         <TabControl Margin="0,0,0,41">
             <TabItem Name="_seedTabItem" Header="{Binding Path=SeedInformationWindow_Property, Source={StaticResource _languages}}">
                 <Grid FocusManager.FocusedElement="{Binding ElementName=_nameTextBox}">
-                    <Label Content="{Binding Path=SeedInformationWindow_Name, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="120" />
-                    <TextBox Height="24" Margin="138,12,12,0" Name="_nameTextBox" VerticalAlignment="Top" IsReadOnly="True" />
-                    <Label Content="{Binding Path=SeedInformationWindow_Keywords, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,42,0,0" VerticalAlignment="Top" Width="120" />
-                    <TextBox Height="24" Margin="138,42,12,0" Name="_keywordsTextBox" VerticalAlignment="Top" IsReadOnly="True" />
-                    <Label Content="{Binding Path=SeedInformationWindow_Signature, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,72,0,0" VerticalAlignment="Top" Width="120" />
-                    <TextBox Height="24" Margin="138,72,12,0" Name="_signatureTextBox" VerticalAlignment="Top" IsReadOnly="True" />
-                    <Label Content="{Binding Path=SeedInformationWindow_CreationTime, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,102,0,0" VerticalAlignment="Top" Width="120" />
-                    <TextBox Height="24" Margin="138,102,12,0" Name="_creationTimeTextBox" VerticalAlignment="Top" IsReadOnly="True" />
-                    <Label Content="{Binding Path=SeedInformationWindow_Length, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="12,132,0,0" VerticalAlignment="Top" Width="120" />
-                    <TextBox Height="24" Margin="138,132,12,0" Name="_lengthTextBox" VerticalAlignment="Top" IsReadOnly="True" />
-                    <Label Content="{Binding Path=SeedInformationWindow_Comment, Source={StaticResource _languages}}" HorizontalAlignment="Left" Margin="12,162,0,0" Width="120" Height="24" VerticalAlignment="Top" />
-                    <TextBox AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" Margin="138,162,12,12" Name="_commentTextBox" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="True" />
+                    <Label Content="{Binding Path=SeedInformationWindow_Name, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
+                    <TextBox Height="24" Margin="132,6,6,0" Name="_nameTextBox" VerticalAlignment="Top" IsReadOnly="True" />
+                    <Label Content="{Binding Path=SeedInformationWindow_Keywords, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="120" />
+                    <TextBox Height="24" Margin="132,36,6,0" Name="_keywordsTextBox" VerticalAlignment="Top" IsReadOnly="True" />
+                    <Label Content="{Binding Path=SeedInformationWindow_Signature, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="120" />
+                    <TextBox Height="24" Margin="132,66,6,0" Name="_signatureTextBox" VerticalAlignment="Top" IsReadOnly="True" />
+                    <Label Content="{Binding Path=SeedInformationWindow_CreationTime, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,96,0,0" VerticalAlignment="Top" Width="120" />
+                    <TextBox Height="24" Margin="132,96,6,0" Name="_creationTimeTextBox" VerticalAlignment="Top" IsReadOnly="True" />
+                    <Label Content="{Binding Path=SeedInformationWindow_Length, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,126,0,0" VerticalAlignment="Top" Width="120" />
+                    <TextBox Height="24" Margin="132,126,6,0" Name="_lengthTextBox" VerticalAlignment="Top" IsReadOnly="True" />
+                    <Label Content="{Binding Path=SeedInformationWindow_Comment, Source={StaticResource _languages}}" HorizontalAlignment="Left" Margin="6,156,0,0" Width="120" Height="24" VerticalAlignment="Top" />
+                    <TextBox AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" Margin="132,156,6,6" Name="_commentTextBox" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="True" />
                 </Grid>
             </TabItem>
             <TabItem Name="_storeTabItem" Header="{Binding Path=SeedInformationWindow_Store, Source={StaticResource _languages}}">
