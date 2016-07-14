@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -383,23 +384,28 @@ namespace Amoeba.Windows
 
                 try
                 {
-                    var shareInformation = _amoebaManager.ShareInformation.ToArray();
                     var sb = new StringBuilder();
                     sb.AppendLine("Share Delete");
 
-                    foreach (var item in shareInformation)
-                    {
-                        if (item.Contains("Path") && !File.Exists((string)item["Path"]))
-                        {
-                            try
-                            {
-                                _amoebaManager.RemoveShare((string)item["Path"]);
-                                sb.AppendLine((string)item["Path"]);
-                            }
-                            catch (Exception)
-                            {
+                    var paths = _amoebaManager.ShareInformation.ToArray()
+                        .Where(n => n.Contains("Path"))
+                        .Select(n => (string)n["Path"]);
 
-                            }
+                    var dic = new ConcurrentDictionary<string, HashSet<string>>();
+
+                    foreach (var path in paths)
+                    {
+                        var directoryPath = System.IO.Path.GetDirectoryName(path);
+
+                        var hashSet = dic.GetOrAdd(directoryPath, _ =>
+                        {
+                            return new HashSet<string>(Directory.GetFiles(directoryPath, "*", SearchOption.TopDirectoryOnly));
+                        });
+
+                        if (!hashSet.Contains(path))
+                        {
+                            _amoebaManager.RemoveShare(path);
+                            sb.AppendLine(path);
                         }
                     }
 
