@@ -61,6 +61,7 @@ namespace Amoeba.Windows
                 _commentTextBox.Text = _seed.Comment;
             }
 
+            try
             {
                 _storeSignatureListView.ItemsSource = _storeSignatureCollection;
 
@@ -78,6 +79,10 @@ namespace Amoeba.Windows
 
                     _storeTabItem.Cursor = null;
                 }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            catch (Exception)
+            {
+
             }
         }
 
