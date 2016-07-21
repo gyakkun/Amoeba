@@ -139,7 +139,6 @@
     <Compile Include="Windows\Store\StoreControl.xaml.cs">
       <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\EqualityComparer.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Windows\Store\LibraryControl.xaml.cs">
       <DependentUpon>LibraryControl.xaml</DependentUpon>
@@ -498,6 +497,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <Import Project="..\..\Library\Library.Utilities\Library.Utilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

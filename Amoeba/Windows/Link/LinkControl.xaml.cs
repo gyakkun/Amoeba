@@ -78,6 +78,10 @@ namespace Amoeba.Windows
                     this.Update();
                 }
             };
+
+            _searchRowDefinition.Height = new GridLength(0);
+
+            this.Update();
         }
 
         private void Sort()
@@ -222,9 +226,30 @@ namespace Amoeba.Windows
             _trustSignatureCollection.Clear();
             _untrustSignatureCollection.Clear();
 
+            string[] words = null;
+
+            {
+                string searchText = _searchTextBox.Text;
+
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
+                }
+            }
+
             foreach (var leaderSignature in Settings.Instance.Global_TrustSignatures.ToArray())
             {
                 var item = this.GetSignatureTreeViewItem(leaderSignature);
+
+                if (words != null)
+                {
+                    foreach (var word in words)
+                    {
+                        if (item == null) break;
+                        item = item.Search(n => n.LinkItem.Signature.Contains(word, StringComparison.CurrentCultureIgnoreCase));
+                    }
+                }
+
                 if (item == null) continue;
 
                 _treeView.Items.Add(new SignatureTreeViewModel(null, item));
@@ -250,7 +275,10 @@ namespace Amoeba.Windows
 
                 End:;
 
-                Settings.Instance.LinkControl_ExpandedPaths.Remove(path);
+                if (words == null)
+                {
+                    Settings.Instance.LinkControl_ExpandedPaths.Remove(path);
+                }
             }
         }
 
@@ -450,9 +478,31 @@ namespace Amoeba.Windows
 
         #endregion
 
+        private void _searchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                this.Update();
+            }
+        }
+
         private void Execute_Copy(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
             _treeViewItemCopyMenuItem_Click(sender, e);
+        }
+
+        private void Execute_Search(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(24);
+            _searchTextBox.Focus();
+        }
+
+        private void Execute_Close(object sender, ExecutedRoutedEventArgs e)
+        {
+            _searchRowDefinition.Height = new GridLength(0);
+            _searchTextBox.Text = "";
+
+            this.Update();
         }
     }
 }

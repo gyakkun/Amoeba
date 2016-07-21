@@ -1805,14 +1805,6 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private void _serachCloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            _searchRowDefinition.Height = new GridLength(0);
-            _searchTextBox.Text = "";
-
-            this.Update();
-        }
-
         private void _searchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)

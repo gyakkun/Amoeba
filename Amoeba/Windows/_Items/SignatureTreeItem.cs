@@ -27,6 +27,31 @@ namespace Amoeba.Windows
             this.LinkItem = sectionLinkItemInfo;
         }
 
+        public SignatureTreeItem Search(Func<SignatureTreeItem, bool> predicate)
+        {
+            if (this.Children == null || this.Children.Count == 0)
+            {
+                if (predicate(this)) return this;
+                else return null;
+            }
+            else
+            {
+                var results = this.Children
+                    .Select(n => n.Search(predicate))
+                    .Where(n => n != null).ToList();
+
+                if (results.Any())
+                {
+                    var result = new SignatureTreeItem(this.LinkItem);
+                    result.Children.AddRange(results);
+
+                    return result;
+                }
+
+                return null;
+            }
+        }
+
         [DataMember(Name = "LinkItem")]
         public LinkItem LinkItem
         {

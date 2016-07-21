@@ -11,13 +11,21 @@
 
     <UserControl.CommandBindings>
         <CommandBinding Command="Copy" Executed="Execute_Copy" />
+        <CommandBinding Command="Search"  Executed="Execute_Search" />
+        <CommandBinding Command="Close"  Executed="Execute_Close" />
     </UserControl.CommandBindings>
 
     <UserControl.InputBindings>
         <KeyBinding Gesture="CTRL+C" Command="Copy" />
+        <KeyBinding Gesture="CTRL+F" Command="Search" />
+        <KeyBinding Gesture="Escape" Command="Close" />
     </UserControl.InputBindings>
 
-    <Grid Grid.ColumnSpan="3" Grid.Row="2">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Name="_searchRowDefinition" Height="24" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding Path=LinkControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
             <ColumnDefinition Width="4"/>
@@ -51,7 +59,7 @@
             </TreeView.ItemTemplate>
         </TreeView>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="3"/>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="2"/>
 
         <TabControl Grid.Column="2">
             <TabItem Header="{Binding Path=LinkControl_Trust, Source={StaticResource _languages}}">
@@ -97,5 +105,8 @@
                 </local:ListViewEx>
             </TabItem>
         </TabControl>
+
+        <TextBox Grid.ColumnSpan="3" Grid.Row="1" Margin="24,0,0,0" Name="_searchTextBox" KeyDown="_searchTextBox_KeyDown" />
+        <Button Content="×" Grid.ColumnSpan="3" Grid.Row="1" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Command="Close" />
     </Grid>
 </UserControl>

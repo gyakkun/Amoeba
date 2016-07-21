@@ -30,6 +30,7 @@ using Library.Io;
 using Library.Net;
 using Library.Net.Amoeba;
 using Library.Security;
+using Library.Utilities;
 
 namespace Amoeba.Windows
 {

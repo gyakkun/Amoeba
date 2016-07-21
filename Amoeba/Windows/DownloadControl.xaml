@@ -31,7 +31,7 @@
             <RowDefinition Name="_searchRowDefinition" Height="24" />
         </Grid.RowDefinitions>
 
-        <local:ListViewEx Grid.Column="2" x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="_listView_GridViewColumnHeader_Click"
+        <local:ListViewEx x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="_listView_GridViewColumnHeader_Click"
                     VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.Resources>
                 <DataTemplate x:Key="_myTemplate_Name">
@@ -100,7 +100,7 @@
             </ListView.View>
         </local:ListViewEx>
 
-        <TextBox Grid.Row="2" Margin="24,0,0,0" Name="_searchTextBox" />
-        <Button Content="×" Grid.Row="2" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Command="Close" />
+        <TextBox Grid.Row="1" Margin="24,0,0,0" Name="_searchTextBox" />
+        <Button Content="×" Grid.Row="1" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Command="Close" />
     </Grid>
 </UserControl>
