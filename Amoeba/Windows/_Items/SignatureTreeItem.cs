@@ -29,27 +29,23 @@ namespace Amoeba.Windows
 
         public SignatureTreeItem Search(Func<SignatureTreeItem, bool> predicate)
         {
-            if (this.Children == null || this.Children.Count == 0)
+            var children = this.Children
+                .Select(n => n.Search(predicate))
+                .Where(n => n != null).ToList();
+
+            if (children.Any())
             {
-                if (predicate(this)) return this;
-                else return null;
+                var result = new SignatureTreeItem(this.LinkItem);
+                result.Children.AddRange(children);
+                return result;
             }
-            else
+            else if (predicate(this))
             {
-                var results = this.Children
-                    .Select(n => n.Search(predicate))
-                    .Where(n => n != null).ToList();
-
-                if (results.Any())
-                {
-                    var result = new SignatureTreeItem(this.LinkItem);
-                    result.Children.AddRange(results);
-
-                    return result;
-                }
-
-                return null;
+                var result = new SignatureTreeItem(this.LinkItem);
+                return result;
             }
+
+            return null;
         }
 
         [DataMember(Name = "LinkItem")]
