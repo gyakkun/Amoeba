@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -112,25 +113,14 @@ namespace Amoeba.Windows
                     var sw = new Stopwatch();
                     sw.Start();
 
-                    var seedsDictionary = new Dictionary<Seed, SeedsState>();
+                    var seedsDictionary = new ConcurrentDictionary<Seed, SeedsState>();
 
                     {
                         foreach (var seed in _amoebaManager.CacheSeeds)
                         {
-                            SeedsState item = null;
+                            var item = seedsDictionary.GetOrAdd(seed, _ => new SeedsState());
 
-                            if (seedsDictionary.TryGetValue(seed, out item))
-                            {
-                                item.Seeds.Add(seed);
-                            }
-                            else
-                            {
-                                item = new SeedsState();
-                                item.State = SearchState.Cache;
-                                item.Seeds.Add(seed);
-
-                                seedsDictionary.Add(seed, item);
-                            }
+                            item.State |= SearchState.Cache;
                         }
 
                         {
@@ -165,19 +155,9 @@ namespace Amoeba.Windows
 
                             foreach (var seed in seedList)
                             {
-                                SeedsState item = null;
+                                var item = seedsDictionary.GetOrAdd(seed, _ => new SeedsState());
 
-                                if (seedsDictionary.TryGetValue(seed, out item))
-                                {
-                                    item.State |= SearchState.Store;
-                                }
-                                else
-                                {
-                                    item = new SeedsState();
-                                    item.State = SearchState.Store;
-
-                                    seedsDictionary.Add(seed, item);
-                                }
+                                item.State |= SearchState.Store;
                             }
                         }
 
@@ -214,19 +194,9 @@ namespace Amoeba.Windows
 
                             foreach (var seed in seedList)
                             {
-                                SeedsState item = null;
+                                var item = seedsDictionary.GetOrAdd(seed, _ => new SeedsState());
 
-                                if (seedsDictionary.TryGetValue(seed, out item))
-                                {
-                                    item.State |= SearchState.Link;
-                                }
-                                else
-                                {
-                                    item = new SeedsState();
-                                    item.State = SearchState.Link;
-
-                                    seedsDictionary.Add(seed, item);
-                                }
+                                item.State |= SearchState.Link;
                             }
                         }
 
@@ -235,30 +205,13 @@ namespace Amoeba.Windows
                             if (information.Contains("Seed") && ((UploadState)information["State"]) != UploadState.Completed)
                             {
                                 var seed = (Seed)information["Seed"];
-                                SeedsState item = null;
 
-                                if (seedsDictionary.TryGetValue(seed, out item))
+                                var item = seedsDictionary.GetOrAdd(seed, _ => new SeedsState());
+
                                 {
                                     item.State |= SearchState.Uploading;
                                     item.Seeds.Add(seed);
-
-                                    if (item.UploadIds == null)
-                                        item.UploadIds = new SmallList<int>();
-
                                     item.UploadIds.Add((int)information["Id"]);
-                                }
-                                else
-                                {
-                                    item = new SeedsState();
-                                    item.State = SearchState.Uploading;
-                                    item.Seeds.Add(seed);
-
-                                    if (item.UploadIds == null)
-                                        item.UploadIds = new SmallList<int>();
-
-                                    item.UploadIds.Add((int)information["Id"]);
-
-                                    seedsDictionary.Add(seed, item);
                                 }
                             }
                         }
@@ -268,69 +221,34 @@ namespace Amoeba.Windows
                             if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed)
                             {
                                 var seed = (Seed)information["Seed"];
-                                SeedsState item = null;
 
-                                if (seedsDictionary.TryGetValue(seed, out item))
+                                var item = seedsDictionary.GetOrAdd(seed, _ => new SeedsState());
+
                                 {
                                     item.State |= SearchState.Downloading;
                                     item.Seeds.Add(seed);
-
-                                    if (item.DownloadIds == null)
-                                        item.DownloadIds = new SmallList<int>();
-
                                     item.DownloadIds.Add((int)information["Id"]);
-                                }
-                                else
-                                {
-                                    item = new SeedsState();
-                                    item.State = SearchState.Downloading;
-                                    item.Seeds.Add(seed);
-
-                                    if (item.DownloadIds == null)
-                                        item.DownloadIds = new SmallList<int>();
-
-                                    item.DownloadIds.Add((int)information["Id"]);
-
-                                    seedsDictionary.Add(seed, item);
                                 }
                             }
                         }
 
                         foreach (var seed in _amoebaManager.UploadedSeeds)
                         {
-                            SeedsState item = null;
+                            var item = seedsDictionary.GetOrAdd(seed, _ => new SeedsState());
 
-                            if (seedsDictionary.TryGetValue(seed, out item))
                             {
                                 item.State |= SearchState.Uploaded;
                                 item.Seeds.Add(seed);
-                            }
-                            else
-                            {
-                                item = new SeedsState();
-                                item.State = SearchState.Uploaded;
-                                item.Seeds.Add(seed);
-
-                                seedsDictionary.Add(seed, item);
                             }
                         }
 
                         foreach (var seed in _amoebaManager.DownloadedSeeds)
                         {
-                            SeedsState item = null;
+                            var item = seedsDictionary.GetOrAdd(seed, _ => new SeedsState());
 
-                            if (seedsDictionary.TryGetValue(seed, out item))
                             {
                                 item.State |= SearchState.Downloaded;
                                 item.Seeds.Add(seed);
-                            }
-                            else
-                            {
-                                item = new SeedsState();
-                                item.State = SearchState.Downloaded;
-                                item.Seeds.Add(seed);
-
-                                seedsDictionary.Add(seed, item);
                             }
                         }
                     }
@@ -697,9 +615,11 @@ namespace Amoeba.Windows
 
         private class SeedsState
         {
-            public SearchState State { get; set; }
-
             private SmallList<Seed> _seeds;
+            private SmallList<int> _downloadIds;
+            private SmallList<int> _uploadIds;
+
+            public SearchState State { get; set; }
 
             public SmallList<Seed> Seeds
             {
@@ -712,8 +632,27 @@ namespace Amoeba.Windows
                 }
             }
 
-            public SmallList<int> DownloadIds { get; set; }
-            public SmallList<int> UploadIds { get; set; }
+            public SmallList<int> DownloadIds
+            {
+                get
+                {
+                    if (_downloadIds == null)
+                        _downloadIds = new SmallList<int>();
+
+                    return _downloadIds;
+                }
+            }
+
+            public SmallList<int> UploadIds
+            {
+                get
+                {
+                    if (_uploadIds == null)
+                        _uploadIds = new SmallList<int>();
+
+                    return _uploadIds;
+                }
+            }
         }
 
         private void Update()
@@ -1165,7 +1104,7 @@ namespace Amoeba.Windows
                 _listViewSearchMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
                 _listViewDownloadMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
                 _listViewInformationMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
-                
+
                 if (!_listViewDeleteMenuItem_IsEnabled) _listViewDeleteMenuItem.IsEnabled = false;
                 else _listViewDeleteMenuItem.IsEnabled = (selectItems != null
                     && selectItems.OfType<SearchListViewModel>().Any(n => (n.State & (SearchState.Cache | SearchState.Downloading | SearchState.Uploading | SearchState.Downloaded | SearchState.Uploaded)) > 0));
@@ -1235,8 +1174,8 @@ namespace Amoeba.Windows
 
                 list.Add(item.Value);
 
-                if (item.DownloadIds != null) downloadList.UnionWith(item.DownloadIds);
-                if (item.UploadIds != null) uploadList.UnionWith(item.UploadIds);
+                downloadList.UnionWith(item.DownloadIds);
+                uploadList.UnionWith(item.UploadIds);
             }
 
             if ((list.Count + downloadList.Count + uploadList.Count) == 0) return;
@@ -1377,8 +1316,6 @@ namespace Amoeba.Windows
 
             foreach (var item in selectSearchListViewModels.Cast<SearchListViewModel>())
             {
-                if (item.UploadIds == null || !item.State.HasFlag(SearchState.Uploading)) continue;
-
                 list.UnionWith(item.UploadIds);
             }
 
