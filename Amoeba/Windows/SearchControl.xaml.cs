@@ -855,8 +855,6 @@ namespace Amoeba.Windows
                 return;
             }
 
-            Point lposition = e.GetPosition(_treeView);
-
             if (item.IsSelected == true)
             {
                 _startPoint = e.GetPosition(null);
