@@ -1,0 +1,106 @@
+﻿<UserControl x:Class="Amoeba.Windows.DownloadControl"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prop="clr-namespace:Amoeba.Properties"     
+        xmlns:local="clr-namespace:Amoeba.Windows" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        d:DesignHeight="500" d:DesignWidth="800">
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Delete" Executed="Execute_Delete" />
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
+        <CommandBinding Command="Paste" Executed="Execute_Paste" />
+        <CommandBinding Command="Search"  Executed="Execute_Search" />
+        <CommandBinding Command="Close"  Executed="Execute_Close" />
+    </UserControl.CommandBindings>
+
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="Delete" Command="Delete" />
+        <KeyBinding Gesture="CTRL+C" Command="Copy" />
+        <KeyBinding Gesture="CTRL+V" Command="Paste" />
+        <KeyBinding Gesture="CTRL+F" Command="Search" />
+        <KeyBinding Gesture="Escape" Command="Close" />
+    </UserControl.InputBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Name="_searchRowDefinition" Height="24" />
+        </Grid.RowDefinitions>
+
+        <local:ListViewEx x:Name="_listView" ContextMenuOpening="_listView_ContextMenuOpening" GridViewColumnHeader.Click="_listView_GridViewColumnHeader_Click"
+                    VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Resources>
+                <DataTemplate x:Key="_myTemplate_Name">
+                    <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Length">
+                    <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource _longToSizeStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Priority">
+                    <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Rate">
+                    <Grid>
+                        <ProgressBar Value="{Binding Path=Rate, Mode=OneWay}" />
+                        <TextBlock Text="{Binding Path=RateText, Mode=OneWay}" Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Path">
+                    <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_CreationTime">
+                    <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource _dateTimeToStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_State">
+                    <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource _downloadStateToStringConverter}}" />
+                </DataTemplate>
+            </ListView.Resources>
+            <ListView.ContextMenu>
+                <ContextMenu Name="_listViewContextMenu">
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=DownloadControl_Delete, Source={StaticResource _languages}}" Click="_listViewDeleteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_listViewCopyMenuItem" Header="{Binding Path=DownloadControl_Copy, Source={StaticResource _languages}}" Click="_listViewCopyMenuItem_Click"/>
+                    <MenuItem Name="_listViewCopyInfoMenuItem" Header="{Binding Path=DownloadControl_CopyInfo, Source={StaticResource _languages}}" Click="_listViewCopyInfoMenuItem_Click"/>
+                    <MenuItem Name="_listViewPasteMenuItem" Header="{Binding Path=DownloadControl_Paste, Source={StaticResource _languages}}" Click="_listViewPasteMenuItem_Click"/>
+                    <Separator />
+                    <MenuItem Name="_listViewPriorityMenuItem" Header="{Binding Path=DownloadControl_Priority, Source={StaticResource _languages}}">
+                        <MenuItem Name="_listViewPriority0MenuItem" Header="{Binding Path=DownloadControl_Priority0, Source={StaticResource _languages}}" Click="_listViewPriority0MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority1MenuItem" Header="{Binding Path=DownloadControl_Priority1, Source={StaticResource _languages}}" Click="_listViewPriority1MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority2MenuItem" Header="{Binding Path=DownloadControl_Priority2, Source={StaticResource _languages}}" Click="_listViewPriority2MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority3MenuItem" Header="{Binding Path=DownloadControl_Priority3, Source={StaticResource _languages}}" Click="_listViewPriority3MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority4MenuItem" Header="{Binding Path=DownloadControl_Priority4, Source={StaticResource _languages}}" Click="_listViewPriority4MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority5MenuItem" Header="{Binding Path=DownloadControl_Priority5, Source={StaticResource _languages}}" Click="_listViewPriority5MenuItem_Click"/>
+                        <MenuItem Name="_listViewPriority6MenuItem" Header="{Binding Path=DownloadControl_Priority6, Source={StaticResource _languages}}" Click="_listViewPriority6MenuItem_Click"/>
+                    </MenuItem>
+                    <MenuItem Name="_listViewResetMenuItem" Header="{Binding Path=DownloadControl_Reset, Source={StaticResource _languages}}" Click="_listViewResetMenuItem_Click"/>
+                    <MenuItem Name="_listViewDeleteCompleteMenuItem" Header="{Binding Path=DownloadControl_DeleteComplete, Source={StaticResource _languages}}" Click="_listViewDeleteCompleteMenuItem_Click"/>
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Name, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Length, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Length}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_Length_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Priority, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Priority}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_Priority_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Rate, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Rate}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_Rate_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=DownloadControl_Path, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Path}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=DownloadControl_CreationTime, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_CreationTime}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_CreationTime_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=DownloadControl_State, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_State}" 
+                            Width="{Binding Path=DownloadControl_GridViewColumn_State_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                </GridView>
+            </ListView.View>
+        </local:ListViewEx>
+
+        <TextBox Grid.Row="1" Margin="24,0,0,0" Name="_searchTextBox" />
+        <Button Content="×" Grid.Row="1" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Command="Close" />
+    </Grid>
+</UserControl>

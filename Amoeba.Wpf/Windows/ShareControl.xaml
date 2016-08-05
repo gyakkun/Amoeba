@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Amoeba.Windows.ShareControl"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prop="clr-namespace:Amoeba.Properties"     
+        xmlns:local="clr-namespace:Amoeba.Windows" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="New" Executed="Execute_New" />
+        <CommandBinding Command="Delete" Executed="Execute_Delete" />
+        <CommandBinding Command="Search"  Executed="Execute_Search" />
+        <CommandBinding Command="Close"  Executed="Execute_Close" />
+    </UserControl.CommandBindings>
+
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="CTRL+N" Command="New" />
+        <KeyBinding Gesture="Delete" Command="Delete" />
+        <KeyBinding Gesture="CTRL+F" Command="Search" />
+        <KeyBinding Gesture="Escape" Command="Close" />
+    </UserControl.InputBindings>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Name="_searchRowDefinition" Height="24" />
+        </Grid.RowDefinitions>
+
+        <local:ListViewEx x:Name="_listView" AllowDrop="True" ContextMenuOpening="_listView_ContextMenuOpening" PreviewDragOver="_listView_PreviewDragOver" PreviewDrop="_listView_PreviewDrop" GridViewColumnHeader.Click="_listView_GridViewColumnHeader_Click" 
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Resources>
+                <DataTemplate x:Key="_myTemplate_Name">
+                    <TextBlock Text="{Binding Path=Name, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_Path">
+                    <TextBlock Text="{Binding Path=Path, Mode=OneWay, Converter={StaticResource _stringRegularizationConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="_myTemplate_BlockCount">
+                    <TextBlock Text="{Binding Path=BlockCount, Mode=OneWay, StringFormat=\{0:#\,0\}}" />
+                </DataTemplate>
+            </ListView.Resources>
+            <ListView.ContextMenu>
+                <ContextMenu Name="_listViewContextMenu">
+                    <MenuItem Name="_listViewAddMenuItem" Header="{Binding Path=ShareControl_Add, Source={StaticResource _languages}}" Click="_listViewAddMenuItem_Click" />
+                    <MenuItem Name="_listViewDeleteMenuItem" Header="{Binding Path=ShareControl_Delete, Source={StaticResource _languages}}" Click="_listViewDeleteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_listViewCheckExistMenuItem" Header="{Binding Path=ShareControl_CheckExist, Source={StaticResource _languages}}" Click="_listViewCheckExistMenuItem_Click" />
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=ShareControl_Name, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Name}" 
+                            Width="{Binding Path=ShareControl_GridViewColumn_Name_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=ShareControl_Path, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Path}" 
+                            Width="{Binding Path=ShareControl_GridViewColumn_Path_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                    <GridViewColumn Header="{Binding Path=ShareControl_BlockCount, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_BlockCount}" 
+                            Width="{Binding Path=ShareControl_GridViewColumn_BlockCount_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                </GridView>
+            </ListView.View>
+        </local:ListViewEx>
+
+        <TextBox Grid.Row="1" Margin="24,0,0,0" Name="_searchTextBox" />
+        <Button Content="×" Grid.Row="1" Height="16" HorizontalAlignment="Left" Margin="4,4,0,0" Name="_serachCloseButton" VerticalAlignment="Top" Width="16" Padding="0,-2,0,0" Command="Close" />
+    </Grid>
+</UserControl>
