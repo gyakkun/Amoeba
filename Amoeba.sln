@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tools", "..\Library
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Library.Utilities", "..\Library\Library.Utilities\Library.Utilities.shproj", "{0F585D24-9D81-4C31-A341-966A554B3800}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Gkt", "Amoeba.Gkt\Amoeba.Gkt.csproj", "{892006B6-5076-4144-94F4-DA95DCAF8E3B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Gtk", "Amoeba.Gtk\Amoeba.Gtk.csproj", "{892006B6-5076-4144-94F4-DA95DCAF8E3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
