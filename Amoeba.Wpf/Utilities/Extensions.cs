@@ -113,7 +113,7 @@ namespace Amoeba
             if (target == null) return false;
 
             Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
-            Point mousePos = MouseUtilities.GetMousePosition(target);
+            Point mousePos = MouseUtils.GetMousePosition(target);
             return bounds.Contains(mousePos);
         }
     }
@@ -138,7 +138,7 @@ namespace Amoeba
     /// This class was written by Dan Crevier (Microsoft). 
     /// http://blogs.msdn.com/llobo/archive/2006/09/06/Scrolling-Scrollviewer-on-Mouse-Drag-at-the-boundaries.aspx
     /// </remarks>
-    class MouseUtilities
+    class MouseUtils
     {
         [StructLayout(LayoutKind.Sequential)]
         private struct Win32Point

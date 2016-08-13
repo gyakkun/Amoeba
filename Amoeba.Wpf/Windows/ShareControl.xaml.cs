@@ -161,7 +161,7 @@ namespace Amoeba.Windows
 
                             if (listViewModelDic.TryGetValue((string)information["Path"], out item))
                             {
-                                if (!CollectionUtilities.Equals(item.Information, information))
+                                if (!CollectionUtils.Equals(item.Information, information))
                                 {
                                     updateDic[item] = information;
                                 }

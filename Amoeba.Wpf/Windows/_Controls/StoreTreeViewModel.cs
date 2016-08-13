@@ -65,7 +65,7 @@ namespace Amoeba.Windows
                 if (c != 0) return c;
                 if (x.Value.Certificate != null && x.Value.Certificate != null)
                 {
-                    c = CollectionUtilities.Compare(x.Value.Certificate.PublicKey, y.Value.Certificate.PublicKey);
+                    c = CollectionUtils.Compare(x.Value.Certificate.PublicKey, y.Value.Certificate.PublicKey);
                     if (c != 0) return c;
                 }
                 c = y.Value.Seeds.Count.CompareTo(x.Value.Seeds.Count);

@@ -113,14 +113,14 @@ namespace Amoeba.Windows
 
                 this.Setting_Log();
 
-                _configrationDirectoryPaths.Add("MainWindow", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
+                _configrationDirectoryPaths.Add("Properties", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
                 _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
                 _configrationDirectoryPaths.Add("ConnectionSettingManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/ConnectionSettingManager"));
                 _configrationDirectoryPaths.Add("OverlayNetworkManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/OverlayNetworkManager"));
                 _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
                 _configrationDirectoryPaths.Add("CatharsisManager", Path.Combine(App.DirectoryPaths["Configuration"], @"Amoeba/CatharsisManager"));
 
-                Settings.Instance.Load(_configrationDirectoryPaths["MainWindow"]);
+                Settings.Instance.Load(_configrationDirectoryPaths["Properties"]);
 
                 InitializeComponent();
 
@@ -420,7 +420,7 @@ namespace Amoeba.Windows
                             _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
                             _connectionSettingManager.Save(_configrationDirectoryPaths["ConnectionSettingManager"]);
                             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-                            Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                            Settings.Instance.Save(_configrationDirectoryPaths["Properties"]);
                         }
                         catch (Exception e)
                         {
@@ -1209,7 +1209,7 @@ namespace Amoeba.Windows
                     _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
                     _connectionSettingManager.Save(_configrationDirectoryPaths["ConnectionSettingManager"]);
                     _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-                    Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                    Settings.Instance.Save(_configrationDirectoryPaths["Properties"]);
                 }
 
                 {
@@ -1535,7 +1535,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    Settings.Instance.Save(_configrationDirectoryPaths["MainWindow"]);
+                    Settings.Instance.Save(_configrationDirectoryPaths["Properties"]);
 
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {

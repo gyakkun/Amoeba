@@ -253,7 +253,7 @@ namespace Amoeba.Windows
 
                             if (item != null)
                             {
-                                if (!CollectionUtilities.Equals(item.Information, information))
+                                if (!CollectionUtils.Equals(item.Information, information))
                                 {
                                     updateDic[item] = information;
                                 }

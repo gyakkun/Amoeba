@@ -42,8 +42,8 @@ namespace Amoeba.Windows
             if (object.ReferenceEquals(this, other)) return true;
 
             if (this.Signature != other.Signature
-                || !CollectionUtilities.Equals(this.TrustSignatures, other.TrustSignatures)
-                || !CollectionUtilities.Equals(this.DeleteSignatures, other.DeleteSignatures))
+                || !CollectionUtils.Equals(this.TrustSignatures, other.TrustSignatures)
+                || !CollectionUtils.Equals(this.DeleteSignatures, other.DeleteSignatures))
             {
                 return false;
             }

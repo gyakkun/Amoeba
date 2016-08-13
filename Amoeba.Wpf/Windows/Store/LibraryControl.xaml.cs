@@ -173,8 +173,8 @@ namespace Amoeba.Windows
                             boxesListViewModel.Index = newList.Count;
                             boxesListViewModel.Name = box.Name;
                             if (box.Certificate != null) boxesListViewModel.Signature = box.Certificate.ToString();
-                            boxesListViewModel.Length = BoxUtilities.GetBoxLength(box);
-                            boxesListViewModel.CreationTime = BoxUtilities.GetBoxCreationTime(box);
+                            boxesListViewModel.Length = BoxUtils.GetBoxLength(box);
+                            boxesListViewModel.CreationTime = BoxUtils.GetBoxCreationTime(box);
                             boxesListViewModel.Value = box;
 
                             newList.Add(boxesListViewModel);
@@ -746,7 +746,7 @@ namespace Amoeba.Windows
 
         private void _treeView_PreviewDragOver(object sender, DragEventArgs e)
         {
-            Point position = MouseUtilities.GetMousePosition(_treeView);
+            Point position = MouseUtils.GetMousePosition(_treeView);
 
             if (position.Y < 50)
             {
@@ -1086,7 +1086,7 @@ namespace Amoeba.Windows
 
         private void _listView_PreviewDragOver(object sender, DragEventArgs e)
         {
-            Point position = MouseUtilities.GetMousePosition(_listView);
+            Point position = MouseUtils.GetMousePosition(_listView);
 
             if (position.Y < 50)
             {

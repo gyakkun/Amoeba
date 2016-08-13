@@ -6,7 +6,7 @@ using Library.Net.Amoeba;
 
 namespace Amoeba
 {
-    static class BoxUtilities
+    static class BoxUtils
     {
         public static long GetBoxLength(Box box)
         {

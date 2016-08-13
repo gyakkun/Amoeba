@@ -743,7 +743,7 @@ namespace Amoeba.Windows
 
         private void _treeView_PreviewDragOver(object sender, DragEventArgs e)
         {
-            Point position = MouseUtilities.GetMousePosition(_treeView);
+            Point position = MouseUtils.GetMousePosition(_treeView);
 
             if (position.Y < 50)
             {
@@ -1953,17 +1953,17 @@ namespace Amoeba.Windows
 
                 if (this.Seeds != null && other.Seeds != null)
                 {
-                    if (!CollectionUtilities.Equals(this.Seeds, other.Seeds)) return false;
+                    if (!CollectionUtils.Equals(this.Seeds, other.Seeds)) return false;
                 }
 
                 if (this.DownloadIds != null && other.DownloadIds != null)
                 {
-                    if (!CollectionUtilities.Equals(this.DownloadIds, other.DownloadIds)) return false;
+                    if (!CollectionUtils.Equals(this.DownloadIds, other.DownloadIds)) return false;
                 }
 
                 if (this.UploadIds != null && other.UploadIds != null)
                 {
-                    if (!CollectionUtilities.Equals(this.UploadIds, other.UploadIds)) return false;
+                    if (!CollectionUtils.Equals(this.UploadIds, other.UploadIds)) return false;
                 }
 
                 return true;
