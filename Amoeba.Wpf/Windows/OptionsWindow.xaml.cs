@@ -26,11 +26,13 @@ namespace Amoeba.Windows
     /// </summary>
     partial class OptionsWindow : Window
     {
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
+
+        private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
         private ConnectionSettingManager _connectionSettingManager;
         private OverlayNetworkManager _overlayNetworkManager;
         private TransfarLimitManager _transferLimitManager;
-        private BufferManager _bufferManager;
 
         private byte[] _baseNode_Id;
         private ObservableCollectionEx<string> _baseNode_Uris;
@@ -43,11 +45,11 @@ namespace Amoeba.Windows
 
         public OptionsWindow(AmoebaManager amoebaManager, ConnectionSettingManager connectionSettingManager, OverlayNetworkManager overlayNetworkManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
         {
+            _bufferManager = bufferManager;
             _amoebaManager = amoebaManager;
             _connectionSettingManager = connectionSettingManager;
             _overlayNetworkManager = overlayNetworkManager;
             _transferLimitManager = transfarLimitManager;
-            _bufferManager = bufferManager;
 
             InitializeComponent();
 
@@ -57,7 +59,7 @@ namespace Amoeba.Windows
                 var icon = new BitmapImage();
 
                 icon.BeginInit();
-                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                icon.StreamSource = new FileStream(Path.Combine(_serviceManager.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
                 icon.EndInit();
                 if (icon.CanFreeze) icon.Freeze();
 
@@ -192,7 +194,7 @@ namespace Amoeba.Windows
             try
             {
                 string extension = ".box";
-                string commandline = "\"" + Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe")) + "\" \"%1\"";
+                string commandline = "\"" + Path.GetFullPath(Path.Combine(_serviceManager.DirectoryPaths["Core"], "Amoeba.exe")) + "\" \"%1\"";
                 string fileType = "Amoeba";
                 string verb = "open";
 
@@ -2115,7 +2117,7 @@ namespace Amoeba.Windows
                 {
                     var p = new System.Diagnostics.ProcessStartInfo();
                     p.UseShellExecute = true;
-                    p.FileName = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe"));
+                    p.FileName = Path.GetFullPath(Path.Combine(_serviceManager.DirectoryPaths["Core"], "Amoeba.exe"));
                     p.Arguments = "Relate on";
 
                     OperatingSystem osInfo = Environment.OSVersion;
@@ -2139,7 +2141,7 @@ namespace Amoeba.Windows
                 {
                     var p = new System.Diagnostics.ProcessStartInfo();
                     p.UseShellExecute = true;
-                    p.FileName = Path.GetFullPath(Path.Combine(App.DirectoryPaths["Core"], "Amoeba.exe"));
+                    p.FileName = Path.GetFullPath(Path.Combine(_serviceManager.DirectoryPaths["Core"], "Amoeba.exe"));
                     p.Arguments = "Relate off";
 
                     OperatingSystem osInfo = Environment.OSVersion;

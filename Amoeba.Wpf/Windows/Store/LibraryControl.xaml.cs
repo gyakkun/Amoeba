@@ -39,6 +39,8 @@ namespace Amoeba.Windows
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
         private StoreControl _storeControl;
+
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -237,9 +239,9 @@ namespace Amoeba.Windows
 
                     try
                     {
-                        if (Directory.Exists(App.DirectoryPaths["Input"]))
+                        if (Directory.Exists(_serviceManager.DirectoryPaths["Input"]))
                         {
-                            this.OpenBox(App.DirectoryPaths["Input"]);
+                            this.OpenBox(_serviceManager.DirectoryPaths["Input"]);
                         }
                     }
                     catch (Exception)
@@ -446,7 +448,7 @@ namespace Amoeba.Windows
 
         private void Update()
         {
-            _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
+            _mainWindow.Title = string.Format("Amoeba {0}", _serviceManager.AmoebaVersion);
             _updateEvent.Set();
         }
 
@@ -458,7 +460,7 @@ namespace Amoeba.Windows
                 {
                     var selectTreeViewModel = (BoxTreeViewModel)_treeView.SelectedItem;
 
-                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewModel.Value.Name);
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", _serviceManager.AmoebaVersion, selectTreeViewModel.Value.Name);
                 }
             }
         }

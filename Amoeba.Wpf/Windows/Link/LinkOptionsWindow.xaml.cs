@@ -25,6 +25,8 @@ namespace Amoeba.Windows
     /// </summary>
     partial class LinkOptionsWindow : Window
     {
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
+
         private AmoebaManager _amoebaManager;
 
         private ObservableCollectionEx<string> _downloadSignatureCollection = new ObservableCollectionEx<string>();

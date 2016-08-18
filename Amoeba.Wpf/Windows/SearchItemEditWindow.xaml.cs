@@ -23,6 +23,8 @@ namespace Amoeba.Windows
     /// </summary>
     partial class SearchItemEditWindow : Window
     {
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
+
         private SearchItem _searchItem;
 
         private ObservableCollectionEx<SearchContains<string>> _nameCollection;
@@ -44,7 +46,7 @@ namespace Amoeba.Windows
                 var icon = new BitmapImage();
 
                 icon.BeginInit();
-                icon.StreamSource = new FileStream(Path.Combine(App.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                icon.StreamSource = new FileStream(Path.Combine(_serviceManager.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
                 icon.EndInit();
                 if (icon.CanFreeze) icon.Freeze();
 

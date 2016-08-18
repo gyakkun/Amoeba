@@ -31,6 +31,8 @@ namespace Amoeba.Windows
     partial class DownloadControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
+
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -228,9 +230,9 @@ namespace Amoeba.Windows
                 {
                     Thread.Sleep(1000 * 3);
 
-                    if (!Directory.Exists(App.DirectoryPaths["Input"])) continue;
+                    if (!Directory.Exists(_serviceManager.DirectoryPaths["Input"])) continue;
 
-                    foreach (var filePath in Directory.GetFiles(App.DirectoryPaths["Input"]))
+                    foreach (var filePath in Directory.GetFiles(_serviceManager.DirectoryPaths["Input"]))
                     {
                         if (!System.IO.Path.GetFileName(filePath).StartsWith("seed") || !filePath.EndsWith(".txt")) continue;
 

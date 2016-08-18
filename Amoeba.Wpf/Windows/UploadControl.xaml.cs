@@ -32,6 +32,8 @@ namespace Amoeba.Windows
     partial class UploadControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
+
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 

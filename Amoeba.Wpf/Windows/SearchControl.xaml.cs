@@ -39,6 +39,8 @@ namespace Amoeba.Windows
     partial class SearchControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
+
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -657,7 +659,7 @@ namespace Amoeba.Windows
 
         private void Update()
         {
-            _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
+            _mainWindow.Title = string.Format("Amoeba {0}", _serviceManager.AmoebaVersion);
             _updateEvent.Set();
         }
 
@@ -680,7 +682,7 @@ namespace Amoeba.Windows
                 {
                     var selectTreeViewModel = (SearchTreeViewModel)_treeView.SelectedItem;
 
-                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewModel.Value.SearchItem.Name);
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", _serviceManager.AmoebaVersion, selectTreeViewModel.Value.SearchItem.Name);
                 }
             }
         }

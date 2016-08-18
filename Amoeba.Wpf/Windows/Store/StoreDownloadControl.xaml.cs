@@ -43,6 +43,8 @@ namespace Amoeba.Windows
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
         private StoreControl _storeControl;
+
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -424,7 +426,7 @@ namespace Amoeba.Windows
         {
             this.Update_TreeView_Color();
 
-            _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
+            _mainWindow.Title = string.Format("Amoeba {0}", _serviceManager.AmoebaVersion);
             _updateEvent.Set();
         }
 
@@ -436,19 +438,19 @@ namespace Amoeba.Windows
                 {
                     var selectTreeViewModel = (StoreCategorizeTreeViewModel)_treeView.SelectedItem;
 
-                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewModel.Value.Name);
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", _serviceManager.AmoebaVersion, selectTreeViewModel.Value.Name);
                 }
                 else if (_treeView.SelectedItem is StoreTreeViewModel)
                 {
                     var selectTreeViewModel = (StoreTreeViewModel)_treeView.SelectedItem;
 
-                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewModel.Value.Signature);
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", _serviceManager.AmoebaVersion, selectTreeViewModel.Value.Signature);
                 }
                 else if (_treeView.SelectedItem is BoxTreeViewModel)
                 {
                     var selectTreeViewModel = (BoxTreeViewModel)_treeView.SelectedItem;
 
-                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewModel.Value.Name);
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", _serviceManager.AmoebaVersion, selectTreeViewModel.Value.Name);
                 }
             }
         }

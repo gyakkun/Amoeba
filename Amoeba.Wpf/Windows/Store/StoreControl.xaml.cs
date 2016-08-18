@@ -37,6 +37,8 @@ namespace Amoeba.Windows
     partial class StoreControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
+
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
         private AmoebaManager _amoebaManager;
         private BufferManager _bufferManager;
 
@@ -112,7 +114,7 @@ namespace Amoeba.Windows
                 this.SelectedTab = 0;
             }
 
-            _mainWindow.Title = string.Format("Amoeba {0}", App.AmoebaVersion);
+            _mainWindow.Title = string.Format("Amoeba {0}", _serviceManager.AmoebaVersion);
         }
     }
 }

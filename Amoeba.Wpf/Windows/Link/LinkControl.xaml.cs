@@ -41,8 +41,10 @@ namespace Amoeba.Windows
     partial class LinkControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
-        private AmoebaManager _amoebaManager;
+
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
         private BufferManager _bufferManager;
+        private AmoebaManager _amoebaManager;
 
         private ObservableCollectionEx<string> _trustSignatureCollection = new ObservableCollectionEx<string>();
         private ObservableCollectionEx<string> _untrustSignatureCollection = new ObservableCollectionEx<string>();
@@ -290,7 +292,7 @@ namespace Amoeba.Windows
                 {
                     var selectTreeViewItem = (SignatureTreeViewModel)_treeView.SelectedItem;
 
-                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", App.AmoebaVersion, selectTreeViewItem.Value.LinkItem.Signature);
+                    _mainWindow.Title = string.Format("Amoeba {0} - {1}", _serviceManager.AmoebaVersion, selectTreeViewItem.Value.LinkItem.Signature);
                 }
             }
         }

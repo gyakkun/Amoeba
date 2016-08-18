@@ -153,6 +153,8 @@ namespace Amoeba.Windows
 
     public class GetTreeColorConverter : IMultiValueConverter
     {
+        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
+
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var isSelected = (bool)values[0];
@@ -166,7 +168,7 @@ namespace Amoeba.Windows
             {
                 if (isHit.HasValue && isHit.Value)
                 {
-                    return new SolidColorBrush(App.Colors.Tree_Hit);
+                    return new SolidColorBrush(_serviceManager.Colors.Tree_Hit);
                 }
                 else
                 {
