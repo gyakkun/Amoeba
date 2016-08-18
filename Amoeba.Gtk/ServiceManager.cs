@@ -42,30 +42,6 @@ namespace Amoeba
                 currentProcess.PriorityClass = ProcessPriorityClass.BelowNormal;
             }
 
-            {
-                OperatingSystem osInfo = System.Environment.OSVersion;
-
-                // Windows Vista以上。
-                if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version >= new Version(6, 0))
-                {
-                    // SHA256Cngをデフォルトで使うように設定する。
-                    CryptoConfig.AddAlgorithm(typeof(SHA256Cng),
-                        "SHA256",
-                        "SHA256Cng",
-                        "System.Security.Cryptography.SHA256",
-                        "System.Security.Cryptography.SHA256Cng");
-                }
-                else
-                {
-                    // SHA256Managedをデフォルトで使うように設定する。
-                    CryptoConfig.AddAlgorithm(typeof(SHA256Managed),
-                        "SHA256",
-                        "SHA256Managed",
-                        "System.Security.Cryptography.SHA256",
-                        "System.Security.Cryptography.SHA256Managed");
-                }
-            }
-
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
             this.DirectoryPaths = new Dictionary<string, string>();

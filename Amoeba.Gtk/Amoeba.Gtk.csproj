@@ -18,7 +18,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <PlatformTarget>anycpu</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -63,7 +62,7 @@
     <Reference Include="Mono.Posix" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -95,8 +94,8 @@
     <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />
     <Compile Include="Windows\_Items\StoreTreeItem.cs" />
     <Compile Include="Windows\_Items\UpdateOption.cs" />
-    <Compile Include="gtk-gui\Amoeba.MainWindow.cs" />
     <Compile Include="Windows\MainWindow.cs" />
+    <Compile Include="gtk-gui\Amoeba.MainWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Amoeba.License">
@@ -205,9 +204,4 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <PropertyGroup>
-    <PreBuildEvent>call "$(SolutionDir)Settings.bat"
-call "$(SolutionDir)Languages.bat"
-call "$(SolutionDir)Increment.bat"</PreBuildEvent>
-  </PropertyGroup>
 </Project>

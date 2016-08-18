@@ -6,18 +6,10 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Debug/Amoeba.exe" internal="true" />
+    <widget-library name="../bin/Debug/Core/Amoeba.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="Amoeba.Amoeba.Windows" design-size="400 300">
-    <property name="MemberName" />
-    <property name="Title" translatable="yes">Amoeba.Windows</property>
-    <property name="WindowPosition">CenterOnParent</property>
-    <child>
-      <placeholder />
-    </child>
-  </widget>
   <widget class="Gtk.Window" id="Amoeba.MainWindow" design-size="1003 498">
-    <action-group name="Default">
+    <action-group name="Menu">
       <action id="CoreAction">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">Core</property>
@@ -117,22 +109,6 @@
           </packing>
         </child>
       </widget>
-    </child>
-  </widget>
-  <widget class="Gtk.Window" id="Amoeba.MainWindow" design-size="400 300">
-    <property name="MemberName" />
-    <property name="Title" translatable="yes">MainWindow</property>
-    <property name="WindowPosition">CenterOnParent</property>
-    <child>
-      <placeholder />
-    </child>
-  </widget>
-  <widget class="Gtk.Window" id="Amoeba.MainWindow" design-size="400 300">
-    <property name="MemberName" />
-    <property name="Title" translatable="yes">MainWindow</property>
-    <property name="WindowPosition">CenterOnParent</property>
-    <child>
-      <placeholder />
     </child>
   </widget>
 </stetic-interface>

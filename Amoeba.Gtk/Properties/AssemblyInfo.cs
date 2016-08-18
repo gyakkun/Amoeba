@@ -9,4 +9,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("Copyright © Lyrise 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("0.0.0.5")] // QgpgSlLNXqMjFhgVK7vFEGsDr1ChX4eTvRaNxS7UVVs
+[assembly: AssemblyVersion("0.0.0.6")] // CKVsWQVUHV-PUsShUOA3zZJMTAMiGKg9BumFjVRPGPo
