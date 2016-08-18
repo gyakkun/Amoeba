@@ -13,20 +13,22 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>bin\Debug\Core</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>anycpu</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>bin\Release\Core</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
@@ -59,6 +61,8 @@
       <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="Mono.Posix" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
@@ -68,32 +72,69 @@
     <EmbeddedResource Include="Icons\Amoeba.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\LanguagesManager.cs" />
     <Compile Include="ServiceManager.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="Utilities\BoxUtils.cs" />
     <Compile Include="Utilities\CatharsisManager.cs" />
     <Compile Include="Utilities\Clipboard.cs" />
     <Compile Include="Utilities\ConnectionSettingManager.cs" />
-    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Ipv4AddressFilter.cs" />
     <Compile Include="Utilities\MessageConverter.cs" />
     <Compile Include="Utilities\OverlayNetworkManager.cs" />
     <Compile Include="Utilities\Route.cs" />
     <Compile Include="Utilities\SeedStateCache.cs" />
     <Compile Include="Utilities\TransfarLimitManager.cs" />
-    <Compile Include="Utilities\WindowPosition.cs" />
-    <Compile Include="Windows\MainWindow.cs" />
+    <Compile Include="Windows\_Items\LinkItem.cs" />
+    <Compile Include="Windows\_Items\SearchItem.cs" />
+    <Compile Include="Windows\_Items\SearchTreeItem.cs" />
+    <Compile Include="Windows\_Items\SignatureTreeItem.cs" />
+    <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />
+    <Compile Include="Windows\_Items\StoreTreeItem.cs" />
+    <Compile Include="Windows\_Items\UpdateOption.cs" />
     <Compile Include="gtk-gui\Amoeba.MainWindow.cs" />
+    <Compile Include="Windows\MainWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\Amoeba.License">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Amoeba.Readme">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Files\Box.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Languages\Chinese_Simplified.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Languages\Chinese_Traditional.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Languages\English.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Languages\Japanese.xml">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Languages\Korean.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Languages\Russian.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Languages\Ukrainian.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Settings\Nodes.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -164,4 +205,9 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>call "$(SolutionDir)Settings.bat"
+call "$(SolutionDir)Languages.bat"
+call "$(SolutionDir)Increment.bat"</PreBuildEvent>
+  </PropertyGroup>
 </Project>

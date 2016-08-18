@@ -40,7 +40,6 @@ namespace Amoeba
                 var currentProcess = Process.GetCurrentProcess();
 
                 currentProcess.PriorityClass = ProcessPriorityClass.BelowNormal;
-                currentProcess.SetMemoryPriority(4);
             }
 
             {

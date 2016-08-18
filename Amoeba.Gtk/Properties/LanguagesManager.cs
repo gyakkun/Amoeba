@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Windows.Data;
 using System.Xml;
 using Library;
 using System.Windows;
@@ -22,7 +21,6 @@ namespace Amoeba.Properties
         private static LanguagesManager _defaultInstance = new LanguagesManager();
         private static Dictionary<string, Dictionary<string, string>> _dic = new Dictionary<string, Dictionary<string, string>>();
         private static string _currentLanguage;
-        private static ObjectDataProvider _provider;
         private readonly object _thisLock = new object();
 
         public static UsingLanguageChangedEventHandler UsingLanguageChangedEvent;
@@ -35,7 +33,7 @@ namespace Amoeba.Properties
         static LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:/Local/Projects/Alliance-Network/Amoeba/Amoeba.Wpf/bin/Debug/Core/Languages";
+            string path = @"C:/Local/Projects/Alliance-Network/Amoeba/Amoeba/bin/Debug/Core/Languages";
 
             if (!Directory.Exists(path))
                 path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
@@ -90,11 +88,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public static LanguagesManager GetInstance()
-        {
-            return _defaultInstance;
-        }
-
         public static LanguagesManager Instance
         {
             get
@@ -112,8 +105,6 @@ namespace Amoeba.Properties
             if (!_dic.ContainsKey(language)) throw new ArgumentException();
 
             _currentLanguage = language;
-            LanguagesManager.ResourceProvider.Refresh();
-
             LanguagesManager.OnUsingLanguageChangedEvent();
         }
 
@@ -150,19 +141,6 @@ namespace Amoeba.Properties
             get
             {
                 return _currentLanguage;
-            }
-        }
-
-        public static ObjectDataProvider ResourceProvider
-        {
-            get
-            {
-                if (System.Windows.Application.Current != null)
-                {
-                    _provider = (ObjectDataProvider)System.Windows.Application.Current.FindResource("_languages");
-                }
-
-                return _provider;
             }
         }
 

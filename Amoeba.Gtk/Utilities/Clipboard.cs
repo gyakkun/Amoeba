@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Interop;
 using System.Xml;
 using Library;
 using Library.Collections;
@@ -60,7 +59,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                System.Windows.Clipboard.Clear();
+                System.Windows.Forms.Clipboard.Clear();
             }
         }
 
@@ -68,7 +67,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return System.Windows.Clipboard.ContainsFileDropList();
+                return System.Windows.Forms.Clipboard.ContainsFileDropList();
             }
         }
 
@@ -78,7 +77,7 @@ namespace Amoeba
             {
                 try
                 {
-                    return System.Windows.Clipboard.GetFileDropList().Cast<string>();
+                    return System.Windows.Forms.Clipboard.GetFileDropList().Cast<string>();
                 }
                 catch (Exception)
                 {
@@ -97,7 +96,7 @@ namespace Amoeba
                 {
                     var list = new System.Collections.Specialized.StringCollection();
                     list.AddRange(collection.ToArray());
-                    System.Windows.Clipboard.SetFileDropList(list);
+                    System.Windows.Forms.Clipboard.SetFileDropList(list);
                 }
                 catch (Exception)
                 {
@@ -110,7 +109,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return System.Windows.Clipboard.ContainsText();
+                return System.Windows.Forms.Clipboard.ContainsText();
             }
         }
 
@@ -120,7 +119,7 @@ namespace Amoeba
             {
                 try
                 {
-                    return System.Windows.Clipboard.GetText();
+                    return System.Windows.Forms.Clipboard.GetText();
                 }
                 catch (Exception)
                 {
@@ -137,7 +136,7 @@ namespace Amoeba
             {
                 try
                 {
-                    System.Windows.Clipboard.SetText(text);
+                    System.Windows.Forms.Clipboard.SetText(text);
                 }
                 catch (Exception)
                 {
@@ -260,7 +259,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return System.Windows.Clipboard.ContainsData("Amoeba_Boxes");
+                return System.Windows.Forms.Clipboard.ContainsData("Amoeba_Boxes");
             }
         }
 
@@ -270,7 +269,7 @@ namespace Amoeba
             {
                 try
                 {
-                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_Boxes"))
+                    using (Stream stream = (Stream)System.Windows.Forms.Clipboard.GetData("Amoeba_Boxes"))
                     {
                         return Clipboard.FromStream<IEnumerable<Box>>(stream);
                     }
@@ -288,10 +287,10 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                var dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.Forms.DataObject();
                 dataObject.SetData("Amoeba_Boxes", Clipboard.ToStream(boxes));
 
-                System.Windows.Clipboard.SetDataObject(dataObject);
+                System.Windows.Forms.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -299,7 +298,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                var dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.Forms.DataObject();
 
                 {
                     var sb = new StringBuilder();
@@ -314,7 +313,7 @@ namespace Amoeba
 
                 dataObject.SetData("Amoeba_Boxes", Clipboard.ToStream(boxes));
 
-                System.Windows.Clipboard.SetDataObject(dataObject);
+                System.Windows.Forms.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -322,7 +321,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return System.Windows.Clipboard.ContainsData("Amoeba_SearchTreeItems");
+                return System.Windows.Forms.Clipboard.ContainsData("Amoeba_SearchTreeItems");
             }
         }
 
@@ -332,7 +331,7 @@ namespace Amoeba
             {
                 try
                 {
-                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_SearchTreeItems"))
+                    using (Stream stream = (Stream)System.Windows.Forms.Clipboard.GetData("Amoeba_SearchTreeItems"))
                     {
                         return Clipboard.FromStream<IEnumerable<Windows.SearchTreeItem>>(stream);
                     }
@@ -350,10 +349,10 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                var dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.Forms.DataObject();
                 dataObject.SetData("Amoeba_SearchTreeItems", Clipboard.ToStream(items));
 
-                System.Windows.Clipboard.SetDataObject(dataObject);
+                System.Windows.Forms.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -361,7 +360,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return System.Windows.Clipboard.ContainsData("Amoeba_StoreCategorizeTreeItems");
+                return System.Windows.Forms.Clipboard.ContainsData("Amoeba_StoreCategorizeTreeItems");
             }
         }
 
@@ -371,7 +370,7 @@ namespace Amoeba
             {
                 try
                 {
-                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_StoreCategorizeTreeItems"))
+                    using (Stream stream = (Stream)System.Windows.Forms.Clipboard.GetData("Amoeba_StoreCategorizeTreeItems"))
                     {
                         return Clipboard.FromStream<IEnumerable<Windows.StoreCategorizeTreeItem>>(stream);
                     }
@@ -389,10 +388,10 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                var dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.Forms.DataObject();
                 dataObject.SetData("Amoeba_StoreCategorizeTreeItems", Clipboard.ToStream(items));
 
-                System.Windows.Clipboard.SetDataObject(dataObject);
+                System.Windows.Forms.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -400,7 +399,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                return System.Windows.Clipboard.ContainsData("Amoeba_StoreTreeItems");
+                return System.Windows.Forms.Clipboard.ContainsData("Amoeba_StoreTreeItems");
             }
         }
 
@@ -410,7 +409,7 @@ namespace Amoeba
             {
                 try
                 {
-                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_StoreTreeItems"))
+                    using (Stream stream = (Stream)System.Windows.Forms.Clipboard.GetData("Amoeba_StoreTreeItems"))
                     {
                         return Clipboard.FromStream<IEnumerable<Windows.StoreTreeItem>>(stream);
                     }
@@ -428,7 +427,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                var dataObject = new System.Windows.DataObject();
+                var dataObject = new System.Windows.Forms.DataObject();
 
                 {
                     var sb = new StringBuilder();
@@ -443,7 +442,7 @@ namespace Amoeba
 
                 dataObject.SetData("Amoeba_StoreTreeItems", Clipboard.ToStream(items));
 
-                System.Windows.Clipboard.SetDataObject(dataObject);
+                System.Windows.Forms.Clipboard.SetDataObject(dataObject);
             }
         }
     }
