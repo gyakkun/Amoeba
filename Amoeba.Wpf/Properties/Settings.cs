@@ -155,9 +155,9 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "StoreUploadControl_ListSortDirection", Value = ListSortDirection.Ascending },
                 new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "StoreUploadControl_ExpandedPaths", Value = new LockedHashSet<Route>() },
 
+                new Library.Configuration.SettingContent<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
                 new Library.Configuration.SettingContent<string>() { Name = "LibraryControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "LibraryControl_ListSortDirection", Value = ListSortDirection.Ascending },
-                new Library.Configuration.SettingContent<Box>() { Name = "LibraryControl_Box", Value = new Box() { Name = "Library" } },
                 new Library.Configuration.SettingContent<LockedHashSet<Route>>() { Name = "LibraryControl_ExpandedPaths", Value = new LockedHashSet<Route>() },
 
                 new Library.Configuration.SettingContent<double>() { Name = "ProgressWindow_Width", Value = 700 },
@@ -2395,6 +2395,24 @@ namespace Amoeba.Properties
         }
 
 
+        public Box LibraryControl_Box
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return (Box)this["LibraryControl_Box"];
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    this["LibraryControl_Box"] = value;
+                }
+            }
+        }
+
         public string LibraryControl_LastHeaderClicked
         {
             get
@@ -2427,24 +2445,6 @@ namespace Amoeba.Properties
                 lock (this.ThisLock)
                 {
                     this["LibraryControl_ListSortDirection"] = value;
-                }
-            }
-        }
-
-        public Box LibraryControl_Box
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return (Box)this["LibraryControl_Box"];
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    this["LibraryControl_Box"] = value;
                 }
             }
         }

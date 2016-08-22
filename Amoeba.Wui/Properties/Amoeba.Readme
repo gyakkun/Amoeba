@@ -1,0 +1,6 @@
+namespace: Amoeba
+License: New BSD License
+
+File: Assemblies/Ionic.Zip.dll
+Url: https://dotnetzip.codeplex.com/
+License: Microsoft Public License

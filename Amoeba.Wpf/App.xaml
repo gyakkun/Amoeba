@@ -7,7 +7,7 @@
         Startup="Application_Startup"
         Exit="Application_Exit"
         DispatcherUnhandledException="Application_DispatcherUnhandledException">
-   
+
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,7 +15,7 @@
                 <ResourceDictionary Source="Themes/Amoeba.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <ObjectDataProvider x:Key="_languages" ObjectType="{x:Type prop:LanguagesManager}" MethodName="GetInstance"/>
+            <ObjectDataProvider x:Key="_languages" ObjectInstance="{x:Static prop:LanguagesManager.Instance}"/>
 
             <local:ObjectToImageConverter x:Key="_objectToImageConverter"/>
             <local:GetTreeColorConverter x:Key="_getTreeColorConverter" />

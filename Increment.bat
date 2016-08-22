@@ -8,4 +8,4 @@ set TOOL="C:\Local\Projects\Alliance-Network\Library\Library.Tools\bin\Debug\Lib
 IF NOT EXIST %TOOL% exit
 
 call %TOOL% "Increment" Amoeba.Wpf\Amoeba.Wpf.csproj Properties\AssemblyInfo.cs
-call %TOOL% "Increment" Amoeba.Gtk\Amoeba.Gtk.csproj Properties\AssemblyInfo.cs
+call %TOOL% "Increment" Amoeba.Wui\Amoeba.Wui.csproj Properties\AssemblyInfo.cs

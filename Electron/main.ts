@@ -1,0 +1,23 @@
+/// <reference path="typings/index.d.ts" />
+
+import electron = require('electron');
+const BrowserWindow = electron.BrowserWindow;
+const app = electron.app;
+
+electron.crashReporter.start({companyName: "Amoeba",  submitURL: ""});
+
+var mainWindow: Electron.BrowserWindow = null;
+
+app.on('window-all-closed', () => {
+  app.quit();
+});
+
+app.on('ready', () => {
+  mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': __dirname + '/images/app.png'});
+
+  mainWindow.loadURL('file://' + __dirname + '/index.html');
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+});
