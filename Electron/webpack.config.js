@@ -24,8 +24,9 @@ module.exports = {
   resolve: {
       extensions: ['', '.js', '.ts', '.tag']
   },
+  devtool: 'source-map',
   plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
+    //new webpack.optimize.UglifyJsPlugin(),
     new webpack.ProvidePlugin({
       riot: 'riot'
     })

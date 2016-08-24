@@ -10,7 +10,7 @@ var options: ElectronPackager.Options = {
   platform: 'win32',
   arch: 'x64',
   version: '1.3.3',
-  icon: './srco/images/amoeba.png',
+  icon: './src/images/amoeba.png',
 
   'app-version': config.version,
   'version-string': {
