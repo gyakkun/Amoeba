@@ -1,4 +1,4 @@
-/// <reference path="typings/index.d.ts" />
+/// <reference path="../../typings/index.d.ts" />
 
 import electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
@@ -13,7 +13,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', () => {
-  mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': __dirname + '/images/app.png'});
+  mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': __dirname + '/src/images/app.png'});
 
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 

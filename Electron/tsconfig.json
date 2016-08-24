@@ -2,10 +2,11 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
-        "sourceMap": true
+        "sourceMap": false
     },
     "exclude": [
         "node_modules",
+        "riot",
         "dist"
     ]
 }

@@ -1,14 +1,15 @@
-/// <reference path="typings/index.d.ts" />
+/// <reference path="./typings/index.d.ts" />
+"use strict";
 var packager = require('electron-packager');
 var config = require('./package.json');
 var options = {
-    dir: './',
+    dir: '.',
     out: './dist',
-    name: config.name,
+    name: 'electron',
     platform: 'win32',
     arch: 'x64',
     version: '1.3.3',
-    icon: './images/app.png',
+    icon: './srco/images/amoeba.png',
     'app-version': config.version,
     'version-string': {
         CompanyName: '',
@@ -22,7 +23,6 @@ var options = {
     overwrite: true,
     asar: true,
     prune: true,
-    ignore: new RegExp("node_modules/(electron-packager|electron-prebuilt|\.bin)|typings|release\.js"),
 };
 packager(options, function (err, appPath) {
     if (err) {
@@ -30,4 +30,3 @@ packager(options, function (err, appPath) {
     }
     console.log('Done');
 });
-//# sourceMappingURL=build.js.map
