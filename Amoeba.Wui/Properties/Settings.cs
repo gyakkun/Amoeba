@@ -21,11 +21,6 @@ namespace Amoeba.Properties
         Settings()
             : base(new List<Library.Configuration.ISettingContent>()
             {
-                new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_SearchKeywords", Value = new LockedList<string>() },
-                new Library.Configuration.SettingContent<string>() { Name = "Global_UseLanguage", Value = "English" },
-                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsConnectRunning", Value = true },
-                new Library.Configuration.SettingContent<bool>() { Name = "Global_IsConvertRunning", Value = true },
-
                 new Library.Configuration.SettingContent<StoreCategorizeTreeItem>() { Name = "Store_Download_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
                 new Library.Configuration.SettingContent<StoreCategorizeTreeItem>() { Name = "Store_Upload_StoreCategorizeTreeItem", Value = new StoreCategorizeTreeItem() { Name = "Category" } },
                 new Library.Configuration.SettingContent<Box>() { Name = "Store_Library_Box", Value = new Box() { Name = "Library" } },

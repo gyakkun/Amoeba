@@ -1,4 +1,3 @@
 node_modules/
 dist/
 /npm-debug.log
-/src/scripts/bundle.js*

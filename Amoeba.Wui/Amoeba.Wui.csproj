@@ -50,7 +50,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\LanguagesManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceManager.cs" />
@@ -59,9 +58,7 @@
     <Compile Include="Utilities\CatharsisManager.cs" />
     <Compile Include="Utilities\ConnectionSettingManager.cs" />
     <Compile Include="Utilities\Ipv4AddressFilter.cs" />
-    <Compile Include="Utilities\MessageConverter.cs" />
     <Compile Include="Utilities\OverlayNetworkManager.cs" />
-    <Compile Include="Utilities\Route.cs" />
     <Compile Include="Utilities\SeedStateCache.cs" />
     <Compile Include="Utilities\TransfarLimitManager.cs" />
     <Compile Include="Windows\_Items\LinkItem.cs" />
@@ -132,36 +129,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icons\Amoeba.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Icons\Files\Box.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Languages\Chinese_Simplified.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Languages\Chinese_Traditional.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Languages\English.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Languages\Japanese.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Languages\Korean.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Languages\Russian.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Languages\Ukrainian.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Settings\Nodes.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

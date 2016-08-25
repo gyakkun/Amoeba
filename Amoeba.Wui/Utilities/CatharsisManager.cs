@@ -26,7 +26,7 @@ namespace Amoeba
 {
     class CatharsisManager : ManagerBase, Library.Configuration.ISettings, IThisLock
     {
-        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
+        private ServiceManager _serviceManager;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -44,10 +44,11 @@ namespace Amoeba
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public CatharsisManager(AmoebaManager amoebaManager, BufferManager bufferManager)
+        public CatharsisManager(AmoebaManager amoebaManager, BufferManager bufferManager, ServiceManager serviceManager)
         {
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
+            _serviceManager = serviceManager;
 
             _settings = new Settings(this.ThisLock);
 

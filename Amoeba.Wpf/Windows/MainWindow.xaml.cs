@@ -1201,7 +1201,7 @@ namespace Amoeba.Windows
                 _transferLimitManager.Load(_configrationDirectoryPaths["TransfarLimitManager"]);
                 _transferLimitManager.Start();
 
-                _catharsisManager = new CatharsisManager(_amoebaManager, _bufferManager);
+                _catharsisManager = new CatharsisManager(_amoebaManager, _bufferManager, _serviceManager);
                 _catharsisManager.Load(_configrationDirectoryPaths["CatharsisManager"]);
 
                 if (initFlag)

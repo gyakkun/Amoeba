@@ -24,19 +24,10 @@ app.on('ready', () => {
     mainWindow = null;
   });
 
-  mainWindow.on('show', () => {
-    if(tray != null){
-      tray.destroy();
-      tray = null;
-    }
-  });
-
-  mainWindow.on('minimize', () => {
-    mainWindow.hide();
-    
-    tray = new Tray(iconPath);
-    tray.on('click', () => {
-      mainWindow.show();
-    });
+  tray = new Tray(iconPath);
+  
+  tray.on('click', () => {
+    mainWindow.restore();
+    mainWindow.focus();
   });
 });

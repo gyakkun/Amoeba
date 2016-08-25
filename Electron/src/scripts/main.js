@@ -17,17 +17,9 @@ app.on('ready', function () {
     mainWindow.on('closed', function () {
         mainWindow = null;
     });
-    mainWindow.on('show', function () {
-        if (tray != null) {
-            tray.destroy();
-            tray = null;
-        }
-    });
-    mainWindow.on('minimize', function () {
-        mainWindow.hide();
-        tray = new Tray(iconPath);
-        tray.on('click', function () {
-            mainWindow.show();
-        });
+    tray = new Tray(iconPath);
+    tray.on('click', function () {
+        mainWindow.restore();
+        mainWindow.focus();
     });
 });
