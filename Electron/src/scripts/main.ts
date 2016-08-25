@@ -2,13 +2,11 @@
 
 import electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
-const Tray = electron.Tray;
 const app = electron.app;
 
 electron.crashReporter.start({companyName: "Amoeba",  submitURL: ""});
 
 var mainWindow: Electron.BrowserWindow = null;
-var tray: Electron.Tray = null;
 
 app.on('window-all-closed', () => {
   app.quit();
@@ -22,21 +20,5 @@ app.on('ready', () => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
-  });
-
-  mainWindow.on('show', () => {
-    if(tray != null){
-      tray.destroy();
-      tray = null;
-    }
-  });
-
-  mainWindow.on('minimize', () => {
-    mainWindow.hide();
-    
-    tray = new Tray(iconPath);
-    tray.on('click', () => {
-      mainWindow.show();
-    });
   });
 });
