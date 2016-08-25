@@ -1,3 +1,5 @@
 node_modules/
 dist/
+src/components/
+src/scripts/
 /npm-debug.log

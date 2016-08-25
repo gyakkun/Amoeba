@@ -1,5 +1,5 @@
 {
-  "name": "amoeba.view",
+  "name": "amoeba.electron",
   "version": "0.0.0",
   "description": "",
   "main": "src/main.js",
@@ -11,7 +11,7 @@
     "build": "npm-run-all build:*",
     "build:typescript": "tsc",
     "build:src": "webpack",
-    "build:electron": "node build.js",
+    "build:electron": "node electron-build.js",
     "server": "lite-server"
   },
   "author": "Lyrise",
@@ -29,6 +29,7 @@
   "dependencies": {
     "jquery": "^3.1.0",
     "react": "^15.3.1",
+    "react-bootstrap": "^0.30.3",
     "react-dom": "^15.3.1"
   }
 }
