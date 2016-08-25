@@ -7,7 +7,7 @@ var options: ElectronPackager.Options = {
   dir: '.',
   out: './dist',
   name: 'electron',
-  platform: 'win32',
+  platform: 'linux',
   arch: 'x64',
   version: '1.3.3',
   icon: './src/images/amoeba.png',

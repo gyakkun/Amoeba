@@ -2,11 +2,9 @@
 "use strict";
 var electron = require('electron');
 var BrowserWindow = electron.BrowserWindow;
-var Tray = electron.Tray;
 var app = electron.app;
 electron.crashReporter.start({ companyName: "Amoeba", submitURL: "" });
 var mainWindow = null;
-var tray = null;
 app.on('window-all-closed', function () {
     app.quit();
 });
@@ -16,10 +14,5 @@ app.on('ready', function () {
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function () {
         mainWindow = null;
-    });
-    tray = new Tray(iconPath);
-    tray.on('click', function () {
-        mainWindow.restore();
-        mainWindow.focus();
     });
 });
