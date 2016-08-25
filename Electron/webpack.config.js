@@ -1,34 +1,22 @@
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './riot/scripts/index.ts',
+  entry: './react/Index.tsx',
   output: {
     path: __dirname + '/src/scripts',
     filename: 'bundle.js',
     publicPath: '/src/',
   },
   module: {
-    preLoaders: [
-      {
-        test: /\.tag$/,
-        loader: 'riotjs-loader',
-      }
-    ],
     loaders: [
       {
-        test: /\.ts$/,
+        test: /\.ts$|\.tsx$/,
         loader: 'ts-loader'
       }
     ]
   },
   resolve: {
-      extensions: ['', '.js', '.ts', '.tag']
+      extensions: ['', '.js', '.ts', '.tsx']
   },
   devtool: 'source-map',
-  plugins: [
-    //new webpack.optimize.UglifyJsPlugin(),
-    new webpack.ProvidePlugin({
-      riot: 'riot'
-    })
-  ]
 }

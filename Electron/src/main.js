@@ -1,4 +1,4 @@
-/// <reference path="../../typings/index.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 "use strict";
 var electron = require('electron');
 var BrowserWindow = electron.BrowserWindow;
@@ -16,3 +16,4 @@ app.on('ready', function () {
         mainWindow = null;
     });
 });
+//# sourceMappingURL=main.js.map

@@ -1,6 +1,7 @@
-/// <reference path="../../typings/index.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 
-import electron = require('electron');
+import * as electron from 'electron';
+
 const BrowserWindow = electron.BrowserWindow;
 const app = electron.app;
 

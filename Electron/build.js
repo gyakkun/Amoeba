@@ -30,3 +30,4 @@ packager(options, function (err, appPath) {
     }
     console.log('Done');
 });
+//# sourceMappingURL=build.js.map

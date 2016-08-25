@@ -28,7 +28,7 @@ var options: ElectronPackager.Options = {
   prune: true,
 };
 
-packager(options, (err, appPath) => {
+packager(options, (err: Error, appPath: string) => {
   if(err) {
     throw err;
   }

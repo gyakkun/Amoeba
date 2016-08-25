@@ -1,13 +1,12 @@
 {
   "name": "amoeba.view",
-  "dependencies": {
-    "riot": "registry:npm/riot#2.3.0+20160731040735"
-  },
   "globalDependencies": {
     "electron-builder": "registry:dt/electron-builder#2.0.2+20160316155526",
     "electron-packager": "registry:dt/electron-packager#5.1.0+20160316155526",
     "github-electron": "registry:dt/github-electron#1.2.5+20160812193136",
     "jquery": "registry:dt/jquery#1.10.0+20160704162008",
-    "node": "registry:dt/node#6.0.0+20160818175514"
+    "node": "registry:dt/node#6.0.0+20160818175514",
+    "react": "registry:dt/react#0.14.0+20160817201227",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040"
   }
 }
