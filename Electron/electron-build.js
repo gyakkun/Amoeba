@@ -1,8 +1,9 @@
+/// <reference path="./typings/index.d.ts" />
+"use strict";
 var packager = require('electron-packager');
 var config = require('./package.json');
-
 var options = {
-    dir: './src',
+    dir: './',
     out: './dist',
     name: 'electron',
     platform: 'linux',
@@ -23,10 +24,10 @@ var options = {
     asar: true,
     prune: true,
 };
-
 packager(options, function (err, appPath) {
     if (err) {
         throw err;
     }
     console.log('Done');
 });
+//# sourceMappingURL=electron-build.js.map

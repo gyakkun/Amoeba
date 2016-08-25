@@ -1,5 +1,5 @@
 {
-  "name": "amoeba.view",
+  "name": "amoeba.electron",
   "globalDependencies": {
     "electron-builder": "registry:dt/electron-builder#2.0.2+20160316155526",
     "electron-packager": "registry:dt/electron-packager#5.1.0+20160316155526",
