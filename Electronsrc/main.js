@@ -40,13 +40,14 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path="../typings/index.d.ts" />
+	/* WEBPACK VAR INJECTION */(function(__dirname) {/// <reference path="../typings/index.d.ts" />
 	"use strict";
-	var electron = __webpack_require__(1);
+	var electron = __webpack_require__(425);
 	var BrowserWindow = electron.BrowserWindow;
 	var app = electron.app;
 	electron.crashReporter.start({ companyName: "Amoeba", submitURL: "" });
@@ -62,14 +63,17 @@
 	        mainWindow = null;
 	    });
 	});
-
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
-/* 1 */
+
+/***/ 425:
 /***/ function(module, exports) {
 
 	module.exports = require("electron");
 
 /***/ }
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=main.js.map

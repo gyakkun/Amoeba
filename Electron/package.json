@@ -2,25 +2,25 @@
   "name": "amoeba.electron",
   "version": "0.0.0",
   "description": "",
-  "main": "src/main.js",
+  "main": "./src/main.js",
   "scripts": {
-    "clean": "npm-run-all clean:*",
+    "clean": "npm-run-all -p clean:*",
     "clean:npm": "npm prune",
     "clean:bower": "bower prune",
     "clean:typings": "typings prune",
 
-    "update": "npm-run-all clean:* update:*",
+    "update": "npm-run-all -p clean:* update:*",
     "update:npm": "npm install",
     "update:bower": "bower install",
+    "update:bower-instaler": "bower-installer",
     "update:typings": "typings install",
     
     "start": "npm-run-all start:*",
-    "start:build": "npm-run-all build:src build:typescript",
+    "start:webpack": "webpack",
     "start:electron": "electron .",
     
     "build": "npm-run-all build:*",
-    "build:src": "webpack",
-    "build:typescript": "tsc",
+    "build:webpack": "webpack",
     "build:electron": "node electron-build.js",
     
     "server": "lite-server"

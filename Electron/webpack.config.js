@@ -1,11 +1,9 @@
 var webpack = require('webpack');
 
 module.exports = {
-  entry: './react/Index.tsx',
-  output: {
-    path: __dirname + '/src/scripts',
-    filename: 'bundle.js',
-    publicPath: './',
+  entry: {
+    "main": "./electron/main.ts",
+    "scripts/app": "./react/app.tsx"
   },
   module: {
     loaders: [
@@ -18,5 +16,18 @@ module.exports = {
   resolve: {
       extensions: ['', '.js', '.ts', '.tsx']
   },
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
   devtool: 'source-map',
+  output: {
+    path: __dirname + "/src",
+    filename: "[name].js"
+  },
+  plugins: [
+    new webpack.ExternalsPlugin('commonjs', [
+      'electron',
+    ]),
+  ]
 }

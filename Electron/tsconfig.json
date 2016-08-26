@@ -8,7 +8,9 @@
     },
     "exclude": [
         "node_modules",
+        "bower_components",
+        "dist",
         "react",
-        "dist"
+        "electron"
     ]
 }

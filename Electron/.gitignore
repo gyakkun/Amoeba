@@ -1,6 +1,5 @@
 node_modules/
+bower_components/
 dist/
 typings/
-src/components/
-src/scripts/
 /npm-debug.log
