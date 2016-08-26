@@ -9,7 +9,7 @@ app.on('window-all-closed', function () {
     app.quit();
 });
 app.on('ready', function () {
-    var iconPath = '/src/images/amoeba.png';
+    var iconPath = __dirname + '/images/amoeba.png';
     mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': iconPath });
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function () {
