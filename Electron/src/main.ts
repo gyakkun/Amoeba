@@ -14,7 +14,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', () => {
-  var iconPath = '/src/images/amoeba.png';
+  var iconPath = __dirname + '/src/images/amoeba.png';
 
   mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': iconPath});
   mainWindow.loadURL('file://' + __dirname + '/index.html');
