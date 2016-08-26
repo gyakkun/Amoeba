@@ -4,14 +4,25 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "npm-run-all clean:*",
+    "clean:npm": "npm prune",
+    "clean:bower": "bower prune",
+    "clean:typings": "typings prune",
+
+    "update": "npm-run-all clean:* update:*",
+    "update:npm": "npm install",
+    "update:bower": "bower install",
+    "update:typings": "typings install",
+    
     "start": "npm-run-all start:*",
-    "start:build": "npm-run-all build:typescript build:src",
+    "start:build": "npm-run-all build:src build:typescript",
     "start:electron": "electron .",
+    
     "build": "npm-run-all build:*",
-    "build:typescript": "tsc",
     "build:src": "webpack",
+    "build:typescript": "tsc",
     "build:electron": "node electron-build.js",
+    
     "server": "lite-server"
   },
   "author": "Lyrise",

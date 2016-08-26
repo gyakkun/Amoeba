@@ -1,5 +1,6 @@
 node_modules/
 dist/
+typings/
 src/components/
 src/scripts/
 /npm-debug.log
