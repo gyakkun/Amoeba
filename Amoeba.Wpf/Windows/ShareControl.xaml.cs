@@ -641,12 +641,12 @@ namespace Amoeba.Windows
 
         private void Execute_New(object sender, ExecutedRoutedEventArgs e)
         {
-            _listViewAddMenuItem_Click(null, null);
+            _listViewAddMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         }
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
-            _listViewDeleteMenuItem_Click(null, null);
+            _listViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         }
 
         private void Execute_Search(object sender, ExecutedRoutedEventArgs e)

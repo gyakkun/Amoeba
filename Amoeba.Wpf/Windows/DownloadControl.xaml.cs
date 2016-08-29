@@ -230,9 +230,9 @@ namespace Amoeba.Windows
                 {
                     Thread.Sleep(1000 * 3);
 
-                    if (!Directory.Exists(_serviceManager.DirectoryPaths["Input"])) continue;
+                    if (!Directory.Exists(_serviceManager.Paths["Input"])) continue;
 
-                    foreach (var filePath in Directory.GetFiles(_serviceManager.DirectoryPaths["Input"]))
+                    foreach (var filePath in Directory.GetFiles(_serviceManager.Paths["Input"]))
                     {
                         if (!System.IO.Path.GetFileName(filePath).StartsWith("seed") || !filePath.EndsWith(".txt")) continue;
 
@@ -1011,17 +1011,17 @@ namespace Amoeba.Windows
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
-            _listViewDeleteMenuItem_Click(null, null);
+            _listViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         }
 
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
-            _listViewCopyMenuItem_Click(null, null);
+            _listViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         }
 
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
-            _listViewPasteMenuItem_Click(null, null);
+            _listViewPasteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         }
 
         private void Execute_Search(object sender, ExecutedRoutedEventArgs e)

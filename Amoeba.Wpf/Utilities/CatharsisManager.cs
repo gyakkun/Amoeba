@@ -143,13 +143,13 @@ namespace Amoeba
                 var ipv4AddressSet = new HashSet<uint>();
                 var ipv4AddressRangeSet = new HashSet<SearchRange<uint>>();
 
-                foreach (var ipv4AddressFilter in _serviceManager.Catharsis.Ipv4AddressFilters)
+                foreach (var ipv4AddressFilter in _serviceManager.Config.Catharsis.Ipv4AddressFilters)
                 {
                     // path
                     {
                         foreach (var path in ipv4AddressFilter.Paths)
                         {
-                            using (var stream = new FileStream(Path.Combine(_serviceManager.DirectoryPaths["Configuration"], path), FileMode.OpenOrCreate))
+                            using (var stream = new FileStream(Path.Combine(_serviceManager.Paths["Configuration"], path), FileMode.OpenOrCreate))
                             using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
                             {
                                 string line;

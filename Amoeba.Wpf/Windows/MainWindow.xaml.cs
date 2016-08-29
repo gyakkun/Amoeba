@@ -77,7 +77,7 @@ namespace Amoeba.Windows
         private string _logPath;
 
         private volatile bool _closed = false;
-        private bool _autoStop;
+        private volatile bool _autoStop;
 
         private Thread _timerThread;
         private Thread _watchThread;
@@ -115,14 +115,14 @@ namespace Amoeba.Windows
 
                 this.Setting_Log();
 
-                _configrationDirectoryPaths.Add("Properties", Path.Combine(_serviceManager.DirectoryPaths["Configuration"], @"Amoeba/Properties/Settings"));
-                _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(_serviceManager.DirectoryPaths["Configuration"], @"Library/Net/Amoeba/AmoebaManager"));
-                _configrationDirectoryPaths.Add("ConnectionSettingManager", Path.Combine(_serviceManager.DirectoryPaths["Configuration"], @"Amoeba/ConnectionSettingManager"));
-                _configrationDirectoryPaths.Add("OverlayNetworkManager", Path.Combine(_serviceManager.DirectoryPaths["Configuration"], @"Amoeba/OverlayNetworkManager"));
-                _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(_serviceManager.DirectoryPaths["Configuration"], @"Amoeba/TransfarLimitManager"));
-                _configrationDirectoryPaths.Add("CatharsisManager", Path.Combine(_serviceManager.DirectoryPaths["Configuration"], @"Amoeba/CatharsisManager"));
+                _configrationDirectoryPaths.Add("Settings", Path.Combine(_serviceManager.Paths["Configuration"], @"Settings"));
+                _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(_serviceManager.Paths["Configuration"], @"AmoebaManager"));
+                _configrationDirectoryPaths.Add("ConnectionSettingManager", Path.Combine(_serviceManager.Paths["Configuration"], @"ConnectionSettingManager"));
+                _configrationDirectoryPaths.Add("OverlayNetworkManager", Path.Combine(_serviceManager.Paths["Configuration"], @"OverlayNetworkManager"));
+                _configrationDirectoryPaths.Add("TransfarLimitManager", Path.Combine(_serviceManager.Paths["Configuration"], @"TransfarLimitManager"));
+                _configrationDirectoryPaths.Add("CatharsisManager", Path.Combine(_serviceManager.Paths["Configuration"], @"CatharsisManager"));
 
-                Settings.Instance.Load(_configrationDirectoryPaths["Properties"]);
+                Settings.Instance.Load(_configrationDirectoryPaths["Settings"]);
 
                 InitializeComponent();
 
@@ -132,14 +132,14 @@ namespace Amoeba.Windows
                     var icon = new BitmapImage();
 
                     icon.BeginInit();
-                    icon.StreamSource = new FileStream(Path.Combine(_serviceManager.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                    icon.StreamSource = new FileStream(Path.Combine(_serviceManager.Paths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
                     icon.EndInit();
                     if (icon.CanFreeze) icon.Freeze();
 
                     this.Icon = icon;
                 }
 
-                var myIcon = new System.Drawing.Icon(Path.Combine(_serviceManager.DirectoryPaths["Icons"], "Amoeba.ico"));
+                var myIcon = new System.Drawing.Icon(Path.Combine(_serviceManager.Paths["Icons"], "Amoeba.ico"));
                 _notifyIcon.Icon = new System.Drawing.Icon(myIcon, new System.Drawing.Size(16, 16));
                 _notifyIcon.Visible = true;
 
@@ -221,7 +221,7 @@ namespace Amoeba.Windows
             {
                 this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    _connectStartMenuItem_Click(sender, null);
+                    _connectStartMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                 }));
             }
         }
@@ -230,12 +230,12 @@ namespace Amoeba.Windows
         {
             Log.Information(LanguagesManager.Instance.MainWindow_TransferLimit_Message);
 
-            _autoStop = true;
-
             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                _connectStopMenuItem_Click(sender, null);
+                _connectStopMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }));
+
+            _autoStop = true;
         }
 
         public static void CopyDirectory(string sourceDirectoryPath, string destDirectoryPath)
@@ -273,7 +273,6 @@ namespace Amoeba.Windows
                 updateStopwatch.Start();
                 uriUpdateStopwatch.Start();
                 compactionStopwatch.Start();
-                garbageCollectStopwatch.Start();
 
                 for (;;)
                 {
@@ -285,8 +284,8 @@ namespace Amoeba.Windows
                         {
                             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
-                                _connectStopMenuItem_Click(null, null);
-                                _convertStopMenuItem_Click(null, null);
+                                _connectStopMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                                _convertStopMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                             }));
                         }
 
@@ -395,9 +394,9 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            if (!string.IsNullOrWhiteSpace(_serviceManager.Cache.Path))
+                            if (!string.IsNullOrWhiteSpace(_serviceManager.Config.Cache.Path))
                             {
-                                var drive = new DriveInfo(Path.GetDirectoryName(Path.GetFullPath(_serviceManager.Cache.Path)));
+                                var drive = new DriveInfo(Path.GetDirectoryName(Path.GetFullPath(_serviceManager.Config.Cache.Path)));
 
                                 if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
                                 {
@@ -422,7 +421,7 @@ namespace Amoeba.Windows
                             _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
                             _connectionSettingManager.Save(_configrationDirectoryPaths["ConnectionSettingManager"]);
                             _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-                            Settings.Instance.Save(_configrationDirectoryPaths["Properties"]);
+                            Settings.Instance.Save(_configrationDirectoryPaths["Settings"]);
                         }
                         catch (Exception e)
                         {
@@ -462,7 +461,7 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    if (garbageCollectStopwatch.Elapsed.TotalMinutes >= 30)
+                    if (!garbageCollectStopwatch.IsRunning || garbageCollectStopwatch.Elapsed.TotalMinutes >= 30)
                     {
                         garbageCollectStopwatch.Restart();
 
@@ -814,7 +813,7 @@ namespace Amoeba.Windows
 
         private void Setting_Log()
         {
-            Directory.CreateDirectory(_serviceManager.DirectoryPaths["Log"]);
+            Directory.CreateDirectory(_serviceManager.Paths["Log"]);
             int logCount = 0;
             bool isHeaderWrite = true;
 
@@ -824,11 +823,11 @@ namespace Amoeba.Windows
                 {
                     if (logCount == 0)
                     {
-                        _logPath = Path.Combine(_serviceManager.DirectoryPaths["Log"], string.Format("{0}.txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo)));
+                        _logPath = Path.Combine(_serviceManager.Paths["Log"], string.Format("{0}.txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo)));
                     }
                     else
                     {
-                        _logPath = Path.Combine(_serviceManager.DirectoryPaths["Log"], string.Format("{0}.({1}).txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo), logCount));
+                        _logPath = Path.Combine(_serviceManager.Paths["Log"], string.Format("{0}.({1}).txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo), logCount));
                     }
 
                     logCount++;
@@ -1000,17 +999,17 @@ namespace Amoeba.Windows
             {
                 bool initFlag = false;
 
-                _amoebaManager = new AmoebaManager(Path.Combine(_serviceManager.DirectoryPaths["Configuration"], "Cache.bitmap"), _serviceManager.Cache.Path, _bufferManager);
+                _amoebaManager = new AmoebaManager(Path.Combine(_serviceManager.Paths["Work"], "Cache.bitmap"), _serviceManager.Config.Cache.Path, _bufferManager);
                 _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
 
-                if (!File.Exists(Path.Combine(_serviceManager.DirectoryPaths["Configuration"], "Amoeba.version")))
+                if (!File.Exists(Path.Combine(_serviceManager.Paths["Configuration"], "Amoeba.version")))
                 {
                     initFlag = true;
 
                     {
                         var p = new System.Diagnostics.ProcessStartInfo();
                         p.UseShellExecute = true;
-                        p.FileName = Path.GetFullPath(Path.Combine(_serviceManager.DirectoryPaths["Core"], "Amoeba.exe"));
+                        p.FileName = Path.GetFullPath(Path.Combine(_serviceManager.Paths["Core"], "Amoeba.exe"));
                         p.Arguments = "Relate on";
 
                         OperatingSystem osInfo = Environment.OSVersion;
@@ -1120,11 +1119,11 @@ namespace Amoeba.Windows
                     }
 
                     // Trust.txtにあるノード情報を追加する。
-                    if (File.Exists(Path.Combine(_serviceManager.DirectoryPaths["Settings"], "Trust.txt")))
+                    if (File.Exists(Path.Combine(_serviceManager.Paths["Settings"], "Trust.txt")))
                     {
                         var list = new List<string>();
 
-                        using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.DirectoryPaths["Settings"], "Trust.txt"), new UTF8Encoding(false)))
+                        using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.Paths["Settings"], "Trust.txt"), new UTF8Encoding(false)))
                         {
                             string line;
 
@@ -1138,11 +1137,11 @@ namespace Amoeba.Windows
                     }
 
                     // Nodes.txtにあるノード情報を追加する。
-                    if (File.Exists(Path.Combine(_serviceManager.DirectoryPaths["Settings"], "Nodes.txt")))
+                    if (File.Exists(Path.Combine(_serviceManager.Paths["Settings"], "Nodes.txt")))
                     {
                         var list = new List<Node>();
 
-                        using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.DirectoryPaths["Settings"], "Nodes.txt"), new UTF8Encoding(false)))
+                        using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.Paths["Settings"], "Nodes.txt"), new UTF8Encoding(false)))
                         {
                             string line;
 
@@ -1159,7 +1158,7 @@ namespace Amoeba.Windows
                 {
                     Version version;
 
-                    using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+                    using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.Paths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
                     {
                         version = new Version(reader.ReadLine());
                     }
@@ -1167,11 +1166,11 @@ namespace Amoeba.Windows
                     if (version <= new Version(3, 0, 30))
                     {
                         // Trust.txtにあるノード情報を追加する。
-                        if (File.Exists(Path.Combine(_serviceManager.DirectoryPaths["Settings"], "Trust.txt")))
+                        if (File.Exists(Path.Combine(_serviceManager.Paths["Settings"], "Trust.txt")))
                         {
                             var list = new List<string>();
 
-                            using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.DirectoryPaths["Settings"], "Trust.txt"), new UTF8Encoding(false)))
+                            using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.Paths["Settings"], "Trust.txt"), new UTF8Encoding(false)))
                             {
                                 string line;
 
@@ -1186,7 +1185,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                using (StreamWriter writer = new StreamWriter(Path.Combine(_serviceManager.DirectoryPaths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
+                using (StreamWriter writer = new StreamWriter(Path.Combine(_serviceManager.Paths["Configuration"], "Amoeba.version"), false, new UTF8Encoding(false)))
                 {
                     writer.WriteLine(_serviceManager.AmoebaVersion.ToString());
                 }
@@ -1211,35 +1210,7 @@ namespace Amoeba.Windows
                     _overlayNetworkManager.Save(_configrationDirectoryPaths["OverlayNetworkManager"]);
                     _connectionSettingManager.Save(_configrationDirectoryPaths["ConnectionSettingManager"]);
                     _amoebaManager.Save(_configrationDirectoryPaths["AmoebaManager"]);
-                    Settings.Instance.Save(_configrationDirectoryPaths["Properties"]);
-                }
-
-                {
-                    var amoebaPath = Path.Combine(_serviceManager.DirectoryPaths["Configuration"], "Amoeba");
-                    var libraryPath = Path.Combine(_serviceManager.DirectoryPaths["Configuration"], "Library");
-
-                    try
-                    {
-                        if (Directory.Exists(amoebaPath))
-                        {
-                            if (Directory.Exists(amoebaPath + ".old"))
-                                Directory.Delete(amoebaPath + ".old", true);
-
-                            MainWindow.CopyDirectory(amoebaPath, amoebaPath + ".old");
-                        }
-
-                        if (Directory.Exists(libraryPath))
-                        {
-                            if (Directory.Exists(libraryPath + ".old"))
-                                Directory.Delete(libraryPath + ".old", true);
-
-                            MainWindow.CopyDirectory(libraryPath, libraryPath + ".old");
-                        }
-                    }
-                    catch (Exception e2)
-                    {
-                        Log.Warning(e2);
-                    }
+                    Settings.Instance.Save(_configrationDirectoryPaths["Settings"]);
                 }
             }
         }
@@ -1374,7 +1345,7 @@ namespace Amoeba.Windows
                                     foreach (var information in _amoebaManager.DownloadingInformation)
                                     {
                                         if (information.Contains("Seed") && ((DownloadState)information["State"]) != DownloadState.Completed
-                                            && information.Contains("Path") && ((string)information["Path"]) == _serviceManager.DirectoryPaths["Update"])
+                                            && information.Contains("Path") && ((string)information["Path"]) == _serviceManager.Paths["Update"])
                                         {
                                             var tempSeed = (Seed)information["Seed"];
 
@@ -1382,7 +1353,7 @@ namespace Amoeba.Windows
                                         }
                                     }
 
-                                    foreach (var path in Directory.GetFiles(_serviceManager.DirectoryPaths["Update"]))
+                                    foreach (var path in Directory.GetFiles(_serviceManager.Paths["Update"]))
                                     {
                                         string name = Path.GetFileName(path);
 
@@ -1422,7 +1393,7 @@ namespace Amoeba.Windows
 
                                 if (flag)
                                 {
-                                    _amoebaManager.Download(seed, _serviceManager.DirectoryPaths["Update"], 6);
+                                    _amoebaManager.Download(seed, _serviceManager.Paths["Update"], 6);
 
                                     Log.Information(string.Format("Download: {0}", seed.Name));
                                 }
@@ -1500,12 +1471,12 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.Global_IsConnectRunning)
             {
-                _connectStartMenuItem_Click(null, null);
+                _connectStartMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
 
             if (Settings.Instance.Global_IsConvertRunning)
             {
-                _convertStartMenuItem_Click(null, null);
+                _convertStartMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
 
             if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
@@ -1537,7 +1508,7 @@ namespace Amoeba.Windows
             {
                 try
                 {
-                    Settings.Instance.Save(_configrationDirectoryPaths["Properties"]);
+                    Settings.Instance.Save(_configrationDirectoryPaths["Settings"]);
 
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
                     {
@@ -1665,6 +1636,8 @@ namespace Amoeba.Windows
             _connectStopMenuItem.IsEnabled = true;
 
             Settings.Instance.Global_IsConnectRunning = true;
+
+            _autoStop = false;
         }
 
         private void _connectStopMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1673,6 +1646,8 @@ namespace Amoeba.Windows
             _connectStopMenuItem.IsEnabled = false;
 
             Settings.Instance.Global_IsConnectRunning = false;
+
+            _autoStop = false;
         }
 
         volatile bool _updateBaseNodeMenuItem_IsEnabled = true;
@@ -1921,7 +1896,7 @@ namespace Amoeba.Windows
         {
             if (_logTabItem.IsSelected)
             {
-                _logListBoxCopyMenuItem_Click(null, null);
+                _logListBoxCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
         }
     }

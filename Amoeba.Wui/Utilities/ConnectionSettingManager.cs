@@ -49,36 +49,6 @@ namespace Amoeba
 
             }
 
-            try
-            {
-                string query = "SELECT * FROM Win32_NetworkAdapterConfiguration";
-
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(query))
-                {
-                    ManagementObjectCollection queryCollection = searcher.Get();
-
-                    foreach (ManagementObject mo in queryCollection)
-                    {
-                        if ((bool)mo["IPEnabled"])
-                        {
-                            foreach (string ip in (string[])mo["IPAddress"])
-                            {
-                                IPAddress value;
-
-                                if (IPAddress.TryParse(ip, out value))
-                                {
-                                    list.Add(value);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-
             return list;
         }
 

@@ -53,7 +53,7 @@ namespace Amoeba.Windows
                 var icon = new BitmapImage();
 
                 icon.BeginInit();
-                icon.StreamSource = new FileStream(Path.Combine(_serviceManager.DirectoryPaths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
+                icon.StreamSource = new FileStream(Path.Combine(_serviceManager.Paths["Icons"], "Amoeba.ico"), FileMode.Open, FileAccess.Read, FileShare.Read);
                 icon.EndInit();
                 if (icon.CanFreeze) icon.Freeze();
 
@@ -77,7 +77,7 @@ namespace Amoeba.Windows
             _signatureComboBox_CollectionContainer.Collection = _digitalSignatureCollection;
             if (_digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
 
-            _nameTextBox_TextChanged(null, null);
+            _nameTextBox.RaiseEvent(new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

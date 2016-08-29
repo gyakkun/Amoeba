@@ -1868,28 +1868,6 @@ namespace Amoeba.Properties
             }
         }
 
-        public string ConnectionType_Socks4Proxy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionType_Socks4Proxy");
-                }
-            }
-        }
-
-        public string ConnectionType_Socks4aProxy
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return this.Translate("ConnectionType_Socks4aProxy");
-                }
-            }
-        }
-
         public string ConnectionType_Socks5Proxy
         {
             get
