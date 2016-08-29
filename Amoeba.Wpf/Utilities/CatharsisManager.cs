@@ -26,7 +26,7 @@ namespace Amoeba
 {
     class CatharsisManager : ManagerBase, Library.Configuration.ISettings, IThisLock
     {
-        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
+        private ServiceManager _serviceManager;
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
@@ -44,10 +44,11 @@ namespace Amoeba
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public CatharsisManager(AmoebaManager amoebaManager, BufferManager bufferManager)
+        public CatharsisManager(AmoebaManager amoebaManager, BufferManager bufferManager, ServiceManager serviceManager)
         {
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
+            _serviceManager = serviceManager;
 
             _settings = new Settings(this.ThisLock);
 
@@ -142,13 +143,13 @@ namespace Amoeba
                 var ipv4AddressSet = new HashSet<uint>();
                 var ipv4AddressRangeSet = new HashSet<SearchRange<uint>>();
 
-                foreach (var ipv4AddressFilter in _serviceManager.Catharsis.Ipv4AddressFilters)
+                foreach (var ipv4AddressFilter in _serviceManager.Config.Catharsis.Ipv4AddressFilters)
                 {
                     // path
                     {
                         foreach (var path in ipv4AddressFilter.Paths)
                         {
-                            using (var stream = new FileStream(Path.Combine(_serviceManager.DirectoryPaths["Configuration"], path), FileMode.OpenOrCreate))
+                            using (var stream = new FileStream(Path.Combine(_serviceManager.Paths["Configuration"], path), FileMode.OpenOrCreate))
                             using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
                             {
                                 string line;

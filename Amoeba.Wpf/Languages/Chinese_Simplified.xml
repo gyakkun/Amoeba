@@ -162,8 +162,6 @@
 
   <Translate Key="ConnectionType_None" Value="无" />
   <Translate Key="ConnectionType_Tcp" Value="Tcp" />
-  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 代理服务器" />
-  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a 代理服务器" />
   <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 代理服务器" />
   <Translate Key="ConnectionType_HttpProxy" Value="http代理服务器" />
 

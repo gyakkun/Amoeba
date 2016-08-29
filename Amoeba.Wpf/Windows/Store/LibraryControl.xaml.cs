@@ -239,9 +239,9 @@ namespace Amoeba.Windows
 
                     try
                     {
-                        if (Directory.Exists(_serviceManager.DirectoryPaths["Input"]))
+                        if (Directory.Exists(_serviceManager.Paths["Input"]))
                         {
-                            this.OpenBox(_serviceManager.DirectoryPaths["Input"]);
+                            this.OpenBox(_serviceManager.Paths["Input"]);
                         }
                     }
                     catch (Exception)
@@ -796,7 +796,7 @@ namespace Amoeba.Windows
             if (item.IsSelected == true)
             {
                 _startPoint = e.GetPosition(null);
-                _treeView_SelectedItemChanged(null, null);
+                _treeView.RaiseEvent(new RoutedPropertyChangedEventArgs<object>(null, null, TreeView.SelectedItemChangedEvent));
             }
             else
             {
@@ -856,9 +856,9 @@ namespace Amoeba.Windows
 
             _startPoint = new Point(-1, -1);
 
-            MenuItem treeViewItemDeleteMenuItem = contextMenu.GetMenuItem("_treeViewItemDeleteMenuItem");
-            MenuItem treeViewItemCutMenuItem = contextMenu.GetMenuItem("_treeViewItemCutMenuItem");
-            MenuItem treeViewItemPasteMenuItem = contextMenu.GetMenuItem("_treeViewItemPasteMenuItem");
+            MenuItem treeViewItemDeleteMenuItem = contextMenu.GetItem<MenuItem>("_treeViewItemDeleteMenuItem");
+            MenuItem treeViewItemCutMenuItem = contextMenu.GetItem<MenuItem>("_treeViewItemCutMenuItem");
+            MenuItem treeViewItemPasteMenuItem = contextMenu.GetItem<MenuItem>("_treeViewItemPasteMenuItem");
 
             treeViewItemDeleteMenuItem.IsEnabled = (_treeViewModel != treeViewModel);
             treeViewItemCutMenuItem.IsEnabled = (_treeViewModel != treeViewModel);
@@ -1807,18 +1807,24 @@ namespace Amoeba.Windows
 
         private void Execute_New(object sender, ExecutedRoutedEventArgs e)
         {
-            _treeViewItemNewBoxMenuItem_Click(null, null);
+            var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
+            if (contextMenu == null) return;
+
+            contextMenu.GetItem<MenuItem>("_treeViewItemNewBoxMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         }
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                _treeViewItemDeleteMenuItem_Click(null, null);
+                var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
+                if (contextMenu == null) return;
+
+                contextMenu.GetItem<MenuItem>("_treeViewItemDeleteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
             else
             {
-                _listViewDeleteMenuItem_Click(null, null);
+                _listViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
         }
 
@@ -1826,11 +1832,14 @@ namespace Amoeba.Windows
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                _treeViewItemCopyMenuItem_Click(null, null);
+                var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
+                if (contextMenu == null) return;
+
+                contextMenu.GetItem<MenuItem>("_treeViewItemCopyMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
             else
             {
-                _listViewCopyMenuItem_Click(null, null);
+                _listViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
         }
 
@@ -1838,17 +1847,23 @@ namespace Amoeba.Windows
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                _treeViewItemCutMenuItem_Click(null, null);
+                var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
+                if (contextMenu == null) return;
+
+                contextMenu.GetItem<MenuItem>("_treeViewItemCutMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
             else
             {
-                _listViewCutMenuItem_Click(null, null);
+                _listViewCutMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             }
         }
 
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
-            _treeViewItemPasteMenuItem_Click(null, null);
+            var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
+            if (contextMenu == null) return;
+
+            contextMenu.GetItem<MenuItem>("_treeViewItemPasteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         }
 
         private void Execute_Search(object sender, ExecutedRoutedEventArgs e)

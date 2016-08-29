@@ -18,8 +18,8 @@ namespace Amoeba
         public Ipv4AddressFilter(string proxyUri, IEnumerable<string> urls, IEnumerable<string> paths)
         {
             this.ProxyUri = proxyUri;
-            this.ProtectedUrls.AddRange(urls);
-            this.ProtectedPaths.AddRange(paths);
+            if (urls != null) this.ProtectedUrls.AddRange(urls);
+            if (paths != null) this.ProtectedPaths.AddRange(paths);
         }
 
         [DataMember(Name = "ProxyUri")]

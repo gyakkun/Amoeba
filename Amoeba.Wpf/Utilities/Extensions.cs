@@ -51,27 +51,6 @@ namespace Amoeba
         }
     }
 
-    static class ContextMenuExtensions
-    {
-        public static MenuItem GetMenuItem(this ContextMenu thisContextMenu, string name)
-        {
-            var menus = new List<MenuItem>();
-            menus.AddRange(thisContextMenu.Items.OfType<MenuItem>());
-
-            for (int i = 0; i < menus.Count; i++)
-            {
-                if (menus[i].Name == name)
-                {
-                    return menus[i];
-                }
-
-                menus.AddRange(menus[i].Items.OfType<MenuItem>());
-            }
-
-            return null;
-        }
-    }
-
     delegate Point GetPositionDelegate(IInputElement element);
 
     static class ItemsControlExtensions
@@ -415,6 +394,25 @@ namespace Amoeba
             }
 
             return parent;
+        }
+
+        public static T GetItem<T>(this ItemsControl itemsControl, string name)
+            where T : ItemsControl
+        {
+            var items = new List<T>();
+            items.AddRange(itemsControl.Items.OfType<T>());
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (items[i].Name == name)
+                {
+                    return items[i];
+                }
+
+                items.AddRange(items[i].Items.OfType<T>());
+            }
+
+            return null;
         }
     }
 }

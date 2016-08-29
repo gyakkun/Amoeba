@@ -20,19 +20,10 @@ namespace Amoeba
     class ServiceManager : ManagerBase
     {
         public Version AmoebaVersion { get; private set; }
-        public Dictionary<string, string> DirectoryPaths { get; private set; }
+        public Dictionary<string, string> Paths { get; private set; }
+        public Config Config { get; private set; } = new Config();
 
-        // Startup
         private List<Process> _processList = new List<Process>();
-
-        // Catharsis
-        public CatharsisSettings Catharsis { get; private set; }
-
-        // Colors
-        public ColorsSettings Colors { get; private set; }
-
-        // Cache
-        public CacheSettings Cache { get; private set; }
 
         private volatile bool _disposed;
 
@@ -40,54 +31,21 @@ namespace Amoeba
         {
             this.AmoebaVersion = new Version(3, 0, 45);
 
-            {
-                var currentProcess = Process.GetCurrentProcess();
+            this.Paths = new Dictionary<string, string>();
 
-                currentProcess.PriorityClass = ProcessPriorityClass.BelowNormal;
-                currentProcess.SetMemoryPriority(4);
-            }
+            this.Paths["Base"] = @"../";
+            this.Paths["Configuration"] = @"../Configuration";
+            this.Paths["Update"] = Path.GetFullPath(@"../Update");
+            this.Paths["Log"] = @"../Log";
+            this.Paths["Input"] = @"../Input";
+            this.Paths["Work"] = @"../Work";
 
-            {
-                OperatingSystem osInfo = System.Environment.OSVersion;
+            this.Paths["Core"] = @"./";
+            this.Paths["Icons"] = "Icons";
+            this.Paths["Languages"] = "Languages";
+            this.Paths["Settings"] = "Settings";
 
-                // Windows Vista以上。
-                if (osInfo.Platform == PlatformID.Win32NT && osInfo.Version >= new Version(6, 0))
-                {
-                    // SHA256Cngをデフォルトで使うように設定する。
-                    CryptoConfig.AddAlgorithm(typeof(SHA256Cng),
-                        "SHA256",
-                        "SHA256Cng",
-                        "System.Security.Cryptography.SHA256",
-                        "System.Security.Cryptography.SHA256Cng");
-                }
-                else
-                {
-                    // SHA256Managedをデフォルトで使うように設定する。
-                    CryptoConfig.AddAlgorithm(typeof(SHA256Managed),
-                        "SHA256",
-                        "SHA256Managed",
-                        "System.Security.Cryptography.SHA256",
-                        "System.Security.Cryptography.SHA256Managed");
-                }
-            }
-
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
-
-            this.DirectoryPaths = new Dictionary<string, string>();
-
-            this.DirectoryPaths["Base"] = @"../";
-            this.DirectoryPaths["Configuration"] = @"../Configuration";
-            this.DirectoryPaths["Update"] = Path.GetFullPath(@"../Update");
-            this.DirectoryPaths["Log"] = @"../Log";
-            this.DirectoryPaths["Input"] = @"../Input";
-            this.DirectoryPaths["Work"] = @"../Work";
-
-            this.DirectoryPaths["Core"] = @"./";
-            this.DirectoryPaths["Icons"] = "Icons";
-            this.DirectoryPaths["Languages"] = "Languages";
-            this.DirectoryPaths["Settings"] = "Settings";
-
-            foreach (var item in this.DirectoryPaths.Values)
+            foreach (var item in this.Paths.Values)
             {
                 try
                 {
@@ -101,16 +59,6 @@ namespace Amoeba
 
                 }
             }
-
-            Thread.GetDomain().UnhandledException += this.ServiceManager_UnhandledException;
-        }
-
-        void ServiceManager_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var exception = e.ExceptionObject as Exception;
-            if (exception == null) return;
-
-            Log.Error(exception);
         }
 
         private static string GetUniqueFilePath(string path)
@@ -195,11 +143,11 @@ namespace Amoeba
                         try
                         {
                             string extension = ".box";
-                            string commandline = "\"" + Path.GetFullPath(Path.Combine(this.DirectoryPaths["Core"], "Amoeba.exe")) + "\" \"%1\"";
+                            string commandline = "\"" + Path.GetFullPath(Path.Combine(this.Paths["Core"], "Amoeba.exe")) + "\" \"%1\"";
                             string fileType = "Amoeba";
                             string description = "Amoeba Box";
                             string verb = "open";
-                            string iconPath = Path.GetFullPath(Path.Combine(this.DirectoryPaths["Icons"], @"Files/Box.ico"));
+                            string iconPath = Path.GetFullPath(Path.Combine(this.Paths["Icons"], @"Files/Box.ico"));
 
                             using (var regkey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(extension))
                             {
@@ -230,8 +178,6 @@ namespace Amoeba
 
                         }
 
-                        Application.Current.Shutdown();
-
                         return false;
                     }
                     else if (args[1] == "off")
@@ -249,8 +195,6 @@ namespace Amoeba
 
                         }
 
-                        Application.Current.Shutdown();
-
                         return false;
                     }
                 }
@@ -258,10 +202,10 @@ namespace Amoeba
                 {
                     try
                     {
-                        if (!Directory.Exists(this.DirectoryPaths["Input"]))
-                            Directory.CreateDirectory(this.DirectoryPaths["Input"]);
+                        if (!Directory.Exists(this.Paths["Input"]))
+                            Directory.CreateDirectory(this.Paths["Input"]);
 
-                        using (FileStream stream = ServiceManager.GetUniqueFileStream(Path.Combine(this.DirectoryPaths["Input"], "seed.txt")))
+                        using (FileStream stream = ServiceManager.GetUniqueFileStream(Path.Combine(this.Paths["Input"], "seed.txt")))
                         using (StreamWriter writer = new StreamWriter(stream))
                         {
                             foreach (var item in args.Skip(1))
@@ -282,11 +226,11 @@ namespace Amoeba
                     {
                         if (Path.GetExtension(args[0]).ToLower() == ".box")
                         {
-                            if (!Directory.Exists(this.DirectoryPaths["Input"]))
-                                Directory.CreateDirectory(this.DirectoryPaths["Input"]);
+                            if (!Directory.Exists(this.Paths["Input"]))
+                                Directory.CreateDirectory(this.Paths["Input"]);
 
                             using (var inStream = new FileStream(args[0], FileMode.Open, FileAccess.Read, FileShare.Read))
-                            using (var outStream = ServiceManager.GetUniqueFileStream(Path.Combine(this.DirectoryPaths["Input"], Path.GetRandomFileName() + "_temp.box")))
+                            using (var outStream = ServiceManager.GetUniqueFileStream(Path.Combine(this.Paths["Input"], Path.GetRandomFileName() + "_temp.box")))
                             {
                                 byte[] buffer = new byte[1024 * 4];
 
@@ -318,8 +262,6 @@ namespace Amoeba
                         {
                             if (p.MainModule.FileName == Path.GetFullPath(Assembly.GetEntryAssembly().Location))
                             {
-                                Application.Current.Shutdown();
-
                                 return false;
                             }
                         }
@@ -329,7 +271,7 @@ namespace Amoeba
                         }
                     }
 
-                    string updateInformationFilePath = Path.Combine(this.DirectoryPaths["Configuration"], "Amoeba.update");
+                    string updateInformationFilePath = Path.Combine(this.Paths["Configuration"], "Amoeba.update");
 
                     // アップデート中の場合、終了する。
                     if (File.Exists(updateInformationFilePath))
@@ -345,8 +287,6 @@ namespace Amoeba
                                 {
                                     if (Path.GetFileName(p.MainModule.FileName) == updateExeFilePath)
                                     {
-                                        Application.Current.Shutdown();
-
                                         return false;
                                     }
                                 }
@@ -361,11 +301,13 @@ namespace Amoeba
                     }
                 }
 
+                this.Config.Load(this.Paths["Configuration"]);
+
                 this.ShutdownProcesses();
 
                 // アップデート
                 {
-                    var workDirectioryPath = this.DirectoryPaths["Work"];
+                    var workDirectioryPath = this.Paths["Work"];
 
                     // 一時的に作成された"Library.Update.exe"を削除する。
                     try
@@ -380,7 +322,7 @@ namespace Amoeba
 
                     }
 
-                    if (Directory.Exists(this.DirectoryPaths["Update"]))
+                    if (Directory.Exists(this.Paths["Update"]))
                     {
                         Restart:;
 
@@ -390,7 +332,7 @@ namespace Amoeba
                             var regex = new Regex(@"Amoeba.*?((\d*)\.(\d*)\.(\d*)).*?\.zip");
                             Version version = this.AmoebaVersion;
 
-                            foreach (var path in Directory.GetFiles(this.DirectoryPaths["Update"]))
+                            foreach (var path in Directory.GetFiles(this.Paths["Update"]))
                             {
                                 string name = Path.GetFileName(path);
 
@@ -457,7 +399,7 @@ namespace Amoeba
                             var process = Process.Start(startInfo);
                             process.WaitForInputIdle();
 
-                            string updateInformationFilePath = Path.Combine(this.DirectoryPaths["Configuration"], "Amoeba.update");
+                            string updateInformationFilePath = Path.Combine(this.Paths["Configuration"], "Amoeba.update");
 
                             using (FileStream stream = new FileStream(updateInformationFilePath, FileMode.Create))
                             using (StreamWriter writer = new StreamWriter(stream))
@@ -465,19 +407,17 @@ namespace Amoeba
                                 writer.WriteLine(Path.GetFileName(tempUpdateExeFilePath));
                             }
 
-                            Application.Current.Shutdown();
-
                             return false;
                         }
                     }
                 }
 
                 // バージョンアップ処理。
-                if (File.Exists(Path.Combine(this.DirectoryPaths["Configuration"], "Amoeba.version")))
+                if (File.Exists(Path.Combine(this.Paths["Configuration"], "Amoeba.version")))
                 {
                     Version version;
 
-                    using (StreamReader reader = new StreamReader(Path.Combine(this.DirectoryPaths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+                    using (StreamReader reader = new StreamReader(Path.Combine(this.Paths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
                     {
                         version = new Version(reader.ReadLine());
                     }
@@ -486,13 +426,60 @@ namespace Amoeba
                     {
                         throw new NotSupportedException("Not supported configuration.");
                     }
+                    if (version <= new Version(3, 0, 44))
+                    {
+                        string basePath = this.Paths["Configuration"];
+
+                        if (File.Exists(Path.Combine(basePath, @"Cache.bitmap")))
+                        {
+                            File.Delete(Path.Combine(basePath, @"Cache.bitmap"));
+                        }
+
+                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/Properties/Settings")))
+                        {
+                            Directory.Move(Path.Combine(basePath, @"Amoeba/Properties/Settings"), Path.Combine(basePath, @"Settings"));
+                        }
+                        if (Directory.Exists(Path.Combine(basePath, @"Library/Net/Amoeba/AmoebaManager")))
+                        {
+                            Directory.Move(Path.Combine(basePath, @"Library/Net/Amoeba/AmoebaManager"), Path.Combine(basePath, @"AmoebaManager"));
+                        }
+                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/ConnectionSettingManager")))
+                        {
+                            Directory.Move(Path.Combine(basePath, @"Amoeba/ConnectionSettingManager"), Path.Combine(basePath, @"ConnectionSettingManager"));
+                        }
+                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/OverlayNetworkManager")))
+                        {
+                            Directory.Move(Path.Combine(basePath, @"Amoeba/OverlayNetworkManager"), Path.Combine(basePath, @"OverlayNetworkManager"));
+                        }
+                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/TransfarLimitManager")))
+                        {
+                            Directory.Move(Path.Combine(basePath, @"Amoeba/TransfarLimitManager"), Path.Combine(basePath, @"TransfarLimitManager"));
+                        }
+                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/CatharsisManager")))
+                        {
+                            Directory.Move(Path.Combine(basePath, @"Amoeba/CatharsisManager"), Path.Combine(basePath, @"CatharsisManager"));
+                        }
+
+                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba")))
+                        {
+                            Directory.Delete(Path.Combine(basePath, @"Amoeba"), true);
+                        }
+                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba.old")))
+                        {
+                            Directory.Delete(Path.Combine(basePath, @"Amoeba.old"), true);
+                        }
+                        if (Directory.Exists(Path.Combine(basePath, @"Library")))
+                        {
+                            Directory.Delete(Path.Combine(basePath, @"Library"), true);
+                        }
+                        if (Directory.Exists(Path.Combine(basePath, @"Library.old")))
+                        {
+                            Directory.Delete(Path.Combine(basePath, @"Library.old"), true);
+                        }
+                    }
                 }
 
                 this.StartupProcesses();
-
-                this.CatharsisSettings();
-                this.CacheSettings();
-                this.ColorsSettings();
 
                 return true;
             }
@@ -500,120 +487,13 @@ namespace Amoeba
             {
                 MessageBox.Show(ex.Message);
 
-                Application.Current.Shutdown();
-
                 return false;
             }
         }
 
         private void StartupProcesses()
         {
-            if (!File.Exists(Path.Combine(this.DirectoryPaths["Configuration"], "Startup.settings")))
-            {
-                using (XmlTextWriter xml = new XmlTextWriter(Path.Combine(this.DirectoryPaths["Configuration"], "Startup.settings"), new UTF8Encoding(false)))
-                {
-                    xml.Formatting = Formatting.Indented;
-                    xml.WriteStartDocument();
-
-                    xml.WriteStartElement("Configuration");
-
-                    {
-                        xml.WriteStartElement("Process");
-
-                        xml.WriteElementString("Path", @"Assemblies/Tor/tor.exe");
-                        xml.WriteElementString("Arguments", "-f torrc DataDirectory " + @"../../../Work/Tor");
-                        xml.WriteElementString("WorkingDirectory", @"Assemblies/Tor");
-
-                        xml.WriteEndElement(); //Process
-                    }
-
-                    {
-                        xml.WriteStartElement("Process");
-
-                        xml.WriteElementString("Path", @"Assemblies/Polipo/polipo.exe");
-                        xml.WriteElementString("Arguments", "-c polipo.conf");
-                        xml.WriteElementString("WorkingDirectory", @"Assemblies/Polipo");
-
-                        xml.WriteEndElement(); //Process
-                    }
-
-                    xml.WriteEndElement(); //Configuration
-
-                    xml.WriteEndDocument();
-                    xml.Flush();
-                }
-            }
-
-            var runList = new List<RunItem>();
-
-            using (StreamReader r = new StreamReader(Path.Combine(this.DirectoryPaths["Configuration"], "Startup.settings"), new UTF8Encoding(false)))
-            using (XmlTextReader xml = new XmlTextReader(r))
-            {
-                while (xml.Read())
-                {
-                    if (xml.NodeType == XmlNodeType.Element)
-                    {
-                        if (xml.LocalName == "Process")
-                        {
-                            string path = null;
-                            string arguments = null;
-                            string workingDirectory = null;
-
-                            using (var xmlSubtree = xml.ReadSubtree())
-                            {
-                                while (xmlSubtree.Read())
-                                {
-                                    if (xmlSubtree.NodeType == XmlNodeType.Element)
-                                    {
-                                        if (xmlSubtree.LocalName == "Path")
-                                        {
-                                            try
-                                            {
-                                                path = xmlSubtree.ReadString();
-                                            }
-                                            catch (Exception)
-                                            {
-
-                                            }
-                                        }
-                                        else if (xml.LocalName == "Arguments")
-                                        {
-                                            try
-                                            {
-                                                arguments = xmlSubtree.ReadString();
-                                            }
-                                            catch (Exception)
-                                            {
-
-                                            }
-                                        }
-                                        else if (xmlSubtree.LocalName == "WorkingDirectory")
-                                        {
-                                            try
-                                            {
-                                                workingDirectory = xmlSubtree.ReadString();
-                                            }
-                                            catch (Exception)
-                                            {
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            runList.Add(new RunItem()
-                            {
-                                Path = path,
-                                Arguments = arguments,
-                                WorkingDirectory = workingDirectory
-                            });
-                        }
-                    }
-                }
-            }
-
-            Parallel.ForEach(runList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, item =>
+            Parallel.ForEach(this.Config.Startup.ProcessSettings, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, item =>
             {
                 try
                 {
@@ -636,78 +516,7 @@ namespace Amoeba
 
         private void ShutdownProcesses()
         {
-            if (!File.Exists(Path.Combine(this.DirectoryPaths["Configuration"], "Startup.settings"))) return;
-
-            var runList = new List<RunItem>();
-
-            using (StreamReader r = new StreamReader(Path.Combine(this.DirectoryPaths["Configuration"], "Startup.settings"), new UTF8Encoding(false)))
-            using (XmlTextReader xml = new XmlTextReader(r))
-            {
-                while (xml.Read())
-                {
-                    if (xml.NodeType == XmlNodeType.Element)
-                    {
-                        if (xml.LocalName == "Process")
-                        {
-                            string path = null;
-                            string arguments = null;
-                            string workingDirectory = null;
-
-                            using (var xmlSubtree = xml.ReadSubtree())
-                            {
-                                while (xmlSubtree.Read())
-                                {
-                                    if (xmlSubtree.NodeType == XmlNodeType.Element)
-                                    {
-                                        if (xmlSubtree.LocalName == "Path")
-                                        {
-                                            try
-                                            {
-                                                path = xmlSubtree.ReadString();
-                                            }
-                                            catch (Exception)
-                                            {
-
-                                            }
-                                        }
-                                        else if (xml.LocalName == "Arguments")
-                                        {
-                                            try
-                                            {
-                                                arguments = xmlSubtree.ReadString();
-                                            }
-                                            catch (Exception)
-                                            {
-
-                                            }
-                                        }
-                                        else if (xmlSubtree.LocalName == "WorkingDirectory")
-                                        {
-                                            try
-                                            {
-                                                workingDirectory = xmlSubtree.ReadString();
-                                            }
-                                            catch (Exception)
-                                            {
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            runList.Add(new RunItem()
-                            {
-                                Path = path,
-                                Arguments = arguments,
-                                WorkingDirectory = workingDirectory
-                            });
-                        }
-                    }
-                }
-            }
-
-            Parallel.ForEach(runList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, item =>
+            Parallel.ForEach(this.Config.Startup.ProcessSettings, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, item =>
             {
                 foreach (var p in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(item.Path)))
                 {
@@ -734,233 +543,6 @@ namespace Amoeba
             });
         }
 
-        private class RunItem
-        {
-            public string Path { get; set; }
-            public string Arguments { get; set; }
-            public string WorkingDirectory { get; set; }
-        }
-
-        private void CatharsisSettings()
-        {
-            this.Catharsis = new CatharsisSettings();
-
-            if (!File.Exists(Path.Combine(this.DirectoryPaths["Configuration"], "Catharsis.settings")))
-            {
-                using (XmlTextWriter xml = new XmlTextWriter(Path.Combine(this.DirectoryPaths["Configuration"], "Catharsis.settings"), new UTF8Encoding(false)))
-                {
-                    xml.Formatting = Formatting.Indented;
-                    xml.WriteStartDocument();
-
-                    xml.WriteStartElement("Configuration");
-
-                    {
-                        xml.WriteStartElement("Ipv4AddressFilter");
-
-                        {
-                            xml.WriteStartElement("Proxy");
-
-                            xml.WriteElementString("Uri", @"tcp:127.0.0.1:18118");
-
-                            xml.WriteEndElement(); //Proxy
-                        }
-
-                        {
-                            xml.WriteStartElement("Targets");
-
-                            // https://www.iblocklist.com/lists.php
-                            // 政府系IP、反P2P系企業IPを選択的にブロック。
-                            xml.WriteComment(@"<Url>http://list.iblocklist.com/lists/bluetack/level-1</Url>");
-                            xml.WriteComment(@"<Url>http://list.iblocklist.com/lists/tbg/primary-threats</Url>");
-
-                            xml.WriteElementString("Path", @"Catharsis_Ipv4.txt");
-
-                            xml.WriteEndElement(); //Targets
-                        }
-
-                        xml.WriteEndElement(); //Ipv4AddressFilter
-                    }
-
-                    xml.WriteEndElement(); //Configuration
-
-                    xml.WriteEndDocument();
-                    xml.Flush();
-                }
-            }
-
-            var ipv4AddressFilters = new List<Ipv4AddressFilter>();
-
-            using (StreamReader r = new StreamReader(Path.Combine(this.DirectoryPaths["Configuration"], "Catharsis.settings"), new UTF8Encoding(false)))
-            using (XmlTextReader xml = new XmlTextReader(r))
-            {
-                while (xml.Read())
-                {
-                    if (xml.NodeType == XmlNodeType.Element)
-                    {
-                        if (xml.LocalName == "Ipv4AddressFilter")
-                        {
-                            string proxyUri = null;
-                            var urls = new List<string>();
-                            var paths = new List<string>();
-
-                            using (var xmlSubtree = xml.ReadSubtree())
-                            {
-                                while (xmlSubtree.Read())
-                                {
-                                    if (xmlSubtree.NodeType == XmlNodeType.Element)
-                                    {
-                                        if (xmlSubtree.LocalName == "Proxy")
-                                        {
-                                            using (var xmlSubtree2 = xmlSubtree.ReadSubtree())
-                                            {
-                                                while (xmlSubtree2.Read())
-                                                {
-                                                    if (xmlSubtree2.NodeType == XmlNodeType.Element)
-                                                    {
-                                                        if (xmlSubtree2.LocalName == "Uri")
-                                                        {
-                                                            try
-                                                            {
-                                                                proxyUri = xmlSubtree2.ReadString();
-                                                            }
-                                                            catch (Exception)
-                                                            {
-
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else if (xmlSubtree.LocalName == "Targets")
-                                        {
-                                            using (var xmlSubtree2 = xmlSubtree.ReadSubtree())
-                                            {
-                                                while (xmlSubtree2.Read())
-                                                {
-                                                    if (xmlSubtree2.NodeType == XmlNodeType.Element)
-                                                    {
-                                                        if (xmlSubtree2.LocalName == "Url")
-                                                        {
-                                                            try
-                                                            {
-                                                                urls.Add(xmlSubtree2.ReadString());
-                                                            }
-                                                            catch (Exception)
-                                                            {
-
-                                                            }
-                                                        }
-                                                        else if (xmlSubtree2.LocalName == "Path")
-                                                        {
-                                                            try
-                                                            {
-                                                                paths.Add(xmlSubtree2.ReadString());
-                                                            }
-                                                            catch (Exception)
-                                                            {
-
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            this.Catharsis.Ipv4AddressFilters.Add(new Ipv4AddressFilter(proxyUri, urls, paths));
-                        }
-                    }
-                }
-            }
-        }
-
-        private void CacheSettings()
-        {
-            this.Cache = new CacheSettings();
-
-            // Initialize
-            {
-                this.Cache.Path = Path.Combine(this.DirectoryPaths["Configuration"], "Cache.blocks");
-            }
-
-            if (!File.Exists(Path.Combine(this.DirectoryPaths["Configuration"], "Cache.settings")))
-            {
-                using (StreamWriter writer = new StreamWriter(Path.Combine(this.DirectoryPaths["Configuration"], "Cache.settings"), false, new UTF8Encoding(false)))
-                {
-                    writer.WriteLine(string.Format("{0} {1}", "Path", this.Cache.Path));
-                }
-            }
-
-            {
-                using (StreamReader reader = new StreamReader(Path.Combine(this.DirectoryPaths["Configuration"], "Cache.settings"), new UTF8Encoding(false)))
-                {
-                    string line;
-
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var index = line.IndexOf(' ');
-                        var name = line.Substring(0, index);
-                        var value = line.Substring(index + 1);
-
-                        if (name == "Path")
-                        {
-                            this.Cache.Path = value;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void ColorsSettings()
-        {
-            this.Colors = new ColorsSettings();
-
-            // Initialize
-            {
-                this.Colors.Tree_Hit = System.Windows.Media.Colors.LightPink;
-            }
-
-            if (!File.Exists(Path.Combine(this.DirectoryPaths["Configuration"], "Colors.settings")))
-            {
-                Type type = typeof(ColorsSettings);
-
-                using (StreamWriter writer = new StreamWriter(Path.Combine(this.DirectoryPaths["Configuration"], "Colors.settings"), false, new UTF8Encoding(false)))
-                {
-                    var list = type.GetProperties().ToList();
-                    list.Sort((x, y) => x.Name.CompareTo(y.Name));
-
-                    foreach (var property in list)
-                    {
-                        writer.WriteLine(string.Format("{0} {1}", property.Name, (Color)property.GetValue(this.Colors, null)));
-                    }
-                }
-            }
-
-            {
-                Type type = typeof(ColorsSettings);
-
-                using (StreamReader reader = new StreamReader(Path.Combine(this.DirectoryPaths["Configuration"], "Colors.settings"), new UTF8Encoding(false)))
-                {
-                    string line;
-
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        var index = line.IndexOf(' ');
-                        var name = line.Substring(0, index);
-                        var value = line.Substring(index + 1);
-
-                        var property = type.GetProperty(name);
-                        if (property == null) continue;
-
-                        property.SetValue(this.Colors, (Color)ColorConverter.ConvertFromString(value), null);
-                    }
-                }
-            }
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -984,29 +566,4 @@ namespace Amoeba
         }
     }
 
-    class CatharsisSettings
-    {
-        private List<Ipv4AddressFilter> _ipv4AddressFilters;
-
-        public List<Ipv4AddressFilter> Ipv4AddressFilters
-        {
-            get
-            {
-                if (_ipv4AddressFilters == null)
-                    _ipv4AddressFilters = new List<Ipv4AddressFilter>();
-
-                return _ipv4AddressFilters;
-            }
-        }
-    }
-
-    class ColorsSettings
-    {
-        public System.Windows.Media.Color Tree_Hit { get; set; }
-    }
-
-    class CacheSettings
-    {
-        public string Path { get; set; }
-    }
 }

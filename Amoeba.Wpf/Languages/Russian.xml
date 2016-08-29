@@ -162,8 +162,6 @@
 
   <Translate Key="ConnectionType_None" Value="None" />
   <Translate Key="ConnectionType_Tcp" Value="Tcp" />
-  <Translate Key="ConnectionType_Socks4Proxy" Value="Socks4 прокси" />
-  <Translate Key="ConnectionType_Socks4aProxy" Value="Socks4a прокси" />
   <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 прокси" />
   <Translate Key="ConnectionType_HttpProxy" Value="Http прокси" />
 

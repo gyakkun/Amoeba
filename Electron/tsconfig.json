@@ -1,11 +1,16 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "sourceMap": true,
+        "noImplicitAny": true,
         "module": "commonjs",
-        "sourceMap": true
+        "target": "es5",
+        "jsx": "react"
     },
     "exclude": [
         "node_modules",
-        "dist"
+        "bower_components",
+        "dist",
+        "react",
+        "electron"
     ]
 }

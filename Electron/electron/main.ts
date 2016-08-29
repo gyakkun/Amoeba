@@ -1,6 +1,7 @@
-/// <reference path="typings/index.d.ts" />
+/// <reference path="../typings/index.d.ts" />
 
-import electron = require('electron');
+import * as electron from 'electron';
+
 const BrowserWindow = electron.BrowserWindow;
 const app = electron.app;
 
@@ -13,8 +14,9 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', () => {
-  mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': __dirname + '/images/app.png'});
+  var iconPath = __dirname + '/images/amoeba.png';
 
+  mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': iconPath});
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 
   mainWindow.on('closed', () => {

@@ -14,32 +14,20 @@ namespace Amoeba
         {
             // Startup
             {
-                ServiceManager serviceManager = null;
+                var serviceManager = new ServiceManager();
 
-                try
+                if (!serviceManager.Startup(args))
                 {
-                    serviceManager = new ServiceManager();
-
-                    if (!serviceManager.Startup(args))
-                    {
-                        serviceManager.Dispose();
-                        return;
-                    }
-                }
-                catch (Exception)
-                {
-                    if (serviceManager != null)
-                    {
-                        serviceManager.Dispose();
-                    }
+                    serviceManager.Dispose();
+                    serviceManager = null;
 
                     return;
                 }
-
-                _serviceManager = serviceManager;
+                else
+                {
+                    _serviceManager = serviceManager;
+                }
             }
-
-
         }
 
         public static ServiceManager ServiceManager

@@ -168,7 +168,7 @@ namespace Amoeba.Windows
             {
                 if (isHit.HasValue && isHit.Value)
                 {
-                    return new SolidColorBrush(_serviceManager.Colors.Tree_Hit);
+                    return new SolidColorBrush(_serviceManager.Config.Colors.Tree_Hit);
                 }
                 else
                 {
@@ -720,14 +720,6 @@ namespace Amoeba.Windows
             {
                 return LanguagesManager.Instance.ConnectionType_Tcp;
             }
-            else if (item.Value == ConnectionType.Socks4Proxy)
-            {
-                return LanguagesManager.Instance.ConnectionType_Socks4Proxy;
-            }
-            else if (item.Value == ConnectionType.Socks4aProxy)
-            {
-                return LanguagesManager.Instance.ConnectionType_Socks4aProxy;
-            }
             else if (item.Value == ConnectionType.Socks5Proxy)
             {
                 return LanguagesManager.Instance.ConnectionType_Socks5Proxy;
@@ -752,14 +744,6 @@ namespace Amoeba.Windows
             else if (item == LanguagesManager.Instance.ConnectionType_Tcp)
             {
                 return ConnectionType.Tcp;
-            }
-            else if (item == LanguagesManager.Instance.ConnectionType_Socks4Proxy)
-            {
-                return ConnectionType.Socks4Proxy;
-            }
-            else if (item == LanguagesManager.Instance.ConnectionType_Socks4aProxy)
-            {
-                return ConnectionType.Socks4aProxy;
             }
             else if (item == LanguagesManager.Instance.ConnectionType_Socks5Proxy)
             {
