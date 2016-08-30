@@ -242,11 +242,11 @@ namespace Amoeba.Windows
             {
                 if (_baseNodeUrisListView.SelectedIndex == -1)
                 {
-                    _baseNodeUriAddButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _baseNodeUriAddButton_Click(null, null);
                 }
                 else
                 {
-                    _baseNodeUriEditButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _baseNodeUriEditButton_Click(null, null);
                 }
 
                 e.Handled = true;
@@ -266,7 +266,7 @@ namespace Amoeba.Windows
                 _baseNodeTextBox.Text = "";
             }
 
-            _baseNodeUrisListView_SelectionChanged(this, null);
+            _baseNodeUrisListView_SelectionChanged(null, null);
         }
 
         private void _baseNodeUrisListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -301,7 +301,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _baseNodeUrisListView_PreviewMouseLeftButtonDown(this, null);
+                _baseNodeUrisListView_PreviewMouseLeftButtonDown(null, null);
             }
             catch (Exception)
             {
@@ -369,13 +369,13 @@ namespace Amoeba.Windows
 
         private void _baseNodeUrisListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _baseNodeUriDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _baseNodeUriDeleteButton_Click(null, null);
         }
 
         private void _baseNodeUrisListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _baseNodeUrisListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            _baseNodeUriDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _baseNodeUrisListViewCopyMenuItem_Click(null, null);
+            _baseNodeUriDeleteButton_Click(null, null);
         }
 
         private void _baseNodeUrisListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -421,7 +421,7 @@ namespace Amoeba.Windows
         {
             try
             {
-                _baseNodeUriSchemeComboBox_PreviewMouseLeftButtonDown(this, null);
+                _baseNodeUriSchemeComboBox_PreviewMouseLeftButtonDown(null, null);
             }
             catch (Exception)
             {
@@ -556,12 +556,12 @@ namespace Amoeba.Windows
 
         private void _otherNodesUpdate()
         {
-            _otherNodesListView_SelectionChanged(this, null);
+            _otherNodesListView_SelectionChanged(null, null);
         }
 
         private void _otherNodesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _otherNodesListView_PreviewMouseLeftButtonDown(this, null);
+            _otherNodesListView_PreviewMouseLeftButtonDown(null, null);
         }
 
         private void _otherNodesListView_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -627,11 +627,11 @@ namespace Amoeba.Windows
             {
                 if (_clientFiltersListView.SelectedIndex == -1)
                 {
-                    _clientFilterAddButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _clientFilterAddButton_Click(null, null);
                 }
                 else
                 {
-                    _clientFilterEditButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _clientFilterEditButton_Click(null, null);
                 }
 
                 e.Handled = true;
@@ -644,11 +644,11 @@ namespace Amoeba.Windows
             {
                 if (_clientFiltersListView.SelectedIndex == -1)
                 {
-                    _clientFilterAddButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _clientFilterAddButton_Click(null, null);
                 }
                 else
                 {
-                    _clientFilterEditButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _clientFilterEditButton_Click(null, null);
                 }
 
                 e.Handled = true;
@@ -657,7 +657,7 @@ namespace Amoeba.Windows
 
         private void _clientFiltersListViewUpdate()
         {
-            _clientFiltersListView_SelectionChanged(this, null);
+            _clientFiltersListView_SelectionChanged(null, null);
         }
 
         private void _clientFiltersListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -692,7 +692,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _clientFiltersListView_PreviewMouseLeftButtonDown(this, null);
+                _clientFiltersListView_PreviewMouseLeftButtonDown(null, null);
             }
             catch (Exception)
             {
@@ -783,13 +783,13 @@ namespace Amoeba.Windows
 
         private void _clientFiltersListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _clientFilterDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _clientFilterDeleteButton_Click(null, null);
         }
 
         private void _clientFiltersListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _clientFiltersListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            _clientFilterDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _clientFiltersListViewCopyMenuItem_Click(null, null);
+            _clientFilterDeleteButton_Click(null, null);
         }
 
         private void _clientFiltersListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -848,7 +848,7 @@ namespace Amoeba.Windows
 
         private void _clientFiltersConnectionTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown(this, null);
+            _clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown(null, null);
         }
 
         private void _clientFiltersConnectionTypeComboBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -895,7 +895,7 @@ namespace Amoeba.Windows
 
         private void _clientFiltersConditionSchemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown(this, null);
+            _clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown(null, null);
         }
 
         private void _clientFiltersConditionSchemeComboBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -1051,11 +1051,11 @@ namespace Amoeba.Windows
             {
                 if (_serverListenUrisListView.SelectedIndex == -1)
                 {
-                    _serverListenUriAddButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _serverListenUriAddButton_Click(null, null);
                 }
                 else
                 {
-                    _serverListenUriEditButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _serverListenUriEditButton_Click(null, null);
                 }
 
                 e.Handled = true;
@@ -1064,7 +1064,7 @@ namespace Amoeba.Windows
 
         private void _serverListenUrisUpdate()
         {
-            _serverListenUrisListView_SelectionChanged(this, null);
+            _serverListenUrisListView_SelectionChanged(null, null);
         }
 
         private void _serverListenUrisListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1099,7 +1099,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _serverListenUrisListView_PreviewMouseLeftButtonDown(this, null);
+                _serverListenUrisListView_PreviewMouseLeftButtonDown(null, null);
             }
             catch (Exception)
             {
@@ -1160,13 +1160,13 @@ namespace Amoeba.Windows
 
         private void _serverListenUrisListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _serverListenUriDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _serverListenUriDeleteButton_Click(null, null);
         }
 
         private void _serverListenUrisListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _serverListenUrisListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            _serverListenUriDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _serverListenUrisListViewCopyMenuItem_Click(null, null);
+            _serverListenUriDeleteButton_Click(null, null);
         }
 
         private void _serverListenUrisListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -1196,7 +1196,7 @@ namespace Amoeba.Windows
 
         private void _serverListenUriSchemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _serverListenUriSchemeComboBox_PreviewMouseLeftButtonDown(this, null);
+            _serverListenUriSchemeComboBox_PreviewMouseLeftButtonDown(null, null);
         }
 
         private void _serverListenUriSchemeComboBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -1511,7 +1511,7 @@ namespace Amoeba.Windows
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
-                _signatureAddButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                _signatureAddButton_Click(null, null);
 
                 e.Handled = true;
             }
@@ -1554,7 +1554,7 @@ namespace Amoeba.Windows
 
         private void _signatureListViewUpdate()
         {
-            _signatureListView_SelectionChanged(this, null);
+            _signatureListView_SelectionChanged(null, null);
         }
 
         private void _signatureListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1589,7 +1589,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _signatureListView_PreviewMouseLeftButtonDown(this, null);
+                _signatureListView_PreviewMouseLeftButtonDown(null, null);
             }
             catch (Exception)
             {
@@ -1626,7 +1626,7 @@ namespace Amoeba.Windows
 
         private void _signatureListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _signatureDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _signatureDeleteButton_Click(null, null);
         }
 
         private void _signatureImportButton_Click(object sender, RoutedEventArgs e)
@@ -1765,11 +1765,11 @@ namespace Amoeba.Windows
             {
                 if (_keywordListView.SelectedIndex == -1)
                 {
-                    _keywordAddButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _keywordAddButton_Click(null, null);
                 }
                 else
                 {
-                    _keywordEditButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    _keywordEditButton_Click(null, null);
                 }
 
                 e.Handled = true;
@@ -1778,7 +1778,7 @@ namespace Amoeba.Windows
 
         private void _keywordListViewUpdate()
         {
-            _keywordListView_SelectionChanged(this, null);
+            _keywordListView_SelectionChanged(null, null);
         }
 
         private void _keywordListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1813,7 +1813,7 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _keywordListView_PreviewMouseLeftButtonDown(this, null);
+                _keywordListView_PreviewMouseLeftButtonDown(null, null);
             }
             catch (Exception)
             {
@@ -1850,13 +1850,13 @@ namespace Amoeba.Windows
 
         private void _keywordListViewDeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _keywordDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _keywordDeleteButton_Click(null, null);
         }
 
         private void _keywordListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _keywordListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            _keywordDeleteButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            _keywordListViewCopyMenuItem_Click(null, null);
+            _keywordDeleteButton_Click(null, null);
         }
 
         private void _keywordListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -2206,7 +2206,7 @@ namespace Amoeba.Windows
         {
             if (_baseNodeTreeViewItem.IsSelected)
             {
-                _baseNodeUrisListViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _baseNodeUrisListViewDeleteMenuItem_Click(null, null);
             }
             else if (_otherNodesTreeViewItem.IsSelected)
             {
@@ -2214,19 +2214,19 @@ namespace Amoeba.Windows
             }
             else if (_clientTreeViewItem.IsSelected)
             {
-                _clientFiltersListViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _clientFiltersListViewDeleteMenuItem_Click(null, null);
             }
             else if (_serverTreeViewItem.IsSelected)
             {
-                _serverListenUrisListViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _serverListenUrisListViewDeleteMenuItem_Click(null, null);
             }
             else if (_signaturesTreeViewItem.IsSelected)
             {
-                _signatureListViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _signatureListViewDeleteMenuItem_Click(null, null);
             }
             else if (_keywordsTreeViewItem.IsSelected)
             {
-                _keywordListViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _keywordListViewDeleteMenuItem_Click(null, null);
             }
         }
 
@@ -2234,19 +2234,19 @@ namespace Amoeba.Windows
         {
             if (_baseNodeTreeViewItem.IsSelected)
             {
-                _baseNodeUrisListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _baseNodeUrisListViewCopyMenuItem_Click(null, null);
             }
             else if (_otherNodesTreeViewItem.IsSelected)
             {
-                _otherNodesCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _otherNodesCopyMenuItem_Click(null, null);
             }
             else if (_clientTreeViewItem.IsSelected)
             {
-                _clientFiltersListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _clientFiltersListViewCopyMenuItem_Click(null, null);
             }
             else if (_serverTreeViewItem.IsSelected)
             {
-                _serverListenUrisListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _serverListenUrisListViewCopyMenuItem_Click(null, null);
             }
             else if (_signaturesTreeViewItem.IsSelected)
             {
@@ -2254,7 +2254,7 @@ namespace Amoeba.Windows
             }
             else if (_keywordsTreeViewItem.IsSelected)
             {
-                _keywordListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _keywordListViewCopyMenuItem_Click(null, null);
             }
         }
 
@@ -2262,7 +2262,7 @@ namespace Amoeba.Windows
         {
             if (_baseNodeTreeViewItem.IsSelected)
             {
-                _baseNodeUrisListViewCutMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _baseNodeUrisListViewCutMenuItem_Click(null, null);
             }
             else if (_otherNodesTreeViewItem.IsSelected)
             {
@@ -2270,11 +2270,11 @@ namespace Amoeba.Windows
             }
             else if (_clientTreeViewItem.IsSelected)
             {
-                _clientFiltersListViewCutMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _clientFiltersListViewCutMenuItem_Click(null, null);
             }
             else if (_serverTreeViewItem.IsSelected)
             {
-                _serverListenUrisListViewCutMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _serverListenUrisListViewCutMenuItem_Click(null, null);
             }
             else if (_signaturesTreeViewItem.IsSelected)
             {
@@ -2282,7 +2282,7 @@ namespace Amoeba.Windows
             }
             else if (_keywordsTreeViewItem.IsSelected)
             {
-                _keywordListViewCutMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _keywordListViewCutMenuItem_Click(null, null);
             }
         }
 
@@ -2290,19 +2290,19 @@ namespace Amoeba.Windows
         {
             if (_baseNodeTreeViewItem.IsSelected)
             {
-                _baseNodeUrisListViewPasteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _baseNodeUrisListViewPasteMenuItem_Click(null, null);
             }
             else if (_otherNodesTreeViewItem.IsSelected)
             {
-                _otherNodesPasteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _otherNodesPasteMenuItem_Click(null, null);
             }
             else if (_clientTreeViewItem.IsSelected)
             {
-                _clientFiltersListViewPasteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _clientFiltersListViewPasteMenuItem_Click(null, null);
             }
             else if (_serverTreeViewItem.IsSelected)
             {
-                _serverListenUrisListViewPasteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _serverListenUrisListViewPasteMenuItem_Click(null, null);
             }
             else if (_signaturesTreeViewItem.IsSelected)
             {
@@ -2310,7 +2310,7 @@ namespace Amoeba.Windows
             }
             else if (_keywordsTreeViewItem.IsSelected)
             {
-                _keywordListViewPasteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _keywordListViewPasteMenuItem_Click(null, null);
             }
         }
     }

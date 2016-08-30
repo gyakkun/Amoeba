@@ -1,13 +1,15 @@
 {
   "name": "amoeba.electron",
   "globalDependencies": {
-    "electron-builder": "registry:dt/electron-builder#2.0.2+20160316155526",
-    "electron-packager": "registry:dt/electron-packager#5.1.0+20160316155526",
     "github-electron": "registry:dt/github-electron#1.2.5+20160812193136",
     "jquery": "registry:dt/jquery#1.10.0+20160704162008",
     "node": "registry:dt/node#6.0.0+20160818175514",
     "react": "registry:dt/react#0.14.0+20160817201227",
+    "react-bootstrap": "registry:dt/react-bootstrap#0.0.0+20160806072414",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
-    "react-bootstrap": "registry:dt/react-bootstrap#0.0.0+20160806072414"
+    "redux": "registry:dt/redux#3.5.2+20160703092728"
+  },
+  "dependencies": {
+    "react-redux": "registry:npm/react-redux#4.4.0+20160614222153"
   }
 }

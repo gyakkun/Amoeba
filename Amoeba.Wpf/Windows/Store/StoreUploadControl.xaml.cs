@@ -1043,7 +1043,7 @@ namespace Amoeba.Windows
             if (item.IsSelected == true)
             {
                 _startPoint = e.GetPosition(null);
-                _treeView.RaiseEvent(new RoutedPropertyChangedEventArgs<object>(null, null, TreeView.SelectedItemChangedEvent));
+                _treeView_SelectedItemChanged(null, null);
             }
             else
             {
@@ -2711,24 +2711,15 @@ namespace Amoeba.Windows
         {
             if (_treeView.SelectedItem is StoreCategorizeTreeViewModel)
             {
-                var contextMenu = _treeView.FindResource("_storeCategorizeTreeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_storeCategorizeTreeViewItemNewCategoryMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _storeCategorizeTreeViewItemNewCategoryMenuItem_Click(null, null);
             }
             else if (_treeView.SelectedItem is StoreTreeViewModel)
             {
-                var contextMenu = _treeView.FindResource("_storeTreeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_storeTreeViewItemNewBoxMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _storeTreeViewItemNewBoxMenuItem_Click(null, null);
             }
             else if (_treeView.SelectedItem is BoxTreeViewModel)
             {
-                var contextMenu = _treeView.FindResource("_boxTreeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_boxTreeViewItemNewBoxMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _boxTreeViewItemNewBoxMenuItem_Click(null, null);
             }
         }
 
@@ -2738,29 +2729,20 @@ namespace Amoeba.Windows
             {
                 if (_treeView.SelectedItem is StoreCategorizeTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_storeCategorizeTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_storeCategorizeTreeViewItemDeleteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _storeCategorizeTreeViewItemDeleteMenuItem_Click(null, null);
                 }
                 else if (_treeView.SelectedItem is StoreTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_storeTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_storeTreeViewItemDeleteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _storeTreeViewItemDeleteMenuItem_Click(null, null);
                 }
                 else if (_treeView.SelectedItem is BoxTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_boxTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_boxTreeViewItemDeleteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _boxTreeViewItemDeleteMenuItem_Click(null, null);
                 }
             }
             else
             {
-                _listViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _listViewDeleteMenuItem_Click(null, null);
             }
         }
 
@@ -2770,29 +2752,20 @@ namespace Amoeba.Windows
             {
                 if (_treeView.SelectedItem is StoreCategorizeTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_storeCategorizeTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_storeCategorizeTreeViewItemCopyMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _storeCategorizeTreeViewItemCopyMenuItem_Click(null, null);
                 }
                 else if (_treeView.SelectedItem is StoreTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_storeTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_storeTreeViewItemCopyMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _storeTreeViewItemCopyMenuItem_Click(null, null);
                 }
                 else if (_treeView.SelectedItem is BoxTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_boxTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_boxTreeViewItemCopyMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _boxTreeViewItemCopyMenuItem_Click(null, null);
                 }
             }
             else
             {
-                _listViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _listViewCopyMenuItem_Click(null, null);
             }
         }
 
@@ -2802,29 +2775,20 @@ namespace Amoeba.Windows
             {
                 if (_treeView.SelectedItem is StoreCategorizeTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_storeCategorizeTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_storeCategorizeTreeViewItemCutMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _storeCategorizeTreeViewItemCutMenuItem_Click(null, null);
                 }
                 else if (_treeView.SelectedItem is StoreTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_storeTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_storeTreeViewItemCutMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _storeTreeViewItemCutMenuItem_Click(null, null);
                 }
                 else if (_treeView.SelectedItem is BoxTreeViewModel)
                 {
-                    var contextMenu = _treeView.FindResource("_boxTreeViewItemContextMenu") as ContextMenu;
-                    if (contextMenu == null) return;
-
-                    contextMenu.GetItem<MenuItem>("_boxTreeViewItemCutMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _boxTreeViewItemCutMenuItem_Click(null, null);
                 }
             }
             else
             {
-                _listViewCutMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _listViewCutMenuItem_Click(null, null);
             }
         }
 
@@ -2832,24 +2796,15 @@ namespace Amoeba.Windows
         {
             if (_treeView.SelectedItem is StoreCategorizeTreeViewModel)
             {
-                var contextMenu = _treeView.FindResource("_storeCategorizeTreeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_storeCategorizeTreeViewItemPasteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _storeCategorizeTreeViewItemPasteMenuItem_Click(null, null);
             }
             else if (_treeView.SelectedItem is StoreTreeViewModel)
             {
-                var contextMenu = _treeView.FindResource("_storeTreeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_storeTreeViewItemPasteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _storeTreeViewItemPasteMenuItem_Click(null, null);
             }
             else if (_treeView.SelectedItem is BoxTreeViewModel)
             {
-                var contextMenu = _treeView.FindResource("_boxTreeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_boxTreeViewItemPasteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _boxTreeViewItemPasteMenuItem_Click(null, null);
             }
         }
 

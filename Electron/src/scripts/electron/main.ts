@@ -1,4 +1,4 @@
-/// <reference path="../typings/index.d.ts" />
+/// <reference path="../typings.ts" />
 
 import * as electron from 'electron';
 
@@ -14,10 +14,10 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', () => {
-  var iconPath = __dirname + '/images/amoeba.png';
+  var iconPath = __dirname + '/../images/amoeba.png';
 
   mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': iconPath});
-  mainWindow.loadURL('file://' + __dirname + '/index.html');
+  mainWindow.loadURL('file://' + __dirname + '/../index.html');
 
   mainWindow.on('closed', () => {
     mainWindow = null;

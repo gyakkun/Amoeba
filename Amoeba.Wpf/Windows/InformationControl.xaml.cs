@@ -740,12 +740,12 @@ namespace Amoeba.Windows
 
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
-            _listViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            _listViewCopyMenuItem_Click(null, null);
         }
 
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
-            _listViewPasteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            _listViewPasteMenuItem_Click(null, null);
         }
     }
 }

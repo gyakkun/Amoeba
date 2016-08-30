@@ -22,6 +22,7 @@ var options = {
     overwrite: true,
     asar: true,
     prune: true,
+    ignore: "node_modules/(electron-packager|electron-prebuilt)|dist",
 };
 
 packager(options, function (err, appPath) {

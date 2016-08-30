@@ -221,7 +221,7 @@ namespace Amoeba.Windows
             {
                 this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    _connectStartMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    _connectStartMenuItem_Click(null, null);
                 }));
             }
         }
@@ -232,7 +232,7 @@ namespace Amoeba.Windows
 
             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                _connectStopMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _connectStopMenuItem_Click(null, null);
             }));
 
             _autoStop = true;
@@ -284,8 +284,8 @@ namespace Amoeba.Windows
                         {
                             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
-                                _connectStopMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-                                _convertStopMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                                _connectStopMenuItem_Click(null, null);
+                                _convertStopMenuItem_Click(null, null);
                             }));
                         }
 
@@ -1471,12 +1471,12 @@ namespace Amoeba.Windows
 
             if (Settings.Instance.Global_IsConnectRunning)
             {
-                _connectStartMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _connectStartMenuItem_Click(null, null);
             }
 
             if (Settings.Instance.Global_IsConvertRunning)
             {
-                _convertStartMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _convertStartMenuItem_Click(null, null);
             }
 
             if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
@@ -1896,7 +1896,7 @@ namespace Amoeba.Windows
         {
             if (_logTabItem.IsSelected)
             {
-                _logListBoxCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _logListBoxCopyMenuItem_Click(null, null);
             }
         }
     }

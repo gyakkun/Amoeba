@@ -3,20 +3,5 @@
   "version": "0.0.0",
   "dependencies": {
     "bootstrap": "^3.3.7"
-  },
-  "install" : {
-    "path" : {
-      "css": "src/css",
-      "js": "react/scripts"
-    },
-    "sources" : {
-      "bootstrap" : [
-        "bower_components/bootstrap/dist/css/bootstrap.min.css",
-        "bower_components/bootstrap/dist/css/bootstrap-theme.min.css"
-      ],
-      "jquery" : [
-        "bower_components/jquery/dist/jquery.min.js"
-      ]
-    }
   }
 }

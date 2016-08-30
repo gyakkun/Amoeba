@@ -107,8 +107,8 @@ namespace Amoeba.Windows
 
         private void _downloadSignatureListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _downloadSignatureListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            _downloadSignatureListViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            _downloadSignatureListViewCopyMenuItem_Click(null, null);
+            _downloadSignatureListViewDeleteMenuItem_Click(null, null);
         }
 
         private void _downloadSignatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -232,8 +232,8 @@ namespace Amoeba.Windows
 
         private void _uploadTrustSignatureListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _uploadTrustSignatureListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            _uploadTrustSignatureListViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            _uploadTrustSignatureListViewCopyMenuItem_Click(null, null);
+            _uploadTrustSignatureListViewDeleteMenuItem_Click(null, null);
         }
 
         private void _uploadTrustSignatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)
@@ -310,8 +310,8 @@ namespace Amoeba.Windows
 
         private void _uploadUntrustSignatureListViewCutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            _uploadUntrustSignatureListViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            _uploadUntrustSignatureListViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            _uploadUntrustSignatureListViewCopyMenuItem_Click(null, null);
+            _uploadUntrustSignatureListViewDeleteMenuItem_Click(null, null);
         }
 
         private void _uploadUntrustSignatureListViewCopyMenuItem_Click(object sender, RoutedEventArgs e)

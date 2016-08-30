@@ -796,7 +796,7 @@ namespace Amoeba.Windows
             if (item.IsSelected == true)
             {
                 _startPoint = e.GetPosition(null);
-                _treeView.RaiseEvent(new RoutedPropertyChangedEventArgs<object>(null, null, TreeView.SelectedItemChangedEvent));
+                _treeView_SelectedItemChanged(null, null);
             }
             else
             {
@@ -1807,24 +1807,18 @@ namespace Amoeba.Windows
 
         private void Execute_New(object sender, ExecutedRoutedEventArgs e)
         {
-            var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
-            if (contextMenu == null) return;
-
-            contextMenu.GetItem<MenuItem>("_treeViewItemNewBoxMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            _treeViewItemNewBoxMenuItem_Click(null, null);
         }
 
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_treeViewItemDeleteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _treeViewItemDeleteMenuItem_Click(null, null);
             }
             else
             {
-                _listViewDeleteMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _listViewDeleteMenuItem_Click(null, null);
             }
         }
 
@@ -1832,14 +1826,11 @@ namespace Amoeba.Windows
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_treeViewItemCopyMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _treeViewItemCopyMenuItem_Click(null, null);
             }
             else
             {
-                _listViewCopyMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _listViewCopyMenuItem_Click(null, null);
             }
         }
 
@@ -1847,23 +1838,17 @@ namespace Amoeba.Windows
         {
             if (_listView.SelectedItems.Count == 0)
             {
-                var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
-                if (contextMenu == null) return;
-
-                contextMenu.GetItem<MenuItem>("_treeViewItemCutMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _treeViewItemCutMenuItem_Click(null, null);
             }
             else
             {
-                _listViewCutMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                _listViewCutMenuItem_Click(null, null);
             }
         }
 
         private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
         {
-            var contextMenu = _treeView.FindResource("_treeViewItemContextMenu") as ContextMenu;
-            if (contextMenu == null) return;
-
-            contextMenu.GetItem<MenuItem>("_treeViewItemPasteMenuItem").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            _treeViewItemPasteMenuItem_Click(null, null);
         }
 
         private void Execute_Search(object sender, ExecutedRoutedEventArgs e)

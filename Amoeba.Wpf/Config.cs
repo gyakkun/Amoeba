@@ -478,7 +478,7 @@ namespace Amoeba
             }
         }
 
-        [DataContract(Name = "Startup")]
+        [DataContract(Name = "StartupSetting")]
         public class StartupSetting
         {
             private List<ProcessSetting> _processSettings;
@@ -496,7 +496,7 @@ namespace Amoeba
             }
         }
 
-        [DataContract(Name = "Process")]
+        [DataContract(Name = "ProcessSetting")]
         public class ProcessSetting
         {
             [DataMember(Name = "Path")]
@@ -509,7 +509,7 @@ namespace Amoeba
             public string WorkingDirectory { get; set; }
         }
 
-        [DataContract(Name = "Catharsis")]
+        [DataContract(Name = "CatharsisSetting")]
         public class CatharsisSetting
         {
             private List<Ipv4AddressFilter> _ipv4AddressFilters;
@@ -527,14 +527,14 @@ namespace Amoeba
             }
         }
 
-        [DataContract(Name = "Cache")]
+        [DataContract(Name = "CacheSetting")]
         public class CacheSetting
         {
             [DataMember(Name = "Path")]
             public string Path { get; set; }
         }
 
-        [DataContract(Name = "Colors")]
+        [DataContract(Name = "ColorsSetting")]
         public class ColorsSetting
         {
             [DataMember(Name = "Tree_Hit")]

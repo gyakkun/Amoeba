@@ -102,7 +102,7 @@ namespace Amoeba.Windows
             if (_digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
 
             _nameTextBox.TextChanged += _nameTextBox_TextChanged;
-            _nameTextBox.RaiseEvent(new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None));
+            _nameTextBox_TextChanged(null, null);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
