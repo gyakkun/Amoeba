@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tools", "..\Library
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Library.Utilities", "..\Library\Library.Utilities\Library.Utilities.shproj", "{0F585D24-9D81-4C31-A341-966A554B3800}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Wui", "Amoeba.Wui\Amoeba.Wui.csproj", "{9CBEEABE-BFB5-485D-B928-E997FC5F8EF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{9CBEEABE-BFB5-485D-B928-E997FC5F8EF0}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
