@@ -11,7 +11,6 @@ module.exports = {
         {
             src: [
                 src + '/index.html',
-                src + '/css/**',
                 src + '/images/**',
             ],
             dest: dest,

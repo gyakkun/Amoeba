@@ -10,16 +10,16 @@ electron.crashReporter.start({companyName: "Amoeba",  submitURL: ""});
 var mainWindow: Electron.BrowserWindow = null;
 
 app.on('window-all-closed', () => {
-  app.quit();
+    app.quit();
 });
 
 app.on('ready', () => {
-  var iconPath = __dirname + '/../images/amoeba.png';
+    var iconPath = __dirname + '/../images/amoeba.png';
 
-  mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': iconPath});
-  mainWindow.loadURL('file://' + __dirname + '/../index.html');
+    mainWindow = new BrowserWindow({ width: 800, height: 600, 'icon': iconPath});
+    mainWindow.loadURL('file://' + __dirname + '/../index.html');
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
 });
