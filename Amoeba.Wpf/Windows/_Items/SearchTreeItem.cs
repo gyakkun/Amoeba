@@ -11,7 +11,7 @@ using Library.Io;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "SearchTreeItem", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "SearchTreeItem")]
     class SearchTreeItem : ICloneable<SearchTreeItem>, IThisLock
     {
         private SearchItem _searchItem;

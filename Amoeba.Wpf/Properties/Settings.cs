@@ -37,7 +37,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<string>() { Name = "Global_BoxExtractTo_Path", Value = "Box/Temp" },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Url", Value = "http://lyrise.web.fc2.com/update/Amoeba" },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_Update_ProxyUri", Value = "tcp:127.0.0.1:18118" },
-                new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Signature", Value = "Lyrise@OTAhpWvmegu50LT-p5dZ16og7U6bdpO4z5TInZxGsCs" },
+                new Library.Configuration.SettingContent<string>() { Name = "Global_Update_Signature", Value = "Lyrise@CYA4hPfjHTj81-ItOlSGgYBEkSb7Zd7cTo_Qmxv5NnA" },
                 new Library.Configuration.SettingContent<UpdateOption>() { Name = "Global_Update_Option", Value = UpdateOption.AutoCheck },
 
                 new Library.Configuration.SettingContent<LockedHashDictionary<string, LinkItem>>() { Name = "Cache_LinkItems", Value = new LockedHashDictionary<string, LinkItem>() },
@@ -115,7 +115,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_State_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Priority_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Rank_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Depth_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Rate_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Path_Width", Value = 120 },
 
@@ -126,7 +126,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_State_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Priority_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Rank_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Depth_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Rate_Width", Value = 120 },
 
                 new Library.Configuration.SettingContent<string>() { Name = "ShareControl_LastHeaderClicked", Value = "Name" },
@@ -1794,20 +1794,20 @@ namespace Amoeba.Properties
             }
         }
 
-        public double DownloadControl_GridViewColumn_Rank_Width
+        public double DownloadControl_GridViewColumn_Depth_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return (double)this["DownloadControl_GridViewColumn_Rank_Width"];
+                    return (double)this["DownloadControl_GridViewColumn_Depth_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["DownloadControl_GridViewColumn_Rank_Width"] = value;
+                    this["DownloadControl_GridViewColumn_Depth_Width"] = value;
                 }
             }
         }
@@ -1975,20 +1975,20 @@ namespace Amoeba.Properties
             }
         }
 
-        public double UploadControl_GridViewColumn_Rank_Width
+        public double UploadControl_GridViewColumn_Depth_Width
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return (double)this["UploadControl_GridViewColumn_Rank_Width"];
+                    return (double)this["UploadControl_GridViewColumn_Depth_Width"];
                 }
             }
             set
             {
                 lock (this.ThisLock)
                 {
-                    this["UploadControl_GridViewColumn_Rank_Width"] = value;
+                    this["UploadControl_GridViewColumn_Depth_Width"] = value;
                 }
             }
         }

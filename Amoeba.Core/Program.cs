@@ -29,13 +29,5 @@ namespace Amoeba
                 }
             }
         }
-
-        public static ServiceManager ServiceManager
-        {
-            get
-            {
-                return _serviceManager;
-            }
-        }
     }
 }

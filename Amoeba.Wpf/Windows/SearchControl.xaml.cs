@@ -1000,7 +1000,6 @@ namespace Amoeba.Windows
 
             var box = new Box();
             box.Name = selectTreeViewModel.Value.SearchItem.Name;
-            box.CreationTime = DateTime.UtcNow;
 
             foreach (var seed in _listViewModelCollection.Cast<SearchListViewModel>().Select(n => n.Value))
             {

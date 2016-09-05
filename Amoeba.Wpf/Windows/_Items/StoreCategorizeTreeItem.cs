@@ -8,7 +8,7 @@ using Library.Io;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "StoreCategorizeTreeItem", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "StoreCategorizeTreeItem")]
     class StoreCategorizeTreeItem : ICloneable<StoreCategorizeTreeItem>, IThisLock
     {
         private string _name;

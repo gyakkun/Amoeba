@@ -1,94 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using Library;
-using Library.Collections;
-using Library.Io;
 using Library.Net.Amoeba;
-using Library.Security;
+using Library.Io;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "SignatureTreeItem", Namespace = "http://Amoeba/Windows")]
-    class SignatureTreeItem : ICloneable<SignatureTreeItem>, IThisLock
+    [DataContract(Name = "StoreInfo")]
+    class StoreTreeItem : ICloneable<StoreTreeItem>, IThisLock
     {
-        private LinkItem _linkItem;
-        private LockedList<SignatureTreeItem> _children;
+        private string _signature;
+        private BoxCollection _boxes;
+        private bool _isExpanded = true;
+        private bool _isUpdated;
 
-        private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
+        private volatile object _thisLock;
 
-        public SignatureTreeItem(LinkItem sectionLinkItemInfo)
-        {
-            this.LinkItem = sectionLinkItemInfo;
-        }
-
-        public SignatureTreeItem Search(Func<SignatureTreeItem, bool> predicate)
-        {
-            var children = this.Children
-                .Select(n => n.Search(predicate))
-                .Where(n => n != null).ToList();
-
-            if (children.Any())
-            {
-                var result = new SignatureTreeItem(this.LinkItem);
-                result.Children.AddRange(children);
-                return result;
-            }
-            else if (predicate(this))
-            {
-                var result = new SignatureTreeItem(this.LinkItem);
-                return result;
-            }
-
-            return null;
-        }
-
-        [DataMember(Name = "LinkItem")]
-        public LinkItem LinkItem
+        [DataMember(Name = "UploadSignature")]
+        public string Signature
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return _linkItem;
+                    return _signature;
                 }
             }
-            private set
+            set
             {
                 lock (this.ThisLock)
                 {
-                    _linkItem = value;
+                    _signature = value;
                 }
             }
         }
 
-        [DataMember(Name = "Children")]
-        public LockedList<SignatureTreeItem> Children
+        [DataMember(Name = "Boxes")]
+        public BoxCollection Boxes
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    if (_children == null)
-                        _children = new LockedList<SignatureTreeItem>();
+                    if (_boxes == null)
+                        _boxes = new BoxCollection();
 
-                    return _children;
+                    return _boxes;
                 }
             }
         }
 
-        #region ICloneable<SignatureTreeItem>
+        [DataMember(Name = "IsExpanded")]
+        public bool IsExpanded
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return _isExpanded;
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    _isExpanded = value;
+                }
+            }
+        }
 
-        public SignatureTreeItem Clone()
+        [DataMember(Name = "IsUpdated")]
+        public bool IsUpdated
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    return _isUpdated;
+                }
+            }
+            set
+            {
+                lock (this.ThisLock)
+                {
+                    _isUpdated = value;
+                }
+            }
+        }
+
+        #region ICloneable<StoreTreeItem>
+
+        public StoreTreeItem Clone()
         {
             lock (this.ThisLock)
             {
-                var ds = new DataContractSerializer(typeof(SignatureTreeItem));
+                var ds = new DataContractSerializer(typeof(StoreTreeItem));
 
                 using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
@@ -102,7 +111,7 @@ namespace Amoeba.Windows
 
                     using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
-                        return (SignatureTreeItem)ds.ReadObject(xmlDictionaryReader);
+                        return (StoreTreeItem)ds.ReadObject(xmlDictionaryReader);
                     }
                 }
             }

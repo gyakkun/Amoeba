@@ -13,7 +13,7 @@ using Library.Security;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "SignatureTreeItem", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "SignatureTreeItem")]
     class SignatureTreeItem : ICloneable<SignatureTreeItem>, IThisLock
     {
         private LinkItem _linkItem;

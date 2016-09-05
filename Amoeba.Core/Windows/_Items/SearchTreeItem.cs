@@ -3,52 +3,59 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using Library;
+using Library.Collections;
+using System;
 using Library.Net.Amoeba;
+using System.Text.RegularExpressions;
 using Library.Io;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "StoreInfo", Namespace = "http://Amoeba/Windows")]
-    class StoreTreeItem : ICloneable<StoreTreeItem>, IThisLock
+    [DataContract(Name = "SearchTreeItem")]
+    class SearchTreeItem : ICloneable<SearchTreeItem>, IThisLock
     {
-        private string _signature;
-        private BoxCollection _boxes;
+        private SearchItem _searchItem;
+        private LockedList<SearchTreeItem> _children;
         private bool _isExpanded = true;
-        private bool _isUpdated;
 
         private static readonly object _initializeLock = new object();
         private volatile object _thisLock;
 
-        [DataMember(Name = "UploadSignature")]
-        public string Signature
+        public SearchTreeItem(SearchItem searchItem)
+        {
+            this.SearchItem = searchItem;
+        }
+
+        [DataMember(Name = "SearchItem")]
+        public SearchItem SearchItem
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return _signature;
+                    return _searchItem;
                 }
             }
-            set
+            private set
             {
                 lock (this.ThisLock)
                 {
-                    _signature = value;
+                    _searchItem = value;
                 }
             }
         }
 
-        [DataMember(Name = "Boxes")]
-        public BoxCollection Boxes
+        [DataMember(Name = "Items")]
+        public LockedList<SearchTreeItem> Children
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    if (_boxes == null)
-                        _boxes = new BoxCollection();
+                    if (_children == null)
+                        _children = new LockedList<SearchTreeItem>();
 
-                    return _boxes;
+                    return _children;
                 }
             }
         }
@@ -72,32 +79,13 @@ namespace Amoeba.Windows
             }
         }
 
-        [DataMember(Name = "IsUpdated")]
-        public bool IsUpdated
-        {
-            get
-            {
-                lock (this.ThisLock)
-                {
-                    return _isUpdated;
-                }
-            }
-            set
-            {
-                lock (this.ThisLock)
-                {
-                    _isUpdated = value;
-                }
-            }
-        }
+        #region ICloneable<SearchTreeItem>
 
-        #region ICloneable<StoreTreeItem>
-
-        public StoreTreeItem Clone()
+        public SearchTreeItem Clone()
         {
             lock (this.ThisLock)
             {
-                var ds = new DataContractSerializer(typeof(StoreTreeItem));
+                var ds = new DataContractSerializer(typeof(SearchTreeItem));
 
                 using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
@@ -111,7 +99,7 @@ namespace Amoeba.Windows
 
                     using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
-                        return (StoreTreeItem)ds.ReadObject(xmlDictionaryReader);
+                        return (SearchTreeItem)ds.ReadObject(xmlDictionaryReader);
                     }
                 }
             }

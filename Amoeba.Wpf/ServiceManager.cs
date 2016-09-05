@@ -29,7 +29,7 @@ namespace Amoeba
 
         public ServiceManager()
         {
-            this.AmoebaVersion = new Version(3, 0, 45);
+            this.AmoebaVersion = new Version(4, 0, 0);
 
             this.Paths = new Dictionary<string, string>();
 
@@ -422,60 +422,9 @@ namespace Amoeba
                         version = new Version(reader.ReadLine());
                     }
 
-                    if (version < new Version(3, 0, 0))
+                    if (version < new Version(4, 0, 0))
                     {
                         throw new NotSupportedException("Not supported configuration.");
-                    }
-                    if (version <= new Version(3, 0, 44))
-                    {
-                        string basePath = this.Paths["Configuration"];
-
-                        if (File.Exists(Path.Combine(basePath, @"Cache.bitmap")))
-                        {
-                            File.Delete(Path.Combine(basePath, @"Cache.bitmap"));
-                        }
-
-                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/Properties/Settings")))
-                        {
-                            Directory.Move(Path.Combine(basePath, @"Amoeba/Properties/Settings"), Path.Combine(basePath, @"Settings"));
-                        }
-                        if (Directory.Exists(Path.Combine(basePath, @"Library/Net/Amoeba/AmoebaManager")))
-                        {
-                            Directory.Move(Path.Combine(basePath, @"Library/Net/Amoeba/AmoebaManager"), Path.Combine(basePath, @"AmoebaManager"));
-                        }
-                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/ConnectionSettingManager")))
-                        {
-                            Directory.Move(Path.Combine(basePath, @"Amoeba/ConnectionSettingManager"), Path.Combine(basePath, @"ConnectionSettingManager"));
-                        }
-                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/OverlayNetworkManager")))
-                        {
-                            Directory.Move(Path.Combine(basePath, @"Amoeba/OverlayNetworkManager"), Path.Combine(basePath, @"OverlayNetworkManager"));
-                        }
-                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/TransfarLimitManager")))
-                        {
-                            Directory.Move(Path.Combine(basePath, @"Amoeba/TransfarLimitManager"), Path.Combine(basePath, @"TransfarLimitManager"));
-                        }
-                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba/CatharsisManager")))
-                        {
-                            Directory.Move(Path.Combine(basePath, @"Amoeba/CatharsisManager"), Path.Combine(basePath, @"CatharsisManager"));
-                        }
-
-                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba")))
-                        {
-                            Directory.Delete(Path.Combine(basePath, @"Amoeba"), true);
-                        }
-                        if (Directory.Exists(Path.Combine(basePath, @"Amoeba.old")))
-                        {
-                            Directory.Delete(Path.Combine(basePath, @"Amoeba.old"), true);
-                        }
-                        if (Directory.Exists(Path.Combine(basePath, @"Library")))
-                        {
-                            Directory.Delete(Path.Combine(basePath, @"Library"), true);
-                        }
-                        if (Directory.Exists(Path.Combine(basePath, @"Library.old")))
-                        {
-                            Directory.Delete(Path.Combine(basePath, @"Library.old"), true);
-                        }
                     }
                 }
 

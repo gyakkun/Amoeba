@@ -25,26 +25,15 @@ namespace Amoeba.Windows
     {
         private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
 
-        private List<Box> _boxes;
+        private Box _box;
 
-        private ObservableCollectionEx<DigitalSignature> _digitalSignatureCollection = new ObservableCollectionEx<DigitalSignature>();
-
-        public BoxEditWindow(params Box[] boxes)
-            : this((IEnumerable<Box>)boxes)
+        public BoxEditWindow(Box box)
         {
-
-        }
-
-        public BoxEditWindow(IEnumerable<Box> boxes)
-        {
-            _boxes = boxes.ToList();
-
-            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.ToArray());
+            _box = box;
 
             InitializeComponent();
 
             _nameTextBox.MaxLength = Box.MaxNameLength;
-            _commentTextBox.MaxLength = Box.MaxCommentLength;
 
             {
                 var icon = new BitmapImage();
@@ -57,29 +46,10 @@ namespace Amoeba.Windows
                 this.Icon = icon;
             }
 
-            lock (_boxes[0].ThisLock)
+            lock (_box.ThisLock)
             {
-                _nameTextBox.Text = _boxes[0].Name;
-
-                if (_boxes.Count != 1)
-                {
-                    foreach (var box in _boxes)
-                    {
-                        if (_nameTextBox.Text != box.Name)
-                        {
-                            _nameTextBox.Text = "";
-                            _nameTextBox.IsReadOnly = true;
-
-                            break;
-                        }
-                    }
-                }
-
-                _commentTextBox.Text = _boxes[0].Comment;
+                _nameTextBox.Text = _box.Name;
             }
-
-            _signatureComboBox_CollectionContainer.Collection = _digitalSignatureCollection;
-            if (_digitalSignatureCollection.Count > 0) _signatureComboBox.SelectedIndex = 1;
 
             _nameTextBox.TextChanged += _nameTextBox_TextChanged;
             _nameTextBox_TextChanged(null, null);
@@ -103,31 +73,14 @@ namespace Amoeba.Windows
             this.DialogResult = true;
 
             string name = _nameTextBox.Text;
-            string comment = string.IsNullOrWhiteSpace(_commentTextBox.Text) ? null : _commentTextBox.Text;
-            var digitalSignature = _signatureComboBox.SelectedItem as DigitalSignature;
 
             var now = DateTime.UtcNow;
 
-            foreach (var box in _boxes)
+            lock (_box.ThisLock)
             {
-                lock (box.ThisLock)
+                if (!_nameTextBox.IsReadOnly)
                 {
-                    if (!_nameTextBox.IsReadOnly)
-                    {
-                        box.Name = name;
-                    }
-
-                    box.Comment = comment;
-                    box.CreationTime = now;
-
-                    if (digitalSignature == null)
-                    {
-                        box.CreateCertificate(null);
-                    }
-                    else
-                    {
-                        box.CreateCertificate(digitalSignature);
-                    }
+                    _box.Name = name;
                 }
             }
         }

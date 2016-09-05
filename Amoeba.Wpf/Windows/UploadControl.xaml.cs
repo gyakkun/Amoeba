@@ -588,7 +588,7 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
-                _listView.Items.SortDescriptions.Add(new SortDescription("Rank", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Depth", direction));
             }
             else if (sortBy == LanguagesManager.Instance.UploadControl_Path)
             {
@@ -654,7 +654,7 @@ namespace Amoeba.Windows
                     if (c != 0) return c;
                     c = x.Rate.CompareTo(y.Rate);
                     if (c != 0) return c;
-                    c = x.Rank.CompareTo(y.Rank);
+                    c = x.Depth.CompareTo(y.Depth);
                     if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
@@ -759,8 +759,8 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
-                    if (_information.Contains("Rank")) this.Rank = (int)_information["Rank"];
-                    else this.Rank = 0;
+                    if (_information.Contains("Depth")) this.Depth = (int)_information["Depth"];
+                    else this.Depth = 0;
 
                     if (_information.Contains("Name")) this.Name = (string)_information["Name"];
                     else this.Name = null;
@@ -818,14 +818,14 @@ namespace Amoeba.Windows
                                 (int)_information["UploadBlockCount"],
                                 (int)_information["BlockCount"]);
                         }
-                        else if (_information.Contains("EncodeLength") && _information.Contains("EncodeOffset") && _information.Contains("Rank")
+                        else if (_information.Contains("EncodeLength") && _information.Contains("EncodeOffset") && _information.Contains("Depth")
                             && ((UploadState)_information["State"] == UploadState.ComputeHash || (UploadState)_information["State"] == UploadState.Encoding || (UploadState)_information["State"] == UploadState.ParityEncoding))
                         {
                             this.RateText = string.Format("{0}% {1}/{2} [{3}]",
                                 this.Rate,
                                 NetworkConverter.ToSizeString((long)_information["EncodeOffset"]),
                                 NetworkConverter.ToSizeString((long)_information["EncodeLength"]),
-                                (int)_information["Rank"]);
+                                (int)_information["Depth"]);
                         }
                         else
                         {
@@ -842,7 +842,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public int Rank
+            public int Depth
             {
                 get
                 {
@@ -854,7 +854,7 @@ namespace Amoeba.Windows
                     {
                         _rank = value;
 
-                        this.NotifyPropertyChanged(nameof(this.Rank));
+                        this.NotifyPropertyChanged(nameof(this.Depth));
                     }
                 }
             }

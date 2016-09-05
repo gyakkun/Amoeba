@@ -64,7 +64,7 @@ namespace Amoeba
             _amoebaManager.CheckUriEvent = this.ResultCache_CheckUri;
         }
 
-        private bool ResultCache_CheckUri(object sender, string uri)
+        private bool ResultCache_CheckUri(string uri)
         {
             _succeededUris.TrimExcess();
             _failedUris.TrimExcess();
@@ -552,7 +552,7 @@ namespace Amoeba
             }
         }
 
-        [DataContract(Name = "SearchRange", Namespace = "http://Amoeba/CatharsisManager")]
+        [DataContract(Name = "SearchRange")]
         struct SearchRange<T> : IEquatable<SearchRange<T>>
             where T : IComparable<T>, IEquatable<T>
         {

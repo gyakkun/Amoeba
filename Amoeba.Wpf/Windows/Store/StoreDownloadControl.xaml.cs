@@ -214,7 +214,6 @@ namespace Amoeba.Windows
                                 var boxesListViewModel = new BoxListViewModel();
                                 boxesListViewModel.Index = newList.Count;
                                 boxesListViewModel.Name = box.Name;
-                                if (box.Certificate != null) boxesListViewModel.Signature = box.Certificate.ToString();
                                 boxesListViewModel.Length = BoxUtils.GetBoxLength(box);
                                 boxesListViewModel.CreationTime = BoxUtils.GetBoxCreationTime(box);
                                 boxesListViewModel.Value = box;
@@ -330,79 +329,6 @@ namespace Amoeba.Windows
             catch (Exception)
             {
 
-            }
-        }
-
-        private static bool CheckBoxDigitalSignature(ref Box box)
-        {
-            bool flag = true;
-            var seedList = new List<Seed>();
-            var boxList = new List<Box>();
-            boxList.Add(box);
-
-            for (int i = 0; i < boxList.Count; i++)
-            {
-                boxList.AddRange(boxList[i].Boxes);
-                seedList.AddRange(boxList[i].Seeds);
-            }
-
-            foreach (var item in seedList.Reverse<Seed>())
-            {
-                if (!item.VerifyCertificate())
-                {
-                    flag = false;
-
-                    item.CreateCertificate(null);
-                }
-            }
-
-            foreach (var item in boxList.Reverse<Box>())
-            {
-                if (!item.VerifyCertificate())
-                {
-                    flag = false;
-
-                    item.CreateCertificate(null);
-                }
-            }
-
-            return flag;
-        }
-
-        private bool DigitalSignatureRelease(IEnumerable<BoxTreeViewModel> treeViewModels)
-        {
-            var targetList = new List<BoxTreeViewModel>();
-            var builder = new StringBuilder();
-
-            foreach (var item in treeViewModels)
-            {
-                if (item.Value.Certificate != null)
-                {
-                    targetList.Add(item);
-                    builder.AppendLine(string.Format("\"{0}\"", item.Value.Name));
-                }
-            }
-
-            if (targetList.Count == 0) return true;
-
-            if (MessageBox.Show(
-                    _mainWindow,
-                    string.Format("{0}\r\n{1}", builder.ToString(), LanguagesManager.Instance.StoreDownloadControl_DigitalSignatureAnnulled_Message),
-                    "StoreDownload",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Information) == MessageBoxResult.OK)
-            {
-                foreach (var item in targetList)
-                {
-                    item.Value.CreateCertificate(null);
-                    item.Update();
-                }
-
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
 
@@ -980,7 +906,6 @@ namespace Amoeba.Windows
                     var box = new Box();
                     box.Name = "Store - " + Signature.GetNickname(selectTreeViewModel.Value.Signature);
                     box.Boxes.AddRange(selectTreeViewModel.Value.Boxes);
-                    box.CreationTime = DateTime.UtcNow;
 
                     using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                     using (Stream boxStream = AmoebaConverter.ToBoxStream(box))

@@ -27,15 +27,19 @@ namespace Amoeba
 
         public static DateTime GetBoxCreationTime(Box box)
         {
-            var boxList = new List<Box>();
-            boxList.Add(box);
-
-            for (int i = 0; i < boxList.Count; i++)
+            var seedList = new List<Seed>();
             {
-                boxList.AddRange(boxList[i].Boxes);
+                var boxList = new List<Box>();
+                boxList.Add(box);
+
+                for (int i = 0; i < boxList.Count; i++)
+                {
+                    boxList.AddRange(boxList[i].Boxes);
+                }
             }
 
-            return boxList.Max(n => n.CreationTime);
+            if (seedList.Count == 0) return DateTime.MinValue;
+            else return seedList.Max(n => n.CreationTime);
         }
     }
 }

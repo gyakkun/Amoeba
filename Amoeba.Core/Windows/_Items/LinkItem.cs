@@ -10,7 +10,7 @@ using Library.Security;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "LinkItem", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "LinkItem")]
     class LinkItem : IEquatable<LinkItem>, ICloneable<LinkItem>, IThisLock
     {
         private string _signature;

@@ -4,56 +4,64 @@ using System.Text;
 using System.Xml;
 using Library;
 using Library.Collections;
-using System;
-using Library.Net.Amoeba;
-using System.Text.RegularExpressions;
 using Library.Io;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "SearchTreeItem", Namespace = "http://Amoeba/Windows")]
-    class SearchTreeItem : ICloneable<SearchTreeItem>, IThisLock
+    [DataContract(Name = "StoreCategorizeTreeItem")]
+    class StoreCategorizeTreeItem : ICloneable<StoreCategorizeTreeItem>, IThisLock
     {
-        private SearchItem _searchItem;
-        private LockedList<SearchTreeItem> _children;
+        private string _name;
+        private LockedList<StoreTreeItem> _storeTreeItems;
+        private LockedList<StoreCategorizeTreeItem> _children;
         private bool _isExpanded = true;
 
         private static readonly object _initializeLock = new object();
         private volatile object _thisLock;
 
-        public SearchTreeItem(SearchItem searchItem)
-        {
-            this.SearchItem = searchItem;
-        }
-
-        [DataMember(Name = "SearchItem")]
-        public SearchItem SearchItem
+        [DataMember(Name = "Name")]
+        public string Name
         {
             get
             {
                 lock (this.ThisLock)
                 {
-                    return _searchItem;
+                    return _name;
                 }
             }
-            private set
+            set
             {
                 lock (this.ThisLock)
                 {
-                    _searchItem = value;
+                    _name = value;
                 }
             }
         }
 
-        [DataMember(Name = "Items")]
-        public LockedList<SearchTreeItem> Children
+        [DataMember(Name = "StoreTreeItems")]
+        public LockedList<StoreTreeItem> StoreTreeItems
+        {
+            get
+            {
+                lock (this.ThisLock)
+                {
+                    if (_storeTreeItems == null)
+                        _storeTreeItems = new LockedList<StoreTreeItem>();
+
+                    return _storeTreeItems;
+                }
+            }
+        }
+
+        [DataMember(Name = "Children")]
+        public LockedList<StoreCategorizeTreeItem> Children
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_children == null)
-                        _children = new LockedList<SearchTreeItem>();
+                        _children = new LockedList<StoreCategorizeTreeItem>();
 
                     return _children;
                 }
@@ -79,13 +87,13 @@ namespace Amoeba.Windows
             }
         }
 
-        #region ICloneable<SearchTreeItem>
+        #region ICloneable<StoreCategorizeTreeItem>
 
-        public SearchTreeItem Clone()
+        public StoreCategorizeTreeItem Clone()
         {
             lock (this.ThisLock)
             {
-                var ds = new DataContractSerializer(typeof(SearchTreeItem));
+                var ds = new DataContractSerializer(typeof(StoreCategorizeTreeItem));
 
                 using (BufferStream stream = new BufferStream(BufferManager.Instance))
                 {
@@ -99,7 +107,7 @@ namespace Amoeba.Windows
 
                     using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
                     {
-                        return (SearchTreeItem)ds.ReadObject(xmlDictionaryReader);
+                        return (StoreCategorizeTreeItem)ds.ReadObject(xmlDictionaryReader);
                     }
                 }
             }

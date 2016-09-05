@@ -47,7 +47,6 @@ namespace Amoeba.Windows
             _keywordsComboBox1.MaxLength = KeywordCollection.MaxKeywordLength;
             _keywordsComboBox2.MaxLength = KeywordCollection.MaxKeywordLength;
             _keywordsComboBox3.MaxLength = KeywordCollection.MaxKeywordLength;
-            _commentTextBox.MaxLength = Seed.MaxCommentLength;
 
             {
                 var icon = new BitmapImage();
@@ -100,7 +99,6 @@ namespace Amoeba.Windows
             if (!string.IsNullOrWhiteSpace(_keywordsComboBox2.Text)) keywords.Add(_keywordsComboBox2.Text);
             if (!string.IsNullOrWhiteSpace(_keywordsComboBox3.Text)) keywords.Add(_keywordsComboBox3.Text);
             keywords = new KeywordCollection(new HashSet<string>(keywords));
-            string comment = string.IsNullOrWhiteSpace(_commentTextBox.Text) ? null : _commentTextBox.Text;
             var digitalSignature = _signatureComboBox.SelectedItem as DigitalSignature;
 
             Task.Run(() =>
@@ -114,7 +112,6 @@ namespace Amoeba.Windows
                         _amoebaManager.Upload(_filePath,
                                 name,
                                 keywords,
-                                comment,
                                 digitalSignature,
                                 3);
                     }
@@ -123,7 +120,6 @@ namespace Amoeba.Windows
                         _amoebaManager.Share(_filePath,
                                 name,
                                 keywords,
-                                comment,
                                 digitalSignature,
                                 3);
                     }

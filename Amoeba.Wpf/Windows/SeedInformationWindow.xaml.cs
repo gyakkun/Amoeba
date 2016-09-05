@@ -59,7 +59,6 @@ namespace Amoeba.Windows
                 _signatureTextBox.Text = seed.Certificate?.ToString();
                 _creationTimeTextBox.Text = seed.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
                 _lengthTextBox.Text = string.Format("{0} ({1:#,0} Byte)", NetworkConverter.ToSizeString(_seed.Length), _seed.Length);
-                _commentTextBox.Text = _seed.Comment;
             }
 
             try

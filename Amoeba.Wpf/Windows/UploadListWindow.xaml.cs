@@ -114,7 +114,6 @@ namespace Amoeba.Windows
                             _amoebaManager.Upload(item.Path,
                                 item.Name,
                                 keywords,
-                                null,
                                 digitalSignature,
                                 3);
                         }
@@ -126,7 +125,6 @@ namespace Amoeba.Windows
                             _amoebaManager.Share(item.Path,
                                 item.Name,
                                 keywords,
-                                null,
                                 digitalSignature,
                                 3);
                         }

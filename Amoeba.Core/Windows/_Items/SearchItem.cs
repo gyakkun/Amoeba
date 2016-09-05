@@ -12,7 +12,7 @@ using Library.Net.Amoeba;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "SearchItem", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "SearchItem")]
     class SearchItem : ICloneable<SearchItem>, IThisLock
     {
         private string _name = "default";
@@ -229,7 +229,7 @@ namespace Amoeba.Windows
     }
 
     [Flags]
-    [DataContract(Name = "SearchState", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "SearchState")]
     enum SearchState
     {
         [EnumMember(Value = "Link")]
@@ -257,7 +257,7 @@ namespace Amoeba.Windows
         Uploaded = 0x80,
     }
 
-    [DataContract(Name = "SearchContains", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "SearchContains")]
     class SearchContains<T> : IEquatable<SearchContains<T>>
     {
         private bool _contains;
@@ -327,7 +327,7 @@ namespace Amoeba.Windows
         }
     }
 
-    [DataContract(Name = "SearchRegex", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "SearchRegex")]
     class SearchRegex : IEquatable<SearchRegex>
     {
         private string _value;
@@ -419,7 +419,7 @@ namespace Amoeba.Windows
         }
     }
 
-    [DataContract(Name = "SearchRange", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "SearchRange")]
     struct SearchRange<T> : IEquatable<SearchRange<T>>
         where T : IComparable<T>, IEquatable<T>
     {

@@ -573,7 +573,7 @@ namespace Amoeba.Windows
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
-                _listView.Items.SortDescriptions.Add(new SortDescription("Rank", direction));
+                _listView.Items.SortDescriptions.Add(new SortDescription("Depth", direction));
             }
             else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
             {
@@ -639,7 +639,7 @@ namespace Amoeba.Windows
                     if (c != 0) return c;
                     c = x.Rate.CompareTo(y.Rate);
                     if (c != 0) return c;
-                    c = x.Rank.CompareTo(y.Rank);
+                    c = x.Depth.CompareTo(y.Depth);
                     if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
@@ -744,8 +744,8 @@ namespace Amoeba.Windows
                 {
                     _information = value;
 
-                    if (_information.Contains("Rank")) this.Rank = (int)_information["Rank"];
-                    else this.Rank = 0;
+                    if (_information.Contains("Depth")) this.Depth = (int)_information["Depth"];
+                    else this.Depth = 0;
 
                     if (_information.Contains("Name")) this.Name = (string)_information["Name"];
                     else this.Name = null;
@@ -790,7 +790,7 @@ namespace Amoeba.Windows
 
                     if (_information.Contains("State"))
                     {
-                        if (_information.Contains("DownloadBlockCount") && _information.Contains("BlockCount") && _information.Contains("ParityBlockCount") && _information.Contains("Rank") && _information.Contains("Seed")
+                        if (_information.Contains("DownloadBlockCount") && _information.Contains("BlockCount") && _information.Contains("ParityBlockCount") && _information.Contains("Depth") && _information.Contains("Seed")
                             && ((DownloadState)_information["State"] == DownloadState.Downloading || (DownloadState)_information["State"] == DownloadState.Completed || (DownloadState)_information["State"] == DownloadState.Error))
                         {
                             if (0 == (int)_information["ParityBlockCount"])
@@ -799,8 +799,8 @@ namespace Amoeba.Windows
                                     this.Rate,
                                     (int)_information["DownloadBlockCount"],
                                     ((int)_information["BlockCount"] - (int)_information["ParityBlockCount"]),
-                                    (int)_information["Rank"],
-                                    ((Seed)_information["Seed"]).Rank);
+                                    (int)_information["Depth"],
+                                    ((Seed)_information["Seed"]).Metadata.Depth);
                             }
                             else
                             {
@@ -809,19 +809,19 @@ namespace Amoeba.Windows
                                     (int)_information["DownloadBlockCount"],
                                     ((int)_information["BlockCount"] - (int)_information["ParityBlockCount"]),
                                     (int)_information["BlockCount"],
-                                    (int)_information["Rank"],
-                                    ((Seed)_information["Seed"]).Rank);
+                                    (int)_information["Depth"],
+                                    ((Seed)_information["Seed"]).Metadata.Depth);
                             }
                         }
-                        else if (_information.Contains("DecodeLength") && _information.Contains("DecodeOffset") && _information.Contains("Rank") && _information.Contains("Seed")
+                        else if (_information.Contains("DecodeLength") && _information.Contains("DecodeOffset") && _information.Contains("Depth") && _information.Contains("Seed")
                             && ((DownloadState)_information["State"] == DownloadState.ParityDecoding || (DownloadState)_information["State"] == DownloadState.Decoding))
                         {
                             this.RateText = string.Format("{0}% {1}/{2} [{3}/{4}]",
                                 this.Rate,
                                 NetworkConverter.ToSizeString((long)_information["DecodeOffset"]),
                                 NetworkConverter.ToSizeString((long)_information["DecodeLength"]),
-                                (int)_information["Rank"],
-                                ((Seed)_information["Seed"]).Rank);
+                                (int)_information["Depth"],
+                                ((Seed)_information["Seed"]).Metadata.Depth);
                         }
                         else
                         {
@@ -838,7 +838,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public int Rank
+            public int Depth
             {
                 get
                 {
@@ -850,7 +850,7 @@ namespace Amoeba.Windows
                     {
                         _rank = value;
 
-                        this.NotifyPropertyChanged(nameof(this.Rank));
+                        this.NotifyPropertyChanged(nameof(this.Depth));
                     }
                 }
             }

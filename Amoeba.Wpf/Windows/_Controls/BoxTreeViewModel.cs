@@ -78,13 +78,6 @@ namespace Amoeba.Windows
             {
                 int c = x.Value.Name.CompareTo(y.Value.Name);
                 if (c != 0) return c;
-                c = (x.Value.Certificate == null).CompareTo(y.Value.Certificate == null);
-                if (c != 0) return c;
-                if (x.Value.Certificate != null && x.Value.Certificate != null)
-                {
-                    c = CollectionUtils.Compare(x.Value.Certificate.PublicKey, y.Value.Certificate.PublicKey);
-                    if (c != 0) return c;
-                }
                 c = y.Value.Seeds.Count.CompareTo(x.Value.Seeds.Count);
                 if (c != 0) return c;
                 c = y.Value.Boxes.Count.CompareTo(x.Value.Boxes.Count);
@@ -105,14 +98,7 @@ namespace Amoeba.Windows
         {
             get
             {
-                if (this.Value.Certificate == null)
-                {
-                    return string.Format("{0} ({1})", this.Value.Name, BoxTreeViewModel.GetTotalSeedCount(this.Value));
-                }
-                else
-                {
-                    return string.Format("{0} ({1}) - {2}", this.Value.Name, BoxTreeViewModel.GetTotalSeedCount(this.Value), this.Value.Certificate.ToString());
-                }
+                return string.Format("{0} ({1})", this.Value.Name, BoxTreeViewModel.GetTotalSeedCount(this.Value));
             }
         }
 

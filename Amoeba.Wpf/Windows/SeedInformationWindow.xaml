@@ -31,8 +31,6 @@
                     <TextBox Height="24" Margin="132,96,6,0" Name="_creationTimeTextBox" VerticalAlignment="Top" IsReadOnly="True" />
                     <Label Content="{Binding Path=SeedInformationWindow_Length, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,126,0,0" VerticalAlignment="Top" Width="120" />
                     <TextBox Height="24" Margin="132,126,6,0" Name="_lengthTextBox" VerticalAlignment="Top" IsReadOnly="True" />
-                    <Label Content="{Binding Path=SeedInformationWindow_Comment, Source={StaticResource _languages}}" HorizontalAlignment="Left" Margin="6,156,0,0" Width="120" Height="24" VerticalAlignment="Top" />
-                    <TextBox AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" Margin="132,156,6,6" Name="_commentTextBox" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" IsReadOnly="True" />
                 </Grid>
             </TabItem>
             <TabItem Name="_storeTabItem" Header="{Binding Path=SeedInformationWindow_Store, Source={StaticResource _languages}}">

@@ -422,7 +422,7 @@ namespace Amoeba
         #endregion
     }
 
-    [DataContract(Name = "TransferLimitType", Namespace = "http://Amoeba")]
+    [DataContract(Name = "TransferLimitType")]
     enum TransferLimitType
     {
         [EnumMember(Value = "None")]
@@ -438,7 +438,7 @@ namespace Amoeba
         Total,
     }
 
-    [DataContract(Name = "TransferLimit", Namespace = "http://Amoeba")]
+    [DataContract(Name = "TransferLimit")]
     class TransferLimit : IThisLock
     {
         private TransferLimitType _type = TransferLimitType.None;

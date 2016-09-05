@@ -1073,12 +1073,10 @@ namespace Amoeba.Windows
                     {
                         var tempBox = new Box();
                         tempBox.Name = "Temp";
-                        tempBox.CreationTime = DateTime.UtcNow;
 
                         var box = new Box();
                         box.Name = "Box";
                         box.Boxes.Add(tempBox);
-                        box.CreationTime = DateTime.UtcNow;
 
                         var route = new Route();
                         route.Add(box.Name);
@@ -1731,7 +1729,7 @@ namespace Amoeba.Windows
                     flag = true;
                 };
 
-                _amoebaManager.CheckInternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
+                _amoebaManager.CheckInternalBlocks((int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
@@ -1793,7 +1791,7 @@ namespace Amoeba.Windows
                     flag = true;
                 };
 
-                _amoebaManager.CheckExternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
+                _amoebaManager.CheckExternalBlocks((int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {

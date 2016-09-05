@@ -204,7 +204,6 @@ namespace Amoeba.Windows
                                 var boxesListViewModel = new BoxListViewModel();
                                 boxesListViewModel.Index = newList.Count;
                                 boxesListViewModel.Name = box.Name;
-                                if (box.Certificate != null) boxesListViewModel.Signature = box.Certificate.ToString();
                                 boxesListViewModel.Length = BoxUtils.GetBoxLength(box);
                                 boxesListViewModel.CreationTime = BoxUtils.GetBoxCreationTime(box);
                                 boxesListViewModel.Value = box;
@@ -260,30 +259,23 @@ namespace Amoeba.Windows
             }
         }
 
-        private static bool CheckBoxDigitalSignature(ref Box box)
+        private static bool CheckDigitalSignature(Box box)
         {
             bool flag = true;
+
             var seedList = new List<Seed>();
-            var boxList = new List<Box>();
-            boxList.Add(box);
-
-            for (int i = 0; i < boxList.Count; i++)
             {
-                boxList.AddRange(boxList[i].Boxes);
-                seedList.AddRange(boxList[i].Seeds);
-            }
+                var boxList = new List<Box>();
+                boxList.Add(box);
 
-            foreach (var item in seedList.Reverse<Seed>())
-            {
-                if (!item.VerifyCertificate())
+                for (int i = 0; i < boxList.Count; i++)
                 {
-                    flag = false;
-
-                    item.CreateCertificate(null);
+                    boxList.AddRange(boxList[i].Boxes);
+                    seedList.AddRange(boxList[i].Seeds);
                 }
             }
 
-            foreach (var item in boxList.Reverse<Box>())
+            foreach (var item in seedList)
             {
                 if (!item.VerifyCertificate())
                 {
@@ -294,43 +286,6 @@ namespace Amoeba.Windows
             }
 
             return flag;
-        }
-
-        private bool DigitalSignatureRelease(IEnumerable<BoxTreeViewModel> treeViewModels)
-        {
-            var targetList = new List<BoxTreeViewModel>();
-            var builder = new StringBuilder();
-
-            foreach (var item in treeViewModels)
-            {
-                if (item.Value.Certificate != null)
-                {
-                    targetList.Add(item);
-                    builder.AppendLine(string.Format("\"{0}\"", item.Value.Name));
-                }
-            }
-
-            if (targetList.Count == 0) return true;
-
-            if (MessageBox.Show(
-                    _mainWindow,
-                    string.Format("{0}\r\n{1}", builder.ToString(), LanguagesManager.Instance.StoreUploadControl_DigitalSignatureAnnulled_Message),
-                    "StoreUpload",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Information) == MessageBoxResult.OK)
-            {
-                foreach (var item in targetList)
-                {
-                    item.Value.CreateCertificate(null);
-                    item.Update();
-                }
-
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         private static string GetNormalizedPath(string path)
@@ -493,20 +448,19 @@ namespace Amoeba.Windows
                                 var box = AmoebaConverter.FromBoxStream(stream);
                                 if (box == null) continue;
 
-                                if (!StoreUploadControl.CheckBoxDigitalSignature(ref box))
+                                bool flag = true;
+
+                                if (!StoreUploadControl.CheckDigitalSignature(box))
                                 {
-                                    if (MessageBox.Show(
-                                        _mainWindow,
-                                        string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.StoreUploadControl_DigitalSignatureError_Message),
-                                        "Library",
-                                        MessageBoxButton.OKCancel,
-                                        MessageBoxImage.Asterisk) == MessageBoxResult.OK)
-                                    {
-                                        d.Value.Boxes.Add(box);
-                                        d.Value.IsUpdated = true;
-                                    }
+                                    flag = MessageBox.Show(
+                                            _mainWindow,
+                                            string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message),
+                                            "Library",
+                                            MessageBoxButton.OKCancel,
+                                            MessageBoxImage.Asterisk) == MessageBoxResult.OK;
                                 }
-                                else
+
+                                if (flag)
                                 {
                                     d.Value.Boxes.Add(box);
                                     d.Value.IsUpdated = true;
@@ -525,8 +479,6 @@ namespace Amoeba.Windows
                 {
                     var d = (BoxTreeViewModel)destinationItem;
 
-                    if (!this.DigitalSignatureRelease(d.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                     foreach (string filePath in paths)
                     {
                         using (FileStream stream = new FileStream(filePath, FileMode.Open))
@@ -536,23 +488,21 @@ namespace Amoeba.Windows
                                 var box = AmoebaConverter.FromBoxStream(stream);
                                 if (box == null) continue;
 
-                                if (!StoreUploadControl.CheckBoxDigitalSignature(ref box))
+                                bool flag = true;
+
+                                if (!StoreUploadControl.CheckDigitalSignature(box))
                                 {
-                                    if (MessageBox.Show(
-                                        _mainWindow,
-                                        string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.StoreUploadControl_DigitalSignatureError_Message),
-                                        "Library",
-                                        MessageBoxButton.OKCancel,
-                                        MessageBoxImage.Asterisk) == MessageBoxResult.OK)
-                                    {
-                                        d.Value.Boxes.Add(box);
-                                        d.Value.CreationTime = DateTime.UtcNow;
-                                    }
+                                    flag = MessageBox.Show(
+                                            _mainWindow,
+                                            string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message),
+                                            "Library",
+                                            MessageBoxButton.OKCancel,
+                                            MessageBoxImage.Asterisk) == MessageBoxResult.OK;
                                 }
-                                else
+
+                                if (flag)
                                 {
                                     d.Value.Boxes.Add(box);
-                                    d.Value.CreationTime = DateTime.UtcNow;
                                 }
                             }
                             catch (Exception)
@@ -644,8 +594,6 @@ namespace Amoeba.Windows
                             if (d.Value.Boxes.Any(n => object.ReferenceEquals(n, s.Value))) return;
                             if (d.GetAncestors().Any(n => object.ReferenceEquals(n, s))) return;
 
-                            if (!this.DigitalSignatureRelease(s.GetAncestors().OfType<BoxTreeViewModel>().Where(n => n != s))) return;
-
                             var parentItem = s.Parent;
 
                             if (parentItem is StoreTreeViewModel)
@@ -666,7 +614,6 @@ namespace Amoeba.Windows
                                 var tItems = p.Value.Boxes.Where(n => !object.ReferenceEquals(n, s.Value)).ToArray();
                                 p.Value.Boxes.Clear();
                                 p.Value.Boxes.AddRange(tItems);
-                                p.Value.CreationTime = DateTime.UtcNow;
 
                                 p.Update();
                             }
@@ -685,9 +632,6 @@ namespace Amoeba.Windows
                             if (d.Value.Boxes.Any(n => object.ReferenceEquals(n, s.Value))) return;
                             if (d.GetAncestors().Any(n => object.ReferenceEquals(n, s))) return;
 
-                            if (!this.DigitalSignatureRelease(s.GetAncestors().OfType<BoxTreeViewModel>().Where(n => n != s))) return;
-                            if (!this.DigitalSignatureRelease(d.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                             var parentItem = s.Parent;
 
                             if (parentItem is StoreTreeViewModel)
@@ -708,13 +652,11 @@ namespace Amoeba.Windows
                                 var tItems = p.Value.Boxes.Where(n => !object.ReferenceEquals(n, s.Value)).ToArray();
                                 p.Value.Boxes.Clear();
                                 p.Value.Boxes.AddRange(tItems);
-                                p.Value.CreationTime = DateTime.UtcNow;
 
                                 p.Update();
                             }
 
                             d.Value.Boxes.Add(s.Value);
-                            d.Value.CreationTime = DateTime.UtcNow;
                             d.IsSelected = true;
 
                             d.Update();
@@ -764,8 +706,6 @@ namespace Amoeba.Windows
 
                             if (boxes.Count == 0) return;
 
-                            if (!this.DigitalSignatureRelease(d.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                             var tboxes = p.Value.Boxes.Where(n => !boxes.Any(m => object.ReferenceEquals(n, m))).ToArray();
                             p.Value.Boxes.Clear();
                             p.Value.Boxes.AddRange(tboxes);
@@ -774,7 +714,6 @@ namespace Amoeba.Windows
                             p.Update();
 
                             d.Value.Boxes.AddRange(boxes);
-                            d.Value.CreationTime = DateTime.UtcNow;
                             if (!isListView) d.IsSelected = true;
 
                             d.Update();
@@ -793,12 +732,9 @@ namespace Amoeba.Windows
 
                             if (boxes.Count == 0) return;
 
-                            if (!this.DigitalSignatureRelease(p.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                             var tboxes = p.Value.Boxes.Where(n => !boxes.Any(m => object.ReferenceEquals(n, m))).ToArray();
                             p.Value.Boxes.Clear();
                             p.Value.Boxes.AddRange(tboxes);
-                            p.Value.CreationTime = DateTime.UtcNow;
 
                             p.Update();
 
@@ -819,22 +755,17 @@ namespace Amoeba.Windows
 
                             if (boxes.Count == 0 && seeds.Count == 0) return;
 
-                            if (!this.DigitalSignatureRelease(p.GetAncestors().OfType<BoxTreeViewModel>())) return;
-                            if (!this.DigitalSignatureRelease(d.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                             var tboxes = p.Value.Boxes.Where(n => !boxes.Any(m => object.ReferenceEquals(n, m))).ToArray();
                             p.Value.Boxes.Clear();
                             p.Value.Boxes.AddRange(tboxes);
                             var tseeds = p.Value.Seeds.Where(n => !seeds.Any(m => object.ReferenceEquals(n, m))).ToArray();
                             p.Value.Seeds.Clear();
                             p.Value.Seeds.AddRange(tseeds);
-                            p.Value.CreationTime = DateTime.UtcNow;
 
                             p.Update();
 
                             d.Value.Boxes.AddRange(boxes);
                             d.Value.Seeds.AddRange(seeds);
-                            d.Value.CreationTime = DateTime.UtcNow;
                             if (!isListView) d.IsSelected = true;
 
                             d.Update();
@@ -1295,14 +1226,14 @@ namespace Amoeba.Windows
 
             if (!selectTreeViewModel.Value.Boxes.Any(n => n.Name == "New box"))
             {
-                box = new Box() { Name = "New box", CreationTime = DateTime.UtcNow };
+                box = new Box() { Name = "New box" };
             }
             else
             {
                 int i = 1;
                 while (selectTreeViewModel.Value.Boxes.Any(n => n.Name == "New box_" + i)) i++;
 
-                box = new Box() { Name = "New box_" + i, CreationTime = DateTime.UtcNow };
+                box = new Box() { Name = "New box_" + i };
             }
 
             var window = new BoxEditWindow(box);
@@ -1424,19 +1355,19 @@ namespace Amoeba.Windows
                                 var box = AmoebaConverter.FromBoxStream(stream);
                                 if (box == null) continue;
 
-                                if (!StoreUploadControl.CheckBoxDigitalSignature(ref box))
+                                bool flag = true;
+
+                                if (!StoreUploadControl.CheckDigitalSignature(box))
                                 {
-                                    if (MessageBox.Show(
+                                    flag = MessageBox.Show(
                                             _mainWindow,
                                             string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message),
-                                            "Store",
+                                            "Library",
                                             MessageBoxButton.OKCancel,
-                                            MessageBoxImage.Asterisk) == MessageBoxResult.OK)
-                                    {
-                                        selectTreeViewModel.Value.Boxes.Add(box);
-                                    }
+                                            MessageBoxImage.Asterisk) == MessageBoxResult.OK;
                                 }
-                                else
+
+                                if (flag)
                                 {
                                     selectTreeViewModel.Value.Boxes.Add(box);
                                 }
@@ -1476,7 +1407,6 @@ namespace Amoeba.Windows
                     var box = new Box();
                     box.Name = "Store - " + Signature.GetNickname(selectTreeViewModel.Value.Signature);
                     box.Boxes.AddRange(selectTreeViewModel.Value.Boxes);
-                    box.CreationTime = DateTime.UtcNow;
 
                     using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
                     using (Stream boxStream = AmoebaConverter.ToBoxStream(box))
@@ -1542,20 +1472,18 @@ namespace Amoeba.Windows
             var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
             if (storeTreeViewModel == null) return;
 
-            if (!this.DigitalSignatureRelease(selectTreeViewModel.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
             Box box;
 
             if (!selectTreeViewModel.Value.Boxes.Any(n => n.Name == "New box"))
             {
-                box = new Box() { Name = "New box", CreationTime = DateTime.UtcNow };
+                box = new Box() { Name = "New box" };
             }
             else
             {
                 int i = 1;
                 while (selectTreeViewModel.Value.Boxes.Any(n => n.Name == "New box_" + i)) i++;
 
-                box = new Box() { Name = "New box_" + i, CreationTime = DateTime.UtcNow };
+                box = new Box() { Name = "New box_" + i };
             }
 
             var window = new BoxEditWindow(box);
@@ -1564,7 +1492,6 @@ namespace Amoeba.Windows
             if (window.ShowDialog() == true)
             {
                 selectTreeViewModel.Value.Boxes.Add(box);
-                selectTreeViewModel.Value.CreationTime = DateTime.UtcNow;
 
                 selectTreeViewModel.Update();
 
@@ -1584,8 +1511,6 @@ namespace Amoeba.Windows
             var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
             if (storeTreeViewModel == null) return;
 
-            if (!this.DigitalSignatureRelease(selectTreeViewModel.GetAncestors().Where(n => n != selectTreeViewModel).OfType<BoxTreeViewModel>())) return;
-
             var box = selectTreeViewModel.Value;
 
             var window = new BoxEditWindow(box);
@@ -1593,8 +1518,6 @@ namespace Amoeba.Windows
 
             if (window.ShowDialog() == true)
             {
-                selectTreeViewModel.Value.CreationTime = DateTime.UtcNow;
-
                 selectTreeViewModel.Update();
 
                 storeTreeViewModel.Value.IsUpdated = true;
@@ -1613,7 +1536,6 @@ namespace Amoeba.Windows
             var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
             if (storeTreeViewModel == null) return;
 
-            if (!this.DigitalSignatureRelease(selectTreeViewModel.GetAncestors().Where(n => n != selectTreeViewModel).OfType<BoxTreeViewModel>())) return;
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Store", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
             var parentItem = selectTreeViewModel.Parent;
@@ -1632,7 +1554,6 @@ namespace Amoeba.Windows
                 var p = (BoxTreeViewModel)parentItem;
 
                 p.Value.Boxes.Remove(selectTreeViewModel.Value);
-                p.Value.CreationTime = DateTime.UtcNow;
 
                 p.Update();
             }
@@ -1652,8 +1573,6 @@ namespace Amoeba.Windows
             var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
             if (storeTreeViewModel == null) return;
 
-            if (!this.DigitalSignatureRelease(selectTreeViewModel.GetAncestors().Where(n => n != selectTreeViewModel).OfType<BoxTreeViewModel>())) return;
-
             Clipboard.SetBoxes(new Box[] { selectTreeViewModel.Value });
 
             var parentItem = selectTreeViewModel.Parent;
@@ -1672,7 +1591,6 @@ namespace Amoeba.Windows
                 var p = (BoxTreeViewModel)parentItem;
 
                 p.Value.Boxes.Remove(selectTreeViewModel.Value);
-                p.Value.CreationTime = DateTime.UtcNow;
 
                 p.Update();
             }
@@ -1700,11 +1618,8 @@ namespace Amoeba.Windows
             var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
             if (storeTreeViewModel == null) return;
 
-            if (!this.DigitalSignatureRelease(selectTreeViewModel.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
             selectTreeViewModel.Value.Boxes.AddRange(Clipboard.GetBoxes());
             selectTreeViewModel.Value.Seeds.AddRange(Clipboard.GetSeeds());
-            selectTreeViewModel.Value.CreationTime = DateTime.UtcNow;
 
             selectTreeViewModel.Update();
 
@@ -1722,8 +1637,6 @@ namespace Amoeba.Windows
 
             var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
             if (storeTreeViewModel == null) return;
-
-            if (!this.DigitalSignatureRelease(selectTreeViewModel.GetAncestors().OfType<BoxTreeViewModel>())) return;
 
             using (System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog())
             {
@@ -1743,19 +1656,19 @@ namespace Amoeba.Windows
                                 var box = AmoebaConverter.FromBoxStream(stream);
                                 if (box == null) continue;
 
-                                if (!StoreUploadControl.CheckBoxDigitalSignature(ref box))
+                                bool flag = true;
+
+                                if (!StoreUploadControl.CheckDigitalSignature(box))
                                 {
-                                    if (MessageBox.Show(
+                                    flag = MessageBox.Show(
                                             _mainWindow,
                                             string.Format("\"{0}\"\r\n\r\n{1}", box.Name, LanguagesManager.Instance.LibraryControl_DigitalSignatureError_Message),
-                                            "Store",
+                                            "Library",
                                             MessageBoxButton.OKCancel,
-                                            MessageBoxImage.Asterisk) == MessageBoxResult.OK)
-                                    {
-                                        selectTreeViewModel.Value.Boxes.Add(box);
-                                    }
+                                            MessageBoxImage.Asterisk) == MessageBoxResult.OK;
                                 }
-                                else
+
+                                if (flag)
                                 {
                                     selectTreeViewModel.Value.Boxes.Add(box);
                                 }
@@ -1767,7 +1680,6 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    selectTreeViewModel.Value.CreationTime = DateTime.UtcNow;
                     selectTreeViewModel.Update();
 
                     storeTreeViewModel.Value.IsUpdated = true;
@@ -1983,14 +1895,14 @@ namespace Amoeba.Windows
 
                 if (!d.Value.Boxes.Any(n => n.Name == "New box"))
                 {
-                    box = new Box() { Name = "New box", CreationTime = DateTime.UtcNow };
+                    box = new Box() { Name = "New box" };
                 }
                 else
                 {
                     int i = 1;
                     while (d.Value.Boxes.Any(n => n.Name == "New box_" + i)) i++;
 
-                    box = new Box() { Name = "New box_" + i, CreationTime = DateTime.UtcNow };
+                    box = new Box() { Name = "New box_" + i };
                 }
 
                 var window = new BoxEditWindow(box);
@@ -2011,20 +1923,18 @@ namespace Amoeba.Windows
                 var storeTreeViewModel = d.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
                 if (storeTreeViewModel == null) return;
 
-                if (!this.DigitalSignatureRelease(d.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                 Box box;
 
                 if (!d.Value.Boxes.Any(n => n.Name == "New box"))
                 {
-                    box = new Box() { Name = "New box", CreationTime = DateTime.UtcNow };
+                    box = new Box() { Name = "New box" };
                 }
                 else
                 {
                     int i = 1;
                     while (d.Value.Boxes.Any(n => n.Name == "New box_" + i)) i++;
 
-                    box = new Box() { Name = "New box_" + i, CreationTime = DateTime.UtcNow };
+                    box = new Box() { Name = "New box_" + i };
                 }
 
                 var window = new BoxEditWindow(box);
@@ -2033,7 +1943,6 @@ namespace Amoeba.Windows
                 if (window.ShowDialog() == true)
                 {
                     d.Value.Boxes.Add(box);
-                    d.Value.CreationTime = DateTime.UtcNow;
 
                     d.Update();
 
@@ -2057,27 +1966,13 @@ namespace Amoeba.Windows
 
                 if (_listView.SelectedItem is BoxListViewModel)
                 {
-                    var selectBoxListViewModels = _listView.SelectedItems.OfType<BoxListViewModel>();
-                    if (selectBoxListViewModels == null) return;
+                    var editBox = ((BoxListViewModel)_listView.SelectedItem).Value;
 
-                    var editBoxs = selectBoxListViewModels.Select(n => n.Value.Clone()).ToList();
-                    if (editBoxs == null) return;
-
-                    var window = new BoxEditWindow(editBoxs);
+                    var window = new BoxEditWindow(editBox);
                     window.Owner = _mainWindow;
 
                     if (window.ShowDialog() == true)
                     {
-                        foreach (var item in selectBoxListViewModels)
-                        {
-                            selectStoreTreeViewModel.Value.Boxes.Remove(item.Value);
-                        }
-
-                        foreach (var seed in editBoxs)
-                        {
-                            selectStoreTreeViewModel.Value.Boxes.Add(seed);
-                        }
-
                         selectStoreTreeViewModel.Value.IsUpdated = true;
 
                         selectStoreTreeViewModel.Update();
@@ -2090,34 +1985,16 @@ namespace Amoeba.Windows
 
                 if (_listView.SelectedItem is BoxListViewModel)
                 {
-                    var selectBoxListViewModels = _listView.SelectedItems.OfType<BoxListViewModel>();
-                    if (selectBoxListViewModels == null) return;
-
                     var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
                     if (storeTreeViewModel == null) return;
 
-                    if (!this.DigitalSignatureRelease(selectBoxTreeViewModel.GetAncestors().OfType<BoxTreeViewModel>())) return;
+                    var editBox = ((BoxListViewModel)_listView.SelectedItem).Value;
 
-                    var editBoxs = selectBoxListViewModels.Select(n => n.Value.Clone()).ToList();
-                    if (editBoxs == null) return;
-
-                    var window = new BoxEditWindow(editBoxs);
+                    var window = new BoxEditWindow(editBox);
                     window.Owner = _mainWindow;
 
                     if (window.ShowDialog() == true)
                     {
-                        foreach (var item in selectBoxListViewModels)
-                        {
-                            selectBoxTreeViewModel.Value.Boxes.Remove(item.Value);
-                        }
-
-                        foreach (var seed in editBoxs)
-                        {
-                            selectBoxTreeViewModel.Value.Boxes.Add(seed);
-                        }
-
-                        selectBoxTreeViewModel.Value.CreationTime = DateTime.UtcNow;
-
                         selectBoxTreeViewModel.Update();
 
                         storeTreeViewModel.Value.IsUpdated = true;
@@ -2133,8 +2010,6 @@ namespace Amoeba.Windows
                     var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
                     if (storeTreeViewModel == null) return;
 
-                    if (!this.DigitalSignatureRelease(selectBoxTreeViewModel.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                     var editSeeds = selectSeedListViewModels.Select(n => n.Value.Clone()).ToList();
                     if (editSeeds == null) return;
 
@@ -2143,18 +2018,6 @@ namespace Amoeba.Windows
 
                     if (window.ShowDialog() == true)
                     {
-                        foreach (var item in selectSeedListViewModels)
-                        {
-                            selectBoxTreeViewModel.Value.Seeds.Remove(item.Value);
-                        }
-
-                        foreach (var seed in editSeeds)
-                        {
-                            selectBoxTreeViewModel.Value.Seeds.Add(seed);
-                        }
-
-                        selectBoxTreeViewModel.Value.CreationTime = DateTime.UtcNow;
-
                         selectBoxTreeViewModel.Update();
 
                         storeTreeViewModel.Value.IsUpdated = true;
@@ -2198,7 +2061,6 @@ namespace Amoeba.Windows
                 var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
                 if (storeTreeViewModel == null) return;
 
-                if (!this.DigitalSignatureRelease(selectBoxTreeViewModel.GetAncestors().OfType<BoxTreeViewModel>())) return;
                 if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Store", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
                 var boxes = _listView.SelectedItems.OfType<BoxListViewModel>().Select(n => n.Value);
@@ -2213,8 +2075,6 @@ namespace Amoeba.Windows
                 {
                     selectBoxTreeViewModel.Value.Seeds.Remove(item);
                 }
-
-                selectBoxTreeViewModel.Value.CreationTime = DateTime.UtcNow;
 
                 selectBoxTreeViewModel.Update();
 
@@ -2257,8 +2117,6 @@ namespace Amoeba.Windows
                 var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
                 if (storeTreeViewModel == null) return;
 
-                if (!this.DigitalSignatureRelease(selectBoxTreeViewModel.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                 var boxes = _listView.SelectedItems.OfType<BoxListViewModel>().Select(n => n.Value);
                 var seeds = _listView.SelectedItems.OfType<SeedListViewModel>().Select(n => n.Value);
 
@@ -2273,8 +2131,6 @@ namespace Amoeba.Windows
                 {
                     selectBoxTreeViewModel.Value.Seeds.Remove(item);
                 }
-
-                selectBoxTreeViewModel.Value.CreationTime = DateTime.UtcNow;
 
                 selectBoxTreeViewModel.Update();
 
@@ -2337,11 +2193,8 @@ namespace Amoeba.Windows
                 var storeTreeViewModel = d.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
                 if (storeTreeViewModel == null) return;
 
-                if (!this.DigitalSignatureRelease(d.GetAncestors().OfType<BoxTreeViewModel>())) return;
-
                 d.Value.Boxes.AddRange(Clipboard.GetBoxes());
                 d.Value.Seeds.AddRange(Clipboard.GetSeeds());
-                d.Value.CreationTime = DateTime.UtcNow;
 
                 d.Update();
 

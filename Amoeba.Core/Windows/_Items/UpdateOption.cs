@@ -2,7 +2,7 @@
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "UpdateOption", Namespace = "http://Amoeba/Windows")]
+    [DataContract(Name = "UpdateOption")]
     enum UpdateOption
     {
         [EnumMember(Value = "None")]
