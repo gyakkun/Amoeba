@@ -301,6 +301,22 @@ namespace Amoeba
                     }
                 }
 
+                // バージョンアップ処理。
+                if (File.Exists(Path.Combine(this.Paths["Configuration"], "Amoeba.version")))
+                {
+                    Version version;
+
+                    using (StreamReader reader = new StreamReader(Path.Combine(this.Paths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
+                    {
+                        version = new Version(reader.ReadLine());
+                    }
+
+                    if (version < new Version(4, 0, 0))
+                    {
+                        throw new NotSupportedException("Not supported configuration.");
+                    }
+                }
+
                 this.Config.Load(this.Paths["Configuration"]);
 
                 this.ShutdownProcesses();
@@ -409,22 +425,6 @@ namespace Amoeba
 
                             return false;
                         }
-                    }
-                }
-
-                // バージョンアップ処理。
-                if (File.Exists(Path.Combine(this.Paths["Configuration"], "Amoeba.version")))
-                {
-                    Version version;
-
-                    using (StreamReader reader = new StreamReader(Path.Combine(this.Paths["Configuration"], "Amoeba.version"), new UTF8Encoding(false)))
-                    {
-                        version = new Version(reader.ReadLine());
-                    }
-
-                    if (version < new Version(4, 0, 0))
-                    {
-                        throw new NotSupportedException("Not supported configuration.");
                     }
                 }
 
