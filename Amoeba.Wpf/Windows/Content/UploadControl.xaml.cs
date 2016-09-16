@@ -386,7 +386,7 @@ namespace Amoeba.Windows
             {
                 if (seed == null) continue;
 
-                sb.AppendLine(AmoebaConverter.ToTagString(seed));
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -403,7 +403,7 @@ namespace Amoeba.Windows
             {
                 if (seed == null) continue;
 
-                sb.AppendLine(AmoebaConverter.ToTagString(seed));
+                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
                 sb.AppendLine(MessageConverter.ToInfoMessage(seed));
                 sb.AppendLine();
             }
@@ -729,7 +729,7 @@ namespace Amoeba.Windows
             private int _priority;
             private double _rate;
             private string _rateText;
-            private Tag _value;
+            private Seed _value;
 
             public UploadListViewModel(Information information)
             {
@@ -834,7 +834,7 @@ namespace Amoeba.Windows
                         this.RateText = null;
                     }
 
-                    if (_information.Contains("Tag")) this.Value = (Tag)_information["Tag"];
+                    if (_information.Contains("Seed")) this.Value = (Seed)_information["Seed"];
                     else this.Value = null;
                 }
             }
@@ -990,7 +990,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public Tag Value
+            public Seed Value
             {
                 get
                 {
