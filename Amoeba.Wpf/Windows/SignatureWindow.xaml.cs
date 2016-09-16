@@ -36,7 +36,7 @@ namespace Amoeba.Windows
 
         public SignatureWindow(string signature)
         {
-            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.ToArray());
+            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatures.ToArray());
 
             InitializeComponent();
 
@@ -56,9 +56,9 @@ namespace Amoeba.Windows
 
             if (signature != null)
             {
-                for (int index = 0; index < Settings.Instance.Global_DigitalSignatureCollection.Count; index++)
+                for (int index = 0; index < Settings.Instance.Global_DigitalSignatures.Count; index++)
                 {
-                    if (Settings.Instance.Global_DigitalSignatureCollection[index].ToString() == signature)
+                    if (Settings.Instance.Global_DigitalSignatures[index].ToString() == signature)
                     {
                         _signatureComboBox.SelectedIndex = index + 1;
 

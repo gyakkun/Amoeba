@@ -12,7 +12,7 @@ using Library.Net.Amoeba;
 
 namespace Amoeba
 {
-    class TransfarLimitManager : StateManagerBase, Library.Configuration.ISettings, IThisLock
+    class TransfarLimitManager : StateManagerBase, Library.Configuration.ISettings
     {
         private AmoebaManager _amoebaManager;
 
@@ -35,21 +35,21 @@ namespace Amoeba
         {
             _amoebaManager = amoebaManager;
 
-            _settings = new Settings(this.ThisLock);
+            _settings = new Settings(_thisLock);
         }
 
         public event EventHandler StartEvent
         {
             add
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _startEvent += value;
                 }
             }
             remove
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _startEvent -= value;
                 }
@@ -60,14 +60,14 @@ namespace Amoeba
         {
             add
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _stopEvent += value;
                 }
             }
             remove
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _stopEvent -= value;
                 }
@@ -78,14 +78,14 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _settings.TransferLimit;
                 }
             }
             set
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _settings.TransferLimit = value;
                 }
@@ -96,7 +96,7 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _settings.UploadTransferSizeList.Sum(n => n.Value);
                 }
@@ -107,7 +107,7 @@ namespace Amoeba
         {
             get
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     return _settings.DownloadTransferSizeList.Sum(n => n.Value);
                 }
@@ -126,7 +126,7 @@ namespace Amoeba
 
         public void Reset()
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.UploadTransferSizeList.Clear();
                 _settings.DownloadTransferSizeList.Clear();
@@ -144,7 +144,7 @@ namespace Amoeba
 
                 var now = DateTime.Today;
 
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     foreach (var item in _settings.UploadTransferSizeList.ToArray())
                     {
@@ -176,7 +176,7 @@ namespace Amoeba
                         {
                             now = DateTime.Today;
 
-                            lock (this.ThisLock)
+                            lock (_thisLock)
                             {
                                 foreach (var item in _settings.UploadTransferSizeList.ToArray())
                                 {
@@ -202,7 +202,7 @@ namespace Amoeba
                         }
                         else
                         {
-                            lock (this.ThisLock)
+                            lock (_thisLock)
                             {
                                 _settings.UploadTransferSizeList[now] = _uploadSize + _amoebaManager.SentByteCount;
                                 _settings.DownloadTransferSizeList[now] = _downloadSize + _amoebaManager.ReceivedByteCount;
@@ -260,7 +260,7 @@ namespace Amoeba
         {
             lock (_stateLock)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
@@ -277,7 +277,7 @@ namespace Amoeba
         {
             lock (_stateLock)
             {
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     if (this.State == ManagerState.Stop) return;
                     _state = ManagerState.Stop;
@@ -292,7 +292,7 @@ namespace Amoeba
 
         public void Load(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Load(directoryPath);
 
@@ -305,7 +305,7 @@ namespace Amoeba
 
         public void Save(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Save(directoryPath);
             }
@@ -408,18 +408,6 @@ namespace Amoeba
 
             }
         }
-
-        #region IThisLock
-
-        public object ThisLock
-        {
-            get
-            {
-                return _thisLock;
-            }
-        }
-
-        #endregion
     }
 
     [DataContract(Name = "TransferLimitType")]

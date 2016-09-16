@@ -48,7 +48,7 @@ namespace Amoeba.Windows
 
             _isShare = isShare;
 
-            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.ToArray());
+            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatures.ToArray());
 
             InitializeComponent();
 

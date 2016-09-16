@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Amoeba.Properties;
+using Library;
 using Library.Io;
 using Library.Net.Amoeba;
 using Library.Security;
@@ -16,7 +17,39 @@ namespace Amoeba
 {
     static class MessageConverter
     {
-        public static string ToInfoMessage(Library.Net.Amoeba.Seed seed)
+        public static string ToTagString(Tag tag)
+        {
+            if (tag.Name == null || tag.Id == null) return null;
+
+            try
+            {
+                return tag.Name + " - " + NetworkConverter.ToBase64UrlString(tag.Id);
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("ArgumentException", e);
+            }
+        }
+
+        public static string ToInfoMessage(Tag tag)
+        {
+            try
+            {
+                var builder = new StringBuilder();
+
+                if (!string.IsNullOrWhiteSpace(tag.Name)) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.Tag_Name, tag.Name));
+                if (tag.Id != null) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.Tag_Id, NetworkConverter.ToBase64UrlString(tag.Id)));
+
+                if (builder.Length != 0) return builder.ToString().Remove(builder.Length - 2);
+                else return null;
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("ArgumentException", e);
+            }
+        }
+
+        public static string ToInfoMessage(Seed seed)
         {
             if (seed == null) throw new ArgumentNullException(nameof(seed));
 
@@ -41,7 +74,7 @@ namespace Amoeba
             }
         }
 
-        public static string ToInfoMessage(Library.Net.Amoeba.Box box)
+        public static string ToInfoMessage(Box box)
         {
             if (box == null) throw new ArgumentNullException(nameof(box));
 
@@ -50,7 +83,7 @@ namespace Amoeba
                 var builder = new StringBuilder();
 
                 if (!string.IsNullOrWhiteSpace(box.Name)) builder.AppendLine(string.Format("{0}: {1}", LanguagesManager.Instance.Box_Name, box.Name));
-                builder.AppendLine(string.Format("{0}: {1} UTC", LanguagesManager.Instance.Box_CreationTime, BoxUtils.GetBoxCreationTime(box).ToUniversalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo)));
+                builder.AppendLine(string.Format("{0}: {1} UTC", LanguagesManager.Instance.Box_CreationTime, BoxUtils.GetCreationTime(box).ToUniversalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo)));
 
                 if (builder.Length != 0) return builder.ToString().Remove(builder.Length - 2);
                 else return null;

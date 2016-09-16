@@ -23,19 +23,13 @@ namespace Amoeba
 
         private static Stream ToStream<T>(T item)
         {
-            var ds = new DataContractSerializer(typeof(T));
-
             MemoryStream stream = null;
 
             try
             {
                 stream = new MemoryStream();
-
-                using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                using (XmlDictionaryWriter xmlDictionaryWriter = XmlDictionaryWriter.CreateTextWriter(wrapperStream, new UTF8Encoding(false)))
-                {
-                    ds.WriteObject(xmlDictionaryWriter, item);
-                }
+                JsonUtils.Save(stream, item);
+                stream.Seek(0, SeekOrigin.Begin);
             }
             catch (Exception)
             {
@@ -48,12 +42,9 @@ namespace Amoeba
 
         private static T FromStream<T>(Stream stream)
         {
-            var ds = new DataContractSerializer(typeof(T));
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateTextReader(stream, XmlDictionaryReaderQuotas.Max))
-            {
-                return (T)ds.ReadObject(xmlDictionaryReader);
-            }
+            return JsonUtils.Load<T>(stream);
         }
 
         public static void Clear()
@@ -152,7 +143,7 @@ namespace Amoeba
             {
                 foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (item.StartsWith("Node:") || item.StartsWith("Node@")) return true;
+                    if (item.StartsWith("Node:")) return true;
                 }
 
                 return false;
@@ -188,16 +179,140 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
+                Clipboard.SetText(string.Join("\r\n", nodes.Select(n => AmoebaConverter.ToNodeString(n))));
+            }
+        }
+
+        public static bool ContainsTags()
+        {
+            lock (_thisLock)
+            {
+                foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    var sb = new StringBuilder();
-
-                    foreach (var item in nodes)
-                    {
-                        sb.AppendLine(AmoebaConverter.ToNodeString(item));
-                    }
-
-                    Clipboard.SetText(sb.ToString());
+                    if (item.StartsWith("Tag:")) return true;
                 }
+
+                return false;
+            }
+        }
+
+        public static IEnumerable<Tag> GetTags()
+        {
+            lock (_thisLock)
+            {
+                var list = new List<Tag>();
+
+                foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    try
+                    {
+                        var tag = AmoebaConverter.FromTagString(item);
+                        if (tag == null) continue;
+
+                        list.Add(tag);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+
+                return list;
+            }
+        }
+
+        public static void SetTags(IEnumerable<Tag> tags)
+        {
+            lock (_thisLock)
+            {
+                Clipboard.SetText(string.Join("\r\n", tags.Select(n => AmoebaConverter.ToTagString(n))));
+            }
+        }
+
+        public static bool ContainsChatCategorizeTreeItems()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_ChatCategorizeTreeItems");
+            }
+        }
+
+        public static IEnumerable<Windows.ChatCategorizeTreeItem> GetChatCategorizeTreeItems()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_ChatCategorizeTreeItems"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<Windows.ChatCategorizeTreeItem>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return new Windows.ChatCategorizeTreeItem[0];
+            }
+        }
+
+        public static void SetChatCategorizeTreeItems(IEnumerable<Windows.ChatCategorizeTreeItem> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_ChatCategorizeTreeItems", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        public static bool ContainsChatTreeItems()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_ChatTreeItems");
+            }
+        }
+
+        public static IEnumerable<Windows.ChatTreeItem> GetChatTreeItems()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_ChatTreeItems"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<Windows.ChatTreeItem>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return new Windows.ChatTreeItem[0];
+            }
+        }
+
+        public static void SetChatTreeItems(IEnumerable<Windows.ChatTreeItem> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetText(string.Join("\r\n", items.Select(n => AmoebaConverter.ToTagString(n.Tag))));
+                dataObject.SetData("Amoeba_ChatTreeItems", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        public static bool ContainsMailCategorizeTreeItems()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_MailCategorizeTreeItems");
             }
         }
 
@@ -207,7 +322,7 @@ namespace Amoeba
             {
                 foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    if (item.StartsWith("Seed:") || item.StartsWith("Seed@")) return true;
+                    if (item.StartsWith("Seed:")) return true;
                 }
 
                 return false;
@@ -243,16 +358,7 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                {
-                    var sb = new StringBuilder();
-
-                    foreach (var item in seeds)
-                    {
-                        sb.AppendLine(AmoebaConverter.ToSeedString(item));
-                    }
-
-                    Clipboard.SetText(sb.ToString());
-                }
+                Clipboard.SetText(string.Join("\r\n", seeds.Select(n => AmoebaConverter.ToSeedString(n))));
             }
         }
 
@@ -300,18 +406,7 @@ namespace Amoeba
             lock (_thisLock)
             {
                 var dataObject = new System.Windows.DataObject();
-
-                {
-                    var sb = new StringBuilder();
-
-                    foreach (var item in seeds)
-                    {
-                        sb.AppendLine(AmoebaConverter.ToSeedString(item));
-                    }
-
-                    dataObject.SetText(sb.ToString());
-                }
-
+                dataObject.SetText(string.Join("\r\n", seeds.Select(n => AmoebaConverter.ToSeedString(n))));
                 dataObject.SetData("Amoeba_Boxes", Clipboard.ToStream(boxes));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
@@ -429,18 +524,7 @@ namespace Amoeba
             lock (_thisLock)
             {
                 var dataObject = new System.Windows.DataObject();
-
-                {
-                    var sb = new StringBuilder();
-
-                    foreach (var item in items)
-                    {
-                        sb.AppendLine(item.Signature);
-                    }
-
-                    dataObject.SetText(sb.ToString());
-                }
-
+                dataObject.SetText(string.Join("\r\n", items.Select(n => n.Signature)));
                 dataObject.SetData("Amoeba_StoreTreeItems", Clipboard.ToStream(items));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);

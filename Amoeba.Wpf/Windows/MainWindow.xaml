@@ -19,14 +19,6 @@
         Loaded="Window_Loaded"
         Closing="Window_Closing">
 
-    <Window.CommandBindings>
-        <CommandBinding Command="Copy" Executed="Execute_Copy" />
-    </Window.CommandBindings>
-
-    <Window.InputBindings>
-        <KeyBinding Gesture="CTRL+C" Command="Copy" />
-    </Window.InputBindings>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -63,13 +55,14 @@
         </Menu>
         <TabControl Margin="0,28,0,0" Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
             <TabItem Header="{Binding Path=MainWindow_Information, Source={StaticResource _languages}}" Name="_informationTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Link, Source={StaticResource _languages}}" Name="_linkTabItem" />
+            <TabItem Header="{Binding Path=MainWindow_Chat, Source={StaticResource _languages}}" Name="_chatTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Search, Source={StaticResource _languages}}" Name="_searchTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Download, Source={StaticResource _languages}}" Name="_downloadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource _languages}}" Name="_uploadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource _languages}}" Name="_shareTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Link, Source={StaticResource _languages}}" Name="_linkTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource _languages}}" Name="_storeTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Log, Source={StaticResource _languages}}" Name="_logTabItem">
+            <TabItem Name="_logTabItem" Header="{Binding Path=MainWindow_Log, Source={StaticResource _languages}}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="438*" />

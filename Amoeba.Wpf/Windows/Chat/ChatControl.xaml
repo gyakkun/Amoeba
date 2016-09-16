@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="Amoeba.Windows.ChatControl"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:AvalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:prop="clr-namespace:Amoeba.Properties"     
+        xmlns:local="clr-namespace:Amoeba.Windows" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        d:DesignHeight="500" d:DesignWidth="800">
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="New" Executed="Execute_New" />
+        <CommandBinding Command="Delete" Executed="Execute_Delete" />
+        <CommandBinding Command="Cut" Executed="Execute_Cut" />
+        <CommandBinding Command="Copy" Executed="Execute_Copy" />
+        <CommandBinding Command="Paste" Executed="Execute_Paste" />
+    </UserControl.CommandBindings>
+
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="CTRL+N" Command="New" />
+        <KeyBinding Gesture="Delete" Command="Delete" />
+        <KeyBinding Gesture="CTRL+X" Command="Cut" />
+        <KeyBinding Gesture="CTRL+C" Command="Copy" />
+        <KeyBinding Gesture="CTRL+V" Command="Paste" />
+    </UserControl.InputBindings>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{Binding Path=ChatControl_Grid_ColumnDefinitions_Width, Mode=TwoWay, Converter={StaticResource _doubleToGridLengthConverter}, Source={x:Static prop:Settings.Instance}}" />
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TreeView Name="_treeView" AllowDrop="True" 
+                PreviewDragOver="_treeView_PreviewDragOver"
+                PreviewMouseMove="_treeView_PreviewMouseMove" 
+                PreviewDrop="_treeView_PreviewDrop" 
+                PreviewMouseLeftButtonDown="_treeView_PreviewMouseLeftButtonDown"
+                SelectedItemChanged="_treeView_SelectedItemChanged"
+                VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <TreeView.Resources>
+                <Style x:Key="_baseTreeViewItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                    <EventSetter Event="RequestBringIntoView" Handler="TreeViewItem_RequestBringIntoView"/>
+                    <EventSetter Event="MouseDown" Handler="TreeViewItem_MouseDown"/>
+                </Style>
+
+                <ContextMenu x:Key="_chatCategorizeTreeViewItemContextMenu">
+                    <MenuItem Name="_chatCategorizeTreeViewItemNewTagMenuItem" Header="{Binding Path=ChatControl_NewTag, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemNewTagMenuItem_Click"/>
+                    <Separator />
+                    <MenuItem Name="_chatCategorizeTreeViewItemNewCategoryMenuItem" Header="{Binding Path=ChatControl_New, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemNewCategoryMenuItem_Click"/>
+                    <MenuItem Name="_chatCategorizeTreeViewItemEditMenuItem" Header="{Binding Path=ChatControl_Edit, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemEditMenuItem_Click"/>
+                    <MenuItem Name="_chatCategorizeTreeViewItemDeleteMenuItem" Header="{Binding Path=ChatControl_Delete, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemDeleteMenuItem_Click"/>
+                    <Separator />
+                    <MenuItem Name="_chatCategorizeTreeViewItemCutMenuItem" Header="{Binding Path=ChatControl_Cut, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemCutMenuItem_Click" />
+                    <MenuItem Name="_chatCategorizeTreeViewItemCopyMenuItem" Header="{Binding Path=ChatControl_Copy, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_chatCategorizeTreeViewItemCopyInfoMenuItem" Header="{Binding Path=ChatControl_CopyInfo, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemCopyInfoMenuItem_Click" />
+                    <MenuItem Name="_chatCategorizeTreeViewItemPasteMenuItem" Header="{Binding Path=ChatControl_Paste, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemPasteMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_chatCategorizeTreeViewItemTrustOnMenuItem" Header="{Binding Path=ChatControl_Trust_On, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemTrustOnMenuItem_Click" />
+                    <MenuItem Name="_chatCategorizeTreeViewItemTrustOffMenuItem" Header="{Binding Path=ChatControl_Trust_Off, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemTrustOffMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_chatCategorizeTreeViewItemMarkAllMessagesReadMenuItem" Header="{Binding Path=ChatControl_MarkAllMessagesRead, Source={StaticResource _languages}}" Click="_chatCategorizeTreeViewItemMarkAllMessagesReadMenuItem_Click" />
+                </ContextMenu>
+                <Style x:Key="_chatCategorizeTreeViewModelSytle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource _baseTreeViewItemStyle}">
+                    <Setter Property="ContextMenu" Value="{StaticResource _chatCategorizeTreeViewItemContextMenu}" />
+                    <EventSetter Event="ContextMenuOpening" Handler="_chatCategorizeTreeViewItemContextMenu_ContextMenuOpening" />
+                </Style>
+
+                <ContextMenu x:Key="_chatTreeItemTreeViewItemContextMenu">
+                    <MenuItem Name="_chatTreeItemTreeViewItemDeleteMenuItem" Header="{Binding Path=ChatControl_Delete, Source={StaticResource _languages}}" Click="_chatTreeItemTreeViewItemDeleteMenuItem_Click"/>
+                    <Separator />
+                    <MenuItem Name="_chatTreeItemTreeViewItemCutMenuItem" Header="{Binding Path=ChatControl_Cut, Source={StaticResource _languages}}" Click="_chatTreeItemTreeViewItemCutMenuItem_Click" />
+                    <MenuItem Name="_chatTreeItemTreeViewItemCopyMenuItem" Header="{Binding Path=ChatControl_Copy, Source={StaticResource _languages}}" Click="_chatTreeItemTreeViewItemCopyMenuItem_Click" />
+                    <MenuItem Name="_chatTreeItemTreeViewItemCopyInfoMenuItem" Header="{Binding Path=ChatControl_CopyInfo, Source={StaticResource _languages}}" Click="_chatTreeItemTreeViewItemCopyInfoMenuItem_Click" />
+                </ContextMenu>
+                <Style x:Key="_chatTreeViewModelSytle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource _baseTreeViewItemStyle}">
+                    <Setter Property="ContextMenu" Value="{StaticResource _chatTreeItemTreeViewItemContextMenu}" />
+                    <EventSetter Event="ContextMenuOpening" Handler="_chatTreeItemTreeViewItemContextMenu_ContextMenuOpening" />
+                </Style>
+            </TreeView.Resources>
+            <TreeView.ItemContainerStyleSelector>
+                <local:ChatControl_StyleSelector ChatCategorizeTreeViewModelStyle="{StaticResource _chatCategorizeTreeViewModelSytle}" ChatTreeViewModelStyle="{StaticResource _chatTreeViewModelSytle}" />
+            </TreeView.ItemContainerStyleSelector>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type local:TreeViewModelBase}" ItemsSource="{Binding Children}">
+                    <TextBlock Text="{Binding Name}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
+                                <Binding Path="IsSelected" />
+                                <Binding Path="IsHit" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                        <TextBlock.FontWeight>
+                            <Binding Path="IsHit" Converter="{StaticResource _getTreeWeightConverter}" />
+                        </TextBlock.FontWeight>
+                    </TextBlock>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+
+        <Button x:Name="_newMessageButton" Style="{StaticResource _buttonStyle}" Content="New" Grid.Column="2" HorizontalAlignment="Left" Margin="52,6,0,0" VerticalAlignment="Top" Width="40" Height="40" ToolTip="{Binding Path=ChatControl_NewMessage, Source={StaticResource _languages}}" Click="_newMessageButton_Click"/>
+        <ToggleButton x:Name="_trustToggleButton" Style="{StaticResource _toggleButtonStyle}" Content="Trust" Grid.Column="2" HorizontalAlignment="Left" Margin="6,6,0,0" Width="40" Height="40" VerticalAlignment="Top" ToolTip="{Binding Path=ChatControl_Trust, Source={StaticResource _languages}}" Click="_trustToggleButton_Click"/>
+        <StackPanel Orientation="Horizontal" Margin="0,16,0,0" VerticalAlignment="Top" Grid.Column="2" HorizontalAlignment="Right">
+            <Label Content="{Binding Path=ChatControl_Limit, Source={StaticResource _languages}}" Height="24" />
+            <TextBox x:Name="_limitTextBox" x:FieldModifier="private" Margin="6,6,0,6" Width="50" Text="{Binding Path=Global_Limit, Mode=OneWay, Source={x:Static prop:Settings.Instance}}" TextChanged="_limitTextBox_TextChanged" Height="24" />
+            <RepeatButton x:Name="_limitUpButton" x:FieldModifier="private" Margin="0,6" Content="˄" Width="24" Click="_limitUpButton_Click" Height="24" />
+            <RepeatButton x:Name="_limitDownButton" x:FieldModifier="private" Margin="0,6,6,6"  Content="˅" Width="24" Click="_limitDownButton_Click" Height="24" />
+        </StackPanel>
+
+        <AvalonEdit:TextEditor x:Name="_textEditor" Style="{StaticResource _textEditorStyle}" IsReadOnly="True" Grid.Column="2" Margin="0,52,0,0" HorizontalScrollBarVisibility="Disabled">
+            <AvalonEdit:TextEditor.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="_textEditorCopyMenuItem" Header="{Binding Path=ChatControl_Copy, Source={StaticResource _languages}}" Click="_textEditorCopyMenuItem_Click" />
+                    <Separator />
+                    <MenuItem Name="_textEditorLockMenuItem" Header="{Binding Path=ChatControl_Lock, Source={StaticResource _languages}}">
+                        <MenuItem Name="_textEditorLockThisMenuItem" Header="{Binding Path=ChatControl_LockThis, Source={StaticResource _languages}}" Click="_textEditorLockThisMenuItem_Click" />
+                        <MenuItem Name="_textEditorUnlockThisMenuItem" Header="{Binding Path=ChatControl_UnlockThis, Source={StaticResource _languages}}" Click="_textEditorUnlockThisMenuItem_Click" />
+                        <MenuItem Name="_textEditorLockAllMenuItem" Header="{Binding Path=ChatControl_LockAll, Source={StaticResource _languages}}" Click="_textEditorLockAllMenuItem_Click" />
+                        <MenuItem Name="_textEditorUnlockAllMenuItem" Header="{Binding Path=ChatControl_UnlockAll, Source={StaticResource _languages}}" Click="_textEditorUnlockAllMenuItem_Click" />
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Name="_textEditorResponseMenuItem" Header="{Binding Path=ChatControl_Response, Source={StaticResource _languages}}" Click="_textEditorResponseMenuItem_Click" />
+                </ContextMenu>
+            </AvalonEdit:TextEditor.ContextMenu>
+        </AvalonEdit:TextEditor>
+    </Grid>
+</UserControl>

@@ -204,8 +204,8 @@ namespace Amoeba.Windows
                                 var boxesListViewModel = new BoxListViewModel();
                                 boxesListViewModel.Index = newList.Count;
                                 boxesListViewModel.Name = box.Name;
-                                boxesListViewModel.Length = BoxUtils.GetBoxLength(box);
-                                boxesListViewModel.CreationTime = BoxUtils.GetBoxCreationTime(box);
+                                boxesListViewModel.Length = BoxUtils.GetLength(box);
+                                boxesListViewModel.CreationTime = BoxUtils.GetCreationTime(box);
                                 boxesListViewModel.Value = box;
 
                                 newList.Add(boxesListViewModel);
@@ -1187,7 +1187,7 @@ namespace Amoeba.Windows
                 storeTreeViewModel.Value.IsUpdated = false;
                 storeTreeViewModel.Update();
 
-                var digitalSignature = Settings.Instance.Global_DigitalSignatureCollection.FirstOrDefault(n => n.ToString() == storeTreeViewModel.Value.Signature);
+                var digitalSignature = Settings.Instance.Global_DigitalSignatures.FirstOrDefault(n => n.ToString() == storeTreeViewModel.Value.Signature);
                 if (digitalSignature == null) return;
 
                 var store = new Store();
@@ -1430,7 +1430,7 @@ namespace Amoeba.Windows
             var selectTreeViewModel = _treeView.SelectedItem as StoreTreeViewModel;
             if (selectTreeViewModel == null) return;
 
-            var digitalSignature = Settings.Instance.Global_DigitalSignatureCollection.FirstOrDefault(n => n.ToString() == selectTreeViewModel.Value.Signature);
+            var digitalSignature = Settings.Instance.Global_DigitalSignatures.FirstOrDefault(n => n.ToString() == selectTreeViewModel.Value.Signature);
             if (digitalSignature == null) return;
 
             if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Upload_Message, "Store", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;

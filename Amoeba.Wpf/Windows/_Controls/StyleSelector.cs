@@ -32,4 +32,24 @@ namespace Amoeba.Windows
             return null;
         }
     }
+
+    class ChatControl_StyleSelector : StyleSelector
+    {
+        public Style ChatCategorizeTreeViewModelStyle { get; set; }
+        public Style ChatTreeViewModelStyle { get; set; }
+
+        public override Style SelectStyle(object item, DependencyObject container)
+        {
+            if (item is ChatCategorizeTreeViewModel)
+            {
+                return this.ChatCategorizeTreeViewModelStyle;
+            }
+            else if (item is ChatTreeViewModel)
+            {
+                return this.ChatTreeViewModelStyle;
+            }
+
+            return null;
+        }
+    }
 }

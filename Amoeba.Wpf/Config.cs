@@ -64,6 +64,10 @@ namespace Amoeba
                 {
                     var colorsSetting = new ColorsSetting();
                     colorsSetting.Tree_Hit = System.Windows.Media.Colors.LightPink;
+                    colorsSetting.Link = System.Windows.Media.Colors.SkyBlue;
+                    colorsSetting.Link_New = System.Windows.Media.Colors.LightPink;
+                    colorsSetting.Message_Trust = System.Windows.Media.Colors.SkyBlue;
+                    colorsSetting.Message_Untrust = System.Windows.Media.Colors.LightPink;
 
                     this.Colors = colorsSetting;
                 }
@@ -78,22 +82,22 @@ namespace Amoeba
 
                 if (!File.Exists(startupConfigPath))
                 {
-                    this.SaveObject(this.Startup, startupConfigPath);
+                    this.SaveObject(startupConfigPath, this.Startup);
                 }
 
                 if (!File.Exists(catharsisConfigPath))
                 {
-                    this.SaveObject(this.Catharsis, catharsisConfigPath);
+                    this.SaveObject(catharsisConfigPath, this.Catharsis);
                 }
 
                 if (!File.Exists(cacheConfigPath))
                 {
-                    this.SaveObject(this.Cache, cacheConfigPath);
+                    this.SaveObject(cacheConfigPath, this.Cache);
                 }
 
                 if (!File.Exists(colorsConfigPath))
                 {
-                    this.SaveObject(this.Colors, colorsConfigPath);
+                    this.SaveObject(colorsConfigPath, this.Colors);
                 }
 
                 this.Startup = this.LoadObject<StartupSetting>(startupConfigPath);
@@ -107,19 +111,9 @@ namespace Amoeba
         {
             try
             {
-                using (var streamReader = new StreamReader(configPath, new UTF8Encoding(false)))
-                using (var jsonTextReader = new JsonTextReader(streamReader))
+                using (var stream = new FileStream(configPath, FileMode.Open))
                 {
-                    var serializer = new JsonSerializer();
-                    serializer.MissingMemberHandling = MissingMemberHandling.Ignore;
-
-                    serializer.TypeNameHandling = TypeNameHandling.None;
-                    serializer.Converters.Add(new Newtonsoft.Json.Converters.IsoDateTimeConverter());
-                    serializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-                    serializer.Converters.Add(new ColorJsonConverter());
-                    serializer.ContractResolver = new CustomContractResolver();
-
-                    return serializer.Deserialize<T>(jsonTextReader);
+                    return JsonUtils.Load<T>(stream);
                 }
             }
             catch (Exception e)
@@ -130,68 +124,18 @@ namespace Amoeba
             return default(T);
         }
 
-        private void SaveObject<T>(T value, string configPath)
+        private void SaveObject(string configPath, object value)
         {
             try
             {
-                using (var streamWriter = new StreamWriter(configPath, false, new UTF8Encoding(false)))
-                using (var jsonTextWriter = new JsonTextWriter(streamWriter))
+                using (var stream = new FileStream(configPath, FileMode.Create))
                 {
-                    var serializer = new JsonSerializer();
-                    serializer.Formatting = Newtonsoft.Json.Formatting.Indented;
-
-                    serializer.TypeNameHandling = TypeNameHandling.None;
-                    serializer.Converters.Add(new Newtonsoft.Json.Converters.IsoDateTimeConverter());
-                    serializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-                    serializer.Converters.Add(new ColorJsonConverter());
-                    serializer.ContractResolver = new CustomContractResolver();
-
-                    serializer.Serialize(jsonTextWriter, value);
+                    JsonUtils.Save(stream, value, true);
                 }
             }
             catch (Exception e)
             {
                 Log.Warning(e);
-            }
-        }
-
-        public class ColorJsonConverter : JsonConverter
-        {
-            public override bool CanConvert(Type objectType)
-            {
-                return objectType == typeof(Color);
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                return (Color)System.Windows.Media.ColorConverter.ConvertFromString((string)reader.Value);
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                writer.WriteValue(((Color)value).ToString());
-            }
-        }
-
-        class CustomContractResolver : DefaultContractResolver
-        {
-            protected override JsonContract CreateContract(Type objectType)
-            {
-                if (objectType.GetInterfaces().Any(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IDictionary<,>)))
-                {
-                    return base.CreateArrayContract(objectType);
-                }
-
-                if (System.Attribute.GetCustomAttributes(objectType).Any(n => n is DataContractAttribute))
-                {
-                    var objectContract = base.CreateObjectContract(objectType);
-                    objectContract.DefaultCreatorNonPublic = false;
-                    objectContract.DefaultCreator = () => FormatterServices.GetUninitializedObject(objectContract.CreatedType);
-
-                    return objectContract;
-                }
-
-                return base.CreateContract(objectType);
             }
         }
 
@@ -256,6 +200,18 @@ namespace Amoeba
         {
             [DataMember(Name = "Tree_Hit")]
             public System.Windows.Media.Color Tree_Hit { get; set; }
+
+            [DataMember(Name = "Link")]
+            public System.Windows.Media.Color Link { get; set; }
+
+            [DataMember(Name = "Link_New")]
+            public System.Windows.Media.Color Link_New { get; set; }
+
+            [DataMember(Name = "Message_Trust")]
+            public System.Windows.Media.Color Message_Trust { get; set; }
+
+            [DataMember(Name = "Message_Untrust")]
+            public System.Windows.Media.Color Message_Untrust { get; set; }
         }
     }
 }

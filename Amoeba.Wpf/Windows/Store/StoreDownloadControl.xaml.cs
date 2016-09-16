@@ -214,8 +214,8 @@ namespace Amoeba.Windows
                                 var boxesListViewModel = new BoxListViewModel();
                                 boxesListViewModel.Index = newList.Count;
                                 boxesListViewModel.Name = box.Name;
-                                boxesListViewModel.Length = BoxUtils.GetBoxLength(box);
-                                boxesListViewModel.CreationTime = BoxUtils.GetBoxCreationTime(box);
+                                boxesListViewModel.Length = BoxUtils.GetLength(box);
+                                boxesListViewModel.CreationTime = BoxUtils.GetCreationTime(box);
                                 boxesListViewModel.Value = box;
 
                                 newList.Add(boxesListViewModel);

@@ -8,7 +8,7 @@ namespace Amoeba
 {
     static class BoxUtils
     {
-        public static long GetBoxLength(Box box)
+        public static long GetLength(Box box)
         {
             long length = 0;
 
@@ -19,13 +19,13 @@ namespace Amoeba
 
             foreach (var item in box.Boxes)
             {
-                length += GetBoxLength(item);
+                length += GetLength(item);
             }
 
             return length;
         }
 
-        public static DateTime GetBoxCreationTime(Box box)
+        public static DateTime GetCreationTime(Box box)
         {
             var seedList = new List<Seed>();
             {

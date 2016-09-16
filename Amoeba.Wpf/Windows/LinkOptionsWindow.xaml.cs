@@ -353,9 +353,12 @@ namespace Amoeba.Windows
                 }
             }
 
+            var uploadLinkItems = new List<LinkItem>();
+            var uploadProfileItems = new List<ProfileItem>();
+
             lock (Settings.Instance.ThisLock)
             {
-                var uploadLinkCollection = new List<LinkItem>();
+                var tempLinkItems = new List<LinkItem>();
 
                 foreach (var item in _uploadLinkCollection)
                 {
@@ -364,35 +367,83 @@ namespace Amoeba.Windows
                     linkItem.TrustSignatures.AddRange(item.TrustSignatures);
                     linkItem.DeleteSignatures.AddRange(item.DeleteSignatures);
 
-                    uploadLinkCollection.Add(linkItem);
+                    tempLinkItems.Add(linkItem);
                 }
 
-                foreach (var item in Settings.Instance.Global_LinkItems.ToArray())
+                lock (Settings.Instance.Global_LinkItems.ThisLock)
                 {
-                    if (!uploadLinkCollection.Contains(item))
+                    foreach (var item in Settings.Instance.Global_LinkItems.ToArray())
                     {
-                        Settings.Instance.Global_LinkItems.Remove(item);
-                    }
-                }
-
-                foreach (var item in uploadLinkCollection)
-                {
-                    if (!Settings.Instance.Global_LinkItems.Contains(item))
-                    {
-                        Settings.Instance.Global_LinkItems.Add(item);
-
+                        if (!tempLinkItems.Contains(item))
                         {
-                            var digitalSignature = Settings.Instance.Global_DigitalSignatureCollection.FirstOrDefault(n => n.ToString() == item.Signature);
-                            if (digitalSignature == null) return;
+                            Settings.Instance.Global_LinkItems.Remove(item);
+                        }
+                    }
 
-                            var link = new Link();
-                            link.TrustSignatures.AddRange(item.TrustSignatures);
-                            link.DeleteSignatures.AddRange(item.DeleteSignatures);
-
-                            _amoebaManager.Upload(link, digitalSignature);
+                    foreach (var item in tempLinkItems)
+                    {
+                        if (!Settings.Instance.Global_LinkItems.Contains(item))
+                        {
+                            Settings.Instance.Global_LinkItems.Add(item);
+                            uploadLinkItems.Add(item);
                         }
                     }
                 }
+            }
+
+            lock (Settings.Instance.ThisLock)
+            {
+                var hashset = new HashSet<string>();
+
+                foreach (var item in _uploadLinkCollection)
+                {
+                    hashset.Add(item.Signature);
+                }
+
+                lock (Settings.Instance.Global_ProfileSettings.ThisLock)
+                {
+                    foreach (var signature in Settings.Instance.Global_ProfileSettings.Keys.ToArray())
+                    {
+                        if (!hashset.Contains(signature))
+                        {
+                            Settings.Instance.Global_ProfileSettings.Remove(signature);
+                        }
+                    }
+
+                    foreach (var signature in hashset)
+                    {
+                        if (!Settings.Instance.Global_ProfileSettings.ContainsKey(signature))
+                        {
+                            var setting = new ProfileSetting();
+                            setting.Exchange = new Exchange(ExchangeAlgorithm.Rsa2048);
+
+                            var item = new ProfileItem();
+                            item.Signature = signature;
+                            item.ExchangePublicKey = setting.Exchange.GetExchangePublicKey();
+
+                            Settings.Instance.Global_ProfileSettings.Add(signature, setting);
+                            uploadProfileItems.Add(item);
+                        }
+                    }
+                }
+            }
+
+            foreach (var item in uploadLinkItems)
+            {
+                var digitalSignature = Settings.Instance.Global_DigitalSignatures.FirstOrDefault(n => n.ToString() == item.Signature);
+                if (digitalSignature == null) return;
+
+                var link = new Link(item.TrustSignatures, item.DeleteSignatures);
+                _amoebaManager.Upload(link, digitalSignature);
+            }
+
+            foreach (var item in uploadProfileItems)
+            {
+                var digitalSignature = Settings.Instance.Global_DigitalSignatures.FirstOrDefault(n => n.ToString() == item.Signature);
+                if (digitalSignature == null) return;
+
+                var profile = new Profile(item.ExchangePublicKey);
+                _amoebaManager.Upload(profile, digitalSignature);
             }
 
             this.DialogResult = true;

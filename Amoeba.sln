@@ -3,37 +3,37 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Amoeba", "..\Library\Library.Net.Amoeba\Library.Net.Amoeba.csproj", "{82230C99-6599-4130-AAC9-FC926ABC0724}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Amoeba", "Library\Library.Net.Amoeba\Library.Net.Amoeba.csproj", "{82230C99-6599-4130-AAC9-FC926ABC0724}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "..\Library\Library\Library.csproj", "{63EADC1F-9A8A-4945-A562-DA666D0BCB7B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library", "Library\Library\Library.csproj", "{63EADC1F-9A8A-4945-A562-DA666D0BCB7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Collections", "..\Library\Library.Collections\Library.Collections.csproj", "{197C654F-2461-446A-B531-4A789F14BE19}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Collections", "Library\Library.Collections\Library.Collections.csproj", "{197C654F-2461-446A-B531-4A789F14BE19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Configuration", "..\Library\Library.Configuration\Library.Configuration.csproj", "{9AA70F88-4A83-4B3F-B494-7D37EA95766A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Configuration", "Library\Library.Configuration\Library.Configuration.csproj", "{9AA70F88-4A83-4B3F-B494-7D37EA95766A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Correction", "..\Library\Library.Correction\Library.Correction.csproj", "{A8AD7B39-85FC-4ABF-9D04-5E1241CD79B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Correction", "Library\Library.Correction\Library.Correction.csproj", "{A8AD7B39-85FC-4ABF-9D04-5E1241CD79B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Io", "..\Library\Library.Io\Library.Io.csproj", "{74597E45-7F3C-4958-8B6A-B16DE8DE47B9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Io", "Library\Library.Io\Library.Io.csproj", "{74597E45-7F3C-4958-8B6A-B16DE8DE47B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net", "..\Library\Library.Net\Library.Net.csproj", "{7CFDE01D-4A0E-4E10-ACC2-34DB897DBE0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net", "Library\Library.Net\Library.Net.csproj", "{7CFDE01D-4A0E-4E10-ACC2-34DB897DBE0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Connections", "..\Library\Library.Net.Connections\Library.Net.Connections.csproj", "{38994E3C-0699-4D6C-AD02-F9F657340347}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Connections", "Library\Library.Net.Connections\Library.Net.Connections.csproj", "{38994E3C-0699-4D6C-AD02-F9F657340347}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Proxy", "..\Library\Library.Net.Proxy\Library.Net.Proxy.csproj", "{56EB350E-089E-40BB-97CB-F2745A4251AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Proxy", "Library\Library.Net.Proxy\Library.Net.Proxy.csproj", "{56EB350E-089E-40BB-97CB-F2745A4251AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Upnp", "..\Library\Library.Net.Upnp\Library.Net.Upnp.csproj", "{7688AECF-92BD-4212-AAD8-6CD6D42BA6E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.Upnp", "Library\Library.Net.Upnp\Library.Net.Upnp.csproj", "{7688AECF-92BD-4212-AAD8-6CD6D42BA6E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Security", "..\Library\Library.Security\Library.Security.csproj", "{D314C626-A6FC-4FD5-BE3C-9D36C2738418}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Security", "Library\Library.Security\Library.Security.csproj", "{D314C626-A6FC-4FD5-BE3C-9D36C2738418}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Update", "..\Library\Library.Update\Library.Update.csproj", "{5D842D8A-5BFE-4D68-956B-E1E690EDB48A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Update", "Library\Library.Update\Library.Update.csproj", "{5D842D8A-5BFE-4D68-956B-E1E690EDB48A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Compression", "..\Library\Library.Compression\Library.Compression.csproj", "{51ECCC57-56CB-44A0-9A43-DB596F982FC8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Compression", "Library\Library.Compression\Library.Compression.csproj", "{51ECCC57-56CB-44A0-9A43-DB596F982FC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.I2p", "..\Library\Library.Net.I2p\Library.Net.I2p.csproj", "{24DC1835-CC3D-4D29-B922-199027EC551F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Net.I2p", "Library\Library.Net.I2p\Library.Net.I2p.csproj", "{24DC1835-CC3D-4D29-B922-199027EC551F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tools", "..\Library\Library.Tools\Library.Tools.csproj", "{B4424312-441E-4B12-9278-D640CDABD99B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tools", "Library\Library.Tools\Library.Tools.csproj", "{B4424312-441E-4B12-9278-D640CDABD99B}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Library.Utilities", "..\Library\Library.Utilities\Library.Utilities.shproj", "{0F585D24-9D81-4C31-A341-966A554B3800}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Library.Utilities", "Library\Library.Utilities\Library.Utilities.shproj", "{0F585D24-9D81-4C31-A341-966A554B3800}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Core", "Amoeba.Core\Amoeba.Core.csproj", "{9CBEEABE-BFB5-485D-B928-E997FC5F8EF0}"
 EndProject
@@ -41,12 +41,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Wpf", "Amoeba.Wpf\Am
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\Library\Library.Utilities\Library.Utilities.projitems*{0f585d24-9d81-4c31-a341-966a554b3800}*SharedItemsImports = 13
-		..\Library\Library.Utilities\Library.Utilities.projitems*{38994e3c-0699-4d6c-ad02-f9f657340347}*SharedItemsImports = 4
-		..\Library\Library.Utilities\Library.Utilities.projitems*{7c83e92e-62be-49e6-870a-deb9d5340664}*SharedItemsImports = 4
-		..\Library\Library.Utilities\Library.Utilities.projitems*{82230c99-6599-4130-aac9-fc926abc0724}*SharedItemsImports = 4
+		Library\Library.Utilities\Library.Utilities.projitems*{0f585d24-9d81-4c31-a341-966a554b3800}*SharedItemsImports = 13
+		Library\Library.Utilities\Library.Utilities.projitems*{38994e3c-0699-4d6c-ad02-f9f657340347}*SharedItemsImports = 4
+		Library\Library.Utilities\Library.Utilities.projitems*{7c83e92e-62be-49e6-870a-deb9d5340664}*SharedItemsImports = 4
+		Library\Library.Utilities\Library.Utilities.projitems*{82230c99-6599-4130-aac9-fc926abc0724}*SharedItemsImports = 4
 		..\Library\Library.Utilities\Library.Utilities.projitems*{9cbeeabe-bfb5-485d-b928-e997fc5f8ef0}*SharedItemsImports = 4
-		..\Library\Library.Utilities\Library.Utilities.projitems*{d314c626-a6fc-4fd5-be3c-9d36c2738418}*SharedItemsImports = 4
+		Library\Library.Utilities\Library.Utilities.projitems*{d314c626-a6fc-4fd5-be3c-9d36c2738418}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

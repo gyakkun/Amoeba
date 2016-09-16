@@ -544,10 +544,7 @@ namespace Amoeba.Windows
 
             private void NotifyPropertyChanged(string info)
             {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(info));
-                }
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
             }
 
             private Information _information;

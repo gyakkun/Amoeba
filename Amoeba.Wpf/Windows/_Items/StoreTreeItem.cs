@@ -8,7 +8,7 @@ using Library.Io;
 
 namespace Amoeba.Windows
 {
-    [DataContract(Name = "StoreInfo")]
+    [DataContract(Name = "StoreTreeItem")]
     class StoreTreeItem : ICloneable<StoreTreeItem>, IThisLock
     {
         private string _signature;
@@ -19,7 +19,7 @@ namespace Amoeba.Windows
         private static readonly object _initializeLock = new object();
         private volatile object _thisLock;
 
-        [DataMember(Name = "UploadSignature")]
+        [DataMember(Name = "Signature")]
         public string Signature
         {
             get
@@ -97,23 +97,7 @@ namespace Amoeba.Windows
         {
             lock (this.ThisLock)
             {
-                var ds = new DataContractSerializer(typeof(StoreTreeItem));
-
-                using (BufferStream stream = new BufferStream(BufferManager.Instance))
-                {
-                    using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                    using (XmlDictionaryWriter xmlDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
-                    {
-                        ds.WriteObject(xmlDictionaryWriter, this);
-                    }
-
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
-                    {
-                        return (StoreTreeItem)ds.ReadObject(xmlDictionaryReader);
-                    }
-                }
+                return JsonUtils.Clone(this);
             }
         }
 

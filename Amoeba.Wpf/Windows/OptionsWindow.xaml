@@ -56,6 +56,8 @@
                     <TreeViewItem Name="_signaturesTreeViewItem" Header="{Binding Path=OptionsWindow_Signatures, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_keywordsTreeViewItem" Header="{Binding Path=OptionsWindow_Keywords, Source={StaticResource _languages}}" />
                     <TreeViewItem Name="_boxTreeViewItem" Header="{Binding Path=OptionsWindow_Box, Source={StaticResource _languages}}" />
+                    <TreeViewItem Name="_mailTreeViewItem" Header="{Binding Path=OptionsWindow_Mail, Source={StaticResource _languages}}" />
+                    <TreeViewItem Name="_fontsTreeViewItem" Header="{Binding Path=OptionsWindow_Fonts, Source={StaticResource _languages}}" />
                 </TreeViewItem>
             </TreeView>
 
@@ -374,6 +376,20 @@
                 <Label Content="{Binding Path=OptionsWindow_ExtractTo, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,50,0,0" VerticalAlignment="Top" Width="240" />
                 <TextBox Height="24" Margin="252,50,6,0" Name="_boxExtractToTextBox" VerticalAlignment="Top" />
             </Grid>
+
+            <Grid Grid.Column="2" Visibility="{Binding ElementName=_fontsTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
+                <Label Content="{Binding Path=OptionsWindow_MessageFontFamily, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="360" />
+                <ComboBox Height="24" Margin="372,6,6,0" Name="_fontMessageFontFamilyComboBox" VerticalAlignment="Top">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+                <Label Content="{Binding Path=OptionsWindow_MessageFontSize, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="360" />
+                <TextBox Height="24" Margin="372,36,6,0" Name="_fontMessageFontSizeTextBox" VerticalAlignment="Top" TextChanged="_fontMessageFontSizeTextBox_TextChanged" />
+            </Grid>
+
         </Grid>
 
         <Button Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=OptionsWindow_Ok, Source={StaticResource _languages}}" Click="_okButton_Click" IsDefault="True" />

@@ -31,7 +31,6 @@ using Library.Collections;
 using Library.Io;
 using Library.Net.Amoeba;
 using Library.Security;
-using A = Library.Net.Amoeba;
 
 namespace Amoeba.Windows
 {
@@ -120,8 +119,7 @@ namespace Amoeba.Windows
 
         private void Refresh_LinkItems()
         {
-            var higherLinkItems = new HashSet<LinkItem>();
-            var generalLinkItems = new HashSet<LinkItem>();
+            var linkItems = new HashSet<LinkItem>();
 
             foreach (var leaderSignature in Settings.Instance.Global_TrustSignatures.ToArray())
             {
@@ -134,25 +132,28 @@ namespace Amoeba.Windows
 
                 for (int i = 0; i < 32; i++)
                 {
-                    var linkItems = this.GetLinkItems(targetSignatures).ToList();
-                    if (linkItems.Count == 0) break;
+                    var tempLinkItems = this.GetLinkItems(targetSignatures).ToList();
+                    if (tempLinkItems.Count == 0) break;
 
                     checkedSignatures.UnionWith(targetSignatures);
-                    checkedSignatures.UnionWith(linkItems.SelectMany(n => n.DeleteSignatures));
+                    checkedSignatures.UnionWith(tempLinkItems.SelectMany(n => n.DeleteSignatures));
 
                     targetSignatures.Clear();
-                    targetSignatures.UnionWith(linkItems.SelectMany(n => n.TrustSignatures).Where(n => !checkedSignatures.Contains(n)));
+                    targetSignatures.UnionWith(tempLinkItems.SelectMany(n => n.TrustSignatures).Where(n => !checkedSignatures.Contains(n)));
 
-                    targetLinkItems.AddRange(linkItems);
+                    targetLinkItems.AddRange(tempLinkItems);
 
-                    if (targetLinkItems.Count > 32 * 1024) goto End;
+                    if (targetLinkItems.Count > 1024 * 32) goto End;
                 }
 
                 End:;
 
-                higherLinkItems.UnionWith(targetLinkItems.Take(32));
-                generalLinkItems.UnionWith(targetLinkItems.Take(32 * 1024));
+                linkItems.UnionWith(targetLinkItems.Take(1024 * 32));
             }
+
+            Inspect.SetTrustSignatures(linkItems.Select(n => n.Signature));
+
+            var profileItems = this.GetProfileItems(Inspect.GetTrustSignatures()).ToList();
 
             lock (Settings.Instance.ThisLock)
             {
@@ -160,9 +161,19 @@ namespace Amoeba.Windows
                 {
                     Settings.Instance.Cache_LinkItems.Clear();
 
-                    foreach (var linkItem in generalLinkItems)
+                    foreach (var linkItem in linkItems)
                     {
                         Settings.Instance.Cache_LinkItems.Add(linkItem.Signature, linkItem);
+                    }
+                }
+
+                lock (Settings.Instance.Cache_ProfileItems.ThisLock)
+                {
+                    Settings.Instance.Cache_ProfileItems.Clear();
+
+                    foreach (var profileItem in profileItems)
+                    {
+                        Settings.Instance.Cache_ProfileItems.Add(profileItem.Signature, profileItem);
                     }
                 }
             }
@@ -203,6 +214,42 @@ namespace Amoeba.Windows
             }
 
             return linkItems;
+        }
+
+        private IEnumerable<ProfileItem> GetProfileItems(IEnumerable<string> trustSignatures)
+        {
+            var profileItems = new List<ProfileItem>();
+
+            foreach (var trustSignature in trustSignatures)
+            {
+                ProfileItem profileItem = null;
+
+                {
+                    var profile = _amoebaManager.GetProfile(trustSignature);
+
+                    if (profile != null)
+                    {
+                        profileItem = new ProfileItem();
+                        profileItem.Signature = trustSignature;
+                        profileItem.ExchangePublicKey = profile.ExchangePublicKey;
+                    }
+                }
+
+                if (profileItem == null)
+                {
+                    Settings.Instance.Cache_ProfileItems.TryGetValue(trustSignature, out profileItem);
+                }
+
+                if (profileItem == null)
+                {
+                    profileItem = new ProfileItem();
+                    profileItem.Signature = trustSignature;
+                }
+
+                profileItems.Add(profileItem);
+            }
+
+            return profileItems;
         }
 
         private static string GetNormalizedPath(string path)

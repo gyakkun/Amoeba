@@ -42,6 +42,7 @@ namespace Amoeba.Windows
 
         private ObservableCollectionEx<SignatureListViewItem> _signatureListViewItemCollection;
         private ObservableCollectionEx<string> _keywordCollection;
+        private List<string> _fontMessageFontFamilyComboBoxItemCollection = new List<string>();
 
         public OptionsWindow(AmoebaManager amoebaManager, ConnectionSettingManager connectionSettingManager, OverlayNetworkManager overlayNetworkManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
         {
@@ -140,18 +141,20 @@ namespace Amoeba.Windows
             _clientFiltersListViewUpdate();
             _serverListenUrisUpdate();
 
-            lock (_transferLimitManager.ThisLock)
             {
-                _transferLimitTypeComboBox.SelectedItem = _transferLimitManager.TransferLimit.Type;
-                _transferLimitSpanTextBox.Text = _transferLimitManager.TransferLimit.Span.ToString();
+                lock (_transferLimitManager.TransferLimit.ThisLock)
+                {
+                    _transferLimitTypeComboBox.SelectedItem = _transferLimitManager.TransferLimit.Type;
+                    _transferLimitSpanTextBox.Text = _transferLimitManager.TransferLimit.Span.ToString();
 
-                try
-                {
-                    _transferLimitSizeTextBox.Text = NetworkConverter.ToSizeString(_transferLimitManager.TransferLimit.Size, Settings.Instance.OptionsWindow_TransferLimit_Unit);
-                }
-                catch (Exception)
-                {
-                    _transferLimitSizeTextBox.Text = "";
+                    try
+                    {
+                        _transferLimitSizeTextBox.Text = NetworkConverter.ToSizeString(_transferLimitManager.TransferLimit.Size, Settings.Instance.OptionsWindow_TransferLimit_Unit);
+                    }
+                    catch (Exception)
+                    {
+                        _transferLimitSizeTextBox.Text = "";
+                    }
                 }
 
                 _transferInfoUploadedLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize);
@@ -183,7 +186,7 @@ namespace Amoeba.Windows
                 _updateOptionAutoUpdateRadioButton.IsChecked = true;
             }
 
-            _signatureListViewItemCollection = new ObservableCollectionEx<SignatureListViewItem>(Settings.Instance.Global_DigitalSignatureCollection.Select(n => new SignatureListViewItem(n)));
+            _signatureListViewItemCollection = new ObservableCollectionEx<SignatureListViewItem>(Settings.Instance.Global_DigitalSignatures.Select(n => new SignatureListViewItem(n)));
             _signatureListView.ItemsSource = _signatureListViewItemCollection;
             _signatureListViewUpdate();
 
@@ -225,6 +228,12 @@ namespace Amoeba.Windows
 
             _boxOpenCheckBox.IsChecked = Settings.Instance.Global_OpenBox_IsEnabled;
             _boxExtractToTextBox.Text = Settings.Instance.Global_BoxExtractTo_Path;
+
+            _fontMessageFontFamilyComboBoxItemCollection.AddRange(Fonts.SystemFontFamilies.Select(n => n.ToString()));
+            _fontMessageFontFamilyComboBox.ItemsSource = _fontMessageFontFamilyComboBoxItemCollection;
+            _fontMessageFontFamilyComboBox.SelectedItem = Settings.Instance.Global_Fonts_Message_FontFamily;
+
+            _fontMessageFontSizeTextBox.Text = Settings.Instance.Global_Fonts_Message_FontSize.ToString();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -1952,6 +1961,57 @@ namespace Amoeba.Windows
 
         #endregion
 
+        #region Fonts
+
+        private static double GetStringToDouble(string value)
+        {
+            var builder = new StringBuilder("0");
+
+            foreach (var item in value)
+            {
+                var w = item.ToString();
+
+                if (Regex.IsMatch(w, "[0-9\\.]"))
+                {
+                    if (w == ".") builder.Replace(".", "");
+                    builder.Append(w);
+                }
+            }
+
+            double count = 0;
+
+            try
+            {
+                count = double.Parse(builder.ToString().TrimEnd('.'));
+            }
+            catch (OverflowException)
+            {
+                count = double.MaxValue;
+            }
+
+            return count;
+        }
+
+        private void _fontMessageFontSizeTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(_fontMessageFontSizeTextBox.Text)) return;
+
+            var builder = new StringBuilder("");
+
+            foreach (var item in _fontMessageFontSizeTextBox.Text)
+            {
+                if (Regex.IsMatch(item.ToString(), "[0-9\\.]"))
+                {
+                    builder.Append(item.ToString());
+                }
+            }
+
+            var value = builder.ToString();
+            _fontMessageFontSizeTextBox.Text = value;
+        }
+
+        #endregion
+
         private void _okButton_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
@@ -2034,7 +2094,6 @@ namespace Amoeba.Windows
                 _amoebaManager.DownloadDirectory = path;
             }
 
-            lock (_transferLimitManager.ThisLock)
             {
                 lock (_transferLimitManager.TransferLimit.ThisLock)
                 {
@@ -2079,8 +2138,8 @@ namespace Amoeba.Windows
             Settings.Instance.Global_SearchKeywords.Clear();
             Settings.Instance.Global_SearchKeywords.AddRange(_keywordCollection);
 
-            Settings.Instance.Global_DigitalSignatureCollection.Clear();
-            Settings.Instance.Global_DigitalSignatureCollection.AddRange(_signatureListViewItemCollection.Select(n => n.Value));
+            Settings.Instance.Global_DigitalSignatures.Clear();
+            Settings.Instance.Global_DigitalSignatures.AddRange(_signatureListViewItemCollection.Select(n => n.Value));
 
             {
                 Settings.Instance.Global_Update_Url = _updateUrlTextBox.Text;
@@ -2157,6 +2216,9 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_OpenBox_IsEnabled = _boxOpenCheckBox.IsChecked.Value;
             Settings.Instance.Global_BoxExtractTo_Path = _boxExtractToTextBox.Text;
+
+            Settings.Instance.Global_Fonts_Message_FontFamily = (string)_fontMessageFontFamilyComboBox.SelectedItem;
+            Settings.Instance.Global_Fonts_Message_FontSize = Math.Max(Math.Min(OptionsWindow.GetStringToDouble(_fontMessageFontSizeTextBox.Text), 100), 1);
         }
 
         private void _cancelButton_Click(object sender, RoutedEventArgs e)

@@ -182,23 +182,7 @@ namespace Amoeba.Windows
         {
             lock (this.ThisLock)
             {
-                var ds = new DataContractSerializer(typeof(SearchItem));
-
-                using (BufferStream stream = new BufferStream(BufferManager.Instance))
-                {
-                    using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                    using (XmlDictionaryWriter xmlDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
-                    {
-                        ds.WriteObject(xmlDictionaryWriter, this);
-                    }
-
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
-                    {
-                        return (SearchItem)ds.ReadObject(xmlDictionaryReader);
-                    }
-                }
+                return JsonUtils.Clone(this);
             }
         }
 
@@ -241,20 +225,17 @@ namespace Amoeba.Windows
         [EnumMember(Value = "Cache")]
         Cache = 0x4,
 
-        //[EnumMember(Value = "Share")]
-        //Share = 0x8,
-
         [EnumMember(Value = "Downloading")]
-        Downloading = 0x10,
+        Downloading = 0x8,
 
         [EnumMember(Value = "Uploading")]
-        Uploading = 0x20,
+        Uploading = 0x10,
 
         [EnumMember(Value = "Downloaded")]
-        Downloaded = 0x40,
+        Downloaded = 0x20,
 
         [EnumMember(Value = "Uploaded")]
-        Uploaded = 0x80,
+        Uploaded = 0x40,
     }
 
     [DataContract(Name = "SearchContains")]

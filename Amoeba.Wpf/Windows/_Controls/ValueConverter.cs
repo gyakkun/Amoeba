@@ -153,10 +153,24 @@ namespace Amoeba.Windows
 
     public class GetTreeColorConverter : IMultiValueConverter
     {
-        private ServiceManager _serviceManager = ((App)Application.Current).ServiceManager;
+        private ServiceManager _serviceManager;
+
+        public GetTreeColorConverter()
+        {
+            try
+            {
+                _serviceManager = ((App)Application.Current).ServiceManager;
+            }
+            catch (Exception)
+            {
+
+            }
+        }
 
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            if (_serviceManager == null) return null;
+
             var isSelected = (bool)values[0];
             var isHit = values[1] as bool?;
 
@@ -373,6 +387,23 @@ namespace Amoeba.Windows
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();
+        }
+    }
+
+    [ValueConversion(typeof(Tag), typeof(string))]
+    class TagToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var item = value as Tag;
+            if (item == null) return null;
+
+            return MessageConverter.ToTagString(item);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 

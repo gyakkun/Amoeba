@@ -16,6 +16,9 @@
   <Translate Key="ConnectDirection_In" Value="In" />
   <Translate Key="ConnectDirection_Out" Value="Out" />
 
+  <Translate Key="Tag_Name" Value="名前" />
+  <Translate Key="Tag_Id" Value="ID" />
+
   <Translate Key="Seed_Name" Value="名前" />
   <Translate Key="Seed_Signature" Value="サイン" />
   <Translate Key="Seed_Length" Value="サイズ" />
@@ -29,11 +32,14 @@
   <Translate Key="Box_Comment" Value="コメント" />
 
   <Translate Key="MainWindow_Information" Value="インフォメーション" />
+  <Translate Key="MainWindow_Link" Value="リンク" />
+  <Translate Key="MainWindow_Wiki" Value="ウィキ" />
+  <Translate Key="MainWindow_Chat" Value="チャット" />
+  <Translate Key="MainWindow_Mail" Value="メール" />
   <Translate Key="MainWindow_Search" Value="サーチ" />
   <Translate Key="MainWindow_Download" Value="ダウンロード" />
   <Translate Key="MainWindow_Upload" Value="アップロード" />
   <Translate Key="MainWindow_Share" Value="シェア" />
-  <Translate Key="MainWindow_Link" Value="リンク" />
   <Translate Key="MainWindow_Store" Value="ストア" />
   <Translate Key="MainWindow_Log" Value="ログ" />
   <Translate Key="MainWindow_StatesBar" Value="接続: {0}  変換: {1}" />
@@ -46,8 +52,8 @@
   <Translate Key="MainWindow_Cache" Value="キャッシュ" />
   <Translate Key="MainWindow_ConvertStart" Value="変換の開始" />
   <Translate Key="MainWindow_ConvertStop" Value="変換の停止" />
-  <Translate Key="MainWindow_CheckInternalBlocks" Value="内部ブロックの破損チェック" />
-  <Translate Key="MainWindow_CheckExternalBlocks" Value="外部ブロックの破損チェック" />
+  <Translate Key="MainWindow_CheckInternalBlocks" Value="ブロックの破損チェック" />
+  <Translate Key="MainWindow_CheckExternalBlocks" Value="シェアされたブロックの破損チェック" />
   <Translate Key="MainWindow_Tools" Value="ツール" />
   <Translate Key="MainWindow_LinkOptions" Value="リンクの設定" />
   <Translate Key="MainWindow_Options" Value="オプション" />
@@ -76,10 +82,14 @@
   <Translate Key="LinkOptionsWindow_Title" Value="リンク設定" />
   <Translate Key="LinkOptionsWindow_Download" Value="ダウンロード" />
   <Translate Key="LinkOptionsWindow_Upload" Value="アップロード" />
+  <Translate Key="LinkOptionsWindow_YourSignature" Value="あなたのサイン" />
   <Translate Key="LinkOptionsWindow_Trust" Value="トラスト" />
   <Translate Key="LinkOptionsWindow_Untrust" Value="アントラスト" />
-  <Translate Key="LinkOptionsWindow_LinkerSignature" Value="リンカサイン" />
   <Translate Key="LinkOptionsWindow_Signature" Value="サイン" />
+  <Translate Key="LinkOptionsWindow_Value" Value="値" />
+  <Translate Key="LinkOptionsWindow_Up" Value="上へ" />
+  <Translate Key="LinkOptionsWindow_Down" Value="下へ" />
+  <Translate Key="LinkOptionsWindow_Add" Value="追加" />
   <Translate Key="LinkOptionsWindow_New" Value="新規" />
   <Translate Key="LinkOptionsWindow_Edit" Value="編集" />
   <Translate Key="LinkOptionsWindow_Delete" Value="削除" />
@@ -137,10 +147,15 @@
   <Translate Key="OptionsWindow_Signature" Value="サイン" />
   <Translate Key="OptionsWindow_Signatures" Value="サイン" />
   <Translate Key="OptionsWindow_Keywords" Value="キーワード" />
+  <Translate Key="OptionsWindow_ExtractTo" Value="展開先" />
   <Translate Key="OptionsWindow_Box" Value="ボックス" />
   <Translate Key="OptionsWindow_RelateBoxFile" Value="Boxファイルを関連付ける" />
   <Translate Key="OptionsWindow_OpenBox" Value="ダウンロードされたBoxファイルを展開する" />
-  <Translate Key="OptionsWindow_ExtractTo" Value="展開先" />
+  <Translate Key="OptionsWindow_Mail" Value="メール" />
+  <Translate Key="OptionsWindow_OpenMail" Value="ダウンロードされたメールを展開する" />
+  <Translate Key="OptionsWindow_Fonts" Value="フォント" />
+  <Translate Key="OptionsWindow_MessageFontFamily" Value="メッセージのフォントファミリー" />
+  <Translate Key="OptionsWindow_MessageFontSize" Value="メッセージのフォントサイズ (pt)" />
   <Translate Key="OptionsWindow_UpdateOption" Value="アップデートオプション" />
   <Translate Key="OptionsWindow_None" Value="無し" />
   <Translate Key="OptionsWindow_AutoCheck" Value="自動でチェックする" />
@@ -207,6 +222,7 @@
   <Translate Key="InformationControl_LockSpace" Value="保護領域" />
   <Translate Key="InformationControl_UsingSpace" Value="使用領域" />
   <Translate Key="InformationControl_NodeCount" Value="保持ノード情報数" />
+  <Translate Key="InformationControl_MetadataCount" Value="保持メタデータ情報数" />
   <Translate Key="InformationControl_SeedCount" Value="保持シード情報数" />
   <Translate Key="InformationControl_BlockCount" Value="保持ブロック情報数" />
   <Translate Key="InformationControl_DownloadCount" Value="ダウンロード数" />
@@ -216,16 +232,44 @@
   <Translate Key="InformationControl_PushBlockLinkCount" Value="送信ブロックリンク情報数" />
   <Translate Key="InformationControl_PushBlockRequestCount" Value="送信ブロックリクエスト情報数" />
   <Translate Key="InformationControl_PushBlockCount" Value="送信ブロック情報数" />
-  <Translate Key="InformationControl_PushSeedRequestCount" Value="送信シードリクエスト情報数" />
-  <Translate Key="InformationControl_PushSeedCount" Value="送信シード情報数" />
+  <Translate Key="InformationControl_PushMetadataRequestCount" Value="送信メタデータリクエスト情報数" />
+  <Translate Key="InformationControl_PushMetadataCount" Value="送信メタデータ情報数" />
   <Translate Key="InformationControl_PullNodeCount" Value="受信ノード情報数" />
   <Translate Key="InformationControl_PullBlockLinkCount" Value="受信ブロックリンク情報数" />
   <Translate Key="InformationControl_PullBlockRequestCount" Value="受信ブロックリクエスト情報数" />
   <Translate Key="InformationControl_PullBlockCount" Value="受信ブロック情報数" />
-  <Translate Key="InformationControl_PullSeedRequestCount" Value="受信シードリクエスト情報数" />
-  <Translate Key="InformationControl_PullSeedCount" Value="受信シード情報数" />
+  <Translate Key="InformationControl_PullMetadataRequestCount" Value="受信メタデータリクエスト情報数" />
+  <Translate Key="InformationControl_PullMetadataCount" Value="受信メタデータ情報数" />
   <Translate Key="InformationControl_Copy" Value="コピー" />
   <Translate Key="InformationControl_Paste" Value="貼り付け" />
+
+  <Translate Key="ChatControl_NewTag" Value="新しいタグ" />
+  <Translate Key="ChatControl_New" Value="新しいカテゴリ" />
+  <Translate Key="ChatControl_Edit" Value="編集" />
+  <Translate Key="ChatControl_Delete" Value="削除" />
+  <Translate Key="ChatControl_Cut" Value="切り取り" />
+  <Translate Key="ChatControl_Copy" Value="コピー" />
+  <Translate Key="ChatControl_CopyInfo" Value="コピー (詳細情報)" />
+  <Translate Key="ChatControl_Paste" Value="貼り付け" />
+  <Translate Key="ChatControl_Trust_On" Value="トラストを有効にする" />
+  <Translate Key="ChatControl_Trust_Off" Value="トラストを無効にする" />
+  <Translate Key="ChatControl_MarkAllMessagesRead" Value="すべてのメッセージに既読マークを付ける" />
+  <Translate Key="ChatControl_MarkAllMessagesRead_Message" Value="すべてのメッセージに既読マークを付けてもよろしいですか?" />
+  <Translate Key="ChatControl_Limit" Value="リミット" />
+  <Translate Key="ChatControl_Trust" Value="トラスト" />
+  <Translate Key="ChatControl_Lock" Value="ロック" />
+  <Translate Key="ChatControl_LockThis" Value="このメッセージをロック" />
+  <Translate Key="ChatControl_UnlockThis" Value="このメッセージをアンロック" />
+  <Translate Key="ChatControl_LockAll" Value="すべてのメッセージをロック" />
+  <Translate Key="ChatControl_UnlockAll" Value="すべてのメッセージをアンロック" />
+  <Translate Key="ChatControl_Response" Value="レスポンス" />
+
+  <Translate Key="MulticastMessageEditWindow_Title" Value="新しいメッセージ" />
+  <Translate Key="MulticastMessageEditWindow_Edit" Value="編集" />
+  <Translate Key="MulticastMessageEditWindow_Preview" Value="プレビュー" />
+  <Translate Key="MulticastMessageEditWindow_Comment" Value="コメント" />
+  <Translate Key="MulticastMessageEditWindow_Ok" Value="Ok" />
+  <Translate Key="MulticastMessageEditWindow_Cancel" Value="キャンセル" />
 
   <Translate Key="SearchControl_Name" Value="名前" />
   <Translate Key="SearchControl_Signature" Value="サイン" />

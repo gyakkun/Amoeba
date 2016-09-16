@@ -41,7 +41,7 @@ namespace Amoeba.Windows
 
             _seeds = seeds.ToList();
 
-            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatureCollection.ToArray());
+            _digitalSignatureCollection.AddRange(Settings.Instance.Global_DigitalSignatures.ToArray());
 
             InitializeComponent();
 

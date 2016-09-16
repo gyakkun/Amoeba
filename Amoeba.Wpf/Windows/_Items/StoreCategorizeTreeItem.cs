@@ -93,23 +93,7 @@ namespace Amoeba.Windows
         {
             lock (this.ThisLock)
             {
-                var ds = new DataContractSerializer(typeof(StoreCategorizeTreeItem));
-
-                using (BufferStream stream = new BufferStream(BufferManager.Instance))
-                {
-                    using (WrapperStream wrapperStream = new WrapperStream(stream, true))
-                    using (XmlDictionaryWriter xmlDictionaryWriter = XmlDictionaryWriter.CreateBinaryWriter(wrapperStream))
-                    {
-                        ds.WriteObject(xmlDictionaryWriter, this);
-                    }
-
-                    stream.Seek(0, SeekOrigin.Begin);
-
-                    using (XmlDictionaryReader xmlDictionaryReader = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
-                    {
-                        return (StoreCategorizeTreeItem)ds.ReadObject(xmlDictionaryReader);
-                    }
-                }
+                return JsonUtils.Clone(this);
             }
         }
 

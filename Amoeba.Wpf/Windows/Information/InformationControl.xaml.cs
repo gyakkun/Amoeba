@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,7 +16,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Amoeba.Properties;
 using Library;
@@ -74,6 +75,7 @@ namespace Amoeba.Windows
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_NodeCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_BlockCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_MetadataCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_SeedCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_DownloadCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_UploadCount" });
@@ -84,16 +86,16 @@ namespace Amoeba.Windows
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushBlockLinkCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushBlockRequestCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushBlockCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushSeedRequestCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushSeedCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushMetadataRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PushMetadataCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel());
 
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullNodeCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullBlockLinkCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullBlockRequestCount" });
             _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullBlockCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullSeedRequestCount" });
-            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullSeedCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullMetadataRequestCount" });
+            _infomationListViewItemCollection.Add(new AmoebaInfomationListViewModel() { Id = "InformationControl_PullMetadataCount" });
 
             _infomationListView.ItemsSource = _infomationListViewItemCollection;
 
@@ -139,6 +141,7 @@ namespace Amoeba.Windows
 
                     dic["InformationControl_NodeCount"] = ((int)information["OtherNodeCount"]).ToString();
                     dic["InformationControl_BlockCount"] = ((int)information["BlockCount"]).ToString();
+                    dic["InformationControl_MetadataCount"] = ((int)information["MetadataCount"]).ToString();
                     dic["InformationControl_SeedCount"] = ((int)information["SeedCount"]).ToString();
                     dic["InformationControl_DownloadCount"] = ((int)information["DownloadingCount"]).ToString();
                     dic["InformationControl_UploadCount"] = ((int)information["UploadingCount"]).ToString();
@@ -148,15 +151,15 @@ namespace Amoeba.Windows
                     dic["InformationControl_PushBlockLinkCount"] = ((long)information["PushBlockLinkCount"]).ToString();
                     dic["InformationControl_PushBlockRequestCount"] = ((long)information["PushBlockRequestCount"]).ToString();
                     dic["InformationControl_PushBlockCount"] = ((long)information["PushBlockCount"]).ToString();
-                    dic["InformationControl_PushSeedRequestCount"] = ((long)information["PushSeedRequestCount"]).ToString();
-                    dic["InformationControl_PushSeedCount"] = ((long)information["PushSeedCount"]).ToString();
+                    dic["InformationControl_PushMetadataRequestCount"] = ((long)information["PushMetadataRequestCount"]).ToString();
+                    dic["InformationControl_PushMetadataCount"] = ((long)information["PushMetadataCount"]).ToString();
 
                     dic["InformationControl_PullNodeCount"] = ((long)information["PullNodeCount"]).ToString();
                     dic["InformationControl_PullBlockLinkCount"] = ((long)information["PullBlockLinkCount"]).ToString();
                     dic["InformationControl_PullBlockRequestCount"] = ((long)information["PullBlockRequestCount"]).ToString();
                     dic["InformationControl_PullBlockCount"] = ((long)information["PullBlockCount"]).ToString();
-                    dic["InformationControl_PullSeedRequestCount"] = ((long)information["PullSeedRequestCount"]).ToString();
-                    dic["InformationControl_PullSeedCount"] = ((long)information["PullSeedCount"]).ToString();
+                    dic["InformationControl_PullMetadataRequestCount"] = ((long)information["PullMetadataRequestCount"]).ToString();
+                    dic["InformationControl_PullMetadataCount"] = ((long)information["PullMetadataCount"]).ToString();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
@@ -524,10 +527,7 @@ namespace Amoeba.Windows
 
             private void NotifyPropertyChanged(string info)
             {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(info));
-                }
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
             }
 
             public AmoebaInfomationListViewModel()
@@ -596,10 +596,7 @@ namespace Amoeba.Windows
 
             private void NotifyPropertyChanged(string info)
             {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(info));
-                }
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
             }
 
             private int _id;

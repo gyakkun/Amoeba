@@ -24,7 +24,7 @@ using Library.Net.Connections;
 
 namespace Amoeba
 {
-    class CatharsisManager : ManagerBase, Library.Configuration.ISettings, IThisLock
+    class CatharsisManager : ManagerBase, Library.Configuration.ISettings
     {
         private ServiceManager _serviceManager;
         private BufferManager _bufferManager;
@@ -50,7 +50,7 @@ namespace Amoeba
             _bufferManager = bufferManager;
             _serviceManager = serviceManager;
 
-            _settings = new Settings(this.ThisLock);
+            _settings = new Settings(_thisLock);
 
 #if DEBUG
             _watchTimer = new System.Threading.Timer(this.WatchTimer, null, new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0, 0));
@@ -118,7 +118,7 @@ namespace Amoeba
                 {
                     uint uip = NetworkConverter.ToUInt32(ip.GetAddressBytes());
 
-                    lock (this.ThisLock)
+                    lock (_thisLock)
                     {
                         if (_settings.Ipv4AddressSet.Contains(uip)) return false;
 
@@ -264,7 +264,7 @@ namespace Amoeba
                     }
                 }
 
-                lock (this.ThisLock)
+                lock (_thisLock)
                 {
                     _settings.Ipv4AddressSet.Clear();
                     _settings.Ipv4AddressSet.UnionWith(ipv4AddressSet);
@@ -470,7 +470,7 @@ namespace Amoeba
 
         public void Load(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Load(directoryPath);
             }
@@ -478,7 +478,7 @@ namespace Amoeba
 
         public void Save(string directoryPath)
         {
-            lock (this.ThisLock)
+            lock (_thisLock)
             {
                 _settings.Save(directoryPath);
             }
@@ -641,17 +641,5 @@ namespace Amoeba
 
             }
         }
-
-        #region IThisLock
-
-        public object ThisLock
-        {
-            get
-            {
-                return _thisLock;
-            }
-        }
-
-        #endregion
     }
 }

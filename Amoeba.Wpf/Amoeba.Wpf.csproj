@@ -63,6 +63,10 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Assemblies\Ionic.Zip.dll</HintPath>
@@ -81,6 +85,7 @@
     <Reference Include="System.Runtime.Serialization">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
@@ -113,26 +118,38 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Config.cs" />
+    <Compile Include="Utilities\Inspect.cs" />
+    <Compile Include="Utilities\JsonUtils.cs" />
     <Compile Include="Utilities\BoxUtils.cs" />
     <Compile Include="Utilities\Ipv4AddressFilter.cs" />
     <Compile Include="Utilities\CatharsisManager.cs" />
     <Compile Include="Utilities\SeedStateCache.cs" />
     <Compile Include="ServiceManager.cs" />
+    <Compile Include="Windows\Chat\ChatControl.xaml.cs">
+      <DependentUpon>ChatControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Chat\MulticastMessageEditWindow.xaml.cs">
+      <DependentUpon>MulticastMessageEditWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Link\LinkControl.xaml.cs">
       <DependentUpon>LinkControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SeedInformationWindow.xaml.cs">
+    <Compile Include="Windows\Content\SeedInformationWindow.xaml.cs">
       <DependentUpon>SeedInformationWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\UploadWindow.xaml.cs">
+    <Compile Include="Windows\Content\UploadWindow.xaml.cs">
       <DependentUpon>UploadWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\LinkOptionsWindow.xaml.cs">
+      <DependentUpon>LinkOptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\_Controls\AvalonEdit\AvalonEditHelperBase.cs" />
+    <Compile Include="Windows\_Controls\AvalonEdit\AvalonEditHelper_MulticastMessage.cs" />
+    <Compile Include="Windows\_Controls\ChatCategorizeTreeViewModel.cs" />
+    <Compile Include="Windows\_Controls\ChatTreeViewModel.cs" />
     <Compile Include="Windows\_Controls\ComboBoxEx.cs" />
     <Compile Include="Windows\_Controls\ObservableCollectionEx.cs" />
     <Compile Include="Utilities\OverlayNetworkManager.cs" />
-    <Compile Include="Windows\Link\LinkOptionsWindow.xaml.cs">
-      <DependentUpon>LinkOptionsWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\NameWindow.xaml.cs">
       <DependentUpon>NameWindow.xaml</DependentUpon>
     </Compile>
@@ -149,16 +166,16 @@
     <Compile Include="Windows\Store\BoxEditWindow.xaml.cs">
       <DependentUpon>BoxEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SearchControl.xaml.cs">
+    <Compile Include="Windows\Content\SearchControl.xaml.cs">
       <DependentUpon>SearchControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\InformationControl.xaml.cs">
+    <Compile Include="Windows\Information\InformationControl.xaml.cs">
       <DependentUpon>InformationControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DownloadControl.xaml.cs">
+    <Compile Include="Windows\Content\DownloadControl.xaml.cs">
       <DependentUpon>DownloadControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\_Controls\BoxTreeViewModel.cs" />
@@ -167,7 +184,13 @@
     <Compile Include="Windows\_Controls\StoreCategorizeTreeViewModel.cs" />
     <Compile Include="Windows\_Controls\StyleSelector.cs" />
     <Compile Include="Windows\_Controls\TreeViewModelBase.cs" />
+    <Compile Include="Windows\_Items\MulticastMessageItem.cs" />
+    <Compile Include="Windows\_Items\ProfileSetting.cs" />
+    <Compile Include="Windows\_Items\ProfileItem.cs" />
+    <Compile Include="Windows\_Items\ChatCategorizeTreeItem.cs" />
+    <Compile Include="Windows\_Items\ChatTreeItem.cs" />
     <Compile Include="Windows\_Items\LinkItem.cs" />
+    <Compile Include="Windows\_Items\MulticastMessageState.cs" />
     <Compile Include="Windows\_Items\SearchItem.cs" />
     <Compile Include="Windows\_Items\SignatureTreeItem.cs" />
     <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />
@@ -181,13 +204,13 @@
     <Compile Include="Windows\ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SearchItemEditWindow.xaml.cs">
+    <Compile Include="Windows\Content\SearchItemEditWindow.xaml.cs">
       <DependentUpon>SearchItemEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Store\SeedEditWindow.xaml.cs">
       <DependentUpon>SeedEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ShareControl.xaml.cs">
+    <Compile Include="Windows\Content\ShareControl.xaml.cs">
       <DependentUpon>ShareControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SignatureWindow.xaml.cs">
@@ -196,10 +219,10 @@
     <Compile Include="Windows\Store\StoreUploadControl.xaml.cs">
       <DependentUpon>StoreUploadControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\UploadControl.xaml.cs">
+    <Compile Include="Windows\Content\UploadControl.xaml.cs">
       <DependentUpon>UploadControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\UploadListWindow.xaml.cs">
+    <Compile Include="Windows\Content\UploadListWindow.xaml.cs">
       <DependentUpon>UploadListWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\_Items\StoreTreeItem.cs" />
@@ -213,19 +236,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Chat\ChatControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Chat\MulticastMessageEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\Link\LinkControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Link\LinkOptionsWindow.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Windows\LinkOptionsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\NameWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\SeedInformationWindow.xaml">
+    <Page Include="Windows\Content\SeedInformationWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -256,11 +287,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\SearchControl.xaml">
+    <Page Include="Windows\Content\SearchControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\InformationControl.xaml">
+    <Page Include="Windows\Information\InformationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -268,7 +299,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DownloadControl.xaml">
+    <Page Include="Windows\Content\DownloadControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -280,7 +311,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\SearchItemEditWindow.xaml">
+    <Page Include="Windows\Content\SearchItemEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -288,7 +319,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\ShareControl.xaml">
+    <Page Include="Windows\Content\ShareControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -300,15 +331,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\UploadControl.xaml">
+    <Page Include="Windows\Content\UploadControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\UploadListWindow.xaml">
+    <Page Include="Windows\Content\UploadListWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\UploadWindow.xaml">
+    <Page Include="Windows\Content\UploadWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -357,6 +388,24 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Icons\Files\Box.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\Tools\NewMessage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\Tools\ReplyMessage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\Tools\Trust.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\States\Green.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\States\Red.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icons\States\Yello.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Languages\Korean.xml">
@@ -419,57 +468,57 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\Library.Collections\Library.Collections.csproj">
+    <ProjectReference Include="..\Library\Library.Collections\Library.Collections.csproj">
       <Project>{197C654F-2461-446A-B531-4A789F14BE19}</Project>
       <Name>Library.Collections</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Configuration\Library.Configuration.csproj">
+    <ProjectReference Include="..\Library\Library.Configuration\Library.Configuration.csproj">
       <Project>{9AA70F88-4A83-4B3F-B494-7D37EA95766A}</Project>
       <Name>Library.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Io\Library.Io.csproj">
+    <ProjectReference Include="..\Library\Library.Io\Library.Io.csproj">
       <Project>{74597E45-7F3C-4958-8B6A-B16DE8DE47B9}</Project>
       <Name>Library.Io</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Amoeba\Library.Net.Amoeba.csproj">
+    <ProjectReference Include="..\Library\Library.Net.Amoeba\Library.Net.Amoeba.csproj">
       <Project>{82230C99-6599-4130-AAC9-FC926ABC0724}</Project>
       <Name>Library.Net.Amoeba</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Connections\Library.Net.Connections.csproj">
+    <ProjectReference Include="..\Library\Library.Net.Connections\Library.Net.Connections.csproj">
       <Project>{38994E3C-0699-4D6C-AD02-F9F657340347}</Project>
       <Name>Library.Net.Connections</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.I2p\Library.Net.I2p.csproj">
+    <ProjectReference Include="..\Library\Library.Net.I2p\Library.Net.I2p.csproj">
       <Project>{24dc1835-cc3d-4d29-b922-199027ec551f}</Project>
       <Name>Library.Net.I2p</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net\Library.Net.csproj">
+    <ProjectReference Include="..\Library\Library.Net\Library.Net.csproj">
       <Project>{7CFDE01D-4A0E-4E10-ACC2-34DB897DBE0F}</Project>
       <Name>Library.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Proxy\Library.Net.Proxy.csproj">
+    <ProjectReference Include="..\Library\Library.Net.Proxy\Library.Net.Proxy.csproj">
       <Project>{56EB350E-089E-40BB-97CB-F2745A4251AE}</Project>
       <Name>Library.Net.Proxy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.UPnP\Library.Net.Upnp.csproj">
+    <ProjectReference Include="..\Library\Library.Net.UPnP\Library.Net.Upnp.csproj">
       <Project>{7688AECF-92BD-4212-AAD8-6CD6D42BA6E3}</Project>
       <Name>Library.Net.Upnp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Security\Library.Security.csproj">
+    <ProjectReference Include="..\Library\Library.Security\Library.Security.csproj">
       <Project>{D314C626-A6FC-4FD5-BE3C-9D36C2738418}</Project>
       <Name>Library.Security</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Update\Library.Update.csproj">
+    <ProjectReference Include="..\Library\Library.Update\Library.Update.csproj">
       <Project>{5D842D8A-5BFE-4D68-956B-E1E690EDB48A}</Project>
       <Name>Library.Update</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library\Library.csproj">
+    <ProjectReference Include="..\Library\Library\Library.csproj">
       <Project>{63EADC1F-9A8A-4945-A562-DA666D0BCB7B}</Project>
       <Name>Library</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <Import Project="..\..\Library\Library.Utilities\Library.Utilities.projitems" Label="Shared" />
+  <Import Project="..\Library\Library.Utilities\Library.Utilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

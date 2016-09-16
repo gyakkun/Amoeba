@@ -29,7 +29,7 @@ namespace Amoeba
 
         public ServiceManager()
         {
-            this.AmoebaVersion = new Version(4, 0, 2);
+            this.AmoebaVersion = new Version(4, 0, 3);
 
             this.Paths = new Dictionary<string, string>();
 
@@ -314,6 +314,19 @@ namespace Amoeba
                     if (version < new Version(4, 0, 0))
                     {
                         throw new NotSupportedException("Not supported configuration.");
+                    }
+                    if (version <= new Version(4, 0, 2))
+                    {
+                        {
+                            File.Delete(Path.Combine(this.Paths["Configuration"], "Colors.config"));
+                        }
+
+                        {
+                            var oldPath = Path.Combine(this.Paths["Configuration"], "Settings", "Global_DigitalSignatureCollection.config.gz");
+                            var newPath = Path.Combine(this.Paths["Configuration"], "Settings", "Global_DigitalSignatures.config.gz");
+
+                            if (File.Exists(oldPath)) File.Move(oldPath, newPath);
+                        }
                     }
                 }
 

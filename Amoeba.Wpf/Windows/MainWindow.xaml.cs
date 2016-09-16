@@ -45,13 +45,15 @@ namespace Amoeba.Windows
     enum MainWindowTabType
     {
         Information,
+        Link,
+        Wiki,
+        Chat,
+        Mail,
         Search,
         Download,
         Upload,
         Share,
-        Link,
         Store,
-        Log,
     }
 
     /// <summary>
@@ -113,8 +115,6 @@ namespace Amoeba.Windows
 
                 _bufferManager = BufferManager.Instance;
 
-                this.Setting_Log();
-
                 _configrationDirectoryPaths.Add("Settings", Path.Combine(_serviceManager.Paths["Configuration"], @"Settings"));
                 _configrationDirectoryPaths.Add("AmoebaManager", Path.Combine(_serviceManager.Paths["Configuration"], @"AmoebaManager"));
                 _configrationDirectoryPaths.Add("ConnectionSettingManager", Path.Combine(_serviceManager.Paths["Configuration"], @"ConnectionSettingManager"));
@@ -125,6 +125,8 @@ namespace Amoeba.Windows
                 Settings.Instance.Load(_configrationDirectoryPaths["Settings"]);
 
                 InitializeComponent();
+
+                this.Setting_Log();
 
                 this.Title = string.Format("Amoeba {0}", _serviceManager.AmoebaVersion);
 
@@ -738,6 +740,8 @@ namespace Amoeba.Windows
             #endregion
         }
 
+        #region Log
+
         private string GetMachineInfomation()
         {
             OperatingSystem osInfo = Environment.OSVersion;
@@ -836,6 +840,15 @@ namespace Amoeba.Windows
 
             Log.LogEvent += (object sender, LogEventArgs e) =>
             {
+                if (e.Exception != null && e.Exception.GetType().ToString() == "Library.Net.Amoeba.SpaceNotFoundException")
+                {
+                    if (Settings.Instance.Global_IsConnectRunning)
+                        _cacheSpaceNotFoundException = true;
+                }
+            };
+
+            Log.LogEvent += (object sender, LogEventArgs e) =>
+            {
                 lock (_logPath)
                 {
                     try
@@ -869,12 +882,6 @@ namespace Amoeba.Windows
 
             Log.LogEvent += (object sender, LogEventArgs e) =>
             {
-                if (e.Exception != null && e.Exception.GetType().ToString() == "Library.Net.Amoeba.SpaceNotFoundException")
-                {
-                    if (Settings.Instance.Global_IsConnectRunning)
-                        _cacheSpaceNotFoundException = true;
-                }
-
                 try
                 {
                     this.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
@@ -936,11 +943,6 @@ namespace Amoeba.Windows
             }));
         }
 
-        private void _logListBox_Loaded(object sender, RoutedEventArgs e)
-        {
-            _logListBox.GoBottom();
-        }
-
         private class MyTraceListener : TraceListener
         {
             private DebugLog _debugLog;
@@ -960,6 +962,25 @@ namespace Amoeba.Windows
                 _debugLog(message);
             }
         }
+
+        private void _logListBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            _logListBox.GoBottom();
+        }
+
+        private void _logListBoxCopyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var line in _logListBox.SelectedItems.Cast<string>())
+            {
+                sb.AppendLine(line);
+            }
+
+            Clipboard.SetText(sb.ToString().TrimEnd('\n', '\r'));
+        }
+
+        #endregion
 
         private void Setting_Languages()
         {
@@ -1028,6 +1049,13 @@ namespace Amoeba.Windows
                         {
 
                         }
+                    }
+
+                    {
+                        // Amoeba
+                        Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAABkFtb2ViYQEgyeOUT6BPIlq8Nfe1kndaS0ETNlmJY90wt-Osb-l2mZqamJsU")));
+                        // Test
+                        Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAABFRlc3QBIMEj2xDMP6_RAoVbePTEZwHz8Fcd29tqB9MY0JZyn6eS5iXI_A")));
                     }
 
                     {
@@ -1437,6 +1465,16 @@ namespace Amoeba.Windows
             informationControl.Width = Double.NaN;
             _informationTabItem.Content = informationControl;
 
+            var linkControl = new LinkControl(_amoebaManager, _bufferManager);
+            linkControl.Height = Double.NaN;
+            linkControl.Width = Double.NaN;
+            _linkTabItem.Content = linkControl;
+
+            var chatControl = new ChatControl(_amoebaManager, _bufferManager);
+            chatControl.Height = Double.NaN;
+            chatControl.Width = Double.NaN;
+            _chatTabItem.Content = chatControl;
+
             var searchControl = new SearchControl(_amoebaManager, _bufferManager);
             searchControl.Height = Double.NaN;
             searchControl.Width = Double.NaN;
@@ -1456,11 +1494,6 @@ namespace Amoeba.Windows
             shareControl.Height = Double.NaN;
             shareControl.Width = Double.NaN;
             _shareTabItem.Content = shareControl;
-
-            var linkControl = new LinkControl(_amoebaManager, _bufferManager);
-            linkControl.Height = Double.NaN;
-            linkControl.Width = Double.NaN;
-            _linkTabItem.Content = linkControl;
 
             var storeControl = new StoreControl(_amoebaManager, _bufferManager);
             storeControl.Height = Double.NaN;
@@ -1586,6 +1619,14 @@ namespace Amoeba.Windows
             {
                 this.SelectedTab = MainWindowTabType.Information;
             }
+            else if (_tabControl.SelectedItem == _linkTabItem)
+            {
+                this.SelectedTab = MainWindowTabType.Link;
+            }
+            else if (_tabControl.SelectedItem == _chatTabItem)
+            {
+                this.SelectedTab = MainWindowTabType.Chat;
+            }
             else if (_tabControl.SelectedItem == _searchTabItem)
             {
                 this.SelectedTab = MainWindowTabType.Search;
@@ -1602,17 +1643,9 @@ namespace Amoeba.Windows
             {
                 this.SelectedTab = MainWindowTabType.Share;
             }
-            else if (_tabControl.SelectedItem == _linkTabItem)
-            {
-                this.SelectedTab = MainWindowTabType.Link;
-            }
             else if (_tabControl.SelectedItem == _storeTabItem)
             {
                 this.SelectedTab = MainWindowTabType.Store;
-            }
-            else if (_tabControl.SelectedItem == _logTabItem)
-            {
-                this.SelectedTab = MainWindowTabType.Log;
             }
             else
             {
@@ -1876,26 +1909,6 @@ namespace Amoeba.Windows
             var window = new VersionInformationWindow();
             window.Owner = this;
             window.ShowDialog();
-        }
-
-        private void _logListBoxCopyMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var sb = new StringBuilder();
-
-            foreach (var line in _logListBox.SelectedItems.Cast<string>())
-            {
-                sb.AppendLine(line);
-            }
-
-            Clipboard.SetText(sb.ToString().TrimEnd('\n', '\r'));
-        }
-
-        private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (_logTabItem.IsSelected)
-            {
-                _logListBoxCopyMenuItem_Click(null, null);
-            }
         }
     }
 }

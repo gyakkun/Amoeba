@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -26,9 +27,9 @@ using Library.Net.Amoeba;
 namespace Amoeba.Windows
 {
     /// <summary>
-    /// DownloadControl.xaml の相互作用ロジック
+    /// UploadControl.xaml の相互作用ロジック
     /// </summary>
-    partial class DownloadControl : UserControl
+    partial class UploadControl : UserControl
     {
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;
 
@@ -36,32 +37,26 @@ namespace Amoeba.Windows
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
 
-        private ObservableCollectionEx<DownloadListViewModel> _listViewModelCollection = new ObservableCollectionEx<DownloadListViewModel>();
-        private object _listLock = new object();
+        private ObservableCollectionEx<UploadListViewModel> _listViewModelCollection = new ObservableCollectionEx<UploadListViewModel>();
 
-        private Thread _showDownloadItemThread;
-        private Thread _watchThread;
+        private Thread _showUploadItemThread;
 
-        public DownloadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
+        private volatile bool _uploadAddIsRunning = false;
+
+        public UploadControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
-            _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
+            _amoebaManager = amoebaManager;
 
             InitializeComponent();
 
             _listView.ItemsSource = _listViewModelCollection;
 
-            _showDownloadItemThread = new Thread(this.ShowDownloadItem);
-            _showDownloadItemThread.Priority = ThreadPriority.Highest;
-            _showDownloadItemThread.IsBackground = true;
-            _showDownloadItemThread.Name = "DownloadControl_ShowDownloadItemThread";
-            _showDownloadItemThread.Start();
-
-            _watchThread = new Thread(this.Watch);
-            _watchThread.Priority = ThreadPriority.Highest;
-            _watchThread.IsBackground = true;
-            _watchThread.Name = "DownloadControl_WatchThread";
-            _watchThread.Start();
+            _showUploadItemThread = new Thread(this.ShowUploadItem);
+            _showUploadItemThread.Priority = ThreadPriority.Highest;
+            _showUploadItemThread.IsBackground = true;
+            _showUploadItemThread.Name = "UploadControl_ShowUploadItemThread";
+            _showUploadItemThread.Start();
 
             _searchRowDefinition.Height = new GridLength(0);
 
@@ -73,7 +68,7 @@ namespace Amoeba.Windows
             _listView.Items.Refresh();
         }
 
-        private void ShowDownloadItem()
+        private void ShowUploadItem()
         {
             try
             {
@@ -98,7 +93,7 @@ namespace Amoeba.Windows
                             }
                         }
 
-                        foreach (var item in _amoebaManager.DownloadingInformation.ToArray())
+                        foreach (var item in _amoebaManager.UploadingInformation.ToArray())
                         {
                             if (words != null)
                             {
@@ -110,8 +105,8 @@ namespace Amoeba.Windows
                         }
                     }
 
-                    var listViewModelDic = new Dictionary<int, DownloadListViewModel>();
-                    var removeList = new List<DownloadListViewModel>();
+                    var listViewModelDic = new Dictionary<int, UploadListViewModel>();
+                    var removeList = new List<UploadListViewModel>();
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
@@ -126,11 +121,11 @@ namespace Amoeba.Windows
                         }
                     }));
 
-                    var resultList = new List<DownloadListViewModel>();
-                    var updateDic = new Dictionary<DownloadListViewModel, Information>();
+                    var resultList = new List<UploadListViewModel>();
+                    var updateDic = new Dictionary<UploadListViewModel, Information>();
 
                     bool clearFlag = false;
-                    var selectItems = new List<DownloadListViewModel>();
+                    var selectItems = new List<UploadListViewModel>();
 
                     if (removeList.Count > 100)
                     {
@@ -141,14 +136,14 @@ namespace Amoeba.Windows
 
                         foreach (var information in informaitonDic.Values)
                         {
-                            resultList.Add(new DownloadListViewModel(information));
+                            resultList.Add(new UploadListViewModel(information));
                         }
 
                         var hid = new HashSet<int>();
 
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            hid.UnionWith(_listView.SelectedItems.OfType<DownloadListViewModel>().Select(n => n.Id));
+                            hid.UnionWith(_listView.SelectedItems.OfType<UploadListViewModel>().Select(n => n.Id));
                         }));
 
                         foreach (var item in resultList)
@@ -163,7 +158,7 @@ namespace Amoeba.Windows
                     {
                         foreach (var information in informaitonDic.Values)
                         {
-                            DownloadListViewModel item;
+                            UploadListViewModel item;
 
                             if (listViewModelDic.TryGetValue((int)information["Id"], out item))
                             {
@@ -174,7 +169,7 @@ namespace Amoeba.Windows
                             }
                             else
                             {
-                                resultList.Add(new DownloadListViewModel(information));
+                                resultList.Add(new UploadListViewModel(information));
                             }
                         }
                     }
@@ -222,64 +217,60 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Watch()
+        private void _listView_PreviewDragOver(object sender, DragEventArgs e)
         {
-            try
+            e.Effects = DragDropEffects.All;
+            e.Handled = true;
+        }
+
+        private void _listView_PreviewDrop(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            var result = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
+
+            Task.Run(() =>
             {
-                for (;;)
+                if (_uploadAddIsRunning) return;
+                _uploadAddIsRunning = true;
+
+                Thread.CurrentThread.IsBackground = true;
+
+                try
                 {
-                    Thread.Sleep(1000 * 3);
+                    var filePaths = new HashSet<string>();
 
-                    if (!Directory.Exists(_serviceManager.Paths["Input"])) continue;
-
-                    foreach (var filePath in Directory.GetFiles(_serviceManager.Paths["Input"]))
+                    foreach (var item in result)
                     {
-                        if (!System.IO.Path.GetFileName(filePath).StartsWith("seed") || !filePath.EndsWith(".txt")) continue;
-
-                        try
-                        {
-                            using (FileStream stream = new FileStream(filePath, FileMode.Open))
-                            using (StreamReader reader = new StreamReader(stream))
-                            {
-                                try
-                                {
-                                    var seed = AmoebaConverter.FromSeedString(reader.ReadLine());
-                                    if (!seed.VerifyCertificate()) seed.CreateCertificate(null);
-
-                                    var path = reader.ReadLine();
-
-                                    _amoebaManager.Download(seed, path, 3);
-                                }
-                                catch (Exception)
-                                {
-
-                                }
-                            }
-                        }
-                        catch (IOException)
-                        {
-                            continue;
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-
-                        try
-                        {
-                            File.Delete(filePath);
-                        }
-                        catch (Exception)
-                        {
-
-                        }
+                        if (File.Exists(item)) filePaths.Add(item);
+                        else if (Directory.Exists(item)) filePaths.UnionWith(Directory.GetFiles(item, "*", SearchOption.AllDirectories));
                     }
+
+                    foreach (var informaiton in _amoebaManager.ShareInformation)
+                    {
+                        filePaths.Remove((string)informaiton["Path"]);
+                    }
+
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        if (filePaths.Count == 1)
+                        {
+                            var window = new UploadWindow(filePaths.First(), false, _amoebaManager);
+                            window.Owner = _mainWindow;
+                            window.ShowDialog();
+                        }
+                        else if (filePaths.Count > 1)
+                        {
+                            var window = new UploadListWindow(filePaths, false, _amoebaManager);
+                            window.Owner = _mainWindow;
+                            window.ShowDialog();
+                        }
+                    }));
                 }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
+                finally
+                {
+                    _uploadAddIsRunning = false;
+                }
+            });
         }
 
         private void _listView_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -295,9 +286,55 @@ namespace Amoeba.Windows
             _listViewPriorityMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
             if (!_listViewDeleteCompleteMenuItem_IsEnabled) _listViewDeleteCompleteMenuItem.IsEnabled = false;
-            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewModelCollection.Any(n => n.State == DownloadState.Completed);
+            else _listViewDeleteCompleteMenuItem.IsEnabled = _listViewModelCollection.Any(n => n.State == UploadState.Completed);
+        }
 
-            _listViewPasteMenuItem.IsEnabled = Clipboard.ContainsSeeds();
+        private void _listViewAddMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new System.Windows.Forms.OpenFileDialog();
+            dialog.Multiselect = true;
+            dialog.RestoreDirectory = true;
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var filePaths = new HashSet<string>(dialog.FileNames);
+
+                Task.Run(() =>
+                {
+                    if (_uploadAddIsRunning) return;
+                    _uploadAddIsRunning = true;
+
+                    Thread.CurrentThread.IsBackground = true;
+
+                    try
+                    {
+                        foreach (var informaiton in _amoebaManager.ShareInformation)
+                        {
+                            filePaths.Remove((string)informaiton["Path"]);
+                        }
+
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                        {
+                            if (filePaths.Count == 1)
+                            {
+                                var window = new UploadWindow(filePaths.First(), false, _amoebaManager);
+                                window.Owner = _mainWindow;
+                                window.ShowDialog();
+                            }
+                            else if (filePaths.Count > 1)
+                            {
+                                var window = new UploadListWindow(filePaths, false, _amoebaManager);
+                                window.Owner = _mainWindow;
+                                window.ShowDialog();
+                            }
+                        }));
+                    }
+                    finally
+                    {
+                        _uploadAddIsRunning = false;
+                    }
+                });
+            }
         }
 
         volatile bool _listViewDeleteMenuItem_IsEnabled = true;
@@ -307,11 +344,11 @@ namespace Amoeba.Windows
             var selectItems = _listView.SelectedItems;
             if (selectItems == null || selectItems.Count == 0) return;
 
-            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Download", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
+            if (MessageBox.Show(_mainWindow, LanguagesManager.Instance.MainWindow_Delete_Message, "Upload", MessageBoxButton.OKCancel, MessageBoxImage.Information) != MessageBoxResult.OK) return;
 
             var ids = new List<int>();
 
-            foreach (var item in selectItems.Cast<DownloadListViewModel>())
+            foreach (var item in selectItems.Cast<UploadListViewModel>())
             {
                 ids.Add(item.Id);
             }
@@ -326,7 +363,7 @@ namespace Amoeba.Windows
                 {
                     foreach (var item in ids)
                     {
-                        _amoebaManager.RemoveDownload(item);
+                        _amoebaManager.RemoveUpload(item);
                     }
                 }
                 catch (Exception)
@@ -345,11 +382,11 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var seed in selectItems.Cast<DownloadListViewModel>().Select(n => n.Value))
+            foreach (var seed in selectItems.Cast<UploadListViewModel>().Select(n => n.Value))
             {
                 if (seed == null) continue;
 
-                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
+                sb.AppendLine(AmoebaConverter.ToTagString(seed));
             }
 
             Clipboard.SetText(sb.ToString());
@@ -362,11 +399,11 @@ namespace Amoeba.Windows
 
             var sb = new StringBuilder();
 
-            foreach (var seed in selectItems.Cast<DownloadListViewModel>().Select(n => n.Value))
+            foreach (var seed in selectItems.Cast<UploadListViewModel>().Select(n => n.Value))
             {
                 if (seed == null) continue;
 
-                sb.AppendLine(AmoebaConverter.ToSeedString(seed));
+                sb.AppendLine(AmoebaConverter.ToTagString(seed));
                 sb.AppendLine(MessageConverter.ToInfoMessage(seed));
                 sb.AppendLine();
             }
@@ -374,40 +411,18 @@ namespace Amoeba.Windows
             Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
         }
 
-        private void _listViewPasteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var list = new HashSet<Seed>(Clipboard.GetSeeds());
-
-            Task.Run(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                try
-                {
-                    foreach (var item in list)
-                    {
-                        _amoebaManager.Download(item, 3);
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-            });
-        }
-
         #region Priority
 
         private void SetPriority(int i)
         {
-            var downloadItems = _listView.SelectedItems;
-            if (downloadItems == null) return;
+            var uploadItems = _listView.SelectedItems;
+            if (uploadItems == null) return;
 
-            foreach (var item in downloadItems.Cast<DownloadListViewModel>())
+            foreach (var item in uploadItems.Cast<UploadListViewModel>())
             {
                 try
                 {
-                    _amoebaManager.SetDownloadPriority(item.Id, i);
+                    _amoebaManager.SetUploadPriority(item.Id, i);
                 }
                 catch (Exception)
                 {
@@ -455,14 +470,14 @@ namespace Amoeba.Windows
 
         private void _listViewResetMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var downloadItems = _listView.SelectedItems;
-            if (downloadItems == null) return;
+            var uploadItems = _listView.SelectedItems;
+            if (uploadItems == null) return;
 
-            foreach (var item in downloadItems.Cast<DownloadListViewModel>())
+            foreach (var item in uploadItems.Cast<UploadListViewModel>())
             {
                 try
                 {
-                    _amoebaManager.ResetDownload(item.Id);
+                    _amoebaManager.ResetUpload(item.Id);
                 }
                 catch (Exception)
                 {
@@ -481,15 +496,15 @@ namespace Amoeba.Windows
             {
                 Thread.CurrentThread.IsBackground = true;
 
-                var downloadingInformation = _amoebaManager.DownloadingInformation.ToArray();
+                var uploadingInformation = _amoebaManager.UploadingInformation.ToArray();
 
-                foreach (var item in downloadingInformation)
+                foreach (var item in uploadingInformation)
                 {
-                    if (item.Contains("State") && DownloadState.Completed == (DownloadState)item["State"])
+                    if (item.Contains("State") && UploadState.Completed == (UploadState)item["State"])
                     {
                         try
                         {
-                            _amoebaManager.RemoveDownload((int)item["Id"]);
+                            _amoebaManager.RemoveUpload((int)item["Id"]);
                         }
                         catch (Exception)
                         {
@@ -508,9 +523,9 @@ namespace Amoeba.Windows
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (Settings.Instance.DownloadControl_LastHeaderClicked != null)
+            if (Settings.Instance.UploadControl_LastHeaderClicked != null)
             {
-                var list = Sort(_listViewModelCollection, Settings.Instance.DownloadControl_LastHeaderClicked, Settings.Instance.DownloadControl_ListSortDirection).ToList();
+                var list = this.Sort(_listViewModelCollection, Settings.Instance.UploadControl_LastHeaderClicked, Settings.Instance.UploadControl_ListSortDirection).ToList();
 
                 for (int i = 0; i < list.Count; i++)
                 {
@@ -531,13 +546,13 @@ namespace Amoeba.Windows
 
             ListSortDirection direction;
 
-            if (headerClicked != Settings.Instance.DownloadControl_LastHeaderClicked)
+            if (headerClicked != Settings.Instance.UploadControl_LastHeaderClicked)
             {
                 direction = ListSortDirection.Ascending;
             }
             else
             {
-                if (Settings.Instance.DownloadControl_ListSortDirection == ListSortDirection.Ascending)
+                if (Settings.Instance.UploadControl_ListSortDirection == ListSortDirection.Ascending)
                 {
                     direction = ListSortDirection.Descending;
                 }
@@ -549,41 +564,41 @@ namespace Amoeba.Windows
 
             this.Sort(headerClicked, direction);
 
-            Settings.Instance.DownloadControl_LastHeaderClicked = headerClicked;
-            Settings.Instance.DownloadControl_ListSortDirection = direction;
+            Settings.Instance.UploadControl_LastHeaderClicked = headerClicked;
+            Settings.Instance.UploadControl_ListSortDirection = direction;
         }
 
         private void Sort(string sortBy, ListSortDirection direction)
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
+            if (sortBy == LanguagesManager.Instance.UploadControl_Name)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Length)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Length)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Priority)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Priority)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Priority", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Rate)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Rate)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
                 _listView.Items.SortDescriptions.Add(new SortDescription("Rate", direction));
                 _listView.Items.SortDescriptions.Add(new SortDescription("Depth", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Path)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Path", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_CreationTime)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_CreationTime)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("CreationTime", direction));
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_State)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_State)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
             }
@@ -591,11 +606,11 @@ namespace Amoeba.Windows
             _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
-        private IEnumerable<DownloadListViewModel> Sort(IEnumerable<DownloadListViewModel> collection, string sortBy, ListSortDirection direction)
+        private IEnumerable<UploadListViewModel> Sort(IEnumerable<UploadListViewModel> collection, string sortBy, ListSortDirection direction)
         {
-            var list = new List<DownloadListViewModel>(collection);
+            var list = new List<UploadListViewModel>(collection);
 
-            if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
+            if (sortBy == LanguagesManager.Instance.UploadControl_Name)
             {
                 list.Sort((x, y) =>
                 {
@@ -607,7 +622,7 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Length)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Length)
             {
                 list.Sort((x, y) =>
                 {
@@ -619,7 +634,7 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Priority)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Priority)
             {
                 list.Sort((x, y) =>
                 {
@@ -631,7 +646,7 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Rate)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Rate)
             {
                 list.Sort((x, y) =>
                 {
@@ -647,7 +662,7 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Path)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_Path)
             {
                 list.Sort((x, y) =>
                 {
@@ -659,7 +674,7 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_CreationTime)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_CreationTime)
             {
                 list.Sort((x, y) =>
                 {
@@ -671,7 +686,7 @@ namespace Amoeba.Windows
                     return 0;
                 });
             }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_State)
+            else if (sortBy == LanguagesManager.Instance.UploadControl_State)
             {
                 list.Sort((x, y) =>
                 {
@@ -694,16 +709,13 @@ namespace Amoeba.Windows
 
         #endregion
 
-        private class DownloadListViewModel : INotifyPropertyChanged
+        private class UploadListViewModel : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
 
             private void NotifyPropertyChanged(string info)
             {
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(info));
-                }
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
             }
 
             private int _id;
@@ -712,14 +724,14 @@ namespace Amoeba.Windows
             private string _name;
             private string _path;
             private DateTime _creationTime;
-            private DownloadState _state = 0;
+            private UploadState _state = 0;
             private long _length;
             private int _priority;
             private double _rate;
             private string _rateText;
-            private Seed _value;
+            private Tag _value;
 
-            public DownloadListViewModel(Information information)
+            public UploadListViewModel(Information information)
             {
                 this.Information = information;
 
@@ -753,30 +765,35 @@ namespace Amoeba.Windows
                     if (_information.Contains("Path")) this.Path = (string)_information["Path"];
                     else this.Path = null;
 
-                    if (_information.Contains("Length")) this.Length = (long)_information["Length"];
-                    else this.Length = 0;
-
                     if (_information.Contains("CreationTime")) this.CreationTime = (DateTime)_information["CreationTime"];
                     else this.CreationTime = DateTime.MinValue;
 
-                    if (_information.Contains("State")) this.State = (DownloadState)_information["State"];
+                    if (_information.Contains("State")) this.State = (UploadState)_information["State"];
                     else this.State = 0;
+
+                    if (_information.Contains("Length")) this.Length = (long)_information["Length"];
+                    else this.Length = 0;
 
                     if (_information.Contains("Priority")) this.Priority = (int)_information["Priority"];
                     else this.Priority = 0;
 
                     if (_information.Contains("State"))
                     {
-                        if (_information.Contains("DownloadBlockCount") && _information.Contains("BlockCount") && _information.Contains("ParityBlockCount")
-                            && ((DownloadState)_information["State"] == DownloadState.Downloading || (DownloadState)_information["State"] == DownloadState.Completed || (DownloadState)_information["State"] == DownloadState.Error))
+                        if (_information.Contains("UploadBlockCount") && _information.Contains("BlockCount")
+                            && (UploadState)_information["State"] == UploadState.Uploading
+                            && (int)_information["UploadBlockCount"] != 0)
                         {
-                            this.Rate = Math.Round(((double)(int)_information["DownloadBlockCount"] / (double)((int)_information["BlockCount"] - (int)_information["ParityBlockCount"])) * 100, 2);
+                            this.Rate = Math.Round(((double)(int)_information["UploadBlockCount"] / (double)(int)_information["BlockCount"]) * 100, 2);
                         }
-                        else if (_information.Contains("DecodeLength") && _information.Contains("DecodeOffset")
-                            && ((DownloadState)_information["State"] == DownloadState.ParityDecoding || (DownloadState)_information["State"] == DownloadState.Decoding)
-                            && (long)_information["DecodeOffset"] != 0)
+                        else if (_information.Contains("EncodeLength") && _information.Contains("EncodeOffset")
+                            && ((UploadState)_information["State"] == UploadState.ComputeHash || (UploadState)_information["State"] == UploadState.Encoding || (UploadState)_information["State"] == UploadState.ParityEncoding)
+                            && (long)_information["EncodeOffset"] != 0)
                         {
-                            this.Rate = Math.Round(((double)(long)_information["DecodeOffset"] / (double)(long)_information["DecodeLength"]) * 100, 2);
+                            this.Rate = Math.Round(((double)(long)_information["EncodeOffset"] / (double)(long)_information["EncodeLength"]) * 100, 2);
+                        }
+                        else if ((UploadState)_information["State"] == UploadState.Completed)
+                        {
+                            this.Rate = 100;
                         }
                         else
                         {
@@ -790,38 +807,22 @@ namespace Amoeba.Windows
 
                     if (_information.Contains("State"))
                     {
-                        if (_information.Contains("DownloadBlockCount") && _information.Contains("BlockCount") && _information.Contains("ParityBlockCount") && _information.Contains("Depth") && _information.Contains("Seed")
-                            && ((DownloadState)_information["State"] == DownloadState.Downloading || (DownloadState)_information["State"] == DownloadState.Completed || (DownloadState)_information["State"] == DownloadState.Error))
+                        if (_information.Contains("UploadBlockCount") && _information.Contains("BlockCount")
+                            && ((UploadState)_information["State"] == UploadState.Uploading || (UploadState)_information["State"] == UploadState.Completed))
                         {
-                            if (0 == (int)_information["ParityBlockCount"])
-                            {
-                                this.RateText = string.Format("{0}% {1}/{2} [{3}/{4}]",
-                                    this.Rate,
-                                    (int)_information["DownloadBlockCount"],
-                                    ((int)_information["BlockCount"] - (int)_information["ParityBlockCount"]),
-                                    (int)_information["Depth"],
-                                    ((Seed)_information["Seed"]).Metadata.Depth);
-                            }
-                            else
-                            {
-                                this.RateText = string.Format("{0}% {1}/{2}({3}) [{4}/{5}]",
-                                    this.Rate,
-                                    (int)_information["DownloadBlockCount"],
-                                    ((int)_information["BlockCount"] - (int)_information["ParityBlockCount"]),
-                                    (int)_information["BlockCount"],
-                                    (int)_information["Depth"],
-                                    ((Seed)_information["Seed"]).Metadata.Depth);
-                            }
-                        }
-                        else if (_information.Contains("DecodeLength") && _information.Contains("DecodeOffset") && _information.Contains("Depth") && _information.Contains("Seed")
-                            && ((DownloadState)_information["State"] == DownloadState.ParityDecoding || (DownloadState)_information["State"] == DownloadState.Decoding))
-                        {
-                            this.RateText = string.Format("{0}% {1}/{2} [{3}/{4}]",
+                            this.RateText = string.Format("{0}% {1}/{2}",
                                 this.Rate,
-                                NetworkConverter.ToSizeString((long)_information["DecodeOffset"]),
-                                NetworkConverter.ToSizeString((long)_information["DecodeLength"]),
-                                (int)_information["Depth"],
-                                ((Seed)_information["Seed"]).Metadata.Depth);
+                                (int)_information["UploadBlockCount"],
+                                (int)_information["BlockCount"]);
+                        }
+                        else if (_information.Contains("EncodeLength") && _information.Contains("EncodeOffset") && _information.Contains("Depth")
+                            && ((UploadState)_information["State"] == UploadState.ComputeHash || (UploadState)_information["State"] == UploadState.Encoding || (UploadState)_information["State"] == UploadState.ParityEncoding))
+                        {
+                            this.RateText = string.Format("{0}% {1}/{2} [{3}]",
+                                this.Rate,
+                                NetworkConverter.ToSizeString((long)_information["EncodeOffset"]),
+                                NetworkConverter.ToSizeString((long)_information["EncodeLength"]),
+                                (int)_information["Depth"]);
                         }
                         else
                         {
@@ -833,7 +834,7 @@ namespace Amoeba.Windows
                         this.RateText = null;
                     }
 
-                    if (_information.Contains("Seed")) this.Value = (Seed)_information["Seed"];
+                    if (_information.Contains("Tag")) this.Value = (Tag)_information["Tag"];
                     else this.Value = null;
                 }
             }
@@ -882,9 +883,7 @@ namespace Amoeba.Windows
                 {
                     if (value != _path)
                     {
-                        _path = value;
-
-                        this.NotifyPropertyChanged(nameof(this.Path));
+                        _path = value; this.NotifyPropertyChanged(nameof(this.Path));
                     }
                 }
             }
@@ -906,7 +905,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public DownloadState State
+            public UploadState State
             {
                 get
                 {
@@ -991,7 +990,7 @@ namespace Amoeba.Windows
                 }
             }
 
-            public Seed Value
+            public Tag Value
             {
                 get
                 {
@@ -1009,6 +1008,11 @@ namespace Amoeba.Windows
             }
         }
 
+        private void Execute_New(object sender, ExecutedRoutedEventArgs e)
+        {
+            _listViewAddMenuItem_Click(null, null);
+        }
+
         private void Execute_Delete(object sender, ExecutedRoutedEventArgs e)
         {
             _listViewDeleteMenuItem_Click(null, null);
@@ -1017,11 +1021,6 @@ namespace Amoeba.Windows
         private void Execute_Copy(object sender, ExecutedRoutedEventArgs e)
         {
             _listViewCopyMenuItem_Click(null, null);
-        }
-
-        private void Execute_Paste(object sender, ExecutedRoutedEventArgs e)
-        {
-            _listViewPasteMenuItem_Click(null, null);
         }
 
         private void Execute_Search(object sender, ExecutedRoutedEventArgs e)

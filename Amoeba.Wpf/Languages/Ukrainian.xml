@@ -16,6 +16,9 @@
   <Translate Key="ConnectDirection_In" Value="Вхідне" />
   <Translate Key="ConnectDirection_Out" Value="Вихідне" />
 
+  <Translate Key="Tag_Name" Value="Name" />
+  <Translate Key="Tag_Id" Value="ID" />
+
   <Translate Key="Seed_Name" Value="Назва" />
   <Translate Key="Seed_Signature" Value="Підпис" />
   <Translate Key="Seed_Length" Value="Довжина" />
@@ -29,13 +32,16 @@
   <Translate Key="Box_Comment" Value="Коментар" />
 
   <Translate Key="MainWindow_Information" Value="Информація" />
-  <Translate Key="MainWindow_Search" Value="Пошук" />
+  <Translate Key="MainWindow_Link" Value="Link" />
+  <Translate Key="MainWindow_Wiki" Value="Wiki" />
+  <Translate Key="MainWindow_Chat" Value="Chat" />
+  <Translate Key="MainWindow_Mail" Value="Mail" />
+  <Translate Key="MainWindow_Search" Value="Search" />
   <Translate Key="MainWindow_Download" Value="Скачування" />
   <Translate Key="MainWindow_Upload" Value="Завантаження" />
   <Translate Key="MainWindow_Share" Value="Шари" />
-  <Translate Key="MainWindow_Link" Value="Link" />
   <Translate Key="MainWindow_Store" Value="Сховище" />
-  <Translate Key="MainWindow_Log" Value="Журнал" />
+  <Translate Key="MainWindow_Log" Value="Log" />
   <Translate Key="MainWindow_StatesBar" Value="Підключення: {0} Конвертація: {1}" />
   <Translate Key="MainWindow_Running" Value="Працює" />
   <Translate Key="MainWindow_Stopping" Value="Зупинено" />
@@ -73,21 +79,25 @@
   <Translate Key="MainWindow_Shutdown_Message" Value="Вимкнення..." />
   <Translate Key="MainWindow_Copy" Value="Копіювати" />
 
-  <Translate Key="LinkOptionsWindow_Title" Value="Налаштування лінковки" />
-  <Translate Key="LinkOptionsWindow_Download" Value="Скачування" />
-  <Translate Key="LinkOptionsWindow_Upload" Value="Завантаження" />
+  <Translate Key="LinkOptionsWindow_Title" Value="Link options" />
+  <Translate Key="LinkOptionsWindow_Download" Value="Download" />
+  <Translate Key="LinkOptionsWindow_Upload" Value="Upload" />
+  <Translate Key="LinkOptionsWindow_YourSignature" Value="Your signature" />
   <Translate Key="LinkOptionsWindow_Trust" Value="Trust" />
   <Translate Key="LinkOptionsWindow_Untrust" Value="Untrust" />
-  <Translate Key="LinkOptionsWindow_LinkerSignature" Value="Linker signature" />
-  <Translate Key="LinkOptionsWindow_Signature" Value="signature" />
-  <Translate Key="LinkOptionsWindow_New" Value="Додати новий підпис" />
-  <Translate Key="LinkOptionsWindow_Edit" Value="Редагувати" />
-  <Translate Key="LinkOptionsWindow_Delete" Value="Видалити" />
-  <Translate Key="LinkOptionsWindow_Cut" Value="Вирізати" />
-  <Translate Key="LinkOptionsWindow_Copy" Value="Копіювати" />
-  <Translate Key="LinkOptionsWindow_Paste" Value="Вставити" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="Signature" />
+  <Translate Key="LinkOptionsWindow_Value" Value="Value" />
+  <Translate Key="LinkOptionsWindow_Up" Value="Up" />
+  <Translate Key="LinkOptionsWindow_Down" Value="Down" />
+  <Translate Key="LinkOptionsWindow_Add" Value="Add" />
+  <Translate Key="LinkOptionsWindow_New" Value="New" />
+  <Translate Key="LinkOptionsWindow_Edit" Value="Edit" />
+  <Translate Key="LinkOptionsWindow_Delete" Value="Delete" />
+  <Translate Key="LinkOptionsWindow_Cut" Value="Cut" />
+  <Translate Key="LinkOptionsWindow_Copy" Value="Copy" />
+  <Translate Key="LinkOptionsWindow_Paste" Value="Paste" />
   <Translate Key="LinkOptionsWindow_Ok" Value="Ok" />
-  <Translate Key="LinkOptionsWindow_Cancel" Value="Закрити" />
+  <Translate Key="LinkOptionsWindow_Cancel" Value="Cancel" />
 
   <Translate Key="OptionsWindow_Title" Value="Опції" />
   <Translate Key="OptionsWindow_Core" Value="Головні" />
@@ -137,10 +147,15 @@
   <Translate Key="OptionsWindow_Signature" Value="Підпис" />
   <Translate Key="OptionsWindow_Signatures" Value="Ваші підписи" />
   <Translate Key="OptionsWindow_Keywords" Value="Ключові слова" />
+  <Translate Key="OptionsWindow_ExtractTo" Value="Extract to path" />
   <Translate Key="OptionsWindow_Box" Value="Box" />
   <Translate Key="OptionsWindow_RelateBoxFile" Value="Box file is related." />
   <Translate Key="OptionsWindow_OpenBox" Value="Open a box file that downloaded." />
-  <Translate Key="OptionsWindow_ExtractTo" Value="Extract to path" />
+  <Translate Key="OptionsWindow_Mail" Value="Mail" />
+  <Translate Key="OptionsWindow_OpenMail" Value="Open a mail that downloaded." />
+  <Translate Key="OptionsWindow_Fonts" Value="Fonts" />
+  <Translate Key="OptionsWindow_MessageFontFamily" Value="Message font family" />
+  <Translate Key="OptionsWindow_MessageFontSize" Value="Message font size (pt)" />
   <Translate Key="OptionsWindow_UpdateOption" Value="Опції оновлення" />
   <Translate Key="OptionsWindow_None" Value="None" />
   <Translate Key="OptionsWindow_AutoCheck" Value="Автоматична перевірка" />
@@ -207,6 +222,7 @@
   <Translate Key="InformationControl_LockSpace" Value="Заблоковано місця" />
   <Translate Key="InformationControl_UsingSpace" Value="Зайнято місця" />
   <Translate Key="InformationControl_NodeCount" Value="Вузлів" />
+  <Translate Key="InformationControl_MetadataCount" Value="Metadata count" />
   <Translate Key="InformationControl_SeedCount" Value="Seed count" />
   <Translate Key="InformationControl_BlockCount" Value="Блоків" />
   <Translate Key="InformationControl_DownloadCount" Value="Скачувань" />
@@ -216,16 +232,44 @@
   <Translate Key="InformationControl_PushBlockLinkCount" Value="PushBlockLink count" />
   <Translate Key="InformationControl_PushBlockRequestCount" Value="PushBlockRequest count" />
   <Translate Key="InformationControl_PushBlockCount" Value="PushBlock count" />
-  <Translate Key="InformationControl_PushSeedRequestCount" Value="PushSeedRequest count" />
-  <Translate Key="InformationControl_PushSeedCount" Value="PushSeed count" />
+  <Translate Key="InformationControl_PushMetadataRequestCount" Value="PushMetadataRequest count" />
+  <Translate Key="InformationControl_PushMetadataCount" Value="PushMetadata count" />
   <Translate Key="InformationControl_PullNodeCount" Value="PullNode count" />
   <Translate Key="InformationControl_PullBlockLinkCount" Value="PullBlocksLink count" />
   <Translate Key="InformationControl_PullBlockRequestCount" Value="PullBlockRequest count" />
   <Translate Key="InformationControl_PullBlockCount" Value="PullBlock count" />
-  <Translate Key="InformationControl_PullSeedRequestCount" Value="PullSeedRequest count" />
-  <Translate Key="InformationControl_PullSeedCount" Value="PullSeed count" />
+  <Translate Key="InformationControl_PullMetadataRequestCount" Value="PullMetadataRequest count" />
+  <Translate Key="InformationControl_PullMetadataCount" Value="PullMetadata count" />
   <Translate Key="InformationControl_Copy" Value="Копіювати" />
   <Translate Key="InformationControl_Paste" Value="Вставити" />
+
+  <Translate Key="ChatControl_NewTag" Value="New tag" />
+  <Translate Key="ChatControl_New" Value="New category" />
+  <Translate Key="ChatControl_Edit" Value="Edit" />
+  <Translate Key="ChatControl_Delete" Value="Delete" />
+  <Translate Key="ChatControl_Cut" Value="Cut" />
+  <Translate Key="ChatControl_Copy" Value="Copy" />
+  <Translate Key="ChatControl_CopyInfo" Value="Copy info" />
+  <Translate Key="ChatControl_Paste" Value="Paste" />
+  <Translate Key="ChatControl_Trust_On" Value="Trust On" />
+  <Translate Key="ChatControl_Trust_Off" Value="Trust Off" />
+  <Translate Key="ChatControl_MarkAllMessagesRead" Value="Mark all messages read" />
+  <Translate Key="ChatControl_MarkAllMessagesRead_Message" Value="Do you want to mark all messages read?" />
+  <Translate Key="ChatControl_Limit" Value="Limit" />
+  <Translate Key="ChatControl_Trust" Value="Trust" />
+  <Translate Key="ChatControl_Lock" Value="Lock" />
+  <Translate Key="ChatControl_LockThis" Value="Lock this" />
+  <Translate Key="ChatControl_UnlockThis" Value="Unlock this" />
+  <Translate Key="ChatControl_LockAll" Value="Lock all" />
+  <Translate Key="ChatControl_UnlockAll" Value="Unlock all" />
+  <Translate Key="ChatControl_Response" Value="Response" />
+
+  <Translate Key="MulticastMessageEditWindow_Title" Value="New message" />
+  <Translate Key="MulticastMessageEditWindow_Edit" Value="Edit" />
+  <Translate Key="MulticastMessageEditWindow_Preview" Value="Preview" />
+  <Translate Key="MulticastMessageEditWindow_Comment" Value="Comment" />
+  <Translate Key="MulticastMessageEditWindow_Ok" Value="Ok" />
+  <Translate Key="MulticastMessageEditWindow_Cancel" Value="Cancel" />
 
   <Translate Key="SearchControl_Name" Value="Назва" />
   <Translate Key="SearchControl_Signature" Value="Підпис" />

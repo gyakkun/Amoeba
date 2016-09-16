@@ -42,6 +42,7 @@
             <local:ConnectionTypeToStringConverter x:Key="_connectionTypeToStringConverter"/>
             <local:TransferLimitTypeToStringConverter x:Key="_transferLimitTypeToStringConverter"/>
             <local:ConnectDirectionToStringConverter x:Key="_connectDirectionToStringConverter"/>
+            <local:TagToStringConverter x:Key="_tagToStringConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>
