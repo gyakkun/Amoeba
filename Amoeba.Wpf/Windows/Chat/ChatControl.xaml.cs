@@ -289,10 +289,16 @@ namespace Amoeba.Windows
 
                     foreach (var treeViewModel in chatTreeViewModels)
                     {
+                        var limit = Settings.Instance.Global_Limit;
+
                         // MulticastMessage
                         lock (treeViewModel.Value.ThisLock)
                         {
-                            var results = this.GetMulticastMessages(treeViewModel.Value.Tag, treeViewModel.Value.MulticastMessages.ToArray(), treeViewModel.Value.IsTrustEnabled);
+                            var results = this.GetMulticastMessages(
+                                treeViewModel.Value.Tag,
+                                treeViewModel.Value.MulticastMessages.ToArray(),
+                                treeViewModel.Value.IsTrustEnabled,
+                                limit);
 
                             treeViewModel.Value.MulticastMessages.Clear();
 
@@ -330,7 +336,11 @@ namespace Amoeba.Windows
             }
         }
 
-        private IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageState>> GetMulticastMessages(Tag tag, IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageState>> collections, bool isTrust)
+        private IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageState>> GetMulticastMessages(
+            Tag tag,
+            IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageState>> collections,
+            bool trust,
+            int limit)
         {
             var dic = new Dictionary<MulticastMessageItem, MulticastMessageState>();
 
@@ -340,9 +350,6 @@ namespace Amoeba.Windows
             }
 
             {
-                int limit = 0;
-                if (!isTrust) limit = Settings.Instance.Global_Limit;
-
                 foreach (var info in _amoebaManager.GetMulticastMessages(tag, limit))
                 {
                     var item = new MulticastMessageItem();
@@ -354,7 +361,7 @@ namespace Amoeba.Windows
                         item.Comment = message.Comment;
                     }
 
-                    if (isTrust && !Inspect.ContainTrustSignature(item.Signature)) continue;
+                    if (trust && !Inspect.ContainTrustSignature(item.Signature)) continue;
                     if (dic.ContainsKey(item)) continue;
 
                     dic.Add(item, MulticastMessageState.IsUnread);

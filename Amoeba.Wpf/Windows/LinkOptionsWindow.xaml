@@ -55,7 +55,7 @@
                     <local:ListViewEx x:Name="_uploadLinkListView" 
                             ContextMenuOpening="_uploadLinkListView_ContextMenuOpening">
                         <ListView.Resources>
-                            <DataTemplate x:Key="_myTemplate_Linker_Signature">
+                            <DataTemplate x:Key="_myTemplate_Your_Signature">
                                 <TextBlock Text="{Binding Path=Signature, Mode=OneWay}" />
                             </DataTemplate>
                         </ListView.Resources>
@@ -69,8 +69,8 @@
                         </ListView.ContextMenu>
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
-                                <GridViewColumn Header="{Binding Path=LinkOptionsWindow_LinkerSignature, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Linker_Signature}"
-                                    Width="{Binding Path=LinkOptionsWindow_GridViewColumn_LinkerSignature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                <GridViewColumn Header="{Binding Path=LinkOptionsWindow_YourSignature, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_Your_Signature}"
+                                    Width="{Binding Path=LinkOptionsWindow_GridViewColumn_YourSignature_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
                     </local:ListViewEx>
@@ -132,7 +132,7 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        
+
         <Button Content="{Binding Path=LinkOptionsWindow_Ok, Source={StaticResource _languages}}" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="_okButton" VerticalAlignment="Bottom" Width="75" Click="_okButton_Click" IsDefault="True" />
         <Button Content="{Binding Path=LinkOptionsWindow_Cancel, Source={StaticResource _languages}}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="_cancelButton" VerticalAlignment="Bottom" Width="75" Click="_cancelButton_Click" IsCancel="True" />
     </Grid>

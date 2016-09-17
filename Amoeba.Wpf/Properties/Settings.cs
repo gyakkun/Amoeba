@@ -63,7 +63,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<WindowState>() { Name = "LinkOptionsWindow_WindowState", Value = WindowState.Normal },
                 new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_Grid_ColumnDefinitions_Width", Value = 300 },
                 new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_Signature_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_LinkerSignature_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_YourSignature_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "LinkOptionsWindow_GridViewColumn_TrustSignature_Width", Value = 120 },
 
                 new Library.Configuration.SettingContent<double>() { Name = "OptionsWindow_Top", Value = 120 },
@@ -314,7 +314,7 @@ namespace Amoeba.Properties
         public WindowState LinkOptionsWindow_WindowState { get { lock (this.ThisLock) { return (WindowState)this["LinkOptionsWindow_WindowState"]; } } set { lock (this.ThisLock) { this["LinkOptionsWindow_WindowState"] = value; } } }
         public double LinkOptionsWindow_Grid_ColumnDefinitions_Width { get { lock (this.ThisLock) { return (double)this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"]; } } set { lock (this.ThisLock) { this["LinkOptionsWindow_Grid_ColumnDefinitions_Width"] = value; } } }
         public double LinkOptionsWindow_GridViewColumn_Signature_Width { get { lock (this.ThisLock) { return (double)this["LinkOptionsWindow_GridViewColumn_Signature_Width"]; } } set { lock (this.ThisLock) { this["LinkOptionsWindow_GridViewColumn_Signature_Width"] = value; } } }
-        public double LinkOptionsWindow_GridViewColumn_LinkerSignature_Width { get { lock (this.ThisLock) { return (double)this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"]; } } set { lock (this.ThisLock) { this["LinkOptionsWindow_GridViewColumn_LinkerSignature_Width"] = value; } } }
+        public double LinkOptionsWindow_GridViewColumn_YourSignature_Width { get { lock (this.ThisLock) { return (double)this["LinkOptionsWindow_GridViewColumn_YourSignature_Width"]; } } set { lock (this.ThisLock) { this["LinkOptionsWindow_GridViewColumn_YourSignature_Width"] = value; } } }
         public double LinkOptionsWindow_GridViewColumn_TrustSignature_Width { get { lock (this.ThisLock) { return (double)this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"]; } } set { lock (this.ThisLock) { this["LinkOptionsWindow_GridViewColumn_TrustSignature_Width"] = value; } } }
 
         public double OptionsWindow_Top { get { lock (this.ThisLock) { return (double)this["OptionsWindow_Top"]; } } set { lock (this.ThisLock) { this["OptionsWindow_Top"] = value; } } }
