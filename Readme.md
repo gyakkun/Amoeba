@@ -2,16 +2,16 @@
 
 ## 概要
 
-Amoebaは、純粋P2Pのファイル共有ソフトです。
+Amoebaは、純粋P2Pのメッセージとファイルの共有ソフトです。
 
 ## 目的
 
 インターネットにおける権力による抑圧を排除することが最終的な目標です。
-そのためにAmoebaでは、高い匿名性と高い障害耐性を持ったファイル共有の機能をユーザーに提供します。
+そのためにAmoebaでは、高い匿名性と高い障害耐性を持ったメッセージとファイルの共有の機能をユーザーに提供します。
 
 ## 特徴
 
-Amoeba = Freenet + Abstract Network + DHT + (Search = WoT)
+Amoeba = Freenet + Abstract Network + DHT + (Search = WoT or PoW)
 
  * 接続は抽象化されているので、I2P, Tor, TCP, Proxy, その他を利用可能です。
  * DHTにはKademlia + コネクションプールを使用します。
