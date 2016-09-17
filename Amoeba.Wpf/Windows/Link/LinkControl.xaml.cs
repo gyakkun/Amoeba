@@ -151,7 +151,7 @@ namespace Amoeba.Windows
                 linkItems.UnionWith(targetLinkItems.Take(1024 * 32));
             }
 
-            Inspect.SetTrustSignatures(linkItems.Select(n => n.Signature));
+            Inspect.SetTrustSignatures(linkItems.Select(n => n.Signature).ToArray());
 
             var profileItems = this.GetProfileItems(Inspect.GetTrustSignatures()).ToList();
 
