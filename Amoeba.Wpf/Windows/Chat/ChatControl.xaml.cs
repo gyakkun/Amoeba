@@ -209,6 +209,7 @@ namespace Amoeba.Windows
                                 _newMessageButton.IsEnabled = false;
                                 _trustToggleButton.IsEnabled = false;
                                 _trustToggleButton.IsChecked = false;
+                                _limitStackPanel.IsEnabled = false;
 
                                 _textEditor_Helper.Clear(_textEditor);
                             }));
@@ -226,7 +227,10 @@ namespace Amoeba.Windows
 
                                 foreach (var pair in chatTreeViewModel.Value.MulticastMessages.ToArray())
                                 {
-                                    chatTreeViewModel.Value.MulticastMessages[pair.Key] = (pair.Value & ~MulticastMessageState.IsUnread);
+                                    var item = pair.Key;
+                                    var option = pair.Value;
+
+                                    chatTreeViewModel.Value.MulticastMessages[item].State &= ~MulticastMessageState.IsUnread;
                                 }
                             }
 
@@ -239,11 +243,12 @@ namespace Amoeba.Windows
 
                                     _trustToggleButton.IsEnabled = true;
                                     _trustToggleButton.IsChecked = chatTreeViewModel.Value.IsTrustEnabled;
+                                    _limitStackPanel.IsEnabled = true;
                                 }
 
                                 {
                                     var sortedList = newList.ToList();
-                                    sortedList.Sort((x, y) => x.MulticastMessageItem.CreationTime.CompareTo(y.MulticastMessageItem.CreationTime));
+                                    sortedList.Sort((x, y) => x.Item.CreationTime.CompareTo(y.Item.CreationTime));
 
                                     _textEditer_Collection.Clear();
                                     _textEditer_Collection.AddRange(sortedList);
@@ -289,7 +294,8 @@ namespace Amoeba.Windows
 
                     foreach (var treeViewModel in chatTreeViewModels)
                     {
-                        var limit = Settings.Instance.Global_Limit;
+                        int limit = -1;
+                        if (!treeViewModel.Value.IsTrustEnabled) limit = Settings.Instance.Global_Limit;
 
                         // MulticastMessage
                         lock (treeViewModel.Value.ThisLock)
@@ -297,7 +303,6 @@ namespace Amoeba.Windows
                             var results = this.GetMulticastMessages(
                                 treeViewModel.Value.Tag,
                                 treeViewModel.Value.MulticastMessages.ToArray(),
-                                treeViewModel.Value.IsTrustEnabled,
                                 limit);
 
                             treeViewModel.Value.MulticastMessages.Clear();
@@ -336,16 +341,27 @@ namespace Amoeba.Windows
             }
         }
 
-        private IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageState>> GetMulticastMessages(
+        private IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageOption>> GetMulticastMessages(
             Tag tag,
-            IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageState>> collections,
-            bool trust,
+            IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageOption>> collections,
             int limit)
         {
-            var dic = new Dictionary<MulticastMessageItem, MulticastMessageState>();
+            var dic = new Dictionary<MulticastMessageItem, MulticastMessageOption>();
 
             foreach (var pair in collections)
             {
+                var item = pair.Key;
+                var option = pair.Value;
+
+                if (limit < 0)
+                {
+                    if (!Inspect.ContainTrustSignature(item.Signature)) continue;
+                }
+                else
+                {
+                    if (!Inspect.ContainTrustSignature(item.Signature) && option.Cost < limit) continue;
+                }
+
                 dic.Add(pair.Key, pair.Value);
             }
 
@@ -361,36 +377,25 @@ namespace Amoeba.Windows
                         item.Comment = message.Comment;
                     }
 
-                    if (trust && !Inspect.ContainTrustSignature(item.Signature)) continue;
-                    if (dic.ContainsKey(item)) continue;
+                    MulticastMessageOption option;
 
-                    dic.Add(item, MulticastMessageState.IsUnread);
+                    if (!dic.TryGetValue(item, out option))
+                    {
+                        option = new MulticastMessageOption();
+                        option.State = MulticastMessageState.IsUnread;
+                        option.Cost = (int)info["Cost"];
+                        dic.Add(item, option);
+                    }
                 }
             }
 
             {
-                var sortedList = dic.Where(n => !n.Value.HasFlag(MulticastMessageState.IsLocked)).Select(n => n.Key).ToList();
+                var sortedList = dic.Where(n => !n.Value.State.HasFlag(MulticastMessageState.IsLocked)).Select(n => n.Key).ToList();
                 sortedList.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));
 
                 foreach (var item in sortedList.Take(sortedList.Count - 1024))
                 {
                     dic.Remove(item);
-                }
-            }
-
-            {
-                var ddd = new Dictionary<string, List<MulticastMessageItem>>();
-                foreach (var p in dic.Keys)
-                {
-                    List<MulticastMessageItem> list;
-                    if (!ddd.TryGetValue(p.Signature, out list))
-                    {
-                        list = new List<MulticastMessageItem>();
-                        ddd[p.Signature] = list;
-                    }
-
-                    list.Add(p);
-                    list.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));
                 }
             }
 
@@ -428,7 +433,7 @@ namespace Amoeba.Windows
                 var hitItems = new HashSet<TreeViewModelBase>();
 
                 foreach (var item in items.OfType<ChatTreeViewModel>()
-                    .Where(n => n.Value.MulticastMessages.Any(m => m.Value.HasFlag(MulticastMessageState.IsUnread))))
+                    .Where(n => n.Value.MulticastMessages.Any(m => m.Value.State.HasFlag(MulticastMessageState.IsUnread))))
                 {
                     hitItems.UnionWith(item.GetAncestors());
                 }
@@ -882,13 +887,16 @@ namespace Amoeba.Windows
                 chatTreeViewModels.AddRange(categorizeChatTreeViewModels[i].Children.OfType<ChatTreeViewModel>());
             }
 
-            foreach (var item in chatTreeViewModels)
+            foreach (var viewModel in chatTreeViewModels)
             {
-                lock (item.Value.ThisLock)
+                lock (viewModel.Value.ThisLock)
                 {
-                    foreach (var pair in item.Value.MulticastMessages.ToArray())
+                    foreach (var pair in viewModel.Value.MulticastMessages.ToArray())
                     {
-                        item.Value.MulticastMessages[pair.Key] = pair.Value & ~MulticastMessageState.IsUnread;
+                        var item = pair.Key;
+                        var option = pair.Value;
+
+                        viewModel.Value.MulticastMessages[item].State = option.State & ~MulticastMessageState.IsUnread;
                     }
                 }
             }
@@ -982,16 +990,6 @@ namespace Amoeba.Windows
             if (selectTreeViewModel == null) return;
 
             selectTreeViewModel.Value.IsTrustEnabled = _trustToggleButton.IsChecked.Value;
-
-            if (selectTreeViewModel.Value.IsTrustEnabled)
-            {
-                foreach (var pair in selectTreeViewModel.Value.MulticastMessages.ToArray())
-                {
-                    if (Inspect.ContainTrustSignature(pair.Key.Signature)) continue;
-                    selectTreeViewModel.Value.MulticastMessages.Remove(pair.Key);
-                }
-            }
-
             selectTreeViewModel.Update();
 
             this.Update_Cache();
@@ -999,7 +997,45 @@ namespace Amoeba.Windows
 
         #endregion
 
+        #region Limit
+
+        private void _limitTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int limit;
+
+            if (int.TryParse(_limitTextBox.Text, out limit))
+            {
+                Settings.Instance.Global_Limit = Math.Min(Math.Max(limit, 0), 256);
+            }
+
+            this.Update_Cache();
+        }
+
+        private void _limitUpButton_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.Global_Limit = Math.Min(Settings.Instance.Global_Limit + 1, 256);
+            _limitTextBox.Text = Settings.Instance.Global_Limit.ToString();
+
+            this.Update_Cache();
+        }
+
+        private void _limitDownButton_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.Instance.Global_Limit = Math.Max(Settings.Instance.Global_Limit - 1, 0);
+            _limitTextBox.Text = Settings.Instance.Global_Limit.ToString();
+
+            this.Update_Cache();
+        }
+
+        #endregion
+
         #region _textEditor
+
+        private void _textEditor_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            _textEditorCopyMenuItem.IsEnabled = !string.IsNullOrEmpty(_textEditor.SelectedText);
+            _textEditorResponseMenuItem.IsEnabled = (Settings.Instance.Global_DigitalSignatures.Count != 0);
+        }
 
         private void _textEditorCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -1015,13 +1051,13 @@ namespace Amoeba.Windows
             {
                 foreach (var index in _textEditor_Helper.SelectIndexes(_textEditor))
                 {
-                    selectedItems.Add(_textEditer_Collection[index].MulticastMessageItem);
+                    selectedItems.Add(_textEditer_Collection[index].Item);
                 }
             }
 
             foreach (var item in selectedItems)
             {
-                selectTreeViewModel.Value.MulticastMessages[item] |= MulticastMessageState.IsLocked;
+                selectTreeViewModel.Value.MulticastMessages[item].State |= MulticastMessageState.IsLocked;
             }
         }
 
@@ -1034,13 +1070,13 @@ namespace Amoeba.Windows
             {
                 foreach (var index in _textEditor_Helper.SelectIndexes(_textEditor))
                 {
-                    selectedItems.Add(_textEditer_Collection[index].MulticastMessageItem);
+                    selectedItems.Add(_textEditer_Collection[index].Item);
                 }
             }
 
             foreach (var item in selectedItems)
             {
-                selectTreeViewModel.Value.MulticastMessages[item] &= ~MulticastMessageState.IsLocked;
+                selectTreeViewModel.Value.MulticastMessages[item].State &= ~MulticastMessageState.IsLocked;
             }
         }
 
@@ -1051,7 +1087,7 @@ namespace Amoeba.Windows
 
             foreach (var item in selectTreeViewModel.Value.MulticastMessages.Keys.ToArray())
             {
-                selectTreeViewModel.Value.MulticastMessages[item] |= MulticastMessageState.IsLocked;
+                selectTreeViewModel.Value.MulticastMessages[item].State |= MulticastMessageState.IsLocked;
             }
         }
 
@@ -1062,7 +1098,7 @@ namespace Amoeba.Windows
 
             foreach (var item in selectTreeViewModel.Value.MulticastMessages.Keys.ToArray())
             {
-                selectTreeViewModel.Value.MulticastMessages[item] &= ~MulticastMessageState.IsLocked;
+                selectTreeViewModel.Value.MulticastMessages[item].State &= ~MulticastMessageState.IsLocked;
             }
         }
 
@@ -1070,6 +1106,8 @@ namespace Amoeba.Windows
         {
             var selectTreeViewModel = _treeView.SelectedItem as ChatTreeViewModel;
             if (selectTreeViewModel == null) return;
+
+            if (Settings.Instance.Global_DigitalSignatures.Count == 0) return;
 
             var comment = new StringBuilder();
             foreach (var line in _textEditor.SelectedText
@@ -1088,38 +1126,6 @@ namespace Amoeba.Windows
 
             window.Owner = _mainWindow;
             window.Show();
-        }
-
-        #endregion
-
-        #region Limit
-
-        private void _limitTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            int limit;
-
-            if (int.TryParse(_limitTextBox.Text, out limit))
-            {
-                Settings.Instance.Global_Limit = Math.Min(Math.Max(limit, 0), 256);
-            }
-
-            this.Update();
-        }
-
-        private void _limitUpButton_Click(object sender, RoutedEventArgs e)
-        {
-            Settings.Instance.Global_Limit = Math.Min(Settings.Instance.Global_Limit + 1, 256);
-            _limitTextBox.Text = Settings.Instance.Global_Limit.ToString();
-
-            this.Update();
-        }
-
-        private void _limitDownButton_Click(object sender, RoutedEventArgs e)
-        {
-            Settings.Instance.Global_Limit = Math.Max(Settings.Instance.Global_Limit - 1, 0);
-            _limitTextBox.Text = Settings.Instance.Global_Limit.ToString();
-
-            this.Update();
         }
 
         #endregion
@@ -1187,19 +1193,19 @@ namespace Amoeba.Windows
 
     class MulticastMessageViewModel : IEquatable<MulticastMessageViewModel>
     {
-        public MulticastMessageViewModel(MulticastMessageItem multicastMessageItem, MulticastMessageState state)
+        public MulticastMessageViewModel(MulticastMessageItem item, MulticastMessageOption option)
         {
-            this.MulticastMessageItem = multicastMessageItem;
-            this.State = state;
+            this.Item = item;
+            this.Option = option;
         }
 
-        public MulticastMessageItem MulticastMessageItem { get; private set; }
-        public MulticastMessageState State { get; private set; }
+        public MulticastMessageItem Item { get; private set; }
+        public MulticastMessageOption Option { get; private set; }
 
         public override int GetHashCode()
         {
-            if (this.MulticastMessageItem == null) return 0;
-            else return this.MulticastMessageItem.GetHashCode();
+            if (this.Item == null) return 0;
+            else return this.Item.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -1214,8 +1220,8 @@ namespace Amoeba.Windows
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
-            if (this.MulticastMessageItem != other.MulticastMessageItem
-                || this.State != other.State)
+            if (this.Item != other.Item
+                || this.Option != other.Option)
             {
                 return false;
             }

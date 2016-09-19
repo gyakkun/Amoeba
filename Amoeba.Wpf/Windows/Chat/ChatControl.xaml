@@ -106,14 +106,15 @@
 
         <Button x:Name="_newMessageButton" Style="{StaticResource _buttonStyle}" Content="New" Grid.Column="2" HorizontalAlignment="Left" Margin="52,6,0,0" VerticalAlignment="Top" Width="40" Height="40" ToolTip="{Binding Path=ChatControl_NewMessage, Source={StaticResource _languages}}" Click="_newMessageButton_Click"/>
         <ToggleButton x:Name="_trustToggleButton" Style="{StaticResource _toggleButtonStyle}" Content="Trust" Grid.Column="2" HorizontalAlignment="Left" Margin="6,6,0,0" Width="40" Height="40" VerticalAlignment="Top" ToolTip="{Binding Path=ChatControl_Trust, Source={StaticResource _languages}}" Click="_trustToggleButton_Click"/>
-        <StackPanel Orientation="Horizontal" Margin="0,16,0,0" VerticalAlignment="Top" Grid.Column="2" HorizontalAlignment="Right">
+        <StackPanel Name="_limitStackPanel" Orientation="Horizontal" Margin="0,16,0,0" VerticalAlignment="Top" Grid.Column="2" HorizontalAlignment="Right">
             <Label Content="{Binding Path=ChatControl_Limit, Source={StaticResource _languages}}" Height="24" />
-            <TextBox x:Name="_limitTextBox" x:FieldModifier="private" Margin="6,6,0,6" Width="50" Text="{Binding Path=Global_Limit, Mode=OneWay, Source={x:Static prop:Settings.Instance}}" TextChanged="_limitTextBox_TextChanged" Height="24" />
-            <RepeatButton x:Name="_limitUpButton" x:FieldModifier="private" Margin="0,6" Content="˄" Width="24" Click="_limitUpButton_Click" Height="24" />
-            <RepeatButton x:Name="_limitDownButton" x:FieldModifier="private" Margin="0,6,6,6"  Content="˅" Width="24" Click="_limitDownButton_Click" Height="24" />
+            <TextBox x:Name="_limitTextBox" Margin="6,6,0,6" Width="50" Text="{Binding Path=Global_Limit, Mode=OneWay, Source={x:Static prop:Settings.Instance}}" TextChanged="_limitTextBox_TextChanged" Height="24" />
+            <RepeatButton x:Name="_limitUpButton" Margin="0,6" Content="˄" Width="24" Click="_limitUpButton_Click" Height="24" />
+            <RepeatButton x:Name="_limitDownButton" Margin="0,6,6,6"  Content="˅" Width="24" Click="_limitDownButton_Click" Height="24" />
         </StackPanel>
 
-        <AvalonEdit:TextEditor x:Name="_textEditor" Style="{StaticResource _textEditorStyle}" IsReadOnly="True" Grid.Column="2" Margin="0,52,0,0" HorizontalScrollBarVisibility="Disabled">
+        <AvalonEdit:TextEditor x:Name="_textEditor" Style="{StaticResource _textEditorStyle}" IsReadOnly="True" Grid.Column="2" Margin="0,52,0,0" HorizontalScrollBarVisibility="Disabled"
+                    ContextMenuOpening="_textEditor_ContextMenuOpening">
             <AvalonEdit:TextEditor.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="_textEditorCopyMenuItem" Header="{Binding Path=ChatControl_Copy, Source={StaticResource _languages}}" Click="_textEditorCopyMenuItem_Click" />

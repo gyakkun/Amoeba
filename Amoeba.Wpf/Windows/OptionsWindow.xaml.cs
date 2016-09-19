@@ -229,6 +229,8 @@ namespace Amoeba.Windows
             _boxOpenCheckBox.IsChecked = Settings.Instance.Global_OpenBox_IsEnabled;
             _boxExtractToTextBox.Text = Settings.Instance.Global_BoxExtractTo_Path;
 
+            _MiningTimeTextBox.Text = Settings.Instance.Global_MiningTime.TotalMinutes.ToString();
+
             _fontMessageFontFamilyComboBoxItemCollection.AddRange(Fonts.SystemFontFamilies.Select(n => n.ToString()));
             _fontMessageFontFamilyComboBox.ItemsSource = _fontMessageFontFamilyComboBoxItemCollection;
             _fontMessageFontFamilyComboBox.SelectedItem = Settings.Instance.Global_Fonts_Message_FontFamily;
@@ -2216,6 +2218,8 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_OpenBox_IsEnabled = _boxOpenCheckBox.IsChecked.Value;
             Settings.Instance.Global_BoxExtractTo_Path = _boxExtractToTextBox.Text;
+
+            Settings.Instance.Global_MiningTime = TimeSpan.FromMinutes(Math.Max(Math.Min(OptionsWindow.GetStringToInt(_MiningTimeTextBox.Text), 180), 1));
 
             Settings.Instance.Global_Fonts_Message_FontFamily = (string)_fontMessageFontFamilyComboBox.SelectedItem;
             Settings.Instance.Global_Fonts_Message_FontSize = Math.Max(Math.Min(OptionsWindow.GetStringToDouble(_fontMessageFontSizeTextBox.Text), 100), 1);

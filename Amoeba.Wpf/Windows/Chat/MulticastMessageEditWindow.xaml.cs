@@ -123,7 +123,7 @@ namespace Amoeba.Windows
                     var digitalSignature = _signatureComboBox.SelectedItem as DigitalSignature;
 
                     var comment = _commentTextBox.Text.Substring(0, Math.Min(_commentTextBox.Text.Length, Message.MaxCommentLength));
-                    _textEditor_Helper.Set(_textEditor, DateTime.UtcNow, digitalSignature.ToString(), comment);
+                    _textEditor_Helper.Set(_textEditor, DateTime.UtcNow, digitalSignature.ToString(), 0, comment);
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace Amoeba.Windows
             var comment = _commentTextBox.Text.Substring(0, Math.Min(_commentTextBox.Text.Length, Message.MaxCommentLength));
             var message = new Message(comment);
 
-            _amoebaManager.MulticastUpload(_tag, message, limit, new TimeSpan(0, 3, 0), digitalSignature);
+            _amoebaManager.MulticastUpload(_tag, message, limit, Settings.Instance.Global_MiningTime, digitalSignature);
 
             this.Close();
         }

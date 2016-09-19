@@ -190,7 +190,7 @@
     <Compile Include="Windows\_Items\ChatCategorizeTreeItem.cs" />
     <Compile Include="Windows\_Items\ChatTreeItem.cs" />
     <Compile Include="Windows\_Items\LinkItem.cs" />
-    <Compile Include="Windows\_Items\MulticastMessageState.cs" />
+    <Compile Include="Windows\_Items\MulticastMessageOption.cs" />
     <Compile Include="Windows\_Items\SearchItem.cs" />
     <Compile Include="Windows\_Items\SignatureTreeItem.cs" />
     <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />

@@ -327,8 +327,8 @@ namespace Amoeba.Properties
         public string OptionsWindow_Box { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_Box"); } } }
         public string OptionsWindow_RelateBoxFile { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_RelateBoxFile"); } } }
         public string OptionsWindow_OpenBox { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_OpenBox"); } } }
-        public string OptionsWindow_Mail { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_Mail"); } } }
-        public string OptionsWindow_OpenMail { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_OpenMail"); } } }
+        public string OptionsWindow_Mining { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_Mining"); } } }
+        public string OptionsWindow_MiningTime { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_MiningTime"); } } }
         public string OptionsWindow_Fonts { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_Fonts"); } } }
         public string OptionsWindow_MessageFontFamily { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_MessageFontFamily"); } } }
         public string OptionsWindow_MessageFontSize { get { lock (this.ThisLock) { return this.Translate("OptionsWindow_MessageFontSize"); } } }

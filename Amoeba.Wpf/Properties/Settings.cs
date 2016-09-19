@@ -27,6 +27,7 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "Global_LinkItems", Value = new LockedList<LinkItem>() },
                 new Library.Configuration.SettingContent<LockedHashDictionary<string, ProfileSetting>>() { Name = "Global_ProfileSettings", Value = new LockedHashDictionary<string, ProfileSetting>() },
                 new Library.Configuration.SettingContent<int>() { Name = "Global_Limit", Value = 32 },
+                new Library.Configuration.SettingContent<TimeSpan>() { Name = "Global_MiningTime", Value = new TimeSpan(0, 10, 0) },
                 new Library.Configuration.SettingContent<LockedHashSet<string>>() { Name = "Global_UrlHistorys", Value = new LockedHashSet<string>() },
                 new Library.Configuration.SettingContent<LockedHashSet<Tag>>() { Name = "Global_TagHistorys", Value = new LockedHashSet<Tag>() },
                 new Library.Configuration.SettingContent<LockedHashSet<Seed>>() { Name = "Global_SeedHistorys", Value = new LockedHashSet<Seed>() },
@@ -278,6 +279,7 @@ namespace Amoeba.Properties
         public LockedList<LinkItem> Global_LinkItems { get { lock (this.ThisLock) { return (LockedList<LinkItem>)this["Global_LinkItems"]; } } set { lock (this.ThisLock) { this["Global_LinkItems"] = value; } } }
         public LockedHashDictionary<string, ProfileSetting> Global_ProfileSettings { get { lock (this.ThisLock) { return (LockedHashDictionary<string, ProfileSetting>)this["Global_ProfileSettings"]; } } set { lock (this.ThisLock) { this["Global_ProfileSettings"] = value; } } }
         public int Global_Limit { get { lock (this.ThisLock) { return (int)this["Global_Limit"]; } } set { lock (this.ThisLock) { this["Global_Limit"] = value; } } }
+        public TimeSpan Global_MiningTime { get { lock (this.ThisLock) { return (TimeSpan)this["Global_MiningTime"]; } } set { lock (this.ThisLock) { this["Global_MiningTime"] = value; } } }
         public LockedHashSet<string> Global_UrlHistorys { get { lock (this.ThisLock) { return (LockedHashSet<string>)this["Global_UrlHistorys"]; } } set { lock (this.ThisLock) { this["Global_UrlHistorys"] = value; } } }
         public LockedHashSet<Tag> Global_TagHistorys { get { lock (this.ThisLock) { return (LockedHashSet<Tag>)this["Global_TagHistorys"]; } } set { lock (this.ThisLock) { this["Global_TagHistorys"] = value; } } }
         public LockedHashSet<Seed> Global_SeedHistorys { get { lock (this.ThisLock) { return (LockedHashSet<Seed>)this["Global_SeedHistorys"]; } } set { lock (this.ThisLock) { this["Global_SeedHistorys"] = value; } } }

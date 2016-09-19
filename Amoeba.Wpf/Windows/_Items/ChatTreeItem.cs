@@ -20,7 +20,7 @@ namespace Amoeba.Windows
 
         private bool _isTrustEnabled = true;
 
-        private LockedHashDictionary<MulticastMessageItem, MulticastMessageState> _multicastMessages;
+        private LockedHashDictionary<MulticastMessageItem, MulticastMessageOption> _multicastMessages;
 
         private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
@@ -68,15 +68,15 @@ namespace Amoeba.Windows
             }
         }
 
-        [DataMember(Name = "MulticastMessages")]
-        public LockedHashDictionary<MulticastMessageItem, MulticastMessageState> MulticastMessages
+        [DataMember(Name = "MulticastMessages-2")]
+        public LockedHashDictionary<MulticastMessageItem, MulticastMessageOption> MulticastMessages
         {
             get
             {
                 lock (this.ThisLock)
                 {
                     if (_multicastMessages == null)
-                        _multicastMessages = new LockedHashDictionary<MulticastMessageItem, MulticastMessageState>();
+                        _multicastMessages = new LockedHashDictionary<MulticastMessageItem, MulticastMessageOption>();
 
                     return _multicastMessages;
                 }

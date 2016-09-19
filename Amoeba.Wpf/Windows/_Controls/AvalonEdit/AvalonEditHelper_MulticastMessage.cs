@@ -93,7 +93,6 @@ namespace Amoeba.Windows
 
             var document = new StringBuilder();
             var settings = new List<CustomElementSetting>();
-            int count = 1;
 
             foreach (var target in collection)
             {
@@ -101,12 +100,12 @@ namespace Amoeba.Windows
 
                 {
                     string item1;
-                    if (target.State.HasFlag(MulticastMessageState.IsLocked)) item1 = "#";
-                    else if (target.State.HasFlag(MulticastMessageState.IsUnread)) item1 = "!";
+                    if (target.Option.State.HasFlag(MulticastMessageState.IsLocked)) item1 = "#";
+                    else if (target.Option.State.HasFlag(MulticastMessageState.IsUnread)) item1 = "!";
                     else item1 = "@";
 
-                    var item2 = target.MulticastMessageItem.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                    var item3 = target.MulticastMessageItem.Signature;
+                    var item2 = target.Item.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                    var item3 = target.Item.Signature;
 
                     {
                         settings.Add(new CustomElementSetting("State", document.Length, item1.Length));
@@ -119,19 +118,23 @@ namespace Amoeba.Windows
 
                         settings.Add(new CustomElementSetting("Signature", document.Length, item3.Length));
                         document.Append(item3);
+
+                        if (!Inspect.ContainTrustSignature(target.Item.Signature))
+                        {
+                            document.Append(" +");
+                            document.Append(target.Option.Cost);
+                        }
                     }
 
                     document.AppendLine();
-                    count++;
                 }
 
                 {
                     document.AppendLine();
-                    count++;
                 }
 
                 {
-                    foreach (var line in target.MulticastMessageItem.Comment
+                    foreach (var line in target.Item.Comment
                         .Trim('\r', '\n')
                         .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
                         .Take(128)
@@ -143,13 +146,11 @@ namespace Amoeba.Windows
                         }
 
                         document.AppendLine(line);
-                        count++;
                     }
                 }
 
                 {
                     document.AppendLine();
-                    count++;
                 }
 
                 _ranges.Add(new CustomElementRange(startOffset, document.Length));
@@ -179,11 +180,10 @@ namespace Amoeba.Windows
             textEditor.ScrollToEnd();
         }
 
-        public void Set(TextEditor textEditor, DateTime creationTime, string signature, string comment)
+        public void Set(TextEditor textEditor, DateTime creationTime, string signature, int cost, string comment)
         {
             var document = new StringBuilder();
             var settings = new List<CustomElementSetting>();
-            int count = 1;
 
             {
                 {
@@ -202,15 +202,19 @@ namespace Amoeba.Windows
 
                         settings.Add(new CustomElementSetting("Signature", document.Length, item3.Length));
                         document.Append(item3);
+
+                        if (!Inspect.ContainTrustSignature(signature))
+                        {
+                            document.Append(" - ");
+                            document.Append(cost);
+                        }
                     }
 
                     document.AppendLine();
-                    count++;
                 }
 
                 {
                     document.AppendLine();
-                    count++;
                 }
 
                 {
@@ -226,13 +230,11 @@ namespace Amoeba.Windows
                         }
 
                         document.AppendLine(line);
-                        count++;
                     }
                 }
 
                 {
                     document.AppendLine();
-                    count++;
                 }
             }
 

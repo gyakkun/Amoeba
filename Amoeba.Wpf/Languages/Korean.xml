@@ -151,8 +151,8 @@
   <Translate Key="OptionsWindow_Box" Value="박스" />
   <Translate Key="OptionsWindow_RelateBoxFile" Value="박스 파일을 연결." />
   <Translate Key="OptionsWindow_OpenBox" Value="다운로드 된 박스파일을 엽니다." />
-  <Translate Key="OptionsWindow_Mail" Value="Mail" />
-  <Translate Key="OptionsWindow_OpenMail" Value="Open a mail that downloaded." />
+  <Translate Key="OptionsWindow_Mining" Value="Mining" />
+  <Translate Key="OptionsWindow_MiningTime" Value="Mining time (minutes)" />
   <Translate Key="OptionsWindow_Fonts" Value="Fonts" />
   <Translate Key="OptionsWindow_MessageFontFamily" Value="Message font family" />
   <Translate Key="OptionsWindow_MessageFontSize" Value="Message font size (pt)" />

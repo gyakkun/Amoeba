@@ -151,8 +151,8 @@
   <Translate Key="OptionsWindow_Box" Value="Box" />
   <Translate Key="OptionsWindow_RelateBoxFile" Value="Box 文件已设定关联。" />
   <Translate Key="OptionsWindow_OpenBox" Value="开启已下载的 .box 文件。" />
-  <Translate Key="OptionsWindow_Mail" Value="Mail" />
-  <Translate Key="OptionsWindow_OpenMail" Value="Open a mail that downloaded." />
+  <Translate Key="OptionsWindow_Mining" Value="Mining" />
+  <Translate Key="OptionsWindow_MiningTime" Value="Mining time (minutes)" />
   <Translate Key="OptionsWindow_Fonts" Value="Fonts" />
   <Translate Key="OptionsWindow_MessageFontFamily" Value="Message font family" />
   <Translate Key="OptionsWindow_MessageFontSize" Value="Message font size (pt)" />

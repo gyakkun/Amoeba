@@ -151,8 +151,8 @@
   <Translate Key="OptionsWindow_Box" Value="ボックス" />
   <Translate Key="OptionsWindow_RelateBoxFile" Value="Boxファイルを関連付ける" />
   <Translate Key="OptionsWindow_OpenBox" Value="ダウンロードされたBoxファイルを展開する" />
-  <Translate Key="OptionsWindow_Mail" Value="メール" />
-  <Translate Key="OptionsWindow_OpenMail" Value="ダウンロードされたメールを展開する" />
+  <Translate Key="OptionsWindow_Mining" Value="マイニング" />
+  <Translate Key="OptionsWindow_MiningTime" Value="マイニング時間 (分)" />
   <Translate Key="OptionsWindow_Fonts" Value="フォント" />
   <Translate Key="OptionsWindow_MessageFontFamily" Value="メッセージのフォントファミリー" />
   <Translate Key="OptionsWindow_MessageFontSize" Value="メッセージのフォントサイズ (pt)" />
