@@ -128,12 +128,8 @@ namespace Amoeba.Windows
             {
                 foreach (var signature in Inspect.GetTrustSignatures())
                 {
-                    var store = _amoebaManager.GetStore(signature);
-
-                    if (store != null) Settings.Instance.Cache_Stores[signature] = store;
-                    else Settings.Instance.Cache_Stores.TryGetValue(signature, out store);
-
-                    if (store == null) continue;
+                    Store store;
+                    if (!Settings.Instance.Cache_Stores.TryGetValue(signature, out store)) continue;
 
                     var boxList = new List<Box>();
                     var seedList = new HashSet<Seed>();

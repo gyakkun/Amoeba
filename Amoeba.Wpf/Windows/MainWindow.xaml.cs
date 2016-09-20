@@ -90,7 +90,7 @@ namespace Amoeba.Windows
 
         private volatile MainWindowTabType _selectedTab;
 
-        [FlagsAttribute]
+        [Flags]
         enum ExecutionState : uint
         {
             Null = 0,

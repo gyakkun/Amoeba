@@ -25,8 +25,6 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<LockedList<string>>() { Name = "Global_TrustSignatures", Value = new LockedList<string>() },
                 new Library.Configuration.SettingContent<LockedList<LinkItem>>() { Name = "Global_LinkItems", Value = new LockedList<LinkItem>() },
                 new Library.Configuration.SettingContent<LockedHashDictionary<string, ProfileSetting>>() { Name = "Global_ProfileSettings", Value = new LockedHashDictionary<string, ProfileSetting>() },
-                new Library.Configuration.SettingContent<int>() { Name = "Global_Limit", Value = 32 },
-                new Library.Configuration.SettingContent<TimeSpan>() { Name = "Global_MiningTime", Value = new TimeSpan(0, 10, 0) },
                 new Library.Configuration.SettingContent<LockedHashSet<string>>() { Name = "Global_UrlHistorys", Value = new LockedHashSet<string>() },
                 new Library.Configuration.SettingContent<LockedHashSet<Tag>>() { Name = "Global_TagHistorys", Value = new LockedHashSet<Tag>() },
                 new Library.Configuration.SettingContent<LockedHashSet<Seed>>() { Name = "Global_SeedHistorys", Value = new LockedHashSet<Seed>() },
@@ -44,6 +42,8 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_RelateBoxFile_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<bool>() { Name = "Global_OpenBox_IsEnabled", Value = true },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_BoxExtractTo_Path", Value = "Box/Temp" },
+                new Library.Configuration.SettingContent<int>() { Name = "Global_Limit", Value = 32 },
+                new Library.Configuration.SettingContent<TimeSpan>() { Name = "Global_MiningTime", Value = new TimeSpan(0, 10, 0) },
                 new Library.Configuration.SettingContent<string>() { Name = "Global_Fonts_Message_FontFamily", Value = "MS PGothic" },
                 new Library.Configuration.SettingContent<double>() { Name = "Global_Fonts_Message_FontSize", Value = 12 },
 
@@ -262,8 +262,6 @@ namespace Amoeba.Properties
         public LockedList<string> Global_TrustSignatures { get { return (LockedList<string>)this["Global_TrustSignatures"]; } set { this["Global_TrustSignatures"] = value; } }
         public LockedList<LinkItem> Global_LinkItems { get { return (LockedList<LinkItem>)this["Global_LinkItems"]; } set { this["Global_LinkItems"] = value; } }
         public LockedHashDictionary<string, ProfileSetting> Global_ProfileSettings { get { return (LockedHashDictionary<string, ProfileSetting>)this["Global_ProfileSettings"]; } set { this["Global_ProfileSettings"] = value; } }
-        public int Global_Limit { get { return (int)this["Global_Limit"]; } set { this["Global_Limit"] = value; } }
-        public TimeSpan Global_MiningTime { get { return (TimeSpan)this["Global_MiningTime"]; } set { this["Global_MiningTime"] = value; } }
         public LockedHashSet<string> Global_UrlHistorys { get { return (LockedHashSet<string>)this["Global_UrlHistorys"]; } set { this["Global_UrlHistorys"] = value; } }
         public LockedHashSet<Tag> Global_TagHistorys { get { return (LockedHashSet<Tag>)this["Global_TagHistorys"]; } set { this["Global_TagHistorys"] = value; } }
         public LockedHashSet<Seed> Global_SeedHistorys { get { return (LockedHashSet<Seed>)this["Global_SeedHistorys"]; } set { this["Global_SeedHistorys"] = value; } }
@@ -281,6 +279,8 @@ namespace Amoeba.Properties
         public bool Global_RelateBoxFile_IsEnabled { get { return (bool)this["Global_RelateBoxFile_IsEnabled"]; } set { this["Global_RelateBoxFile_IsEnabled"] = value; } }
         public bool Global_OpenBox_IsEnabled { get { return (bool)this["Global_OpenBox_IsEnabled"]; } set { this["Global_OpenBox_IsEnabled"] = value; } }
         public string Global_BoxExtractTo_Path { get { return (string)this["Global_BoxExtractTo_Path"]; } set { this["Global_BoxExtractTo_Path"] = value; } }
+        public int Global_Limit { get { return (int)this["Global_Limit"]; } set { this["Global_Limit"] = value; } }
+        public TimeSpan Global_MiningTime { get { return (TimeSpan)this["Global_MiningTime"]; } set { this["Global_MiningTime"] = value; } }
         public string Global_Fonts_Message_FontFamily { get { return (string)this["Global_Fonts_Message_FontFamily"]; } set { this["Global_Fonts_Message_FontFamily"] = value; } }
         public double Global_Fonts_Message_FontSize { get { return (double)this["Global_Fonts_Message_FontSize"]; } set { this["Global_Fonts_Message_FontSize"] = value; } }
 

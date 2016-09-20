@@ -119,6 +119,8 @@ namespace Amoeba.Windows
 
         private void Refresh()
         {
+            var trustSignatures = new HashSet<string>();
+
             {
                 var linkItems = new HashSet<LinkItem>();
 
@@ -162,11 +164,11 @@ namespace Amoeba.Windows
                     }
                 }
 
-                Inspect.SetTrustSignatures(linkItems.Select(n => n.Signature).ToArray());
+                trustSignatures.UnionWith(linkItems.Select(n => n.Signature).ToArray());
             }
 
             {
-                var trustSignatures = new HashSet<string>(Inspect.GetTrustSignatures());
+                Inspect.SetTrustSignatures(trustSignatures);
                 _amoebaManager.SetTrustSignatures(trustSignatures);
 
                 foreach (var signature in Settings.Instance.Cache_Links.Keys.ToArray())
