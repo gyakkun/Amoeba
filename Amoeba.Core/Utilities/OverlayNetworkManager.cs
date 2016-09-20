@@ -41,7 +41,7 @@ namespace Amoeba
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
 
-            _settings = new Settings(_thisLock);
+            _settings = new Settings();
 
             _amoebaManager.CreateCapEvent = this.CreateCap;
             _amoebaManager.AcceptCapEvent = this.AcceptCap;

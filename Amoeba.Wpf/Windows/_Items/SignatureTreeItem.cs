@@ -22,9 +22,9 @@ namespace Amoeba.Windows
         private volatile object _thisLock;
         private static readonly object _initializeLock = new object();
 
-        public SignatureTreeItem(LinkItem sectionLinkItemInfo)
+        public SignatureTreeItem(LinkItem linkItem)
         {
-            this.LinkItem = sectionLinkItemInfo;
+            this.LinkItem = linkItem;
         }
 
         public SignatureTreeItem Search(Func<SignatureTreeItem, bool> predicate)

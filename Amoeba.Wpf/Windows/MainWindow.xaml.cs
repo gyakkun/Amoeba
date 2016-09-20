@@ -82,7 +82,6 @@ namespace Amoeba.Windows
         private volatile bool _autoStop;
 
         private Thread _timerThread;
-        private Thread _watchThread;
         private Thread _statusBarThread;
         private Thread _trafficMonitorThread;
 
@@ -171,11 +170,6 @@ namespace Amoeba.Windows
                 _timerThread.Priority = ThreadPriority.Lowest;
                 _timerThread.Name = "MainWindow_TimerThread";
                 _timerThread.Start();
-
-                _watchThread = new Thread(this.WatchThread);
-                _watchThread.Priority = ThreadPriority.Lowest;
-                _watchThread.Name = "MainWindow_WatchThread";
-                _watchThread.Start();
 
                 _statusBarThread = new Thread(this.StatusBarThread);
                 _statusBarThread.Priority = ThreadPriority.Highest;
@@ -437,8 +431,8 @@ namespace Amoeba.Windows
 
                         try
                         {
-                            if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
-                               || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
+                            if (Settings.Instance.Global_Update_Option == UpdateOption.Check
+                               || Settings.Instance.Global_Update_Option == UpdateOption.Update)
                             {
                                 this.CheckUpdate(false);
                             }
@@ -512,84 +506,6 @@ namespace Amoeba.Windows
             catch (Exception)
             {
 
-            }
-        }
-
-        private void WatchThread()
-        {
-            try
-            {
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-
-                for (;;)
-                {
-                    Thread.Sleep(1000);
-                    if (_closed) return;
-
-                    if (Settings.Instance.Global_IsConnectRunning && stopwatch.Elapsed.TotalSeconds >= 120)
-                    {
-                        stopwatch.Restart();
-
-                        // SearchSignaturesの更新
-                        {
-                            var searchSignatures = new HashSet<string>();
-
-                            // クリップボード上にあるデータも考慮する。
-                            {
-                                var storeTreeItems = new List<StoreTreeItem>();
-                                storeTreeItems.AddRange(Clipboard.GetStoreTreeItems());
-
-                                {
-                                    var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
-                                    storeCategorizeTreeItems.AddRange(Clipboard.GetStoreCategorizeTreeItems());
-
-                                    for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
-                                    {
-                                        storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
-                                        storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
-                                    }
-                                }
-
-                                searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
-                            }
-
-                            {
-                                var storeTreeItems = new List<StoreTreeItem>();
-
-                                {
-                                    var storeCategorizeTreeItems = new List<StoreCategorizeTreeItem>();
-                                    storeCategorizeTreeItems.Add(Settings.Instance.StoreDownloadControl_StoreCategorizeTreeItem);
-
-                                    for (int i = 0; i < storeCategorizeTreeItems.Count; i++)
-                                    {
-                                        storeCategorizeTreeItems.AddRange(storeCategorizeTreeItems[i].Children);
-                                        storeTreeItems.AddRange(storeCategorizeTreeItems[i].StoreTreeItems);
-                                    }
-                                }
-
-                                searchSignatures.UnionWith(storeTreeItems.Select(n => n.Signature));
-                            }
-
-                            searchSignatures.UnionWith(Settings.Instance.Global_TrustSignatures.ToArray());
-
-                            foreach (var linkItem in Settings.Instance.Cache_LinkItems.Values.ToArray())
-                            {
-                                searchSignatures.Add(linkItem.Signature);
-                                searchSignatures.UnionWith(linkItem.TrustSignatures);
-                            }
-
-                            lock (_amoebaManager.ThisLock)
-                            {
-                                _amoebaManager.SetSearchSignatures(searchSignatures);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
             }
         }
 
@@ -1401,7 +1317,7 @@ namespace Amoeba.Windows
 
                                 bool flag = true;
 
-                                if (Settings.Instance.Global_Update_Option != UpdateOption.AutoUpdate)
+                                if (Settings.Instance.Global_Update_Option != UpdateOption.Update)
                                 {
                                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                                     {
@@ -1510,8 +1426,8 @@ namespace Amoeba.Windows
                 _convertStartMenuItem_Click(null, null);
             }
 
-            if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck
-               || Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
+            if (Settings.Instance.Global_Update_Option == UpdateOption.Check
+               || Settings.Instance.Global_Update_Option == UpdateOption.Update)
             {
                 this.CheckUpdate(false);
             }
@@ -1548,9 +1464,6 @@ namespace Amoeba.Windows
 
                     _timerThread.Join();
                     _timerThread = null;
-
-                    _watchThread.Join();
-                    _watchThread = null;
 
                     _statusBarThread.Join();
                     _statusBarThread = null;

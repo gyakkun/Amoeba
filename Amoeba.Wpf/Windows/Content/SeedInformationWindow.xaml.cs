@@ -126,17 +126,13 @@ namespace Amoeba.Windows
             }
 
             {
-                var searchSignatures = new HashSet<string>();
-
-                foreach (var linkItem in Settings.Instance.Cache_LinkItems.Values.ToArray())
-                {
-                    searchSignatures.Add(linkItem.Signature);
-                    searchSignatures.UnionWith(linkItem.TrustSignatures);
-                }
-
-                foreach (var signature in searchSignatures)
+                foreach (var signature in Inspect.GetTrustSignatures())
                 {
                     var store = _amoebaManager.GetStore(signature);
+
+                    if (store != null) Settings.Instance.Cache_Stores[signature] = store;
+                    else Settings.Instance.Cache_Stores.TryGetValue(signature, out store);
+
                     if (store == null) continue;
 
                     var boxList = new List<Box>();

@@ -25,7 +25,7 @@ namespace Amoeba
         {
             _amoebaManager = amoebaManager;
 
-            _settings = new Settings(_thisLock);
+            _settings = new Settings();
         }
 
         public override ManagerState State

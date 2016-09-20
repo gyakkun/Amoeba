@@ -25,7 +25,7 @@ namespace Amoeba
         {
             _amoebaManager = amoebaManager;
 
-            _settings = new Settings(_thisLock);
+            _settings = new Settings();
         }
 
         public override ManagerState State
@@ -405,49 +405,25 @@ namespace Amoeba
 
         private class Settings : Library.Configuration.SettingsBase
         {
-            private object _thisLock;
-
-            public Settings(object lockObject)
+            public Settings()
                 : base(new List<Library.Configuration.ISettingContent>() {
                     new Library.Configuration.SettingContent<string>() { Name = "Ipv4Uri", Value = null },
                     new Library.Configuration.SettingContent<string>() { Name = "Ipv6Uri", Value = null },
                     new Library.Configuration.SettingContent<string>() { Name = "UpnpUri", Value = null },
                 })
             {
-                _thisLock = lockObject;
-            }
 
-            public override void Load(string directoryPath)
-            {
-                lock (_thisLock)
-                {
-                    base.Load(directoryPath);
-                }
-            }
-
-            public override void Save(string directoryPath)
-            {
-                lock (_thisLock)
-                {
-                    base.Save(directoryPath);
-                }
             }
 
             public string Ipv4Uri
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (string)this["Ipv4Uri"];
-                    }
+                    return (string)this["Ipv4Uri"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["Ipv4Uri"] = value;
-                    }
+                    this["Ipv4Uri"] = value;
                 }
             }
 
@@ -455,17 +431,11 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (string)this["Ipv6Uri"];
-                    }
+                    return (string)this["Ipv6Uri"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["Ipv6Uri"] = value;
-                    }
+                    this["Ipv6Uri"] = value;
                 }
             }
 
@@ -473,17 +443,11 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (string)this["UpnpUri"];
-                    }
+                    return (string)this["UpnpUri"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["UpnpUri"] = value;
-                    }
+                    this["UpnpUri"] = value;
                 }
             }
         }

@@ -41,7 +41,7 @@ namespace Amoeba
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
 
-            _settings = new Settings(_thisLock);
+            _settings = new Settings();
 
             _amoebaManager.CreateCapEvent = this.CreateCap;
             _amoebaManager.AcceptCapEvent = this.AcceptCap;
@@ -358,48 +358,24 @@ namespace Amoeba
 
         private class Settings : Library.Configuration.SettingsBase
         {
-            private object _thisLock;
-
-            public Settings(object lockObject)
+            public Settings()
                 : base(new List<Library.Configuration.ISettingContent>() {
                     new Library.Configuration.SettingContent<string>() { Name = "SamBridgeUri", Value = "tcp:127.0.0.1:7656" },
                     new Library.Configuration.SettingContent<string>() { Name = "I2pUri", Value = "" },
                 })
             {
-                _thisLock = lockObject;
-            }
 
-            public override void Load(string directoryPath)
-            {
-                lock (_thisLock)
-                {
-                    base.Load(directoryPath);
-                }
-            }
-
-            public override void Save(string directoryPath)
-            {
-                lock (_thisLock)
-                {
-                    base.Save(directoryPath);
-                }
             }
 
             public string SamBridgeUri
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (string)this["SamBridgeUri"];
-                    }
+                    return (string)this["SamBridgeUri"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["SamBridgeUri"] = value;
-                    }
+                    this["SamBridgeUri"] = value;
                 }
             }
 
@@ -407,17 +383,11 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (string)this["I2pUri"];
-                    }
+                    return (string)this["I2pUri"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["I2pUri"] = value;
-                    }
+                    this["I2pUri"] = value;
                 }
             }
         }

@@ -9,9 +9,9 @@ namespace Amoeba.Windows
         None = 0,
 
         [EnumMember(Value = "AutoCheck")]
-        AutoCheck = 1,
+        Check = 1,
 
         [EnumMember(Value = "AutoUpdate")]
-        AutoUpdate = 2,
+        Update = 2,
     }
 }

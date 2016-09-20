@@ -302,6 +302,10 @@ namespace Amoeba.Windows
                         foreach (var storeTreeViewModel in storeTreeViewModels)
                         {
                             var store = _amoebaManager.GetStore(storeTreeViewModel.Value.Signature);
+
+                            if (store != null) Settings.Instance.Cache_Stores[storeTreeViewModel.Value.Signature] = store;
+                            else Settings.Instance.Cache_Stores.TryGetValue(storeTreeViewModel.Value.Signature, out store);
+
                             if (store == null || CollectionUtils.Equals(storeTreeViewModel.Value.Boxes, store.Boxes)) continue;
 
                             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>

@@ -52,7 +52,6 @@ namespace Amoeba.Windows
         private Thread _cacheThread;
 
         private AutoResetEvent _updateEvent = new AutoResetEvent(false);
-        private volatile bool _refreshing = false;
         private AutoResetEvent _cacheUpdateEvent = new AutoResetEvent(false);
         private volatile bool _autoUpdate;
 
@@ -189,80 +188,71 @@ namespace Amoeba.Windows
                 {
                     _updateEvent.WaitOne();
 
-                    try
-                    {
-                        _refreshing = true;
+                    TreeViewModelBase tempTreeViewModel = null;
 
-                        TreeViewModelBase tempTreeViewModel = null;
+                    this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        tempTreeViewModel = (TreeViewModelBase)_treeView.SelectedItem;
+                    }));
+
+                    if (tempTreeViewModel is ChatCategorizeTreeViewModel)
+                    {
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                        {
+                            if (tempTreeViewModel != _treeView.SelectedItem) return;
+
+                            _newMessageButton.IsEnabled = false;
+                            _trustToggleButton.IsEnabled = false;
+                            _trustToggleButton.IsChecked = false;
+                            _limitStackPanel.IsEnabled = false;
+
+                            _textEditor_Helper.Clear(_textEditor);
+                        }));
+                    }
+                    else if (tempTreeViewModel is ChatTreeViewModel)
+                    {
+                        var chatTreeViewModel = (ChatTreeViewModel)tempTreeViewModel;
+
+                        var newList = new HashSet<MulticastMessageViewModel>();
+
+                        lock (chatTreeViewModel.Value.ThisLock)
+                        {
+                            newList.UnionWith(chatTreeViewModel.Value.MulticastMessages
+                                .Select(n => new MulticastMessageViewModel(n.Key, n.Value)));
+
+                            foreach (var pair in chatTreeViewModel.Value.MulticastMessages.ToArray())
+                            {
+                                var item = pair.Key;
+                                var option = pair.Value;
+
+                                chatTreeViewModel.Value.MulticastMessages[item].State &= ~MulticastMessageState.IsUnread;
+                            }
+                        }
 
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
-                            tempTreeViewModel = (TreeViewModelBase)_treeView.SelectedItem;
-                        }));
+                            if (chatTreeViewModel != _treeView.SelectedItem) return;
 
-                        if (tempTreeViewModel is ChatCategorizeTreeViewModel)
-                        {
-                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
-                                if (tempTreeViewModel != _treeView.SelectedItem) return;
+                                _newMessageButton.IsEnabled = (Settings.Instance.Global_DigitalSignatures.Count != 0);
 
-                                _newMessageButton.IsEnabled = false;
-                                _trustToggleButton.IsEnabled = false;
-                                _trustToggleButton.IsChecked = false;
-                                _limitStackPanel.IsEnabled = false;
-
-                                _textEditor_Helper.Clear(_textEditor);
-                            }));
-                        }
-                        else if (tempTreeViewModel is ChatTreeViewModel)
-                        {
-                            var chatTreeViewModel = (ChatTreeViewModel)tempTreeViewModel;
-
-                            var newList = new HashSet<MulticastMessageViewModel>();
-
-                            lock (chatTreeViewModel.Value.ThisLock)
-                            {
-                                newList.UnionWith(chatTreeViewModel.Value.MulticastMessages
-                                    .Select(n => new MulticastMessageViewModel(n.Key, n.Value)));
-
-                                foreach (var pair in chatTreeViewModel.Value.MulticastMessages.ToArray())
-                                {
-                                    var item = pair.Key;
-                                    var option = pair.Value;
-
-                                    chatTreeViewModel.Value.MulticastMessages[item].State &= ~MulticastMessageState.IsUnread;
-                                }
+                                _trustToggleButton.IsEnabled = true;
+                                _trustToggleButton.IsChecked = chatTreeViewModel.Value.IsTrustEnabled;
+                                _limitStackPanel.IsEnabled = true;
                             }
 
-                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
-                                if (chatTreeViewModel != _treeView.SelectedItem) return;
+                                var sortedList = newList.ToList();
+                                sortedList.Sort((x, y) => x.Item.CreationTime.CompareTo(y.Item.CreationTime));
 
-                                {
-                                    _newMessageButton.IsEnabled = (Settings.Instance.Global_DigitalSignatures.Count != 0);
+                                _textEditer_Collection.Clear();
+                                _textEditer_Collection.AddRange(sortedList);
 
-                                    _trustToggleButton.IsEnabled = true;
-                                    _trustToggleButton.IsChecked = chatTreeViewModel.Value.IsTrustEnabled;
-                                    _limitStackPanel.IsEnabled = true;
-                                }
+                                _textEditor_Helper.Set(_textEditor, _textEditer_Collection);
+                            }
 
-                                {
-                                    var sortedList = newList.ToList();
-                                    sortedList.Sort((x, y) => x.Item.CreationTime.CompareTo(y.Item.CreationTime));
-
-                                    _textEditer_Collection.Clear();
-                                    _textEditer_Collection.AddRange(sortedList);
-
-                                    _textEditor_Helper.Set(_textEditor, _textEditer_Collection);
-                                }
-
-                                this.Update_TreeView_Color();
-                            }));
-                        }
-                    }
-                    finally
-                    {
-                        _refreshing = false;
+                            this.Update_TreeView_Color();
+                        }));
                     }
                 }
             }

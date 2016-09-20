@@ -177,11 +177,11 @@ namespace Amoeba.Windows
             {
                 _updateOptionNoneRadioButton.IsChecked = true;
             }
-            else if (Settings.Instance.Global_Update_Option == UpdateOption.AutoCheck)
+            else if (Settings.Instance.Global_Update_Option == UpdateOption.Check)
             {
                 _updateOptionAutoCheckRadioButton.IsChecked = true;
             }
-            else if (Settings.Instance.Global_Update_Option == UpdateOption.AutoUpdate)
+            else if (Settings.Instance.Global_Update_Option == UpdateOption.Update)
             {
                 _updateOptionAutoUpdateRadioButton.IsChecked = true;
             }
@@ -2154,11 +2154,11 @@ namespace Amoeba.Windows
                 }
                 else if (_updateOptionAutoCheckRadioButton.IsChecked.Value)
                 {
-                    Settings.Instance.Global_Update_Option = UpdateOption.AutoCheck;
+                    Settings.Instance.Global_Update_Option = UpdateOption.Check;
                 }
                 else if (_updateOptionAutoUpdateRadioButton.IsChecked.Value)
                 {
-                    Settings.Instance.Global_Update_Option = UpdateOption.AutoUpdate;
+                    Settings.Instance.Global_Update_Option = UpdateOption.Update;
                 }
             }
 

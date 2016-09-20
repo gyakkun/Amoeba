@@ -52,6 +52,8 @@ namespace Amoeba.Windows
 
         private Thread _watchThread;
 
+        private LockedHashDictionary<string, LinkItem> _cache_LinkItems = new LockedHashDictionary<string, LinkItem>();
+
         public LinkControl(AmoebaManager amoebaManager, BufferManager bufferManager)
         {
             _amoebaManager = amoebaManager;
@@ -81,8 +83,6 @@ namespace Amoeba.Windows
             };
 
             _searchRowDefinition.Height = new GridLength(0);
-
-            this.Update();
         }
 
         private void Sort()
@@ -105,7 +105,7 @@ namespace Amoeba.Windows
                     {
                         stopwatch.Restart();
 
-                        this.Refresh_LinkItems();
+                        this.Refresh();
                     }
 
                     Thread.Sleep(1000);
@@ -117,64 +117,71 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Refresh_LinkItems()
+        private void Refresh()
         {
-            var linkItems = new HashSet<LinkItem>();
-
-            foreach (var leaderSignature in Settings.Instance.Global_TrustSignatures.ToArray())
             {
-                var targetLinkItems = new List<LinkItem>();
+                var linkItems = new HashSet<LinkItem>();
 
-                var targetSignatures = new HashSet<string>();
-                var checkedSignatures = new HashSet<string>();
-
-                targetSignatures.Add(leaderSignature);
-
-                for (int i = 0; i < 32; i++)
+                foreach (var leaderSignature in Settings.Instance.Global_TrustSignatures.ToArray())
                 {
-                    var tempLinkItems = this.GetLinkItems(targetSignatures).ToList();
-                    if (tempLinkItems.Count == 0) break;
+                    var targetLinkItems = new List<LinkItem>();
 
-                    checkedSignatures.UnionWith(targetSignatures);
-                    checkedSignatures.UnionWith(tempLinkItems.SelectMany(n => n.DeleteSignatures));
+                    var targetSignatures = new HashSet<string>();
+                    var checkedSignatures = new HashSet<string>();
 
-                    targetSignatures.Clear();
-                    targetSignatures.UnionWith(tempLinkItems.SelectMany(n => n.TrustSignatures).Where(n => !checkedSignatures.Contains(n)));
+                    targetSignatures.Add(leaderSignature);
 
-                    targetLinkItems.AddRange(tempLinkItems);
+                    for (int i = 0; i < 32; i++)
+                    {
+                        var tempLinkItems = this.GetLinkItems(targetSignatures).ToList();
+                        if (tempLinkItems.Count == 0) break;
 
-                    if (targetLinkItems.Count > 1024 * 32) goto End;
+                        checkedSignatures.UnionWith(targetSignatures);
+                        checkedSignatures.UnionWith(tempLinkItems.SelectMany(n => n.DeleteSignatures));
+
+                        targetSignatures.Clear();
+                        targetSignatures.UnionWith(tempLinkItems.SelectMany(n => n.TrustSignatures).Where(n => !checkedSignatures.Contains(n)));
+
+                        targetLinkItems.AddRange(tempLinkItems);
+
+                        if (targetLinkItems.Count > 1024 * 32) goto End;
+                    }
+
+                    End:;
+
+                    linkItems.UnionWith(targetLinkItems.Take(1024 * 32));
                 }
 
-                End:;
-
-                linkItems.UnionWith(targetLinkItems.Take(1024 * 32));
-            }
-
-            Inspect.SetTrustSignatures(linkItems.Select(n => n.Signature).ToArray());
-
-            var profileItems = this.GetProfileItems(Inspect.GetTrustSignatures()).ToList();
-
-            lock (Settings.Instance.ThisLock)
-            {
-                lock (Settings.Instance.Cache_LinkItems.ThisLock)
+                lock (_cache_LinkItems.ThisLock)
                 {
-                    Settings.Instance.Cache_LinkItems.Clear();
+                    _cache_LinkItems.Clear();
 
                     foreach (var linkItem in linkItems)
                     {
-                        Settings.Instance.Cache_LinkItems.Add(linkItem.Signature, linkItem);
+                        _cache_LinkItems.Add(linkItem.Signature, linkItem);
                     }
                 }
 
-                lock (Settings.Instance.Cache_ProfileItems.ThisLock)
-                {
-                    Settings.Instance.Cache_ProfileItems.Clear();
+                Inspect.SetTrustSignatures(linkItems.Select(n => n.Signature).ToArray());
+            }
 
-                    foreach (var profileItem in profileItems)
-                    {
-                        Settings.Instance.Cache_ProfileItems.Add(profileItem.Signature, profileItem);
-                    }
+            {
+                var trustSignatures = new HashSet<string>(Inspect.GetTrustSignatures());
+                _amoebaManager.SetTrustSignatures(trustSignatures);
+
+                foreach (var signature in Settings.Instance.Cache_Links.Keys.ToArray())
+                {
+                    if (!trustSignatures.Contains(signature)) Settings.Instance.Cache_Links.Remove(signature);
+                }
+
+                foreach (var signature in Settings.Instance.Cache_Profiles.Keys.ToArray())
+                {
+                    if (!trustSignatures.Contains(signature)) Settings.Instance.Cache_Profiles.Remove(signature);
+                }
+
+                foreach (var signature in Settings.Instance.Cache_Stores.Keys.ToArray())
+                {
+                    if (!trustSignatures.Contains(signature)) Settings.Instance.Cache_Stores.Remove(signature);
                 }
             }
         }
@@ -190,6 +197,9 @@ namespace Amoeba.Windows
                 {
                     var link = _amoebaManager.GetLink(trustSignature);
 
+                    if (link != null) Settings.Instance.Cache_Links[trustSignature] = link;
+                    else Settings.Instance.Cache_Links.TryGetValue(trustSignature, out link);
+
                     if (link != null)
                     {
                         linkItem = new LinkItem();
@@ -197,11 +207,6 @@ namespace Amoeba.Windows
                         linkItem.TrustSignatures.AddRange(link.TrustSignatures);
                         linkItem.DeleteSignatures.AddRange(link.DeleteSignatures);
                     }
-                }
-
-                if (linkItem == null)
-                {
-                    Settings.Instance.Cache_LinkItems.TryGetValue(trustSignature, out linkItem);
                 }
 
                 if (linkItem == null)
@@ -214,42 +219,6 @@ namespace Amoeba.Windows
             }
 
             return linkItems;
-        }
-
-        private IEnumerable<ProfileItem> GetProfileItems(IEnumerable<string> trustSignatures)
-        {
-            var profileItems = new List<ProfileItem>();
-
-            foreach (var trustSignature in trustSignatures)
-            {
-                ProfileItem profileItem = null;
-
-                {
-                    var profile = _amoebaManager.GetProfile(trustSignature);
-
-                    if (profile != null)
-                    {
-                        profileItem = new ProfileItem();
-                        profileItem.Signature = trustSignature;
-                        profileItem.ExchangePublicKey = profile.ExchangePublicKey;
-                    }
-                }
-
-                if (profileItem == null)
-                {
-                    Settings.Instance.Cache_ProfileItems.TryGetValue(trustSignature, out profileItem);
-                }
-
-                if (profileItem == null)
-                {
-                    profileItem = new ProfileItem();
-                    profileItem.Signature = trustSignature;
-                }
-
-                profileItems.Add(profileItem);
-            }
-
-            return profileItems;
         }
 
         private static string GetNormalizedPath(string path)
@@ -274,6 +243,8 @@ namespace Amoeba.Windows
 
             _trustSignatureCollection.Clear();
             _untrustSignatureCollection.Clear();
+
+            if (_cache_LinkItems.Count == 0) return;
 
             string[] words = null;
 
@@ -354,7 +325,7 @@ namespace Amoeba.Windows
 
             {
                 LinkItem leaderLinkItem;
-                if (!Settings.Instance.Cache_LinkItems.TryGetValue(leaderSignature, out leaderLinkItem)) return null;
+                if (!_cache_LinkItems.TryGetValue(leaderSignature, out leaderLinkItem)) return null;
 
                 signatureTreeItems.Add(new SignatureTreeItem(leaderLinkItem));
                 checkedSignatures.Add(leaderSignature);
@@ -375,7 +346,7 @@ namespace Amoeba.Windows
                             if (checkedSignatures.Contains(trustSignature)) continue;
 
                             LinkItem tempLinkItem;
-                            if (!Settings.Instance.Cache_LinkItems.TryGetValue(trustSignature, out tempLinkItem)) continue;
+                            if (!_cache_LinkItems.TryGetValue(trustSignature, out tempLinkItem)) continue;
 
                             var tempTreeItem = new SignatureTreeItem(tempLinkItem);
                             signatureTreeItems[index].Children.Add(tempTreeItem);

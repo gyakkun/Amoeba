@@ -169,22 +169,16 @@ namespace Amoeba.Windows
                             {
                                 var boxList = new List<Box>();
 
+                                foreach (var signature in Inspect.GetTrustSignatures())
                                 {
-                                    var searchSignatures = new HashSet<string>();
+                                    var store = _amoebaManager.GetStore(signature);
 
-                                    foreach (var linkItem in Settings.Instance.Cache_LinkItems.Values.ToArray())
-                                    {
-                                        searchSignatures.Add(linkItem.Signature);
-                                        searchSignatures.UnionWith(linkItem.TrustSignatures);
-                                    }
+                                    if (store != null) Settings.Instance.Cache_Stores[signature] = store;
+                                    else Settings.Instance.Cache_Stores.TryGetValue(signature, out store);
 
-                                    foreach (var signature in searchSignatures)
-                                    {
-                                        var store = _amoebaManager.GetStore(signature);
-                                        if (store == null) continue;
+                                    if (store == null) continue;
 
-                                        boxList.AddRange(store.Boxes);
-                                    }
+                                    boxList.AddRange(store.Boxes);
                                 }
 
                                 for (int i = 0; i < boxList.Count; i++)

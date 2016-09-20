@@ -35,7 +35,7 @@ namespace Amoeba
         {
             _amoebaManager = amoebaManager;
 
-            _settings = new Settings(_thisLock);
+            _settings = new Settings();
         }
 
         public event EventHandler StartEvent
@@ -315,49 +315,25 @@ namespace Amoeba
 
         private class Settings : Library.Configuration.SettingsBase
         {
-            private object _thisLock;
-
-            public Settings(object lockObject)
+            public Settings()
                 : base(new List<Library.Configuration.ISettingContent>() {
                 new Library.Configuration.SettingContent<TransferLimit>() { Name = "TransferLimit", Value = new TransferLimit() },
                 new Library.Configuration.SettingContent<LockedHashDictionary<DateTime, long>>() { Name = "UploadTransferSizeList", Value = new LockedHashDictionary<DateTime, long>() },
                 new Library.Configuration.SettingContent<LockedHashDictionary<DateTime, long>>() { Name = "DownloadTransferSizeList", Value = new LockedHashDictionary<DateTime, long>() },
                 })
             {
-                _thisLock = lockObject;
-            }
 
-            public override void Load(string directoryPath)
-            {
-                lock (_thisLock)
-                {
-                    base.Load(directoryPath);
-                }
-            }
-
-            public override void Save(string directoryPath)
-            {
-                lock (_thisLock)
-                {
-                    base.Save(directoryPath);
-                }
             }
 
             public TransferLimit TransferLimit
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (TransferLimit)this["TransferLimit"];
-                    }
+                    return (TransferLimit)this["TransferLimit"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["TransferLimit"] = value;
-                    }
+                    this["TransferLimit"] = value;
                 }
             }
 
@@ -365,17 +341,11 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (LockedHashDictionary<DateTime, long>)this["UploadTransferSizeList"];
-                    }
+                    return (LockedHashDictionary<DateTime, long>)this["UploadTransferSizeList"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["UploadTransferSizeList"] = value;
-                    }
+                    this["UploadTransferSizeList"] = value;
                 }
             }
 
@@ -383,17 +353,11 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (LockedHashDictionary<DateTime, long>)this["DownloadTransferSizeList"];
-                    }
+                    return (LockedHashDictionary<DateTime, long>)this["DownloadTransferSizeList"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["DownloadTransferSizeList"] = value;
-                    }
+                    this["DownloadTransferSizeList"] = value;
                 }
             }
         }

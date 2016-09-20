@@ -50,7 +50,7 @@ namespace Amoeba
             _bufferManager = bufferManager;
             _serviceManager = serviceManager;
 
-            _settings = new Settings(_thisLock);
+            _settings = new Settings();
 
 #if DEBUG
             _watchTimer = new System.Threading.Timer(this.WatchTimer, null, new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0, 0));
@@ -488,48 +488,24 @@ namespace Amoeba
 
         private class Settings : Library.Configuration.SettingsBase
         {
-            private object _thisLock;
-
-            public Settings(object lockObject)
+            public Settings()
                 : base(new List<Library.Configuration.ISettingContent>() {
                     new Library.Configuration.SettingContent<HashSet<uint>>() { Name = "Ipv4AddressSet", Value = new HashSet<uint>() },
                     new Library.Configuration.SettingContent<HashSet<SearchRange<uint>>>() { Name = "Ipv4AddressRangeSet", Value = new HashSet<SearchRange<uint>>() },
                 })
             {
-                _thisLock = lockObject;
-            }
 
-            public override void Load(string directoryPath)
-            {
-                lock (_thisLock)
-                {
-                    base.Load(directoryPath);
-                }
-            }
-
-            public override void Save(string directoryPath)
-            {
-                lock (_thisLock)
-                {
-                    base.Save(directoryPath);
-                }
             }
 
             public HashSet<uint> Ipv4AddressSet
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (HashSet<uint>)this["Ipv4AddressSet"];
-                    }
+                    return (HashSet<uint>)this["Ipv4AddressSet"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["Ipv4AddressSet"] = value;
-                    }
+                    this["Ipv4AddressSet"] = value;
                 }
             }
 
@@ -537,17 +513,11 @@ namespace Amoeba
             {
                 get
                 {
-                    lock (_thisLock)
-                    {
-                        return (HashSet<SearchRange<uint>>)this["Ipv4AddressRangeSet"];
-                    }
+                    return (HashSet<SearchRange<uint>>)this["Ipv4AddressRangeSet"];
                 }
                 set
                 {
-                    lock (_thisLock)
-                    {
-                        this["Ipv4AddressRangeSet"] = value;
-                    }
+                    this["Ipv4AddressRangeSet"] = value;
                 }
             }
         }
