@@ -47,9 +47,21 @@ namespace Amoeba.Windows
             return seedList.Count;
         }
 
-        public void Update()
+        public void Update_Header()
         {
             this.NotifyPropertyChanged(nameof(this.Name));
+
+            if (this.Parent is BoxTreeViewModel)
+            {
+                var parentBoxTreeViewModel = (BoxTreeViewModel)this.Parent;
+
+                parentBoxTreeViewModel.Update_Header();
+            }
+        }
+
+        public void Update()
+        {
+            this.Update_Header();
 
             foreach (var item in _children.OfType<BoxTreeViewModel>().ToArray())
             {
