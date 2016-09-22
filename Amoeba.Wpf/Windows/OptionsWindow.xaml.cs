@@ -232,6 +232,7 @@ namespace Amoeba.Windows
             _MiningTimeTextBox.Text = Settings.Instance.Global_MiningTime.TotalMinutes.ToString();
 
             _fontMessageFontFamilyComboBoxItemCollection.AddRange(Fonts.SystemFontFamilies.Select(n => n.ToString()));
+            _fontMessageFontFamilyComboBoxItemCollection.Sort();
             _fontMessageFontFamilyComboBox.ItemsSource = _fontMessageFontFamilyComboBoxItemCollection;
             _fontMessageFontFamilyComboBox.SelectedItem = Settings.Instance.Global_Fonts_Message_FontFamily;
 
