@@ -140,7 +140,7 @@ namespace Amoeba.Windows
                     dic["InformationControl_UsingSpace"] = NetworkConverter.ToSizeString(((long)information["UsingSpace"])).ToString();
 
                     dic["InformationControl_NodeCount"] = ((int)information["OtherNodeCount"]).ToString();
-                    dic["InformationControl_BlockCount"] = ((int)information["BlockCount"]).ToString();
+                    dic["InformationControl_BlockCount"] = ((long)information["BlockCount"]).ToString();
                     dic["InformationControl_MetadataCount"] = ((int)information["MetadataCount"]).ToString();
                     dic["InformationControl_SeedCount"] = ((int)information["SeedCount"]).ToString();
                     dic["InformationControl_DownloadCount"] = ((int)information["DownloadingCount"]).ToString();
