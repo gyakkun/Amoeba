@@ -35,6 +35,7 @@ namespace Amoeba
                 for (int i = 0; i < boxList.Count; i++)
                 {
                     boxList.AddRange(boxList[i].Boxes);
+                    seedList.AddRange(boxList[i].Seeds);
                 }
             }
 
