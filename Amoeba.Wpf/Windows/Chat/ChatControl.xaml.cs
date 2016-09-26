@@ -218,14 +218,11 @@ namespace Amoeba.Windows
                         lock (chatTreeViewModel.Value.ThisLock)
                         {
                             newList.UnionWith(chatTreeViewModel.Value.MulticastMessages
-                                .Select(n => new MulticastMessageViewModel(n.Key, n.Value)));
+                                .Select(n => new MulticastMessageViewModel(n.Key, n.Value.Clone())));
 
-                            foreach (var pair in chatTreeViewModel.Value.MulticastMessages.ToArray())
+                            foreach (var option in chatTreeViewModel.Value.MulticastMessages.Values.ToArray())
                             {
-                                var item = pair.Key;
-                                var option = pair.Value.Clone();
-
-                                chatTreeViewModel.Value.MulticastMessages[item].State &= ~MulticastMessageState.IsUnread;
+                                option.State &= ~MulticastMessageState.IsUnread;
                             }
                         }
 
