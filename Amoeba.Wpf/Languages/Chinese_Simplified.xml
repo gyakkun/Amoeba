@@ -13,10 +13,10 @@
   <Translate Key="Languages_Ukrainian" Value="乌克兰语 (Ukrainian)" />
   <Translate Key="Languages_Russian" Value="俄罗斯语 (Russian)" />
 
-  <Translate Key="ConnectDirection_In" Value="进站" />
-  <Translate Key="ConnectDirection_Out" Value="出站" />
+  <Translate Key="ConnectDirection_In" Value="进" />
+  <Translate Key="ConnectDirection_Out" Value="出" />
 
-  <Translate Key="Tag_Name" Value="Name" />
+  <Translate Key="Tag_Name" Value="名称" />
   <Translate Key="Tag_Id" Value="ID" />
 
   <Translate Key="Seed_Name" Value="名称" />
@@ -24,31 +24,31 @@
   <Translate Key="Seed_Length" Value="大小" />
   <Translate Key="Seed_Keywords" Value="关键字" />
   <Translate Key="Seed_CreationTime" Value="建立时间" />
-  <Translate Key="Seed_Comment" Value="评论" />
+  <Translate Key="Seed_Comment" Value="注释" />
 
   <Translate Key="Box_Name" Value="名称" />
   <Translate Key="Box_Signature" Value="签名" />
   <Translate Key="Box_CreationTime" Value="建立时间" />
-  <Translate Key="Box_Comment" Value="评论" />
+  <Translate Key="Box_Comment" Value="注释" />
 
   <Translate Key="MainWindow_Information" Value="信息" />
-  <Translate Key="MainWindow_Link" Value="Link" />
+  <Translate Key="MainWindow_Link" Value="链接" />
   <Translate Key="MainWindow_Wiki" Value="Wiki" />
-  <Translate Key="MainWindow_Chat" Value="Chat" />
-  <Translate Key="MainWindow_Mail" Value="Mail" />
-  <Translate Key="MainWindow_Search" Value="Search" />
+  <Translate Key="MainWindow_Chat" Value="聊天" />
+  <Translate Key="MainWindow_Mail" Value="邮件" />
+  <Translate Key="MainWindow_Search" Value="搜索" />
   <Translate Key="MainWindow_Download" Value="下载" />
   <Translate Key="MainWindow_Upload" Value="上传" />
   <Translate Key="MainWindow_Share" Value="分享" />
   <Translate Key="MainWindow_Store" Value="收藏" />
-  <Translate Key="MainWindow_Log" Value="Log" />
+  <Translate Key="MainWindow_Log" Value="日志" />
   <Translate Key="MainWindow_StatesBar" Value="连接: {0}  转换: {1}" />
   <Translate Key="MainWindow_Running" Value="进行中" />
   <Translate Key="MainWindow_Stopping" Value="停止中" />
   <Translate Key="MainWindow_Core" Value="核心" />
   <Translate Key="MainWindow_ConnectStart" Value="开始" />
   <Translate Key="MainWindow_ConnectStop" Value="停止" />
-  <Translate Key="MainWindow_UpdateBaseNode" Value="更新基础节点" />
+  <Translate Key="MainWindow_UpdateBaseNode" Value="更新本地节点" />
   <Translate Key="MainWindow_Cache" Value="缓存" />
   <Translate Key="MainWindow_ConvertStart" Value="开始转换" />
   <Translate Key="MainWindow_ConvertStop" Value="停止转换" />
@@ -71,37 +71,37 @@
   <Translate Key="MainWindow_CheckExternalBlocks_Message" Value="检查外部区块" />
   <Translate Key="MainWindow_CheckBlocks_State" Value="已检查:{1} 错误:{0} 总计:{2}" />
   <Translate Key="MainWindow_CheckUpdate_Message" Value="你想要更新至 &quot;{0}&quot; 吗？" />
-  <Translate Key="MainWindow_LatestVersion_Message" Value="这是最新版本。" />
-  <Translate Key="MainWindow_Close_Message" Value="你确定要离开 Amoeba 吗？" />
+  <Translate Key="MainWindow_LatestVersion_Message" Value="这已经是最新的版本。" />
+  <Translate Key="MainWindow_Close_Message" Value="确定要离开 Amoeba 吗？" />
   <Translate Key="MainWindow_Delete_Message" Value="确定要删除吗？" />
   <Translate Key="MainWindow_TransferLimit_Message" Value="传输限制" />
   <Translate Key="MainWindow_Upload_Message" Value="你确定要上传吗？" />
   <Translate Key="MainWindow_Shutdown_Message" Value="正在关闭..." />
   <Translate Key="MainWindow_Copy" Value="复制" />
 
-  <Translate Key="LinkOptionsWindow_Title" Value="Link options" />
-  <Translate Key="LinkOptionsWindow_Download" Value="Download" />
-  <Translate Key="LinkOptionsWindow_Upload" Value="Upload" />
-  <Translate Key="LinkOptionsWindow_YourSignature" Value="Your signature" />
-  <Translate Key="LinkOptionsWindow_Trust" Value="Trust" />
-  <Translate Key="LinkOptionsWindow_Untrust" Value="Untrust" />
-  <Translate Key="LinkOptionsWindow_Signature" Value="Signature" />
-  <Translate Key="LinkOptionsWindow_Value" Value="Value" />
-  <Translate Key="LinkOptionsWindow_Up" Value="Up" />
-  <Translate Key="LinkOptionsWindow_Down" Value="Down" />
-  <Translate Key="LinkOptionsWindow_Add" Value="Add" />
-  <Translate Key="LinkOptionsWindow_New" Value="New" />
-  <Translate Key="LinkOptionsWindow_Edit" Value="Edit" />
-  <Translate Key="LinkOptionsWindow_Delete" Value="Delete" />
-  <Translate Key="LinkOptionsWindow_Cut" Value="Cut" />
-  <Translate Key="LinkOptionsWindow_Copy" Value="Copy" />
-  <Translate Key="LinkOptionsWindow_Paste" Value="Paste" />
-  <Translate Key="LinkOptionsWindow_Ok" Value="Ok" />
-  <Translate Key="LinkOptionsWindow_Cancel" Value="Cancel" />
+  <Translate Key="LinkOptionsWindow_Title" Value="链接选项" />
+  <Translate Key="LinkOptionsWindow_Download" Value="下载" />
+  <Translate Key="LinkOptionsWindow_Upload" Value="上传" />
+  <Translate Key="LinkOptionsWindow_YourSignature" Value="你的签名" />
+  <Translate Key="LinkOptionsWindow_Trust" Value="信任" />
+  <Translate Key="LinkOptionsWindow_Untrust" Value="非信任" />
+  <Translate Key="LinkOptionsWindow_Signature" Value="签名" />
+  <Translate Key="LinkOptionsWindow_Value" Value="值" />
+  <Translate Key="LinkOptionsWindow_Up" Value="向上" />
+  <Translate Key="LinkOptionsWindow_Down" Value="向下" />
+  <Translate Key="LinkOptionsWindow_Add" Value="添加" />
+  <Translate Key="LinkOptionsWindow_New" Value="新增" />
+  <Translate Key="LinkOptionsWindow_Edit" Value="编辑" />
+  <Translate Key="LinkOptionsWindow_Delete" Value="删除" />
+  <Translate Key="LinkOptionsWindow_Cut" Value="剪切" />
+  <Translate Key="LinkOptionsWindow_Copy" Value="复制" />
+  <Translate Key="LinkOptionsWindow_Paste" Value="粘贴" />
+  <Translate Key="LinkOptionsWindow_Ok" Value="确定" />
+  <Translate Key="LinkOptionsWindow_Cancel" Value="取消" />
 
   <Translate Key="OptionsWindow_Title" Value="选项" />
   <Translate Key="OptionsWindow_Core" Value="核心" />
-  <Translate Key="OptionsWindow_BaseNode" Value="基本节点" />
+  <Translate Key="OptionsWindow_BaseNode" Value="本地节点" />
   <Translate Key="OptionsWindow_Node" Value="节点" />
   <Translate Key="OptionsWindow_Uris" Value="地址" />
   <Translate Key="OptionsWindow_Uri" Value="地址" />
@@ -111,7 +111,7 @@
   <Translate Key="OptionsWindow_Filters" Value="过滤器" />
   <Translate Key="OptionsWindow_ConnectionType" Value="连接类型" />
   <Translate Key="OptionsWindow_ProxyUri" Value="代理服务器地址" />
-  <Translate Key="OptionsWindow_UriCondition" Value="Uri condition" />
+  <Translate Key="OptionsWindow_UriCondition" Value="地址选项" />
   <Translate Key="OptionsWindow_Option" Value="选项" />
   <Translate Key="OptionsWindow_Type" Value="类型" />
   <Translate Key="OptionsWindow_Host" Value="主机" />
@@ -120,7 +120,7 @@
   <Translate Key="OptionsWindow_Data" Value="资料" />
   <Translate Key="OptionsWindow_Bandwidth" Value="带宽" />
   <Translate Key="OptionsWindow_BandwidthLimit" Value="限制带宽 (*/s) [0 Byte: 无限制]" />
-  <Translate Key="OptionsWindow_Transfer" Value="传送" />
+  <Translate Key="OptionsWindow_Transfer" Value="传输" />
   <Translate Key="OptionsWindow_TransferLimitType" Value="限制类型" />
   <Translate Key="OptionsWindow_TransferLimitSpan" Value="限制合并 (日)" />
   <Translate Key="OptionsWindow_TransferLimitSize" Value="限制大小" />
@@ -151,11 +151,11 @@
   <Translate Key="OptionsWindow_Box" Value="Box" />
   <Translate Key="OptionsWindow_RelateBoxFile" Value="Box 文件已设定关联。" />
   <Translate Key="OptionsWindow_OpenBox" Value="开启已下载的 .box 文件。" />
-  <Translate Key="OptionsWindow_Mining" Value="Mining" />
-  <Translate Key="OptionsWindow_MiningTime" Value="Mining time (minutes)" />
-  <Translate Key="OptionsWindow_Fonts" Value="Fonts" />
-  <Translate Key="OptionsWindow_MessageFontFamily" Value="Message font family" />
-  <Translate Key="OptionsWindow_MessageFontSize" Value="Message font size (pt)" />
+  <Translate Key="OptionsWindow_Mining" Value="挖掘" />
+  <Translate Key="OptionsWindow_MiningTime" Value="挖掘时间 (分钟)" />
+  <Translate Key="OptionsWindow_Fonts" Value="字体" />
+  <Translate Key="OptionsWindow_MessageFontFamily" Value="字体类型" />
+  <Translate Key="OptionsWindow_MessageFontSize" Value="字体大小 (pt)" />
   <Translate Key="OptionsWindow_UpdateOption" Value="更新选项" />
   <Translate Key="OptionsWindow_None" Value="无" />
   <Translate Key="OptionsWindow_AutoCheck" Value="自动检查" />
@@ -173,12 +173,12 @@
   <Translate Key="OptionsWindow_Cut" Value="剪切" />
   <Translate Key="OptionsWindow_Copy" Value="复制" />
   <Translate Key="OptionsWindow_Paste" Value="粘贴" />
-  <Translate Key="OptionsWindow_CacheResize_Message" Value="重设缓存大小将会删除重要的区块。确定没有问题？" />
+  <Translate Key="OptionsWindow_CacheResize_Message" Value="重设缓存大小将会删除重要的区块。确定无误吗？" />
 
   <Translate Key="ConnectionType_None" Value="无" />
   <Translate Key="ConnectionType_Tcp" Value="Tcp" />
   <Translate Key="ConnectionType_Socks5Proxy" Value="Socks5 代理服务器" />
-  <Translate Key="ConnectionType_HttpProxy" Value="http代理服务器" />
+  <Translate Key="ConnectionType_HttpProxy" Value="http 代理服务器" />
 
   <Translate Key="TransferLimitType_None" Value="无" />
   <Translate Key="TransferLimitType_Downloads" Value="下载" />
@@ -207,7 +207,7 @@
 
   <Translate Key="InformationControl_Direction" Value="方向" />
   <Translate Key="InformationControl_Uri" Value="地址" />
-  <Translate Key="InformationControl_Priority" Value="优先等级" />
+  <Translate Key="InformationControl_Priority" Value="优先级" />
   <Translate Key="InformationControl_SentByteCount" Value="总计传送字节" />
   <Translate Key="InformationControl_ReceivedByteCount" Value="总计接收字节" />
   <Translate Key="InformationControl_Name" Value="名称" />
@@ -222,7 +222,7 @@
   <Translate Key="InformationControl_LockSpace" Value="锁定空间" />
   <Translate Key="InformationControl_UsingSpace" Value="使用中空间" />
   <Translate Key="InformationControl_NodeCount" Value="总计节点数" />
-  <Translate Key="InformationControl_MetadataCount" Value="Metadata count" />
+  <Translate Key="InformationControl_MetadataCount" Value="Metadata 数" />
   <Translate Key="InformationControl_SeedCount" Value="总计种子数" />
   <Translate Key="InformationControl_BlockCount" Value="总计区块数" />
   <Translate Key="InformationControl_DownloadCount" Value="总计下载数" />
@@ -232,51 +232,51 @@
   <Translate Key="InformationControl_PushBlockLinkCount" Value="总计 PushBlockLink 数" />
   <Translate Key="InformationControl_PushBlockRequestCount" Value="总计 PushBlockRequest 数" />
   <Translate Key="InformationControl_PushBlockCount" Value="总计 PushBlock 数" />
-  <Translate Key="InformationControl_PushMetadataRequestCount" Value="PushMetadataRequest count" />
-  <Translate Key="InformationControl_PushMetadataCount" Value="PushMetadata count" />
+  <Translate Key="InformationControl_PushMetadataRequestCount" Value="总计 PushMetadataRequest 数" />
+  <Translate Key="InformationControl_PushMetadataCount" Value="总计 PushMetadata 数" />
   <Translate Key="InformationControl_PullNodeCount" Value="总计 PullNode 数" />
   <Translate Key="InformationControl_PullBlockLinkCount" Value="总计 PullBlocksLink 数" />
   <Translate Key="InformationControl_PullBlockRequestCount" Value="总计 PullBlockRequest 数" />
   <Translate Key="InformationControl_PullBlockCount" Value="总计 PullBlock 数" />
-  <Translate Key="InformationControl_PullMetadataRequestCount" Value="PullMetadataRequest count" />
-  <Translate Key="InformationControl_PullMetadataCount" Value="PullMetadata count" />
+  <Translate Key="InformationControl_PullMetadataRequestCount" Value="总计 PullMetadataRequest 数" />
+  <Translate Key="InformationControl_PullMetadataCount" Value="总计 PullMetadata 数" />
   <Translate Key="InformationControl_Copy" Value="复制" />
   <Translate Key="InformationControl_Paste" Value="粘贴" />
 
-  <Translate Key="ChatControl_NewTag" Value="New tag" />
-  <Translate Key="ChatControl_New" Value="New category" />
-  <Translate Key="ChatControl_Edit" Value="Edit" />
-  <Translate Key="ChatControl_Delete" Value="Delete" />
-  <Translate Key="ChatControl_Cut" Value="Cut" />
-  <Translate Key="ChatControl_Copy" Value="Copy" />
-  <Translate Key="ChatControl_CopyInfo" Value="Copy info" />
-  <Translate Key="ChatControl_Paste" Value="Paste" />
-  <Translate Key="ChatControl_Trust_On" Value="Trust On" />
-  <Translate Key="ChatControl_Trust_Off" Value="Trust Off" />
-  <Translate Key="ChatControl_MarkAllMessagesRead" Value="Mark all messages read" />
-  <Translate Key="ChatControl_MarkAllMessagesRead_Message" Value="Do you want to mark all messages read?" />
-  <Translate Key="ChatControl_Limit" Value="Limit" />
-  <Translate Key="ChatControl_Trust" Value="Trust" />
-  <Translate Key="ChatControl_Lock" Value="Lock" />
-  <Translate Key="ChatControl_LockThis" Value="Lock this" />
-  <Translate Key="ChatControl_UnlockThis" Value="Unlock this" />
-  <Translate Key="ChatControl_LockAll" Value="Lock all" />
-  <Translate Key="ChatControl_UnlockAll" Value="Unlock all" />
-  <Translate Key="ChatControl_Response" Value="Response" />
+  <Translate Key="ChatControl_NewTag" Value="新建标签" />
+  <Translate Key="ChatControl_New" Value="新建分类" />
+  <Translate Key="ChatControl_Edit" Value="编辑" />
+  <Translate Key="ChatControl_Delete" Value="删除" />
+  <Translate Key="ChatControl_Cut" Value="剪切" />
+  <Translate Key="ChatControl_Copy" Value="复制" />
+  <Translate Key="ChatControl_CopyInfo" Value="复制信息" />
+  <Translate Key="ChatControl_Paste" Value="粘贴" />
+  <Translate Key="ChatControl_Trust_On" Value="开启信任" />
+  <Translate Key="ChatControl_Trust_Off" Value="关闭信任" />
+  <Translate Key="ChatControl_MarkAllMessagesRead" Value="全部已读" />
+  <Translate Key="ChatControl_MarkAllMessagesRead_Message" Value="是否将所有消息设为已读?" />
+  <Translate Key="ChatControl_Limit" Value="限制" />
+  <Translate Key="ChatControl_Trust" Value="信任" />
+  <Translate Key="ChatControl_Lock" Value="锁定" />
+  <Translate Key="ChatControl_LockThis" Value="锁定" />
+  <Translate Key="ChatControl_UnlockThis" Value="解锁" />
+  <Translate Key="ChatControl_LockAll" Value="锁定全部" />
+  <Translate Key="ChatControl_UnlockAll" Value="解锁全部" />
+  <Translate Key="ChatControl_Response" Value="回复" />
 
-  <Translate Key="MulticastMessageEditWindow_Title" Value="New message" />
-  <Translate Key="MulticastMessageEditWindow_Edit" Value="Edit" />
-  <Translate Key="MulticastMessageEditWindow_Preview" Value="Preview" />
-  <Translate Key="MulticastMessageEditWindow_Comment" Value="Comment" />
-  <Translate Key="MulticastMessageEditWindow_Ok" Value="Ok" />
-  <Translate Key="MulticastMessageEditWindow_Cancel" Value="Cancel" />
+  <Translate Key="MulticastMessageEditWindow_Title" Value="新建消息" />
+  <Translate Key="MulticastMessageEditWindow_Edit" Value="编辑" />
+  <Translate Key="MulticastMessageEditWindow_Preview" Value="预览" />
+  <Translate Key="MulticastMessageEditWindow_Comment" Value="注释" />
+  <Translate Key="MulticastMessageEditWindow_Ok" Value="确定" />
+  <Translate Key="MulticastMessageEditWindow_Cancel" Value="取消" />
 
   <Translate Key="SearchControl_Name" Value="名称" />
   <Translate Key="SearchControl_Signature" Value="签名" />
   <Translate Key="SearchControl_Length" Value="大小" />
   <Translate Key="SearchControl_Keywords" Value="关键字" />
   <Translate Key="SearchControl_CreationTime" Value="建立时间" />
-  <Translate Key="SearchControl_Comment" Value="评论" />
+  <Translate Key="SearchControl_Comment" Value="注释" />
   <Translate Key="SearchControl_State" Value="状态" />
   <Translate Key="SearchControl_Id" Value="ID" />
   <Translate Key="SearchControl_New" Value="新增分类" />
@@ -287,7 +287,7 @@
   <Translate Key="SearchControl_CopyInfo" Value="复制信息" />
   <Translate Key="SearchControl_Paste" Value="粘贴" />
   <Translate Key="SearchControl_Export" Value="导出" />
-  <Translate Key="SearchControl_DeleteAll" Value="Delete all" />
+  <Translate Key="SearchControl_DeleteAll" Value="删除全部" />
   <Translate Key="SearchControl_DeleteCache" Value="删除缓存" />
   <Translate Key="SearchControl_DeleteShare" Value="删除分享 " />
   <Translate Key="SearchControl_DeleteDownload" Value="删除下载 " />
@@ -304,13 +304,13 @@
   <Translate Key="SearchControl_FilterName" Value="过滤名称" />
   <Translate Key="SearchControl_FilterSignature" Value="过滤签名" />
   <Translate Key="SearchControl_FilterKeyword" Value="过滤关键字" />
-  <Translate Key="SearchControl_FilterCreationTimeRange" Value="过滤器建立时间范围" />
-  <Translate Key="SearchControl_FilterSeed" Value="过滤种子" />
-  <Translate Key="SearchControl_Information" Value="Information" />
+  <Translate Key="SearchControl_FilterCreationTimeRange" Value="过滤建立时间范围" />
+  <Translate Key="SearchControl_FilterSeed" Value="过滤Seed" />
+  <Translate Key="SearchControl_Information" Value="信息" />
 
   <Translate Key="SearchItemEditWindow_Title" Value="编辑分类" />
   <Translate Key="SearchItemEditWindow_Name" Value="名称" />
-  <Translate Key="SearchItemEditWindow_NameRegex" Value="名称正规运算式" />
+  <Translate Key="SearchItemEditWindow_NameRegex" Value="名称正则表达式" />
   <Translate Key="SearchItemEditWindow_Signature" Value="签名" />
   <Translate Key="SearchItemEditWindow_Keyword" Value="关键字" />
   <Translate Key="SearchItemEditWindow_CreationTimeRange" Value="建立时间范围" />
@@ -318,7 +318,7 @@
   <Translate Key="SearchItemEditWindow_Seed" Value="种子" />
   <Translate Key="SearchItemEditWindow_SearchState" Value="状态" />
   <Translate Key="SearchItemEditWindow_Contains" Value="包含" />
-  <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="忽略案例" />
+  <Translate Key="SearchItemEditWindow_IsIgnoreCase" Value="忽略" />
   <Translate Key="SearchItemEditWindow_Value" Value="值" />
   <Translate Key="SearchItemEditWindow_Min" Value="最小" />
   <Translate Key="SearchItemEditWindow_Max" Value="最大" />
@@ -330,35 +330,35 @@
   <Translate Key="SearchItemEditWindow_Ok" Value="确定" />
   <Translate Key="SearchItemEditWindow_Cancel" Value="取消" />
   <Translate Key="SearchItemEditWindow_Cut" Value="剪切" />
-  <Translate Key="SearchItemEditWindow_Copy" Value="Copy" />
-  <Translate Key="SearchItemEditWindow_Paste" Value="Paste" />
-  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="Link" />
-  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="Store" />
-  <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="Cache" />
-  <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="Downloading" />
-  <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="Uploading" />
-  <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="Downloaded" />
-  <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="Uploaded" />
+  <Translate Key="SearchItemEditWindow_Copy" Value="复制" />
+  <Translate Key="SearchItemEditWindow_Paste" Value="粘贴" />
+  <Translate Key="SearchItemEditWindow_SearchState_Link" Value="链接" />
+  <Translate Key="SearchItemEditWindow_SearchState_Store" Value="存储" />
+  <Translate Key="SearchItemEditWindow_SearchState_Cache" Value="缓存" />
+  <Translate Key="SearchItemEditWindow_SearchState_Downloading" Value="下载中" />
+  <Translate Key="SearchItemEditWindow_SearchState_Uploading" Value="上传中" />
+  <Translate Key="SearchItemEditWindow_SearchState_Downloaded" Value="已下载" />
+  <Translate Key="SearchItemEditWindow_SearchState_Uploaded" Value="已上传" />
 
-  <Translate Key="SearchState_Link" Value="L" />
-  <Translate Key="SearchState_Store" Value="S" />
-  <Translate Key="SearchState_Cache" Value="C" />
-  <Translate Key="SearchState_Downloading" Value="D" />
-  <Translate Key="SearchState_Uploading" Value="U" />
-  <Translate Key="SearchState_Downloaded" Value="DH" />
-  <Translate Key="SearchState_Uploaded" Value="UH" />
+  <Translate Key="SearchState_Link" Value="链接" />
+  <Translate Key="SearchState_Store" Value="存储" />
+  <Translate Key="SearchState_Cache" Value="缓存" />
+  <Translate Key="SearchState_Downloading" Value="下载中" />
+  <Translate Key="SearchState_Uploading" Value="上传中" />
+  <Translate Key="SearchState_Downloaded" Value="已下载" />
+  <Translate Key="SearchState_Uploaded" Value="已上传" />
 
   <Translate Key="StoreControl_Download" Value="下载" />
   <Translate Key="StoreControl_Upload" Value="上传" />
-  <Translate Key="StoreControl_Library" Value="库" />
+  <Translate Key="StoreControl_Library" Value="Library" />
 
   <Translate Key="DownloadControl_Name" Value="名称" />
   <Translate Key="DownloadControl_Length" Value="大小" />
-  <Translate Key="DownloadControl_Priority" Value="优先等级" />
+  <Translate Key="DownloadControl_Priority" Value="优先级" />
   <Translate Key="DownloadControl_Rank" Value="等级" />
   <Translate Key="DownloadControl_Rate" Value="进度" />
   <Translate Key="DownloadControl_Path" Value="路径" />
-  <Translate Key="DownloadControl_CreationTime" Value="Creation time" />
+  <Translate Key="DownloadControl_CreationTime" Value="建立时间" />
   <Translate Key="DownloadControl_State" Value="状态" />
   <Translate Key="DownloadControl_Delete" Value="删除" />
   <Translate Key="DownloadControl_Copy" Value="复制" />
@@ -382,11 +382,11 @@
 
   <Translate Key="UploadControl_Name" Value="名称" />
   <Translate Key="UploadControl_Length" Value="大小" />
-  <Translate Key="UploadControl_Priority" Value="优先等级" />
+  <Translate Key="UploadControl_Priority" Value="优先级" />
   <Translate Key="UploadControl_Rank" Value="等级" />
   <Translate Key="UploadControl_Rate" Value="进度" />
   <Translate Key="UploadControl_Path" Value="路径" />
-  <Translate Key="UploadControl_CreationTime" Value="Creation time" />
+  <Translate Key="UploadControl_CreationTime" Value="建立时间" />
   <Translate Key="UploadControl_State" Value="状态" />
   <Translate Key="UploadControl_Add" Value="新增" />
   <Translate Key="UploadControl_Delete" Value="删除" />
@@ -420,27 +420,27 @@
   <Translate Key="UploadWindow_Name" Value="名称" />
   <Translate Key="UploadWindow_Keywords" Value="关键字" />
   <Translate Key="UploadWindow_Signature" Value="签名" />
-  <Translate Key="UploadWindow_Comment" Value="评论" />
+  <Translate Key="UploadWindow_Comment" Value="注释" />
   <Translate Key="UploadWindow_List" Value="列表" />
   <Translate Key="UploadWindow_Path" Value="路径" />
   <Translate Key="UploadWindow_Ok" Value="确定" />
   <Translate Key="UploadWindow_Cancel" Value="取消" />
 
-  <Translate Key="LinkControl_Trust" Value="Trust" />
-  <Translate Key="LinkControl_Untrust" Value="Untrust" />
-  <Translate Key="LinkControl_Signature" Value="Signature" />
-  <Translate Key="LinkControl_Value" Value="Value" />
-  <Translate Key="LinkControl_Delete" Value="Delete" />
-  <Translate Key="LinkControl_Cut" Value="Cut" />
-  <Translate Key="LinkControl_Copy" Value="Copy" />
-  <Translate Key="LinkControl_Paste" Value="Paste" />
+  <Translate Key="LinkControl_Trust" Value="信任" />
+  <Translate Key="LinkControl_Untrust" Value="非信任" />
+  <Translate Key="LinkControl_Signature" Value="签名" />
+  <Translate Key="LinkControl_Value" Value="值" />
+  <Translate Key="LinkControl_Delete" Value="删除" />
+  <Translate Key="LinkControl_Cut" Value="剪切" />
+  <Translate Key="LinkControl_Copy" Value="复制" />
+  <Translate Key="LinkControl_Paste" Value="粘贴" />
 
   <Translate Key="StoreDownloadControl_Name" Value="名称" />
   <Translate Key="StoreDownloadControl_Signature" Value="签名" />
   <Translate Key="StoreDownloadControl_Length" Value="大小" />
   <Translate Key="StoreDownloadControl_Keywords" Value="关键字" />
   <Translate Key="StoreDownloadControl_CreationTime" Value="建立时间" />
-  <Translate Key="StoreDownloadControl_Comment" Value="评论" />
+  <Translate Key="StoreDownloadControl_Comment" Value="注释" />
   <Translate Key="StoreDownloadControl_State" Value="状态" />
   <Translate Key="StoreDownloadControl_Id" Value="ID" />
   <Translate Key="StoreDownloadControl_Upload" Value="上传" />
@@ -464,7 +464,7 @@
   <Translate Key="StoreUploadControl_Length" Value="大小" />
   <Translate Key="StoreUploadControl_Keywords" Value="关键字" />
   <Translate Key="StoreUploadControl_CreationTime" Value="建立时间" />
-  <Translate Key="StoreUploadControl_Comment" Value="评论" />
+  <Translate Key="StoreUploadControl_Comment" Value="注释" />
   <Translate Key="StoreUploadControl_State" Value="状态" />
   <Translate Key="StoreUploadControl_Id" Value="ID" />
   <Translate Key="StoreUploadControl_Upload" Value="上传" />
@@ -488,7 +488,7 @@
   <Translate Key="LibraryControl_Length" Value="大小" />
   <Translate Key="LibraryControl_Keywords" Value="关键字" />
   <Translate Key="LibraryControl_CreationTime" Value="建立时间" />
-  <Translate Key="LibraryControl_Comment" Value="评论" />
+  <Translate Key="LibraryControl_Comment" Value="注释" />
   <Translate Key="LibraryControl_State" Value="状态" />
   <Translate Key="LibraryControl_Id" Value="ID" />
   <Translate Key="LibraryControl_NewBox" Value="新增 box" />
@@ -504,31 +504,31 @@
   <Translate Key="LibraryControl_DigitalSignatureAnnulled_Message" Value="box 的签名已经无效。" />
   <Translate Key="LibraryControl_DigitalSignatureError_Message" Value="数字签名错误。" />
 
-  <Translate Key="SeedEditWindow_Title" Value="Seed edit" />
-  <Translate Key="SeedEditWindow_Name" Value="Name" />
-  <Translate Key="SeedEditWindow_Keywords" Value="Keywords" />
-  <Translate Key="SeedEditWindow_Signature" Value="Signature" />
-  <Translate Key="SeedEditWindow_Comment" Value="Comment" />
-  <Translate Key="SeedEditWindow_Ok" Value="Ok" />
-  <Translate Key="SeedEditWindow_Cancel" Value="Cancel" />
+  <Translate Key="SeedEditWindow_Title" Value="Seed 编辑" />
+  <Translate Key="SeedEditWindow_Name" Value="名称" />
+  <Translate Key="SeedEditWindow_Keywords" Value="关键字" />
+  <Translate Key="SeedEditWindow_Signature" Value="签名" />
+  <Translate Key="SeedEditWindow_Comment" Value="注释" />
+  <Translate Key="SeedEditWindow_Ok" Value="确定" />
+  <Translate Key="SeedEditWindow_Cancel" Value="取消" />
 
-  <Translate Key="BoxEditWindow_Title" Value="Box edit" />
-  <Translate Key="BoxEditWindow_Name" Value="Name" />
-  <Translate Key="BoxEditWindow_Signature" Value="Signature" />
-  <Translate Key="BoxEditWindow_Comment" Value="Comment" />
-  <Translate Key="BoxEditWindow_Ok" Value="Ok" />
-  <Translate Key="BoxEditWindow_Cancel" Value="Cancel" />
+  <Translate Key="BoxEditWindow_Title" Value="Box 编辑" />
+  <Translate Key="BoxEditWindow_Name" Value="名称" />
+  <Translate Key="BoxEditWindow_Signature" Value="签名" />
+  <Translate Key="BoxEditWindow_Comment" Value="注释" />
+  <Translate Key="BoxEditWindow_Ok" Value="确定" />
+  <Translate Key="BoxEditWindow_Cancel" Value="取消" />
 
-  <Translate Key="SeedInformationWindow_Title" Value="Seed information" />
-  <Translate Key="SeedInformationWindow_Property" Value="Property" />
-  <Translate Key="SeedInformationWindow_Name" Value="Name" />
-  <Translate Key="SeedInformationWindow_Keywords" Value="Keywords" />
-  <Translate Key="SeedInformationWindow_Signature" Value="Signature" />
-  <Translate Key="SeedInformationWindow_CreationTime" Value="Creation time" />
-  <Translate Key="SeedInformationWindow_Length" Value="Length" />
-  <Translate Key="SeedInformationWindow_Comment" Value="Comment" />
+  <Translate Key="SeedInformationWindow_Title" Value="Seed 信息" />
+  <Translate Key="SeedInformationWindow_Property" Value="属性" />
+  <Translate Key="SeedInformationWindow_Name" Value="名称" />
+  <Translate Key="SeedInformationWindow_Keywords" Value="关键字" />
+  <Translate Key="SeedInformationWindow_Signature" Value="签名" />
+  <Translate Key="SeedInformationWindow_CreationTime" Value="建立时间" />
+  <Translate Key="SeedInformationWindow_Length" Value="长度" />
+  <Translate Key="SeedInformationWindow_Comment" Value="注释" />
   <Translate Key="SeedInformationWindow_Store" Value="Store" />
-  <Translate Key="SeedInformationWindow_Copy" Value="Copy" />
-  <Translate Key="SeedInformationWindow_Close" Value="Close" />
+  <Translate Key="SeedInformationWindow_Copy" Value="复制" />
+  <Translate Key="SeedInformationWindow_Close" Value="关闭" />
 
 </Configuration>

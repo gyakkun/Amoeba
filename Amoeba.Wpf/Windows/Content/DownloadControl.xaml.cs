@@ -557,11 +557,7 @@ namespace Amoeba.Windows
         {
             _listView.Items.SortDescriptions.Clear();
 
-            if (sortBy == LanguagesManager.Instance.DownloadControl_Name)
-            {
-                _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
-            }
-            else if (sortBy == LanguagesManager.Instance.DownloadControl_Length)
+            if (sortBy == LanguagesManager.Instance.DownloadControl_Length)
             {
                 _listView.Items.SortDescriptions.Add(new SortDescription("Length", direction));
             }
@@ -588,6 +584,7 @@ namespace Amoeba.Windows
                 _listView.Items.SortDescriptions.Add(new SortDescription("State", direction));
             }
 
+            _listView.Items.SortDescriptions.Add(new SortDescription("Name", direction));
             _listView.Items.SortDescriptions.Add(new SortDescription("Id", direction));
         }
 
@@ -613,6 +610,8 @@ namespace Amoeba.Windows
                 {
                     int c = x.Length.CompareTo(y.Length);
                     if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
@@ -624,6 +623,8 @@ namespace Amoeba.Windows
                 list.Sort((x, y) =>
                 {
                     int c = x.Priority.CompareTo(y.Priority);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
@@ -641,6 +642,8 @@ namespace Amoeba.Windows
                     if (c != 0) return c;
                     c = x.Depth.CompareTo(y.Depth);
                     if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
@@ -652,6 +655,8 @@ namespace Amoeba.Windows
                 list.Sort((x, y) =>
                 {
                     int c = x.Path.CompareTo(y.Path);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
@@ -665,6 +670,8 @@ namespace Amoeba.Windows
                 {
                     int c = x.CreationTime.CompareTo(y.CreationTime);
                     if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;
 
@@ -676,6 +683,8 @@ namespace Amoeba.Windows
                 list.Sort((x, y) =>
                 {
                     int c = x.State.CompareTo(y.State);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;
                     c = x.Id.CompareTo(y.Id);
                     if (c != 0) return c;

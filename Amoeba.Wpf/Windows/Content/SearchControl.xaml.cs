@@ -1800,27 +1800,7 @@ namespace Amoeba.Windows
             {
                 list.Sort((x, y) =>
                 {
-                    int c = 0;
-
-                    if (x.Signature != null)
-                    {
-                        if (y.Signature != null)
-                        {
-                            c = x.Signature.CompareTo(y.Signature);
-                        }
-                        else
-                        {
-                            c = 1;
-                        }
-                    }
-                    else
-                    {
-                        if (y.Signature != null)
-                        {
-                            c = -1;
-                        }
-                    }
-
+                    int c = (x.Signature ?? "").CompareTo(y.Signature ?? "");
                     if (c != 0) return c;
                     c = x.Name.CompareTo(y.Name);
                     if (c != 0) return c;

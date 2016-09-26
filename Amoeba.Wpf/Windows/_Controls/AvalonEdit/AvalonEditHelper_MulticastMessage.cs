@@ -338,15 +338,15 @@ namespace Amoeba.Windows
 
                             element = new CustomObjectElement(uri, textBlock);
                         }
-                        else if (uri.StartsWith("Tag:"))
+                        else if (uri.StartsWith("Seed:"))
                         {
-                            var seed = AmoebaConverter.FromTagString(uri);
+                            var seed = AmoebaConverter.FromSeedString(uri);
 
                             var textBlock = new TextBlock();
                             textBlock.Text = uri.Substring(0, Math.Min(64, uri.Length)) + ((uri.Length > 64) ? "..." : "");
                             textBlock.ToolTip = MessageConverter.ToInfoMessage(seed);
 
-                            if (Settings.Instance.Global_TagHistorys.Contains(seed)) textBlock.Foreground = new SolidColorBrush(_serviceManager.Config.Colors.Link);
+                            if (Settings.Instance.Global_SeedHistorys.Contains(seed)) textBlock.Foreground = new SolidColorBrush(_serviceManager.Config.Colors.Link);
                             else textBlock.Foreground = new SolidColorBrush(_serviceManager.Config.Colors.Link_New);
 
                             element = new CustomObjectElement(uri, textBlock);

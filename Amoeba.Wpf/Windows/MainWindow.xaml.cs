@@ -1675,7 +1675,7 @@ namespace Amoeba.Windows
                     flag = true;
                 };
 
-                _amoebaManager.CheckInternalBlocks((int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
+                _amoebaManager.CheckInternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {
@@ -1737,7 +1737,7 @@ namespace Amoeba.Windows
                     flag = true;
                 };
 
-                _amoebaManager.CheckExternalBlocks((int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
+                _amoebaManager.CheckExternalBlocks((object sender2, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
                 {
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                     {

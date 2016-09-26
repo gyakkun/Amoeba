@@ -223,7 +223,7 @@ namespace Amoeba.Windows
                             foreach (var pair in chatTreeViewModel.Value.MulticastMessages.ToArray())
                             {
                                 var item = pair.Key;
-                                var option = pair.Value;
+                                var option = pair.Value.Clone();
 
                                 chatTreeViewModel.Value.MulticastMessages[item].State &= ~MulticastMessageState.IsUnread;
                             }
@@ -284,29 +284,7 @@ namespace Amoeba.Windows
 
                     foreach (var treeViewModel in chatTreeViewModels)
                     {
-                        int limit = -1;
-                        if (!treeViewModel.Value.IsTrustEnabled) limit = Settings.Instance.Global_Limit;
-
-                        // MulticastMessage
-                        lock (treeViewModel.Value.ThisLock)
-                        {
-                            var results = this.GetMulticastMessages(
-                                treeViewModel.Value.Tag,
-                                treeViewModel.Value.MulticastMessages.ToArray(),
-                                limit);
-
-                            treeViewModel.Value.MulticastMessages.Clear();
-
-                            foreach (var item in results)
-                            {
-                                treeViewModel.Value.MulticastMessages.Add(item.Key, item.Value);
-                            }
-                        }
-
-                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                        {
-                            treeViewModel.Update();
-                        }));
+                        this.Update_ChatTreeViewModel(treeViewModel);
                     }
 
                     this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
@@ -331,65 +309,83 @@ namespace Amoeba.Windows
             }
         }
 
-        private IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageOption>> GetMulticastMessages(
-            Tag tag,
-            IEnumerable<KeyValuePair<MulticastMessageItem, MulticastMessageOption>> collections,
-            int limit)
+        private void Update_ChatTreeViewModel(ChatTreeViewModel treeViewModel)
         {
-            var dic = new Dictionary<MulticastMessageItem, MulticastMessageOption>();
+            int limit = -1;
+            if (!treeViewModel.Value.IsTrustEnabled) limit = Settings.Instance.Global_Limit;
 
-            foreach (var pair in collections)
+            var newMulticastMessages = new Dictionary<MulticastMessageItem, MulticastMessageOption>();
+
+            foreach (var info in _amoebaManager.GetMulticastMessages(treeViewModel.Value.Tag, limit))
             {
-                var item = pair.Key;
-                var option = pair.Value;
-
-                if (limit < 0)
+                var item = new MulticastMessageItem();
+                item.Tag = (Tag)info["Tag"];
+                item.CreationTime = (DateTime)info["CreationTime"];
+                item.Signature = (string)info["Signature"];
                 {
-                    if (!Inspect.ContainTrustSignature(item.Signature)) continue;
-                }
-                else
-                {
-                    if (!Inspect.ContainTrustSignature(item.Signature) && option.Cost < limit) continue;
+                    var message = (Message)info["Value"];
+                    item.Comment = message.Comment;
                 }
 
-                dic.Add(pair.Key, pair.Value);
+                var option = new MulticastMessageOption();
+                option.State = MulticastMessageState.IsUnread;
+                option.Cost = (int)info["Cost"];
+
+                newMulticastMessages.Add(item, option);
             }
 
+            lock (treeViewModel.Value.ThisLock)
             {
-                foreach (var info in _amoebaManager.GetMulticastMessages(tag, limit))
+                var dic = new Dictionary<MulticastMessageItem, MulticastMessageOption>();
+
+                foreach (var pair in treeViewModel.Value.MulticastMessages)
                 {
-                    var item = new MulticastMessageItem();
-                    item.Tag = (Tag)info["Tag"];
-                    item.CreationTime = (DateTime)info["CreationTime"];
-                    item.Signature = (string)info["Signature"];
+                    var item = pair.Key;
+                    var option = pair.Value;
+
+                    if (limit < 0)
                     {
-                        var message = (Message)info["Value"];
-                        item.Comment = message.Comment;
+                        if (!Inspect.ContainTrustSignature(item.Signature)) continue;
+                    }
+                    else
+                    {
+                        if (!Inspect.ContainTrustSignature(item.Signature) && option.Cost < limit) continue;
                     }
 
-                    MulticastMessageOption option;
+                    dic.Add(pair.Key, pair.Value);
+                }
 
-                    if (!dic.TryGetValue(item, out option))
+                foreach (var pair in newMulticastMessages)
+                {
+                    var item = pair.Key;
+                    var option = pair.Value;
+
+                    if (dic.ContainsKey(item)) continue;
+                    dic.Add(item, option);
+                }
+
+                {
+                    var sortedList = dic.Where(n => !n.Value.State.HasFlag(MulticastMessageState.IsLocked)).Select(n => n.Key).ToList();
+                    sortedList.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));
+
+                    foreach (var item in sortedList.Take(sortedList.Count - 1024))
                     {
-                        option = new MulticastMessageOption();
-                        option.State = MulticastMessageState.IsUnread;
-                        option.Cost = (int)info["Cost"];
-                        dic.Add(item, option);
+                        dic.Remove(item);
                     }
                 }
-            }
 
-            {
-                var sortedList = dic.Where(n => !n.Value.State.HasFlag(MulticastMessageState.IsLocked)).Select(n => n.Key).ToList();
-                sortedList.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));
+                treeViewModel.Value.MulticastMessages.Clear();
 
-                foreach (var item in sortedList.Take(sortedList.Count - 1024))
+                foreach (var item in dic)
                 {
-                    dic.Remove(item);
+                    treeViewModel.Value.MulticastMessages.Add(item.Key, item.Value);
                 }
             }
 
-            return dic;
+            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                treeViewModel.Update();
+            }));
         }
 
         private void Update()

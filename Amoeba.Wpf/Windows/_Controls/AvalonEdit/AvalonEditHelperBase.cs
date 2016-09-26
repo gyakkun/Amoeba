@@ -32,7 +32,7 @@ namespace Amoeba.Windows
             var uriRegexes = new List<Regex>();
             uriRegexes.Add(new Regex(@"http(s)?://(\S)+", RegexOptions.Compiled));
             uriRegexes.Add(new Regex(@"Tag:[A-Za-z0-9\-_]+", RegexOptions.Compiled));
-            uriRegexes.Add(new Regex(@"Tag:[A-Za-z0-9\-_]+", RegexOptions.Compiled));
+            uriRegexes.Add(new Regex(@"Seed:[A-Za-z0-9\-_]+", RegexOptions.Compiled));
 
             _uriRegexes = uriRegexes.ToArray();
         }

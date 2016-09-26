@@ -47,7 +47,7 @@ namespace Amoeba
             _amoebaManager.AcceptCapEvent = this.AcceptCap;
         }
 
-        private Cap CreateCap(string uri)
+        private Cap CreateCap(object sender, string uri)
         {
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
@@ -124,7 +124,7 @@ namespace Amoeba
             return null;
         }
 
-        private Cap AcceptCap(out string uri)
+        private Cap AcceptCap(object sender, out string uri)
         {
             uri = null;
 

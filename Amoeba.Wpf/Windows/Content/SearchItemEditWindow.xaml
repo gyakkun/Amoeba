@@ -17,7 +17,7 @@
         Width="{Binding Path=SearchItemEditWindow_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         WindowState="{Binding Path=SearchItemEditWindow_WindowState, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}"
         Loaded="Window_Loaded">
-   
+
     <Window.CommandBindings>
         <CommandBinding Command="Delete" Executed="Execute_Delete" />
         <CommandBinding Command="Cut" Executed="Execute_Cut" />
@@ -298,7 +298,7 @@
                     </local:ListViewEx>
                 </Grid>
             </TabItem>
-            <TabItem Header="{Binding Path=SearchItemEditWindow_Tag, Source={StaticResource _languages}}" Name="_seedTabItem">
+            <TabItem Header="{Binding Path=SearchItemEditWindow_Seed, Source={StaticResource _languages}}" Name="_seedTabItem">
                 <Grid FocusManager.FocusedElement="{Binding ElementName=_seedTextBox}">
                     <Button Name="_seedUpButton" Height="23" HorizontalAlignment="Right" Margin="0,0,330,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Up, Source={StaticResource _languages}}" Click="_seedUpButton_Click" IsEnabled="False" />
                     <Button Name="_seedDownButton" Height="23" HorizontalAlignment="Right" Margin="0,0,249,6" VerticalAlignment="Bottom" Width="75" Content="{Binding Path=SearchItemEditWindow_Down, Source={StaticResource _languages}}" Click="_seedDownButton_Click" IsEnabled="False" />
@@ -312,7 +312,7 @@
                             <DataTemplate x:Key="_myTemplate_SearchContains_Contains">
                                 <TextBlock Text="{Binding Path=Contains, Mode=OneWay, Converter={StaticResource _boolToStringConverter}}" />
                             </DataTemplate>
-                            <DataTemplate x:Key="_myTemplate_SearchContains_Tag_Value">
+                            <DataTemplate x:Key="_myTemplate_SearchContains_Seed_Value">
                                 <TextBlock Text="{Binding Path=Value.Name, Mode=OneWay}" ToolTip="{Binding Path=Value, Mode=OneWay, Converter={StaticResource _objectToInfoStringConverter}}"/>
                             </DataTemplate>
                         </ListView.Resources>
@@ -328,9 +328,9 @@
                         <ListView.View>
                             <GridView AllowsColumnReorder="False">
                                 <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Contains, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Contains}" 
-                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Tag_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
-                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Tag_Value}" 
-                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Tag_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Seed_Contains_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
+                                <GridViewColumn Header="{Binding Path=SearchItemEditWindow_Value, Source={StaticResource _languages}}" CellTemplate="{StaticResource _myTemplate_SearchContains_Seed_Value}" 
+                                    Width="{Binding Path=SearchItemEditWindow_GridViewColumn_Seed_Value_Width, Mode=TwoWay, Source={x:Static prop:Settings.Instance}}" />
                             </GridView>
                         </ListView.View>
                     </local:ListViewEx>

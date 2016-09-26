@@ -64,7 +64,7 @@ namespace Amoeba
             _amoebaManager.CheckUriEvent = this.ResultCache_CheckUri;
         }
 
-        private bool ResultCache_CheckUri(string uri)
+        private bool ResultCache_CheckUri(object sender, string uri)
         {
             _succeededUris.TrimExcess();
             _failedUris.TrimExcess();
