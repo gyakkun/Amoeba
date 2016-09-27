@@ -29,7 +29,7 @@ namespace Amoeba
 
         public ServiceManager()
         {
-            this.AmoebaVersion = new Version(4, 0, 16);
+            this.AmoebaVersion = new Version(4, 0, 17);
 
             this.Paths = new Dictionary<string, string>();
 

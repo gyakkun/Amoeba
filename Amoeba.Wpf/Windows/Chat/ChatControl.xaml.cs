@@ -124,54 +124,71 @@ namespace Amoeba.Windows
             LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
         }
 
-        void _textEditor_Helper_ClickEvent(string uri)
+        private void _textEditor_Helper_ClickEvent(string uri)
         {
             if (uri.StartsWith("http:") | uri.StartsWith("https:"))
             {
                 try
                 {
+                    Settings.Instance.Global_UrlHistorys.Add(uri);
+
                     Process.Start(uri);
                 }
                 catch (Exception)
                 {
-                    return;
-                }
 
-                Settings.Instance.Global_UrlHistorys.Add(uri);
+                }
             }
             else if (uri.StartsWith("Tag:"))
             {
-                var tag = AmoebaConverter.FromTagString(uri);
-                if (tag.Id == null || tag.Name == null) return;
-
+                try
                 {
-                    var chatCategorizeTreeItems = new List<ChatCategorizeTreeItem>();
-                    chatCategorizeTreeItems.Add(_treeViewModel.Value);
+                    var tag = AmoebaConverter.FromTagString(uri);
+                    if (tag.Id == null || tag.Name == null) return;
 
-                    for (int i = 0; i < chatCategorizeTreeItems.Count; i++)
+                    Settings.Instance.Global_TagHistorys.Add(tag);
+
                     {
-                        chatCategorizeTreeItems.AddRange(chatCategorizeTreeItems[i].Children);
-                        if (chatCategorizeTreeItems[i].ChatTreeItems.Any(n => n.Tag == tag)) return;
+                        var chatCategorizeTreeItems = new List<ChatCategorizeTreeItem>();
+                        chatCategorizeTreeItems.Add(_treeViewModel.Value);
+
+                        for (int i = 0; i < chatCategorizeTreeItems.Count; i++)
+                        {
+                            chatCategorizeTreeItems.AddRange(chatCategorizeTreeItems[i].Children);
+                            if (chatCategorizeTreeItems[i].ChatTreeItems.Any(n => n.Tag == tag)) return;
+                        }
                     }
+
+                    var selectTreeViewModel = _treeView.SelectedItem as ChatTreeViewModel;
+                    if (selectTreeViewModel == null) return;
+
+                    var parentTreeViewModel = selectTreeViewModel.Parent as ChatCategorizeTreeViewModel;
+                    if (parentTreeViewModel == null) return;
+
+                    var chatTreeItem = new ChatTreeItem(tag);
+                    parentTreeViewModel.Value.ChatTreeItems.Add(chatTreeItem);
+
+                    parentTreeViewModel.Update();
                 }
+                catch (Exception)
+                {
 
-                var selectTreeViewModel = _treeView.SelectedItem as ChatTreeViewModel;
-                if (selectTreeViewModel == null) return;
-
-                var parentTreeViewModel = selectTreeViewModel.Parent as ChatCategorizeTreeViewModel;
-                if (parentTreeViewModel == null) return;
-
-                var chatTreeItem = new ChatTreeItem(tag);
-                parentTreeViewModel.Value.ChatTreeItems.Add(chatTreeItem);
-
-                parentTreeViewModel.Update();
+                }
             }
             else if (uri.StartsWith("Seed:"))
             {
-                var seed = AmoebaConverter.FromSeedString(uri);
+                try
+                {
+                    var seed = AmoebaConverter.FromSeedString(uri);
 
-                _amoebaManager.Download(seed, 3);
-                Settings.Instance.Global_SeedHistorys.Add(seed);
+                    Settings.Instance.Global_SeedHistorys.Add(seed);
+
+                    _amoebaManager.Download(seed, 3);
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
 

@@ -163,10 +163,7 @@ namespace Amoeba.Windows
 
                             if (listViewModelDic.TryGetValue((string)information["Path"], out item))
                             {
-                                if (!CollectionUtils.Equals(item.Information, information))
-                                {
-                                    updateDic[item] = information;
-                                }
+                                updateDic[item] = information;
                             }
                             else
                             {
@@ -209,7 +206,11 @@ namespace Amoeba.Windows
                         if (sortFlag) this.Sort();
                     }));
 
-                    Thread.Sleep(1000 * 3);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        Thread.Sleep(1000 * 3);
+                        if (_mainWindow.SelectedTab == MainWindowTabType.Share) break;
+                    }
                 }
             }
             catch (Exception)
