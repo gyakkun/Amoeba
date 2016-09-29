@@ -13,5 +13,4 @@ Amoebaは、純粋P2Pの匿名性の高いデータ共有ソフトです。
 Amoeba = Freenet + Abstract Network + DHT + (Search = WoT + PoW)
 
  * チャットとファイル共有の機能を提供します。
- * I2P, Tor, TCP, Socks5 Proxy, Http proxyを利用可能です。
- * Port0でも利用可能です(接続数は少なくなります)。
+ * I2P, Tor, TCP, Socks5 Proxy, Http proxyを利用可能です。Port0でも動きます(接続数は少なくなります)。
