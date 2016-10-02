@@ -90,7 +90,10 @@ namespace Amoeba.Windows
                     if (treeViewModel == null) goto End;
                 }
 
-                treeViewModel.IsExpanded = true;
+                if (treeViewModel is StoreCategorizeTreeViewModel) ((StoreCategorizeTreeViewModel)treeViewModel).IsExpanded = true;
+                else if (treeViewModel is StoreTreeViewModel) ((StoreTreeViewModel)treeViewModel).IsExpanded = true;
+                else if (treeViewModel is BoxTreeViewModel) ((BoxTreeViewModel)treeViewModel).IsExpanded = true;
+
                 continue;
 
                 End:;

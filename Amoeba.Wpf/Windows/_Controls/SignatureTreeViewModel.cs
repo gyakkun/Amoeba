@@ -85,7 +85,7 @@ namespace Amoeba.Windows
             }
         }
 
-        public override bool IsExpanded
+        public bool IsExpanded
         {
             get
             {

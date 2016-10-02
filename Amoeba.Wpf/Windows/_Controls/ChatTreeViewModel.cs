@@ -15,20 +15,13 @@ namespace Amoeba.Windows
     class ChatTreeViewModel : TreeViewModelBase
     {
         private bool _isSelected;
-        private bool _isExpanded;
         private bool _isHit;
         private ChatTreeItem _value;
-
-        private ReadOnlyObservableCollection<TreeViewModelBase> _readonlyChildren;
-        private ObservableCollectionEx<TreeViewModelBase> _children;
 
         public ChatTreeViewModel(TreeViewModelBase parent, ChatTreeItem value)
             : base(parent)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-
-            _children = new ObservableCollectionEx<TreeViewModelBase>();
-            _readonlyChildren = new ReadOnlyObservableCollection<TreeViewModelBase>(_children);
 
             this.Value = value;
         }
@@ -82,23 +75,6 @@ namespace Amoeba.Windows
             }
         }
 
-        public override bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                if (value != _isExpanded)
-                {
-                    _isExpanded = value;
-
-                    this.NotifyPropertyChanged(nameof(this.IsExpanded));
-                }
-            }
-        }
-
         public bool IsHit
         {
             get
@@ -120,7 +96,7 @@ namespace Amoeba.Windows
         {
             get
             {
-                return _readonlyChildren;
+                return new TreeViewModelBase[0];
             }
         }
 

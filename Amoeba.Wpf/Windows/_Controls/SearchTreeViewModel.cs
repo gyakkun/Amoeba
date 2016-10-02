@@ -12,6 +12,7 @@ namespace Amoeba.Windows
     sealed class SearchTreeViewModel : TreeViewModelBase
     {
         private bool _isSelected;
+        private bool _isHit;
         private int _count;
         private SearchTreeItem _value;
 
@@ -100,7 +101,7 @@ namespace Amoeba.Windows
             }
         }
 
-        public override bool IsExpanded
+        public bool IsExpanded
         {
             get
             {
@@ -113,6 +114,23 @@ namespace Amoeba.Windows
                     _value.IsExpanded = value;
 
                     this.NotifyPropertyChanged(nameof(this.IsExpanded));
+                }
+            }
+        }
+
+        public bool IsHit
+        {
+            get
+            {
+                return _isHit;
+            }
+            set
+            {
+                if (value != _isHit)
+                {
+                    _isHit = value;
+
+                    this.NotifyPropertyChanged(nameof(this.IsHit));
                 }
             }
         }

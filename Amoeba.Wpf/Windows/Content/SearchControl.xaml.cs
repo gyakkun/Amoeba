@@ -53,8 +53,8 @@ namespace Amoeba.Windows
         private ObservableCollectionEx<SearchListViewModel> _listViewModelCollection = new ObservableCollectionEx<SearchListViewModel>();
         private LockedList<SearchListViewModel> _searchingCache = new LockedList<SearchListViewModel>();
 
-        private Thread _cacheThread;
         private Thread _searchThread;
+        private Thread _cacheThread;
 
         private const HashAlgorithm _hashAlgorithm = HashAlgorithm.Sha256;
 
@@ -82,17 +82,17 @@ namespace Amoeba.Windows
                 }
             };
 
-            _cacheThread = new Thread(this.Cache);
-            _cacheThread.Priority = ThreadPriority.Highest;
-            _cacheThread.IsBackground = true;
-            _cacheThread.Name = "SearchControl_CacheThread";
-            _cacheThread.Start();
-
             _searchThread = new Thread(this.Search);
             _searchThread.Priority = ThreadPriority.Highest;
             _searchThread.IsBackground = true;
             _searchThread.Name = "SearchControl_SearchThread";
             _searchThread.Start();
+
+            _cacheThread = new Thread(this.Cache);
+            _cacheThread.Priority = ThreadPriority.Highest;
+            _cacheThread.IsBackground = true;
+            _cacheThread.Name = "SearchControl_CacheThread";
+            _cacheThread.Start();
 
             _searchRowDefinition.Height = new GridLength(0);
 
@@ -104,6 +104,111 @@ namespace Amoeba.Windows
         private void LanguagesManager_UsingLanguageChangedEvent(object sender)
         {
             _listView.Items.Refresh();
+        }
+
+        private void Search()
+        {
+            try
+            {
+                for (;;)
+                {
+                    _updateEvent.WaitOne();
+
+                    try
+                    {
+                        _refreshing = true;
+
+                        SearchTreeViewModel tempTreeViewModel = null;
+
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                        {
+                            tempTreeViewModel = _treeView.SelectedItem as SearchTreeViewModel;
+                        }));
+
+                        if (tempTreeViewModel == null) continue;
+
+                        var newList = new List<SearchListViewModel>(_searchingCache);
+
+                        var searchTreeViewModels = new List<SearchTreeViewModel>();
+
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                        {
+                            searchTreeViewModels.AddRange(tempTreeViewModel.GetAncestors().OfType<SearchTreeViewModel>());
+                        }));
+
+                        foreach (var searchTreeViewModel in searchTreeViewModels)
+                        {
+                            {
+                                var tempList = SearchControl.Filter(newList, searchTreeViewModel.Value.SearchItem);
+                                newList.Clear();
+                                newList.AddRange(tempList);
+                            }
+
+                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                            {
+                                searchTreeViewModel.IsHit = false;
+                                searchTreeViewModel.Count = newList.Count;
+
+                                searchTreeViewModel.Update();
+                            }));
+                        }
+
+                        {
+                            string[] words = null;
+
+                            {
+                                string searchText = null;
+
+                                this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                                {
+                                    searchText = _searchTextBox.Text;
+                                }));
+
+                                if (!string.IsNullOrWhiteSpace(searchText))
+                                {
+                                    words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
+                                }
+                            }
+
+                            var tempList = new List<SearchListViewModel>();
+
+                            foreach (var item in newList)
+                            {
+                                if (words != null)
+                                {
+                                    var text = (item.Name ?? "").ToLower();
+                                    if (!words.All(n => text.Contains(n))) continue;
+                                }
+
+                                tempList.Add(item);
+                            }
+
+                            newList.Clear();
+                            newList.AddRange(tempList);
+                        }
+
+                        var sortList = this.Sort(newList, 100000);
+
+                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+                        {
+                            if (tempTreeViewModel != _treeView.SelectedItem) return;
+
+                            _listViewModelCollection.Clear();
+                            _listViewModelCollection.AddRange(sortList);
+
+                            this.Update_Title();
+                        }));
+                    }
+                    finally
+                    {
+                        _refreshing = false;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
 
         private void Cache()
@@ -306,116 +411,19 @@ namespace Amoeba.Windows
             }
         }
 
-        private void Search()
-        {
-            try
-            {
-                for (;;)
-                {
-                    _updateEvent.WaitOne();
-
-                    try
-                    {
-                        _refreshing = true;
-
-                        SearchTreeViewModel tempTreeViewModel = null;
-
-                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                        {
-                            tempTreeViewModel = _treeView.SelectedItem as SearchTreeViewModel;
-                        }));
-
-                        if (tempTreeViewModel == null) continue;
-
-                        var newList = new List<SearchListViewModel>(_searchingCache);
-
-                        var searchTreeViewModels = new List<SearchTreeViewModel>();
-
-                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                        {
-                            searchTreeViewModels.AddRange(tempTreeViewModel.GetAncestors().OfType<SearchTreeViewModel>());
-                        }));
-
-                        foreach (var searchTreeViewModel in searchTreeViewModels)
-                        {
-                            {
-                                var tempList = SearchControl.Filter(newList, searchTreeViewModel.Value.SearchItem);
-                                newList.Clear();
-                                newList.AddRange(tempList);
-                            }
-
-                            this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                            {
-                                searchTreeViewModel.Count = newList.Count;
-                                searchTreeViewModel.Update();
-                            }));
-                        }
-
-                        {
-                            string[] words = null;
-
-                            {
-                                string searchText = null;
-
-                                this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                                {
-                                    searchText = _searchTextBox.Text;
-                                }));
-
-                                if (!string.IsNullOrWhiteSpace(searchText))
-                                {
-                                    words = searchText.ToLower().Split(new string[] { " ", "　" }, StringSplitOptions.RemoveEmptyEntries);
-                                }
-                            }
-
-                            var tempList = new List<SearchListViewModel>();
-
-                            foreach (var item in newList)
-                            {
-                                if (words != null)
-                                {
-                                    var text = (item.Name ?? "").ToLower();
-                                    if (!words.All(n => text.Contains(n))) continue;
-                                }
-
-                                tempList.Add(item);
-                            }
-
-                            newList.Clear();
-                            newList.AddRange(tempList);
-                        }
-
-                        var sortList = this.Sort(newList, 100000);
-
-                        this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
-                        {
-                            if (tempTreeViewModel != _treeView.SelectedItem) return;
-
-                            _listViewModelCollection.Clear();
-                            _listViewModelCollection.AddRange(sortList);
-
-                            this.Update_Title();
-                        }));
-                    }
-                    finally
-                    {
-                        _refreshing = false;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-        }
-
         private void SetCount(SearchTreeViewModel targetTreeViewModel, IEnumerable<SearchListViewModel> items)
         {
             var tempList = SearchControl.Filter(items, targetTreeViewModel.Value.SearchItem).ToList();
 
             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
+                if (targetTreeViewModel.Count != 0 && targetTreeViewModel.Count != tempList.Count)
+                {
+                    targetTreeViewModel.IsHit = true;
+                }
+
                 targetTreeViewModel.Count = tempList.Count;
+
                 targetTreeViewModel.Update();
             }));
 

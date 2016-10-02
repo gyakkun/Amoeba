@@ -77,7 +77,17 @@
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type local:TreeViewModelBase}" ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Name}" />
+                    <TextBlock Text="{Binding Name}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
+                                <Binding Path="IsSelected" />
+                                <Binding Path="IsHit" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                        <TextBlock.FontWeight>
+                            <Binding Path="IsHit" Converter="{StaticResource _getTreeWeightConverter}" />
+                        </TextBlock.FontWeight>
+                    </TextBlock>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

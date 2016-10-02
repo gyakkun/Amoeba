@@ -70,7 +70,7 @@ namespace Amoeba.Windows
             foreach (var path in Settings.Instance.LibraryControl_ExpandedPaths.ToArray())
             {
                 if (path.Count == 0 || path[0] != _treeViewModel.Value.Name) goto End;
-                TreeViewModelBase treeViewModel = _treeViewModel;
+                BoxTreeViewModel treeViewModel = _treeViewModel;
 
                 foreach (var name in path.Skip(1))
                 {
@@ -79,6 +79,7 @@ namespace Amoeba.Windows
                 }
 
                 treeViewModel.IsExpanded = true;
+
                 continue;
 
                 End:;

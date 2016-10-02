@@ -43,7 +43,6 @@ namespace Amoeba.Windows
         }
 
         public abstract string Name { get; }
-        public abstract bool IsExpanded { get; set; }
         public abstract bool IsSelected { get; set; }
 
         public TreeViewModelBase Parent { get { return _parent; } }
