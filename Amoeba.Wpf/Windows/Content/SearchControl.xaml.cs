@@ -146,7 +146,6 @@ namespace Amoeba.Windows
 
                             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                             {
-                                searchTreeViewModel.IsHit = false;
                                 searchTreeViewModel.Count = newList.Count;
 
                                 searchTreeViewModel.Update();
@@ -192,6 +191,8 @@ namespace Amoeba.Windows
                         this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                         {
                             if (tempTreeViewModel != _treeView.SelectedItem) return;
+
+                            tempTreeViewModel.IsHit = false;
 
                             _listViewModelCollection.Clear();
                             _listViewModelCollection.AddRange(sortList);
