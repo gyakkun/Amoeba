@@ -11,8 +11,30 @@
 
     <Grid>
         <TabControl Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
-            <TabItem Header="{Binding Path=StoreControl_Download, Source={StaticResource _languages}}" Name="_storeDownloadTabItem" />
-            <TabItem Header="{Binding Path=StoreControl_Upload, Source={StaticResource _languages}}" Name="_storeUploadTabItem" />
+            <TabItem Name="_storeDownloadTabItem">
+                <TabItem.Header>
+                    <TextBlock Text="{Binding Path=StoreControl_Download, Source={StaticResource _languages}}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
+                                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                                <Binding Path="Content.IsHit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem Name="_storeUploadTabItem">
+                <TabItem.Header>
+                    <TextBlock Text="{Binding Path=StoreControl_Upload, Source={StaticResource _languages}}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
+                                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                                <Binding Path="Content.IsHit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </TabItem.Header>
+            </TabItem>
             <TabItem Header="{Binding Path=StoreControl_Library, Source={StaticResource _languages}}" Name="_libraryTabItem" />
         </TabControl>
     </Grid>

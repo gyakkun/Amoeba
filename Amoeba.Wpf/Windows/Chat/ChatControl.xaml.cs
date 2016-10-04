@@ -124,6 +124,24 @@ namespace Amoeba.Windows
             LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
         }
 
+        #region IsHit
+
+        public static readonly DependencyProperty IsHitProperty = DependencyProperty.Register("IsHit", typeof(bool), typeof(ChatControl), new PropertyMetadata(false));
+
+        public bool IsHit
+        {
+            get
+            {
+                return (bool)GetValue(IsHitProperty);
+            }
+            set
+            {
+                SetValue(IsHitProperty, value);
+            }
+        }
+
+        #endregion
+
         private void _textEditor_Helper_ClickEvent(string uri)
         {
             if (uri.StartsWith("http:") | uri.StartsWith("https:"))
@@ -449,6 +467,8 @@ namespace Amoeba.Windows
                         ((ChatTreeViewModel)item).IsHit = hitItems.Contains(item);
                     }
                 }
+
+                this.IsHit = (hitItems.Count != 0);
             }
         }
 

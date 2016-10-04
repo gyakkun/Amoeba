@@ -123,6 +123,24 @@ namespace Amoeba.Windows
             this.Update();
         }
 
+        #region IsHit
+
+        public static readonly DependencyProperty IsHitProperty = DependencyProperty.Register("IsHit", typeof(bool), typeof(StoreUploadControl), new PropertyMetadata(false));
+
+        public bool IsHit
+        {
+            get
+            {
+                return (bool)GetValue(IsHitProperty);
+            }
+            set
+            {
+                SetValue(IsHitProperty, value);
+            }
+        }
+
+        #endregion
+
         private void LanguagesManager_UsingLanguageChangedEvent(object sender)
         {
             _listView.Items.Refresh();
@@ -374,6 +392,8 @@ namespace Amoeba.Windows
                         ((StoreTreeViewModel)item).IsHit = hitItems.Contains(item);
                     }
                 }
+
+                this.IsHit = (hitItems.Count != 0);
             }
         }
 
@@ -2013,7 +2033,7 @@ namespace Amoeba.Windows
                     var storeTreeViewModel = selectTreeViewModel.GetAncestors().OfType<StoreTreeViewModel>().FirstOrDefault();
                     if (storeTreeViewModel == null) return;
 
-                    var editSeeds = selectSeedListViewModels.Select(n => n.Value.Clone()).ToList();
+                    var editSeeds = selectSeedListViewModels.Select(n => n.Value).ToList();
                     if (editSeeds == null) return;
 
                     var window = new SeedEditWindow(editSeeds);

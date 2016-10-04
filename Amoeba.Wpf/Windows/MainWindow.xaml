@@ -56,12 +56,45 @@
         <TabControl Margin="0,28,0,0" Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
             <TabItem Header="{Binding Path=MainWindow_Information, Source={StaticResource _languages}}" Name="_informationTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Link, Source={StaticResource _languages}}" Name="_linkTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Chat, Source={StaticResource _languages}}" Name="_chatTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Search, Source={StaticResource _languages}}" Name="_searchTabItem" />
+            <TabItem Name="_chatTabItem">
+                <TabItem.Header>
+                    <TextBlock Text="{Binding Path=MainWindow_Chat, Source={StaticResource _languages}}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
+                                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                                <Binding Path="Content.IsHit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem Name="_searchTabItem">
+                <TabItem.Header>
+                    <TextBlock Text="{Binding Path=MainWindow_Search, Source={StaticResource _languages}}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
+                                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                                <Binding Path="Content.IsHit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </TabItem.Header>
+            </TabItem>
             <TabItem Header="{Binding Path=MainWindow_Download, Source={StaticResource _languages}}" Name="_downloadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Upload, Source={StaticResource _languages}}" Name="_uploadTabItem" />
             <TabItem Header="{Binding Path=MainWindow_Share, Source={StaticResource _languages}}" Name="_shareTabItem" />
-            <TabItem Header="{Binding Path=MainWindow_Store, Source={StaticResource _languages}}" Name="_storeTabItem" />
+            <TabItem Name="_storeTabItem">
+                <TabItem.Header>
+                    <TextBlock Text="{Binding Path=MainWindow_Store, Source={StaticResource _languages}}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
+                                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                                <Binding Path="Content.IsHit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </TabItem.Header>
+            </TabItem>
             <TabItem Name="_logTabItem" Header="{Binding Path=MainWindow_Log, Source={StaticResource _languages}}">
                 <Grid>
                     <Grid.RowDefinitions>

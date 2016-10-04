@@ -101,6 +101,24 @@ namespace Amoeba.Windows
             this.Update_Cache();
         }
 
+        #region IsHit
+
+        public static readonly DependencyProperty IsHitProperty = DependencyProperty.Register("IsHit", typeof(bool), typeof(SearchControl), new PropertyMetadata(false));
+
+        public bool IsHit
+        {
+            get
+            {
+                return (bool)GetValue(IsHitProperty);
+            }
+            set
+            {
+                SetValue(IsHitProperty, value);
+            }
+        }
+
+        #endregion
+
         private void LanguagesManager_UsingLanguageChangedEvent(object sender)
         {
             _listView.Items.Refresh();
@@ -193,6 +211,8 @@ namespace Amoeba.Windows
                             if (tempTreeViewModel != _treeView.SelectedItem) return;
 
                             tempTreeViewModel.IsHit = false;
+
+                            this.Update_IsHit();
 
                             _listViewModelCollection.Clear();
                             _listViewModelCollection.AddRange(sortList);
@@ -421,6 +441,8 @@ namespace Amoeba.Windows
                 if (targetTreeViewModel.Count != 0 && targetTreeViewModel.Count != tempList.Count)
                 {
                     targetTreeViewModel.IsHit = true;
+
+                    this.Update_IsHit();
                 }
 
                 targetTreeViewModel.Count = tempList.Count;
@@ -688,6 +710,19 @@ namespace Amoeba.Windows
                     _mainWindow.Title = string.Format("Amoeba {0} - {1}", _serviceManager.AmoebaVersion, selectTreeViewModel.Value.SearchItem.Name);
                 }
             }
+        }
+
+        private void Update_IsHit()
+        {
+            var searchTreeViewModels = new List<SearchTreeViewModel>();
+            searchTreeViewModels.Add(_treeViewModel);
+
+            for (int i = 0; i < searchTreeViewModels.Count; i++)
+            {
+                searchTreeViewModels.AddRange(searchTreeViewModels[i].Children.OfType<SearchTreeViewModel>());
+            }
+
+            this.IsHit = searchTreeViewModels.Any(n => n.IsHit);
         }
 
         private void _textBox_KeyDown(object sender, KeyEventArgs e)
@@ -1140,20 +1175,12 @@ namespace Amoeba.Windows
             var selectSearchListViewModels = _listView.SelectedItems.OfType<SearchListViewModel>();
             if (selectSearchListViewModels == null) return;
 
-            var list = new List<Seed>();
+            var editSeeds = selectSearchListViewModels.SelectMany(n => n.Seeds).ToList();
 
-            foreach (var seeds in selectSearchListViewModels.Select(n => n.Seeds))
-            {
-                foreach (var seed in seeds)
-                {
-                    list.Add(seed);
-                }
-            }
-
-            var window = new SeedEditWindow(list);
+            var window = new SeedEditWindow(editSeeds);
             window.Owner = _mainWindow;
 
-            if (true == window.ShowDialog())
+            if (window.ShowDialog() == true)
             {
                 this.Update();
             }

@@ -133,6 +133,24 @@ namespace Amoeba.Windows
             this.Update();
         }
 
+        #region IsHit
+
+        public static readonly DependencyProperty IsHitProperty = DependencyProperty.Register("IsHit", typeof(bool), typeof(StoreDownloadControl), new PropertyMetadata(false));
+
+        public bool IsHit
+        {
+            get
+            {
+                return (bool)GetValue(IsHitProperty);
+            }
+            set
+            {
+                SetValue(IsHitProperty, value);
+            }
+        }
+
+        #endregion
+
         private void LanguagesManager_UsingLanguageChangedEvent(object sender)
         {
             _listView.Items.Refresh();
@@ -422,6 +440,9 @@ namespace Amoeba.Windows
                         ((StoreTreeViewModel)item).IsHit = hitItems.Contains(item);
                     }
                 }
+
+                this.IsHit = (hitItems.Count != 0);
+                _storeControl.IsHit = (hitItems.Count != 0);
             }
         }
 

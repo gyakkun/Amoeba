@@ -3,23 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Management;
 using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Automation.Peers;
-using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -30,13 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using Amoeba.Properties;
 using Library;
-using Library.Collections;
-using Library.Io;
 using Library.Net.Amoeba;
-using Library.Net.Connections;
-using Library.Net.Proxy;
-using Library.Net.Upnp;
-using Library.Security;
 
 namespace Amoeba.Windows
 {
@@ -970,6 +956,8 @@ namespace Amoeba.Windows
                     {
                         // Amoeba
                         Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAABkFtb2ViYQEgyeOUT6BPIlq8Nfe1kndaS0ETNlmJY90wt-Osb-l2mZqamJsU")));
+                        // Covenant
+                        Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAACENvdmVuYW50ASBJDZp3I-Ng-iWJwmq2Us-q45iWCQQpekfoZExA5Zom9EZtMqE")));
                         // Test
                         Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAABFRlc3QBIMEj2xDMP6_RAoVbePTEZwHz8Fcd29tqB9MY0JZyn6eS5iXI_A")));
                     }
@@ -1105,25 +1093,10 @@ namespace Amoeba.Windows
                         version = new Version(reader.ReadLine());
                     }
 
-                    if (version <= new Version(3, 0, 30))
+                    if (version <= new Version(4, 0, 18))
                     {
-                        // Trust.txtにあるノード情報を追加する。
-                        if (File.Exists(Path.Combine(_serviceManager.Paths["Settings"], "Trust.txt")))
-                        {
-                            var list = new List<string>();
-
-                            using (StreamReader reader = new StreamReader(Path.Combine(_serviceManager.Paths["Settings"], "Trust.txt"), new UTF8Encoding(false)))
-                            {
-                                string line;
-
-                                while ((line = reader.ReadLine()) != null)
-                                {
-                                    list.Add(line);
-                                }
-                            }
-
-                            Settings.Instance.Global_TrustSignatures.AddRange(list);
-                        }
+                        // Covenant
+                        Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAACENvdmVuYW50ASBJDZp3I-Ng-iWJwmq2Us-q45iWCQQpekfoZExA5Zom9EZtMqE")));
                     }
                 }
 

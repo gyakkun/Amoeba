@@ -1124,6 +1124,7 @@ namespace Amoeba.Windows
                 _listViewDeleteMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
                 _listViewCutMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
                 _listViewCopyMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
+                _listViewCopyInfoMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
                 _listViewDownloadMenuItem.IsEnabled = (selectItems != null && selectItems.Count > 0);
 
                 // Paste
@@ -1200,7 +1201,7 @@ namespace Amoeba.Windows
                     var selectSeedListViewModels = _listView.SelectedItems.OfType<SeedListViewModel>();
                     if (selectSeedListViewModels == null) return;
 
-                    var editSeeds = selectSeedListViewModels.Select(n => n.Value.Clone()).ToList();
+                    var editSeeds = selectSeedListViewModels.Select(n => n.Value).ToList();
                     if (editSeeds == null) return;
 
                     var window = new SeedEditWindow(editSeeds);

@@ -71,6 +71,24 @@ namespace Amoeba.Windows
             _libraryTabItem.Content = libraryControl;
         }
 
+        #region IsHit
+
+        public static readonly DependencyProperty IsHitProperty = DependencyProperty.Register("IsHit", typeof(bool), typeof(StoreControl), new PropertyMetadata(false));
+
+        public bool IsHit
+        {
+            get
+            {
+                return (bool)GetValue(IsHitProperty);
+            }
+            set
+            {
+                SetValue(IsHitProperty, value);
+            }
+        }
+
+        #endregion
+
         public SearchState GetState(Seed seed)
         {
             return _seedStateCache.GetState(seed);
