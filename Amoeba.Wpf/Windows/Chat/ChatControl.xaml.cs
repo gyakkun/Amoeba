@@ -348,20 +348,22 @@ namespace Amoeba.Windows
 
             var newMulticastMessages = new Dictionary<MulticastMessageItem, MulticastMessageOption>();
 
-            foreach (var info in _amoebaManager.GetMulticastMessages(treeViewModel.Value.Tag, limit))
+            foreach (dynamic info in _amoebaManager.GetMulticastMessages(treeViewModel.Value.Tag, limit))
             {
                 var item = new MulticastMessageItem();
-                item.Tag = (Tag)info["Tag"];
-                item.CreationTime = (DateTime)info["CreationTime"];
-                item.Signature = (string)info["Signature"];
+                item.Tag = info.Tag;
+                item.CreationTime = info.CreationTime;
+                item.Signature = info.Signature;
                 {
-                    var message = (Message)info["Value"];
+                    Message message = info.Value;
                     item.Comment = message.Comment;
                 }
 
                 var option = new MulticastMessageOption();
                 option.State = MulticastMessageState.IsUnread;
-                option.Cost = (int)info["Cost"];
+                option.Cost = info.Cost;
+
+                if (ChatControl.Filter(item)) continue;
 
                 newMulticastMessages.Add(item, option);
             }
@@ -383,6 +385,8 @@ namespace Amoeba.Windows
                     {
                         if (!Inspect.ContainTrustSignature(item.Signature) && option.Cost < limit) continue;
                     }
+
+                    if (ChatControl.Filter(item)) continue;
 
                     dic.Add(pair.Key, pair.Value);
                 }
@@ -406,11 +410,13 @@ namespace Amoeba.Windows
                     }
                 }
 
-                treeViewModel.Value.MulticastMessages.Clear();
-
-                foreach (var item in dic)
                 {
-                    treeViewModel.Value.MulticastMessages.Add(item.Key, item.Value);
+                    treeViewModel.Value.MulticastMessages.Clear();
+
+                    foreach (var item in dic)
+                    {
+                        treeViewModel.Value.MulticastMessages.Add(item.Key, item.Value);
+                    }
                 }
             }
 
@@ -418,6 +424,29 @@ namespace Amoeba.Windows
             {
                 treeViewModel.Update();
             }));
+        }
+
+        private static bool Filter(MulticastMessageItem target)
+        {
+            {
+                var iterator = System.Globalization.StringInfo.GetTextElementEnumerator(target.Signature);
+
+                while (iterator.MoveNext())
+                {
+                    if (Encoding.UTF8.GetByteCount(iterator.GetTextElement()) > 16) return true;
+                }
+            }
+
+            {
+                var iterator = System.Globalization.StringInfo.GetTextElementEnumerator(target.Comment);
+
+                while (iterator.MoveNext())
+                {
+                    if (Encoding.UTF8.GetByteCount(iterator.GetTextElement()) > 16) return true;
+                }
+            }
+
+            return false;
         }
 
         private void Update()

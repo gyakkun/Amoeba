@@ -44,41 +44,6 @@ namespace Amoeba.Windows
             this.ClickEvent?.Invoke(text);
         }
 
-        private static IEnumerable<string> ToTextElements(string text)
-        {
-            var iterator = System.Globalization.StringInfo.GetTextElementEnumerator(text);
-
-            while (iterator.MoveNext())
-            {
-                var item = iterator.GetTextElement();
-
-                if (Encoding.UTF8.GetByteCount(item) > 16) yield return " ";
-                else yield return iterator.GetTextElement();
-            }
-        }
-
-        protected string Regularization(string value)
-        {
-            var sb = new StringBuilder(value.Length);
-
-            foreach (var element in ToTextElements(value))
-            {
-                foreach (var c in element)
-                {
-                    if (char.IsControl(c) || c == '\uFFFD')
-                    {
-                        sb.Append(' ');
-                    }
-                    else
-                    {
-                        sb.Append(c);
-                    }
-                }
-            }
-
-            return sb.ToString();
-        }
-
         protected abstract class AbstractCustomElementGenerator : VisualLineElementGenerator
         {
             private List<CustomElementSetting> _settings = new List<CustomElementSetting>();

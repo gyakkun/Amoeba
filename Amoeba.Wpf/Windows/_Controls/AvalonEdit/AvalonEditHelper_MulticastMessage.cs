@@ -137,8 +137,7 @@ namespace Amoeba.Windows
                     foreach (var line in target.Item.Comment
                         .Trim('\r', '\n')
                         .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
-                        .Take(128)
-                        .Select(n => this.Regularization(n)))
+                        .Take(128))
                     {
                         foreach (var match in _uriRegexes.Select(n => n.Matches(line)).SelectMany(n => n.OfType<Match>()))
                         {
@@ -221,8 +220,7 @@ namespace Amoeba.Windows
                     foreach (var line in comment
                         .Trim('\r', '\n')
                         .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
-                        .Take(128)
-                        .Select(n => this.Regularization(n)))
+                        .Take(128))
                     {
                         foreach (var match in _uriRegexes.Select(n => n.Matches(line)).SelectMany(n => n.OfType<Match>()))
                         {
