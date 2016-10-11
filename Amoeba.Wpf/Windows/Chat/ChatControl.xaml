@@ -86,26 +86,50 @@
                 <local:ChatControl_StyleSelector ChatCategorizeTreeViewModelStyle="{StaticResource _chatCategorizeTreeViewModelSytle}" ChatTreeViewModelStyle="{StaticResource _chatTreeViewModelSytle}" />
             </TreeView.ItemContainerStyleSelector>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:TreeViewModelBase}" ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Name}">
-                        <TextBlock.Foreground>
-                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
-                                <Binding Path="IsSelected" />
-                                <Binding Path="IsHit" />
-                            </MultiBinding>
-                        </TextBlock.Foreground>
-                        <TextBlock.FontWeight>
-                            <Binding Path="IsHit" Converter="{StaticResource _getTreeWeightConverter}" />
-                        </TextBlock.FontWeight>
-                    </TextBlock>
+                <HierarchicalDataTemplate DataType="{x:Type local:TreeViewModelBase}" ItemsSource="{Binding Path=Children}">
+                    <TextBlock Name="_textBlock" Text="{Binding Path=Name}" />
+
+                    <HierarchicalDataTemplate.Triggers>
+
+                        <DataTrigger Value="false" Binding="{Binding Path=IsSelected}">
+                            <Setter TargetName="_textBlock" Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                        </DataTrigger>
+                        <DataTrigger Value="true" Binding="{Binding Path=IsSelected}">
+                            <Setter TargetName="_textBlock" Property="Foreground">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{DynamicResource BlackColor}" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="false" Binding="{Binding Path=IsSelected}"/>
+                                <Condition Value="true" Binding="{Binding Path=IsHit}"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="_textBlock" Property="Foreground">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding Path=Tree_Hit, Source={StaticResource _colors}}" />
+                                </Setter.Value>
+                            </Setter>
+                        </MultiDataTrigger>
+
+                        <DataTrigger Value="true" Binding="{Binding Path=IsHit}">
+                            <Setter TargetName="_textBlock" Property="FontWeight" Value="ExtraBlack"/>
+                        </DataTrigger>
+                        <DataTrigger Value="false" Binding="{Binding Path=IsHit}">
+                            <Setter TargetName="_textBlock" Property="FontWeight" Value="Normal"/>
+                        </DataTrigger>
+
+                    </HierarchicalDataTemplate.Triggers>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
 
-        <Button x:Name="_newMessageButton" Style="{StaticResource _buttonStyle}" Content="New" Grid.Column="2" HorizontalAlignment="Left" Margin="52,6,0,0" VerticalAlignment="Top" Width="40" Height="40" ToolTip="{Binding Path=ChatControl_NewMessage, Source={StaticResource _languages}}" Click="_newMessageButton_Click"/>
-        <ToggleButton x:Name="_trustToggleButton" Style="{StaticResource _toggleButtonStyle}" Content="Trust" Grid.Column="2" HorizontalAlignment="Left" Margin="6,6,0,0" Width="40" Height="40" VerticalAlignment="Top" ToolTip="{Binding Path=ChatControl_Trust, Source={StaticResource _languages}}" Click="_trustToggleButton_Click"/>
+        <Button x:Name="_newMessageButton" Style="{StaticResource _flatButtonStyle}" Content="New" Grid.Column="2" HorizontalAlignment="Left" Margin="52,6,0,0" VerticalAlignment="Top" Width="40" Height="40" ToolTip="{Binding Path=ChatControl_NewMessage, Source={StaticResource _languages}}" Click="_newMessageButton_Click"/>
+        <ToggleButton x:Name="_trustToggleButton" Style="{StaticResource _flatToggleButtonStyle}" Content="Trust" Grid.Column="2" HorizontalAlignment="Left" Margin="6,6,0,0" Width="40" Height="40" VerticalAlignment="Top" ToolTip="{Binding Path=ChatControl_Trust, Source={StaticResource _languages}}" Click="_trustToggleButton_Click"/>
+
         <StackPanel Name="_limitStackPanel" Orientation="Horizontal" Margin="0,16,0,0" VerticalAlignment="Top" Grid.Column="2" HorizontalAlignment="Right">
             <Label Content="{Binding Path=ChatControl_Limit, Source={StaticResource _languages}}" Height="24" />
             <TextBox x:Name="_limitTextBox" Margin="6,6,0,6" Width="50" Text="{Binding Path=Global_Limit, Mode=OneWay, Source={x:Static prop:Settings.Instance}}" TextChanged="_limitTextBox_TextChanged" Height="24" />

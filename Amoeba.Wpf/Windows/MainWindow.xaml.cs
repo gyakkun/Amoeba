@@ -872,10 +872,14 @@ namespace Amoeba.Windows
 
         private void _logListBoxCopyMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            var hashSet = new HashSet<string>(_logListBox.SelectedItems.Cast<string>());
+
             var sb = new StringBuilder();
 
-            foreach (var line in _logListBox.SelectedItems.Cast<string>())
+            foreach (var line in _logListBox.Items.Cast<string>())
             {
+                if (!hashSet.Contains(line)) continue;
+
                 sb.AppendLine(line);
             }
 
@@ -1352,7 +1356,7 @@ namespace Amoeba.Windows
             var informationControl = new InformationControl(_amoebaManager, _bufferManager);
             informationControl.Height = Double.NaN;
             informationControl.Width = Double.NaN;
-            _informationTabItem.Content = informationControl;
+            _infoTabItem.Content = informationControl;
 
             var linkControl = new LinkControl(_amoebaManager, _bufferManager);
             linkControl.Height = Double.NaN;
@@ -1501,7 +1505,7 @@ namespace Amoeba.Windows
         {
             if (e.OriginalSource != _tabControl) return;
 
-            if (_tabControl.SelectedItem == _informationTabItem)
+            if (_tabControl.SelectedItem == _infoTabItem)
             {
                 this.SelectedTab = MainWindowTabType.Information;
             }

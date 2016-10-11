@@ -76,18 +76,41 @@
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:TreeViewModelBase}" ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding Name}">
-                        <TextBlock.Foreground>
-                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
-                                <Binding Path="IsSelected" />
-                                <Binding Path="IsHit" />
-                            </MultiBinding>
-                        </TextBlock.Foreground>
-                        <TextBlock.FontWeight>
-                            <Binding Path="IsHit" Converter="{StaticResource _getTreeWeightConverter}" />
-                        </TextBlock.FontWeight>
-                    </TextBlock>
+                <HierarchicalDataTemplate DataType="{x:Type local:TreeViewModelBase}" ItemsSource="{Binding Path=Children}">
+                    <TextBlock Name="_textBlock" Text="{Binding Path=Name}" />
+
+                    <HierarchicalDataTemplate.Triggers>
+
+                        <DataTrigger Value="false" Binding="{Binding Path=IsSelected}">
+                            <Setter TargetName="_textBlock" Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                        </DataTrigger>
+                        <DataTrigger Value="true" Binding="{Binding Path=IsSelected}">
+                            <Setter TargetName="_textBlock" Property="Foreground">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{DynamicResource BlackColor}" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="false" Binding="{Binding Path=IsSelected}"/>
+                                <Condition Value="true" Binding="{Binding Path=IsHit}"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="_textBlock" Property="Foreground">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{Binding Path=Tree_Hit, Source={StaticResource _colors}}" />
+                                </Setter.Value>
+                            </Setter>
+                        </MultiDataTrigger>
+
+                        <DataTrigger Value="true" Binding="{Binding Path=IsHit}">
+                            <Setter TargetName="_textBlock" Property="FontWeight" Value="ExtraBlack"/>
+                        </DataTrigger>
+                        <DataTrigger Value="false" Binding="{Binding Path=IsHit}">
+                            <Setter TargetName="_textBlock" Property="FontWeight" Value="Normal"/>
+                        </DataTrigger>
+
+                    </HierarchicalDataTemplate.Triggers>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

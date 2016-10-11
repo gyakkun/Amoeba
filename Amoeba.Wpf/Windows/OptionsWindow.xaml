@@ -296,12 +296,12 @@
             </Grid>
 
             <Grid Grid.Column="2" FocusManager.FocusedElement="{Binding ElementName=_updateUrlTextBox}" Visibility="{Binding ElementName=_updateTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <Label Content="{Binding Path=OptionsWindow_UpdateUrl, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="120" />
-                <TextBox Height="24" Margin="132,6,6,0" Name="_updateUrlTextBox" VerticalAlignment="Top" />
-                <Label Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="120" />
-                <TextBox Height="24" Margin="132,36,6,0" Name="_updateProxyUriTextBox" VerticalAlignment="Top" />
-                <Label Content="{Binding Path=OptionsWindow_Signature, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="120" />
-                <TextBox Height="24" Margin="132,66,6,0" Name="_updateSignatureTextBox" VerticalAlignment="Top" />
+                <Label Content="{Binding Path=OptionsWindow_UpdateUrl, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="252,6,6,0" Name="_updateUrlTextBox" VerticalAlignment="Top" />
+                <Label Content="{Binding Path=OptionsWindow_ProxyUri, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="252,36,6,0" Name="_updateProxyUriTextBox" VerticalAlignment="Top" />
+                <Label Content="{Binding Path=OptionsWindow_Signature, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,66,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="252,66,6,0" Name="_updateSignatureTextBox" VerticalAlignment="Top" />
                 <GroupBox Header="{Binding Path=OptionsWindow_UpdateOption, Source={StaticResource _languages}}" Height="103" Margin="6,96,6,0" Name="groupBox1" VerticalAlignment="Top">
                     <Grid>
                         <RadioButton Content="{Binding Path=OptionsWindow_None, Source={StaticResource _languages}}" Height="16" HorizontalAlignment="Left" Margin="6,6,0,0" Name="_updateOptionNoneRadioButton" VerticalAlignment="Top" />
@@ -383,16 +383,16 @@
             </Grid>
 
             <Grid Grid.Column="2" Visibility="{Binding ElementName=_fontsTreeViewItem, Path=IsSelected, Converter={StaticResource _boolToVisibilityConverter}}">
-                <Label Content="{Binding Path=OptionsWindow_MessageFontFamily, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="360" />
-                <ComboBox Height="24" Margin="372,6,6,0" Name="_fontMessageFontFamilyComboBox" VerticalAlignment="Top">
+                <Label Content="{Binding Path=OptionsWindow_MessageFontFamily, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,6,0,0" VerticalAlignment="Top" Width="240" />
+                <ComboBox Height="24" Margin="252,6,6,0" Name="_fontMessageFontFamilyComboBox" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel />
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
-                <Label Content="{Binding Path=OptionsWindow_MessageFontSize, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="360" />
-                <TextBox Height="24" Margin="372,36,6,0" Name="_fontMessageFontSizeTextBox" VerticalAlignment="Top" TextChanged="_fontMessageFontSizeTextBox_TextChanged" />
+                <Label Content="{Binding Path=OptionsWindow_MessageFontSize, Source={StaticResource _languages}}" Height="24" HorizontalAlignment="Left" Margin="6,36,0,0" VerticalAlignment="Top" Width="240" />
+                <TextBox Height="24" Margin="252,36,6,0" Name="_fontMessageFontSizeTextBox" VerticalAlignment="Top" TextChanged="_fontMessageFontSizeTextBox_TextChanged" d:LayoutOverrides="HorizontalAlignment" />
             </Grid>
 
         </Grid>

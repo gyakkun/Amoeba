@@ -132,21 +132,22 @@ namespace Amoeba.Properties
                 new Library.Configuration.SettingContent<string>() { Name = "DownloadControl_LastHeaderClicked", Value = "Rate" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "DownloadControl_ListSortDirection", Value = ListSortDirection.Descending },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_State_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Priority_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Depth_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Rate_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_Path_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "DownloadControl_GridViewColumn_State_Width", Value = 120 },
 
                 new Library.Configuration.SettingContent<string>() { Name = "UploadControl_LastHeaderClicked", Value = "Rate" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "UploadControl_ListSortDirection", Value = ListSortDirection.Descending },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Name_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_State_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Length_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Priority_Width", Value = 120 },
-                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Depth_Width", Value = 120 },
                 new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Rate_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_Path_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_CreationTime_Width", Value = 120 },
+                new Library.Configuration.SettingContent<double>() { Name = "UploadControl_GridViewColumn_State_Width", Value = 120 },
 
                 new Library.Configuration.SettingContent<string>() { Name = "ShareControl_LastHeaderClicked", Value = "Name" },
                 new Library.Configuration.SettingContent<ListSortDirection>() { Name = "ShareControl_ListSortDirection", Value = ListSortDirection.Ascending },
@@ -365,21 +366,22 @@ namespace Amoeba.Properties
         public string DownloadControl_LastHeaderClicked { get { return (string)this["DownloadControl_LastHeaderClicked"]; } set { this["DownloadControl_LastHeaderClicked"] = value; } }
         public ListSortDirection DownloadControl_ListSortDirection { get { return (ListSortDirection)this["DownloadControl_ListSortDirection"]; } set { this["DownloadControl_ListSortDirection"] = value; } }
         public double DownloadControl_GridViewColumn_Name_Width { get { return (double)this["DownloadControl_GridViewColumn_Name_Width"]; } set { this["DownloadControl_GridViewColumn_Name_Width"] = value; } }
-        public double DownloadControl_GridViewColumn_State_Width { get { return (double)this["DownloadControl_GridViewColumn_State_Width"]; } set { this["DownloadControl_GridViewColumn_State_Width"] = value; } }
         public double DownloadControl_GridViewColumn_Length_Width { get { return (double)this["DownloadControl_GridViewColumn_Length_Width"]; } set { this["DownloadControl_GridViewColumn_Length_Width"] = value; } }
         public double DownloadControl_GridViewColumn_Priority_Width { get { return (double)this["DownloadControl_GridViewColumn_Priority_Width"]; } set { this["DownloadControl_GridViewColumn_Priority_Width"] = value; } }
-        public double DownloadControl_GridViewColumn_Depth_Width { get { return (double)this["DownloadControl_GridViewColumn_Depth_Width"]; } set { this["DownloadControl_GridViewColumn_Depth_Width"] = value; } }
         public double DownloadControl_GridViewColumn_Rate_Width { get { return (double)this["DownloadControl_GridViewColumn_Rate_Width"]; } set { this["DownloadControl_GridViewColumn_Rate_Width"] = value; } }
         public double DownloadControl_GridViewColumn_Path_Width { get { return (double)this["DownloadControl_GridViewColumn_Path_Width"]; } set { this["DownloadControl_GridViewColumn_Path_Width"] = value; } }
+        public double DownloadControl_GridViewColumn_CreationTime_Width { get { return (double)this["DownloadControl_GridViewColumn_CreationTime_Width"]; } set { this["DownloadControl_GridViewColumn_CreationTime_Width"] = value; } }
+        public double DownloadControl_GridViewColumn_State_Width { get { return (double)this["DownloadControl_GridViewColumn_State_Width"]; } set { this["DownloadControl_GridViewColumn_State_Width"] = value; } }
 
         public string UploadControl_LastHeaderClicked { get { return (string)this["UploadControl_LastHeaderClicked"]; } set { this["UploadControl_LastHeaderClicked"] = value; } }
         public ListSortDirection UploadControl_ListSortDirection { get { return (ListSortDirection)this["UploadControl_ListSortDirection"]; } set { this["UploadControl_ListSortDirection"] = value; } }
         public double UploadControl_GridViewColumn_Name_Width { get { return (double)this["UploadControl_GridViewColumn_Name_Width"]; } set { this["UploadControl_GridViewColumn_Name_Width"] = value; } }
-        public double UploadControl_GridViewColumn_State_Width { get { return (double)this["UploadControl_GridViewColumn_State_Width"]; } set { this["UploadControl_GridViewColumn_State_Width"] = value; } }
         public double UploadControl_GridViewColumn_Length_Width { get { return (double)this["UploadControl_GridViewColumn_Length_Width"]; } set { this["UploadControl_GridViewColumn_Length_Width"] = value; } }
         public double UploadControl_GridViewColumn_Priority_Width { get { return (double)this["UploadControl_GridViewColumn_Priority_Width"]; } set { this["UploadControl_GridViewColumn_Priority_Width"] = value; } }
-        public double UploadControl_GridViewColumn_Depth_Width { get { return (double)this["UploadControl_GridViewColumn_Depth_Width"]; } set { this["UploadControl_GridViewColumn_Depth_Width"] = value; } }
         public double UploadControl_GridViewColumn_Rate_Width { get { return (double)this["UploadControl_GridViewColumn_Rate_Width"]; } set { this["UploadControl_GridViewColumn_Rate_Width"] = value; } }
+        public double UploadControl_GridViewColumn_Path_Width { get { return (double)this["UploadControl_GridViewColumn_Path_Width"]; } set { this["UploadControl_GridViewColumn_Path_Width"] = value; } }
+        public double UploadControl_GridViewColumn_CreationTime_Width { get { return (double)this["UploadControl_GridViewColumn_CreationTime_Width"]; } set { this["UploadControl_GridViewColumn_CreationTime_Width"] = value; } }
+        public double UploadControl_GridViewColumn_State_Width { get { return (double)this["UploadControl_GridViewColumn_State_Width"]; } set { this["UploadControl_GridViewColumn_State_Width"] = value; } }
 
         public string ShareControl_LastHeaderClicked { get { return (string)this["ShareControl_LastHeaderClicked"]; } set { this["ShareControl_LastHeaderClicked"] = value; } }
         public ListSortDirection ShareControl_ListSortDirection { get { return (ListSortDirection)this["ShareControl_ListSortDirection"]; } set { this["ShareControl_ListSortDirection"] = value; } }

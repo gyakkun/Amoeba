@@ -98,7 +98,7 @@ namespace Amoeba.Windows
 
             LanguagesManager.UsingLanguageChangedEvent += this.LanguagesManager_UsingLanguageChangedEvent;
 
-            this.Update_Cache();
+            this.Update();
         }
 
         #region IsHit

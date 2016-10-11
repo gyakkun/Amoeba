@@ -31,7 +31,7 @@
   <Translate Key="Box_CreationTime" Value="建立时间" />
   <Translate Key="Box_Comment" Value="注释" />
 
-  <Translate Key="MainWindow_Information" Value="信息" />
+  <Translate Key="MainWindow_Info" Value="信息" />
   <Translate Key="MainWindow_Link" Value="链接" />
   <Translate Key="MainWindow_Wiki" Value="Wiki" />
   <Translate Key="MainWindow_Chat" Value="聊天" />
@@ -255,8 +255,9 @@
   <Translate Key="ChatControl_Trust_Off" Value="关闭信任" />
   <Translate Key="ChatControl_MarkAllMessagesRead" Value="全部已读" />
   <Translate Key="ChatControl_MarkAllMessagesRead_Message" Value="是否将所有消息设为已读?" />
-  <Translate Key="ChatControl_Limit" Value="限制" />
+  <Translate Key="ChatControl_NewMessage" Value="New message" />
   <Translate Key="ChatControl_Trust" Value="信任" />
+  <Translate Key="ChatControl_Limit" Value="限制" />
   <Translate Key="ChatControl_Lock" Value="锁定" />
   <Translate Key="ChatControl_LockThis" Value="锁定" />
   <Translate Key="ChatControl_UnlockThis" Value="解锁" />

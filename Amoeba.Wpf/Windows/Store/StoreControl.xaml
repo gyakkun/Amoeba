@@ -11,31 +11,48 @@
 
     <Grid>
         <TabControl Name="_tabControl" SelectionChanged="_tabControl_SelectionChanged">
-            <TabItem Name="_storeDownloadTabItem">
-                <TabItem.Header>
-                    <TextBlock Text="{Binding Path=StoreControl_Download, Source={StaticResource _languages}}">
-                        <TextBlock.Foreground>
-                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
-                                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
-                                <Binding Path="Content.IsHit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
-                            </MultiBinding>
-                        </TextBlock.Foreground>
-                    </TextBlock>
-                </TabItem.Header>
-            </TabItem>
-            <TabItem Name="_storeUploadTabItem">
-                <TabItem.Header>
-                    <TextBlock Text="{Binding Path=StoreControl_Upload, Source={StaticResource _languages}}">
-                        <TextBlock.Foreground>
-                            <MultiBinding Converter="{StaticResource _getTreeColorConverter}">
-                                <Binding Path="IsSelected" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
-                                <Binding Path="Content.IsHit" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type TabItem}}" />
-                            </MultiBinding>
-                        </TextBlock.Foreground>
-                    </TextBlock>
-                </TabItem.Header>
-            </TabItem>
-            <TabItem Header="{Binding Path=StoreControl_Library, Source={StaticResource _languages}}" Name="_libraryTabItem" />
+            <TabControl.Resources>
+                <Style x:Key="_hitTabItemStyle" TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <ContentPresenter>
+                                    <ContentPresenter.Content>
+                                        <TextBlock Name="_textBlock" Text="{TemplateBinding Content}" />
+                                    </ContentPresenter.Content>
+                                </ContentPresenter>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Value="false" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}}">
+                                        <Setter TargetName="_textBlock" Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Value="true" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}}">
+                                        <Setter TargetName="_textBlock" Property="Foreground">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="{DynamicResource BlackColor}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="false" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}}"/>
+                                            <Condition Value="true" Binding="{Binding Path=Content.IsHit, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TabItem}}}"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter TargetName="_textBlock" Property="Foreground">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="{Binding Path=Tree_Hit, Source={StaticResource _colors}}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </MultiDataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+
+            <TabItem Name="_storeDownloadTabItem" Header="{Binding Path=StoreControl_Download, Source={StaticResource _languages}}" Style="{StaticResource _hitTabItemStyle}" />
+            <TabItem Name="_storeUploadTabItem" Header="{Binding Path=StoreControl_Upload, Source={StaticResource _languages}}" Style="{StaticResource _hitTabItemStyle}" />
+            <TabItem Name="_libraryTabItem" Header="{Binding Path=StoreControl_Library, Source={StaticResource _languages}}" />
         </TabControl>
     </Grid>
 </UserControl>

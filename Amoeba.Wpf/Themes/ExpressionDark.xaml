@@ -2580,10 +2580,10 @@
                         </Trigger>
                         <Trigger Property="IsSelected" Value="true">
                             <Trigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource SelectedOff}" x:Name="SelectedOn_BeginStoryboard1"/>
+                                <BeginStoryboard Storyboard="{StaticResource SelectedOff}"/>
                             </Trigger.ExitActions>
                             <Trigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource SelectedOn}" x:Name="SelectedOn_BeginStoryboard"/>
+                                <BeginStoryboard Storyboard="{StaticResource SelectedOn}"/>
                             </Trigger.EnterActions>
                         </Trigger>
                         <MultiTrigger>
@@ -2601,7 +2601,7 @@
                         </Trigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource HoverOff}" x:Name="HoverOff_BeginStoryboard"/>
+                                <BeginStoryboard Storyboard="{StaticResource HoverOff}"/>
                             </MultiDataTrigger.ExitActions>
                             <MultiDataTrigger.EnterActions>
                                 <BeginStoryboard Storyboard="{StaticResource HoverOn}"/>
@@ -2988,7 +2988,7 @@
                                 <BeginStoryboard Storyboard="{StaticResource SelectedOn}" x:Name="SelectedOn_BeginStoryboard"/>
                             </Trigger.EnterActions>
                         </Trigger>
-                        
+
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsMouseOver" Value="True" />
@@ -3001,7 +3001,7 @@
                                 <BeginStoryboard Storyboard="{StaticResource HoverOn}"/>
                             </MultiTrigger.EnterActions>
                         </MultiTrigger>
-                        
+
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Foreground" Value="{DynamicResource DisabledForegroundBrush}" />
                             <Setter Property="Fill" TargetName="Background" Value="{DynamicResource DisabledBackgroundBrush}"/>

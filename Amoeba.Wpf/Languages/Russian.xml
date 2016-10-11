@@ -31,7 +31,7 @@
   <Translate Key="Box_CreationTime" Value="Время создания" />
   <Translate Key="Box_Comment" Value="Комментарий" />
 
-  <Translate Key="MainWindow_Information" Value="Информация" />
+  <Translate Key="MainWindow_Info" Value="Информация" />
   <Translate Key="MainWindow_Link" Value="Link" />
   <Translate Key="MainWindow_Wiki" Value="Wiki" />
   <Translate Key="MainWindow_Chat" Value="Chat" />
@@ -255,8 +255,9 @@
   <Translate Key="ChatControl_Trust_Off" Value="Trust Off" />
   <Translate Key="ChatControl_MarkAllMessagesRead" Value="Mark all messages read" />
   <Translate Key="ChatControl_MarkAllMessagesRead_Message" Value="Do you want to mark all messages read?" />
-  <Translate Key="ChatControl_Limit" Value="Limit" />
+  <Translate Key="ChatControl_NewMessage" Value="New message" />
   <Translate Key="ChatControl_Trust" Value="Trust" />
+  <Translate Key="ChatControl_Limit" Value="Limit" />
   <Translate Key="ChatControl_Lock" Value="Lock" />
   <Translate Key="ChatControl_LockThis" Value="Lock this" />
   <Translate Key="ChatControl_UnlockThis" Value="Unlock this" />

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Windows;
+using System.Windows.Data;
 using Library;
 
 namespace Amoeba
@@ -91,6 +92,17 @@ namespace Amoeba
                 this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
 
                 _serviceManager = serviceManager;
+            }
+        }
+
+        private void Application_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+        {
+            // Colors
+            {
+                var objectDataProvider = this.FindResource("_colors") as ObjectDataProvider;
+                if (objectDataProvider == null) return;
+
+                objectDataProvider.ObjectInstance = _serviceManager.Config.Colors;
             }
         }
 

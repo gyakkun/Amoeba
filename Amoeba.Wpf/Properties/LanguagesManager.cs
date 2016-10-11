@@ -207,7 +207,7 @@ namespace Amoeba.Properties
         public string Box_CreationTime { get { lock (this.ThisLock) { return this.Translate("Box_CreationTime"); } } }
         public string Box_Comment { get { lock (this.ThisLock) { return this.Translate("Box_Comment"); } } }
 
-        public string MainWindow_Information { get { lock (this.ThisLock) { return this.Translate("MainWindow_Information"); } } }
+        public string MainWindow_Info { get { lock (this.ThisLock) { return this.Translate("MainWindow_Info"); } } }
         public string MainWindow_Link { get { lock (this.ThisLock) { return this.Translate("MainWindow_Link"); } } }
         public string MainWindow_Wiki { get { lock (this.ThisLock) { return this.Translate("MainWindow_Wiki"); } } }
         public string MainWindow_Chat { get { lock (this.ThisLock) { return this.Translate("MainWindow_Chat"); } } }
@@ -431,8 +431,9 @@ namespace Amoeba.Properties
         public string ChatControl_Trust_Off { get { lock (this.ThisLock) { return this.Translate("ChatControl_Trust_Off"); } } }
         public string ChatControl_MarkAllMessagesRead { get { lock (this.ThisLock) { return this.Translate("ChatControl_MarkAllMessagesRead"); } } }
         public string ChatControl_MarkAllMessagesRead_Message { get { lock (this.ThisLock) { return this.Translate("ChatControl_MarkAllMessagesRead_Message"); } } }
-        public string ChatControl_Limit { get { lock (this.ThisLock) { return this.Translate("ChatControl_Limit"); } } }
+        public string ChatControl_NewMessage { get { lock (this.ThisLock) { return this.Translate("ChatControl_NewMessage"); } } }
         public string ChatControl_Trust { get { lock (this.ThisLock) { return this.Translate("ChatControl_Trust"); } } }
+        public string ChatControl_Limit { get { lock (this.ThisLock) { return this.Translate("ChatControl_Limit"); } } }
         public string ChatControl_Lock { get { lock (this.ThisLock) { return this.Translate("ChatControl_Lock"); } } }
         public string ChatControl_LockThis { get { lock (this.ThisLock) { return this.Translate("ChatControl_LockThis"); } } }
         public string ChatControl_UnlockThis { get { lock (this.ThisLock) { return this.Translate("ChatControl_UnlockThis"); } } }

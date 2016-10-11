@@ -9,7 +9,7 @@
     <Style TargetType="{x:Type local:ListViewEx}" BasedOn="{StaticResource {x:Type ListView}}" />
     <Style TargetType="{x:Type local:LanguageMenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}" />
 
-    <Style x:Key="_toggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
+    <Style x:Key="_flatToggleButtonStyle" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
         <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}" />
@@ -89,7 +89,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="_buttonStyle" TargetType="{x:Type Button}" BasedOn="{x:Null}">
+    <Style x:Key="_flatButtonStyle" TargetType="{x:Type Button}" BasedOn="{x:Null}">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
         <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}" />

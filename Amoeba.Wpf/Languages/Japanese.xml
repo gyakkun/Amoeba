@@ -31,7 +31,7 @@
   <Translate Key="Box_CreationTime" Value="作成日" />
   <Translate Key="Box_Comment" Value="コメント" />
 
-  <Translate Key="MainWindow_Information" Value="インフォメーション" />
+  <Translate Key="MainWindow_Info" Value="インフォメーション" />
   <Translate Key="MainWindow_Link" Value="リンク" />
   <Translate Key="MainWindow_Wiki" Value="ウィキ" />
   <Translate Key="MainWindow_Chat" Value="チャット" />
@@ -255,8 +255,9 @@
   <Translate Key="ChatControl_Trust_Off" Value="トラストを無効にする" />
   <Translate Key="ChatControl_MarkAllMessagesRead" Value="すべてのメッセージに既読マークを付ける" />
   <Translate Key="ChatControl_MarkAllMessagesRead_Message" Value="すべてのメッセージに既読マークを付けてもよろしいですか?" />
-  <Translate Key="ChatControl_Limit" Value="リミット" />
+  <Translate Key="ChatControl_NewMessage" Value="New message" />
   <Translate Key="ChatControl_Trust" Value="トラスト" />
+  <Translate Key="ChatControl_Limit" Value="リミット" />
   <Translate Key="ChatControl_Lock" Value="ロック" />
   <Translate Key="ChatControl_LockThis" Value="このメッセージをロック" />
   <Translate Key="ChatControl_UnlockThis" Value="このメッセージをアンロック" />

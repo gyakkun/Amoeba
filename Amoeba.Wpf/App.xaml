@@ -5,6 +5,7 @@
         xmlns:prop="clr-namespace:Amoeba.Properties" 
         xmlns:local="clr-namespace:Amoeba.Windows" 
         Startup="Application_Startup"
+        Navigating="Application_Navigating"
         Exit="Application_Exit"
         DispatcherUnhandledException="Application_DispatcherUnhandledException">
 
@@ -16,10 +17,9 @@
             </ResourceDictionary.MergedDictionaries>
 
             <ObjectDataProvider x:Key="_languages" ObjectInstance="{x:Static prop:LanguagesManager.Instance}"/>
+            <ObjectDataProvider x:Key="_colors"/>
 
             <local:ObjectToImageConverter x:Key="_objectToImageConverter"/>
-            <local:GetTreeColorConverter x:Key="_getTreeColorConverter" />
-            <local:GetTreeWeightConverter x:Key="_getTreeWeightConverter" />
             <local:BoolToVisibilityConverter x:Key="_boolToVisibilityConverter"/>
             <local:StringRegularizationConverter x:Key="_stringRegularizationConverter"/>
             <local:DoubleToGridLengthConverter x:Key="_doubleToGridLengthConverter"/>
