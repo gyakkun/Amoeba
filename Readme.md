@@ -19,7 +19,7 @@ Amoeba = Freenet + Abstract Network + DHT + (Search = WoT + PoW)
 
 ## Links
  
- * [Specs](https://github.com/Alliance-Network/Specs)
+ * [Specs](https://github.com/Alliance-Network/Specs/tree/master/Amoeba)
  * [Documents](http://alliance-network.github.io/docs/Amoeba/index.en)
 
 ## License
