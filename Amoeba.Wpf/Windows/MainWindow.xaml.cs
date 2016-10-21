@@ -30,7 +30,7 @@ namespace Amoeba.Windows
 
     enum MainWindowTabType
     {
-        Information,
+        Info,
         Link,
         Wiki,
         Chat,
@@ -1507,7 +1507,7 @@ namespace Amoeba.Windows
 
             if (_tabControl.SelectedItem == _infoTabItem)
             {
-                this.SelectedTab = MainWindowTabType.Information;
+                this.SelectedTab = MainWindowTabType.Info;
             }
             else if (_tabControl.SelectedItem == _linkTabItem)
             {

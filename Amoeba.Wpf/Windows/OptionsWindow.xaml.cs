@@ -35,13 +35,13 @@ namespace Amoeba.Windows
         private TransfarLimitManager _transferLimitManager;
 
         private byte[] _baseNode_Id;
-        private ObservableCollectionEx<string> _baseNode_Uris;
-        private ObservableCollectionEx<Node> _otherNodes;
-        private ObservableCollectionEx<ConnectionFilter> _clientFilters;
-        private ObservableCollectionEx<string> _serverListenUris;
+        private ObservableCollectionEx<string> _baseNode_Uris = new ObservableCollectionEx<string>();
+        private ObservableCollectionEx<Node> _otherNodes = new ObservableCollectionEx<Node>();
+        private ObservableCollectionEx<ConnectionFilter> _clientFilters = new ObservableCollectionEx<ConnectionFilter>();
+        private ObservableCollectionEx<string> _serverListenUris = new ObservableCollectionEx<string>();
 
-        private ObservableCollectionEx<SignatureListViewItem> _signatureListViewItemCollection;
-        private ObservableCollectionEx<string> _keywordCollection;
+        private ObservableCollectionEx<SignatureListViewItem> _signatureListViewItemCollection = new ObservableCollectionEx<SignatureListViewItem>();
+        private ObservableCollectionEx<string> _keywordCollection = new ObservableCollectionEx<string>();
         private List<string> _fontMessageFontFamilyComboBoxItemCollection = new List<string>();
 
         public OptionsWindow(AmoebaManager amoebaManager, ConnectionSettingManager connectionSettingManager, OverlayNetworkManager overlayNetworkManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
@@ -67,79 +67,85 @@ namespace Amoeba.Windows
                 this.Icon = icon;
             }
 
-            foreach (var item in Enum.GetValues(typeof(ConnectionType)).Cast<ConnectionType>())
             {
-                _clientFiltersConnectionTypeComboBox.Items.Add(item);
-            }
-
-            foreach (var item in Enum.GetValues(typeof(TransferLimitType)).Cast<TransferLimitType>())
-            {
-                _transferLimitTypeComboBox.Items.Add(item);
-            }
-
-            foreach (var u in new string[] { "Byte", "KB", "MB", "GB", "TB" })
-            {
-                _dataCacheSizeComboBox.Items.Add(u);
-            }
-
-            _dataCacheSizeComboBox.SelectedItem = Settings.Instance.OptionsWindow_DataCacheSize_Unit;
-
-            foreach (var u in new string[] { "Byte", "KB", "MB", "GB", })
-            {
-                _bandwidthLimitComboBox.Items.Add(u);
-            }
-
-            _bandwidthLimitComboBox.SelectedItem = Settings.Instance.OptionsWindow_BandwidthLimit_Unit;
-
-            foreach (var u in new string[] { "Byte", "KB", "MB", "GB", })
-            {
-                _transferLimitSizeComboBox.Items.Add(u);
-            }
-
-            _transferLimitSizeComboBox.SelectedItem = Settings.Instance.OptionsWindow_TransferLimit_Unit;
-
-            lock (_amoebaManager.ThisLock)
-            {
-                var baseNode = _amoebaManager.BaseNode;
-
-                _baseNode_Id = baseNode.Id;
-                _baseNode_Uris = new ObservableCollectionEx<string>(baseNode.Uris);
-                _otherNodes = new ObservableCollectionEx<Node>(_amoebaManager.OtherNodes);
-                _clientFilters = new ObservableCollectionEx<ConnectionFilter>(_amoebaManager.Filters);
-                _serverListenUris = new ObservableCollectionEx<string>(_amoebaManager.ListenUris);
-
-                try
+                foreach (var item in Enum.GetValues(typeof(ConnectionType)).Cast<ConnectionType>())
                 {
-                    _dataCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size, Settings.Instance.OptionsWindow_DataCacheSize_Unit);
-                }
-                catch (Exception)
-                {
-                    _dataCacheSizeTextBox.Text = "";
+                    _clientFiltersConnectionTypeComboBox.Items.Add(item);
                 }
 
-                _dataDownloadDirectoryTextBox.Text = _amoebaManager.DownloadDirectory;
-
-                _bandwidthConnectionCountTextBox.Text = _amoebaManager.ConnectionCountLimit.ToString();
-
-                try
+                foreach (var item in Enum.GetValues(typeof(TransferLimitType)).Cast<TransferLimitType>())
                 {
-                    _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.BandwidthLimit, Settings.Instance.OptionsWindow_BandwidthLimit_Unit);
+                    _transferLimitTypeComboBox.Items.Add(item);
                 }
-                catch (Exception)
+
+                foreach (var u in new string[] { "Byte", "KB", "MB", "GB", "TB" })
                 {
-                    _bandwidthLimitTextBox.Text = "";
+                    _dataCacheSizeComboBox.Items.Add(u);
                 }
+
+                _dataCacheSizeComboBox.SelectedItem = Settings.Instance.OptionsWindow_DataCacheSize_Unit;
+
+                foreach (var u in new string[] { "Byte", "KB", "MB", "GB", })
+                {
+                    _bandwidthLimitComboBox.Items.Add(u);
+                }
+
+                _bandwidthLimitComboBox.SelectedItem = Settings.Instance.OptionsWindow_BandwidthLimit_Unit;
+
+                foreach (var u in new string[] { "Byte", "KB", "MB", "GB", })
+                {
+                    _transferLimitSizeComboBox.Items.Add(u);
+                }
+
+                _transferLimitSizeComboBox.SelectedItem = Settings.Instance.OptionsWindow_TransferLimit_Unit;
             }
 
-            _baseNodeUrisListView.ItemsSource = _baseNode_Uris;
-            _otherNodesListView.ItemsSource = _otherNodes;
-            _clientFiltersListView.ItemsSource = _clientFilters;
-            _serverListenUrisListView.ItemsSource = _serverListenUris;
+            {
+                lock (_amoebaManager.ThisLock)
+                {
+                    var baseNode = _amoebaManager.BaseNode;
 
-            _baseNodeUpdate();
-            _otherNodesUpdate();
-            _clientFiltersListViewUpdate();
-            _serverListenUrisUpdate();
+                    _baseNode_Id = baseNode.Id;
+                    _baseNode_Uris.AddRange(baseNode.Uris);
+                    _otherNodes.AddRange(_amoebaManager.OtherNodes);
+                    _clientFilters.AddRange(_amoebaManager.Filters);
+                    _serverListenUris.AddRange(_amoebaManager.ListenUris);
+
+                    try
+                    {
+                        _dataCacheSizeTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.Size, Settings.Instance.OptionsWindow_DataCacheSize_Unit);
+                    }
+                    catch (Exception)
+                    {
+                        _dataCacheSizeTextBox.Text = "";
+                    }
+
+                    _dataDownloadDirectoryTextBox.Text = _amoebaManager.DownloadDirectory;
+
+                    _bandwidthConnectionCountTextBox.Text = _amoebaManager.ConnectionCountLimit.ToString();
+
+                    try
+                    {
+                        _bandwidthLimitTextBox.Text = NetworkConverter.ToSizeString(_amoebaManager.BandwidthLimit, Settings.Instance.OptionsWindow_BandwidthLimit_Unit);
+                    }
+                    catch (Exception)
+                    {
+                        _bandwidthLimitTextBox.Text = "";
+                    }
+                }
+
+                _baseNodeUrisListView.ItemsSource = _baseNode_Uris;
+                _baseNodeUpdate();
+
+                _otherNodesListView.ItemsSource = _otherNodes;
+                _otherNodesUpdate();
+
+                _clientFiltersListView.ItemsSource = _clientFilters;
+                _clientFiltersListViewUpdate();
+
+                _serverListenUrisListView.ItemsSource = _serverListenUris;
+                _serverListenUrisUpdate();
+            }
 
             {
                 lock (_transferLimitManager.TransferLimit.ThisLock)
@@ -157,86 +163,105 @@ namespace Amoeba.Windows
                     }
                 }
 
-                _transferInfoUploadedLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize);
-                _transferInfoDownloadedLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalDownloadSize);
-                _transferInfoTotalLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize + _transferLimitManager.TotalDownloadSize);
-            }
-
-            _eventOpenPortAndGetIpAddressCheckBox.IsChecked = Settings.Instance.Global_ConnectionSetting_IsEnabled;
-            _eventUseI2pCheckBox.IsChecked = Settings.Instance.Global_I2p_SamBridge_IsEnabled;
-
-            {
-                _eventSamBridgeUriTextBox.Text = _overlayNetworkManager.SamBridgeUri;
-            }
-
-            _updateUrlTextBox.Text = Settings.Instance.Global_Update_Url;
-            _updateProxyUriTextBox.Text = Settings.Instance.Global_Update_ProxyUri;
-            _updateSignatureTextBox.Text = Settings.Instance.Global_Update_Signature;
-
-            if (Settings.Instance.Global_Update_Option == UpdateOption.None)
-            {
-                _updateOptionNoneRadioButton.IsChecked = true;
-            }
-            else if (Settings.Instance.Global_Update_Option == UpdateOption.Check)
-            {
-                _updateOptionAutoCheckRadioButton.IsChecked = true;
-            }
-            else if (Settings.Instance.Global_Update_Option == UpdateOption.Update)
-            {
-                _updateOptionAutoUpdateRadioButton.IsChecked = true;
-            }
-
-            _signatureListViewItemCollection = new ObservableCollectionEx<SignatureListViewItem>(Settings.Instance.Global_DigitalSignatures.Select(n => new SignatureListViewItem(n)));
-            _signatureListView.ItemsSource = _signatureListViewItemCollection;
-            _signatureListViewUpdate();
-
-            _keywordCollection = new ObservableCollectionEx<string>(Settings.Instance.Global_SearchKeywords);
-            _keywordListView.ItemsSource = _keywordCollection;
-            _keywordListViewUpdate();
-
-            try
-            {
-                string extension = ".box";
-                string commandline = "\"" + Path.GetFullPath(Path.Combine(_serviceManager.Paths["Core"], "Amoeba.exe")) + "\" \"%1\"";
-                string fileType = "Amoeba";
-                string verb = "open";
-
-                using (var regkey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(extension))
                 {
-                    if (fileType != (string)regkey.GetValue("")) throw new Exception();
+                    var uploadSize = _transferLimitManager.TotalUploadSize;
+                    var downloadSize = _transferLimitManager.TotalDownloadSize;
+
+                    _transferInfoUploadedLabel.Content = NetworkConverter.ToSizeString(uploadSize);
+                    _transferInfoDownloadedLabel.Content = NetworkConverter.ToSizeString(downloadSize);
+                    _transferInfoTotalLabel.Content = NetworkConverter.ToSizeString(uploadSize + downloadSize);
                 }
+            }
 
-                using (var shellkey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileType))
+            {
+                _eventOpenPortAndGetIpAddressCheckBox.IsChecked = Settings.Instance.Global_ConnectionSetting_IsEnabled;
+                _eventUseI2pCheckBox.IsChecked = Settings.Instance.Global_I2p_SamBridge_IsEnabled;
+
                 {
-                    using (var shellkey2 = shellkey.OpenSubKey("shell\\" + verb))
+                    _eventSamBridgeUriTextBox.Text = _overlayNetworkManager.SamBridgeUri;
+                }
+            }
+
+            {
+                _updateUrlTextBox.Text = Settings.Instance.Global_Update_Url;
+                _updateProxyUriTextBox.Text = Settings.Instance.Global_Update_ProxyUri;
+                _updateSignatureTextBox.Text = Settings.Instance.Global_Update_Signature;
+
+                if (Settings.Instance.Global_Update_Option == UpdateOption.None)
+                {
+                    _updateOptionNoneRadioButton.IsChecked = true;
+                }
+                else if (Settings.Instance.Global_Update_Option == UpdateOption.Check)
+                {
+                    _updateOptionAutoCheckRadioButton.IsChecked = true;
+                }
+                else if (Settings.Instance.Global_Update_Option == UpdateOption.Update)
+                {
+                    _updateOptionAutoUpdateRadioButton.IsChecked = true;
+                }
+            }
+
+            {
+                _signatureListViewItemCollection.AddRange(Settings.Instance.Global_DigitalSignatures.Select(n => new SignatureListViewItem(n)));
+                _signatureListView.ItemsSource = _signatureListViewItemCollection;
+                _signatureListViewUpdate();
+            }
+
+            {
+                _keywordCollection.AddRange(Settings.Instance.Global_SearchKeywords);
+                _keywordListView.ItemsSource = _keywordCollection;
+                _keywordListViewUpdate();
+            }
+
+            {
+                try
+                {
+                    string extension = ".box";
+                    string commandline = "\"" + Path.GetFullPath(Path.Combine(_serviceManager.Paths["Core"], "Amoeba.exe")) + "\" \"%1\"";
+                    string fileType = "Amoeba";
+                    string verb = "open";
+
+                    using (var regkey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(extension))
                     {
-                        using (var shellkey3 = shellkey2.OpenSubKey("command"))
+                        if (fileType != (string)regkey.GetValue("")) throw new Exception();
+                    }
+
+                    using (var shellkey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileType))
+                    {
+                        using (var shellkey2 = shellkey.OpenSubKey("shell\\" + verb))
                         {
-                            if (commandline != (string)shellkey3.GetValue("")) throw new Exception();
+                            using (var shellkey3 = shellkey2.OpenSubKey("command"))
+                            {
+                                if (commandline != (string)shellkey3.GetValue("")) throw new Exception();
+                            }
                         }
                     }
+
+                    Settings.Instance.Global_RelateBoxFile_IsEnabled = true;
+                    _boxRelateFileCheckBox.IsChecked = true;
+                }
+                catch
+                {
+                    Settings.Instance.Global_RelateBoxFile_IsEnabled = false;
+                    _boxRelateFileCheckBox.IsChecked = false;
                 }
 
-                Settings.Instance.Global_RelateBoxFile_IsEnabled = true;
-                _boxRelateFileCheckBox.IsChecked = true;
+                _boxOpenCheckBox.IsChecked = Settings.Instance.Global_OpenBox_IsEnabled;
+                _boxExtractToTextBox.Text = Settings.Instance.Global_BoxExtractTo_Path;
             }
-            catch
+
             {
-                Settings.Instance.Global_RelateBoxFile_IsEnabled = false;
-                _boxRelateFileCheckBox.IsChecked = false;
+                _MiningTimeTextBox.Text = Settings.Instance.Global_MiningTime.TotalMinutes.ToString();
             }
 
-            _boxOpenCheckBox.IsChecked = Settings.Instance.Global_OpenBox_IsEnabled;
-            _boxExtractToTextBox.Text = Settings.Instance.Global_BoxExtractTo_Path;
+            {
+                _fontMessageFontFamilyComboBoxItemCollection.AddRange(Fonts.SystemFontFamilies.Select(n => n.ToString()));
+                _fontMessageFontFamilyComboBoxItemCollection.Sort();
+                _fontMessageFontFamilyComboBox.ItemsSource = _fontMessageFontFamilyComboBoxItemCollection;
+                _fontMessageFontFamilyComboBox.SelectedItem = Settings.Instance.Global_Fonts_Message_FontFamily;
 
-            _MiningTimeTextBox.Text = Settings.Instance.Global_MiningTime.TotalMinutes.ToString();
-
-            _fontMessageFontFamilyComboBoxItemCollection.AddRange(Fonts.SystemFontFamilies.Select(n => n.ToString()));
-            _fontMessageFontFamilyComboBoxItemCollection.Sort();
-            _fontMessageFontFamilyComboBox.ItemsSource = _fontMessageFontFamilyComboBoxItemCollection;
-            _fontMessageFontFamilyComboBox.SelectedItem = Settings.Instance.Global_Fonts_Message_FontFamily;
-
-            _fontMessageFontSizeTextBox.Text = Settings.Instance.Global_Fonts_Message_FontSize.ToString();
+                _fontMessageFontSizeTextBox.Text = Settings.Instance.Global_Fonts_Message_FontSize.ToString();
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -1510,9 +1535,14 @@ namespace Amoeba.Windows
         {
             _transferLimitManager.Reset();
 
-            _transferInfoUploadedLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize);
-            _transferInfoDownloadedLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalDownloadSize);
-            _transferInfoTotalLabel.Content = NetworkConverter.ToSizeString(_transferLimitManager.TotalUploadSize + _transferLimitManager.TotalDownloadSize);
+            {
+                var uploadSize = _transferLimitManager.TotalUploadSize;
+                var downloadSize = _transferLimitManager.TotalDownloadSize;
+
+                _transferInfoUploadedLabel.Content = NetworkConverter.ToSizeString(uploadSize);
+                _transferInfoDownloadedLabel.Content = NetworkConverter.ToSizeString(downloadSize);
+                _transferInfoTotalLabel.Content = NetworkConverter.ToSizeString(uploadSize + downloadSize);
+            }
         }
 
         #endregion
@@ -2135,14 +2165,21 @@ namespace Amoeba.Windows
 
             Settings.Instance.Global_ConnectionSetting_IsEnabled = _eventOpenPortAndGetIpAddressCheckBox.IsChecked.Value;
             Settings.Instance.Global_I2p_SamBridge_IsEnabled = _eventUseI2pCheckBox.IsChecked.Value;
+
             Settings.Instance.OptionsWindow_DataCacheSize_Unit = (string)_dataCacheSizeComboBox.SelectedItem;
             Settings.Instance.OptionsWindow_BandwidthLimit_Unit = (string)_bandwidthLimitComboBox.SelectedItem;
 
-            Settings.Instance.Global_SearchKeywords.Clear();
-            Settings.Instance.Global_SearchKeywords.AddRange(_keywordCollection);
+            lock (Settings.Instance.Global_SearchKeywords.ThisLock)
+            {
+                Settings.Instance.Global_SearchKeywords.Clear();
+                Settings.Instance.Global_SearchKeywords.AddRange(_keywordCollection);
+            }
 
-            Settings.Instance.Global_DigitalSignatures.Clear();
-            Settings.Instance.Global_DigitalSignatures.AddRange(_signatureListViewItemCollection.Select(n => n.Value));
+            lock (Settings.Instance.Global_DigitalSignatures.ThisLock)
+            {
+                Settings.Instance.Global_DigitalSignatures.Clear();
+                Settings.Instance.Global_DigitalSignatures.AddRange(_signatureListViewItemCollection.Select(n => n.Value));
+            }
 
             {
                 Settings.Instance.Global_Update_Url = _updateUrlTextBox.Text;

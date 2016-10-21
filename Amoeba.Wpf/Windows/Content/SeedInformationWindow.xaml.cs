@@ -61,10 +61,10 @@ namespace Amoeba.Windows
                 _lengthTextBox.Text = string.Format("{0} ({1:#,0} Byte)", NetworkConverter.ToSizeString(_seed.Length), _seed.Length);
             }
 
+            _storeSignatureListView.ItemsSource = _storeSignatureCollection;
+
             try
             {
-                _storeSignatureListView.ItemsSource = _storeSignatureCollection;
-
                 _storeTabItem.Cursor = Cursors.Wait;
 
                 Task.Run(() =>
