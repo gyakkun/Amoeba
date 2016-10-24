@@ -42,9 +42,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Messaging", "Library\Library.Messaging\Library.Messaging.csproj", "{8617B9AE-BCBF-4F85-A09C-4DAF0DBB9614}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Library\Library.Utilities\Library.Utilities.projitems*{0f585d24-9d81-4c31-a341-966a554b3800}*SharedItemsImports = 13
 		Library\Library.Utilities\Library.Utilities.projitems*{38994e3c-0699-4d6c-ad02-f9f657340347}*SharedItemsImports = 4

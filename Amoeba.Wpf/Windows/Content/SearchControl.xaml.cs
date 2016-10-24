@@ -438,7 +438,7 @@ namespace Amoeba.Windows
 
             this.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                if (targetTreeViewModel.Count != 0 && targetTreeViewModel.Count != tempList.Count)
+                if (targetTreeViewModel.Count != 0 && targetTreeViewModel.Count < tempList.Count)
                 {
                     targetTreeViewModel.IsHit = true;
 

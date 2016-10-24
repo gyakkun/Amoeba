@@ -66,8 +66,8 @@ namespace Amoeba
 
         private bool ResultCache_CheckUri(object sender, string uri)
         {
-            _succeededUris.TrimExcess();
-            _failedUris.TrimExcess();
+            _succeededUris.Update();
+            _failedUris.Update();
 
             if (_succeededUris.Contains(uri)) return true;
             if (_failedUris.Contains(uri)) return false;
