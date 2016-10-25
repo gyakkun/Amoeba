@@ -960,8 +960,6 @@ namespace Amoeba.Windows
                     {
                         // Amoeba
                         Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAABkFtb2ViYQEgyeOUT6BPIlq8Nfe1kndaS0ETNlmJY90wt-Osb-l2mZqamJsU")));
-                        // Covenant
-                        Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAACENvdmVuYW50ASBJDZp3I-Ng-iWJwmq2Us-q45iWCQQpekfoZExA5Zom9EZtMqE")));
                         // Test
                         Settings.Instance.ChatControl_ChatCategorizeTreeItem.ChatTreeItems.Add(new ChatTreeItem(AmoebaConverter.FromTagString("Tag:AAAABFRlc3QBIMEj2xDMP6_RAoVbePTEZwHz8Fcd29tqB9MY0JZyn6eS5iXI_A")));
                     }
