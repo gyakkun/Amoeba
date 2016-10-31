@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Xml;
 using Ionic.Zip;
 using Library;
+using Library.Io;
 
 namespace Amoeba
 {
@@ -29,7 +30,7 @@ namespace Amoeba
 
         public ServiceManager()
         {
-            this.AmoebaVersion = new Version(4, 0, 28);
+            this.AmoebaVersion = new Version(4, 0, 29);
 
             this.Paths = new Dictionary<string, string>();
 
@@ -83,13 +84,13 @@ namespace Amoeba
             }
         }
 
-        private static FileStream GetUniqueFileStream(string path)
+        private static UnbufferedFileStream GetUniqueFileStream(string path)
         {
             if (!File.Exists(path))
             {
                 try
                 {
-                    return new FileStream(path, FileMode.CreateNew);
+                    return new UnbufferedFileStream(path, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite, FileOptions.None, BufferManager.Instance);
                 }
                 catch (DirectoryNotFoundException)
                 {
@@ -101,10 +102,9 @@ namespace Amoeba
                 }
             }
 
-            for (int index = 1, count = 0; ; index++)
+            for (int index = 1; ; index++)
             {
-                string text = string.Format(
-                    @"{0}/{1} ({2}){3}",
+                string text = string.Format(@"{0}\{1} ({2}){3}",
                     Path.GetDirectoryName(path),
                     Path.GetFileNameWithoutExtension(path),
                     index,
@@ -114,7 +114,7 @@ namespace Amoeba
                 {
                     try
                     {
-                        return new FileStream(text, FileMode.CreateNew);
+                        return new UnbufferedFileStream(text, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite, FileOptions.None, BufferManager.Instance);
                     }
                     catch (DirectoryNotFoundException)
                     {
@@ -122,11 +122,7 @@ namespace Amoeba
                     }
                     catch (IOException)
                     {
-                        count++;
-                        if (count > 1024)
-                        {
-                            throw;
-                        }
+                        if (index > 1024) throw;
                     }
                 }
             }
@@ -205,7 +201,7 @@ namespace Amoeba
                         if (!Directory.Exists(this.Paths["Input"]))
                             Directory.CreateDirectory(this.Paths["Input"]);
 
-                        using (FileStream stream = ServiceManager.GetUniqueFileStream(Path.Combine(this.Paths["Input"], "seed.txt")))
+                        using (var stream = ServiceManager.GetUniqueFileStream(Path.Combine(this.Paths["Input"], "seed.txt")))
                         using (StreamWriter writer = new StreamWriter(stream))
                         {
                             foreach (var item in args.Skip(1))

@@ -17,21 +17,14 @@ namespace Amoeba
     static class ProcessExtensions
     {
         [DllImport("ntdll.dll")]
-        private static extern uint NtSetInformationProcess(IntPtr hProcess, uint processInformationClass, ref uint processInformation, uint processInformationLength);
+        private static extern uint NtSetInformationProcess(IntPtr processHandle, uint processInformationClass, ref uint processInformation, uint processInformationLength);
 
         const uint ProcessInformationMemoryPriority = 0x27;
-        const uint ProcessInformationIoPriority = 0x21;
 
         public static void SetMemoryPriority(this Process process, int priority)
         {
             var memoryPriority = (uint)priority;
             ProcessExtensions.NtSetInformationProcess(process.Handle, ProcessExtensions.ProcessInformationMemoryPriority, ref memoryPriority, sizeof(uint));
-        }
-
-        public static void SetIoPriority(this Process process, int priority)
-        {
-            var ioPriority = (uint)priority;
-            ProcessExtensions.NtSetInformationProcess(process.Handle, ProcessExtensions.ProcessInformationIoPriority, ref ioPriority, sizeof(uint));
         }
     }
 
