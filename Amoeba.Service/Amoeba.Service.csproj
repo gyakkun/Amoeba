@@ -4,37 +4,33 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9CBEEABE-BFB5-485D-B928-E997FC5F8EF0}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{9FB416B3-CD9C-4797-9524-5603CDB8C90C}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Amoeba</RootNamespace>
-    <AssemblyName>Amoeba</AssemblyName>
+    <RootNamespace>Amoeba.Service</RootNamespace>
+    <AssemblyName>Amoeba.Service</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\Core\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\Core\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AllowedReferenceRelatedFileExtensions>-</AllowedReferenceRelatedFileExtensions>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip">
@@ -51,94 +47,57 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="BaseNodeSetting\BaseNodeSettingManager.cs" />
+    <Compile Include="Catharsis\CatharsisManager.cs" />
+    <Compile Include="Catharsis\Ipv4AddressFilter.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="OverlayNetwork\OverlayNetworkManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceManager.cs" />
-    <Compile Include="Utilities\BoxUtils.cs" />
-    <Compile Include="Utilities\ConnectionSettingManager.cs" />
-    <Compile Include="Utilities\OverlayNetworkManager.cs" />
-    <Compile Include="Utilities\SeedStateCache.cs" />
-    <Compile Include="Utilities\TransfarLimitManager.cs" />
-    <Compile Include="Windows\_Items\LinkItem.cs" />
-    <Compile Include="Windows\_Items\SearchItem.cs" />
-    <Compile Include="Windows\_Items\SearchTreeItem.cs" />
-    <Compile Include="Windows\_Items\SignatureTreeItem.cs" />
-    <Compile Include="Windows\_Items\StoreCategorizeTreeItem.cs" />
-    <Compile Include="Windows\_Items\StoreTreeItem.cs" />
-    <Compile Include="Windows\_Items\UpdateOption.cs" />
+    <Compile Include="TransfarLimit\TransfarLimitManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\Amoeba.License">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Properties\Amoeba.Readme">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Library\Library.Collections\Library.Collections.csproj">
+    <ProjectReference Include="..\Library\Library.Collections\Library.Collections.csproj">
       <Project>{197c654f-2461-446a-b531-4a789f14be19}</Project>
       <Name>Library.Collections</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Configuration\Library.Configuration.csproj">
+    <ProjectReference Include="..\Library\Library.Configuration\Library.Configuration.csproj">
       <Project>{9aa70f88-4a83-4b3f-b494-7d37ea95766a}</Project>
       <Name>Library.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Io\Library.Io.csproj">
+    <ProjectReference Include="..\Library\Library.Io\Library.Io.csproj">
       <Project>{74597e45-7f3c-4958-8b6a-b16de8de47b9}</Project>
       <Name>Library.Io</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Amoeba\Library.Net.Amoeba.csproj">
+    <ProjectReference Include="..\Library\Library.Net.Amoeba\Library.Net.Amoeba.csproj">
       <Project>{82230c99-6599-4130-aac9-fc926abc0724}</Project>
       <Name>Library.Net.Amoeba</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Connections\Library.Net.Connections.csproj">
-      <Project>{38994e3c-0699-4d6c-ad02-f9f657340347}</Project>
-      <Name>Library.Net.Connections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.I2p\Library.Net.I2p.csproj">
+    <ProjectReference Include="..\Library\Library.Net.I2p\Library.Net.I2p.csproj">
       <Project>{24dc1835-cc3d-4d29-b922-199027ec551f}</Project>
       <Name>Library.Net.I2p</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Proxy\Library.Net.Proxy.csproj">
+    <ProjectReference Include="..\Library\Library.Net.Proxy\Library.Net.Proxy.csproj">
       <Project>{56eb350e-089e-40bb-97cb-f2745a4251ae}</Project>
       <Name>Library.Net.Proxy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net.Upnp\Library.Net.Upnp.csproj">
+    <ProjectReference Include="..\Library\Library.Net.Upnp\Library.Net.Upnp.csproj">
       <Project>{7688aecf-92bd-4212-aad8-6cd6d42ba6e3}</Project>
       <Name>Library.Net.Upnp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Net\Library.Net.csproj">
+    <ProjectReference Include="..\Library\Library.Net\Library.Net.csproj">
       <Project>{7cfde01d-4a0e-4e10-acc2-34db897dbe0f}</Project>
       <Name>Library.Net</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Security\Library.Security.csproj">
+    <ProjectReference Include="..\Library\Library.Security\Library.Security.csproj">
       <Project>{d314c626-a6fc-4fd5-be3c-9d36c2738418}</Project>
       <Name>Library.Security</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library.Update\Library.Update.csproj">
-      <Project>{5d842d8a-5bfe-4d68-956b-e1e690edb48a}</Project>
-      <Name>Library.Update</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Library\Library\Library.csproj">
+    <ProjectReference Include="..\Library\Library\Library.csproj">
       <Project>{63eadc1f-9a8a-4945-a562-da666d0bcb7b}</Project>
       <Name>Library</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Settings\Nodes.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Settings\Trust.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <Import Project="..\..\Library\Library.Utilities\Library.Utilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>call "$(SolutionDir)Increment.bat"</PreBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -146,4 +105,16 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)'=='Windows'">
+    <DefineConstants>$(DefineConstants);Windows</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)'=='Unix'">
+    <DefineConstants>$(DefineConstants);Unix</DefineConstants>
+  </PropertyGroup>
 </Project>

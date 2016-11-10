@@ -10,22 +10,22 @@ using Library.Net.Upnp;
 
 namespace Amoeba
 {
-    class ConnectionSettingManager : StateManagerBase, Library.Configuration.ISettings
+    class BaseNodeSettingManager : StateManagerBase
     {
         private AmoebaManager _amoebaManager;
 
-        private Settings _settings;
+        private string _ipv4Uri;
+        private string _ipv6Uri;
+        private string _upnpUri;
 
         private volatile ManagerState _state = ManagerState.Stop;
 
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public ConnectionSettingManager(AmoebaManager amoebaManager)
+        public BaseNodeSettingManager(AmoebaManager amoebaManager)
         {
             _amoebaManager = amoebaManager;
-
-            _settings = new Settings();
         }
 
         public override ManagerState State
@@ -114,7 +114,7 @@ namespace Amoeba
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        var myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
+                        var myIpAddresses = new List<IPAddress>(BaseNodeSettingManager.GetIpAddresses());
 
                         foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
                         {
@@ -124,23 +124,23 @@ namespace Amoeba
                             {
                                 continue;
                             }
-                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
-                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
+                            if (BaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
+                                && BaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
-                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
+                            if (BaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
+                                && BaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
-                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
+                            if (BaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
+                                && BaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
-                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
+                            if (BaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
+                                && BaseNodeSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
                             {
                                 continue;
                             }
@@ -155,18 +155,22 @@ namespace Amoeba
 
                     }
 
-                    if (ipv4Uri != _settings.Ipv4Uri)
+                    if (ipv4Uri != _ipv4Uri)
                     {
-                        if (this.RemoveUri(_settings.Ipv4Uri))
-                            Log.Information(string.Format("Remove Node uri: {0}", _settings.Ipv4Uri));
+                        if (this.RemoveUri(_ipv4Uri))
+                        {
+                            Log.Information(string.Format("Remove Node uri: {0}", _ipv4Uri));
+                        }
                     }
 
-                    _settings.Ipv4Uri = ipv4Uri;
+                    _ipv4Uri = ipv4Uri;
 
-                    if (_settings.Ipv4Uri != null)
+                    if (_ipv4Uri != null)
                     {
-                        if (this.AddUri(_settings.Ipv4Uri))
-                            Log.Information(string.Format("Add Node uri: {0}", _settings.Ipv4Uri));
+                        if (this.AddUri(_ipv4Uri))
+                        {
+                            Log.Information(string.Format("Add Node uri: {0}", _ipv4Uri));
+                        }
                     }
                 }
 
@@ -183,7 +187,7 @@ namespace Amoeba
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        var myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
+                        var myIpAddresses = new List<IPAddress>(BaseNodeSettingManager.GetIpAddresses());
 
                         foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6))
                         {
@@ -216,18 +220,22 @@ namespace Amoeba
 
                     }
 
-                    if (ipv6Uri != _settings.Ipv6Uri)
+                    if (ipv6Uri != _ipv6Uri)
                     {
-                        if (this.RemoveUri(_settings.Ipv6Uri))
-                            Log.Information(string.Format("Remove Node uri: {0}", _settings.Ipv6Uri));
+                        if (this.RemoveUri(_ipv6Uri))
+                        {
+                            Log.Information(string.Format("Remove Node uri: {0}", _ipv6Uri));
+                        }
                     }
 
-                    _settings.Ipv6Uri = ipv6Uri;
+                    _ipv6Uri = ipv6Uri;
 
-                    if (_settings.Ipv6Uri != null)
+                    if (_ipv6Uri != null)
                     {
-                        if (this.AddUri(_settings.Ipv6Uri))
-                            Log.Information(string.Format("Add Node uri: {0}", _settings.Ipv6Uri));
+                        if (this.AddUri(_ipv6Uri))
+                        {
+                            Log.Information(string.Format("Add Node uri: {0}", _ipv6Uri));
+                        }
                     }
                 }
 
@@ -253,13 +261,13 @@ namespace Amoeba
 
                             upnpUri = string.Format("tcp:{0}:{1}", ip, port);
 
-                            if (upnpUri != _settings.UpnpUri)
+                            if (upnpUri != _upnpUri)
                             {
-                                if (_settings.UpnpUri != null)
+                                if (_upnpUri != null)
                                 {
                                     try
                                     {
-                                        var match2 = regex.Match(_settings.UpnpUri);
+                                        var match2 = regex.Match(_upnpUri);
                                         if (!match2.Success) throw new Exception();
                                         int port2 = int.Parse(match2.Groups[3].Value);
 
@@ -286,18 +294,22 @@ namespace Amoeba
 
                     }
 
-                    if (upnpUri != _settings.UpnpUri)
+                    if (upnpUri != _upnpUri)
                     {
-                        if (this.RemoveUri(_settings.UpnpUri))
-                            Log.Information(string.Format("Remove Node uri: {0}", _settings.UpnpUri));
+                        if (this.RemoveUri(_upnpUri))
+                        {
+                            Log.Information(string.Format("Remove Node uri: {0}", _upnpUri));
+                        }
                     }
 
-                    _settings.UpnpUri = upnpUri;
+                    _upnpUri = upnpUri;
 
-                    if (_settings.UpnpUri != null)
+                    if (_upnpUri != null)
                     {
-                        if (this.AddUri(_settings.UpnpUri))
-                            Log.Information(string.Format("Add Node uri: {0}", _settings.UpnpUri));
+                        if (this.AddUri(_upnpUri))
+                        {
+                            Log.Information(string.Format("Add Node uri: {0}", _upnpUri));
+                        }
                     }
                 }
             }
@@ -307,24 +319,30 @@ namespace Amoeba
         {
             lock (_thisLock)
             {
-                if (_settings.Ipv4Uri != null)
+                if (_ipv4Uri != null)
                 {
-                    if (this.RemoveUri(_settings.Ipv4Uri))
-                        Log.Information(string.Format("Remove Node uri: {0}", _settings.Ipv4Uri));
+                    if (this.RemoveUri(_ipv4Uri))
+                    {
+                        Log.Information(string.Format("Remove Node uri: {0}", _ipv4Uri));
+                    }
                 }
-                _settings.Ipv4Uri = null;
+                _ipv4Uri = null;
 
-                if (_settings.Ipv6Uri != null)
+                if (_ipv6Uri != null)
                 {
-                    if (this.RemoveUri(_settings.Ipv6Uri))
-                        Log.Information(string.Format("Remove Node uri: {0}", _settings.Ipv6Uri));
+                    if (this.RemoveUri(_ipv6Uri))
+                    {
+                        Log.Information(string.Format("Remove Node uri: {0}", _ipv6Uri));
+                    }
                 }
-                _settings.Ipv6Uri = null;
+                _ipv6Uri = null;
 
-                if (_settings.UpnpUri != null)
+                if (_upnpUri != null)
                 {
-                    if (this.RemoveUri(_settings.UpnpUri))
-                        Log.Information(string.Format("Remove Node uri: {0}", _settings.UpnpUri));
+                    if (this.RemoveUri(_upnpUri))
+                    {
+                        Log.Information(string.Format("Remove Node uri: {0}", _upnpUri));
+                    }
 
                     try
                     {
@@ -333,7 +351,7 @@ namespace Amoeba
                             client.Connect(new TimeSpan(0, 0, 10));
 
                             var regex = new Regex(@"(.*?):(.*):(\d*)");
-                            var match = regex.Match(_settings.UpnpUri);
+                            var match = regex.Match(_upnpUri);
                             if (!match.Success) throw new Exception();
                             int port = int.Parse(match.Groups[3].Value);
 
@@ -347,7 +365,7 @@ namespace Amoeba
 
                     }
                 }
-                _settings.UpnpUri = null;
+                _upnpUri = null;
             }
         }
 
@@ -377,77 +395,6 @@ namespace Amoeba
                     _state = ManagerState.Stop;
 
                     this.Shutdown();
-                }
-            }
-        }
-
-        #region ISettings
-
-        public void Load(string directoryPath)
-        {
-            lock (_thisLock)
-            {
-                _settings.Load(directoryPath);
-
-                this.Shutdown();
-            }
-        }
-
-        public void Save(string directoryPath)
-        {
-            lock (_thisLock)
-            {
-                _settings.Save(directoryPath);
-            }
-        }
-
-        #endregion
-
-        private class Settings : Library.Configuration.SettingsBase
-        {
-            public Settings()
-                : base(new List<Library.Configuration.ISettingContent>() {
-                    new Library.Configuration.SettingContent<string>() { Name = "Ipv4Uri", Value = null },
-                    new Library.Configuration.SettingContent<string>() { Name = "Ipv6Uri", Value = null },
-                    new Library.Configuration.SettingContent<string>() { Name = "UpnpUri", Value = null },
-                })
-            {
-
-            }
-
-            public string Ipv4Uri
-            {
-                get
-                {
-                    return (string)this["Ipv4Uri"];
-                }
-                set
-                {
-                    this["Ipv4Uri"] = value;
-                }
-            }
-
-            public string Ipv6Uri
-            {
-                get
-                {
-                    return (string)this["Ipv6Uri"];
-                }
-                set
-                {
-                    this["Ipv6Uri"] = value;
-                }
-            }
-
-            public string UpnpUri
-            {
-                get
-                {
-                    return (string)this["UpnpUri"];
-                }
-                set
-                {
-                    this["UpnpUri"] = value;
                 }
             }
         }

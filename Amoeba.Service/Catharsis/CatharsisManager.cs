@@ -20,15 +20,14 @@ using Library.Collections;
 using Library.Io;
 using Library.Net;
 using Library.Net.Amoeba;
-using Library.Net.Connections;
 
 namespace Amoeba
 {
     class CatharsisManager : ManagerBase, Library.Configuration.ISettings
     {
-        private ServiceManager _serviceManager;
-        private BufferManager _bufferManager;
+        private string _basePath;
         private AmoebaManager _amoebaManager;
+        private BufferManager _bufferManager;
 
         private Settings _settings;
 
@@ -44,11 +43,11 @@ namespace Amoeba
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public CatharsisManager(AmoebaManager amoebaManager, BufferManager bufferManager, ServiceManager serviceManager)
+        public CatharsisManager(string basePath, AmoebaManager amoebaManager, BufferManager bufferManager)
         {
+            _basePath = basePath;
             _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
-            _serviceManager = serviceManager;
 
             _settings = new Settings();
 
@@ -143,13 +142,13 @@ namespace Amoeba
                 var ipv4AddressSet = new HashSet<uint>();
                 var ipv4AddressRangeSet = new HashSet<SearchRange<uint>>();
 
-                foreach (var ipv4AddressFilter in _serviceManager.Config.Catharsis.Ipv4AddressFilters)
+                foreach (var ipv4AddressFilter in _settings.Ipv4AddressFilters)
                 {
                     // path
                     {
                         foreach (var path in ipv4AddressFilter.Paths)
                         {
-                            using (var stream = new FileStream(Path.Combine(_serviceManager.Paths["Configuration"], path), FileMode.OpenOrCreate))
+                            using (var stream = new FileStream(Path.Combine(_basePath, path), FileMode.OpenOrCreate))
                             using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
                             {
                                 string line;
@@ -490,11 +489,20 @@ namespace Amoeba
         {
             public Settings()
                 : base(new List<Library.Configuration.ISettingContent>() {
+                    new Library.Configuration.SettingContent<List<Ipv4AddressFilter>>() { Name = "Ipv4AddressFilters", Value = new List<Ipv4AddressFilter>() },
                     new Library.Configuration.SettingContent<HashSet<uint>>() { Name = "Ipv4AddressSet", Value = new HashSet<uint>() },
                     new Library.Configuration.SettingContent<HashSet<SearchRange<uint>>>() { Name = "Ipv4AddressRangeSet", Value = new HashSet<SearchRange<uint>>() },
                 })
             {
 
+            }
+
+            public List<Ipv4AddressFilter> Ipv4AddressFilters
+            {
+                get
+                {
+                    return (List<Ipv4AddressFilter>)this["Ipv4AddressFilters"];
+                }
             }
 
             public HashSet<uint> Ipv4AddressSet
@@ -503,10 +511,6 @@ namespace Amoeba
                 {
                     return (HashSet<uint>)this["Ipv4AddressSet"];
                 }
-                set
-                {
-                    this["Ipv4AddressSet"] = value;
-                }
             }
 
             public HashSet<SearchRange<uint>> Ipv4AddressRangeSet
@@ -514,10 +518,6 @@ namespace Amoeba
                 get
                 {
                     return (HashSet<SearchRange<uint>>)this["Ipv4AddressRangeSet"];
-                }
-                set
-                {
-                    this["Ipv4AddressRangeSet"] = value;
                 }
             }
         }

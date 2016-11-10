@@ -51,7 +51,7 @@ namespace Amoeba.Windows
 
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
-        private ConnectionSettingManager _connectionSettingManager;
+        private BaseNodeSettingManager _connectionSettingManager;
         private OverlayNetworkManager _overlayNetworkManager;
         private TransfarLimitManager _transferLimitManager;
         private CatharsisManager _catharsisManager;
@@ -1107,7 +1107,7 @@ namespace Amoeba.Windows
                     writer.WriteLine(_serviceManager.AmoebaVersion.ToString());
                 }
 
-                _connectionSettingManager = new ConnectionSettingManager(_amoebaManager);
+                _connectionSettingManager = new BaseNodeSettingManager(_amoebaManager);
                 _connectionSettingManager.Load(_configrationDirectoryPaths["ConnectionSettingManager"]);
 
                 _overlayNetworkManager = new OverlayNetworkManager(_amoebaManager, _bufferManager);

@@ -30,7 +30,7 @@ namespace Amoeba.Windows
 
         private BufferManager _bufferManager;
         private AmoebaManager _amoebaManager;
-        private ConnectionSettingManager _connectionSettingManager;
+        private BaseNodeSettingManager _connectionSettingManager;
         private OverlayNetworkManager _overlayNetworkManager;
         private TransfarLimitManager _transferLimitManager;
 
@@ -44,7 +44,7 @@ namespace Amoeba.Windows
         private ObservableCollectionEx<string> _keywordCollection = new ObservableCollectionEx<string>();
         private List<string> _fontMessageFontFamilyComboBoxItemCollection = new List<string>();
 
-        public OptionsWindow(AmoebaManager amoebaManager, ConnectionSettingManager connectionSettingManager, OverlayNetworkManager overlayNetworkManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
+        public OptionsWindow(AmoebaManager amoebaManager, BaseNodeSettingManager connectionSettingManager, OverlayNetworkManager overlayNetworkManager, TransfarLimitManager transfarLimitManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _amoebaManager = amoebaManager;

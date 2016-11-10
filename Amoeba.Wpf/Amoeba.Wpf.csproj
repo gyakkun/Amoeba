@@ -121,8 +121,8 @@
     <Compile Include="Utilities\Inspect.cs" />
     <Compile Include="Utilities\JsonUtils.cs" />
     <Compile Include="Utilities\BoxUtils.cs" />
-    <Compile Include="Utilities\Manager\Ipv4AddressFilter.cs" />
-    <Compile Include="Utilities\Manager\CatharsisManager.cs" />
+    <Compile Include="Utilities\Catharsis\Ipv4AddressFilter.cs" />
+    <Compile Include="Utilities\Catharsis\CatharsisManager.cs" />
     <Compile Include="Utilities\SeedStateCache.cs" />
     <Compile Include="ServiceManager.cs" />
     <Compile Include="Windows\Chat\ChatControl.xaml.cs">
@@ -149,7 +149,7 @@
     <Compile Include="Windows\_Controls\ChatTreeViewModel.cs" />
     <Compile Include="Windows\_Controls\ComboBoxEx.cs" />
     <Compile Include="Windows\_Controls\ObservableCollectionEx.cs" />
-    <Compile Include="Utilities\Manager\OverlayNetworkManager.cs" />
+    <Compile Include="Utilities\OverlayNetwork\OverlayNetworkManager.cs" />
     <Compile Include="Windows\NameWindow.xaml.cs">
       <DependentUpon>NameWindow.xaml</DependentUpon>
     </Compile>
@@ -276,7 +276,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\Route.cs" />
-    <Compile Include="Utilities\Manager\TransfarLimitManager.cs" />
+    <Compile Include="Utilities\TransfarLimit\TransfarLimitManager.cs" />
     <Compile Include="Utilities\WindowPosition.cs" />
     <Page Include="Windows\Store\LibraryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -355,7 +355,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\Settings.cs" />
-    <Compile Include="Utilities\Manager\ConnectionSettingManager.cs" />
+    <Compile Include="Utilities\BaseNodeSetting\BaseNodeSettingManager.cs" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
