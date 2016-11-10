@@ -926,7 +926,7 @@ namespace Amoeba.Windows
             {
                 bool initFlag = false;
 
-                _amoebaManager = new AmoebaManager(Path.Combine(_serviceManager.Paths["Work"], "Cache.bitmap"), _serviceManager.Config.Cache.Path, _bufferManager);
+                _amoebaManager = new AmoebaManager(_serviceManager.Config.Cache.Path, _bufferManager);
                 _amoebaManager.Load(_configrationDirectoryPaths["AmoebaManager"]);
 
                 if (!File.Exists(Path.Combine(_serviceManager.Paths["Configuration"], "Amoeba.version")))
