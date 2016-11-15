@@ -113,7 +113,7 @@ namespace Amoeba
                     }
                 }
             }
-            catch (Exception)
+            catch (SamException)
             {
                 foreach (var item in garbages)
                 {
@@ -140,7 +140,7 @@ namespace Amoeba
                 socket = _samManager.Accept(out base32Address);
                 uri = string.Format("i2p:{0}", base32Address);
             }
-            catch (Exception)
+            catch (SamException)
             {
                 if (socket != null) socket.Dispose();
 
