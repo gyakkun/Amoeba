@@ -365,7 +365,16 @@ namespace Amoeba.Windows
 
                 if (ChatControl.Filter(item)) continue;
 
-                newMulticastMessages.Add(item, option);
+                {
+                    MulticastMessageOption targetOption;
+
+                    if (newMulticastMessages.TryGetValue(item, out targetOption))
+                    {
+                        option.Cost = Math.Max(option.Cost, targetOption.Cost);
+                    }
+
+                    newMulticastMessages[item] = option;
+                }
             }
 
             lock (treeViewModel.Value.ThisLock)
@@ -388,7 +397,7 @@ namespace Amoeba.Windows
 
                     if (ChatControl.Filter(item)) continue;
 
-                    dic.Add(pair.Key, pair.Value);
+                    dic.Add(item, option);
                 }
 
                 foreach (var pair in newMulticastMessages)
