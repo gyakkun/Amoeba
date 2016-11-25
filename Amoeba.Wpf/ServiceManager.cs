@@ -30,7 +30,7 @@ namespace Amoeba
 
         public ServiceManager()
         {
-            this.AmoebaVersion = new Version(4, 0, 39);
+            this.AmoebaVersion = new Version(4, 0, 40);
 
             this.Paths = new Dictionary<string, string>();
 
