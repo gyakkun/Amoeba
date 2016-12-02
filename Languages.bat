@@ -3,4 +3,4 @@ cd %BATDIR%
 
 set TOOL="Library\Library.Tools\bin\Debug\Library.Tools.exe"
 
-IF EXIST %TOOL% call %TOOL% "Languages" "Amoeba.Wpf\Properties\LanguagesManager.cs" "Amoeba.Wpf\Languages"
+IF EXIST %TOOL% call %TOOL% "Languages" "Amoeba\Properties\LanguagesManager.cs" "Amoeba\Languages"

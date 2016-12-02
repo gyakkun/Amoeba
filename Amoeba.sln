@@ -35,11 +35,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Tools", "Library\Li
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Library.Utilities", "Library\Library.Utilities\Library.Utilities.shproj", "{0F585D24-9D81-4C31-A341-966A554B3800}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Wpf", "Amoeba.Wpf\Amoeba.Wpf.csproj", "{7C83E92E-62BE-49E6-870A-DEB9D5340664}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Messaging", "Library\Library.Messaging\Library.Messaging.csproj", "{8617B9AE-BCBF-4F85-A09C-4DAF0DBB9614}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{9FB416B3-CD9C-4797-9524-5603CDB8C90C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba", "Amoeba\Amoeba.csproj", "{19E45677-BD12-4F48-8C19-87E60B7CBA36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Old", "Amoeba.Old\Amoeba.Old.csproj", "{7C83E92E-62BE-49E6-870A-DEB9D5340664}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -47,6 +49,7 @@ Global
 		Library\Library.Utilities\Library.Utilities.projitems*{38994e3c-0699-4d6c-ad02-f9f657340347}*SharedItemsImports = 4
 		Library\Library.Utilities\Library.Utilities.projitems*{7c83e92e-62be-49e6-870a-deb9d5340664}*SharedItemsImports = 4
 		Library\Library.Utilities\Library.Utilities.projitems*{82230c99-6599-4130-aac9-fc926abc0724}*SharedItemsImports = 4
+		Library\Library.Utilities\Library.Utilities.projitems*{9fb416b3-cd9c-4797-9524-5603cdb8c90c}*SharedItemsImports = 4
 		Library\Library.Utilities\Library.Utilities.projitems*{d314c626-a6fc-4fd5-be3c-9d36c2738418}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,10 +117,6 @@ Global
 		{B4424312-441E-4B12-9278-D640CDABD99B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4424312-441E-4B12-9278-D640CDABD99B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4424312-441E-4B12-9278-D640CDABD99B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7C83E92E-62BE-49E6-870A-DEB9D5340664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C83E92E-62BE-49E6-870A-DEB9D5340664}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7C83E92E-62BE-49E6-870A-DEB9D5340664}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7C83E92E-62BE-49E6-870A-DEB9D5340664}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8617B9AE-BCBF-4F85-A09C-4DAF0DBB9614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8617B9AE-BCBF-4F85-A09C-4DAF0DBB9614}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8617B9AE-BCBF-4F85-A09C-4DAF0DBB9614}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -126,6 +125,12 @@ Global
 		{9FB416B3-CD9C-4797-9524-5603CDB8C90C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FB416B3-CD9C-4797-9524-5603CDB8C90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FB416B3-CD9C-4797-9524-5603CDB8C90C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C83E92E-62BE-49E6-870A-DEB9D5340664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C83E92E-62BE-49E6-870A-DEB9D5340664}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

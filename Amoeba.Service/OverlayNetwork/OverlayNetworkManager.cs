@@ -23,6 +23,8 @@ namespace Amoeba
 
         private Settings _settings;
 
+        private string _i2pUri;
+
         private string _oldSamBridgeUri;
         private SamManager _samManager;
 
@@ -53,8 +55,6 @@ namespace Amoeba
 
             if (!uri.StartsWith("i2p:")) return null;
 
-            var garbages = new List<IDisposable>();
-
             try
             {
                 string scheme = null;
@@ -73,51 +73,27 @@ namespace Amoeba
 
                 if (host == null) return null;
 
+                if (scheme == "i2p")
                 {
-                    string proxyScheme = null;
-                    string proxyHost = null;
-                    int proxyPort = -1;
+                    Socket socket = null;
 
+                    try
                     {
-                        var regex = new Regex(@"(.*?):(.*):(\d*)");
-                        var match = regex.Match(this.SamBridgeUri);
+                        socket = _samManager.Connect(host);
+                    }
+                    catch (Exception)
+                    {
+                        if (socket != null) socket.Dispose();
 
-                        if (match.Success)
-                        {
-                            proxyScheme = match.Groups[1].Value;
-                            proxyHost = match.Groups[2].Value;
-                            proxyPort = int.Parse(match.Groups[3].Value);
-                        }
+                        throw;
                     }
 
-                    if (proxyHost == null) return null;
-
-                    if (scheme == "i2p")
-                    {
-                        Socket socket = null;
-
-                        try
-                        {
-                            socket = _samManager.Connect(host);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex);
-                            if (socket != null) socket.Dispose();
-
-                            throw;
-                        }
-
-                        return new SocketCap(socket);
-                    }
+                    return new SocketCap(socket);
                 }
             }
             catch (Exception)
             {
-                foreach (var item in garbages)
-                {
-                    item.Dispose();
-                }
+
             }
 
             return null;
@@ -259,18 +235,22 @@ namespace Amoeba
 
                         lock (_thisLock)
                         {
-                            if (i2pUri != _settings.I2pUri)
+                            if (i2pUri != _i2pUri)
                             {
-                                if (this.RemoveUri(_settings.I2pUri))
-                                    Log.Information(string.Format("Remove Node uri: {0}", _settings.I2pUri));
+                                if (this.RemoveUri(_i2pUri))
+                                {
+                                    Log.Information(string.Format("Remove Node uri: {0}", _i2pUri));
+                                }
                             }
 
-                            _settings.I2pUri = i2pUri;
+                            _i2pUri = i2pUri;
 
-                            if (_settings.I2pUri != null)
+                            if (_i2pUri != null)
                             {
-                                if (this.AddUri(_settings.I2pUri))
-                                    Log.Information(string.Format("Add Node uri: {0}", _settings.I2pUri));
+                                if (this.AddUri(_i2pUri))
+                                {
+                                    Log.Information(string.Format("Add Node uri: {0}", _i2pUri));
+                                }
                             }
 
                             _oldSamBridgeUri = this.SamBridgeUri;
@@ -325,12 +305,14 @@ namespace Amoeba
 
                 lock (_thisLock)
                 {
-                    if (_settings.I2pUri != null)
+                    if (_i2pUri != null)
                     {
-                        if (this.RemoveUri(_settings.I2pUri))
-                            Log.Information(string.Format("Remove Node uri: {0}", _settings.I2pUri));
+                        if (this.RemoveUri(_i2pUri))
+                        {
+                            Log.Information(string.Format("Remove Node uri: {0}", _i2pUri));
+                        }
                     }
-                    _settings.I2pUri = null;
+                    _i2pUri = null;
                 }
             }
         }
@@ -360,7 +342,6 @@ namespace Amoeba
             public Settings()
                 : base(new List<Library.Configuration.ISettingContent>() {
                     new Library.Configuration.SettingContent<string>() { Name = "SamBridgeUri", Value = "tcp:127.0.0.1:7656" },
-                    new Library.Configuration.SettingContent<string>() { Name = "I2pUri", Value = "" },
                 })
             {
 
@@ -375,18 +356,6 @@ namespace Amoeba
                 set
                 {
                     this["SamBridgeUri"] = value;
-                }
-            }
-
-            public string I2pUri
-            {
-                get
-                {
-                    return (string)this["I2pUri"];
-                }
-                set
-                {
-                    this["I2pUri"] = value;
                 }
             }
         }

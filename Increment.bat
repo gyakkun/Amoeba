@@ -10,4 +10,4 @@ cd %BATDIR%
 set TOOL="Library\Library.Tools\bin\Debug\Library.Tools.exe"
 IF NOT EXIST %TOOL% exit
 
-call %TOOL% "Increment" Amoeba.Wpf\Amoeba.Wpf.csproj Properties\AssemblyInfo.cs
+call %TOOL% "Increment" Amoeba\Amoeba.csproj Properties\AssemblyInfo.cs

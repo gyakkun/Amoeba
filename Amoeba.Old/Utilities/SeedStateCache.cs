@@ -9,6 +9,7 @@ using Amoeba.Windows;
 using Library;
 using Library.Collections;
 using Library.Net.Amoeba;
+using Library.Utilities;
 
 namespace Amoeba
 {
@@ -18,26 +19,17 @@ namespace Amoeba
         private ConcurrentDictionary<Seed, SearchState> _seedsDictionary = new ConcurrentDictionary<Seed, SearchState>();
         private readonly object _thisLock = new object();
 
-        private System.Threading.Timer _watchTimer;
-        private volatile bool _isRefreshing = false;
+        private WatchTimer _watchTimer;
 
         public SeedStateCache(AmoebaManager amoebaManager)
         {
             _amoebaManager = amoebaManager;
 
-            _watchTimer = new Timer(this.WatchTimer, null, 0, 1000 * 60);
+            _watchTimer = new WatchTimer(this.WatchTimer, 0, 1000 * 60);
         }
 
-        private void WatchTimer(object state)
+        private void WatchTimer()
         {
-            this.Refresh();
-        }
-
-        private void Refresh()
-        {
-            if (_isRefreshing) return;
-            _isRefreshing = true;
-
             try
             {
                 var tempDictionary = new ConcurrentDictionary<Seed, SearchState>();
@@ -87,10 +79,6 @@ namespace Amoeba
             catch (Exception)
             {
 
-            }
-            finally
-            {
-                _isRefreshing = false;
             }
         }
 

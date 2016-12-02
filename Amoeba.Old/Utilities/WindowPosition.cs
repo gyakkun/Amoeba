@@ -28,8 +28,6 @@ namespace Amoeba
 
                 window.Left = Math.Min(Math.Max(maxLeft, window.Left), maxRight);
                 window.Top = Math.Min(Math.Max(maxTop, window.Top), maxBottom);
-
-                return;
             }
         }
     }
