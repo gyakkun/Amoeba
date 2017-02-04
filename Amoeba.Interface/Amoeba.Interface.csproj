@@ -7,8 +7,8 @@
     <ProjectGuid>{19E45677-BD12-4F48-8C19-87E60B7CBA36}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Amoeba</RootNamespace>
-    <AssemblyName>Amoeba</AssemblyName>
+    <RootNamespace>Amoeba.Interface</RootNamespace>
+    <AssemblyName>Amoeba.Interface</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
