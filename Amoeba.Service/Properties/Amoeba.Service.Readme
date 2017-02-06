@@ -1,0 +1,5 @@
+namespace: Amoeba.Service
+License: MIT License
+
+File: DeadlockMonitor.cs
+Url: http://msdn.microsoft.com/ja-jp/site/cc163352
