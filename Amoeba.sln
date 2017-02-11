@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Net.Amoeba", "Omnius\Omnius.Net.Amoeba\Omnius.Net.Amoeba.csproj", "{82230C99-6599-4130-AAC9-FC926ABC0724}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Collections", "Omnius\Omnius.Collections\Omnius.Collections.csproj", "{197C654F-2461-446A-B531-4A789F14BE19}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Configuration", "Omnius\Omnius.Configuration\Omnius.Configuration.csproj", "{9AA70F88-4A83-4B3F-B494-7D37EA95766A}"
@@ -39,6 +37,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Interface", "Amoeba.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{8796EE1C-25D5-483E-B273-A17710A61259}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Core", "Amoeba.Core\Amoeba.Core.csproj", "{82230C99-6599-4130-AAC9-FC926ABC0724}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.UnitTest", "Amoeba.UnitTest\Amoeba.UnitTest.csproj", "{57DB853D-6357-4621-965B-EDDDD7955376}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0f585d24-9d81-4c31-a341-966a554b3800}*SharedItemsImports = 13
@@ -50,10 +52,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{82230C99-6599-4130-AAC9-FC926ABC0724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82230C99-6599-4130-AAC9-FC926ABC0724}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82230C99-6599-4130-AAC9-FC926ABC0724}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82230C99-6599-4130-AAC9-FC926ABC0724}.Release|Any CPU.Build.0 = Release|Any CPU
 		{197C654F-2461-446A-B531-4A789F14BE19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{197C654F-2461-446A-B531-4A789F14BE19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{197C654F-2461-446A-B531-4A789F14BE19}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -118,6 +116,14 @@ Global
 		{8796EE1C-25D5-483E-B273-A17710A61259}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8796EE1C-25D5-483E-B273-A17710A61259}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8796EE1C-25D5-483E-B273-A17710A61259}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82230C99-6599-4130-AAC9-FC926ABC0724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82230C99-6599-4130-AAC9-FC926ABC0724}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82230C99-6599-4130-AAC9-FC926ABC0724}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82230C99-6599-4130-AAC9-FC926ABC0724}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57DB853D-6357-4621-965B-EDDDD7955376}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57DB853D-6357-4621-965B-EDDDD7955376}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57DB853D-6357-4621-965B-EDDDD7955376}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57DB853D-6357-4621-965B-EDDDD7955376}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

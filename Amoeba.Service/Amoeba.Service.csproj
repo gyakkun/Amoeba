@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sources\Information\Store\SeedCollection.cs" />
     <Compile Include="Sources\Information\_Interface\Store\ISeed.cs" />
     <Compile Include="Sources\Information\Profile\Link\Link.cs" />
     <Compile Include="Sources\Information\Profile\Link\LinkCollection.cs" />
@@ -66,6 +67,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Amoeba.Core\Amoeba.Core.csproj">
+      <Project>{82230c99-6599-4130-aac9-fc926abc0724}</Project>
+      <Name>Amoeba.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
       <Project>{63eadc1f-9a8a-4945-a562-da666d0bcb7b}</Project>
       <Name>Omnius.Base</Name>
@@ -85,10 +90,6 @@
     <ProjectReference Include="..\Omnius\Omnius.Messaging\Omnius.Messaging.csproj">
       <Project>{8617b9ae-bcbf-4f85-a09c-4daf0dbb9614}</Project>
       <Name>Omnius.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Net.Amoeba\Omnius.Net.Amoeba.csproj">
-      <Project>{82230c99-6599-4130-aac9-fc926abc0724}</Project>
-      <Name>Omnius.Net.Amoeba</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Net.I2p\Omnius.Net.I2p.csproj">
       <Project>{24dc1835-cc3d-4d29-b922-199027ec551f}</Project>

@@ -1,0 +1,1754 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
+using Omnius.Base;
+using Omnius.Collections;
+using Omnius.Configuration;
+using Omnius.Correction;
+using Omnius.Io;
+using Omnius.Messaging;
+using Omnius.Security;
+using Omnius.Utilities;
+
+namespace Amoeba.Core.Cache
+{
+    public delegate void CheckBlocksProgressEventHandler(object sender, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop);
+
+    interface ISetOperators<T>
+    {
+        IEnumerable<T> IntersectFrom(IEnumerable<T> collection);
+        IEnumerable<T> ExceptFrom(IEnumerable<T> collection);
+    }
+
+    class CacheManager : ManagerBase, ISettings, ISetOperators<Hash>, IEnumerable<Hash>
+    {
+        private Stream _fileStream;
+
+        private BitmapManager _bitmapManager;
+        private BufferManager _bufferManager;
+
+        private Settings _settings;
+
+        private long _size;
+        private Dictionary<Hash, ClusterInfo> _clusterIndex;
+
+        private bool _spaceSectors_Initialized;
+        private HashSet<long> _spaceSectors = new HashSet<long>();
+
+        private Dictionary<Hash, int> _lockedHashes = new Dictionary<Hash, int>();
+
+        private ContentInfoManager _contentInfoManager;
+
+        private EventQueue<Hash> _blockAddEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
+        private EventQueue<Hash> _blockRemoveEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
+
+        private WatchTimer _watchTimer;
+
+        private readonly object _thisLock = new object();
+        private volatile bool _disposed;
+
+        public static readonly int SectorSize = 1024 * 256;
+        public static readonly int SpaceSectorCount = 4 * 1024; // 1MB * 1024 = 1024MB
+
+        private int _threadCount = 2;
+
+        public CacheManager(string configPath, string blocksPath, BufferManager bufferManager)
+        {
+            const FileOptions FileFlagNoBuffering = (FileOptions)0x20000000;
+            _fileStream = new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize, FileFlagNoBuffering);
+
+            _bitmapManager = new BitmapManager(bufferManager);
+            _bufferManager = bufferManager;
+
+            _settings = new Settings(configPath);
+
+            _contentInfoManager = new ContentInfoManager();
+
+            _watchTimer = new WatchTimer(this.WatchTimer, Timeout.Infinite);
+        }
+
+        private static long Roundup(long value, long unit)
+        {
+            if (value % unit == 0) return value;
+            else return ((value / unit) + 1) * unit;
+        }
+
+        private void WatchTimer()
+        {
+            this.CheckInformation();
+        }
+
+        private volatile Info _info = new Info();
+
+        public class Info
+        {
+            public long BlockCount { get; set; }
+            public long UsingSpace { get; set; }
+            public long LockSpace { get; set; }
+            public long FreeSpace { get; set; }
+        }
+
+        public Information Information
+        {
+            get
+            {
+                lock (_thisLock)
+                {
+                    var contexts = new List<InformationContext>();
+                    {
+                        // Info
+                        {
+                            Type type = typeof(Info);
+
+                            foreach (var property in type.GetProperties())
+                            {
+                                string name = property.Name;
+                                object value = property.GetValue(_info);
+
+                                if (value is SafeInteger) value = (long)value;
+
+                                contexts.Add(new InformationContext(name, value));
+                            }
+                        }
+
+                        contexts.Add(new InformationContext("ContentCount", _contentInfoManager.Count));
+                    }
+
+                    return new Information(contexts);
+                }
+            }
+        }
+
+        private void CheckInformation()
+        {
+            lock (_thisLock)
+            {
+                _info.BlockCount = this.Count;
+                _info.UsingSpace = _fileStream.Length;
+
+                {
+                    var usingHashes = new HashSet<Hash>();
+                    usingHashes.UnionWith(_lockedHashes.Keys);
+                    usingHashes.UnionWith(_contentInfoManager.Select(n => n.LockedHashes).Extract());
+
+                    long size = 0;
+
+                    foreach (var hash in usingHashes)
+                    {
+                        ClusterInfo clusterInfo;
+
+                        if (_clusterIndex.TryGetValue(hash, out clusterInfo))
+                        {
+                            size += clusterInfo.Indexes.Length * CacheManager.SectorSize;
+                        }
+                    }
+
+                    _info.LockSpace = size;
+                }
+
+                _info.FreeSpace = this.Size - _info.LockSpace;
+            }
+        }
+
+        public long Size
+        {
+            get
+            {
+                lock (_thisLock)
+                {
+                    return _size;
+                }
+            }
+        }
+
+        public long Count
+        {
+            get
+            {
+                lock (_thisLock)
+                {
+                    return _clusterIndex.Count;
+                }
+            }
+        }
+
+        public event Action<IEnumerable<Hash>> BlockAddEvents
+        {
+            add
+            {
+                _blockAddEventQueue.Events += value;
+            }
+            remove
+            {
+                _blockAddEventQueue.Events -= value;
+            }
+        }
+
+        public event Action<IEnumerable<Hash>> BlockRemoveEvents
+        {
+            add
+            {
+                _blockRemoveEventQueue.Events += value;
+            }
+            remove
+            {
+                _blockRemoveEventQueue.Events -= value;
+            }
+        }
+
+        private void CheckSpace(int sectorCount)
+        {
+            lock (_thisLock)
+            {
+                if (!_spaceSectors_Initialized)
+                {
+                    _bitmapManager.SetLength(this.Size / CacheManager.SectorSize);
+
+                    foreach (var clusterInfo in _clusterIndex.Values)
+                    {
+                        foreach (var sector in clusterInfo.Indexes)
+                        {
+                            _bitmapManager.Set(sector, true);
+                        }
+                    }
+
+                    _spaceSectors_Initialized = true;
+                }
+
+                if (_spaceSectors.Count < sectorCount)
+                {
+                    for (long i = 0; i < _bitmapManager.Length; i++)
+                    {
+                        if (!_bitmapManager.Get(i))
+                        {
+                            _spaceSectors.Add(i);
+                            if (_spaceSectors.Count >= sectorCount) break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CreatingSpace()
+        {
+            lock (_thisLock)
+            {
+                this.CheckSpace(CacheManager.SpaceSectorCount);
+                if (CacheManager.SpaceSectorCount <= _spaceSectors.Count) return;
+
+                var usingHashes = new HashSet<Hash>();
+                usingHashes.UnionWith(_lockedHashes.Keys);
+                usingHashes.UnionWith(_contentInfoManager.Select(n => n.LockedHashes).Extract());
+
+                var removePairs = _clusterIndex
+                    .Where(n => !usingHashes.Contains(n.Key))
+                    .ToList();
+
+                removePairs.Sort((x, y) =>
+                {
+                    return x.Value.UpdateTime.CompareTo(y.Value.UpdateTime);
+                });
+
+                foreach (var hash in removePairs.Select(n => n.Key))
+                {
+                    if (CacheManager.SpaceSectorCount <= _spaceSectors.Count) break;
+
+                    this.Remove(hash);
+                }
+            }
+        }
+
+        public void Lock(Hash hash)
+        {
+            lock (_thisLock)
+            {
+                int count;
+                _lockedHashes.TryGetValue(hash, out count);
+
+                count++;
+
+                _lockedHashes[hash] = count;
+            }
+        }
+
+        public void Unlock(Hash hash)
+        {
+            lock (_thisLock)
+            {
+                int count;
+                if (!_lockedHashes.TryGetValue(hash, out count)) throw new KeyNotFoundException();
+
+                count--;
+
+                if (count == 0)
+                {
+                    _lockedHashes.Remove(hash);
+                }
+                else
+                {
+                    _lockedHashes[hash] = count;
+                }
+            }
+        }
+
+        public bool Contains(Hash hash)
+        {
+            lock (_thisLock)
+            {
+                return _clusterIndex.ContainsKey(hash) || _contentInfoManager.Contains(hash);
+            }
+        }
+
+        public IEnumerable<Hash> IntersectFrom(IEnumerable<Hash> collection)
+        {
+            lock (_thisLock)
+            {
+                foreach (var key in collection)
+                {
+                    if (this.Contains(key))
+                    {
+                        yield return key;
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<Hash> ExceptFrom(IEnumerable<Hash> collection)
+        {
+            lock (_thisLock)
+            {
+                foreach (var key in collection)
+                {
+                    if (!this.Contains(key))
+                    {
+                        yield return key;
+                    }
+                }
+            }
+        }
+
+        public void Remove(Hash hash)
+        {
+            lock (_thisLock)
+            {
+                ClusterInfo clusterInfo = null;
+
+                if (_clusterIndex.TryGetValue(hash, out clusterInfo))
+                {
+                    _clusterIndex.Remove(hash);
+
+                    if (_spaceSectors_Initialized)
+                    {
+                        foreach (var sector in clusterInfo.Indexes)
+                        {
+                            _bitmapManager.Set(sector, false);
+                            if (_spaceSectors.Count < CacheManager.SpaceSectorCount) _spaceSectors.Add(sector);
+                        }
+                    }
+
+                    // Event
+                    _blockRemoveEventQueue.Enqueue(hash);
+                }
+            }
+        }
+
+        public void Resize(long size)
+        {
+            if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
+
+            lock (_thisLock)
+            {
+                int unit = 1024 * 1024 * 256; // 256MB
+                size = CacheManager.Roundup(size, unit);
+
+                foreach (var key in _clusterIndex.Keys.ToArray()
+                    .Where(n => _clusterIndex[n].Indexes.Any(point => size < (point * CacheManager.SectorSize) + CacheManager.SectorSize))
+                    .ToArray())
+                {
+                    this.Remove(key);
+                }
+
+                _size = CacheManager.Roundup(size, CacheManager.SectorSize);
+                _fileStream.SetLength(Math.Min(_size, _fileStream.Length));
+
+                _spaceSectors.Clear();
+                _spaceSectors_Initialized = false;
+            }
+        }
+
+        public void CheckBlocks(CheckBlocksProgressEventHandler getProgressEvent)
+        {
+            // 読めないブロックを検出しRemoveする。
+            {
+                var list = this.ToArray();
+
+                int badBlockCount = 0;
+                int checkedBlockCount = 0;
+                int blockCount = list.Length;
+                bool isStop;
+
+                getProgressEvent.Invoke(this, badBlockCount, checkedBlockCount, blockCount, out isStop);
+
+                if (isStop) return;
+
+                foreach (var hash in list)
+                {
+                    lock (_thisLock)
+                    {
+                        if (this.Contains(hash))
+                        {
+                            var buffer = new ArraySegment<byte>();
+
+                            try
+                            {
+                                buffer = this[hash];
+                            }
+                            catch (Exception)
+                            {
+                                badBlockCount++;
+                            }
+                            finally
+                            {
+                                if (buffer.Array != null)
+                                {
+                                    _bufferManager.ReturnBuffer(buffer.Array);
+                                }
+                            }
+                        }
+                    }
+
+                    checkedBlockCount++;
+
+                    if (checkedBlockCount % 8 == 0)
+                    {
+                        getProgressEvent.Invoke(this, badBlockCount, checkedBlockCount, blockCount, out isStop);
+                    }
+
+                    if (isStop) return;
+                }
+
+                getProgressEvent.Invoke(this, badBlockCount, checkedBlockCount, blockCount, out isStop);
+            }
+        }
+
+        private byte[] _sectorBuffer = new byte[CacheManager.SectorSize];
+
+        public ArraySegment<byte> this[Hash hash]
+        {
+            get
+            {
+                // Cache
+                {
+                    ArraySegment<byte>? result = null;
+
+                    lock (_thisLock)
+                    {
+                        ClusterInfo clusterInfo = null;
+
+                        if (_clusterIndex.TryGetValue(hash, out clusterInfo))
+                        {
+                            clusterInfo.UpdateTime = DateTime.UtcNow;
+
+                            byte[] buffer = _bufferManager.TakeBuffer(clusterInfo.Length);
+
+                            try
+                            {
+                                try
+                                {
+                                    for (int i = 0, remain = clusterInfo.Length; i < clusterInfo.Indexes.Length; i++, remain -= CacheManager.SectorSize)
+                                    {
+                                        long posision = clusterInfo.Indexes[i] * CacheManager.SectorSize;
+                                        if (posision > _fileStream.Length) throw new ArgumentOutOfRangeException();
+
+                                        if (_fileStream.Position != posision)
+                                        {
+                                            _fileStream.Seek(posision, SeekOrigin.Begin);
+                                        }
+
+                                        int length = Math.Min(remain, CacheManager.SectorSize);
+
+                                        {
+                                            _fileStream.Read(_sectorBuffer, 0, _sectorBuffer.Length);
+
+                                            Unsafe.Copy(_sectorBuffer, 0, buffer, CacheManager.SectorSize * i, length);
+                                        }
+                                    }
+                                }
+                                catch (ArgumentOutOfRangeException)
+                                {
+                                    throw new BlockNotFoundException();
+                                }
+                                catch (IOException)
+                                {
+                                    throw new BlockNotFoundException();
+                                }
+
+                                result = new ArraySegment<byte>(buffer, 0, clusterInfo.Length);
+                            }
+                            catch (Exception)
+                            {
+                                _bufferManager.ReturnBuffer(buffer);
+
+                                this.Remove(hash);
+
+                                throw;
+                            }
+                        }
+                    }
+
+                    if (result != null)
+                    {
+                        if (hash.Algorithm == HashAlgorithm.Sha256
+                            && Unsafe.Equals(Sha256.ComputeHash(result.Value), hash.Value))
+                        {
+                            return result.Value;
+                        }
+                        else
+                        {
+                            _bufferManager.ReturnBuffer(result.Value.Array);
+
+                            this.Remove(hash);
+                        }
+                    }
+                }
+
+                // Share
+                {
+                    ArraySegment<byte>? result = null;
+                    ContentInfo contentInfo;
+
+                    lock (_thisLock)
+                    {
+                        contentInfo = _contentInfoManager.GetContentInfo(hash);
+
+                        if (contentInfo != null)
+                        {
+                            byte[] buffer = _bufferManager.TakeBuffer(contentInfo.ShareInfo.BlockLength);
+
+                            try
+                            {
+                                int length;
+
+                                try
+                                {
+                                    using (var stream = new UnbufferedFileStream(contentInfo.ShareInfo.Path, FileMode.Open, FileAccess.Read, FileShare.Read, FileOptions.None, _bufferManager))
+                                    {
+                                        stream.Seek((long)contentInfo.ShareInfo.GetIndex(hash) * contentInfo.ShareInfo.BlockLength, SeekOrigin.Begin);
+
+                                        length = (int)Math.Min(stream.Length - stream.Position, contentInfo.ShareInfo.BlockLength);
+                                        stream.Read(buffer, 0, length);
+                                    }
+                                }
+                                catch (ArgumentOutOfRangeException)
+                                {
+                                    throw new BlockNotFoundException();
+                                }
+                                catch (IOException)
+                                {
+                                    throw new BlockNotFoundException();
+                                }
+
+                                result = new ArraySegment<byte>(buffer, 0, length);
+                            }
+                            catch (Exception)
+                            {
+                                _bufferManager.ReturnBuffer(buffer);
+
+                                throw;
+                            }
+                        }
+                    }
+
+                    if (result != null)
+                    {
+                        if (hash.Algorithm == HashAlgorithm.Sha256
+                            && Unsafe.Equals(Sha256.ComputeHash(result.Value), hash.Value))
+                        {
+                            return result.Value;
+                        }
+                        else
+                        {
+                            _bufferManager.ReturnBuffer(result.Value.Array);
+
+                            this.Remove(contentInfo.ShareInfo.Path);
+                        }
+                    }
+                }
+
+                throw new BlockNotFoundException();
+            }
+            set
+            {
+                if (value.Count > 1024 * 1024 * 32) throw new BadBlockException();
+
+                if (hash.Algorithm == HashAlgorithm.Sha256)
+                {
+                    if (!Unsafe.Equals(Sha256.ComputeHash(value), hash.Value)) throw new BadBlockException();
+                }
+                else
+                {
+                    throw new FormatException();
+                }
+
+                lock (_thisLock)
+                {
+                    if (this.Contains(hash)) return;
+
+                    List<long> sectorList = null;
+
+                    try
+                    {
+                        int count = (value.Count + (CacheManager.SectorSize - 1)) / CacheManager.SectorSize;
+
+                        sectorList = new List<long>(count);
+
+                        if (_spaceSectors.Count < count)
+                        {
+                            this.CreatingSpace();
+                        }
+
+                        if (_spaceSectors.Count < count) throw new SpaceNotFoundException();
+
+                        sectorList.AddRange(_spaceSectors.Take(count));
+
+                        foreach (var sector in sectorList)
+                        {
+                            _bitmapManager.Set(sector, true);
+                            _spaceSectors.Remove(sector);
+                        }
+
+                        for (int i = 0, remain = value.Count; i < sectorList.Count && 0 < remain; i++, remain -= CacheManager.SectorSize)
+                        {
+                            long posision = sectorList[i] * CacheManager.SectorSize;
+
+                            if ((_fileStream.Length < posision + CacheManager.SectorSize))
+                            {
+                                int unit = 1024 * 1024 * 256; // 256MB
+                                long size = CacheManager.Roundup((posision + CacheManager.SectorSize), unit);
+
+                                _fileStream.SetLength(Math.Min(size, this.Size));
+                            }
+
+                            if (_fileStream.Position != posision)
+                            {
+                                _fileStream.Seek(posision, SeekOrigin.Begin);
+                            }
+
+                            int length = Math.Min(remain, CacheManager.SectorSize);
+
+                            {
+                                Unsafe.Copy(value.Array, value.Offset + (CacheManager.SectorSize * i), _sectorBuffer, 0, length);
+                                Unsafe.Zero(_sectorBuffer, length, _sectorBuffer.Length - length);
+
+                                _fileStream.Write(_sectorBuffer, 0, _sectorBuffer.Length);
+                            }
+                        }
+
+                        _fileStream.Flush();
+                    }
+                    catch (SpaceNotFoundException e)
+                    {
+                        Log.Error(e);
+
+                        throw e;
+                    }
+                    catch (IOException e)
+                    {
+                        Log.Error(e);
+
+                        throw e;
+                    }
+
+                    var clusterInfo = new ClusterInfo(sectorList.ToArray(), value.Count);
+                    clusterInfo.UpdateTime = DateTime.UtcNow;
+
+                    _clusterIndex[hash] = clusterInfo;
+
+                    // Event
+                    _blockAddEventQueue.Enqueue(hash);
+                }
+            }
+        }
+
+        public int GetLength(Hash hash)
+        {
+            lock (_thisLock)
+            {
+                if (_clusterIndex.ContainsKey(hash))
+                {
+                    return _clusterIndex[hash].Length;
+                }
+
+                // Share
+                {
+                    var contentInfo = _contentInfoManager.GetContentInfo(hash);
+
+                    if (contentInfo != null)
+                    {
+                        return Math.Min((int)(contentInfo.ShareInfo.FileLength - (contentInfo.ShareInfo.BlockLength * contentInfo.ShareInfo.GetIndex(hash))), contentInfo.ShareInfo.BlockLength);
+                    }
+                }
+
+                throw new KeyNotFoundException();
+            }
+        }
+
+        public Task Decoding(Stream outStream, IEnumerable<Hash> hashes, long maxLength, CancellationToken token)
+        {
+            return Task.Run(() =>
+            {
+                if (outStream == null) throw new ArgumentNullException(nameof(outStream));
+
+                try
+                {
+                    foreach (var hash in hashes)
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        var block = new ArraySegment<byte>();
+
+                        try
+                        {
+                            block = this[hash];
+
+                            outStream.Write(block.Array, block.Offset, block.Count);
+
+                            if (outStream.Length > maxLength) throw new CacheManagerException("Size too large");
+                        }
+                        finally
+                        {
+                            if (block.Array != null) _bufferManager.ReturnBuffer(block.Array);
+                        }
+                    }
+                }
+                finally
+                {
+                    outStream.Close();
+                }
+            }, token);
+        }
+
+        public Task<IEnumerable<Hash>> ParityDecoding(Group group, CancellationToken token)
+        {
+            return Task.Run(() =>
+            {
+                if (group.CorrectionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
+                {
+                    var hashList = group.Hashes.ToList();
+                    var blockLength = group.Hashes.Max(n => this.GetLength(n));
+                    var informationCount = hashList.Count / 2;
+
+                    var buffers = new ArraySegment<byte>[informationCount];
+                    var indexes = new int[informationCount];
+
+                    try
+                    {
+                        // Load
+                        {
+                            int count = 0;
+
+                            for (int i = 0; i < hashList.Count; i++)
+                            {
+                                token.ThrowIfCancellationRequested();
+
+                                if (!this.Contains(hashList[i])) continue;
+
+                                var buffer = new ArraySegment<byte>();
+
+                                try
+                                {
+                                    buffer = this[hashList[i]];
+
+                                    if (buffer.Count < blockLength)
+                                    {
+                                        var tempBuffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
+                                        Unsafe.Copy(buffer.Array, buffer.Offset, tempBuffer.Array, tempBuffer.Offset, buffer.Count);
+                                        Unsafe.Zero(tempBuffer.Array, tempBuffer.Offset + buffer.Count, tempBuffer.Count - buffer.Count);
+
+                                        _bufferManager.ReturnBuffer(buffer.Array);
+
+                                        buffer = tempBuffer;
+                                    }
+                                }
+                                catch (BlockNotFoundException)
+                                {
+
+                                }
+                                catch (Exception)
+                                {
+                                    if (buffer.Array != null)
+                                    {
+                                        _bufferManager.ReturnBuffer(buffer.Array);
+                                    }
+
+                                    throw;
+                                }
+
+                                indexes[count] = i;
+                                buffers[count] = buffer;
+
+                                count++;
+
+                                if (count >= informationCount) break;
+                            }
+
+                            if (count < informationCount) throw new BlockNotFoundException();
+                        }
+
+                        using (ReedSolomon8 reedSolomon = new ReedSolomon8(informationCount, informationCount * 2, _threadCount, _bufferManager))
+                        {
+                            reedSolomon.Decode(buffers, indexes, blockLength, token);
+                        }
+
+                        // Set
+                        {
+                            long length = group.Length;
+
+                            for (int i = 0; i < informationCount; length -= blockLength, i++)
+                            {
+                                this[hashList[i]] = new ArraySegment<byte>(buffers[i].Array, buffers[i].Offset, (int)Math.Min(buffers[i].Count, length));
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        foreach (var buffer in buffers)
+                        {
+                            if (buffer.Array == null) continue;
+
+                            _bufferManager.ReturnBuffer(buffer.Array);
+                        }
+                    }
+
+                    return group.Hashes.Take(informationCount);
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
+            }, token);
+        }
+
+        public Task<Metadata> Import(string path, CancellationToken token)
+        {
+            if (path == null) throw new ArgumentNullException(nameof(path));
+
+            return Task.Run(() =>
+            {
+                // Check
+                lock (_thisLock)
+                {
+                    var info = _contentInfoManager.GetContentInfo(path);
+                    if (info != null) return info.Metadata;
+                }
+
+                Metadata metadata = null;
+                var lockedHashes = new HashSet<Hash>();
+                ShareInfo shareInfo = null;
+
+                try
+                {
+                    const int blockLength = 1024 * 1024;
+                    const HashAlgorithm hashAlgorithm = HashAlgorithm.Sha256;
+                    const CorrectionAlgorithm correctionAlgorithm = CorrectionAlgorithm.ReedSolomon8;
+
+                    int depth = 0;
+                    DateTime creationTime = DateTime.UtcNow;
+
+                    var groupList = new List<Group>();
+
+                    // File
+                    using (var stream = new UnbufferedFileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, FileOptions.None, _bufferManager))
+                    {
+                        if (stream.Length <= blockLength)
+                        {
+                            Hash hash = null;
+
+                            using (var safeBuffer = _bufferManager.CreateSafeBuffer(blockLength))
+                            {
+                                var length = (int)stream.Length;
+                                stream.Read(safeBuffer.Value, 0, length);
+
+                                if (hashAlgorithm == HashAlgorithm.Sha256)
+                                {
+                                    hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(safeBuffer.Value, 0, length));
+                                }
+                            }
+
+                            shareInfo = new ShareInfo(path, stream.Length, (int)stream.Length, new Hash[] { hash });
+                            metadata = new Metadata(depth, hash);
+                        }
+                        else
+                        {
+                            var sharedHashes = new List<Hash>();
+
+                            for (;;)
+                            {
+                                var targetHashes = new List<Hash>();
+                                var targetBuffers = new List<ArraySegment<byte>>();
+                                long sumLength = 0;
+
+                                try
+                                {
+                                    for (int i = 0; stream.Position < stream.Length; i++)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+
+                                        ArraySegment<byte> buffer = new ArraySegment<byte>();
+
+                                        try
+                                        {
+                                            var length = (int)Math.Min(stream.Length - stream.Position, blockLength);
+                                            buffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(length), 0, length);
+                                            stream.Read(buffer.Array, 0, length);
+
+                                            sumLength += length;
+                                        }
+                                        catch (Exception)
+                                        {
+                                            if (buffer.Array != null)
+                                            {
+                                                _bufferManager.ReturnBuffer(buffer.Array);
+                                            }
+
+                                            throw;
+                                        }
+
+                                        Hash hash;
+
+                                        if (hashAlgorithm == HashAlgorithm.Sha256)
+                                        {
+                                            hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(buffer));
+                                        }
+
+                                        sharedHashes.Add(hash);
+
+                                        targetHashes.Add(hash);
+                                        targetBuffers.Add(buffer);
+
+                                        if (targetBuffers.Count >= 128) break;
+                                    }
+
+                                    var parityHashes = this.ParityEncoding(targetBuffers, hashAlgorithm, correctionAlgorithm, token);
+                                    lockedHashes.UnionWith(parityHashes);
+
+                                    groupList.Add(new Group(correctionAlgorithm, sumLength, CollectionUtils.Unite(targetHashes, parityHashes)));
+                                }
+                                finally
+                                {
+                                    foreach (var buffer in targetBuffers)
+                                    {
+                                        if (buffer.Array == null) continue;
+
+                                        _bufferManager.ReturnBuffer(buffer.Array);
+                                    }
+                                }
+
+                                if (stream.Position == stream.Length) break;
+                            }
+
+                            shareInfo = new ShareInfo(path, stream.Length, blockLength, sharedHashes);
+
+                            depth++;
+                        }
+                    }
+
+                    while (groupList.Count > 0)
+                    {
+                        // Index
+                        using (var stream = (new Index(groupList)).Export(_bufferManager))
+                        {
+                            if (stream.Length <= blockLength)
+                            {
+                                Hash hash = null;
+
+                                using (var safeBuffer = _bufferManager.CreateSafeBuffer(blockLength))
+                                {
+                                    var length = (int)stream.Length;
+                                    stream.Read(safeBuffer.Value, 0, length);
+
+                                    if (hashAlgorithm == HashAlgorithm.Sha256)
+                                    {
+                                        hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(safeBuffer.Value, 0, length));
+                                    }
+
+                                    this.Lock(hash);
+                                    lockedHashes.Add(hash);
+
+                                    this[hash] = new ArraySegment<byte>(safeBuffer.Value, 0, length);
+                                }
+
+                                metadata = new Metadata(depth, hash);
+                            }
+                            else
+                            {
+                                for (;;)
+                                {
+                                    var targetHashes = new List<Hash>();
+                                    var targetBuffers = new List<ArraySegment<byte>>();
+                                    long sumLength = 0;
+
+                                    try
+                                    {
+                                        for (int i = 0; stream.Position < stream.Length; i++)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+
+                                            ArraySegment<byte> buffer = new ArraySegment<byte>();
+
+                                            try
+                                            {
+                                                var length = (int)Math.Min(stream.Length - stream.Position, blockLength);
+                                                buffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(length), 0, length);
+                                                stream.Read(buffer.Array, 0, length);
+
+                                                sumLength += length;
+                                            }
+                                            catch (Exception)
+                                            {
+                                                if (buffer.Array != null)
+                                                {
+                                                    _bufferManager.ReturnBuffer(buffer.Array);
+                                                }
+
+                                                throw;
+                                            }
+
+                                            Hash hash;
+
+                                            if (hashAlgorithm == HashAlgorithm.Sha256)
+                                            {
+                                                hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(buffer));
+                                            }
+
+                                            this.Lock(hash);
+                                            lockedHashes.Add(hash);
+
+                                            this[hash] = buffer;
+
+                                            targetHashes.Add(hash);
+                                            targetBuffers.Add(buffer);
+
+                                            if (targetBuffers.Count >= 128) break;
+                                        }
+
+                                        var parityHashes = this.ParityEncoding(targetBuffers, hashAlgorithm, correctionAlgorithm, token);
+                                        lockedHashes.UnionWith(parityHashes);
+
+                                        groupList.Add(new Group(correctionAlgorithm, sumLength, CollectionUtils.Unite(targetHashes, parityHashes)));
+                                    }
+                                    finally
+                                    {
+                                        foreach (var buffer in targetBuffers)
+                                        {
+                                            if (buffer.Array == null) continue;
+
+                                            _bufferManager.ReturnBuffer(buffer.Array);
+                                        }
+                                    }
+
+                                    if (stream.Position == stream.Length) break;
+                                }
+
+                                depth++;
+                            }
+                        }
+                    }
+
+                    lock (_thisLock)
+                    {
+                        if (!_contentInfoManager.Contains(path))
+                        {
+                            _contentInfoManager.Add(new ContentInfo(metadata, lockedHashes, shareInfo));
+                        }
+                    }
+
+                    return metadata;
+                }
+                catch (Exception)
+                {
+                    foreach (var hash in lockedHashes)
+                    {
+                        this.Unlock(hash);
+                    }
+
+                    throw;
+                }
+            }, token);
+        }
+
+        private IEnumerable<Hash> ParityEncoding(IEnumerable<ArraySegment<byte>> buffers, HashAlgorithm hashAlgorithm, CorrectionAlgorithm correctionAlgorithm, CancellationToken token)
+        {
+            if (correctionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
+            {
+                if (buffers.Count() > 128) throw new ArgumentOutOfRangeException(nameof(buffers));
+
+                var createBuffers = new List<ArraySegment<byte>>();
+
+                try
+                {
+                    var targetBuffers = new ArraySegment<byte>[buffers.Count()];
+                    var parityBuffers = new ArraySegment<byte>[buffers.Count()];
+
+                    var blockLength = buffers.Max(n => n.Count);
+
+                    // Normalize
+                    {
+                        int index = 0;
+
+                        foreach (var buffer in buffers)
+                        {
+                            token.ThrowIfCancellationRequested();
+
+                            if (buffer.Count < blockLength)
+                            {
+                                var tempBuffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
+                                Unsafe.Copy(buffer.Array, buffer.Offset, tempBuffer.Array, tempBuffer.Offset, buffer.Count);
+                                Unsafe.Zero(tempBuffer.Array, tempBuffer.Offset + buffer.Count, tempBuffer.Count - buffer.Count);
+
+                                createBuffers.Add(tempBuffer);
+
+                                targetBuffers[index] = tempBuffer;
+                            }
+                            else
+                            {
+                                targetBuffers[index] = buffer;
+                            }
+
+                            index++;
+                        }
+                    }
+
+                    for (int i = 0; i < parityBuffers.Length; i++)
+                    {
+                        parityBuffers[i] = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
+                    }
+
+                    var indexes = new int[parityBuffers.Length];
+
+                    for (int i = 0; i < parityBuffers.Length; i++)
+                    {
+                        indexes[i] = targetBuffers.Length + i;
+                    }
+
+                    using (ReedSolomon8 reedSolomon = new ReedSolomon8(targetBuffers.Length, targetBuffers.Length + parityBuffers.Length, _threadCount, _bufferManager))
+                    {
+                        reedSolomon.Encode(targetBuffers, parityBuffers, indexes, blockLength, token);
+                    }
+
+                    token.ThrowIfCancellationRequested();
+
+                    var parityHashes = new HashCollection();
+
+                    for (int i = 0; i < parityBuffers.Length; i++)
+                    {
+                        Hash hash = null;
+
+                        if (hashAlgorithm == HashAlgorithm.Sha256)
+                        {
+                            hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(parityBuffers[i]));
+                        }
+
+                        this.Lock(hash);
+                        this[hash] = parityBuffers[i];
+
+                        parityHashes.Add(hash);
+                    }
+
+                    return parityHashes;
+                }
+                finally
+                {
+                    foreach (var buffer in createBuffers)
+                    {
+                        if (buffer.Array == null) continue;
+
+                        _bufferManager.ReturnBuffer(buffer.Array);
+                    }
+                }
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        public IEnumerable<string> GetContentPaths()
+        {
+            lock (_thisLock)
+            {
+                return _contentInfoManager.Select(n => n.ShareInfo.Path).ToArray();
+            }
+        }
+
+        public Metadata GetMetadata(string path)
+        {
+            lock (_thisLock)
+            {
+                var contentInfo = _contentInfoManager.GetContentInfo(path);
+                if (contentInfo == null) return null;
+
+                return contentInfo.Metadata;
+            }
+        }
+
+        public void Remove(string path)
+        {
+            lock (_thisLock)
+            {
+                var contentInfo = _contentInfoManager.GetContentInfo(path);
+                if (contentInfo == null) return;
+
+                foreach (var hash in contentInfo.LockedHashes)
+                {
+                    this.Unlock(hash);
+                }
+
+                _contentInfoManager.Remove(path);
+
+                // Event
+                _blockRemoveEventQueue.Enqueue(contentInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
+            }
+        }
+
+        public bool Contains(string path)
+        {
+            lock (_thisLock)
+            {
+                return _contentInfoManager.Contains(path);
+            }
+        }
+
+        #region ISettings
+
+        public void Load()
+        {
+            lock (_thisLock)
+            {
+                int version = _settings.Load("Version", () => 0);
+
+                _size = _settings.Load("Size", () => (long)1024 * 1024 * 1024 * 32);
+                _clusterIndex = _settings.Load("ClusterIndex", () => new Dictionary<Hash, ClusterInfo>());
+
+                foreach (var contentInfo in _settings.Load<ContentInfo[]>("ContentInfos", () => new ContentInfo[0]))
+                {
+                    _contentInfoManager.Add(contentInfo);
+                }
+
+                _watchTimer.Change(new TimeSpan(0, 0, 0), new TimeSpan(0, 5, 0));
+            }
+        }
+
+        public void Save()
+        {
+            lock (_thisLock)
+            {
+                _settings.Save("Version", 0);
+
+                _settings.Save("Size", _size);
+                _settings.Save("ClusterIndex", _clusterIndex);
+                _settings.Save("ContentInfos", _contentInfoManager.ToArray());
+            }
+        }
+
+        #endregion
+
+        public Hash[] ToArray()
+        {
+            lock (_thisLock)
+            {
+                return _clusterIndex.Keys.ToArray();
+            }
+        }
+
+        #region IEnumerable<Hash>
+
+        public IEnumerator<Hash> GetEnumerator()
+        {
+            lock (_thisLock)
+            {
+                foreach (var hash in _clusterIndex.Keys)
+                {
+                    yield return hash;
+                }
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            lock (_thisLock)
+            {
+                return this.GetEnumerator();
+            }
+        }
+
+        #endregion
+
+        [DataContract(Name = "ClusterInfo")]
+        private class ClusterInfo
+        {
+            private long[] _indexes;
+            private int _length;
+            private DateTime _updateTime;
+
+            public ClusterInfo(long[] indexes, int length)
+            {
+                this.Indexes = indexes;
+                this.Length = length;
+            }
+
+            [DataMember(Name = "Indexes")]
+            public long[] Indexes
+            {
+                get
+                {
+                    return _indexes;
+                }
+                private set
+                {
+                    _indexes = value;
+                }
+            }
+
+            [DataMember(Name = "Length")]
+            public int Length
+            {
+                get
+                {
+                    return _length;
+                }
+                private set
+                {
+                    _length = value;
+                }
+            }
+
+            [DataMember(Name = "UpdateTime")]
+            public DateTime UpdateTime
+            {
+                get
+                {
+                    return _updateTime;
+                }
+                set
+                {
+                    var utc = value.ToUniversalTime();
+                    _updateTime = utc.AddTicks(-(utc.Ticks % TimeSpan.TicksPerSecond));
+                }
+            }
+        }
+
+        private class ContentInfoManager : IEnumerable<ContentInfo>
+        {
+            private Dictionary<string, ContentInfo> _contentInfos;
+
+            private HashMap _hashMap;
+
+            public ContentInfoManager()
+            {
+                _contentInfos = new Dictionary<string, ContentInfo>();
+
+                _hashMap = new HashMap();
+            }
+
+            public void Add(ContentInfo info)
+            {
+                _contentInfos.Add(info.ShareInfo.Path, info);
+
+                _hashMap.Add(info);
+            }
+
+            public void Remove(string path)
+            {
+                ContentInfo contentInfo;
+
+                if (_contentInfos.TryGetValue(path, out contentInfo))
+                {
+                    _contentInfos.Remove(path);
+
+                    _hashMap.Remove(contentInfo);
+                }
+            }
+
+            public bool Contains(string path)
+            {
+                return _contentInfos.ContainsKey(path);
+            }
+
+            public ContentInfo GetContentInfo(string path)
+            {
+                ContentInfo contentInfo;
+                if (!_contentInfos.TryGetValue(path, out contentInfo)) return null;
+
+                return contentInfo;
+            }
+
+            #region Hash
+
+            public bool Contains(Hash hash)
+            {
+                return _hashMap.Contains(hash);
+            }
+
+            public ContentInfo GetContentInfo(Hash hash)
+            {
+                return _hashMap.Get(hash);
+            }
+
+            public IEnumerable<Hash> GetHashes()
+            {
+                return _hashMap.ToArray();
+            }
+
+            #endregion
+
+            public int Count
+            {
+                get
+                {
+                    return _contentInfos.Count;
+                }
+            }
+
+            public ContentInfo[] ToArray()
+            {
+                return _contentInfos.Values.ToArray();
+            }
+
+            #region IEnumerable<ContentInfo>
+
+            public IEnumerator<ContentInfo> GetEnumerator()
+            {
+                foreach (var info in _contentInfos.Values)
+                {
+                    yield return info;
+                }
+            }
+
+            #endregion
+
+            #region IEnumerable
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return this.GetEnumerator();
+            }
+
+            #endregion
+
+            private class HashMap
+            {
+                private Dictionary<Hash, SmallList<ContentInfo>> _map;
+
+                public HashMap()
+                {
+                    _map = new Dictionary<Hash, SmallList<ContentInfo>>();
+                }
+
+                public void Add(ContentInfo info)
+                {
+                    foreach (var hash in info.ShareInfo.Hashes)
+                    {
+                        _map.GetOrAdd(hash, (_) => new SmallList<ContentInfo>()).Add(info);
+                    }
+                }
+
+                public void Remove(ContentInfo info)
+                {
+                    foreach (var hash in info.ShareInfo.Hashes)
+                    {
+                        SmallList<ContentInfo> infos;
+
+                        if (_map.TryGetValue(hash, out infos))
+                        {
+                            infos.Remove(info);
+
+                            if (infos.Count == 0)
+                            {
+                                _map.Remove(hash);
+                            }
+                        }
+                    }
+                }
+
+                public ContentInfo Get(Hash hash)
+                {
+                    SmallList<ContentInfo> infos;
+
+                    if (_map.TryGetValue(hash, out infos))
+                    {
+                        return infos[0];
+                    }
+
+                    return null;
+                }
+
+                public bool Contains(Hash hash)
+                {
+                    return _map.ContainsKey(hash);
+                }
+
+                public Hash[] ToArray()
+                {
+                    return _map.Keys.ToArray();
+                }
+            }
+        }
+
+        [DataContract(Name = "ContentInfo")]
+        private class ContentInfo
+        {
+            private Metadata _metadata;
+            private HashCollection _lockedHashes;
+            private ShareInfo _shareInfo;
+
+            public ContentInfo(Metadata metadata, IEnumerable<Hash> lockedHashes, ShareInfo shareInfo)
+            {
+                this.Metadata = metadata;
+                if (lockedHashes != null) this.ProtectedLockedHashes.AddRange(lockedHashes);
+                this.ShareInfo = shareInfo;
+            }
+
+            [DataMember(Name = "Metadata")]
+            public Metadata Metadata
+            {
+                get
+                {
+                    return _metadata;
+                }
+                private set
+                {
+                    _metadata = value;
+                }
+            }
+
+            private volatile ReadOnlyCollection<Hash> _readOnlyLockedHashes;
+
+            public IEnumerable<Hash> LockedHashes
+            {
+                get
+                {
+                    if (_readOnlyLockedHashes == null)
+                        _readOnlyLockedHashes = new ReadOnlyCollection<Hash>(this.ProtectedLockedHashes);
+
+                    return _readOnlyLockedHashes;
+                }
+            }
+
+            [DataMember(Name = "LockedHashes")]
+            private HashCollection ProtectedLockedHashes
+            {
+                get
+                {
+                    if (_lockedHashes == null)
+                        _lockedHashes = new HashCollection();
+
+                    return _lockedHashes;
+                }
+            }
+
+            [DataMember(Name = "ShareInfo")]
+            public ShareInfo ShareInfo
+            {
+                get
+                {
+                    return _shareInfo;
+                }
+                private set
+                {
+                    _shareInfo = value;
+                }
+            }
+        }
+
+        [DataContract(Name = "ShareInfo")]
+        private class ShareInfo
+        {
+            private string _path;
+            private long _fileLength;
+            private int _blockLength;
+            private HashCollection _hashes;
+
+            public ShareInfo(string path, long fileLength, int blockLength, IEnumerable<Hash> hashes)
+            {
+                this.Path = path;
+                this.FileLength = fileLength;
+                this.BlockLength = blockLength;
+                if (hashes != null) this.ProtectedHashes.AddRange(hashes);
+            }
+
+            [DataMember(Name = "Path")]
+            public string Path
+            {
+                get
+                {
+                    return _path;
+                }
+                private set
+                {
+                    _path = value;
+                }
+            }
+
+            [DataMember(Name = "FileLength")]
+            public long FileLength
+            {
+                get
+                {
+                    return _fileLength;
+                }
+                private set
+                {
+                    _fileLength = value;
+                }
+            }
+
+            [DataMember(Name = "BlockLength")]
+            public int BlockLength
+            {
+                get
+                {
+                    return _blockLength;
+                }
+                private set
+                {
+                    _blockLength = value;
+                }
+            }
+
+            private volatile ReadOnlyCollection<Hash> _readOnlyHashes;
+
+            public IEnumerable<Hash> Hashes
+            {
+                get
+                {
+                    if (_readOnlyHashes == null)
+                        _readOnlyHashes = new ReadOnlyCollection<Hash>(this.ProtectedHashes);
+
+                    return _readOnlyHashes;
+                }
+            }
+
+            [DataMember(Name = "Hashes")]
+            private HashCollection ProtectedHashes
+            {
+                get
+                {
+                    if (_hashes == null)
+                        _hashes = new HashCollection();
+
+                    return _hashes;
+                }
+            }
+
+            #region Hash to Index
+
+            private Dictionary<Hash, int> _hashMap = null;
+
+            public int GetIndex(Hash hash)
+            {
+                if (_hashMap == null)
+                {
+                    _hashMap = new Dictionary<Hash, int>();
+
+                    for (int i = 0; i < this.ProtectedHashes.Count; i++)
+                    {
+                        _hashMap[this.ProtectedHashes[i]] = i;
+                    }
+                }
+
+                {
+                    int result;
+                    if (!_hashMap.TryGetValue(hash, out result)) return -1;
+
+                    return result;
+                }
+            }
+
+            #endregion
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            if (disposing)
+            {
+                _blockAddEventQueue.Dispose();
+
+                if (_fileStream != null)
+                {
+                    try
+                    {
+                        _fileStream.Dispose();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    _fileStream = null;
+                }
+
+                if (_watchTimer != null)
+                {
+                    try
+                    {
+                        _watchTimer.Dispose();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    _watchTimer = null;
+                }
+            }
+        }
+    }
+
+    [Serializable]
+    class CacheManagerException : ManagerException
+    {
+        public CacheManagerException() : base() { }
+        public CacheManagerException(string message) : base(message) { }
+        public CacheManagerException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
+    [Serializable]
+    class SpaceNotFoundException : CacheManagerException
+    {
+        public SpaceNotFoundException() : base() { }
+        public SpaceNotFoundException(string message) : base(message) { }
+        public SpaceNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
+    [Serializable]
+    class BlockNotFoundException : CacheManagerException
+    {
+        public BlockNotFoundException() : base() { }
+        public BlockNotFoundException(string message) : base(message) { }
+        public BlockNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+    }
+
+    [Serializable]
+    class BadBlockException : CacheManagerException
+    {
+        public BadBlockException() : base() { }
+        public BadBlockException(string message) : base(message) { }
+        public BadBlockException(string message, Exception innerException) : base(message, innerException) { }
+    }
+}

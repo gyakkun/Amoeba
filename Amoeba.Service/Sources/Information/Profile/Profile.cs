@@ -14,14 +14,22 @@ namespace Amoeba.Service
     {
         private enum SerializeId
         {
-            ExchangePublicKey = 0,
+            Comment = 0,
+            ExchangePublicKey = 1,
+            Link = 2,
         }
 
+        private string _comment;
         private ExchangePublicKey _exchangePublicKey;
+        private Link _link;
 
-        public Profile(ExchangePublicKey exchangePublicKey)
+        public static readonly int MaxCommentLength = 1024 * 8;
+
+        public Profile(string comment, ExchangePublicKey exchangePublicKey, Link link)
         {
+            this.Comment = comment;
             this.ExchangePublicKey = exchangePublicKey;
+            this.Link = link;
         }
 
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
@@ -32,9 +40,17 @@ namespace Amoeba.Service
 
                 while ((id = reader.GetInt()) != -1)
                 {
+                    if (id == (int)SerializeId.Comment)
+                    {
+                        this.Comment = reader.GetString();
+                    }
                     if (id == (int)SerializeId.ExchangePublicKey)
                     {
                         this.ExchangePublicKey = ExchangePublicKey.Import(reader.GetStream(), bufferManager);
+                    }
+                    else if (id == (int)SerializeId.Link)
+                    {
+                        this.Link = Link.Import(reader.GetStream(), bufferManager);
                     }
                 }
             }
@@ -44,11 +60,23 @@ namespace Amoeba.Service
         {
             using (var writer = new ItemStreamWriter(bufferManager))
             {
+                // Comment
+                if (this.Comment != null)
+                {
+                    writer.Write((int)SerializeId.Comment);
+                    writer.Write(this.Comment);
+                }
                 // ExchangePublicKey
                 if (this.ExchangePublicKey != null)
                 {
                     writer.Write((int)SerializeId.ExchangePublicKey);
                     writer.Write(this.ExchangePublicKey.Export(bufferManager));
+                }
+                // Link
+                if (this.Link != null)
+                {
+                    writer.Write((int)SerializeId.Link);
+                    writer.Write(this.Link.Export(bufferManager));
                 }
 
                 return writer.GetStream();
@@ -73,7 +101,9 @@ namespace Amoeba.Service
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
-            if (this.ExchangePublicKey != other.ExchangePublicKey)
+            if (this.Comment != other.Comment
+                || this.ExchangePublicKey != other.ExchangePublicKey
+                || this.Link != other.Link)
             {
                 return false;
             }
@@ -82,6 +112,26 @@ namespace Amoeba.Service
         }
 
         #region IProfile
+
+        [DataMember(Name = "Comment")]
+        public string Comment
+        {
+            get
+            {
+                return _comment;
+            }
+            private set
+            {
+                if (value != null && value.Length > Message.MaxCommentLength)
+                {
+                    throw new ArgumentException();
+                }
+                else
+                {
+                    _comment = value;
+                }
+            }
+        }
 
         [DataMember(Name = "ExchangePublicKey")]
         public ExchangePublicKey ExchangePublicKey
@@ -93,6 +143,19 @@ namespace Amoeba.Service
             private set
             {
                 _exchangePublicKey = value;
+            }
+        }
+
+        [DataMember(Name = "Link")]
+        public Link Link
+        {
+            get
+            {
+                return _link;
+            }
+            private set
+            {
+                _link = value;
             }
         }
 

@@ -6,7 +6,7 @@ namespace Amoeba.Service
     interface IBox
     {
         string Name { get; }
-        ICollection<Seed> Seeds { get; }
-        ICollection<Box> Boxes { get; }
+        IEnumerable<Seed> Seeds { get; }
+        IEnumerable<Box> Boxes { get; }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Library.Collections;
+using Omnius.Collections;
 
 namespace Amoeba.Service
 {
-    public sealed class BoxCollection : LockedList<Box>
+    public sealed class BoxCollection : FilteredList<Box>
     {
         public BoxCollection() : base() { }
         public BoxCollection(int capacity) : base(capacity) { }

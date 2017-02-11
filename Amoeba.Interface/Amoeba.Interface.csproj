@@ -84,6 +84,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <Content Include="Properties\Amoeba.Interface.License">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Properties\Amoeba.Interface.Readme">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\Amoeba.ico">

@@ -5,6 +5,7 @@ namespace Amoeba.Service
 {
     interface IProfile
     {
+        string Comment { get; }
         ExchangePublicKey ExchangePublicKey { get; }
         Link Link { get; }
     }

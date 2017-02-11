@@ -1,49 +1,65 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
-using Library.Io;
+using Omnius.Base;
+using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
     [DataContract(Name = "Store")]
-    public sealed class Store : ItemBase<Store>, IStore, ICloneable<Store>, IThisLock
+    public sealed class Store : ItemBase<Store>, IStore
     {
         private enum SerializeId
         {
-            Box = 0,
+            Boxes = 0,
         }
 
         private BoxCollection _boxes;
 
-        private volatile object _thisLock;
+        private readonly int _hashCode;
 
         public static readonly int MaxBoxCount = 8192;
 
-        public Store()
+        public Box(string name, IEnumerable<Seed> seeds, IEnumerable<Box> boxes)
         {
+            this.Name = name;
+            if (seeds != null) this.ProtectedSeeds.AddRange(seeds);
+            if (boxes != null) this.ProtectedBoxes.AddRange(boxes);
 
-        }
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-
-            _thisLock = new object();
+            _hashCode = this.Name?.GetHashCode() ?? 0
+                | this.Seeds.FirstOrDefault()?.GetHashCode() ?? 0
+                | this.Boxes.FirstOrDefault()?.GetHashCode() ?? 0;
         }
 
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
         {
-            lock (this.ThisLock)
-            {
-                using (var reader = new ItemStreamReader(stream, bufferManager))
-                {
-                    int id;
+            if (depth > 256) throw new ArgumentException();
 
-                    while ((id = reader.GetId()) != -1)
+            using (var reader = new ItemStreamReader(stream, bufferManager))
+            {
+                int id;
+
+                while ((id = reader.GetInt()) != -1)
+                {
+                    if (id == (int)SerializeId.Name)
                     {
-                        if (id == (int)SerializeId.Box)
+                        this.Name = reader.GetString();
+                    }
+                    else if (id == (int)SerializeId.Seeds)
+                    {
+                        for (int i = reader.GetInt() - 1; i >= 0; i--)
                         {
-                            this.Boxes.AddRange(reader.GetItems((itemStream) => Box.Import(itemStream, bufferManager)));
+                            this.ProtectedSeeds.Add(Seed.Import(reader.GetStream(), bufferManager));
+                        }
+                    }
+                    else if (id == (int)SerializeId.Boxes)
+                    {
+                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        {
+                            this.ProtectedBoxes.Add(Box.Import(reader.GetStream(), bufferManager));
                         }
                     }
                 }
@@ -52,43 +68,63 @@ namespace Amoeba.Service
 
         protected override Stream Export(BufferManager bufferManager, int depth)
         {
-            lock (this.ThisLock)
-            {
-                using (var writer = new ItemStreamWriter(bufferManager))
-                {
-                    // Boxes
-                    if (this.Boxes.Count > 0)
-                    {
-                        writer.Write((int)SerializeId.Box, this.Boxes, (item) => item.Export(bufferManager));
-                    }
+            if (depth > 256) throw new ArgumentException();
 
-                    return writer.GetStream();
+            using (var writer = new ItemStreamWriter(bufferManager))
+            {
+                // Name
+                if (this.Name != null)
+                {
+                    writer.Write((int)SerializeId.Name);
+                    writer.Write(this.Name);
                 }
+                // Seeds
+                if (this.ProtectedSeeds.Count > 0)
+                {
+                    writer.Write((int)SerializeId.Seeds);
+                    writer.Write(this.ProtectedSeeds.Count);
+
+                    foreach (var item in this.Seeds)
+                    {
+                        writer.Write(item.Export(bufferManager));
+                    }
+                }
+                // Boxes
+                if (this.ProtectedBoxes.Count > 0)
+                {
+                    writer.Write((int)SerializeId.Boxes);
+                    writer.Write(this.ProtectedBoxes.Count);
+
+                    foreach (var item in this.Boxes)
+                    {
+                        writer.Write(item.Export(bufferManager));
+                    }
+                }
+
+                return writer.GetStream();
             }
         }
 
         public override int GetHashCode()
         {
-            lock (this.ThisLock)
-            {
-                if (this.Boxes.Count == 0) return 0;
-                else return this.Boxes[0].GetHashCode();
-            }
+            return _hashCode;
         }
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null || !(obj is Store)) return false;
+            if ((object)obj == null || !(obj is Box)) return false;
 
-            return this.Equals((Store)obj);
+            return this.Equals((Box)obj);
         }
 
-        public override bool Equals(Store other)
+        public override bool Equals(Box other)
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
-            if (!CollectionUtils.Equals(this.Boxes, other.Boxes))
+            if (this.Name != other.Name
+                || !CollectionUtils.Equals(this.Seeds, other.Seeds)
+                || !CollectionUtils.Equals(this.Boxes, other.Boxes))
             {
                 return false;
             }
@@ -96,58 +132,80 @@ namespace Amoeba.Service
             return true;
         }
 
-        #region IStore
+        public override string ToString()
+        {
+            return this.Name;
+        }
 
-        ICollection<Box> IStore.Boxes
+        #region IBox
+
+        [DataMember(Name = "Name")]
+        public string Name
         {
             get
             {
-                lock (this.ThisLock)
+                return _name;
+            }
+            set
+            {
+                if (value != null && value.Length > Box.MaxNameLength)
                 {
-                    return this.Boxes;
+                    throw new ArgumentException();
                 }
+                else
+                {
+                    _name = value;
+                }
+            }
+        }
+
+        private volatile ReadOnlyCollection<Seed> _readOnlySeeds;
+
+        public IEnumerable<Seed> Seeds
+        {
+            get
+            {
+                if (_readOnlySeeds == null)
+                    _readOnlySeeds = new ReadOnlyCollection<Seed>(this.ProtectedSeeds);
+
+                return _readOnlySeeds;
+            }
+        }
+
+        [DataMember(Name = "Seeds")]
+        private SeedCollection ProtectedSeeds
+        {
+            get
+            {
+                if (_seeds == null)
+                    _seeds = new SeedCollection(Box.MaxSeedCount);
+
+                return _seeds;
+            }
+        }
+
+        private volatile ReadOnlyCollection<Box> _readOnlyBoxes;
+
+        public IEnumerable<Box> Boxes
+        {
+            get
+            {
+                if (_readOnlyBoxes == null)
+                    _readOnlyBoxes = new ReadOnlyCollection<Box>(this.ProtectedBoxes);
+
+                return _readOnlyBoxes;
             }
         }
 
         [DataMember(Name = "Boxes")]
-        public BoxCollection Boxes
+        private BoxCollection ProtectedBoxes
         {
             get
             {
-                lock (this.ThisLock)
-                {
-                    if (_boxes == null)
-                        _boxes = new BoxCollection(Store.MaxBoxCount);
+                if (_boxes == null)
+                    _boxes = new BoxCollection(Box.MaxBoxCount);
 
-                    return _boxes;
-                }
-            }
-        }
-
-        #endregion
-
-        #region ICloneable<Store>
-
-        public Store Clone()
-        {
-            lock (this.ThisLock)
-            {
-                using (var stream = this.Export(BufferManager.Instance))
-                {
-                    return Store.Import(stream, BufferManager.Instance);
-                }
-            }
-        }
-
-        #endregion
-
-        #region IThisLock
-
-        public object ThisLock
-        {
-            get
-            {
-                return _thisLock;
+                return _boxes;
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Omnius.Net.Amoeba;
+using Amoeba.Core;
 
 namespace Amoeba.Service
 {

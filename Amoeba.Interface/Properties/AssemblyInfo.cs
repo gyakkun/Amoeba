@@ -9,7 +9,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Amoeba.Interface")]
-[assembly: AssemblyCopyright("Copyright © Lyrise 2009-2017")]
+[assembly: AssemblyCopyright("Copyright © Lyrise 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

@@ -39,11 +39,17 @@ namespace Amoeba.Service
                 {
                     if (id == (int)SerializeId.TrustSignature)
                     {
-                        this.ProtectedTrustSignatures.Add(Signature.Import(reader.GetStream(), bufferManager));
+                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        {
+                            this.ProtectedTrustSignatures.Add(Signature.Import(reader.GetStream(), bufferManager));
+                        }
                     }
                     else if (id == (int)SerializeId.DeleteSignature)
                     {
-                        this.ProtectedDeleteSignatures.Add(Signature.Import(reader.GetStream(), bufferManager));
+                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        {
+                            this.ProtectedDeleteSignatures.Add(Signature.Import(reader.GetStream(), bufferManager));
+                        }
                     }
                 }
             }
@@ -54,16 +60,26 @@ namespace Amoeba.Service
             using (var writer = new ItemStreamWriter(bufferManager))
             {
                 // TrustSignatures
-                foreach (var value in this.TrustSignatures)
+                if (this.ProtectedTrustSignatures.Count > 0)
                 {
                     writer.Write((int)SerializeId.TrustSignature);
-                    writer.Write(value.Export(bufferManager));
+                    writer.Write(this.ProtectedTrustSignatures.Count);
+
+                    foreach (var value in this.TrustSignatures)
+                    {
+                        writer.Write(value.Export(bufferManager));
+                    }
                 }
                 // DeleteSignatures
-                foreach (var value in this.DeleteSignatures)
+                if (this.ProtectedDeleteSignatures.Count > 0)
                 {
                     writer.Write((int)SerializeId.DeleteSignature);
-                    writer.Write(value.Export(bufferManager));
+                    writer.Write(this.ProtectedDeleteSignatures.Count);
+
+                    foreach (var value in this.DeleteSignatures)
+                    {
+                        writer.Write(value.Export(bufferManager));
+                    }
                 }
 
                 return writer.GetStream();
