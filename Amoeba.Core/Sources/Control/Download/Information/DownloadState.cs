@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Amoeba.Core.Control
+namespace Amoeba.Core
 {
     [DataContract(Name = "DownloadState")]
     public enum DownloadState

@@ -4,6 +4,6 @@ namespace Amoeba.Service
 {
     interface IStore
     {
-        ICollection<Box> Boxes { get; }
+        IEnumerable<Box> Boxes { get; }
     }
 }
