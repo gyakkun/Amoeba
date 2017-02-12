@@ -386,8 +386,8 @@ namespace Amoeba.Core.Control
 
                                             lock (_thisLock)
                                             {
-                                                if (!_downloadItemInfoManager.Contains(item.Metadata)
-                                                    && !_tempDownloadItemInfoManager.Contains(item.Metadata)) tokenSource.Cancel();
+                                                if (!_tempDownloadItemInfoManager.Contains(item.Metadata)
+                                                    && !_downloadItemInfoManager.Contains(item.Metadata)) tokenSource.Cancel();
                                             }
 
                                             Thread.Sleep(1000);
@@ -428,8 +428,8 @@ namespace Amoeba.Core.Control
 
                                                 lock (_thisLock)
                                                 {
-                                                    if (!_downloadItemInfoManager.Contains(item.Metadata)
-                                                        && !_tempDownloadItemInfoManager.Contains(item.Metadata)) tokenSource.Cancel();
+                                                    if (!_tempDownloadItemInfoManager.Contains(item.Metadata)
+                                                        && !_downloadItemInfoManager.Contains(item.Metadata)) tokenSource.Cancel();
                                                 }
 
                                                 Thread.Sleep(1000);
@@ -764,85 +764,6 @@ namespace Amoeba.Core.Control
 
         #endregion
 
-        private class DownloadItemInfoManager : IEnumerable<DownloadItemInfo>
-        {
-            private Dictionary<Metadata, DownloadItemInfo> _downloadItemInfos;
-
-            public DownloadItemInfoManager()
-            {
-                _downloadItemInfos = new Dictionary<Metadata, DownloadItemInfo>();
-            }
-
-            public Action<DownloadItemInfo> AddEvents;
-            public Action<DownloadItemInfo> RemoveEvents;
-
-            private void OnAdd(DownloadItemInfo info)
-            {
-                this.AddEvents?.Invoke(info);
-            }
-
-            private void OnRemove(DownloadItemInfo info)
-            {
-                this.RemoveEvents?.Invoke(info);
-            }
-
-            public void Add(DownloadItemInfo info)
-            {
-                _downloadItemInfos.Add(info.Metadata, info);
-
-                this.OnAdd(info);
-            }
-
-            public void Remove(Metadata metadata)
-            {
-                DownloadItemInfo info;
-                if (!_downloadItemInfos.TryGetValue(metadata, out info)) return;
-
-                _downloadItemInfos.Remove(metadata);
-
-                this.OnRemove(info);
-            }
-
-            public bool Contains(Metadata metadata)
-            {
-                return _downloadItemInfos.ContainsKey(metadata);
-            }
-
-            public DownloadItemInfo GetDownloadItemInfo(Metadata metadata)
-            {
-                DownloadItemInfo info;
-                if (!_downloadItemInfos.TryGetValue(metadata, out info)) return null;
-
-                return info;
-            }
-
-            public DownloadItemInfo[] ToArray()
-            {
-                return _downloadItemInfos.Values.ToArray();
-            }
-
-            #region IEnumerable<DownloadItemInfo>
-
-            public IEnumerator<DownloadItemInfo> GetEnumerator()
-            {
-                foreach (var info in _downloadItemInfos.Values)
-                {
-                    yield return info;
-                }
-            }
-
-            #endregion
-
-            #region IEnumerable
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.GetEnumerator();
-            }
-
-            #endregion
-        }
-
         private class TempDownloadItemInfoManager : IEnumerable<DownloadItemInfo>
         {
             private Dictionary<Metadata, Container<DownloadItemInfo>> _downloadItemInfos;
@@ -935,6 +856,85 @@ namespace Amoeba.Core.Control
                 public T Value { get; set; }
                 public DateTime UpdateTime { get; set; }
             }
+        }
+
+        private class DownloadItemInfoManager : IEnumerable<DownloadItemInfo>
+        {
+            private Dictionary<Metadata, DownloadItemInfo> _downloadItemInfos;
+
+            public DownloadItemInfoManager()
+            {
+                _downloadItemInfos = new Dictionary<Metadata, DownloadItemInfo>();
+            }
+
+            public Action<DownloadItemInfo> AddEvents;
+            public Action<DownloadItemInfo> RemoveEvents;
+
+            private void OnAdd(DownloadItemInfo info)
+            {
+                this.AddEvents?.Invoke(info);
+            }
+
+            private void OnRemove(DownloadItemInfo info)
+            {
+                this.RemoveEvents?.Invoke(info);
+            }
+
+            public void Add(DownloadItemInfo info)
+            {
+                _downloadItemInfos.Add(info.Metadata, info);
+
+                this.OnAdd(info);
+            }
+
+            public void Remove(Metadata metadata)
+            {
+                DownloadItemInfo info;
+                if (!_downloadItemInfos.TryGetValue(metadata, out info)) return;
+
+                _downloadItemInfos.Remove(metadata);
+
+                this.OnRemove(info);
+            }
+
+            public bool Contains(Metadata metadata)
+            {
+                return _downloadItemInfos.ContainsKey(metadata);
+            }
+
+            public DownloadItemInfo GetDownloadItemInfo(Metadata metadata)
+            {
+                DownloadItemInfo info;
+                if (!_downloadItemInfos.TryGetValue(metadata, out info)) return null;
+
+                return info;
+            }
+
+            public DownloadItemInfo[] ToArray()
+            {
+                return _downloadItemInfos.Values.ToArray();
+            }
+
+            #region IEnumerable<DownloadItemInfo>
+
+            public IEnumerator<DownloadItemInfo> GetEnumerator()
+            {
+                foreach (var info in _downloadItemInfos.Values)
+                {
+                    yield return info;
+                }
+            }
+
+            #endregion
+
+            #region IEnumerable
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return this.GetEnumerator();
+            }
+
+            #endregion
         }
 
         [DataContract(Name = "DownloadItemInfo")]
