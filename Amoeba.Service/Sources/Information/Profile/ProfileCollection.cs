@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Library.Collections;
+using Omnius.Collections;
 
 namespace Amoeba.Service
 {
-    public sealed class ProfileCollection : LockedList<Profile>
+    public sealed class ProfileCollection : FilteredList<Profile>
     {
         public ProfileCollection() : base() { }
         public ProfileCollection(int capacity) : base(capacity) { }

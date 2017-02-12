@@ -10,9 +10,9 @@ using Omnius.Base;
 using Omnius.Configuration;
 using Amoeba.Core;
 
-namespace Amoeba.Service.Message
+namespace Amoeba.Service.Download
 {
-    class MessageManager : StateManagerBase, ISettings
+    class DownloadManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
@@ -28,7 +28,7 @@ namespace Amoeba.Service.Message
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public MessageManager(string configPath, string messagesPath, CoreManager coreManager, BufferManager bufferManager)
+        public DownloadManager(string configPath, string messagesPath, CoreManager coreManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _coreManager = coreManager;
@@ -111,10 +111,10 @@ namespace Amoeba.Service.Message
     }
 
     [Serializable]
-    class MessageManagerException : ManagerException
+    class DownloadManagerException : ManagerException
     {
-        public MessageManagerException() : base() { }
-        public MessageManagerException(string message) : base(message) { }
-        public MessageManagerException(string message, Exception innerException) : base(message, innerException) { }
+        public DownloadManagerException() : base() { }
+        public DownloadManagerException(string message) : base(message) { }
+        public DownloadManagerException(string message, Exception innerException) : base(message, innerException) { }
     }
 }
