@@ -82,7 +82,7 @@ namespace Amoeba.Core.Network
             _routeTable = new RouteTable<SessionInfo>(256, 20);
 
             _messageManager = new MessageManager();
-            _messageManager.GetLockSignaturesEvent += (_) => this.OnGetLockSignaturesEvent();
+            _messageManager.GetLockSignaturesEvent += (_) => this.OnGetLockSignatures();
         }
 
         public Location MyLocation
@@ -261,7 +261,7 @@ namespace Amoeba.Core.Network
 
         public GetSignaturesEventHandler GetLockSignaturesEvent { get; set; }
 
-        private IEnumerable<Signature> OnGetLockSignaturesEvent()
+        private IEnumerable<Signature> OnGetLockSignatures()
         {
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
         }

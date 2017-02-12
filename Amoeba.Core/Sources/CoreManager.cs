@@ -10,6 +10,7 @@ using Amoeba.Core.Control;
 using Amoeba.Core.Network;
 using Omnius.Security;
 using Omnius.Net;
+using System.Threading;
 
 namespace Amoeba.Core
 {
@@ -21,9 +22,6 @@ namespace Amoeba.Core
         private DownloadManager _downloadManager;
 
         private volatile ManagerState _state = ManagerState.Stop;
-
-        private ConnectCapEventHandler _connectCapEvent;
-        private AcceptCapEventHandler _acceptCapEvent;
 
         private bool _isLoaded = false;
 
@@ -39,6 +37,7 @@ namespace Amoeba.Core
 
             _networkManager.ConnectCapEvent = (_, uri) => this.OnConnectCap(uri);
             _networkManager.AcceptCapEvent = (_) => this.OnAcceptCap();
+            _networkManager.GetLockSignaturesEvent = (_) => this.OnGetLockSignatures();
         }
 
         private void Check()
@@ -50,6 +49,8 @@ namespace Amoeba.Core
         public ConnectCapEventHandler ConnectCapEvent { get; set; }
         public AcceptCapEventHandler AcceptCapEvent { get; set; }
 
+        public GetSignaturesEventHandler GetLockSignaturesEvent { get; set; }
+
         private Cap OnConnectCap(string uri)
         {
             return this.ConnectCapEvent?.Invoke(this, uri);
@@ -58,6 +59,11 @@ namespace Amoeba.Core
         private Cap OnAcceptCap()
         {
             return this.AcceptCapEvent?.Invoke(this);
+        }
+
+        private IEnumerable<Signature> OnGetLockSignatures()
+        {
+            return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
         }
 
         public Information Information
@@ -248,6 +254,96 @@ namespace Amoeba.Core
                 isStop = false;
                 getProgressEvent?.Invoke(this, badBlockCount, checkedBlockCount, blockCount, out isStop);
             });
+        }
+
+        public Task<Metadata> Import(string path, CancellationToken token)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _cacheManager.Import(path, token);
+            }
+        }
+
+        public BroadcastMessage GetBroadcastMessage(Signature signature, string type)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _networkManager.GetBroadcastMessage(signature, type);
+            }
+        }
+
+        public IEnumerable<UnicastMessage> GetUnicastMessages(Signature signature, string type)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _networkManager.GetUnicastMessages(signature, type);
+            }
+        }
+
+        public void Upload(BroadcastMessage message)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                _networkManager.Upload(message);
+            }
+        }
+
+        public void Upload(UnicastMessage message)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                _networkManager.Upload(message);
+            }
+        }
+
+        public Stream GetStream(Metadata metadata, long maxLength)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _downloadManager.GetStream(metadata, maxLength);
+            }
+        }
+
+        public IEnumerable<Metadata> GetDownloadMetadatas()
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _downloadManager.GetDownloadMetadatas();
+            }
+        }
+
+        public Information GetInformation(Metadata metadata)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _downloadManager.GetInformation(metadata);
+            }
+        }
+
+        public Task Decoding(Metadata metadata, Stream outStream, long maxLength, CancellationToken token)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _downloadManager.Decoding(metadata, outStream, maxLength, token);
+            }
         }
 
         public void AddDownload(Metadata metadata, int priority)

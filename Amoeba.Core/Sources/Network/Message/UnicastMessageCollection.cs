@@ -3,7 +3,7 @@ using Omnius.Collections;
 
 namespace Amoeba.Core
 {
-    sealed class UnicastMessageCollection : FilteredList<UnicastMessage>
+   public sealed class UnicastMessageCollection : FilteredList<UnicastMessage>
     {
         public UnicastMessageCollection() : base() { }
         public UnicastMessageCollection(int capacity) : base(capacity) { }

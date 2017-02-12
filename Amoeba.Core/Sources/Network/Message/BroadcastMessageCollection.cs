@@ -3,7 +3,7 @@ using Omnius.Collections;
 
 namespace Amoeba.Core
 {
-    sealed class BroadcastMessageCollection : FilteredList<BroadcastMessage>
+  public  sealed class BroadcastMessageCollection : FilteredList<BroadcastMessage>
     {
         public BroadcastMessageCollection() : base() { }
         public BroadcastMessageCollection(int capacity) : base(capacity) { }
