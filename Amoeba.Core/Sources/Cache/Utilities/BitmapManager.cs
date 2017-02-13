@@ -4,7 +4,7 @@ using System.IO;
 using Omnius.Base;
 using Omnius.Io;
 
-namespace Amoeba.Core.Cache
+namespace Amoeba.Core
 {
     class BitmapManager : ManagerBase
     {

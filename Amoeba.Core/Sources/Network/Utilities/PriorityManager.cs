@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Omnius.Base;
 
-namespace Amoeba.Core.Network
+namespace Amoeba.Core
 {
     sealed class PriorityManager
     {

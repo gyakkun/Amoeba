@@ -10,14 +10,12 @@ using Omnius.Base;
 using Omnius.Configuration;
 using Amoeba.Core;
 
-namespace Amoeba.Service.Download
+namespace Amoeba.Service
 {
     class DownloadManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
-
-        private string _messagesPath;
 
         private Settings _settings;
 
@@ -28,12 +26,10 @@ namespace Amoeba.Service.Download
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public DownloadManager(string configPath, string messagesPath, CoreManager coreManager, BufferManager bufferManager)
+        public DownloadManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _coreManager = coreManager;
-
-            _messagesPath = messagesPath;
 
             _settings = new Settings(configPath);
         }

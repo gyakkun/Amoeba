@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Omnius.Base;
 
-namespace Amoeba.Core.Network
+namespace Amoeba.Core
 {
     public class RouteTable<T> : IEnumerable<Node<T>>, IEnumerable
     {

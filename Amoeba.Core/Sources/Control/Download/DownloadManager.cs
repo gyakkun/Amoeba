@@ -11,13 +11,13 @@ using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Io;
-using Amoeba.Core.Cache;
-using Amoeba.Core.Network;
 using Omnius.Security;
 using Omnius.Utilities;
 
-namespace Amoeba.Core.Control
+namespace Amoeba.Core
 {
+    public delegate void DownloadCompletedEventHandler(object sender, Metadata metadata);
+
     class DownloadManager : StateManagerBase, ISettings
     {
         private NetworkManager _networkManager;
@@ -203,6 +203,13 @@ namespace Amoeba.Core.Control
             }
         }
 
+        public event DownloadCompletedEventHandler DownloadCompletedEvents;
+
+        private void OnDownloadCompleted(Metadata metadata)
+        {
+            this.DownloadCompletedEvents?.Invoke(this, metadata);
+        }
+
         private void DownloadThread()
         {
             var random = new Random();
@@ -224,7 +231,6 @@ namespace Amoeba.Core.Control
                         {
                             var items = tempList
                                .Where(n => n.State == DownloadState.Downloading)
-                               .Where(n => n.Priority != 0)
                                .Where(x =>
                                {
                                    if (x.Depth == 0) return _cacheManager.Contains(x.Metadata.Hash);
@@ -239,8 +245,6 @@ namespace Amoeba.Core.Control
                         {
                             var items = tempList
                                 .Where(n => n.State == DownloadState.Downloading)
-                                .Where(n => n.Priority != 0)
-                                .OrderBy(n => -n.Priority)
                                 .ToList();
 
                             if (items.Count > 0)
@@ -275,7 +279,7 @@ namespace Amoeba.Core.Control
                         {
                             item.State = DownloadState.Downloading;
 
-                            var limitCount = (int)(256 * Math.Pow(item.Priority, 3));
+                            var limitCount = 1024;
 
                             foreach (var group in item.Index.Groups.Randomize())
                             {
@@ -342,7 +346,6 @@ namespace Amoeba.Core.Control
                     item = CollectionUtils.Unite(_tempDownloadItemInfoManager, _downloadItemInfoManager)
                         .Where(n => !_workingItems.Contains(n))
                         .Where(n => n.State == DownloadState.Decoding || n.State == DownloadState.ParityDecoding)
-                        .Where(n => n.Priority != 0)
                         .OrderBy(n => (n.Depth == n.Metadata.Depth) ? 0 : 1)
                         .OrderBy(n => (n.State == DownloadState.Decoding) ? 0 : 1)
                         .FirstOrDefault();
@@ -486,6 +489,8 @@ namespace Amoeba.Core.Control
 
                                 item.State = DownloadState.Completed;
                             }
+
+                            this.OnDownloadCompleted(item.Metadata);
                         }
                     }
                 }
@@ -515,9 +520,7 @@ namespace Amoeba.Core.Control
                 if (info == null)
                 {
                     info = new DownloadItemInfo(metadata);
-
                     info.State = DownloadState.Downloading;
-                    info.Priority = 2;
 
                     _tempDownloadItemInfoManager.Add(info);
                 }
@@ -603,8 +606,6 @@ namespace Amoeba.Core.Control
                         if (info.Depth == 1) contexts.Add(new InformationContext("BlockCount", 1));
                         else contexts.Add(new InformationContext("BlockCount", info.Index.Groups.Sum(n => n.Hashes.Count())));
                     }
-
-                    contexts.Add(new InformationContext("Priority", info.Priority));
                 }
 
                 return new Information(contexts);
@@ -625,7 +626,7 @@ namespace Amoeba.Core.Control
             }
         }
 
-        public void Add(Metadata metadata, int priority)
+        public void Add(Metadata metadata)
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
 
@@ -634,9 +635,7 @@ namespace Amoeba.Core.Control
                 if (!_downloadItemInfoManager.Contains(metadata)) return;
 
                 var info = new DownloadItemInfo(metadata);
-
                 info.State = DownloadState.Downloading;
-                info.Priority = priority;
 
                 _downloadItemInfoManager.Add(info);
             }
@@ -659,17 +658,7 @@ namespace Amoeba.Core.Control
                 var info = _downloadItemInfoManager.GetInfo(metadata);
 
                 this.Remove(metadata);
-                this.Add(metadata, info.Priority);
-            }
-        }
-
-        public void SetPriority(Metadata metadata, int priority)
-        {
-            lock (_thisLock)
-            {
-                var info = _downloadItemInfoManager.GetInfo(metadata);
-
-                info.Priority = priority;
+                this.Add(metadata);
             }
         }
 
@@ -940,7 +929,6 @@ namespace Amoeba.Core.Control
             private Index _index;
 
             private DownloadState _state;
-            private int _priority = 3;
 
             private HashCollection _resultHashes;
 
@@ -998,19 +986,6 @@ namespace Amoeba.Core.Control
                 set
                 {
                     _state = value;
-                }
-            }
-
-            [DataMember(Name = "Priority")]
-            public int Priority
-            {
-                get
-                {
-                    return _priority;
-                }
-                set
-                {
-                    _priority = value;
                 }
             }
 

@@ -9,7 +9,7 @@ using Omnius.Configuration;
 using Omnius.Security;
 using Omnius.Utilities;
 
-namespace Amoeba.Core.Network
+namespace Amoeba.Core
 {
     class MessageManager
     {

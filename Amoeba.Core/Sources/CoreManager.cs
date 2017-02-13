@@ -5,9 +5,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Omnius.Base;
 using Omnius.Configuration;
-using Amoeba.Core.Cache;
-using Amoeba.Core.Control;
-using Amoeba.Core.Network;
 using Omnius.Security;
 using Omnius.Net;
 using System.Threading;
@@ -38,6 +35,7 @@ namespace Amoeba.Core
             _networkManager.ConnectCapEvent = (_, uri) => this.OnConnectCap(uri);
             _networkManager.AcceptCapEvent = (_) => this.OnAcceptCap();
             _networkManager.GetLockSignaturesEvent = (_) => this.OnGetLockSignatures();
+            _downloadManager.DownloadCompletedEvents += (_, metadata) => this.OnDownloadCompleted(metadata);
         }
 
         private void Check()
@@ -50,6 +48,8 @@ namespace Amoeba.Core
         public AcceptCapEventHandler AcceptCapEvent { get; set; }
 
         public GetSignaturesEventHandler GetLockSignaturesEvent { get; set; }
+
+        public event DownloadCompletedEventHandler DownloadCompletedEvents;
 
         private Cap OnConnectCap(string uri)
         {
@@ -64,6 +64,11 @@ namespace Amoeba.Core
         private IEnumerable<Signature> OnGetLockSignatures()
         {
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
+        }
+
+        private void OnDownloadCompleted(Metadata metadata)
+        {
+            this.DownloadCompletedEvents?.Invoke(this, metadata);
         }
 
         public Information Information
@@ -426,13 +431,13 @@ namespace Amoeba.Core
             }
         }
 
-        public void AddDownload(Metadata metadata, int priority)
+        public void AddDownload(Metadata metadata)
         {
             this.Check();
 
             lock (this.ThisLock)
             {
-                _downloadManager.Add(metadata, priority);
+                _downloadManager.Add(metadata);
             }
         }
 
@@ -453,16 +458,6 @@ namespace Amoeba.Core
             lock (this.ThisLock)
             {
                 _downloadManager.Reset(metadata);
-            }
-        }
-
-        public void SetDownloadPriority(Metadata metadata, int priority)
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                _downloadManager.SetPriority(metadata, priority);
             }
         }
 

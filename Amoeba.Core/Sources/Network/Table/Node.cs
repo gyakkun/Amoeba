@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Amoeba.Core.Network
+namespace Amoeba.Core
 {
     [DataContract(Name = "Node")]
     public struct Node<T>

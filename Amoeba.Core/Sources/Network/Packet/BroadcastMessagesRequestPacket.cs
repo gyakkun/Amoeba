@@ -8,7 +8,7 @@ using Omnius.Io;
 using Omnius.Security;
 using Omnius.Serialization;
 
-namespace Amoeba.Core.Network
+namespace Amoeba.Core
 {
     sealed class BroadcastMessagesRequestPacket : ItemBase<BroadcastMessagesRequestPacket>
     {

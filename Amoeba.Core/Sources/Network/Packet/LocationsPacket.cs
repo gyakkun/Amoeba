@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Omnius.Base;
 using Omnius.Serialization;
 
-namespace Amoeba.Core.Network
+namespace Amoeba.Core
 {
     sealed class LocationsPacket : ItemBase<LocationsPacket>
     {

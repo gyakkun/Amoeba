@@ -18,7 +18,7 @@ using Omnius.Messaging;
 using Omnius.Security;
 using Omnius.Utilities;
 
-namespace Amoeba.Core.Cache
+namespace Amoeba.Core
 {
     public delegate void CheckBlocksProgressEventHandler(object sender, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop);
 

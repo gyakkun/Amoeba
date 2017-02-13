@@ -8,7 +8,7 @@ using Omnius.Io;
 using Omnius.Serialization;
 using Omnius.Utilities;
 
-namespace Amoeba.Core.Network
+namespace Amoeba.Core
 {
     sealed class ProfilePacket : ItemBase<ProfilePacket>
     {

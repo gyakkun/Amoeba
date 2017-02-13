@@ -11,13 +11,12 @@ using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Io;
 using Omnius.Messaging;
-using Amoeba.Core.Cache;
 using Omnius.Security;
 using Omnius.Serialization;
 using Omnius.Utilities;
 using Omnius.Net;
 
-namespace Amoeba.Core.Network
+namespace Amoeba.Core
 {
     public delegate IEnumerable<Signature> GetSignaturesEventHandler(object sender);
 
