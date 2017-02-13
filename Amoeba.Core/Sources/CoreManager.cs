@@ -256,6 +256,46 @@ namespace Amoeba.Core
             });
         }
 
+        public Task<Metadata> Import(Stream stream, CancellationToken token)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _cacheManager.Import(stream, token);
+            }
+        }
+
+        public IEnumerable<Metadata> GetCacheMetadatas()
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _cacheManager.GetCacheMetadatas();
+            }
+        }
+
+        public void RemoveCache(Metadata metadata)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                _cacheManager.RemoveCache(metadata);
+            }
+        }
+
+        public bool ContainsCache(Metadata metadata)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _cacheManager.ContainsCache(metadata);
+            }
+        }
+
         public Task<Metadata> Import(string path, CancellationToken token)
         {
             this.Check();
@@ -263,6 +303,46 @@ namespace Amoeba.Core
             lock (this.ThisLock)
             {
                 return _cacheManager.Import(path, token);
+            }
+        }
+
+        public IEnumerable<string> GetSharePaths()
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _cacheManager.GetSharePaths();
+            }
+        }
+
+        public Metadata GetShareMetadata(string path)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _cacheManager.GetShareMetadata(path);
+            }
+        }
+
+        public void RemoveShare(string path)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                _cacheManager.RemoveShare(path);
+            }
+        }
+
+        public bool ContainsShare(string path)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _cacheManager.ContainsShare(path);
             }
         }
 
@@ -332,7 +412,7 @@ namespace Amoeba.Core
 
             lock (this.ThisLock)
             {
-                return _downloadManager.GetInformation(metadata);
+                return _downloadManager.GetDownloadInformation(metadata);
             }
         }
 
