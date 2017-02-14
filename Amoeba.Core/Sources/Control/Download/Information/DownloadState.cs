@@ -22,9 +22,6 @@ namespace Amoeba.Core
         [EnumMember(Value = "Completed")]
         Completed,
 
-        [EnumMember(Value = "Deleted")]
-        Deleted,
-
         [EnumMember(Value = "Error")]
         Error,
     }

@@ -173,52 +173,29 @@ namespace Amoeba.Core
                 lock (_thisLock)
                 {
                     var contexts = new List<InformationContext>();
-
-                    // Info
                     {
-                        Type type = typeof(Info);
+                        const string prefix = "Network_";
 
-                        foreach (var property in type.GetProperties())
+                        // Info
                         {
-                            string name = property.Name;
-                            object value = property.GetValue(_info);
+                            Type type = typeof(Info);
 
-                            if (value is SafeInteger) value = (long)value;
+                            foreach (var property in type.GetProperties())
+                            {
+                                string name = property.Name;
+                                object value = property.GetValue(_info);
 
-                            contexts.Add(new InformationContext(name, value));
+                                if (value is SafeInteger) value = (long)value;
+
+                                contexts.Add(new InformationContext(prefix + name, value));
+                            }
                         }
-                    }
 
-                    contexts.Add(new InformationContext("CrowdNodeCount", _routeTable.Count));
-                    contexts.Add(new InformationContext("MessageCount", _messageManager.Count));
+                        contexts.Add(new InformationContext(prefix + "CrowdNodeCount", _routeTable.Count));
+                        contexts.Add(new InformationContext(prefix + "MessageCount", _messageManager.Count));
+                    }
 
                     return new Information(contexts);
-                }
-            }
-        }
-
-        public IEnumerable<Information> ConnectionInformation
-        {
-            get
-            {
-                lock (_thisLock)
-                {
-                    var list = new List<Information>();
-
-                    foreach (var sessionInfo in _routeTable.ToArray().Select(n => n.Value))
-                    {
-                        var contexts = new List<InformationContext>();
-
-                        contexts.Add(new InformationContext("Version", sessionInfo.Version));
-                        contexts.Add(new InformationContext("Id", sessionInfo.Id));
-                        contexts.Add(new InformationContext("Location", sessionInfo.Location));
-                        contexts.Add(new InformationContext("ReceivedByteCount", sessionInfo.Connection.ReceivedByteCount));
-                        contexts.Add(new InformationContext("SentByteCount", sessionInfo.Connection.SentByteCount));
-
-                        list.Add(new Information(contexts));
-                    }
-
-                    return list;
                 }
             }
         }
@@ -263,6 +240,30 @@ namespace Amoeba.Core
         private IEnumerable<Signature> OnGetLockSignatures()
         {
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
+        }
+
+        public IEnumerable<Information> GetConnectionInformations()
+        {
+            lock (_thisLock)
+            {
+                var list = new List<Information>();
+
+                foreach (var sessionInfo in _routeTable.ToArray().Select(n => n.Value))
+                {
+                    var contexts = new List<InformationContext>();
+                    {
+                        contexts.Add(new InformationContext("Version", sessionInfo.Version));
+                        contexts.Add(new InformationContext("Id", sessionInfo.Id));
+                        contexts.Add(new InformationContext("Location", sessionInfo.Location));
+                        contexts.Add(new InformationContext("ReceivedByteCount", sessionInfo.Connection.ReceivedByteCount));
+                        contexts.Add(new InformationContext("SentByteCount", sessionInfo.Connection.SentByteCount));
+                    }
+
+                    list.Add(new Information(contexts));
+                }
+
+                return list;
+            }
         }
 
         private void UpdateMyId()

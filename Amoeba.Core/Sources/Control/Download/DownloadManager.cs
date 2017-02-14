@@ -16,8 +16,6 @@ using Omnius.Utilities;
 
 namespace Amoeba.Core
 {
-    public delegate void DownloadCompletedEventHandler(object sender, Metadata metadata);
-
     class DownloadManager : StateManagerBase, ISettings
     {
         private NetworkManager _networkManager;
@@ -89,7 +87,7 @@ namespace Amoeba.Core
                 _cacheManager.Unlock(info.Metadata.Hash);
                 this.UncheckState(info.Index);
 
-                info.State = DownloadState.Deleted;
+                info.State = DownloadState.Error;
             }
         }
 
@@ -201,13 +199,6 @@ namespace Amoeba.Core
                     _existManager.Remove(group);
                 }
             }
-        }
-
-        public event DownloadCompletedEventHandler DownloadCompletedEvents;
-
-        private void OnDownloadCompleted(Metadata metadata)
-        {
-            this.DownloadCompletedEvents?.Invoke(this, metadata);
         }
 
         private void DownloadThread()
@@ -389,7 +380,7 @@ namespace Amoeba.Core
 
                                             lock (_thisLock)
                                             {
-                                                if (item.State == DownloadState.Deleted) tokenSource.Cancel();
+                                                if (item.State == DownloadState.Error) tokenSource.Cancel();
                                             }
 
                                             Thread.Sleep(1000);
@@ -430,7 +421,7 @@ namespace Amoeba.Core
 
                                                 lock (_thisLock)
                                                 {
-                                                    if (item.State == DownloadState.Deleted) tokenSource.Cancel();
+                                                    if (item.State == DownloadState.Error) tokenSource.Cancel();
                                                 }
 
                                                 Thread.Sleep(1000);
@@ -489,8 +480,6 @@ namespace Amoeba.Core
 
                                 item.State = DownloadState.Completed;
                             }
-
-                            this.OnDownloadCompleted(item.Metadata);
                         }
                     }
                 }
@@ -565,50 +554,45 @@ namespace Amoeba.Core
 
         #endregion
 
-        public IEnumerable<Metadata> GetDownloadMetadatas()
+        public IEnumerable<Information> GetDownloadInformations()
         {
             lock (_thisLock)
             {
-                return _downloadItemInfoManager.ToArray().Select(n => n.Metadata).ToArray();
-            }
-        }
+                var list = new List<Information>();
 
-        public Information GetDownloadInformation(Metadata metadata)
-        {
-            if (metadata == null) throw new ArgumentNullException(nameof(metadata));
-
-            lock (_thisLock)
-            {
-                var info = _downloadItemInfoManager.GetInfo(metadata);
-                if (info == null) return null;
-
-                var contexts = new List<InformationContext>();
+                foreach (var info in _downloadItemInfoManager)
                 {
-                    contexts.Add(new InformationContext("State", info.State));
-                    contexts.Add(new InformationContext("Depth", info.Depth));
-
-                    if (info.State != DownloadState.Error)
+                    var contexts = new List<InformationContext>();
                     {
-                        if (info.State == DownloadState.Downloading || info.State == DownloadState.Decoding || info.State == DownloadState.ParityDecoding)
-                        {
-                            if (info.Depth == 1) contexts.Add(new InformationContext("DownloadBlockCount", _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0));
-                            else contexts.Add(new InformationContext("DownloadBlockCount", info.Index.Groups.Sum(n => Math.Min(n.Hashes.Count() / 2, _existManager.GetCount(n)))));
-                        }
-                        else if (info.State == DownloadState.Completed)
-                        {
-                            if (info.Depth == 1) contexts.Add(new InformationContext("DownloadBlockCount", _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0));
-                            else contexts.Add(new InformationContext("DownloadBlockCount", info.Index.Groups.Sum(n => _existManager.GetCount(n))));
-                        }
+                        contexts.Add(new InformationContext("Metadata", info.Metadata));
+                        contexts.Add(new InformationContext("State", info.State));
+                        contexts.Add(new InformationContext("Depth", info.Depth));
 
-                        if (info.Depth == 1) contexts.Add(new InformationContext("ParityBlockCount", 0));
-                        else contexts.Add(new InformationContext("ParityBlockCount", info.Index.Groups.Sum(n => n.Hashes.Count() / 2)));
+                        if (info.State != DownloadState.Error)
+                        {
+                            if (info.State == DownloadState.Downloading || info.State == DownloadState.Decoding || info.State == DownloadState.ParityDecoding)
+                            {
+                                if (info.Depth == 1) contexts.Add(new InformationContext("DownloadBlockCount", _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0));
+                                else contexts.Add(new InformationContext("DownloadBlockCount", info.Index.Groups.Sum(n => Math.Min(n.Hashes.Count() / 2, _existManager.GetCount(n)))));
+                            }
+                            else if (info.State == DownloadState.Completed)
+                            {
+                                if (info.Depth == 1) contexts.Add(new InformationContext("DownloadBlockCount", _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0));
+                                else contexts.Add(new InformationContext("DownloadBlockCount", info.Index.Groups.Sum(n => _existManager.GetCount(n))));
+                            }
 
-                        if (info.Depth == 1) contexts.Add(new InformationContext("BlockCount", 1));
-                        else contexts.Add(new InformationContext("BlockCount", info.Index.Groups.Sum(n => n.Hashes.Count())));
+                            if (info.Depth == 1) contexts.Add(new InformationContext("ParityBlockCount", 0));
+                            else contexts.Add(new InformationContext("ParityBlockCount", info.Index.Groups.Sum(n => n.Hashes.Count() / 2)));
+
+                            if (info.Depth == 1) contexts.Add(new InformationContext("BlockCount", 1));
+                            else contexts.Add(new InformationContext("BlockCount", info.Index.Groups.Sum(n => n.Hashes.Count())));
+                        }
                     }
+
+                    list.Add(new Information(contexts));
                 }
 
-                return new Information(contexts);
+                return list;
             }
         }
 
@@ -655,8 +639,6 @@ namespace Amoeba.Core
         {
             lock (_thisLock)
             {
-                var info = _downloadItemInfoManager.GetInfo(metadata);
-
                 this.Remove(metadata);
                 this.Add(metadata);
             }

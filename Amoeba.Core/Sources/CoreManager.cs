@@ -35,7 +35,6 @@ namespace Amoeba.Core
             _networkManager.ConnectCapEvent = (_, uri) => this.OnConnectCap(uri);
             _networkManager.AcceptCapEvent = (_) => this.OnAcceptCap();
             _networkManager.GetLockSignaturesEvent = (_) => this.OnGetLockSignatures();
-            _downloadManager.DownloadCompletedEvents += (_, metadata) => this.OnDownloadCompleted(metadata);
         }
 
         private void Check()
@@ -48,8 +47,6 @@ namespace Amoeba.Core
         public AcceptCapEventHandler AcceptCapEvent { get; set; }
 
         public GetSignaturesEventHandler GetLockSignaturesEvent { get; set; }
-
-        public event DownloadCompletedEventHandler DownloadCompletedEvents;
 
         private Cap OnConnectCap(string uri)
         {
@@ -66,11 +63,6 @@ namespace Amoeba.Core
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
         }
 
-        private void OnDownloadCompleted(Metadata metadata)
-        {
-            this.DownloadCompletedEvents?.Invoke(this, metadata);
-        }
-
         public Information Information
         {
             get
@@ -84,19 +76,6 @@ namespace Amoeba.Core
                     contexts.AddRange(_networkManager.Information);
 
                     return new Information(contexts);
-                }
-            }
-        }
-
-        public IEnumerable<Information> ConnectionInformation
-        {
-            get
-            {
-                this.Check();
-
-                lock (this.ThisLock)
-                {
-                    return _networkManager.ConnectionInformation;
                 }
             }
         }
@@ -210,6 +189,16 @@ namespace Amoeba.Core
             }
         }
 
+        public IEnumerable<Information> GetConnectionInformations()
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _networkManager.GetConnectionInformations();
+            }
+        }
+
         public void SetMyLocation(Location location)
         {
             this.Check();
@@ -261,6 +250,16 @@ namespace Amoeba.Core
             });
         }
 
+        public IEnumerable<Information> GetCacheInformations()
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _cacheManager.GetCacheInformations();
+            }
+        }
+
         public Task<Metadata> Import(Stream stream, CancellationToken token)
         {
             this.Check();
@@ -268,16 +267,6 @@ namespace Amoeba.Core
             lock (this.ThisLock)
             {
                 return _cacheManager.Import(stream, token);
-            }
-        }
-
-        public IEnumerable<Metadata> GetCacheMetadatas()
-        {
-            this.Check();
-
-            lock (_thisLock)
-            {
-                return _cacheManager.GetCacheMetadatas();
             }
         }
 
@@ -301,6 +290,16 @@ namespace Amoeba.Core
             }
         }
 
+        public IEnumerable<Information> GetShareInformations()
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _cacheManager.GetShareInformations();
+            }
+        }
+
         public Task<Metadata> Import(string path, CancellationToken token)
         {
             this.Check();
@@ -311,25 +310,6 @@ namespace Amoeba.Core
             }
         }
 
-        public IEnumerable<string> GetSharePaths()
-        {
-            this.Check();
-
-            lock (_thisLock)
-            {
-                return _cacheManager.GetSharePaths();
-            }
-        }
-
-        public Metadata GetShareMetadata(string path)
-        {
-            this.Check();
-
-            lock (_thisLock)
-            {
-                return _cacheManager.GetShareMetadata(path);
-            }
-        }
 
         public void RemoveShare(string path)
         {
@@ -401,23 +381,13 @@ namespace Amoeba.Core
             }
         }
 
-        public IEnumerable<Metadata> GetDownloadMetadatas()
+        public IEnumerable<Information> GetDownloadInformations()
         {
             this.Check();
 
             lock (this.ThisLock)
             {
-                return _downloadManager.GetDownloadMetadatas();
-            }
-        }
-
-        public Information GetInformation(Metadata metadata)
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                return _downloadManager.GetDownloadInformation(metadata);
+                return _downloadManager.GetDownloadInformations();
             }
         }
 

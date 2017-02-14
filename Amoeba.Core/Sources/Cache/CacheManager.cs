@@ -104,6 +104,8 @@ namespace Amoeba.Core
                 {
                     var contexts = new List<InformationContext>();
                     {
+                        const string prefix = "Cache_";
+
                         // Info
                         {
                             Type type = typeof(Info);
@@ -115,11 +117,9 @@ namespace Amoeba.Core
 
                                 if (value is SafeInteger) value = (long)value;
 
-                                contexts.Add(new InformationContext(name, value));
+                                contexts.Add(new InformationContext(prefix + name, value));
                             }
                         }
-
-                        contexts.Add(new InformationContext("ContentCount", _contentInfoManager.ShareCount));
                     }
 
                     return new Information(contexts);
@@ -1361,11 +1361,26 @@ namespace Amoeba.Core
 
         #region Cache
 
-        public IEnumerable<Metadata> GetCacheMetadatas()
+        public IEnumerable<Information> GetCacheInformations()
         {
             lock (_thisLock)
             {
-                return new HashSet<Metadata>(_contentInfoManager.Select(n => n.Metadata)).ToArray();
+                lock (_thisLock)
+                {
+                    var list = new List<Information>();
+
+                    foreach (var info in _contentInfoManager.GetCacheContentInfos())
+                    {
+                        var contexts = new List<InformationContext>();
+                        {
+                            contexts.Add(new InformationContext("Metadata", info.Metadata));
+                        }
+
+                        list.Add(new Information(contexts));
+                    }
+
+                    return list;
+                }
             }
         }
 
@@ -1400,22 +1415,27 @@ namespace Amoeba.Core
 
         #region Share
 
-        public IEnumerable<string> GetSharePaths()
+        public IEnumerable<Information> GetShareInformations()
         {
             lock (_thisLock)
             {
-                return _contentInfoManager.Select(n => n.ShareInfo.Path).ToArray();
-            }
-        }
+                lock (_thisLock)
+                {
+                    var list = new List<Information>();
 
-        public Metadata GetShareMetadata(string path)
-        {
-            lock (_thisLock)
-            {
-                var contentInfo = _contentInfoManager.GetShareContentInfo(path);
-                if (contentInfo == null) return null;
+                    foreach (var info in _contentInfoManager.GetShareContentInfos())
+                    {
+                        var contexts = new List<InformationContext>();
+                        {
+                            contexts.Add(new InformationContext("Metadata", info.Metadata));
+                            contexts.Add(new InformationContext("Path", info.ShareInfo.Path));
+                        }
 
-                return contentInfo.Metadata;
+                        list.Add(new Information(contexts));
+                    }
+
+                    return list;
+                }
             }
         }
 
@@ -1602,11 +1622,6 @@ namespace Amoeba.Core
 
             #region Cache
 
-            public IEnumerable<Metadata> GetCacheMetadatas()
-            {
-                return _cacheContentInfos.Keys.ToArray();
-            }
-
             public void RemoveCache(Metadata metadata)
             {
                 ContentInfo contentInfo;
@@ -1622,20 +1637,17 @@ namespace Amoeba.Core
                 return _cacheContentInfos.ContainsKey(metadata);
             }
 
+            public IEnumerable<ContentInfo> GetCacheContentInfos()
+            {
+                return _cacheContentInfos.Values.ToArray();
+            }
+
             public ContentInfo GetCacheContentInfo(Metadata metadata)
             {
                 ContentInfo contentInfo;
                 if (!_cacheContentInfos.TryGetValue(metadata, out contentInfo)) return null;
 
                 return contentInfo;
-            }
-
-            public int CacheCount
-            {
-                get
-                {
-                    return _cacheContentInfos.Count;
-                }
             }
 
             #endregion
@@ -1664,20 +1676,17 @@ namespace Amoeba.Core
                 return _shareContentInfos.ContainsKey(path);
             }
 
+            public IEnumerable<ContentInfo> GetShareContentInfos()
+            {
+                return _shareContentInfos.Values.ToArray();
+            }
+
             public ContentInfo GetShareContentInfo(string path)
             {
                 ContentInfo contentInfo;
                 if (!_shareContentInfos.TryGetValue(path, out contentInfo)) return null;
 
                 return contentInfo;
-            }
-
-            public int ShareCount
-            {
-                get
-                {
-                    return _shareContentInfos.Count;
-                }
             }
 
             #endregion
