@@ -9,9 +9,9 @@ namespace Amoeba.Core
 {
     sealed class PriorityManager
     {
-        private TimeSpan _survivalTime;
-
         private Dictionary<DateTime, int> _table = new Dictionary<DateTime, int>();
+
+        private readonly TimeSpan _survivalTime;
 
         private readonly object _thisLock = new object();
 

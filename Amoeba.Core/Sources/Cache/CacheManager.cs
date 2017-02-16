@@ -20,7 +20,7 @@ using Omnius.Utilities;
 
 namespace Amoeba.Core
 {
-    public delegate void CheckBlocksProgressEventHandler(object sender, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop);
+    public delegate void CheckBlocksProgressEventHandler(object sender, int badBlockCount, int checkedBlockCount, int blockCount);
 
     interface ISetOperators<T>
     {
@@ -45,7 +45,7 @@ namespace Amoeba.Core
 
         private Dictionary<Hash, int> _lockedHashes = new Dictionary<Hash, int>();
 
-        private ContentInfoManager _contentInfoManager;
+        private CacheInfoManager _cacheInfoManager;
 
         private EventQueue<Hash> _blockAddEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
         private EventQueue<Hash> _blockRemoveEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
@@ -70,7 +70,7 @@ namespace Amoeba.Core
 
             _settings = new Settings(configPath);
 
-            _contentInfoManager = new ContentInfoManager();
+            _cacheInfoManager = new CacheInfoManager();
 
             _watchTimer = new WatchTimer(this.WatchTimer, Timeout.Infinite);
         }
@@ -137,7 +137,7 @@ namespace Amoeba.Core
                 {
                     var usingHashes = new HashSet<Hash>();
                     usingHashes.UnionWith(_lockedHashes.Keys);
-                    usingHashes.UnionWith(_contentInfoManager.Select(n => n.LockedHashes).Extract());
+                    usingHashes.UnionWith(_cacheInfoManager.Select(n => n.LockedHashes).Extract());
 
                     long size = 0;
 
@@ -246,7 +246,7 @@ namespace Amoeba.Core
 
                 var usingHashes = new HashSet<Hash>();
                 usingHashes.UnionWith(_lockedHashes.Keys);
-                usingHashes.UnionWith(_contentInfoManager.Select(n => n.LockedHashes).Extract());
+                usingHashes.UnionWith(_cacheInfoManager.Select(n => n.LockedHashes).Extract());
 
                 var removePairs = _clusterIndex
                     .Where(n => !usingHashes.Contains(n.Key))
@@ -303,7 +303,7 @@ namespace Amoeba.Core
         {
             lock (_thisLock)
             {
-                return _clusterIndex.ContainsKey(hash) || _contentInfoManager.Contains(hash);
+                return _clusterIndex.ContainsKey(hash) || _cacheInfoManager.Contains(hash);
             }
         }
 
@@ -384,59 +384,61 @@ namespace Amoeba.Core
             }
         }
 
-        public void CheckBlocks(CheckBlocksProgressEventHandler getProgressEvent)
+        public Task CheckBlocks(CheckBlocksProgressEventHandler checkBlocksProgressEvent, CancellationToken token)
         {
-            // 読めないブロックを検出しRemoveする。
+            return Task.Run(() =>
             {
-                var list = this.ToArray();
-
-                int badBlockCount = 0;
-                int checkedBlockCount = 0;
-                int blockCount = list.Length;
-                bool isStop;
-
-                getProgressEvent.Invoke(this, badBlockCount, checkedBlockCount, blockCount, out isStop);
-
-                if (isStop) return;
-
-                foreach (var hash in list)
+                // 読めないブロックを検出しRemoveする。
                 {
-                    lock (_thisLock)
-                    {
-                        if (this.Contains(hash))
-                        {
-                            var buffer = new ArraySegment<byte>();
+                    var list = this.ToArray();
 
-                            try
+                    int badBlockCount = 0;
+                    int checkedBlockCount = 0;
+                    int blockCount = list.Length;
+
+                    token.ThrowIfCancellationRequested();
+
+                    checkBlocksProgressEvent?.Invoke(this, badBlockCount, checkedBlockCount, blockCount);
+
+                    foreach (var hash in list)
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        var buffer = new ArraySegment<byte>();
+
+                        try
+                        {
+                            lock (_thisLock)
                             {
-                                buffer = this[hash];
-                            }
-                            catch (Exception)
-                            {
-                                badBlockCount++;
-                            }
-                            finally
-                            {
-                                if (buffer.Array != null)
+                                if (this.Contains(hash))
                                 {
-                                    _bufferManager.ReturnBuffer(buffer.Array);
+                                    buffer = this[hash];
                                 }
                             }
                         }
+                        catch (Exception)
+                        {
+                            badBlockCount++;
+                        }
+                        finally
+                        {
+                            if (buffer.Array != null)
+                            {
+                                _bufferManager.ReturnBuffer(buffer.Array);
+                            }
+                        }
+
+                        checkedBlockCount++;
+
+                        if (checkedBlockCount % 8 == 0)
+                        {
+                            checkBlocksProgressEvent?.Invoke(this, badBlockCount, checkedBlockCount, blockCount);
+                        }
                     }
 
-                    checkedBlockCount++;
-
-                    if (checkedBlockCount % 8 == 0)
-                    {
-                        getProgressEvent.Invoke(this, badBlockCount, checkedBlockCount, blockCount, out isStop);
-                    }
-
-                    if (isStop) return;
+                    checkBlocksProgressEvent?.Invoke(this, badBlockCount, checkedBlockCount, blockCount);
                 }
-
-                getProgressEvent.Invoke(this, badBlockCount, checkedBlockCount, blockCount, out isStop);
-            }
+            }, token);
         }
 
         private byte[] _sectorBuffer = new byte[CacheManager.SectorSize];
@@ -527,7 +529,7 @@ namespace Amoeba.Core
 
                     lock (_thisLock)
                     {
-                        shareInfo = _contentInfoManager.GetShareInfo(hash);
+                        shareInfo = _cacheInfoManager.GetShareInfo(hash);
 
                         if (shareInfo != null)
                         {
@@ -578,7 +580,7 @@ namespace Amoeba.Core
                         {
                             _bufferManager.ReturnBuffer(result.Value.Array);
 
-                            this.RemoveShare(shareInfo.Path);
+                            this.RemoveContent(shareInfo.Path);
                         }
                     }
                 }
@@ -689,7 +691,7 @@ namespace Amoeba.Core
 
                 // Share
                 {
-                    var shareInfo = _contentInfoManager.GetShareInfo(hash);
+                    var shareInfo = _cacheInfoManager.GetShareInfo(hash);
 
                     if (shareInfo != null)
                     {
@@ -973,7 +975,7 @@ namespace Amoeba.Core
 
                     lock (_thisLock)
                     {
-                        if (_contentInfoManager.ContainsCache(metadata))
+                        if (_cacheInfoManager.ContainsMessage(metadata))
                         {
                             foreach (var hash in lockedHashes)
                             {
@@ -982,7 +984,7 @@ namespace Amoeba.Core
                         }
                         else
                         {
-                            _contentInfoManager.Add(new ContentInfo(metadata, lockedHashes, null));
+                            _cacheInfoManager.Add(new CacheInfo(metadata, lockedHashes, null));
                         }
                     }
 
@@ -1017,7 +1019,7 @@ namespace Amoeba.Core
                 // Check
                 lock (_thisLock)
                 {
-                    var info = _contentInfoManager.GetShareContentInfo(path);
+                    var info = _cacheInfoManager.GetContentCacheInfo(path);
                     if (info != null) return info.Metadata;
                 }
 
@@ -1236,7 +1238,7 @@ namespace Amoeba.Core
 
                     lock (_thisLock)
                     {
-                        if (_contentInfoManager.ContainsShare(path))
+                        if (_cacheInfoManager.ContainsContent(path))
                         {
                             foreach (var hash in lockedHashes)
                             {
@@ -1245,7 +1247,7 @@ namespace Amoeba.Core
                         }
                         else
                         {
-                            _contentInfoManager.Add(new ContentInfo(metadata, lockedHashes, shareInfo));
+                            _cacheInfoManager.Add(new CacheInfo(metadata, lockedHashes, shareInfo));
                         }
                     }
 
@@ -1359,9 +1361,9 @@ namespace Amoeba.Core
             }
         }
 
-        #region Cache
+        #region Message
 
-        public IEnumerable<Information> GetCacheInformations()
+        public IEnumerable<Information> GetMessageInformations()
         {
             lock (_thisLock)
             {
@@ -1369,7 +1371,7 @@ namespace Amoeba.Core
                 {
                     var list = new List<Information>();
 
-                    foreach (var info in _contentInfoManager.GetCacheContentInfos())
+                    foreach (var info in _cacheInfoManager.GetMessageCacheInfos())
                     {
                         var contexts = new List<InformationContext>();
                         {
@@ -1384,38 +1386,30 @@ namespace Amoeba.Core
             }
         }
 
-        public void RemoveCache(Metadata metadata)
+        public void RemoveMessage(Metadata metadata)
         {
             lock (_thisLock)
             {
-                var contentInfo = _contentInfoManager.GetCacheContentInfo(metadata);
-                if (contentInfo == null) return;
+                var cacheInfo = _cacheInfoManager.GetMessageCacheInfo(metadata);
+                if (cacheInfo == null) return;
 
-                foreach (var hash in contentInfo.LockedHashes)
+                foreach (var hash in cacheInfo.LockedHashes)
                 {
                     this.Unlock(hash);
                 }
 
-                _contentInfoManager.RemoveCache(metadata);
+                _cacheInfoManager.RemoveMessage(metadata);
 
                 // Event
-                _blockRemoveEventQueue.Enqueue(contentInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
-            }
-        }
-
-        public bool ContainsCache(Metadata metadata)
-        {
-            lock (_thisLock)
-            {
-                return _contentInfoManager.ContainsCache(metadata);
+                _blockRemoveEventQueue.Enqueue(cacheInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
             }
         }
 
         #endregion
 
-        #region Share
+        #region Content
 
-        public IEnumerable<Information> GetShareInformations()
+        public IEnumerable<Information> GetContentInformations()
         {
             lock (_thisLock)
             {
@@ -1423,7 +1417,7 @@ namespace Amoeba.Core
                 {
                     var list = new List<Information>();
 
-                    foreach (var info in _contentInfoManager.GetShareContentInfos())
+                    foreach (var info in _cacheInfoManager.GetContentCacheInfos())
                     {
                         var contexts = new List<InformationContext>();
                         {
@@ -1439,30 +1433,22 @@ namespace Amoeba.Core
             }
         }
 
-        public void RemoveShare(string path)
+        public void RemoveContent(string path)
         {
             lock (_thisLock)
             {
-                var contentInfo = _contentInfoManager.GetShareContentInfo(path);
-                if (contentInfo == null) return;
+                var cacheInfo = _cacheInfoManager.GetContentCacheInfo(path);
+                if (cacheInfo == null) return;
 
-                foreach (var hash in contentInfo.LockedHashes)
+                foreach (var hash in cacheInfo.LockedHashes)
                 {
                     this.Unlock(hash);
                 }
 
-                _contentInfoManager.RemoveShare(path);
+                _cacheInfoManager.RemoveContent(path);
 
                 // Event
-                _blockRemoveEventQueue.Enqueue(contentInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
-            }
-        }
-
-        public bool ContainsShare(string path)
-        {
-            lock (_thisLock)
-            {
-                return _contentInfoManager.ContainsShare(path);
+                _blockRemoveEventQueue.Enqueue(cacheInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
             }
         }
 
@@ -1479,9 +1465,9 @@ namespace Amoeba.Core
                 _size = _settings.Load("Size", () => (long)1024 * 1024 * 1024 * 32);
                 _clusterIndex = _settings.Load("ClusterIndex", () => new Dictionary<Hash, ClusterInfo>());
 
-                foreach (var contentInfo in _settings.Load<ContentInfo[]>("ContentInfos", () => new ContentInfo[0]))
+                foreach (var cacheInfo in _settings.Load<CacheInfo[]>("CacheInfos", () => new CacheInfo[0]))
                 {
-                    _contentInfoManager.Add(contentInfo);
+                    _cacheInfoManager.Add(cacheInfo);
                 }
 
                 _watchTimer.Change(new TimeSpan(0, 0, 0), new TimeSpan(0, 5, 0));
@@ -1496,7 +1482,7 @@ namespace Amoeba.Core
 
                 _settings.Save("Size", _size);
                 _settings.Save("ClusterIndex", _clusterIndex);
-                _settings.Save("ContentInfos", _contentInfoManager.ToArray());
+                _settings.Save("CacheInfos", _cacheInfoManager.ToArray());
             }
         }
 
@@ -1591,102 +1577,102 @@ namespace Amoeba.Core
             }
         }
 
-        private class ContentInfoManager : IEnumerable<ContentInfo>
+        private class CacheInfoManager : IEnumerable<CacheInfo>
         {
-            private Dictionary<Metadata, ContentInfo> _cacheContentInfos;
-            private Dictionary<string, ContentInfo> _shareContentInfos;
+            private Dictionary<Metadata, CacheInfo> _messageCacheInfos;
+            private Dictionary<string, CacheInfo> _contentCacheInfos;
 
             private HashMap _hashMap;
 
-            public ContentInfoManager()
+            public CacheInfoManager()
             {
-                _cacheContentInfos = new Dictionary<Metadata, ContentInfo>();
-                _shareContentInfos = new Dictionary<string, ContentInfo>();
+                _messageCacheInfos = new Dictionary<Metadata, CacheInfo>();
+                _contentCacheInfos = new Dictionary<string, CacheInfo>();
 
                 _hashMap = new HashMap();
             }
 
-            public void Add(ContentInfo info)
+            public void Add(CacheInfo info)
             {
                 if (info.ShareInfo == null)
                 {
-                    _cacheContentInfos.Add(info.Metadata, info);
+                    _messageCacheInfos.Add(info.Metadata, info);
                 }
                 else
                 {
-                    _shareContentInfos.Add(info.ShareInfo.Path, info);
+                    _contentCacheInfos.Add(info.ShareInfo.Path, info);
 
                     _hashMap.Add(info.ShareInfo);
                 }
             }
 
-            #region Cache
+            #region Message
 
-            public void RemoveCache(Metadata metadata)
+            public void RemoveMessage(Metadata metadata)
             {
-                ContentInfo contentInfo;
+                CacheInfo cacheInfo;
 
-                if (_cacheContentInfos.TryGetValue(metadata, out contentInfo))
+                if (_messageCacheInfos.TryGetValue(metadata, out cacheInfo))
                 {
-                    _cacheContentInfos.Remove(metadata);
+                    _messageCacheInfos.Remove(metadata);
                 }
             }
 
-            public bool ContainsCache(Metadata metadata)
+            public bool ContainsMessage(Metadata metadata)
             {
-                return _cacheContentInfos.ContainsKey(metadata);
+                return _messageCacheInfos.ContainsKey(metadata);
             }
 
-            public IEnumerable<ContentInfo> GetCacheContentInfos()
+            public IEnumerable<CacheInfo> GetMessageCacheInfos()
             {
-                return _cacheContentInfos.Values.ToArray();
+                return _messageCacheInfos.Values.ToArray();
             }
 
-            public ContentInfo GetCacheContentInfo(Metadata metadata)
+            public CacheInfo GetMessageCacheInfo(Metadata metadata)
             {
-                ContentInfo contentInfo;
-                if (!_cacheContentInfos.TryGetValue(metadata, out contentInfo)) return null;
+                CacheInfo cacheInfo;
+                if (!_messageCacheInfos.TryGetValue(metadata, out cacheInfo)) return null;
 
-                return contentInfo;
+                return cacheInfo;
             }
 
             #endregion
 
-            #region Share
+            #region Content
 
-            public IEnumerable<string> GetSharePaths()
+            public IEnumerable<string> GetContentPaths()
             {
-                return _shareContentInfos.Keys.ToArray();
+                return _contentCacheInfos.Keys.ToArray();
             }
 
-            public void RemoveShare(string path)
+            public void RemoveContent(string path)
             {
-                ContentInfo contentInfo;
+                CacheInfo cacheInfo;
 
-                if (_shareContentInfos.TryGetValue(path, out contentInfo))
+                if (_contentCacheInfos.TryGetValue(path, out cacheInfo))
                 {
-                    _shareContentInfos.Remove(path);
+                    _contentCacheInfos.Remove(path);
 
-                    _hashMap.Remove(contentInfo.ShareInfo);
+                    _hashMap.Remove(cacheInfo.ShareInfo);
                 }
             }
 
-            public bool ContainsShare(string path)
+            public bool ContainsContent(string path)
             {
-                return _shareContentInfos.ContainsKey(path);
+                return _contentCacheInfos.ContainsKey(path);
             }
 
-            public IEnumerable<ContentInfo> GetShareContentInfos()
+            public IEnumerable<CacheInfo> GetContentCacheInfos()
             {
-                return _shareContentInfos.Values.ToArray();
+                return _contentCacheInfos.Values.ToArray();
             }
 
-            public ContentInfo GetShareContentInfo(string path)
+            public CacheInfo GetContentCacheInfo(string path)
             {
-                ContentInfo contentInfo;
-                if (!_shareContentInfos.TryGetValue(path, out contentInfo)) return null;
+                CacheInfo cacheInfo;
+                if (!_contentCacheInfos.TryGetValue(path, out cacheInfo)) return null;
 
-                return contentInfo;
+                return cacheInfo;
             }
 
             #endregion
@@ -1710,16 +1696,11 @@ namespace Amoeba.Core
 
             #endregion
 
-            public ContentInfo[] ToArray()
-            {
-                return _shareContentInfos.Values.ToArray();
-            }
+            #region IEnumerable<CacheInfo>
 
-            #region IEnumerable<ContentInfo>
-
-            public IEnumerator<ContentInfo> GetEnumerator()
+            public IEnumerator<CacheInfo> GetEnumerator()
             {
-                foreach (var info in _shareContentInfos.Values)
+                foreach (var info in CollectionUtils.Unite(_messageCacheInfos.Values, _contentCacheInfos.Values))
                 {
                     yield return info;
                 }
@@ -1795,14 +1776,14 @@ namespace Amoeba.Core
             }
         }
 
-        [DataContract(Name = "ContentInfo")]
-        private class ContentInfo
+        [DataContract(Name = "CacheInfo")]
+        private class CacheInfo
         {
             private Metadata _metadata;
             private HashCollection _lockedHashes;
             private ShareInfo _shareInfo;
 
-            public ContentInfo(Metadata metadata, IEnumerable<Hash> lockedHashes, ShareInfo shareInfo)
+            public CacheInfo(Metadata metadata, IEnumerable<Hash> lockedHashes, ShareInfo shareInfo)
             {
                 this.Metadata = metadata;
                 if (lockedHashes != null) this.ProtectedLockedHashes.AddRange(lockedHashes);

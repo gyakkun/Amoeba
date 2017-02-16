@@ -25,12 +25,12 @@ namespace Amoeba.Core
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public CoreManager(string configPath, string tempPath, string blocksPath, BufferManager bufferManager)
+        public CoreManager(string configPath, string blocksPath, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _cacheManager = new CacheManager(Path.Combine(configPath, "CacheManager"), blocksPath, _bufferManager);
             _networkManager = new NetworkManager(Path.Combine(configPath, "NetworkManager"), _cacheManager, _bufferManager);
-            _downloadManager = new DownloadManager(Path.Combine(configPath, "DownloadManager"), tempPath, _networkManager, _cacheManager, _bufferManager);
+            _downloadManager = new DownloadManager(Path.Combine(configPath, "DownloadManager"), _networkManager, _cacheManager, _bufferManager);
 
             _networkManager.ConnectCapEvent = (_, uri) => this.OnConnectCap(uri);
             _networkManager.AcceptCapEvent = (_) => this.OnAcceptCap();
@@ -239,66 +239,17 @@ namespace Amoeba.Core
             }
         }
 
-        public void CheckBlocks(CheckBlocksProgressEventHandler getProgressEvent)
-        {
-            this.Check();
-
-            _cacheManager.CheckBlocks((object sender, int badBlockCount, int checkedBlockCount, int blockCount, out bool isStop) =>
-            {
-                isStop = false;
-                getProgressEvent?.Invoke(this, badBlockCount, checkedBlockCount, blockCount, out isStop);
-            });
-        }
-
-        public IEnumerable<Information> GetCacheInformations()
+        public Task CheckBlocks(CheckBlocksProgressEventHandler checkBlocksProgressEvent, CancellationToken token)
         {
             this.Check();
 
             lock (this.ThisLock)
             {
-                return _cacheManager.GetCacheInformations();
+                return _cacheManager.CheckBlocks(checkBlocksProgressEvent, token);
             }
         }
 
-        public Task<Metadata> Import(Stream stream, CancellationToken token)
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                return _cacheManager.Import(stream, token);
-            }
-        }
-
-        public void RemoveCache(Metadata metadata)
-        {
-            this.Check();
-
-            lock (_thisLock)
-            {
-                _cacheManager.RemoveCache(metadata);
-            }
-        }
-
-        public bool ContainsCache(Metadata metadata)
-        {
-            this.Check();
-
-            lock (_thisLock)
-            {
-                return _cacheManager.ContainsCache(metadata);
-            }
-        }
-
-        public IEnumerable<Information> GetShareInformations()
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                return _cacheManager.GetShareInformations();
-            }
-        }
+        #region Content
 
         public Task<Metadata> Import(string path, CancellationToken token)
         {
@@ -310,24 +261,97 @@ namespace Amoeba.Core
             }
         }
 
-
-        public void RemoveShare(string path)
+        public IEnumerable<Information> GetContentInformations()
         {
             this.Check();
 
-            lock (_thisLock)
+            lock (this.ThisLock)
             {
-                _cacheManager.RemoveShare(path);
+                return _cacheManager.GetContentInformations();
             }
         }
 
-        public bool ContainsShare(string path)
+        public void RemoveContent(string path)
         {
             this.Check();
 
             lock (_thisLock)
             {
-                return _cacheManager.ContainsShare(path);
+                _cacheManager.RemoveContent(path);
+            }
+        }
+
+        public void Download(Metadata metadata)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                _downloadManager.Add(metadata);
+            }
+        }
+
+        public IEnumerable<Information> GetDownloadInformations()
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _downloadManager.GetDownloadInformations();
+            }
+        }
+
+        public void RemoveDownload(Metadata metadata)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                _downloadManager.Remove(metadata);
+            }
+        }
+
+        public void ResetDownload(Metadata metadata)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                _downloadManager.Reset(metadata);
+            }
+        }
+
+        public Task Export(Metadata metadata, Stream outStream, long maxLength, CancellationToken token)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _downloadManager.Export(metadata, outStream, maxLength, token);
+            }
+        }
+
+        #endregion
+
+        #region Message
+
+        public void UploadMessage(BroadcastMessage message)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                _networkManager.Upload(message);
+            }
+        }
+
+        public void UploadMessage(UnicastMessage message)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                _networkManager.Upload(message);
             }
         }
 
@@ -351,27 +375,37 @@ namespace Amoeba.Core
             }
         }
 
-        public void Upload(BroadcastMessage message)
+        public Task<Metadata> Import(Stream stream, CancellationToken token)
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _cacheManager.Import(stream, token);
+            }
+        }
+
+        public IEnumerable<Information> GetMessageInformations()
+        {
+            this.Check();
+
+            lock (this.ThisLock)
+            {
+                return _cacheManager.GetMessageInformations();
+            }
+        }
+
+        public void RemoveMessage(Metadata metadata)
         {
             this.Check();
 
             lock (_thisLock)
             {
-                _networkManager.Upload(message);
+                _cacheManager.RemoveMessage(metadata);
             }
         }
 
-        public void Upload(UnicastMessage message)
-        {
-            this.Check();
-
-            lock (_thisLock)
-            {
-                _networkManager.Upload(message);
-            }
-        }
-
-        public Stream GetStream(Metadata metadata, long maxLength)
+        public Task<Stream> GetStream(Metadata metadata, long maxLength)
         {
             this.Check();
 
@@ -381,55 +415,7 @@ namespace Amoeba.Core
             }
         }
 
-        public IEnumerable<Information> GetDownloadInformations()
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                return _downloadManager.GetDownloadInformations();
-            }
-        }
-
-        public Task Decoding(Metadata metadata, Stream outStream, long maxLength, CancellationToken token)
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                return _downloadManager.Decoding(metadata, outStream, maxLength, token);
-            }
-        }
-
-        public void AddDownload(Metadata metadata)
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                _downloadManager.Add(metadata);
-            }
-        }
-
-        public void RemoveDownload(Metadata metadata)
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                _downloadManager.Remove(metadata);
-            }
-        }
-
-        public void ResetDownload(Metadata metadata)
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                _downloadManager.Reset(metadata);
-            }
-        }
+        #endregion
 
         public override ManagerState State
         {

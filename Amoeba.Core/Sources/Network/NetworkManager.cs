@@ -1341,6 +1341,22 @@ namespace Amoeba.Core
             }
         }
 
+        public void Upload(BroadcastMessage message)
+        {
+            lock (_thisLock)
+            {
+                _messageManager.SetMetadata(message);
+            }
+        }
+
+        public void Upload(UnicastMessage message)
+        {
+            lock (_thisLock)
+            {
+                _messageManager.SetMetadata(message);
+            }
+        }
+
         public BroadcastMessage GetBroadcastMessage(Signature signature, string type)
         {
             lock (_thisLock)
@@ -1358,22 +1374,6 @@ namespace Amoeba.Core
                 _pushUnicastMessagesRequestSet.Add(signature);
 
                 return _messageManager.GetUnicastMessages(signature, type);
-            }
-        }
-
-        public void Upload(BroadcastMessage message)
-        {
-            lock (_thisLock)
-            {
-                _messageManager.SetMetadata(message);
-            }
-        }
-
-        public void Upload(UnicastMessage message)
-        {
-            lock (_thisLock)
-            {
-                _messageManager.SetMetadata(message);
             }
         }
 

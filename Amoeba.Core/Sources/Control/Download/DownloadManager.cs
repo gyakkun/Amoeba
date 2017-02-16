@@ -26,14 +26,12 @@ namespace Amoeba.Core
 
         private HashSet<Signature> _trustSignatures = new HashSet<Signature>();
 
-        private string _tempPath;
-
         private Thread _downloadThread;
         private List<Thread> _decodeThreads = new List<Thread>();
 
         private ExistManager _existManager = new ExistManager();
 
-        private TempDownloadItemInfoManager _tempDownloadItemInfoManager;
+        private VolatileDownloadItemInfoManager _volatileDownloadItemInfoManager;
         private DownloadItemInfoManager _downloadItemInfoManager;
 
         private WatchTimer _watchTimer;
@@ -45,7 +43,7 @@ namespace Amoeba.Core
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public DownloadManager(string configPath, string tempPath, NetworkManager networkManager, CacheManager cacheManager, BufferManager bufferManager)
+        public DownloadManager(string configPath, NetworkManager networkManager, CacheManager cacheManager, BufferManager bufferManager)
         {
             _networkManager = networkManager;
             _cacheManager = cacheManager;
@@ -53,11 +51,9 @@ namespace Amoeba.Core
 
             _settings = new Settings(configPath);
 
-            _tempPath = tempPath;
-
-            _tempDownloadItemInfoManager = new TempDownloadItemInfoManager();
-            _tempDownloadItemInfoManager.AddEvents += (info) => this.Event_AddInfo(info);
-            _tempDownloadItemInfoManager.RemoveEvents += (info) => this.Event_RemoveInfo(info);
+            _volatileDownloadItemInfoManager = new VolatileDownloadItemInfoManager();
+            _volatileDownloadItemInfoManager.AddEvents += (info) => this.Event_AddInfo(info);
+            _volatileDownloadItemInfoManager.RemoveEvents += (info) => this.Event_RemoveInfo(info);
 
             _downloadItemInfoManager = new DownloadItemInfoManager();
             _downloadItemInfoManager.AddEvents += (info) => this.Event_AddInfo(info);
@@ -95,7 +91,7 @@ namespace Amoeba.Core
         {
             lock (_thisLock)
             {
-                _tempDownloadItemInfoManager.Update();
+                _volatileDownloadItemInfoManager.Update();
             }
         }
 
@@ -114,50 +110,6 @@ namespace Amoeba.Core
             catch (Exception)
             {
 
-            }
-        }
-
-        private static UnbufferedFileStream GetUniqueFileStream(string path)
-        {
-            if (!File.Exists(path))
-            {
-                try
-                {
-                    return new UnbufferedFileStream(path, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite, FileOptions.None, BufferManager.Instance);
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    throw;
-                }
-                catch (IOException)
-                {
-
-                }
-            }
-
-            for (int index = 1; ; index++)
-            {
-                string text = string.Format(@"{0}\{1} ({2}){3}",
-                    Path.GetDirectoryName(path),
-                    Path.GetFileNameWithoutExtension(path),
-                    index,
-                    Path.GetExtension(path));
-
-                if (!File.Exists(text))
-                {
-                    try
-                    {
-                        return new UnbufferedFileStream(text, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite, FileOptions.None, BufferManager.Instance);
-                    }
-                    catch (DirectoryNotFoundException)
-                    {
-                        throw;
-                    }
-                    catch (IOException)
-                    {
-                        if (index > 1024) throw;
-                    }
-                }
             }
         }
 
@@ -215,7 +167,7 @@ namespace Amoeba.Core
 
                 lock (_thisLock)
                 {
-                    var tempList = CollectionUtils.Unite(_tempDownloadItemInfoManager, _downloadItemInfoManager).ToArray();
+                    var tempList = CollectionUtils.Unite(_volatileDownloadItemInfoManager, _downloadItemInfoManager).ToArray();
 
                     if (tempList.Length > 0)
                     {
@@ -334,7 +286,7 @@ namespace Amoeba.Core
 
                 lock (_thisLock)
                 {
-                    item = CollectionUtils.Unite(_tempDownloadItemInfoManager, _downloadItemInfoManager)
+                    item = CollectionUtils.Unite(_volatileDownloadItemInfoManager, _downloadItemInfoManager)
                         .Where(n => !_workingItems.Contains(n))
                         .Where(n => n.State == DownloadState.Decoding || n.State == DownloadState.ParityDecoding)
                         .OrderBy(n => (n.Depth == n.Metadata.Depth) ? 0 : 1)
@@ -402,15 +354,11 @@ namespace Amoeba.Core
                         {
                             Index index;
                             {
-                                string filePath = null;
-
                                 try
                                 {
-                                    using (var stream = DownloadManager.GetUniqueFileStream(Path.Combine(_tempPath, "_index_.tmp")))
+                                    using (var stream = new BufferStream(_bufferManager))
                                     using (var tokenSource = new CancellationTokenSource())
                                     {
-                                        filePath = stream.Name;
-
                                         // Write
                                         {
                                             var task = _cacheManager.Decoding(stream, hashes, (long)1024 * 1024 * 1024 * 4, tokenSource.Token);
@@ -441,13 +389,6 @@ namespace Amoeba.Core
                                 catch (Exception)
                                 {
                                     continue;
-                                }
-                                finally
-                                {
-                                    if (File.Exists(filePath))
-                                    {
-                                        File.Delete(filePath);
-                                    }
                                 }
                             }
 
@@ -496,25 +437,37 @@ namespace Amoeba.Core
             }
         }
 
-        #region Temp
+        #region Volatile
 
-        public Stream GetStream(Metadata metadata, long maxLength)
+        public Task<Stream> GetStream(Metadata metadata, long maxLength)
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
 
-            lock (_thisLock)
+            return Task.Run(() =>
             {
-                var info = _tempDownloadItemInfoManager.GetInfo(metadata);
+                var resultHashes = new List<Hash>();
 
-                if (info == null)
+                lock (_thisLock)
                 {
-                    info = new DownloadItemInfo(metadata);
-                    info.State = DownloadState.Downloading;
+                    var info = _volatileDownloadItemInfoManager.GetInfo(metadata);
 
-                    _tempDownloadItemInfoManager.Add(info);
+                    if (info == null)
+                    {
+                        info = new DownloadItemInfo(metadata);
+                        info.State = DownloadState.Downloading;
+
+                        _volatileDownloadItemInfoManager.Add(info);
+                    }
+
+                    if (info.State != DownloadState.Completed) return null;
+
+                    resultHashes.AddRange(info.ResultHashes);
+
+                    foreach (var hash in resultHashes)
+                    {
+                        _cacheManager.Lock(hash);
+                    }
                 }
-
-                if (info.State != DownloadState.Completed) return null;
 
                 Stream stream = null;
 
@@ -525,7 +478,7 @@ namespace Amoeba.Core
                     using (var wrapperStream = new WrapperStream(stream, true))
                     using (var tokenSource = new CancellationTokenSource())
                     {
-                        var task = _cacheManager.Decoding(wrapperStream, info.ResultHashes, maxLength, tokenSource.Token);
+                        var task = _cacheManager.Decoding(wrapperStream, resultHashes, maxLength, tokenSource.Token);
 
                         while (!task.IsCompleted)
                         {
@@ -547,9 +500,16 @@ namespace Amoeba.Core
                         stream = null;
                     }
                 }
+                finally
+                {
+                    foreach (var hash in resultHashes)
+                    {
+                        _cacheManager.Unlock(hash);
+                    }
+                }
 
                 return stream;
-            }
+            });
         }
 
         #endregion
@@ -596,7 +556,7 @@ namespace Amoeba.Core
             }
         }
 
-        public Task Decoding(Metadata metadata, Stream outStream, long maxLength, CancellationToken token)
+        public Task Export(Metadata metadata, Stream outStream, long maxLength, CancellationToken token)
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
             if (outStream == null) throw new ArgumentNullException(nameof(outStream));
@@ -729,11 +689,11 @@ namespace Amoeba.Core
 
         #endregion
 
-        private class TempDownloadItemInfoManager : IEnumerable<DownloadItemInfo>
+        private class VolatileDownloadItemInfoManager : IEnumerable<DownloadItemInfo>
         {
             private Dictionary<Metadata, Container<DownloadItemInfo>> _downloadItemInfos;
 
-            public TempDownloadItemInfoManager()
+            public VolatileDownloadItemInfoManager()
             {
                 _downloadItemInfos = new Dictionary<Metadata, Container<DownloadItemInfo>>();
             }

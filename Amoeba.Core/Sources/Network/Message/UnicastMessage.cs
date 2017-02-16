@@ -11,7 +11,7 @@ using Omnius.Serialization;
 namespace Amoeba.Core
 {
     [DataContract(Name = "UnicastMessage")]
-   public sealed class UnicastMessage : ImmutableCashItemBase<UnicastMessage>, IUnicastMessage
+    public sealed class UnicastMessage : ImmutableCashItemBase<UnicastMessage>, IUnicastMessage
     {
         private enum SerializeId
         {

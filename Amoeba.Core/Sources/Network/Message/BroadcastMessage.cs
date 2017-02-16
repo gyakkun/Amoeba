@@ -10,7 +10,7 @@ using Omnius.Serialization;
 namespace Amoeba.Core
 {
     [DataContract(Name = "BroadcastMessage")]
-   public sealed class BroadcastMessage : ImmutableCertificateItemBase<BroadcastMessage>, IBroadcastMessage
+    public sealed class BroadcastMessage : ImmutableCertificateItemBase<BroadcastMessage>, IBroadcastMessage
     {
         private enum SerializeId
         {
