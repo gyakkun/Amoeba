@@ -6,8 +6,8 @@ using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = "Message")]
-    public sealed class Message : ItemBase<Message>, IMessage
+    [DataContract(Name = "Mail")]
+    public sealed class Mail : ItemBase<Mail>, IMail
     {
         private enum SerializeId
         {
@@ -18,7 +18,7 @@ namespace Amoeba.Service
 
         public static readonly int MaxCommentLength = 1024 * 8;
 
-        public Message(string comment)
+        public Mail(string comment)
         {
             this.Comment = comment;
         }
@@ -61,12 +61,12 @@ namespace Amoeba.Service
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null || !(obj is Message)) return false;
+            if ((object)obj == null || !(obj is Mail)) return false;
 
-            return this.Equals((Message)obj);
+            return this.Equals((Mail)obj);
         }
 
-        public override bool Equals(Message other)
+        public override bool Equals(Mail other)
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
@@ -90,7 +90,7 @@ namespace Amoeba.Service
             }
             private set
             {
-                if (value != null && value.Length > Message.MaxCommentLength)
+                if (value != null && value.Length > Mail.MaxCommentLength)
                 {
                     throw new ArgumentException();
                 }

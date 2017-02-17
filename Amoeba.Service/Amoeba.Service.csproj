@@ -42,25 +42,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sources\Information\Store\SeedCollection.cs" />
-    <Compile Include="Sources\Information\_Interface\Store\ISeed.cs" />
-    <Compile Include="Sources\Information\Profile\Link\Link.cs" />
-    <Compile Include="Sources\Information\Profile\Link\LinkCollection.cs" />
-    <Compile Include="Sources\Information\Message\Message.cs" />
-    <Compile Include="Sources\Information\Message\MessageCollection.cs" />
-    <Compile Include="Sources\Information\Profile\Profile.cs" />
-    <Compile Include="Sources\Information\Profile\ProfileCollection.cs" />
-    <Compile Include="Sources\Information\Store\Seed.cs" />
-    <Compile Include="Sources\Information\Store\Box.cs" />
-    <Compile Include="Sources\Information\Store\BoxCollection.cs" />
-    <Compile Include="Sources\Information\Store\Store.cs" />
-    <Compile Include="Sources\Information\Store\StoreCollection.cs" />
-    <Compile Include="Sources\Information\_Interface\Profile\Link\ILink.cs" />
-    <Compile Include="Sources\Information\_Interface\Message\IMessage.cs" />
-    <Compile Include="Sources\Information\_Interface\Profile\IProfile.cs" />
-    <Compile Include="Sources\Information\_Interface\Store\IBox.cs" />
-    <Compile Include="Sources\Information\_Interface\Store\IStore.cs" />
-    <Compile Include="Sources\Download\DownloadManager.cs" />
+    <Compile Include="Sources\Message\Download\BackgroundDownloadManager.cs" />
+    <Compile Include="Sources\Message\Information\Store\SeedCollection.cs" />
+    <Compile Include="Sources\Message\Information\_Interface\Store\ISeed.cs" />
+    <Compile Include="Sources\Message\Information\Profile\Link\Link.cs" />
+    <Compile Include="Sources\Message\Information\Profile\Link\LinkCollection.cs" />
+    <Compile Include="Sources\Message\Information\Mail\Mail.cs" />
+    <Compile Include="Sources\Message\Information\Mail\MailCollection.cs" />
+    <Compile Include="Sources\Message\Information\Profile\Profile.cs" />
+    <Compile Include="Sources\Message\Information\Profile\ProfileCollection.cs" />
+    <Compile Include="Sources\Message\Information\Store\Seed.cs" />
+    <Compile Include="Sources\Message\Information\Store\Box.cs" />
+    <Compile Include="Sources\Message\Information\Store\BoxCollection.cs" />
+    <Compile Include="Sources\Message\Information\Store\Store.cs" />
+    <Compile Include="Sources\Message\Information\Store\StoreCollection.cs" />
+    <Compile Include="Sources\Message\Information\_Interface\Profile\Link\ILink.cs" />
+    <Compile Include="Sources\Message\Information\_Interface\Mail\IMail.cs" />
+    <Compile Include="Sources\Message\Information\_Interface\Profile\IProfile.cs" />
+    <Compile Include="Sources\Message\Information\_Interface\Store\IBox.cs" />
+    <Compile Include="Sources\Message\Information\_Interface\Store\IStore.cs" />
+    <Compile Include="Sources\Message\Download\MessageDownloadManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Amoeba.Service.License">
@@ -122,6 +123,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sources\Content\" />
+  </ItemGroup>
+  <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

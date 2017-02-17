@@ -6,18 +6,30 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using Omnius.Base;
-using Omnius.Configuration;
 using Amoeba.Core;
+using Omnius.Base;
+using Omnius.Collections;
+using Omnius.Configuration;
+using Omnius.Security;
+using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    class DownloadManager : StateManagerBase, ISettings
+    class MessageDownloadManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
 
         private Settings _settings;
+
+        private HashSet<Signature> _searchSignatures = new HashSet<Signature>();
+
+        private VolatileHashDictionary<Metadata, Link> _links;
+        private VolatileHashDictionary<Metadata, Profile> _profiles;
+        private VolatileHashDictionary<Metadata, Store> _stores;
+        private VolatileHashDictionary<Metadata, Mail> _mails;
+
+        private WatchTimer _watchTimer;
 
         private Random _random = new Random();
 
@@ -26,12 +38,47 @@ namespace Amoeba.Service
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public DownloadManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
+        public MessageDownloadManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _coreManager = coreManager;
 
             _settings = new Settings(configPath);
+
+            _links = new VolatileHashDictionary<Metadata, Link>(new TimeSpan(0, 30, 0));
+            _profiles = new VolatileHashDictionary<Metadata, Profile>(new TimeSpan(0, 30, 0));
+            _stores = new VolatileHashDictionary<Metadata, Store>(new TimeSpan(0, 30, 0));
+            _mails = new VolatileHashDictionary<Metadata, Mail>(new TimeSpan(0, 30, 0));
+
+            _watchTimer = new WatchTimer(this.WatchTimer, new TimeSpan(0, 0, 30));
+        }
+
+        private void WatchTimer()
+        {
+            _links.Update();
+            _profiles.Update();
+            _stores.Update();
+            _mails.Update();
+        }
+
+        public IEnumerable<Signature> SearchSignatures
+        {
+            get
+            {
+                lock (_thisLock)
+                {
+                    return _searchSignatures.ToArray();
+                }
+            }
+        }
+
+        public void SetSearchSignatures(IEnumerable<Signature> signatures)
+        {
+            lock (_thisLock)
+            {
+                _searchSignatures.Clear();
+                _searchSignatures.UnionWith(signatures);
+            }
         }
 
         public override ManagerState State
@@ -81,6 +128,8 @@ namespace Amoeba.Service
             lock (_thisLock)
             {
                 int version = _settings.Load("Version", () => 0);
+
+                this.SetSearchSignatures(_settings.Load("SearchSignatures", () => new Signature[0]));
             }
         }
 
@@ -89,6 +138,8 @@ namespace Amoeba.Service
             lock (_thisLock)
             {
                 _settings.Save("Version", 0);
+
+                _settings.Save("SearchSignatures", this.SearchSignatures);
             }
         }
 
@@ -107,10 +158,10 @@ namespace Amoeba.Service
     }
 
     [Serializable]
-    class DownloadManagerException : ManagerException
+    class MessageDownloadManagerException : ManagerException
     {
-        public DownloadManagerException() : base() { }
-        public DownloadManagerException(string message) : base(message) { }
-        public DownloadManagerException(string message, Exception innerException) : base(message, innerException) { }
+        public MessageDownloadManagerException() : base() { }
+        public MessageDownloadManagerException(string message) : base(message) { }
+        public MessageDownloadManagerException(string message, Exception innerException) : base(message, innerException) { }
     }
 }
