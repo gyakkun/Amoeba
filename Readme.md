@@ -12,7 +12,7 @@ In the Internet, the goal is to eliminate the suppression by the power.
 
 ## Features
 
-Amoeba = (Freenet like network and Bittorrent like network) + (Tcp, Tor, I2p, etc) + DHT + (WoT + PoW)
+Amoeba = (Freenet like network) + (Tcp, Tor, I2p, etc) + DHT + (WoT + PoW)
 
  * Provides a chat and file-sharing capabilities.
  * I2P, is available Tor, TCP, Socks5 Proxy, the Http proxy. Also works Port0 (the number of connections is less).
