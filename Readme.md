@@ -8,14 +8,14 @@ Amoeba is a high anonymity of pure P2P data sharing software.
 
 ## Goal
 
-In the Internet, the goal is to eliminate the suppression by the power.
+The goal is to eliminate the suppression on the Internet.
 
 ## Features
 
-Amoeba = (Freenet like network) + (Tcp, Tor, I2p, etc) + DHT + (WoT + PoW)
+Amoeba = (Freenet like network) + DHT + (Tcp, Tor, I2p, etc) + (WoT + PoW)
 
  * Provides a chat and file-sharing capabilities.
- * I2P, is available Tor, TCP, Socks5 Proxy, the Http proxy. Also works Port0 (the number of connections is less).
+ * I2P, Tor, TCP, Socks5 Proxy, Http proxy is available. Also works Port 0 (the connections is less).
 
 ## Links
  

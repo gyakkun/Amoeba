@@ -191,33 +191,14 @@ namespace Amoeba.Core
                             }
                         }
 
+                        contexts.Add(new InformationContext(prefix + "ReceivedByteCount", _receivedByteCount));
+                        contexts.Add(new InformationContext(prefix + "SentByteCount", _sentByteCount));
+
                         contexts.Add(new InformationContext(prefix + "CrowdNodeCount", _routeTable.Count));
                         contexts.Add(new InformationContext(prefix + "MessageCount", _messageManager.Count));
                     }
 
                     return new Information(contexts);
-                }
-            }
-        }
-
-        public long ReceivedByteCount
-        {
-            get
-            {
-                lock (_thisLock)
-                {
-                    return _receivedByteCount;
-                }
-            }
-        }
-
-        public long SentByteCount
-        {
-            get
-            {
-                lock (_thisLock)
-                {
-                    return _sentByteCount;
                 }
             }
         }

@@ -150,32 +150,6 @@ namespace Amoeba.Core
             }
         }
 
-        public long ReceivedByteCount
-        {
-            get
-            {
-                this.Check();
-
-                lock (this.ThisLock)
-                {
-                    return _networkManager.ReceivedByteCount;
-                }
-            }
-        }
-
-        public long SentByteCount
-        {
-            get
-            {
-                this.Check();
-
-                lock (this.ThisLock)
-                {
-                    return _networkManager.SentByteCount;
-                }
-            }
-        }
-
         public long Size
         {
             get
@@ -469,7 +443,7 @@ namespace Amoeba.Core
 #if DEBUG
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-# endif
+#endif
 
                 {
                     var tasks = new List<Task>();
@@ -504,7 +478,7 @@ namespace Amoeba.Core
 #if DEBUG
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-# endif
+#endif
 
                 {
                     var tasks = new List<Task>();
