@@ -81,6 +81,49 @@ namespace Amoeba.Service
             }
         }
 
+        public Profile GetProfile(Signature signature)
+        {
+            if (signature == null) throw new ArgumentNullException(nameof(signature));
+
+            lock (_thisLock)
+            {
+                var broadcastMetadata = _coreManager.GetBroadcastMessage(signature, "Profile");
+                if (broadcastMetadata == null) return null;
+
+                Profile result;
+
+                if (!_cache_BroadcastProfiles.TryGetValue(broadcastMetadata, out result))
+                {
+                    BackgroundDownloadItem item;
+
+                    if (!_downloadItems.TryGetValue(broadcastMetadata.Metadata, out item))
+                    {
+                        item = new BackgroundDownloadItem();
+                        item.Depth = 1;
+                        item.State = BackgroundDownloadState.Downloading;
+                        item.UpdateTime = DateTime.UtcNow;
+
+                        _cacheManager.Lock(broadcastMetadata.Metadata.Key);
+
+                        _downloadItems.Add(broadcastMetadata.Metadata, item);
+                    }
+                    else
+                    {
+                        item.UpdateTime = DateTime.UtcNow;
+
+                        if (item.Stream != null)
+                        {
+                            item.Stream.Seek(0, SeekOrigin.Begin);
+                            result = ContentConverter.FromProfileStream(item.Stream);
+                            _cache_BroadcastProfiles[broadcastMetadata] = result;
+                        }
+                    }
+                }
+
+                return result;
+            }
+        }
+
         public override ManagerState State
         {
             get
