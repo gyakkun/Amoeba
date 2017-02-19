@@ -350,43 +350,24 @@ namespace Amoeba.Service
         {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            var streams = new List<Stream>();
-
             try
             {
-                var tempStream = new BufferStream(_bufferManager);
+                var lengthStream = new BufferStream(_bufferManager);
+                VintUtils.Write(lengthStream, stream.Length);
+
+                Stream paddingStream;
                 {
-                    using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
+                    Random random;
                     {
-                        int length;
-
-                        while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
-                        {
-                            tempStream.Write(safeBuffer.Value, 0, length);
-                        }
+                        byte[] seedBuffer = new byte[4];
+                        _random.GetBytes(seedBuffer);
+                        random = new Random(NetworkConverter.ToInt32(seedBuffer));
                     }
-                }
 
-                streams.Add(tempStream);
+                    int paddingLength = size - (int)(lengthStream.Length + stream.Length);
 
-                for (; size < 1024 * 1024 * 32; size *= 2)
-                {
-                    if (size > tempStream.Length) break;
-                }
+                    paddingStream = new BufferStream(_bufferManager);
 
-                byte[] seedBuffer = new byte[4];
-                _random.GetBytes(seedBuffer);
-                var random = new Random(NetworkConverter.ToInt32(seedBuffer));
-
-                var metadataStream = new BufferStream(_bufferManager);
-                streams.Add(metadataStream);
-                VintUtils.WriteVint(metadataStream, tempStream.Length);
-
-                int paddingLength = size - (int)(metadataStream.Length + tempStream.Length);
-
-                var paddingStream = new BufferStream(_bufferManager);
-                streams.Add(paddingStream);
-                {
                     using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                     {
                         while (paddingLength > 0)
@@ -401,13 +382,13 @@ namespace Amoeba.Service
                     }
                 }
 
-                return new UniteStream(streams);
+                return new UniteStream(lengthStream, stream, paddingStream);
             }
             catch (Exception e)
             {
-                foreach (var targetStream in streams)
+                if (stream != null)
                 {
-                    targetStream.Dispose();
+                    stream.Dispose();
                 }
 
                 throw new ArgumentException(e.Message, e);
@@ -420,11 +401,16 @@ namespace Amoeba.Service
 
             try
             {
-                int length = (int)VintUtils.GetVint(stream);
-                return new RangeStream(stream, stream.Position, length, true);
+                int length = (int)VintUtils.Get(stream);
+                return new RangeStream(stream, stream.Position, length);
             }
             catch (Exception e)
             {
+                if (stream != null)
+                {
+                    stream.Dispose();
+                }
+
                 throw new ArgumentException(e.Message, e);
             }
         }
