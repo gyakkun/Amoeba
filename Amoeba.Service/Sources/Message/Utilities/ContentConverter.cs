@@ -415,44 +415,14 @@ namespace Amoeba.Service
             }
         }
 
-        public static Stream ToStream<T>(T message)
+        public static Stream ToStream<T>(int version, T message)
             where T : ItemBase<T>
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 
-            var bufferStream = new BufferStream(_bufferManager);
-
-            using (Stream messageStream = message.Export(_bufferManager))
-            using (Stream compressStream = ContentConverter.Compress(messageStream))
-            using (Stream versionStream = ContentConverter.AddVersion(compressStream, 0))
-            {
-                using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
-                {
-                    int length;
-
-                    while ((length = versionStream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
-                    {
-                        bufferStream.Write(safeBuffer.Value, 0, length);
-                    }
-                }
-            }
-
-            return bufferStream;
-        }
-
-        public static T FromStream<T>(Stream stream)
-            where T : ItemBase<T>
-        {
-            if (stream == null) throw new ArgumentException("stream", nameof(stream));
-
             try
             {
-                using (Stream versionStream = new WrapperStream(stream, true))
-                using (Stream compressStream = ContentConverter.RemoveVersion(versionStream, 0))
-                using (Stream messageStream = ContentConverter.Decompress(compressStream))
-                {
-                    return ItemBase<T>.Import(messageStream, _bufferManager);
-                }
+                return AddVersion(Compress(message.Export(_bufferManager)), version);
             }
             catch (Exception)
             {
@@ -460,35 +430,38 @@ namespace Amoeba.Service
             }
         }
 
-        public static Stream ToCryptoStream<T>(T message, IExchangeEncrypt publicKey)
+        public static T FromStream<T>(int version, Stream stream)
+            where T : ItemBase<T>
+        {
+            if (stream == null) throw new ArgumentException("stream", nameof(stream));
+
+            try
+            {
+                return ItemBase<T>.Import(Decompress(RemoveVersion(stream, version)), _bufferManager);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static Stream ToCryptoStream<T>(int version, T message, int paddingSize, IExchangeEncrypt publicKey)
             where T : ItemBase<T>
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
             if (publicKey == null) throw new ArgumentNullException(nameof(publicKey));
 
-            var bufferStream = new BufferStream(_bufferManager);
-
-            using (Stream messageStream = message.Export(_bufferManager))
-            using (Stream compressStream = ContentConverter.Compress(messageStream))
-            using (Stream paddingStream = ContentConverter.AddPadding(compressStream, 1024 * 256))
-            using (Stream cryptostream = ContentConverter.Encrypt(paddingStream, publicKey))
-            using (Stream versionStream = ContentConverter.AddVersion(cryptostream, 0))
+            try
             {
-                using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
-                {
-                    int length;
-
-                    while ((length = versionStream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
-                    {
-                        bufferStream.Write(safeBuffer.Value, 0, length);
-                    }
-                }
+                return AddVersion(Encrypt(AddPadding(Compress(message.Export(_bufferManager)), paddingSize), publicKey), version);
             }
-
-            return bufferStream;
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
-        public static T FromCryptoStream<T>(Stream stream, IExchangeDecrypt privateKey)
+        public static T FromCryptoStream<T>(int version, Stream stream, IExchangeDecrypt privateKey)
             where T : ItemBase<T>
         {
             if (stream == null) throw new ArgumentException("stream", nameof(stream));
@@ -496,14 +469,7 @@ namespace Amoeba.Service
 
             try
             {
-                using (Stream versionStream = new WrapperStream(stream, true))
-                using (Stream cryptoStream = ContentConverter.RemoveVersion(versionStream, 0))
-                using (Stream paddingStream = ContentConverter.Decrypt(cryptoStream, privateKey))
-                using (Stream compressStream = ContentConverter.RemovePadding(paddingStream))
-                using (Stream messageStream = ContentConverter.Decompress(compressStream))
-                {
-                    return ItemBase<T>.Import(messageStream, _bufferManager);
-                }
+                return ItemBase<T>.Import(Decompress(RemovePadding(Decrypt(RemoveVersion(stream, version), privateKey))), _bufferManager);
             }
             catch (Exception)
             {

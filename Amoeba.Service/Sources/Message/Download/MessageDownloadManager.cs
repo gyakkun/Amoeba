@@ -12,6 +12,8 @@ using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Security;
 using Omnius.Utilities;
+using Omnius.Serialization;
+using System.Collections.Concurrent;
 
 namespace Amoeba.Service
 {
@@ -24,10 +26,7 @@ namespace Amoeba.Service
 
         private HashSet<Signature> _searchSignatures = new HashSet<Signature>();
 
-        private VolatileHashDictionary<Metadata, Link> _links;
-        private VolatileHashDictionary<Metadata, Profile> _profiles;
-        private VolatileHashDictionary<Metadata, Store> _stores;
-        private VolatileHashDictionary<Metadata, Mail> _mails;
+        private Dictionary<Type, VolatileHashDictionary<Metadata, object>> _cachedMessages;
 
         private WatchTimer _watchTimer;
 
@@ -38,6 +37,8 @@ namespace Amoeba.Service
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
+        private const int _maxMessageSize = 1024 * 1024 * 256;
+
         public MessageDownloadManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
@@ -45,20 +46,20 @@ namespace Amoeba.Service
 
             _settings = new Settings(configPath);
 
-            _links = new VolatileHashDictionary<Metadata, Link>(new TimeSpan(0, 30, 0));
-            _profiles = new VolatileHashDictionary<Metadata, Profile>(new TimeSpan(0, 30, 0));
-            _stores = new VolatileHashDictionary<Metadata, Store>(new TimeSpan(0, 30, 0));
-            _mails = new VolatileHashDictionary<Metadata, Mail>(new TimeSpan(0, 30, 0));
+            _cachedMessages = new Dictionary<Type, VolatileHashDictionary<Metadata, object>>();
 
             _watchTimer = new WatchTimer(this.WatchTimer, new TimeSpan(0, 0, 30));
         }
 
         private void WatchTimer()
         {
-            _links.Update();
-            _profiles.Update();
-            _stores.Update();
-            _mails.Update();
+            lock (_thisLock)
+            {
+                foreach (var dic in _cachedMessages.Values)
+                {
+                    dic.Update();
+                }
+            }
         }
 
         public IEnumerable<Signature> SearchSignatures
@@ -81,47 +82,46 @@ namespace Amoeba.Service
             }
         }
 
-        public Profile GetProfile(Signature signature)
+        public Task<T> GetBroadcastMessage<T>(int version, Signature signature)
+            where T : ItemBase<T>
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
 
+            var type = typeof(T).GetType();
+
+            VolatileHashDictionary<Metadata, object> dic;
+
             lock (_thisLock)
             {
-                var broadcastMetadata = _coreManager.GetBroadcastMessage(signature, "Profile");
-                if (broadcastMetadata == null) return null;
-
-                Profile result;
-
-                if (!_cache_BroadcastProfiles.TryGetValue(broadcastMetadata, out result))
-                {
-                    BackgroundDownloadItem item;
-
-                    if (!_downloadItems.TryGetValue(broadcastMetadata.Metadata, out item))
-                    {
-                        item = new BackgroundDownloadItem();
-                        item.Depth = 1;
-                        item.State = BackgroundDownloadState.Downloading;
-                        item.UpdateTime = DateTime.UtcNow;
-
-                        _cacheManager.Lock(broadcastMetadata.Metadata.Key);
-
-                        _downloadItems.Add(broadcastMetadata.Metadata, item);
-                    }
-                    else
-                    {
-                        item.UpdateTime = DateTime.UtcNow;
-
-                        if (item.Stream != null)
-                        {
-                            item.Stream.Seek(0, SeekOrigin.Begin);
-                            result = ContentConverter.FromProfileStream(item.Stream);
-                            _cache_BroadcastProfiles[broadcastMetadata] = result;
-                        }
-                    }
-                }
-
-                return result;
+                dic = _cachedMessages.GetOrAdd(type, (_) => new VolatileHashDictionary<Metadata, object>(new TimeSpan(0, 30, 0)));
             }
+
+            var broadcastMessage = _coreManager.GetBroadcastMessage(signature, type.Name);
+            if (broadcastMessage == null) return Task.FromResult<T>(null);
+
+            // Cache
+            {
+                object cachedResult;
+
+                if (dic.TryGetValue(broadcastMessage.Metadata, out cachedResult))
+                {
+                    return Task.FromResult((T)cachedResult);
+                }
+            }
+
+            var task = _coreManager.GetStream(broadcastMessage.Metadata, _maxMessageSize)
+                .ContinueWith((t) =>
+                {
+                    var stream = t.Result;
+                    if (stream == null) return null;
+
+                    var result = ContentConverter.FromStream<T>(version, stream);
+                    dic[broadcastMessage.Metadata] = result;
+
+                    return result;
+                });
+
+            return task;
         }
 
         public override ManagerState State
