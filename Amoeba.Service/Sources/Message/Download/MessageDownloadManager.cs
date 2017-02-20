@@ -87,41 +87,39 @@ namespace Amoeba.Service
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
 
-            var type = typeof(T).GetType();
-
-            VolatileHashDictionary<Metadata, object> dic;
+            var type = typeof(T);
 
             lock (_thisLock)
             {
-                dic = _cachedMessages.GetOrAdd(type, (_) => new VolatileHashDictionary<Metadata, object>(new TimeSpan(0, 30, 0)));
-            }
+                var dic = _cachedMessages.GetOrAdd(type, (_) => new VolatileHashDictionary<Metadata, object>(new TimeSpan(0, 30, 0)));
 
-            var broadcastMessage = _coreManager.GetBroadcastMessage(signature, type.Name);
-            if (broadcastMessage == null) return Task.FromResult<T>(null);
+                var broadcastMessage = _coreManager.GetBroadcastMessage(signature, type.Name);
+                if (broadcastMessage == null) return Task.FromResult<T>(null);
 
-            // Cache
-            {
-                object cachedResult;
-
-                if (dic.TryGetValue(broadcastMessage.Metadata, out cachedResult))
+                // Cache
                 {
-                    return Task.FromResult((T)cachedResult);
+                    object cachedResult;
+
+                    if (dic.TryGetValue(broadcastMessage.Metadata, out cachedResult))
+                    {
+                        return Task.FromResult((T)cachedResult);
+                    }
                 }
+
+                var task = _coreManager.GetStream(broadcastMessage.Metadata, _maxMessageSize)
+                    .ContinueWith((t) =>
+                    {
+                        var stream = t.Result;
+                        if (stream == null) return null;
+
+                        var result = ContentConverter.FromStream<T>(version, stream);
+                        dic[broadcastMessage.Metadata] = result;
+
+                        return result;
+                    });
+
+                return task;
             }
-
-            var task = _coreManager.GetStream(broadcastMessage.Metadata, _maxMessageSize)
-                .ContinueWith((t) =>
-                {
-                    var stream = t.Result;
-                    if (stream == null) return null;
-
-                    var result = ContentConverter.FromStream<T>(version, stream);
-                    dic[broadcastMessage.Metadata] = result;
-
-                    return result;
-                });
-
-            return task;
         }
 
         public override ManagerState State
