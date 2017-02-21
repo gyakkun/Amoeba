@@ -335,8 +335,10 @@ namespace Amoeba.Core
                                                 if (item.State == DownloadState.Error) tokenSource.Cancel();
                                             }
 
-                                            Thread.Sleep(1000);
+                                            task.Wait(1000);
                                         }
+
+                                        if (task.Exception != null) throw task.Exception;
 
                                         hashes.AddRange(task.Result);
                                     }
@@ -372,10 +374,10 @@ namespace Amoeba.Core
                                                     if (item.State == DownloadState.Error) tokenSource.Cancel();
                                                 }
 
-                                                Thread.Sleep(1000);
+                                                task.Wait(1000);
                                             }
 
-                                            task.Wait();
+                                            if (task.Exception != null) throw task.Exception;
                                         }
 
                                         stream.Seek(0, SeekOrigin.Begin);
@@ -443,32 +445,25 @@ namespace Amoeba.Core
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
 
-            return Task.Run(() =>
+            DownloadItemInfo info;
+
+            lock (_thisLock)
             {
-                var resultHashes = new List<Hash>();
+                info = _volatileDownloadItemInfoManager.GetInfo(metadata);
 
-                lock (_thisLock)
+                if (info == null)
                 {
-                    var info = _volatileDownloadItemInfoManager.GetInfo(metadata);
+                    info = new DownloadItemInfo(metadata);
+                    info.State = DownloadState.Downloading;
 
-                    if (info == null)
-                    {
-                        info = new DownloadItemInfo(metadata);
-                        info.State = DownloadState.Downloading;
-
-                        _volatileDownloadItemInfoManager.Add(info);
-                    }
-
-                    if (info.State != DownloadState.Completed) return null;
-
-                    resultHashes.AddRange(info.ResultHashes);
-
-                    foreach (var hash in resultHashes)
-                    {
-                        _cacheManager.Lock(hash);
-                    }
+                    _volatileDownloadItemInfoManager.Add(info);
                 }
 
+                if (info.State != DownloadState.Completed) return Task.FromResult<Stream>(null);
+            }
+
+            return Task.Run(() =>
+            {
                 Stream stream = null;
 
                 try
@@ -478,16 +473,16 @@ namespace Amoeba.Core
                     using (var wrapperStream = new WrapperStream(stream, true))
                     using (var tokenSource = new CancellationTokenSource())
                     {
-                        var task = _cacheManager.Decoding(wrapperStream, resultHashes, maxLength, tokenSource.Token);
+                        var task = _cacheManager.Decoding(wrapperStream, info.ResultHashes, maxLength, tokenSource.Token);
 
                         while (!task.IsCompleted)
                         {
                             if (this.State == ManagerState.Stop) tokenSource.Cancel();
 
-                            Thread.Sleep(1000);
+                            task.Wait(1000);
                         }
 
-                        task.Wait();
+                        if (task.Exception != null) throw task.Exception;
                     }
 
                     stream.Seek(0, SeekOrigin.Begin);
@@ -498,13 +493,6 @@ namespace Amoeba.Core
                     {
                         stream.Dispose();
                         stream = null;
-                    }
-                }
-                finally
-                {
-                    foreach (var hash in resultHashes)
-                    {
-                        _cacheManager.Unlock(hash);
                     }
                 }
 

@@ -122,7 +122,7 @@ namespace Amoeba.Service
             }
             private set
             {
-                if (value != null && value.Length > Mail.MaxCommentLength)
+                if (value != null && value.Length > MailMessage.MaxCommentLength)
                 {
                     throw new ArgumentException();
                 }

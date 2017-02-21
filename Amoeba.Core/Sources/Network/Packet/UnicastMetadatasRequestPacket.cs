@@ -10,7 +10,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    sealed class BroadcastMessagesRequestPacket : ItemBase<BroadcastMessagesRequestPacket>
+    sealed class UnicastMetadatasRequestPacket : ItemBase<UnicastMetadatasRequestPacket>
     {
         private enum SerializeId
         {
@@ -21,7 +21,7 @@ namespace Amoeba.Core
 
         public const int MaxMetadataRequestCount = 1024;
 
-        public BroadcastMessagesRequestPacket(IEnumerable<Signature> signatures)
+        public UnicastMetadatasRequestPacket(IEnumerable<Signature> signatures)
         {
             if (signatures != null) this.ProtectedSignatures.AddRange(signatures);
         }

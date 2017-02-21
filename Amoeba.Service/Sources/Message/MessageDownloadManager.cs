@@ -82,7 +82,7 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<T> GetBroadcastMessage<T>(int version, Signature signature)
+        private Task<BroadcastMessage<T>> GetBroadcastMessage<T>(int version, Signature signature)
             where T : ItemBase<T>
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
@@ -91,34 +91,108 @@ namespace Amoeba.Service
 
             lock (_thisLock)
             {
-                var dic = _cachedMessages.GetOrAdd(type, (_) => new VolatileHashDictionary<Metadata, object>(new TimeSpan(0, 30, 0)));
+                var broadcastMetadata = _coreManager.GetBroadcastMetadata(signature, type.Name);
+                if (broadcastMetadata == null) return Task.FromResult<BroadcastMessage<T>>(null);
 
-                var broadcastMessage = _coreManager.GetBroadcastMessage(signature, type.Name);
-                if (broadcastMessage == null) return Task.FromResult<T>(null);
+                var dic = _cachedMessages.GetOrAdd(type, (_) => new VolatileHashDictionary<Metadata, object>(new TimeSpan(0, 30, 0)));
 
                 // Cache
                 {
                     object cachedResult;
 
-                    if (dic.TryGetValue(broadcastMessage.Metadata, out cachedResult))
+                    if (dic.TryGetValue(broadcastMetadata.Metadata, out cachedResult))
                     {
-                        return Task.FromResult((T)cachedResult);
+                        return Task.FromResult((BroadcastMessage<T>)cachedResult);
                     }
                 }
 
-                var task = _coreManager.GetStream(broadcastMessage.Metadata, _maxMessageSize)
+                var task = _coreManager.GetStream(broadcastMetadata.Metadata, _maxMessageSize)
+                    .ContinueWith((t) =>
+                    {
+                        var stream = t.Result;
+                        if (stream == null) return null;
+
+                        var result = new BroadcastMessage<T>(broadcastMetadata.Certificate.GetSignature(),
+                            broadcastMetadata.CreationTime, ContentConverter.FromStream<T>(version, stream));
+
+                        dic[broadcastMetadata.Metadata] = result;
+
+                        return result;
+                    });
+
+                return task;
+            }
+        }
+
+        private Task<IEnumerable<T>> GetUnicastMessages<T>(int version, Signature signature, IExchangeDecrypt exchangePrivateKey, int limit)
+            where T : ItemBase<T>
+        {
+            if (signature == null) throw new ArgumentNullException(nameof(signature));
+            if (exchangePrivateKey == null) throw new ArgumentNullException(nameof(exchangePrivateKey));
+
+            var type = typeof(T);
+
+            return Task.Run(() =>
+            {
+                VolatileHashDictionary<Metadata, object> dic;
+
+                lock (_thisLock)
+                {
+                    dic = _cachedMessages.GetOrAdd(type, (_) => new VolatileHashDictionary<Metadata, object>(new TimeSpan(0, 30, 0)));
+                }
+
+                foreach (var unicastMetadata in _coreManager.GetUnicastMetadatas(signature, type.Name))
+                {
+                    if (!_searchSignatures.Contains(unicastMetadata.Certificate.GetSignature()) && unicastMetadata.Cost.Value < limit) continue;
+
+                    // Cache
+                    {
+                        object cachedResult;
+
+                        if (dic.TryGetValue(broadcastMetadata.Metadata, out cachedResult))
+                        {
+                            return Task.FromResult((T)cachedResult);
+                        }
+                    }
+                }
+
+                var task = _coreManager.GetStream(broadcastMetadata.Metadata, _maxMessageSize)
                     .ContinueWith((t) =>
                     {
                         var stream = t.Result;
                         if (stream == null) return null;
 
                         var result = ContentConverter.FromStream<T>(version, stream);
-                        dic[broadcastMessage.Metadata] = result;
+                        dic[broadcastMetadata.Metadata] = result;
 
                         return result;
                     });
 
                 return task;
+            });
+        }
+
+        public Task<Profile> GetProfile(Signature signature)
+        {
+            lock (_thisLock)
+            {
+                return this.GetBroadcastMessage<Profile>(0, signature);
+            }
+        }
+
+        public Task<Store> GetStore(Signature signature)
+        {
+            lock (_thisLock)
+            {
+                return this.GetBroadcastMessage<Store>(0, signature);
+            }
+        }
+
+        public Task<MailMessage> GetMail(Signature signature)
+        {
+            lock (_thisLock)
+            {
+                return this.GetBroadcastMessage<MailMessage>(0, signature);
             }
         }
 

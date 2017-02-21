@@ -19,6 +19,7 @@ using Omnius.Net;
 namespace Amoeba.Core
 {
     public delegate IEnumerable<Signature> GetSignaturesEventHandler(object sender);
+    public delegate IEnumerable<Tag> GetTagsEventHandler(object sender);
 
     public delegate Cap ConnectCapEventHandler(object sender, string uri);
     public delegate Cap AcceptCapEventHandler(object sender);
@@ -44,7 +45,7 @@ namespace Amoeba.Core
 
         private LockedHashDictionary<Connection, SessionInfo> _connections = new LockedHashDictionary<Connection, SessionInfo>();
 
-        private MessageManager _messageManager;
+        private MetadataManager _metadataManager;
 
         private Thread _computeThread;
         private Thread _sendConnectionsThread;
@@ -54,8 +55,9 @@ namespace Amoeba.Core
 
         private VolatileHashSet<Hash> _pushBlocksRequestSet;
 
-        private VolatileHashSet<Signature> _pushBroadcastMessagesRequestSet;
-        private VolatileHashSet<Signature> _pushUnicastMessagesRequestSet;
+        private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet;
+        private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet;
+        private VolatileHashSet<Tag> _pushMulticastMetadatasRequestSet;
 
         private SafeInteger _receivedByteCount = new SafeInteger();
         private SafeInteger _sentByteCount = new SafeInteger();
@@ -80,8 +82,9 @@ namespace Amoeba.Core
 
             _routeTable = new RouteTable<SessionInfo>(256, 20);
 
-            _messageManager = new MessageManager();
-            _messageManager.GetLockSignaturesEvent += (_) => this.OnGetLockSignatures();
+            _metadataManager = new MetadataManager();
+            _metadataManager.GetLockSignaturesEvent += (_) => this.OnGetLockSignatures();
+            _metadataManager.GetLockTagsEvent += (_) => this.OnGetLockTagsEvent();
         }
 
         public Location MyLocation
@@ -195,7 +198,7 @@ namespace Amoeba.Core
                         contexts.Add(new InformationContext(prefix + "SentByteCount", _sentByteCount));
 
                         contexts.Add(new InformationContext(prefix + "CrowdNodeCount", _routeTable.Count));
-                        contexts.Add(new InformationContext(prefix + "MessageCount", _messageManager.Count));
+                        contexts.Add(new InformationContext(prefix + "MessageCount", _metadataManager.Count));
                     }
 
                     return new Information(contexts);
@@ -221,6 +224,13 @@ namespace Amoeba.Core
         private IEnumerable<Signature> OnGetLockSignatures()
         {
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
+        }
+
+        public GetTagsEventHandler GetLockTagsEvent { get; set; }
+
+        private IEnumerable<Tag> OnGetLockTagsEvent()
+        {
+            return this.GetLockTagsEvent?.Invoke(this) ?? new Tag[0];
         }
 
         public IEnumerable<Information> GetConnectionInformations()
@@ -282,9 +292,18 @@ namespace Amoeba.Core
                     {
                         refreshStopwatch.Restart();
 
-                        // トラストにより必要なMetadataを選択し、不要なMetadataを削除する。
+                        // 古いPushリクエスト情報を削除する。
                         {
-                            _messageManager.Refresh();
+                            _pushBlocksRequestSet.Update();
+
+                            _pushBroadcastMetadatasRequestSet.Update();
+                            _pushUnicastMetadatasRequestSet.Update();
+                            _pushMulticastMetadatasRequestSet.Update();
+                        }
+
+                        // 不要なMetadataを削除する。
+                        {
+                            _metadataManager.Refresh();
                         }
 
                         // 古いセッション情報を破棄する。
@@ -460,21 +479,30 @@ namespace Amoeba.Core
                     {
                         pushMetadataUploadStopwatch.Restart();
 
-                        // BroadcastMessage
-                        foreach (var signature in _messageManager.GetBroadcastSignatures())
+                        // BroadcastMetadata
+                        foreach (var signature in _metadataManager.GetBroadcastSignatures())
                         {
                             foreach (var node in _routeTable.Search(signature.Id, 2))
                             {
-                                node.Value.ReceiveInfo.PullBroadcastMessageRequestSet.Add(signature);
+                                node.Value.ReceiveInfo.PullBroadcastMetadataRequestSet.Add(signature);
                             }
                         }
 
-                        // UnicastMessage
-                        foreach (var signature in _messageManager.GetUnicastSignatures())
+                        // UnicastMetadata
+                        foreach (var signature in _metadataManager.GetUnicastSignatures())
                         {
                             foreach (var node in _routeTable.Search(signature.Id, 2))
                             {
-                                node.Value.ReceiveInfo.PullUnicastMessageRequestSet.Add(signature);
+                                node.Value.ReceiveInfo.PullUnicastMetadataRequestSet.Add(signature);
+                            }
+                        }
+
+                        // MulticastMetadata
+                        foreach (var tag in _metadataManager.GetMulticastTags())
+                        {
+                            foreach (var node in _routeTable.Search(tag.Id, 2))
+                            {
+                                node.Value.ReceiveInfo.PullMulticastMetadataRequestSet.Add(tag);
                             }
                         }
                     }
@@ -485,43 +513,62 @@ namespace Amoeba.Core
                     {
                         pushMetadataDownloadStopwatch.Restart();
 
-                        var pushBroadcastMessagesRequestSet = new HashSet<Signature>();
-                        var pushUnicastMessagesRequestSet = new HashSet<Signature>();
+                        var pushBroadcastMetadatasRequestSet = new HashSet<Signature>();
+                        var pushUnicastMetadatasRequestSet = new HashSet<Signature>();
+                        var pushMulticastMetadatasRequestSet = new HashSet<Tag>();
 
                         {
-                            // BroadcastMessage
+                            // BroadcastMetadata
                             {
                                 {
-                                    var list = _pushBroadcastMessagesRequestSet.ToArray();
+                                    var list = _pushBroadcastMetadatasRequestSet.ToArray();
                                     _random.Shuffle(list);
 
-                                    pushBroadcastMessagesRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
+                                    pushBroadcastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
 
                                 foreach (var info in _routeTable.ToArray().Select(n => n.Value))
                                 {
-                                    var list = info.ReceiveInfo.PullBroadcastMessageRequestSet.ToArray(new TimeSpan(0, 10, 0));
+                                    var list = info.ReceiveInfo.PullBroadcastMetadataRequestSet.ToArray(new TimeSpan(0, 10, 0));
                                     _random.Shuffle(list);
 
-                                    pushBroadcastMessagesRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
+                                    pushBroadcastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
                             }
 
-                            // UnicastMessage
+                            // UnicastMetadata
                             {
                                 {
-                                    var list = _pushUnicastMessagesRequestSet.ToArray();
+                                    var list = _pushUnicastMetadatasRequestSet.ToArray();
                                     _random.Shuffle(list);
 
-                                    pushUnicastMessagesRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
+                                    pushUnicastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
 
                                 foreach (var info in _routeTable.ToArray().Select(n => n.Value))
                                 {
-                                    var list = info.ReceiveInfo.PullUnicastMessageRequestSet.ToArray(new TimeSpan(0, 10, 0));
+                                    var list = info.ReceiveInfo.PullUnicastMetadataRequestSet.ToArray(new TimeSpan(0, 10, 0));
                                     _random.Shuffle(list);
 
-                                    pushUnicastMessagesRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
+                                    pushUnicastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
+                                }
+                            }
+
+                            // MulticastMetadata
+                            {
+                                {
+                                    var list = _pushMulticastMetadatasRequestSet.ToArray();
+                                    _random.Shuffle(list);
+
+                                    pushMulticastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
+                                }
+
+                                foreach (var info in _routeTable.ToArray().Select(n => n.Value))
+                                {
+                                    var list = info.ReceiveInfo.PullMulticastMetadataRequestSet.ToArray(new TimeSpan(0, 10, 0));
+                                    _random.Shuffle(list);
+
+                                    pushMulticastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
                             }
                         }
@@ -529,11 +576,11 @@ namespace Amoeba.Core
                         {
                             var crowdNodes = _routeTable.ToArray();
 
-                            // BroadcastMessage
+                            // BroadcastMetadata
                             {
                                 var tempMap = new Dictionary<Node<SessionInfo>, List<Signature>>();
 
-                                foreach (var signature in pushBroadcastMessagesRequestSet.Randomize())
+                                foreach (var signature in pushBroadcastMetadatasRequestSet.Randomize())
                                 {
                                     foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _myId, crowdNodes, 2))
                                     {
@@ -548,19 +595,19 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushBroadcastMessageRequestQueue.ThisLock)
+                                    lock (node.Value.SendInfo.PushBroadcastMetadataRequestQueue.ThisLock)
                                     {
-                                        node.Value.SendInfo.PushBroadcastMessageRequestQueue.Clear();
-                                        node.Value.SendInfo.PushBroadcastMessageRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
+                                        node.Value.SendInfo.PushBroadcastMetadataRequestQueue.Clear();
+                                        node.Value.SendInfo.PushBroadcastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
                                     }
                                 }
                             }
 
-                            // UnicastMessage
+                            // UnicastMetadata
                             {
                                 var tempMap = new Dictionary<Node<SessionInfo>, List<Signature>>();
 
-                                foreach (var signature in pushUnicastMessagesRequestSet.Randomize())
+                                foreach (var signature in pushUnicastMetadatasRequestSet.Randomize())
                                 {
                                     foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _myId, crowdNodes, 2))
                                     {
@@ -575,10 +622,37 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushUnicastMessageRequestQueue.ThisLock)
+                                    lock (node.Value.SendInfo.PushUnicastMetadataRequestQueue.ThisLock)
                                     {
-                                        node.Value.SendInfo.PushUnicastMessageRequestQueue.Clear();
-                                        node.Value.SendInfo.PushUnicastMessageRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
+                                        node.Value.SendInfo.PushUnicastMetadataRequestQueue.Clear();
+                                        node.Value.SendInfo.PushUnicastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
+                                    }
+                                }
+                            }
+
+                            // MulticastMetadata
+                            {
+                                var tempMap = new Dictionary<Node<SessionInfo>, List<Tag>>();
+
+                                foreach (var tag in pushMulticastMetadatasRequestSet.Randomize())
+                                {
+                                    foreach (var node in RouteTable<SessionInfo>.Search(tag.Id, _myId, crowdNodes, 2))
+                                    {
+                                        tempMap.GetOrAdd(node, (_) => new List<Tag>()).Add(tag);
+                                    }
+                                }
+
+                                foreach (var pair in tempMap)
+                                {
+                                    var node = pair.Key;
+                                    var targets = pair.Value;
+
+                                    _random.Shuffle(targets);
+
+                                    lock (node.Value.SendInfo.PushMulticastMetadataRequestQueue.ThisLock)
+                                    {
+                                        node.Value.SendInfo.PushMulticastMetadataRequestQueue.Clear();
+                                        node.Value.SendInfo.PushMulticastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
                                     }
                                 }
                             }
@@ -822,11 +896,14 @@ namespace Amoeba.Core
             BlocksRequest = 2,
             BlockResult = 3,
 
-            BroadcastMessagesRequest = 4,
-            BroadcastMessagesResult = 5,
+            BroadcastMetadatasRequest = 4,
+            BroadcastMetadatasResult = 5,
 
-            UnicastMessagesRequest = 6,
-            UnicastMessagesResult = 7,
+            UnicastMetadatasRequest = 6,
+            UnicastMetadatasResult = 7,
+
+            MulticastMetadatasRequest = 8,
+            MulticastMetadatasResult = 9,
         }
 
         private Stream Send(SessionInfo sessionInfo)
@@ -946,101 +1023,151 @@ namespace Amoeba.Core
                 }
             }
 
-            // BroadcastMessagesRequest
-            if (sessionInfo.SendInfo.PushBroadcastMessageRequestQueue.Count > 0)
+            // BroadcastMetadatasRequest
+            if (sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.Count > 0)
             {
-                var packet = new BroadcastMessagesRequestPacket(sessionInfo.SendInfo.PushBroadcastMessageRequestQueue);
-                sessionInfo.SendInfo.PushBroadcastMessageRequestQueue.Clear();
+                var packet = new BroadcastMetadatasRequestPacket(sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue);
+                sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.Clear();
 
                 Stream typeStream = new BufferStream(_bufferManager);
-                VintUtils.Write(typeStream, (int)SerializeId.BroadcastMessagesRequest);
+                VintUtils.Write(typeStream, (int)SerializeId.BroadcastMetadatasRequest);
 
                 _info.PushMessageRequestCount.Add(packet.Signatures.Count());
 
                 return new UniteStream(typeStream, packet.Export(_bufferManager));
             }
 
-            // BroadcastMessagesResult
-            if (sessionInfo.SendInfo.BroadcastMessageStopwatch.Elapsed.TotalSeconds > 60)
+            // BroadcastMetadatasResult
+            if (sessionInfo.SendInfo.BroadcastMetadataStopwatch.Elapsed.TotalSeconds > 60)
             {
-                sessionInfo.SendInfo.BroadcastMessageStopwatch.Restart();
+                sessionInfo.SendInfo.BroadcastMetadataStopwatch.Restart();
 
-                var broadcastMessages = new List<BroadcastMessage>();
+                var broadcastMetadatas = new List<BroadcastMetadata>();
 
-                var signatures = sessionInfo.ReceiveInfo.PullBroadcastMessageRequestSet.ToList();
+                var signatures = sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.ToList();
                 _random.Shuffle(signatures);
 
                 foreach (var signature in signatures)
                 {
-                    foreach (var metadata in _messageManager.GetBroadcastMessages(signature).Randomize())
+                    foreach (var metadata in _metadataManager.GetBroadcastMetadatas(signature).Randomize())
                     {
-                        broadcastMessages.Add(metadata);
+                        broadcastMetadatas.Add(metadata);
 
-                        if (broadcastMessages.Count >= _maxMetadataResultCount) goto End;
+                        if (broadcastMetadatas.Count >= _maxMetadataResultCount) goto End;
                     }
                 }
 
                 End:;
 
-                if (broadcastMessages.Count > 0)
+                if (broadcastMetadatas.Count > 0)
                 {
-                    var packet = new BroadcastMessagesResultPacket(broadcastMessages);
-                    broadcastMessages.Clear();
+                    var packet = new BroadcastMetadatasResultPacket(broadcastMetadatas);
+                    broadcastMetadatas.Clear();
 
                     Stream typeStream = new BufferStream(_bufferManager);
-                    VintUtils.Write(typeStream, (int)SerializeId.BroadcastMessagesResult);
+                    VintUtils.Write(typeStream, (int)SerializeId.BroadcastMetadatasResult);
 
-                    _info.PushMessageResultCount.Add(packet.BroadcastMessages.Count());
+                    _info.PushMessageResultCount.Add(packet.BroadcastMetadatas.Count());
 
                     return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
             }
 
-            // UnicastMessagesRequest
-            if (sessionInfo.SendInfo.PushUnicastMessageRequestQueue.Count > 0)
+            // UnicastMetadatasRequest
+            if (sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.Count > 0)
             {
-                var packet = new UnicastMessagesRequestPacket(sessionInfo.SendInfo.PushUnicastMessageRequestQueue);
-                sessionInfo.SendInfo.PushUnicastMessageRequestQueue.Clear();
+                var packet = new UnicastMetadatasRequestPacket(sessionInfo.SendInfo.PushUnicastMetadataRequestQueue);
+                sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.Clear();
 
                 Stream typeStream = new BufferStream(_bufferManager);
-                VintUtils.Write(typeStream, (int)SerializeId.UnicastMessagesRequest);
+                VintUtils.Write(typeStream, (int)SerializeId.UnicastMetadatasRequest);
 
                 _info.PushMessageRequestCount.Add(packet.Signatures.Count());
 
                 return new UniteStream(typeStream, packet.Export(_bufferManager));
             }
 
-            // UnicastMessagesResult
-            if (sessionInfo.SendInfo.UnicastMessageStopwatch.Elapsed.TotalSeconds > 60)
+            // UnicastMetadatasResult
+            if (sessionInfo.SendInfo.UnicastMetadataStopwatch.Elapsed.TotalSeconds > 60)
             {
-                sessionInfo.SendInfo.UnicastMessageStopwatch.Restart();
+                sessionInfo.SendInfo.UnicastMetadataStopwatch.Restart();
 
-                var unicastMessages = new List<UnicastMessage>();
+                var unicastMetadatas = new List<UnicastMetadata>();
 
-                var signatures = sessionInfo.ReceiveInfo.PullUnicastMessageRequestSet.ToList();
+                var signatures = sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.ToList();
                 _random.Shuffle(signatures);
 
                 foreach (var signature in signatures)
                 {
-                    foreach (var metadata in _messageManager.GetUnicastMessages(signature).Randomize())
+                    foreach (var metadata in _metadataManager.GetUnicastMetadatas(signature).Randomize())
                     {
-                        unicastMessages.Add(metadata);
+                        unicastMetadatas.Add(metadata);
 
-                        if (unicastMessages.Count >= _maxMetadataResultCount) goto End;
+                        if (unicastMetadatas.Count >= _maxMetadataResultCount) goto End;
                     }
                 }
 
                 End:;
 
-                if (unicastMessages.Count > 0)
+                if (unicastMetadatas.Count > 0)
                 {
-                    var packet = new UnicastMessagesResultPacket(unicastMessages);
-                    unicastMessages.Clear();
+                    var packet = new UnicastMetadatasResultPacket(unicastMetadatas);
+                    unicastMetadatas.Clear();
 
                     Stream typeStream = new BufferStream(_bufferManager);
-                    VintUtils.Write(typeStream, (int)SerializeId.UnicastMessagesResult);
+                    VintUtils.Write(typeStream, (int)SerializeId.UnicastMetadatasResult);
 
-                    _info.PushMessageResultCount.Add(packet.UnicastMessages.Count());
+                    _info.PushMessageResultCount.Add(packet.UnicastMetadatas.Count());
+
+                    return new UniteStream(typeStream, packet.Export(_bufferManager));
+                }
+            }
+
+            // MulticastMetadatasRequest
+            if (sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.Count > 0)
+            {
+                var packet = new MulticastMetadatasRequestPacket(sessionInfo.SendInfo.PushMulticastMetadataRequestQueue);
+                sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.Clear();
+
+                Stream typeStream = new BufferStream(_bufferManager);
+                VintUtils.Write(typeStream, (int)SerializeId.MulticastMetadatasRequest);
+
+                _info.PushMessageRequestCount.Add(packet.Tags.Count());
+
+                return new UniteStream(typeStream, packet.Export(_bufferManager));
+            }
+
+            // MulticastMetadatasResult
+            if (sessionInfo.SendInfo.MulticastMetadataStopwatch.Elapsed.TotalSeconds > 60)
+            {
+                sessionInfo.SendInfo.MulticastMetadataStopwatch.Restart();
+
+                var unicastMetadatas = new List<MulticastMetadata>();
+
+                var signatures = sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.ToList();
+                _random.Shuffle(signatures);
+
+                foreach (var signature in signatures)
+                {
+                    foreach (var metadata in _metadataManager.GetMulticastMetadatas(signature).Randomize())
+                    {
+                        unicastMetadatas.Add(metadata);
+
+                        if (unicastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                    }
+                }
+
+                End:;
+
+                if (unicastMetadatas.Count > 0)
+                {
+                    var packet = new MulticastMetadatasResultPacket(unicastMetadatas);
+                    unicastMetadatas.Clear();
+
+                    Stream typeStream = new BufferStream(_bufferManager);
+                    VintUtils.Write(typeStream, (int)SerializeId.MulticastMetadatasResult);
+
+                    _info.PushMessageResultCount.Add(packet.MulticastMetadatas.Count());
 
                     return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
@@ -1144,27 +1271,27 @@ namespace Amoeba.Core
                             }
                         }
                     }
-                    else if (id == (int)SerializeId.BroadcastMessagesRequest)
+                    else if (id == (int)SerializeId.BroadcastMetadatasRequest)
                     {
-                        if (sessionInfo.ReceiveInfo.PullBroadcastMessageRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMessageRequestSet.SurvivalTime.TotalMinutes) return;
+                        if (sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes) return;
 
-                        var packet = BroadcastMessagesRequestPacket.Import(dataStream, _bufferManager);
+                        var packet = BroadcastMetadatasRequestPacket.Import(dataStream, _bufferManager);
 
                         _info.PullMessageRequestCount.Add(packet.Signatures.Count());
 
-                        sessionInfo.ReceiveInfo.PullBroadcastMessageRequestSet.AddRange(packet.Signatures);
+                        sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.AddRange(packet.Signatures);
                     }
-                    else if (id == (int)SerializeId.BroadcastMessagesResult)
+                    else if (id == (int)SerializeId.BroadcastMetadatasResult)
                     {
-                        var packet = BroadcastMessagesResultPacket.Import(dataStream, _bufferManager);
+                        var packet = BroadcastMetadatasResultPacket.Import(dataStream, _bufferManager);
 
-                        _info.PullMessageResultCount.Add(packet.BroadcastMessages.Count());
+                        _info.PullMessageResultCount.Add(packet.BroadcastMetadatas.Count());
 
-                        foreach (var metadata in packet.BroadcastMessages)
+                        foreach (var metadata in packet.BroadcastMetadatas)
                         {
                             try
                             {
-                                _messageManager.SetMetadata(metadata);
+                                _metadataManager.SetMetadata(metadata);
                             }
                             catch (Exception)
                             {
@@ -1172,27 +1299,55 @@ namespace Amoeba.Core
                             }
                         }
                     }
-                    else if (id == (int)SerializeId.UnicastMessagesRequest)
+                    else if (id == (int)SerializeId.UnicastMetadatasRequest)
                     {
-                        if (sessionInfo.ReceiveInfo.PullUnicastMessageRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMessageRequestSet.SurvivalTime.TotalMinutes) return;
+                        if (sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.SurvivalTime.TotalMinutes) return;
 
-                        var packet = UnicastMessagesRequestPacket.Import(dataStream, _bufferManager);
+                        var packet = UnicastMetadatasRequestPacket.Import(dataStream, _bufferManager);
 
                         _info.PullMessageRequestCount.Add(packet.Signatures.Count());
 
-                        sessionInfo.ReceiveInfo.PullUnicastMessageRequestSet.AddRange(packet.Signatures);
+                        sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.AddRange(packet.Signatures);
                     }
-                    else if (id == (int)SerializeId.UnicastMessagesResult)
+                    else if (id == (int)SerializeId.UnicastMetadatasResult)
                     {
-                        var packet = UnicastMessagesResultPacket.Import(dataStream, _bufferManager);
+                        var packet = UnicastMetadatasResultPacket.Import(dataStream, _bufferManager);
 
-                        _info.PullMessageResultCount.Add(packet.UnicastMessages.Count());
+                        _info.PullMessageResultCount.Add(packet.UnicastMetadatas.Count());
 
-                        foreach (var metadata in packet.UnicastMessages)
+                        foreach (var metadata in packet.UnicastMetadatas)
                         {
                             try
                             {
-                                _messageManager.SetMetadata(metadata);
+                                _metadataManager.SetMetadata(metadata);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+                    else if (id == (int)SerializeId.MulticastMetadatasRequest)
+                    {
+                        if (sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.SurvivalTime.TotalMinutes) return;
+
+                        var packet = MulticastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                        _info.PullMessageRequestCount.Add(packet.Tags.Count());
+
+                        sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.AddRange(packet.Tags);
+                    }
+                    else if (id == (int)SerializeId.MulticastMetadatasResult)
+                    {
+                        var packet = MulticastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                        _info.PullMessageResultCount.Add(packet.MulticastMetadatas.Count());
+
+                        foreach (var metadata in packet.MulticastMetadatas)
+                        {
+                            try
+                            {
+                                _metadataManager.SetMetadata(metadata);
                             }
                             catch (Exception)
                             {
@@ -1240,16 +1395,18 @@ namespace Amoeba.Core
 
             public Stopwatch LocationStopwatch { get; private set; } = Stopwatch.StartNew();
             public Stopwatch BlockStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch BroadcastMessageStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch UnicastMessageStopwatch { get; private set; } = Stopwatch.StartNew();
+            public Stopwatch BroadcastMetadataStopwatch { get; private set; } = Stopwatch.StartNew();
+            public Stopwatch UnicastMetadataStopwatch { get; private set; } = Stopwatch.StartNew();
+            public Stopwatch MulticastMetadataStopwatch { get; private set; } = Stopwatch.StartNew();
 
             public LockedQueue<Hash> PushBlockResultQueue { get; private set; } = new LockedQueue<Hash>();
 
             public LockedList<Hash> PushBlockLinkQueue { get; private set; } = new LockedList<Hash>();
             public LockedList<Hash> PushBlockRequestQueue { get; private set; } = new LockedList<Hash>();
 
-            public LockedList<Signature> PushBroadcastMessageRequestQueue { get; private set; } = new LockedList<Signature>();
-            public LockedList<Signature> PushUnicastMessageRequestQueue { get; private set; } = new LockedList<Signature>();
+            public LockedList<Signature> PushBroadcastMetadataRequestQueue { get; private set; } = new LockedList<Signature>();
+            public LockedList<Signature> PushUnicastMetadataRequestQueue { get; private set; } = new LockedList<Signature>();
+            public LockedList<Tag> PushMulticastMetadataRequestQueue { get; private set; } = new LockedList<Tag>();
 
             public void Update()
             {
@@ -1268,8 +1425,9 @@ namespace Amoeba.Core
             public VolatileHashSet<Hash> PullBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
             public VolatileHashSet<Hash> PullBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
 
-            public VolatileHashSet<Signature> PullBroadcastMessageRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
-            public VolatileHashSet<Signature> PullUnicastMessageRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
+            public VolatileHashSet<Signature> PullBroadcastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
+            public VolatileHashSet<Signature> PullUnicastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
+            public VolatileHashSet<Tag> PullMulticastMetadataRequestSet { get; private set; } = new VolatileHashSet<Tag>(new TimeSpan(0, 30, 0));
 
             public void Update()
             {
@@ -1278,8 +1436,9 @@ namespace Amoeba.Core
                 this.PullBlockLinkSet.Update();
                 this.PullBlockRequestSet.Update();
 
-                this.PullBroadcastMessageRequestSet.Update();
-                this.PullUnicastMessageRequestSet.Update();
+                this.PullBroadcastMetadataRequestSet.Update();
+                this.PullUnicastMetadataRequestSet.Update();
+                this.PullMulticastMetadataRequestSet.Update();
             }
         }
 
@@ -1322,39 +1481,57 @@ namespace Amoeba.Core
             }
         }
 
-        public void Upload(BroadcastMessage message)
+        public void Upload(BroadcastMetadata metadata)
         {
             lock (_thisLock)
             {
-                _messageManager.SetMetadata(message);
+                _metadataManager.SetMetadata(metadata);
             }
         }
 
-        public void Upload(UnicastMessage message)
+        public void Upload(UnicastMetadata metadata)
         {
             lock (_thisLock)
             {
-                _messageManager.SetMetadata(message);
+                _metadataManager.SetMetadata(metadata);
             }
         }
 
-        public BroadcastMessage GetBroadcastMessage(Signature signature, string type)
+        public void Upload(MulticastMetadata metadata)
         {
             lock (_thisLock)
             {
-                _pushBroadcastMessagesRequestSet.Add(signature);
-
-                return _messageManager.GetBroadcastMessage(signature, type);
+                _metadataManager.SetMetadata(metadata);
             }
         }
 
-        public IEnumerable<UnicastMessage> GetUnicastMessages(Signature signature, string type)
+        public BroadcastMetadata GetBroadcastMetadata(Signature signature, string type)
         {
             lock (_thisLock)
             {
-                _pushUnicastMessagesRequestSet.Add(signature);
+                _pushBroadcastMetadatasRequestSet.Add(signature);
 
-                return _messageManager.GetUnicastMessages(signature, type);
+                return _metadataManager.GetBroadcastMetadata(signature, type);
+            }
+        }
+
+        public IEnumerable<UnicastMetadata> GetUnicastMetadatas(Signature signature, string type)
+        {
+            lock (_thisLock)
+            {
+                _pushUnicastMetadatasRequestSet.Add(signature);
+
+                return _metadataManager.GetUnicastMetadatas(signature, type);
+            }
+        }
+
+        public IEnumerable<MulticastMetadata> GetMulticastMetadatas(Tag tag, string type)
+        {
+            lock (_thisLock)
+            {
+                _pushMulticastMetadatasRequestSet.Add(tag);
+
+                return _metadataManager.GetMulticastMetadatas(tag, type);
             }
         }
 
@@ -1471,11 +1648,11 @@ namespace Amoeba.Core
 
                 // MetadataManager
                 {
-                    foreach (var metadata in _settings.Load("BroadcastMessages", () => new BroadcastMessage[0]))
+                    foreach (var metadata in _settings.Load("BroadcastMetadatas", () => new BroadcastMetadata[0]))
                     {
                         try
                         {
-                            _messageManager.SetMetadata(metadata);
+                            _metadataManager.SetMetadata(metadata);
                         }
                         catch (Exception)
                         {
@@ -1483,11 +1660,11 @@ namespace Amoeba.Core
                         }
                     }
 
-                    foreach (var metadata in _settings.Load("UnicastMessages", () => new UnicastMessage[0]))
+                    foreach (var metadata in _settings.Load("UnicastMetadatas", () => new UnicastMetadata[0]))
                     {
                         try
                         {
-                            _messageManager.SetMetadata(metadata);
+                            _metadataManager.SetMetadata(metadata);
                         }
                         catch (Exception)
                         {
@@ -1510,8 +1687,8 @@ namespace Amoeba.Core
                 _settings.Save("BandwidthLimit", _bandwidthLimit);
 
                 {
-                    _settings.Save("BroadcastMessages", _messageManager.GetBroadcastMessages());
-                    _settings.Save("UnicastMessages", _messageManager.GetUnicastMessages());
+                    _settings.Save("BroadcastMetadatas", _metadataManager.GetBroadcastMetadatas());
+                    _settings.Save("UnicastMetadatas", _metadataManager.GetUnicastMetadatas());
                 }
             }
         }

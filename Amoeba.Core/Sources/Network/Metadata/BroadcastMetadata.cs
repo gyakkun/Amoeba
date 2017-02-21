@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -10,38 +9,32 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "UnicastMessage")]
-    public sealed class UnicastMessage : ImmutableCashItemBase<UnicastMessage>, IUnicastMessage
+    [DataContract(Name = "BroadcastMetadata")]
+    public sealed class BroadcastMetadata : CertificateItemBase<BroadcastMetadata>, IBroadcastMetadata
     {
         private enum SerializeId
         {
             Type = 0,
-            Signature = 1,
-            CreationTime = 2,
-            Metadata = 3,
+            CreationTime = 1,
+            Metadata = 2,
 
-            Cash = 4,
-            Certificate = 5,
+            Certificate = 3,
         }
 
         private string _type;
-        private Signature _signature;
         private DateTime _creationTime;
         private Metadata _metadata;
 
-        private Cash _cash;
         private Certificate _certificate;
 
         public static readonly int MaxTypeLength = 256;
 
-        public UnicastMessage(string type, Signature signature, DateTime creationTime, Metadata metadata, DigitalSignature digitalSignature, Miner miner, CancellationToken token)
+        public BroadcastMetadata(string type, DateTime creationTime, Metadata metadata, DigitalSignature digitalSignature)
         {
             this.Type = type;
-            this.Signature = signature;
             this.CreationTime = creationTime;
             this.Metadata = metadata;
 
-            this.CreateCash(miner, digitalSignature?.ToString(), token);
             this.CreateCertificate(digitalSignature);
         }
 
@@ -57,10 +50,6 @@ namespace Amoeba.Core
                     {
                         this.Type = reader.GetString();
                     }
-                    else if (id == (int)SerializeId.Signature)
-                    {
-                        this.Signature = Signature.Import(reader.GetStream(), bufferManager);
-                    }
                     else if (id == (int)SerializeId.CreationTime)
                     {
                         this.CreationTime = reader.GetDateTime();
@@ -70,10 +59,6 @@ namespace Amoeba.Core
                         this.Metadata = Metadata.Import(reader.GetStream(), bufferManager);
                     }
 
-                    else if (id == (int)SerializeId.Cash)
-                    {
-                        this.Cash = Cash.Import(reader.GetStream(), bufferManager);
-                    }
                     else if (id == (int)SerializeId.Certificate)
                     {
                         this.Certificate = Certificate.Import(reader.GetStream(), bufferManager);
@@ -92,12 +77,6 @@ namespace Amoeba.Core
                     writer.Write((int)SerializeId.Type);
                     writer.Write(this.Type);
                 }
-                // Signature
-                if (this.Signature != null)
-                {
-                    writer.Write((int)SerializeId.Signature);
-                    writer.Write(this.Signature.Export(bufferManager));
-                }
                 // CreationTime
                 if (this.CreationTime != DateTime.MinValue)
                 {
@@ -111,12 +90,6 @@ namespace Amoeba.Core
                     writer.Write(this.Metadata.Export(bufferManager));
                 }
 
-                // Cash
-                if (this.Cash != null)
-                {
-                    writer.Write((int)SerializeId.Cash);
-                    writer.Write(this.Cash.Export(bufferManager));
-                }
                 // Certificate
                 if (this.Certificate != null)
                 {
@@ -136,92 +109,26 @@ namespace Amoeba.Core
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null || !(obj is UnicastMessage)) return false;
+            if ((object)obj == null || !(obj is BroadcastMetadata)) return false;
 
-            return this.Equals((UnicastMessage)obj);
+            return this.Equals((BroadcastMetadata)obj);
         }
 
-        public override bool Equals(UnicastMessage other)
+        public override bool Equals(BroadcastMetadata other)
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
             if (this.Type != other.Type
-                || this.Signature != other.Signature
                 || this.CreationTime != other.CreationTime
                 || this.Metadata != other.Metadata
 
-                || this.Cash != other.Cash
                 || this.Certificate != other.Certificate)
             {
                 return false;
             }
 
             return true;
-        }
-
-        protected override void CreateCash(Miner miner, string signature, CancellationToken token)
-        {
-            base.CreateCash(miner, signature, token);
-        }
-
-        protected override int VerifyCash(string signature)
-        {
-            return base.VerifyCash(signature);
-        }
-
-        protected override Stream GetCashStream(string signature)
-        {
-            var tempCertificate = this.Certificate;
-            this.Certificate = null;
-
-            var tempCash = this.Cash;
-            this.Cash = null;
-
-            try
-            {
-                var bufferManager = BufferManager.Instance;
-                var streams = new List<Stream>();
-
-                streams.Add(this.Export(bufferManager));
-
-                using (var writer = new ItemStreamWriter(bufferManager))
-                {
-                    writer.Write((int)SerializeId.Certificate);
-                    writer.Write(signature);
-
-                    streams.Add(writer.GetStream());
-                }
-
-                return new UniteStream(streams);
-            }
-            finally
-            {
-                this.Certificate = tempCertificate;
-                this.Cash = tempCash;
-            }
-        }
-
-        protected override Cash Cash
-        {
-            get
-            {
-                return _cash;
-            }
-            set
-            {
-                _cash = value;
-            }
-        }
-
-        protected override void CreateCertificate(DigitalSignature digitalSignature)
-        {
-            base.CreateCertificate(digitalSignature);
-        }
-
-        public override bool VerifyCertificate()
-        {
-            return base.VerifyCertificate();
         }
 
         protected override Stream GetCertificateStream()
@@ -251,7 +158,7 @@ namespace Amoeba.Core
             }
         }
 
-        #region IUnicastMessage
+        #region IBroadcastMetadata
 
         [DataMember(Name = "Type")]
         public string Type
@@ -262,7 +169,7 @@ namespace Amoeba.Core
             }
             private set
             {
-                if (value != null && value.Length > UnicastMessage.MaxTypeLength)
+                if (value != null && value.Length > BroadcastMetadata.MaxTypeLength)
                 {
                     throw new ArgumentException();
                 }
@@ -270,19 +177,6 @@ namespace Amoeba.Core
                 {
                     _type = value;
                 }
-            }
-        }
-
-        [DataMember(Name = "Signature")]
-        public Signature Signature
-        {
-            get
-            {
-                return _signature;
-            }
-            private set
-            {
-                _signature = value;
             }
         }
 
@@ -311,35 +205,6 @@ namespace Amoeba.Core
             {
                 _metadata = value;
             }
-        }
-
-        #endregion
-
-        #region IComputeHash
-
-        private volatile byte[] _sha256_hash;
-
-        public Hash CreateHash(HashAlgorithm hashAlgorithm)
-        {
-            if (_sha256_hash == null)
-            {
-                using (var stream = this.Export(BufferManager.Instance))
-                {
-                    _sha256_hash = Sha256.ComputeHash(stream);
-                }
-            }
-
-            if (hashAlgorithm == HashAlgorithm.Sha256)
-            {
-                return new Hash(HashAlgorithm.Sha256, _sha256_hash);
-            }
-
-            return null;
-        }
-
-        public bool VerifyHash(Hash hash)
-        {
-            return Unsafe.Equals(this.CreateHash(hash.Algorithm).Value, hash.Value);
         }
 
         #endregion

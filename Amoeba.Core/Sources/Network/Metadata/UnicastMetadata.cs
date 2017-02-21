@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -9,19 +10,21 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "BroadcastMessage")]
-    public sealed class BroadcastMessage : ImmutableCertificateItemBase<BroadcastMessage>, IBroadcastMessage
+    [DataContract(Name = "UnicastMetadata")]
+    public sealed class UnicastMetadata : CertificateItemBase<UnicastMetadata>, IUnicastMetadata
     {
         private enum SerializeId
         {
             Type = 0,
-            CreationTime = 1,
-            Metadata = 2,
+            Signature = 1,
+            CreationTime = 2,
+            Metadata = 3,
 
-            Certificate = 3,
+            Certificate = 4,
         }
 
         private string _type;
+        private Signature _signature;
         private DateTime _creationTime;
         private Metadata _metadata;
 
@@ -29,9 +32,10 @@ namespace Amoeba.Core
 
         public static readonly int MaxTypeLength = 256;
 
-        public BroadcastMessage(string type, DateTime creationTime, Metadata metadata, DigitalSignature digitalSignature)
+        public UnicastMetadata(string type, Signature signature, DateTime creationTime, Metadata metadata, DigitalSignature digitalSignature)
         {
             this.Type = type;
+            this.Signature = signature;
             this.CreationTime = creationTime;
             this.Metadata = metadata;
 
@@ -49,6 +53,10 @@ namespace Amoeba.Core
                     if (id == (int)SerializeId.Type)
                     {
                         this.Type = reader.GetString();
+                    }
+                    else if (id == (int)SerializeId.Signature)
+                    {
+                        this.Signature = Signature.Import(reader.GetStream(), bufferManager);
                     }
                     else if (id == (int)SerializeId.CreationTime)
                     {
@@ -76,6 +84,12 @@ namespace Amoeba.Core
                 {
                     writer.Write((int)SerializeId.Type);
                     writer.Write(this.Type);
+                }
+                // Signature
+                if (this.Signature != null)
+                {
+                    writer.Write((int)SerializeId.Signature);
+                    writer.Write(this.Signature.Export(bufferManager));
                 }
                 // CreationTime
                 if (this.CreationTime != DateTime.MinValue)
@@ -109,17 +123,18 @@ namespace Amoeba.Core
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null || !(obj is BroadcastMessage)) return false;
+            if ((object)obj == null || !(obj is UnicastMetadata)) return false;
 
-            return this.Equals((BroadcastMessage)obj);
+            return this.Equals((UnicastMetadata)obj);
         }
 
-        public override bool Equals(BroadcastMessage other)
+        public override bool Equals(UnicastMetadata other)
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
             if (this.Type != other.Type
+                || this.Signature != other.Signature
                 || this.CreationTime != other.CreationTime
                 || this.Metadata != other.Metadata
 
@@ -129,16 +144,6 @@ namespace Amoeba.Core
             }
 
             return true;
-        }
-
-        protected override void CreateCertificate(DigitalSignature digitalSignature)
-        {
-            base.CreateCertificate(digitalSignature);
-        }
-
-        public override bool VerifyCertificate()
-        {
-            return base.VerifyCertificate();
         }
 
         protected override Stream GetCertificateStream()
@@ -168,7 +173,7 @@ namespace Amoeba.Core
             }
         }
 
-        #region IBroadcastMessage
+        #region IUnicastMetadata
 
         [DataMember(Name = "Type")]
         public string Type
@@ -179,7 +184,7 @@ namespace Amoeba.Core
             }
             private set
             {
-                if (value != null && value.Length > BroadcastMessage.MaxTypeLength)
+                if (value != null && value.Length > UnicastMetadata.MaxTypeLength)
                 {
                     throw new ArgumentException();
                 }
@@ -187,6 +192,19 @@ namespace Amoeba.Core
                 {
                     _type = value;
                 }
+            }
+        }
+
+        [DataMember(Name = "Signature")]
+        public Signature Signature
+        {
+            get
+            {
+                return _signature;
+            }
+            private set
+            {
+                _signature = value;
             }
         }
 
@@ -215,35 +233,6 @@ namespace Amoeba.Core
             {
                 _metadata = value;
             }
-        }
-
-        #endregion
-
-        #region IComputeHash
-
-        private volatile byte[] _sha256_hash;
-
-        public Hash CreateHash(HashAlgorithm hashAlgorithm)
-        {
-            if (_sha256_hash == null)
-            {
-                using (var stream = this.Export(BufferManager.Instance))
-                {
-                    _sha256_hash = Sha256.ComputeHash(stream);
-                }
-            }
-
-            if (hashAlgorithm == HashAlgorithm.Sha256)
-            {
-                return new Hash(HashAlgorithm.Sha256, _sha256_hash);
-            }
-
-            return null;
-        }
-
-        public bool VerifyHash(Hash hash)
-        {
-            return Unsafe.Equals(this.CreateHash(hash.Algorithm).Value, hash.Value);
         }
 
         #endregion

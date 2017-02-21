@@ -1,7 +1,7 @@
 ﻿
 namespace Amoeba.Service
 {
-    interface IMail
+    interface IChatMessage
     {
         string Comment { get; }
     }

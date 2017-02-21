@@ -21,7 +21,7 @@ namespace Library.Net.Amoeba
         private VolatileHashDictionary<BroadcastMetadata, Link> _cache_BroadcastLinks;
         private VolatileHashDictionary<BroadcastMetadata, Profile> _cache_BroadcastProfiles;
         private VolatileHashDictionary<BroadcastMetadata, Store> _cache_BroadcastStores;
-        private VolatileHashDictionary<string, Dictionary<UnicastMetadata, Message>> _cache_UnicastMessages;
+        private VolatileHashDictionary<string, Dictionary<UnicastMetadata, Message>> _cache_UnicastMetadatas;
         private VolatileHashDictionary<Tag, Dictionary<MulticastMetadata, Message>> _cache_MulticastMessages;
         private VolatileHashDictionary<Tag, Dictionary<MulticastMetadata, Website>> _cache_MulticastWebsites;
 
@@ -58,7 +58,7 @@ namespace Library.Net.Amoeba
             _cache_BroadcastLinks = new VolatileHashDictionary<BroadcastMetadata, Link>(new TimeSpan(0, 30, 0));
             _cache_BroadcastProfiles = new VolatileHashDictionary<BroadcastMetadata, Profile>(new TimeSpan(0, 30, 0));
             _cache_BroadcastStores = new VolatileHashDictionary<BroadcastMetadata, Store>(new TimeSpan(0, 30, 0));
-            _cache_UnicastMessages = new VolatileHashDictionary<string, Dictionary<UnicastMetadata, Message>>(new TimeSpan(0, 30, 0));
+            _cache_UnicastMetadatas = new VolatileHashDictionary<string, Dictionary<UnicastMetadata, Message>>(new TimeSpan(0, 30, 0));
             _cache_MulticastMessages = new VolatileHashDictionary<Tag, Dictionary<MulticastMetadata, Message>>(new TimeSpan(0, 30, 0));
             _cache_MulticastWebsites = new VolatileHashDictionary<Tag, Dictionary<MulticastMetadata, Website>>(new TimeSpan(0, 30, 0));
 
@@ -135,7 +135,7 @@ namespace Library.Net.Amoeba
                 signatures.UnionWith(_cache_BroadcastLinks.Keys.Select(n => n.Certificate.ToString()));
                 signatures.UnionWith(_cache_BroadcastProfiles.Keys.Select(n => n.Certificate.ToString()));
                 signatures.UnionWith(_cache_BroadcastStores.Keys.Select(n => n.Certificate.ToString()));
-                signatures.UnionWith(_cache_UnicastMessages.Keys);
+                signatures.UnionWith(_cache_UnicastMetadatas.Keys);
 
                 return signatures;
             };
@@ -303,7 +303,7 @@ namespace Library.Net.Amoeba
                     _cache_BroadcastLinks.TrimExcess();
                     _cache_BroadcastProfiles.TrimExcess();
                     _cache_BroadcastStores.TrimExcess();
-                    _cache_UnicastMessages.TrimExcess();
+                    _cache_UnicastMetadatas.TrimExcess();
                     _cache_MulticastMessages.TrimExcess();
                     _cache_MulticastWebsites.TrimExcess();
                 }
@@ -923,7 +923,7 @@ namespace Library.Net.Amoeba
             }
         }
 
-        public IEnumerable<Information> GetUnicastMessages(string signature, ExchangePrivateKey exchangePrivateKey)
+        public IEnumerable<Information> GetUnicastMetadatas(string signature, ExchangePrivateKey exchangePrivateKey)
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
             if (exchangePrivateKey == null) throw new ArgumentNullException(nameof(exchangePrivateKey));
@@ -932,10 +932,10 @@ namespace Library.Net.Amoeba
             {
                 Dictionary<UnicastMetadata, Message> dic;
 
-                if (!_cache_UnicastMessages.TryGetValue(signature, out dic))
+                if (!_cache_UnicastMetadatas.TryGetValue(signature, out dic))
                 {
                     dic = new Dictionary<UnicastMetadata, Message>();
-                    _cache_UnicastMessages[signature] = dic;
+                    _cache_UnicastMetadatas[signature] = dic;
                 }
 
                 var unicastMetadatas = new HashSet<UnicastMetadata>(_connectionsManager.GetUnicastMetadatas(signature, "Message"));
@@ -977,7 +977,7 @@ namespace Library.Net.Amoeba
                             if (item.Stream != null)
                             {
                                 item.Stream.Seek(0, SeekOrigin.Begin);
-                                result = ContentConverter.FromUnicastMessageStream(item.Stream, exchangePrivateKey);
+                                result = ContentConverter.FromUnicastMetadataStream(item.Stream, exchangePrivateKey);
                                 dic[unicastMetadata] = result;
                             }
                         }

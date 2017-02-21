@@ -1,12 +1,11 @@
 ﻿using System;
-using Omnius.Security;
 
 namespace Amoeba.Core
 {
-    interface IUnicastMessage
+    interface IMulticastMetadata
     {
         string Type { get; }
-        Signature Signature { get; }
+        Tag Tag { get; }
         DateTime CreationTime { get; }
         Metadata Metadata { get; }
     }

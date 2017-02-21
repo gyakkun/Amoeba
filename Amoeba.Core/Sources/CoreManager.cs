@@ -35,6 +35,7 @@ namespace Amoeba.Core
             _networkManager.ConnectCapEvent = (_, uri) => this.OnConnectCap(uri);
             _networkManager.AcceptCapEvent = (_) => this.OnAcceptCap();
             _networkManager.GetLockSignaturesEvent = (_) => this.OnGetLockSignatures();
+            _networkManager.GetLockTagsEvent = (_) => this.OnGetLockTags();
         }
 
         private void Check()
@@ -47,6 +48,7 @@ namespace Amoeba.Core
         public AcceptCapEventHandler AcceptCapEvent { get; set; }
 
         public GetSignaturesEventHandler GetLockSignaturesEvent { get; set; }
+        public GetTagsEventHandler GetLockTagsEvent { get; set; }
 
         private Cap OnConnectCap(string uri)
         {
@@ -61,6 +63,11 @@ namespace Amoeba.Core
         private IEnumerable<Signature> OnGetLockSignatures()
         {
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
+        }
+
+        private IEnumerable<Tag> OnGetLockTags()
+        {
+            return this.GetLockTagsEvent?.Invoke(this) ?? new Tag[0];
         }
 
         public Information Information
@@ -309,43 +316,63 @@ namespace Amoeba.Core
 
         #region Message
 
-        public void UploadMessage(BroadcastMessage message)
+        public void UploadMetadata(BroadcastMetadata metadata)
         {
             this.Check();
 
             lock (_thisLock)
             {
-                _networkManager.Upload(message);
+                _networkManager.Upload(metadata);
             }
         }
 
-        public void UploadMessage(UnicastMessage message)
+        public void UploadMessage(UnicastMetadata metadata)
         {
             this.Check();
 
             lock (_thisLock)
             {
-                _networkManager.Upload(message);
+                _networkManager.Upload(metadata);
             }
         }
 
-        public BroadcastMessage GetBroadcastMessage(Signature signature, string type)
+        public void UploadMessage(MulticastMetadata metadata)
         {
             this.Check();
 
             lock (_thisLock)
             {
-                return _networkManager.GetBroadcastMessage(signature, type);
+                _networkManager.Upload(metadata);
             }
         }
 
-        public IEnumerable<UnicastMessage> GetUnicastMessages(Signature signature, string type)
+        public BroadcastMetadata GetBroadcastMetadata(Signature signature, string type)
         {
             this.Check();
 
             lock (_thisLock)
             {
-                return _networkManager.GetUnicastMessages(signature, type);
+                return _networkManager.GetBroadcastMetadata(signature, type);
+            }
+        }
+
+        public IEnumerable<UnicastMetadata> GetUnicastMetadatas(Signature signature, string type)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _networkManager.GetUnicastMetadatas(signature, type);
+            }
+        }
+
+        public IEnumerable<MulticastMetadata> GetMulticastMetadatas(Tag tag, string type)
+        {
+            this.Check();
+
+            lock (_thisLock)
+            {
+                return _networkManager.GetMulticastMetadatas(tag, type);
             }
         }
 

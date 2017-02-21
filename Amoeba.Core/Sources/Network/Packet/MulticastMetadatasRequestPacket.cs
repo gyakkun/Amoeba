@@ -10,20 +10,20 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    sealed class UnicastMessagesRequestPacket : ItemBase<UnicastMessagesRequestPacket>
+    sealed class MulticastMetadatasRequestPacket : ItemBase<MulticastMetadatasRequestPacket>
     {
         private enum SerializeId
         {
-            Signatures = 0,
+            Tags = 0,
         }
 
-        private SignatureCollection _signatures;
+        private TagCollection _tags;
 
         public const int MaxMetadataRequestCount = 1024;
 
-        public UnicastMessagesRequestPacket(IEnumerable<Signature> signatures)
+        public MulticastMetadatasRequestPacket(IEnumerable<Tag> tags)
         {
-            if (signatures != null) this.ProtectedSignatures.AddRange(signatures);
+            if (tags != null) this.ProtectedTags.AddRange(tags);
         }
 
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
@@ -34,11 +34,11 @@ namespace Amoeba.Core
 
                 while ((id = reader.GetInt()) != -1)
                 {
-                    if (id == (int)SerializeId.Signatures)
+                    if (id == (int)SerializeId.Tags)
                     {
                         for (int i = reader.GetInt() - 1; i >= 0; i--)
                         {
-                            this.ProtectedSignatures.Add(Signature.Import(reader.GetStream(), bufferManager));
+                            this.ProtectedTags.Add(Tag.Import(reader.GetStream(), bufferManager));
                         }
                     }
                 }
@@ -49,13 +49,13 @@ namespace Amoeba.Core
         {
             using (var writer = new ItemStreamWriter(bufferManager))
             {
-                // Signatures
-                if (this.ProtectedSignatures.Count > 0)
+                // Tags
+                if (this.ProtectedTags.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Signatures);
-                    writer.Write(this.ProtectedSignatures.Count);
+                    writer.Write((int)SerializeId.Tags);
+                    writer.Write(this.ProtectedTags.Count);
 
-                    foreach (var item in this.ProtectedSignatures)
+                    foreach (var item in this.ProtectedTags)
                     {
                         writer.Write(item.Export(bufferManager));
                     }
@@ -65,27 +65,27 @@ namespace Amoeba.Core
             }
         }
 
-        private volatile ReadOnlyCollection<Signature> _readOnlySignatures;
+        private volatile ReadOnlyCollection<Tag> _readOnlyTags;
 
-        public IEnumerable<Signature> Signatures
+        public IEnumerable<Tag> Tags
         {
             get
             {
-                if (_readOnlySignatures == null)
-                    _readOnlySignatures = new ReadOnlyCollection<Signature>(this.ProtectedSignatures);
+                if (_readOnlyTags == null)
+                    _readOnlyTags = new ReadOnlyCollection<Tag>(this.ProtectedTags);
 
-                return _readOnlySignatures;
+                return _readOnlyTags;
             }
         }
 
-        private SignatureCollection ProtectedSignatures
+        private TagCollection ProtectedTags
         {
             get
             {
-                if (_signatures == null)
-                    _signatures = new SignatureCollection(MaxMetadataRequestCount);
+                if (_tags == null)
+                    _tags = new TagCollection(MaxMetadataRequestCount);
 
-                return _signatures;
+                return _tags;
             }
         }
     }
