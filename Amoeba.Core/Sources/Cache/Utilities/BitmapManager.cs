@@ -19,7 +19,7 @@ namespace Amoeba.Core
         private byte[] _cacheBuffer;
         private int _cacheBufferLength = 0;
 
-        private readonly object _thisLock = new object();
+        private readonly object _syncObject = new object();
         private volatile bool _disposed;
 
         public static readonly int SectorSize = 256;
@@ -42,7 +42,7 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     return _length;
                 }
@@ -51,7 +51,7 @@ namespace Amoeba.Core
 
         public void SetLength(long length)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 {
                     var size = BitmapManager.Roundup(length, 8);
@@ -113,7 +113,7 @@ namespace Amoeba.Core
 
         public bool Get(long point)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 if (point >= _length) throw new ArgumentOutOfRangeException(nameof(point));
 
@@ -128,7 +128,7 @@ namespace Amoeba.Core
 
         public void Set(long point, bool state)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 if (point >= _length) throw new ArgumentOutOfRangeException(nameof(point));
 

@@ -63,7 +63,7 @@ namespace Amoeba.Core
 
         private ManagerState _state = ManagerState.Stop;
 
-        private readonly object _thisLock = new object();
+        private readonly object _syncObject = new object();
         private volatile bool _disposed;
 
         private const int _maxLocationCount = 256;
@@ -89,7 +89,7 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     return _myLocation;
                 }
@@ -100,7 +100,7 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     return CollectionUtils.Unite(_crowdLocations, _routeTable.ToArray().Select(n => n.Value.Location)).ToArray();
                 }
@@ -111,14 +111,14 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     return _connectionCountLimit;
                 }
             }
             set
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     _connectionCountLimit = value;
                 }
@@ -129,14 +129,14 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     return _bandwidthLimit;
                 }
             }
             set
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     _bandwidthLimit = value;
                 }
@@ -171,7 +171,7 @@ namespace Amoeba.Core
             {
                 if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
 
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     var contexts = new List<InformationContext>();
                     {
@@ -226,7 +226,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Information> GetConnectionInformations()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var list = new List<Information>();
 
@@ -250,7 +250,7 @@ namespace Amoeba.Core
 
         private void UpdateMyId()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _myId = new byte[32];
 
@@ -343,7 +343,7 @@ namespace Amoeba.Core
                         {
                             var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(1024).ToList();
 
-                            lock (node.Value.SendInfo.PushBlockResultQueue.ThisLock)
+                            lock (node.Value.SendInfo.PushBlockResultQueue.SyncObject)
                             {
                                 node.Value.SendInfo.PushBlockResultQueue.Clear();
 
@@ -424,7 +424,7 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushBlockLinkQueue.ThisLock)
+                                    lock (node.Value.SendInfo.PushBlockLinkQueue.SyncObject)
                                     {
                                         node.Value.SendInfo.PushBlockLinkQueue.Clear();
                                         node.Value.SendInfo.PushBlockLinkQueue.AddRange(targets.Take(_maxBlockLinkCount));
@@ -454,7 +454,7 @@ namespace Amoeba.Core
                                     var node = pair.Key;
                                     var targets = pair.Value;
 
-                                    lock (node.Value.SendInfo.PushBlockRequestQueue.ThisLock)
+                                    lock (node.Value.SendInfo.PushBlockRequestQueue.SyncObject)
                                     {
                                         node.Value.SendInfo.PushBlockRequestQueue.Clear();
                                         node.Value.SendInfo.PushBlockRequestQueue.AddRange(targets.Take(_maxBlockRequestCount).Randomize());
@@ -586,7 +586,7 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushBroadcastMetadataRequestQueue.ThisLock)
+                                    lock (node.Value.SendInfo.PushBroadcastMetadataRequestQueue.SyncObject)
                                     {
                                         node.Value.SendInfo.PushBroadcastMetadataRequestQueue.Clear();
                                         node.Value.SendInfo.PushBroadcastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
@@ -613,7 +613,7 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushUnicastMetadataRequestQueue.ThisLock)
+                                    lock (node.Value.SendInfo.PushUnicastMetadataRequestQueue.SyncObject)
                                     {
                                         node.Value.SendInfo.PushUnicastMetadataRequestQueue.Clear();
                                         node.Value.SendInfo.PushUnicastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
@@ -640,7 +640,7 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushMulticastMetadataRequestQueue.ThisLock)
+                                    lock (node.Value.SendInfo.PushMulticastMetadataRequestQueue.SyncObject)
                                     {
                                         node.Value.SendInfo.PushMulticastMetadataRequestQueue.Clear();
                                         node.Value.SendInfo.PushMulticastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
@@ -749,7 +749,7 @@ namespace Amoeba.Core
 
         private void CreateConnection(Cap cap, SessionType type)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var connection = new Connection(1024 * 1024 * 8, _bufferManager);
                 connection.Connect(cap);
@@ -767,7 +767,7 @@ namespace Amoeba.Core
 
         private void RemoveConnection(Connection connection)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 SessionInfo sessionInfo;
 
@@ -969,7 +969,7 @@ namespace Amoeba.Core
                 {
                     Hash hash = null;
 
-                    lock (sessionInfo.SendInfo.PushBlockResultQueue.ThisLock)
+                    lock (sessionInfo.SendInfo.PushBlockResultQueue.SyncObject)
                     {
                         if (sessionInfo.SendInfo.PushBlockResultQueue.Count > 0)
                         {
@@ -1184,7 +1184,7 @@ namespace Amoeba.Core
                         sessionInfo.Id = profile.Id;
                         sessionInfo.Location = profile.Location;
 
-                        lock (_thisLock)
+                        lock (_syncObject)
                         {
                             if (_connections.ContainsKey(sessionInfo.Connection))
                             {
@@ -1435,7 +1435,7 @@ namespace Amoeba.Core
 
         public void SetMyLocation(Location location)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 foreach (var connection in _connections.Keys.ToArray())
                 {
@@ -1450,7 +1450,7 @@ namespace Amoeba.Core
 
         public void SetCrowdLocations(IEnumerable<Location> locations)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _crowdLocations.AddRange(locations);
             }
@@ -1458,7 +1458,7 @@ namespace Amoeba.Core
 
         public bool IsDownloadWaiting(Hash hash)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 return _pushBlocksRequestSet.Contains(hash);
             }
@@ -1466,7 +1466,7 @@ namespace Amoeba.Core
 
         public void Download(Hash hash)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _pushBlocksRequestSet.Add(hash);
             }
@@ -1474,7 +1474,7 @@ namespace Amoeba.Core
 
         public void Upload(BroadcastMetadata metadata)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _metadataManager.SetMetadata(metadata);
             }
@@ -1482,7 +1482,7 @@ namespace Amoeba.Core
 
         public void Upload(UnicastMetadata metadata)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _metadataManager.SetMetadata(metadata);
             }
@@ -1490,7 +1490,7 @@ namespace Amoeba.Core
 
         public void Upload(MulticastMetadata metadata)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _metadataManager.SetMetadata(metadata);
             }
@@ -1498,7 +1498,7 @@ namespace Amoeba.Core
 
         public BroadcastMetadata GetBroadcastMetadata(Signature signature, string type)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _pushBroadcastMetadatasRequestSet.Add(signature);
 
@@ -1508,7 +1508,7 @@ namespace Amoeba.Core
 
         public IEnumerable<UnicastMetadata> GetUnicastMetadatas(Signature signature, string type)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _pushUnicastMetadatasRequestSet.Add(signature);
 
@@ -1518,7 +1518,7 @@ namespace Amoeba.Core
 
         public IEnumerable<MulticastMetadata> GetMulticastMetadatas(Tag tag, string type)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _pushMulticastMetadatasRequestSet.Add(tag);
 
@@ -1544,7 +1544,7 @@ namespace Amoeba.Core
 
             lock (_stateLock)
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
@@ -1595,7 +1595,7 @@ namespace Amoeba.Core
 
             lock (_stateLock)
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     if (this.State == ManagerState.Stop) return;
                     _state = ManagerState.Stop;
@@ -1628,7 +1628,7 @@ namespace Amoeba.Core
 
         public void Load()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 int version = _settings.Load("Version", () => 0);
 
@@ -1680,7 +1680,7 @@ namespace Amoeba.Core
 
         public void Save()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _settings.Save("Version", 0);
 

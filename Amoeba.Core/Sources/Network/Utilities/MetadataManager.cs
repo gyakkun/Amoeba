@@ -26,7 +26,7 @@ namespace Amoeba.Core
         private Dictionary<string, DateTime> _unicastTypes = new Dictionary<string, DateTime>();
         private Dictionary<string, DateTime> _multicastTypes = new Dictionary<string, DateTime>();
 
-        private readonly object _thisLock = new object();
+        private readonly object _syncObject = new object();
 
         public MetadataManager()
         {
@@ -42,7 +42,7 @@ namespace Amoeba.Core
 
         public void Refresh()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var lockSignatures = new HashSet<Signature>(this.OnGetLockSignaturesEvent());
                 var lockTags = new HashSet<Tag>(_aliveTags);
@@ -185,7 +185,7 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     int count = 0;
 
@@ -200,7 +200,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Signature> GetBroadcastSignatures()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var hashset = new HashSet<Signature>();
 
@@ -212,7 +212,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Signature> GetUnicastSignatures()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var hashset = new HashSet<Signature>();
 
@@ -224,7 +224,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Tag> GetMulticastTags()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var hashset = new HashSet<Tag>();
 
@@ -236,7 +236,7 @@ namespace Amoeba.Core
 
         public IEnumerable<BroadcastMetadata> GetBroadcastMetadatas()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 return _broadcastMetadatas.Values.SelectMany(n => n.Values).ToArray();
             }
@@ -244,7 +244,7 @@ namespace Amoeba.Core
 
         public IEnumerable<BroadcastMetadata> GetBroadcastMetadatas(Signature signature)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var list = new List<BroadcastMetadata>();
 
@@ -264,7 +264,7 @@ namespace Amoeba.Core
 
         public BroadcastMetadata GetBroadcastMetadata(Signature signature, string type)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _broadcastTypes[type] = DateTime.UtcNow;
 
@@ -286,7 +286,7 @@ namespace Amoeba.Core
 
         public IEnumerable<UnicastMetadata> GetUnicastMetadatas()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 return _unicastMetadatas.Values.SelectMany(n => n.Values.SelectMany(m => m.Values.Extract())).ToArray();
             }
@@ -294,7 +294,7 @@ namespace Amoeba.Core
 
         public IEnumerable<UnicastMetadata> GetUnicastMetadatas(Signature signature)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var list = new List<UnicastMetadata>();
 
@@ -314,7 +314,7 @@ namespace Amoeba.Core
 
         public IEnumerable<UnicastMetadata> GetUnicastMetadatas(Signature signature, string type)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _unicastTypes[type] = DateTime.UtcNow;
 
@@ -338,7 +338,7 @@ namespace Amoeba.Core
 
         public IEnumerable<MulticastMetadata> GetMulticastMetadatas()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 return _multicastMetadatas.Values.SelectMany(n => n.Values.SelectMany(m => m.Values.Extract())).ToArray();
             }
@@ -346,7 +346,7 @@ namespace Amoeba.Core
 
         public IEnumerable<MulticastMetadata> GetMulticastMetadatas(Tag tag)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var list = new List<MulticastMetadata>();
 
@@ -366,7 +366,7 @@ namespace Amoeba.Core
 
         public IEnumerable<MulticastMetadata> GetMulticastMetadatas(Tag tag, string type)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _aliveTags.Add(tag);
                 _multicastTypes[type] = DateTime.UtcNow;
@@ -391,7 +391,7 @@ namespace Amoeba.Core
 
         public bool SetMetadata(BroadcastMetadata broadcastMetadata)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var now = DateTime.UtcNow;
 
@@ -424,7 +424,7 @@ namespace Amoeba.Core
 
         public bool SetMetadata(UnicastMetadata unicastMetadata)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var now = DateTime.UtcNow;
 
@@ -473,7 +473,7 @@ namespace Amoeba.Core
 
         public bool SetMetadata(MulticastMetadata multicastMetadata)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var now = DateTime.UtcNow;
 

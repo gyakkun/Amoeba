@@ -52,7 +52,7 @@ namespace Amoeba.Core
 
         private WatchTimer _watchTimer;
 
-        private readonly object _thisLock = new object();
+        private readonly object _syncObject = new object();
         private volatile bool _disposed;
 
         public static readonly int SectorSize = 1024 * 256;
@@ -101,7 +101,7 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     var contexts = new List<InformationContext>();
                     {
@@ -130,7 +130,7 @@ namespace Amoeba.Core
 
         private void CheckInformation()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _info.BlockCount = this.Count;
                 _info.UsingSpace = _fileStream.Length;
@@ -163,7 +163,7 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     return _size;
                 }
@@ -174,7 +174,7 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     return _clusterIndex.Count;
                 }
@@ -207,7 +207,7 @@ namespace Amoeba.Core
 
         private void CheckSpace(int sectorCount)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 if (!_spaceSectors_Initialized)
                 {
@@ -240,7 +240,7 @@ namespace Amoeba.Core
 
         private void CreatingSpace()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 this.CheckSpace(CacheManager.SpaceSectorCount);
                 if (CacheManager.SpaceSectorCount <= _spaceSectors.Count) return;
@@ -269,7 +269,7 @@ namespace Amoeba.Core
 
         public void Lock(Hash hash)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 int count;
                 _lockedHashes.TryGetValue(hash, out count);
@@ -282,7 +282,7 @@ namespace Amoeba.Core
 
         public void Unlock(Hash hash)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 int count;
                 if (!_lockedHashes.TryGetValue(hash, out count)) throw new KeyNotFoundException();
@@ -302,7 +302,7 @@ namespace Amoeba.Core
 
         public bool Contains(Hash hash)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 return _clusterIndex.ContainsKey(hash) || _cacheInfoManager.Contains(hash);
             }
@@ -310,7 +310,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Hash> IntersectFrom(IEnumerable<Hash> collection)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 foreach (var key in collection)
                 {
@@ -324,7 +324,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Hash> ExceptFrom(IEnumerable<Hash> collection)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 foreach (var key in collection)
                 {
@@ -338,7 +338,7 @@ namespace Amoeba.Core
 
         public void Remove(Hash hash)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 ClusterInfo clusterInfo = null;
 
@@ -365,7 +365,7 @@ namespace Amoeba.Core
         {
             if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
 
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 int unit = 1024 * 1024 * 256; // 256MB
                 size = CacheManager.Roundup(size, unit);
@@ -409,7 +409,7 @@ namespace Amoeba.Core
 
                         try
                         {
-                            lock (_thisLock)
+                            lock (_syncObject)
                             {
                                 if (this.Contains(hash))
                                 {
@@ -452,7 +452,7 @@ namespace Amoeba.Core
                 {
                     ArraySegment<byte>? result = null;
 
-                    lock (_thisLock)
+                    lock (_syncObject)
                     {
                         ClusterInfo clusterInfo = null;
 
@@ -528,7 +528,7 @@ namespace Amoeba.Core
                     ArraySegment<byte>? result = null;
                     ShareInfo shareInfo;
 
-                    lock (_thisLock)
+                    lock (_syncObject)
                     {
                         shareInfo = _cacheInfoManager.GetShareInfo(hash);
 
@@ -601,7 +601,7 @@ namespace Amoeba.Core
                     throw new FormatException();
                 }
 
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     if (this.Contains(hash)) return;
 
@@ -683,7 +683,7 @@ namespace Amoeba.Core
 
         public int GetLength(Hash hash)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 if (_clusterIndex.ContainsKey(hash))
                 {
@@ -974,7 +974,7 @@ namespace Amoeba.Core
                         }
                     }
 
-                    lock (_thisLock)
+                    lock (_syncObject)
                     {
                         if (_cacheInfoManager.ContainsMessage(metadata))
                         {
@@ -1018,7 +1018,7 @@ namespace Amoeba.Core
             return Task.Run(() =>
             {
                 // Check
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     var info = _cacheInfoManager.GetContentCacheInfo(path);
                     if (info != null) return info.Metadata;
@@ -1237,7 +1237,7 @@ namespace Amoeba.Core
                         }
                     }
 
-                    lock (_thisLock)
+                    lock (_syncObject)
                     {
                         if (_cacheInfoManager.ContainsContent(path))
                         {
@@ -1366,7 +1366,7 @@ namespace Amoeba.Core
 
         private void CheckMessageContents()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var now = DateTime.UtcNow;
 
@@ -1386,9 +1386,9 @@ namespace Amoeba.Core
 
         public IEnumerable<Information> GetContentInformations()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     var list = new List<Information>();
 
@@ -1410,7 +1410,7 @@ namespace Amoeba.Core
 
         public void RemoveContent(string path)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var cacheInfo = _cacheInfoManager.GetContentCacheInfo(path);
                 if (cacheInfo == null) return;
@@ -1433,7 +1433,7 @@ namespace Amoeba.Core
 
         public void Load()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 int version = _settings.Load("Version", () => 0);
 
@@ -1451,7 +1451,7 @@ namespace Amoeba.Core
 
         public void Save()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _settings.Save("Version", 0);
 
@@ -1465,7 +1465,7 @@ namespace Amoeba.Core
 
         public Hash[] ToArray()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 return _clusterIndex.Keys.ToArray();
             }
@@ -1475,7 +1475,7 @@ namespace Amoeba.Core
 
         public IEnumerator<Hash> GetEnumerator()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 foreach (var hash in _clusterIndex.Keys)
                 {
@@ -1490,7 +1490,7 @@ namespace Amoeba.Core
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 return this.GetEnumerator();
             }

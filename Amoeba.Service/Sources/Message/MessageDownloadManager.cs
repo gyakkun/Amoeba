@@ -37,7 +37,7 @@ namespace Amoeba.Service
 
         private ManagerState _state = ManagerState.Stop;
 
-        private readonly object _thisLock = new object();
+        private readonly object _syncObject = new object();
         private volatile bool _disposed;
 
         public MessageDownloadManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
@@ -57,7 +57,7 @@ namespace Amoeba.Service
 
         private void WatchTimer()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _cache_Profiles.Update();
                 _cache_Stores.Update();
@@ -70,7 +70,7 @@ namespace Amoeba.Service
         {
             get
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     return _searchSignatures.ToArray();
                 }
@@ -79,7 +79,7 @@ namespace Amoeba.Service
 
         public void SetSearchSignatures(IEnumerable<Signature> signatures)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _searchSignatures.Clear();
                 _searchSignatures.UnionWith(signatures);
@@ -276,7 +276,7 @@ namespace Amoeba.Service
 
             lock (_stateLock)
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
@@ -290,7 +290,7 @@ namespace Amoeba.Service
 
             lock (_stateLock)
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     if (this.State == ManagerState.Stop) return;
                     _state = ManagerState.Stop;
@@ -302,7 +302,7 @@ namespace Amoeba.Service
 
         public void Load()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 int version = _settings.Load("Version", () => 0);
 
@@ -312,7 +312,7 @@ namespace Amoeba.Service
 
         public void Save()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _settings.Save("Version", 0);
 

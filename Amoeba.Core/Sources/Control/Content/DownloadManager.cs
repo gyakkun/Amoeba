@@ -40,7 +40,7 @@ namespace Amoeba.Core
 
         private volatile ManagerState _state = ManagerState.Stop;
 
-        private readonly object _thisLock = new object();
+        private readonly object _syncObject = new object();
         private volatile bool _disposed;
 
         public DownloadManager(string configPath, NetworkManager networkManager, CacheManager cacheManager, BufferManager bufferManager)
@@ -69,7 +69,7 @@ namespace Amoeba.Core
 
         private void Event_AddInfo(DownloadItemInfo info)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _cacheManager.Lock(info.Metadata.Hash);
                 this.CheckState(info.Index);
@@ -78,7 +78,7 @@ namespace Amoeba.Core
 
         private void Event_RemoveInfo(DownloadItemInfo info)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _cacheManager.Unlock(info.Metadata.Hash);
                 this.UncheckState(info.Index);
@@ -89,7 +89,7 @@ namespace Amoeba.Core
 
         private void WatchThread()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _volatileDownloadItemInfoManager.Update();
             }
@@ -99,7 +99,7 @@ namespace Amoeba.Core
         {
             try
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     foreach (var hash in hashes)
                     {
@@ -115,7 +115,7 @@ namespace Amoeba.Core
 
         private void CheckState(Index index)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 if (index == null) return;
 
@@ -137,7 +137,7 @@ namespace Amoeba.Core
 
         private void UncheckState(Index index)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 if (index == null) return;
 
@@ -165,7 +165,7 @@ namespace Amoeba.Core
 
                 DownloadItemInfo item = null;
 
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     var tempList = CollectionUtils.Unite(_volatileDownloadItemInfoManager, _downloadItemInfoManager).ToArray();
 
@@ -284,7 +284,7 @@ namespace Amoeba.Core
 
                 DownloadItemInfo item = null;
 
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     item = CollectionUtils.Unite(_volatileDownloadItemInfoManager, _downloadItemInfoManager)
                         .Where(n => !_workingItems.Contains(n))
@@ -330,7 +330,7 @@ namespace Amoeba.Core
                                         {
                                             if (this.State == ManagerState.Stop) tokenSource.Cancel();
 
-                                            lock (_thisLock)
+                                            lock (_syncObject)
                                             {
                                                 if (item.State == DownloadState.Error) tokenSource.Cancel();
                                             }
@@ -369,7 +369,7 @@ namespace Amoeba.Core
                                             {
                                                 if (this.State == ManagerState.Stop) tokenSource.Cancel();
 
-                                                lock (_thisLock)
+                                                lock (_syncObject)
                                                 {
                                                     if (item.State == DownloadState.Error) tokenSource.Cancel();
                                                 }
@@ -394,7 +394,7 @@ namespace Amoeba.Core
                                 }
                             }
 
-                            lock (_thisLock)
+                            lock (_syncObject)
                             {
                                 this.UncheckState(item.Index);
 
@@ -417,7 +417,7 @@ namespace Amoeba.Core
                         }
                         else
                         {
-                            lock (_thisLock)
+                            lock (_syncObject)
                             {
                                 item.ResultHashes.AddRange(hashes);
 
@@ -447,7 +447,7 @@ namespace Amoeba.Core
 
             DownloadItemInfo info;
 
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 info = _volatileDownloadItemInfoManager.GetInfo(metadata);
 
@@ -504,7 +504,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Information> GetDownloadInformations()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var list = new List<Information>();
 
@@ -549,7 +549,7 @@ namespace Amoeba.Core
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
             if (outStream == null) throw new ArgumentNullException(nameof(outStream));
 
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var info = _downloadItemInfoManager.GetInfo(metadata);
                 if (info.State != DownloadState.Completed) throw new DownloadManagerException("Is not completed");
@@ -562,7 +562,7 @@ namespace Amoeba.Core
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
 
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 if (!_downloadItemInfoManager.Contains(metadata)) return;
 
@@ -575,7 +575,7 @@ namespace Amoeba.Core
 
         public void Remove(Metadata metadata)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 var info = _downloadItemInfoManager.GetInfo(metadata);
 
@@ -585,7 +585,7 @@ namespace Amoeba.Core
 
         public void Reset(Metadata metadata)
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 this.Remove(metadata);
                 this.Add(metadata);
@@ -606,7 +606,7 @@ namespace Amoeba.Core
         {
             lock (_stateLock)
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
@@ -633,7 +633,7 @@ namespace Amoeba.Core
         {
             lock (_stateLock)
             {
-                lock (_thisLock)
+                lock (_syncObject)
                 {
                     if (this.State == ManagerState.Stop) return;
                     _state = ManagerState.Stop;
@@ -654,7 +654,7 @@ namespace Amoeba.Core
 
         public void Load()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 int version = _settings.Load("Version", () => 0);
 
@@ -667,7 +667,7 @@ namespace Amoeba.Core
 
         public void Save()
         {
-            lock (_thisLock)
+            lock (_syncObject)
             {
                 _settings.Save("Version", 0);
 
