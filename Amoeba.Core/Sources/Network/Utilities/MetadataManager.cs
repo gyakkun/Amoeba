@@ -13,12 +13,13 @@ namespace Amoeba.Core
 {
     class MetadataManager
     {
-        // Type, CreatorSignature
+        // Type, AuthorSignature
         private Dictionary<string, Dictionary<Signature, BroadcastMetadata>> _broadcastMetadatas = new Dictionary<string, Dictionary<Signature, BroadcastMetadata>>();
-        // Type, Signature, CreatorSignature
+        // Type, Signature, AuthorSignature
         private Dictionary<string, Dictionary<Signature, Dictionary<Signature, HashSet<UnicastMetadata>>>> _unicastMetadatas = new Dictionary<string, Dictionary<Signature, Dictionary<Signature, HashSet<UnicastMetadata>>>>();
-        // Type, Tag, CreatorSignature
+        // Type, Tag, AuthorSignature
         private Dictionary<string, Dictionary<Tag, Dictionary<Signature, HashSet<MulticastMetadata>>>> _multicastMetadatas = new Dictionary<string, Dictionary<Tag, Dictionary<Signature, HashSet<MulticastMetadata>>>>();
+        private VolatileHashSet<Tag> _aliveTags = new VolatileHashSet<Tag>(new TimeSpan(0, 30, 0));
 
         // UpdateTime
         private Dictionary<string, DateTime> _broadcastTypes = new Dictionary<string, DateTime>();
@@ -39,31 +40,29 @@ namespace Amoeba.Core
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
         }
 
-        public GetTagsEventHandler GetLockTagsEvent { get; set; }
-
-        private IEnumerable<Tag> OnGetLockTagsEvent()
-        {
-            return this.GetLockTagsEvent?.Invoke(this) ?? new Tag[0];
-        }
-
         public void Refresh()
         {
             lock (_thisLock)
             {
                 var lockSignatures = new HashSet<Signature>(this.OnGetLockSignaturesEvent());
-                var lockTags = new HashSet<Tag>(this.OnGetLockTagsEvent());
+                var lockTags = new HashSet<Tag>(_aliveTags);
+
+                _aliveTags.Update();
 
                 // Broadcast
                 {
                     {
-                        var hashset = new HashSet<string>(_broadcastTypes.OrderByDescending(n => n.Value).Select(n => n.Key).Take(32));
+                        var removeTypes = new HashSet<string>(_broadcastTypes.OrderBy(n => n.Value).Select(n => n.Key).Take(_broadcastTypes.Count - 32));
 
-                        foreach (var key in _broadcastMetadatas.Keys.ToArray())
+                        foreach (var type in removeTypes)
                         {
-                            if (!hashset.Contains(key))
-                            {
-                                _broadcastMetadatas.Remove(key);
-                            }
+                            _broadcastTypes.Remove(type);
+                        }
+
+                        foreach (var type in _broadcastMetadatas.Keys.ToArray())
+                        {
+                            if (!removeTypes.Contains(type)) continue;
+                            _broadcastMetadatas.Remove(type);
                         }
                     }
 
@@ -81,14 +80,17 @@ namespace Amoeba.Core
                 // Unicast
                 {
                     {
-                        var hashset = new HashSet<string>(_unicastTypes.OrderByDescending(n => n.Value).Select(n => n.Key).Take(32));
+                        var removeTypes = new HashSet<string>(_unicastTypes.OrderBy(n => n.Value).Select(n => n.Key).Take(_unicastTypes.Count - 32));
 
-                        foreach (var key in _unicastMetadatas.Keys.ToArray())
+                        foreach (var type in removeTypes)
                         {
-                            if (!hashset.Contains(key))
-                            {
-                                _unicastMetadatas.Remove(key);
-                            }
+                            _unicastTypes.Remove(type);
+                        }
+
+                        foreach (var type in _unicastMetadatas.Keys.ToArray())
+                        {
+                            if (!removeTypes.Contains(type)) continue;
+                            _unicastMetadatas.Remove(type);
                         }
                     }
 
@@ -129,14 +131,17 @@ namespace Amoeba.Core
                 // Multicast
                 {
                     {
-                        var hashset = new HashSet<string>(_multicastTypes.OrderByDescending(n => n.Value).Select(n => n.Key).Take(32));
+                        var removeTypes = new HashSet<string>(_multicastTypes.OrderBy(n => n.Value).Select(n => n.Key).Take(_multicastTypes.Count - 32));
 
-                        foreach (var key in _multicastMetadatas.Keys.ToArray())
+                        foreach (var type in removeTypes)
                         {
-                            if (!hashset.Contains(key))
-                            {
-                                _multicastMetadatas.Remove(key);
-                            }
+                            _multicastTypes.Remove(type);
+                        }
+
+                        foreach (var type in _multicastMetadatas.Keys.ToArray())
+                        {
+                            if (!removeTypes.Contains(type)) continue;
+                            _multicastMetadatas.Remove(type);
                         }
                     }
 
@@ -363,6 +368,7 @@ namespace Amoeba.Core
         {
             lock (_thisLock)
             {
+                _aliveTags.Add(tag);
                 _multicastTypes[type] = DateTime.UtcNow;
 
                 var list = new List<MulticastMetadata>();
@@ -409,8 +415,6 @@ namespace Amoeba.Core
                 if (!dic.TryGetValue(signature, out tempMetadata)
                     || broadcastMetadata.CreationTime > tempMetadata.CreationTime)
                 {
-                    if (!broadcastMetadata.VerifyCertificate()) throw new MessageManagerException("Certificate");
-
                     dic[signature] = broadcastMetadata;
                 }
 
@@ -460,8 +464,6 @@ namespace Amoeba.Core
 
                 if (!hashset.Contains(unicastMetadata))
                 {
-                    if (!unicastMetadata.VerifyCertificate()) throw new MessageManagerException("Certificate");
-
                     hashset.Add(unicastMetadata);
                 }
 
@@ -511,8 +513,6 @@ namespace Amoeba.Core
 
                 if (!hashset.Contains(multicastMetadata))
                 {
-                    if (!multicastMetadata.VerifyCertificate()) throw new MessageManagerException("Certificate");
-
                     hashset.Add(multicastMetadata);
                 }
 

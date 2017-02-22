@@ -5,31 +5,38 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Security;
 using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = "BroadcastMessage")]
-    public sealed class BroadcastMessage<T> : ItemBase<BroadcastMessage<T>>, IBroadcastMessage<T>
+    [DataContract(Name = "MulticastMessage")]
+    public sealed class MulticastMessage<T> : ItemBase<MulticastMessage<T>>, IMulticastMessage<T>
         where T : ItemBase<T>
     {
         private enum SerializeId
         {
-            AuthorSignature = 0,
-            CreationTime = 1,
-            Value = 2,
+            Tag = 0,
+            AuthorSignature = 1,
+            CreationTime = 2,
+            Cost = 3,
+            Value = 4,
         }
 
+        private Tag _tag;
         private Signature _authorSignature;
         private DateTime _creationTime;
+        private Cost _cost;
         private T _value;
 
-        public BroadcastMessage(Signature authorSignature, DateTime creationTime, T value)
+        public MulticastMessage(Tag tag, Signature authorSignature, DateTime creationTime, Cost cost, T value)
         {
+            this.Tag = tag;
             this.AuthorSignature = authorSignature;
             this.CreationTime = creationTime;
+            this.Cost = cost;
             this.Value = value;
         }
 
@@ -41,13 +48,21 @@ namespace Amoeba.Service
 
                 while ((id = reader.GetInt()) != -1)
                 {
-                    if (id == (int)SerializeId.AuthorSignature)
+                    if (id == (int)SerializeId.Tag)
+                    {
+                        this.Tag = Tag.Import(reader.GetStream(), bufferManager);
+                    }
+                    else if (id == (int)SerializeId.AuthorSignature)
                     {
                         this.AuthorSignature = Signature.Import(reader.GetStream(), bufferManager);
                     }
                     else if (id == (int)SerializeId.CreationTime)
                     {
                         this.CreationTime = reader.GetDateTime();
+                    }
+                    else if (id == (int)SerializeId.Cost)
+                    {
+                        this.Cost = Cost.Import(reader.GetStream(), bufferManager);
                     }
                     else if (id == (int)SerializeId.Value)
                     {
@@ -61,6 +76,12 @@ namespace Amoeba.Service
         {
             using (var writer = new ItemStreamWriter(bufferManager))
             {
+                // Tag
+                if (this.Tag != null)
+                {
+                    writer.Write((int)SerializeId.Tag);
+                    writer.Write(this.Tag.Export(bufferManager));
+                }
                 // AuthorSignature
                 if (this.AuthorSignature != null)
                 {
@@ -72,6 +93,12 @@ namespace Amoeba.Service
                 {
                     writer.Write((int)SerializeId.CreationTime);
                     writer.Write(this.CreationTime);
+                }
+                // Cost
+                if (this.Cost != null)
+                {
+                    writer.Write((int)SerializeId.Cost);
+                    writer.Write(this.Cost.Export(bufferManager));
                 }
                 // Value
                 if (this.Value != null)
@@ -92,18 +119,20 @@ namespace Amoeba.Service
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null || !(obj is BroadcastMessage<T>)) return false;
+            if ((object)obj == null || !(obj is MulticastMessage<T>)) return false;
 
-            return this.Equals((BroadcastMessage<T>)obj);
+            return this.Equals((MulticastMessage<T>)obj);
         }
 
-        public override bool Equals(BroadcastMessage<T> other)
+        public override bool Equals(MulticastMessage<T> other)
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
-            if (this.AuthorSignature != other.AuthorSignature
+            if (this.Tag != other.Tag
+                || this.AuthorSignature != other.AuthorSignature
                 || this.CreationTime != other.CreationTime
+                || this.Cost != other.Cost
                 || this.Value != other.Value)
             {
                 return false;
@@ -117,7 +146,20 @@ namespace Amoeba.Service
             return this.Value.ToString();
         }
 
-        #region IBroadcastMessage
+        #region IMulticastMessage
+
+        [DataMember(Name = "Tag")]
+        public Tag Tag
+        {
+            get
+            {
+                return _tag;
+            }
+            private set
+            {
+                _tag = value;
+            }
+        }
 
         [DataMember(Name = "AuthorSignature")]
         public Signature AuthorSignature
@@ -143,6 +185,19 @@ namespace Amoeba.Service
             {
                 var utc = value.ToUniversalTime();
                 _creationTime = utc.AddTicks(-(utc.Ticks % TimeSpan.TicksPerSecond));
+            }
+        }
+
+        [DataMember(Name = "Cost")]
+        public Cost Cost
+        {
+            get
+            {
+                return _cost;
+            }
+            private set
+            {
+                _cost = value;
             }
         }
 

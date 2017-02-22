@@ -35,7 +35,6 @@ namespace Amoeba.Core
             _networkManager.ConnectCapEvent = (_, uri) => this.OnConnectCap(uri);
             _networkManager.AcceptCapEvent = (_) => this.OnAcceptCap();
             _networkManager.GetLockSignaturesEvent = (_) => this.OnGetLockSignatures();
-            _networkManager.GetLockTagsEvent = (_) => this.OnGetLockTags();
         }
 
         private void Check()
@@ -48,7 +47,6 @@ namespace Amoeba.Core
         public AcceptCapEventHandler AcceptCapEvent { get; set; }
 
         public GetSignaturesEventHandler GetLockSignaturesEvent { get; set; }
-        public GetTagsEventHandler GetLockTagsEvent { get; set; }
 
         private Cap OnConnectCap(string uri)
         {
@@ -63,11 +61,6 @@ namespace Amoeba.Core
         private IEnumerable<Signature> OnGetLockSignatures()
         {
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
-        }
-
-        private IEnumerable<Tag> OnGetLockTags()
-        {
-            return this.GetLockTagsEvent?.Invoke(this) ?? new Tag[0];
         }
 
         public Information Information
@@ -376,33 +369,13 @@ namespace Amoeba.Core
             }
         }
 
-        public Task<Metadata> Import(Stream stream, CancellationToken token)
+        public Task<Metadata> Import(Stream stream, TimeSpan lifeSpan, CancellationToken token)
         {
             this.Check();
 
             lock (this.ThisLock)
             {
-                return _cacheManager.Import(stream, token);
-            }
-        }
-
-        public IEnumerable<Information> GetMessageInformations()
-        {
-            this.Check();
-
-            lock (this.ThisLock)
-            {
-                return _cacheManager.GetMessageInformations();
-            }
-        }
-
-        public void RemoveMessage(Metadata metadata)
-        {
-            this.Check();
-
-            lock (_thisLock)
-            {
-                _cacheManager.RemoveMessage(metadata);
+                return _cacheManager.Import(stream, lifeSpan, token);
             }
         }
 

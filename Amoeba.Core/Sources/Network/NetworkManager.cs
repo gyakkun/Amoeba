@@ -19,7 +19,6 @@ using Omnius.Net;
 namespace Amoeba.Core
 {
     public delegate IEnumerable<Signature> GetSignaturesEventHandler(object sender);
-    public delegate IEnumerable<Tag> GetTagsEventHandler(object sender);
 
     public delegate Cap ConnectCapEventHandler(object sender, string uri);
     public delegate Cap AcceptCapEventHandler(object sender);
@@ -84,7 +83,6 @@ namespace Amoeba.Core
 
             _metadataManager = new MetadataManager();
             _metadataManager.GetLockSignaturesEvent += (_) => this.OnGetLockSignatures();
-            _metadataManager.GetLockTagsEvent += (_) => this.OnGetLockTagsEvent();
         }
 
         public Location MyLocation
@@ -226,13 +224,6 @@ namespace Amoeba.Core
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
         }
 
-        public GetTagsEventHandler GetLockTagsEvent { get; set; }
-
-        private IEnumerable<Tag> OnGetLockTagsEvent()
-        {
-            return this.GetLockTagsEvent?.Invoke(this) ?? new Tag[0];
-        }
-
         public IEnumerable<Information> GetConnectionInformations()
         {
             lock (_thisLock)
@@ -314,7 +305,7 @@ namespace Amoeba.Core
                             }
                         }
 
-                        // 長い間接続の無い通信を切断する。
+                        // 長い間通信の無い接続を切断する。
                         {
                             foreach (var sessionInfo in _routeTable.ToArray().Select(n => n.Value))
                             {
@@ -350,7 +341,7 @@ namespace Amoeba.Core
 
                         foreach (var node in _routeTable.ToArray())
                         {
-                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.ToArray().Randomize()).Take(1024).ToList();
+                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(1024).ToList();
 
                             lock (node.Value.SendInfo.PushBlockResultQueue.ThisLock)
                             {
@@ -820,7 +811,7 @@ namespace Amoeba.Core
                     {
                         var remain = _bandwidthLimit;
 
-                        foreach (var connection in _connections.Keys.ToArray().Randomize())
+                        foreach (var connection in _connections.Keys.Randomize())
                         {
                             try
                             {
@@ -864,7 +855,7 @@ namespace Amoeba.Core
                     {
                         var remain = _bandwidthLimit;
 
-                        foreach (var connection in _connections.Keys.ToArray().Randomize())
+                        foreach (var connection in _connections.Keys.Randomize())
                         {
                             try
                             {
@@ -1144,12 +1135,12 @@ namespace Amoeba.Core
 
                 var unicastMetadatas = new List<MulticastMetadata>();
 
-                var signatures = sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.ToList();
-                _random.Shuffle(signatures);
+                var tags = sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.ToList();
+                _random.Shuffle(tags);
 
-                foreach (var signature in signatures)
+                foreach (var tag in tags)
                 {
-                    foreach (var metadata in _metadataManager.GetMulticastMetadatas(signature).Randomize())
+                    foreach (var metadata in _metadataManager.GetMulticastMetadatas(tag).Randomize())
                     {
                         unicastMetadatas.Add(metadata);
 
@@ -1671,6 +1662,18 @@ namespace Amoeba.Core
 
                         }
                     }
+
+                    foreach (var metadata in _settings.Load("MulticastMetadatas", () => new MulticastMetadata[0]))
+                    {
+                        try
+                        {
+                            _metadataManager.SetMetadata(metadata);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
                 }
             }
         }
@@ -1686,9 +1689,11 @@ namespace Amoeba.Core
                 _settings.Save("ConnectionCountLimit", _connectionCountLimit);
                 _settings.Save("BandwidthLimit", _bandwidthLimit);
 
+                // MetadataManager
                 {
                     _settings.Save("BroadcastMetadatas", _metadataManager.GetBroadcastMetadatas());
                     _settings.Save("UnicastMetadatas", _metadataManager.GetUnicastMetadatas());
+                    _settings.Save("MulticastMetadatas", _metadataManager.GetMulticastMetadatas());
                 }
             }
         }

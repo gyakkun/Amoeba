@@ -17,22 +17,22 @@ namespace Amoeba.Service
     {
         private enum SerializeId
         {
-            Signature = 0,
-            CreationTime = 1,
-            Cost = 2,
+            TargetSignature = 0,
+            AuthorSignature = 1,
+            CreationTime = 2,
             Value = 3,
         }
 
-        private Signature _signature;
+        private Signature _targetSignature;
+        private Signature _authorSignature;
         private DateTime _creationTime;
-        private Cost _cost;
         private T _value;
 
-        public UnicastMessage(Signature signature, DateTime creationTime, Cost cost, T value)
+        public UnicastMessage(Signature targetSignature, Signature authorSignature, DateTime creationTime, T value)
         {
-            this.Signature = signature;
+            this.TargetSignature = targetSignature;
+            this.AuthorSignature = authorSignature;
             this.CreationTime = creationTime;
-            this.Cost = cost;
             this.Value = value;
         }
 
@@ -44,17 +44,17 @@ namespace Amoeba.Service
 
                 while ((id = reader.GetInt()) != -1)
                 {
-                    if (id == (int)SerializeId.Signature)
+                    if (id == (int)SerializeId.TargetSignature)
                     {
-                        this.Signature = Signature.Import(reader.GetStream(), bufferManager);
+                        this.TargetSignature = Signature.Import(reader.GetStream(), bufferManager);
+                    }
+                    else if (id == (int)SerializeId.AuthorSignature)
+                    {
+                        this.AuthorSignature = Signature.Import(reader.GetStream(), bufferManager);
                     }
                     else if (id == (int)SerializeId.CreationTime)
                     {
                         this.CreationTime = reader.GetDateTime();
-                    }
-                    else if (id == (int)SerializeId.Cost)
-                    {
-                        this.Cost = Cost.Import(reader.GetStream(), bufferManager);
                     }
                     else if (id == (int)SerializeId.Value)
                     {
@@ -68,23 +68,23 @@ namespace Amoeba.Service
         {
             using (var writer = new ItemStreamWriter(bufferManager))
             {
-                // Signature
-                if (this.Signature != null)
+                // TargetSignature
+                if (this.TargetSignature != null)
                 {
-                    writer.Write((int)SerializeId.Signature);
-                    writer.Write(this.Signature.Export(bufferManager));
+                    writer.Write((int)SerializeId.TargetSignature);
+                    writer.Write(this.TargetSignature.Export(bufferManager));
+                }
+                // AuthorSignature
+                if (this.AuthorSignature != null)
+                {
+                    writer.Write((int)SerializeId.AuthorSignature);
+                    writer.Write(this.AuthorSignature.Export(bufferManager));
                 }
                 // CreationTime
                 if (this.CreationTime != DateTime.MinValue)
                 {
                     writer.Write((int)SerializeId.CreationTime);
                     writer.Write(this.CreationTime);
-                }
-                // Cost
-                if (this.Cost != null)
-                {
-                    writer.Write((int)SerializeId.Cost);
-                    writer.Write(this.Cost.Export(bufferManager));
                 }
                 // Value
                 if (this.Value != null)
@@ -115,9 +115,9 @@ namespace Amoeba.Service
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;
 
-            if (this.Signature != other.Signature
+            if (this.TargetSignature != other.TargetSignature
+                || this.AuthorSignature != other.AuthorSignature
                 || this.CreationTime != other.CreationTime
-                || this.Cost != other.Cost
                 || this.Value != other.Value)
             {
                 return false;
@@ -133,16 +133,29 @@ namespace Amoeba.Service
 
         #region IUnicastMessage
 
-        [DataMember(Name = "Signature")]
-        public Signature Signature
+        [DataMember(Name = "TargetSignature")]
+        public Signature TargetSignature
         {
             get
             {
-                return _signature;
+                return _targetSignature;
             }
             private set
             {
-                _signature = value;
+                _targetSignature = value;
+            }
+        }
+
+        [DataMember(Name = "AuthorSignature")]
+        public Signature AuthorSignature
+        {
+            get
+            {
+                return _authorSignature;
+            }
+            private set
+            {
+                _authorSignature = value;
             }
         }
 
@@ -157,19 +170,6 @@ namespace Amoeba.Service
             {
                 var utc = value.ToUniversalTime();
                 _creationTime = utc.AddTicks(-(utc.Ticks % TimeSpan.TicksPerSecond));
-            }
-        }
-
-        [DataMember(Name = "Cost")]
-        public Cost Cost
-        {
-            get
-            {
-                return _cost;
-            }
-            private set
-            {
-                _cost = value;
             }
         }
 

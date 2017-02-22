@@ -84,6 +84,7 @@ namespace Amoeba.Core
         private void WatchTimer()
         {
             this.CheckInformation();
+            this.CheckMessageContents();
         }
 
         private volatile Info _info = new Info();
@@ -839,7 +840,7 @@ namespace Amoeba.Core
             }, token);
         }
 
-        public Task<Metadata> Import(Stream stream, CancellationToken token)
+        public Task<Metadata> Import(Stream stream, TimeSpan lifeSpan, CancellationToken token)
         {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
 
@@ -984,7 +985,7 @@ namespace Amoeba.Core
                         }
                         else
                         {
-                            _cacheInfoManager.Add(new CacheInfo(metadata, lockedHashes, null));
+                            _cacheInfoManager.Add(new CacheInfo(DateTime.UtcNow, lifeSpan, metadata, lockedHashes, null));
                         }
                     }
 
@@ -1247,7 +1248,7 @@ namespace Amoeba.Core
                         }
                         else
                         {
-                            _cacheInfoManager.Add(new CacheInfo(metadata, lockedHashes, shareInfo));
+                            _cacheInfoManager.Add(new CacheInfo(DateTime.UtcNow, Timeout.InfiniteTimeSpan, metadata, lockedHashes, shareInfo));
                         }
                     }
 
@@ -1363,45 +1364,19 @@ namespace Amoeba.Core
 
         #region Message
 
-        public IEnumerable<Information> GetMessageInformations()
+        private void CheckMessageContents()
         {
             lock (_thisLock)
             {
-                lock (_thisLock)
-                {
-                    var list = new List<Information>();
+                var now = DateTime.UtcNow;
 
-                    foreach (var info in _cacheInfoManager.GetMessageCacheInfos())
+                foreach (var info in _cacheInfoManager.GetMessageCacheInfos())
+                {
+                    if ((now - info.CreationTime) > info.LifeSpan)
                     {
-                        var contexts = new List<InformationContext>();
-                        {
-                            contexts.Add(new InformationContext("Metadata", info.Metadata));
-                        }
-
-                        list.Add(new Information(contexts));
+                        _cacheInfoManager.RemoveMessage(info.Metadata);
                     }
-
-                    return list;
                 }
-            }
-        }
-
-        public void RemoveMessage(Metadata metadata)
-        {
-            lock (_thisLock)
-            {
-                var cacheInfo = _cacheInfoManager.GetMessageCacheInfo(metadata);
-                if (cacheInfo == null) return;
-
-                foreach (var hash in cacheInfo.LockedHashes)
-                {
-                    this.Unlock(hash);
-                }
-
-                _cacheInfoManager.RemoveMessage(metadata);
-
-                // Event
-                _blockRemoveEventQueue.Enqueue(cacheInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
             }
         }
 
@@ -1640,11 +1615,6 @@ namespace Amoeba.Core
 
             #region Content
 
-            public IEnumerable<string> GetContentPaths()
-            {
-                return _contentCacheInfos.Keys.ToArray();
-            }
-
             public void RemoveContent(string path)
             {
                 CacheInfo cacheInfo;
@@ -1779,15 +1749,47 @@ namespace Amoeba.Core
         [DataContract(Name = "CacheInfo")]
         private class CacheInfo
         {
+            private DateTime _creationTime;
+            private TimeSpan _lifeSpan;
+
             private Metadata _metadata;
             private HashCollection _lockedHashes;
             private ShareInfo _shareInfo;
 
-            public CacheInfo(Metadata metadata, IEnumerable<Hash> lockedHashes, ShareInfo shareInfo)
+            public CacheInfo(DateTime creationTime, TimeSpan lifeTime, Metadata metadata, IEnumerable<Hash> lockedHashes, ShareInfo shareInfo)
             {
+                this.CreationTime = creationTime;
+                this.LifeSpan = lifeTime;
+
                 this.Metadata = metadata;
                 if (lockedHashes != null) this.ProtectedLockedHashes.AddRange(lockedHashes);
                 this.ShareInfo = shareInfo;
+            }
+
+            [DataMember(Name = "CreationTime")]
+            public DateTime CreationTime
+            {
+                get
+                {
+                    return _creationTime;
+                }
+                private set
+                {
+                    _creationTime = value;
+                }
+            }
+
+            [DataMember(Name = "LifeSpan")]
+            public TimeSpan LifeSpan
+            {
+                get
+                {
+                    return _lifeSpan;
+                }
+                private set
+                {
+                    _lifeSpan = value;
+                }
             }
 
             [DataMember(Name = "Metadata")]

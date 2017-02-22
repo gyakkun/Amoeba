@@ -24,9 +24,12 @@ namespace Amoeba.Service
 
         private Settings _settings;
 
-        private HashSet<Signature> _searchSignatures = new HashSet<Signature>();
+        private LockedHashSet<Signature> _searchSignatures = new LockedHashSet<Signature>();
 
-        private Dictionary<Type, VolatileHashDictionary<Metadata, object>> _cachedMessages;
+        private VolatileHashDictionary<BroadcastMetadata, BroadcastMessage<Profile>> _cache_Profiles;
+        private VolatileHashDictionary<BroadcastMetadata, BroadcastMessage<Store>> _cache_Stores;
+        private VolatileHashDictionary<Signature, LockedHashDictionary<UnicastMetadata, UnicastMessage<MailMessage>>> _cache_MailMessages;
+        private VolatileHashDictionary<Tag, LockedHashDictionary<MulticastMetadata, MulticastMessage<ChatMessage>>> _cache_ChatMessages;
 
         private WatchTimer _watchTimer;
 
@@ -37,8 +40,6 @@ namespace Amoeba.Service
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        private const int _maxMessageSize = 1024 * 1024 * 256;
-
         public MessageDownloadManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
@@ -46,7 +47,10 @@ namespace Amoeba.Service
 
             _settings = new Settings(configPath);
 
-            _cachedMessages = new Dictionary<Type, VolatileHashDictionary<Metadata, object>>();
+            _cache_Profiles = new VolatileHashDictionary<BroadcastMetadata, BroadcastMessage<Profile>>(new TimeSpan(0, 30, 0));
+            _cache_Stores = new VolatileHashDictionary<BroadcastMetadata, BroadcastMessage<Store>>(new TimeSpan(0, 30, 0));
+            _cache_MailMessages = new VolatileHashDictionary<Signature, LockedHashDictionary<UnicastMetadata, UnicastMessage<MailMessage>>>(new TimeSpan(0, 30, 0));
+            _cache_ChatMessages = new VolatileHashDictionary<Tag, LockedHashDictionary<MulticastMetadata, MulticastMessage<ChatMessage>>>(new TimeSpan(0, 30, 0));
 
             _watchTimer = new WatchTimer(this.WatchTimer, new TimeSpan(0, 0, 30));
         }
@@ -55,10 +59,10 @@ namespace Amoeba.Service
         {
             lock (_thisLock)
             {
-                foreach (var dic in _cachedMessages.Values)
-                {
-                    dic.Update();
-                }
+                _cache_Profiles.Update();
+                _cache_Stores.Update();
+                _cache_MailMessages.Update();
+                _cache_ChatMessages.Update();
             }
         }
 
@@ -82,118 +86,176 @@ namespace Amoeba.Service
             }
         }
 
-        private Task<BroadcastMessage<T>> GetBroadcastMessage<T>(int version, Signature signature)
-            where T : ItemBase<T>
+        private Task<BroadcastMessage<Profile>> GetProfile(Signature signature)
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
 
-            var type = typeof(T);
+            var broadcastMetadata = _coreManager.GetBroadcastMetadata(signature, "Profile");
+            if (broadcastMetadata == null) return Task.FromResult<BroadcastMessage<Profile>>(null);
 
-            lock (_thisLock)
+            // Cache
             {
-                var broadcastMetadata = _coreManager.GetBroadcastMetadata(signature, type.Name);
-                if (broadcastMetadata == null) return Task.FromResult<BroadcastMessage<T>>(null);
+                BroadcastMessage<Profile> result;
 
-                var dic = _cachedMessages.GetOrAdd(type, (_) => new VolatileHashDictionary<Metadata, object>(new TimeSpan(0, 30, 0)));
-
-                // Cache
+                if (_cache_Profiles.TryGetValue(broadcastMetadata, out result))
                 {
-                    object cachedResult;
-
-                    if (dic.TryGetValue(broadcastMetadata.Metadata, out cachedResult))
-                    {
-                        return Task.FromResult((BroadcastMessage<T>)cachedResult);
-                    }
+                    return Task.FromResult(result);
                 }
-
-                var task = _coreManager.GetStream(broadcastMetadata.Metadata, _maxMessageSize)
-                    .ContinueWith((t) =>
-                    {
-                        var stream = t.Result;
-                        if (stream == null) return null;
-
-                        var result = new BroadcastMessage<T>(broadcastMetadata.Certificate.GetSignature(),
-                            broadcastMetadata.CreationTime, ContentConverter.FromStream<T>(version, stream));
-
-                        dic[broadcastMetadata.Metadata] = result;
-
-                        return result;
-                    });
-
-                return task;
             }
+
+            var task = _coreManager.GetStream(broadcastMetadata.Metadata, 1024 * 1024 * 32)
+                .ContinueWith((t) =>
+                {
+                    var stream = t.Result;
+                    if (stream == null) return null;
+
+                    var result = new BroadcastMessage<Profile>(
+                        broadcastMetadata.Certificate.GetSignature(),
+                        broadcastMetadata.CreationTime,
+                        ContentConverter.FromStream<Profile>(0, stream));
+
+                    _cache_Profiles[broadcastMetadata] = result;
+
+                    return result;
+                });
+
+            return task;
         }
 
-        private Task<IEnumerable<T>> GetUnicastMessages<T>(int version, Signature signature, IExchangeDecrypt exchangePrivateKey, int limit)
-            where T : ItemBase<T>
+        private Task<BroadcastMessage<Store>> GetStore(Signature signature)
+        {
+            if (signature == null) throw new ArgumentNullException(nameof(signature));
+
+            var broadcastMetadata = _coreManager.GetBroadcastMetadata(signature, "Store");
+            if (broadcastMetadata == null) return Task.FromResult<BroadcastMessage<Store>>(null);
+
+            // Cache
+            {
+                BroadcastMessage<Store> result;
+
+                if (_cache_Stores.TryGetValue(broadcastMetadata, out result))
+                {
+                    return Task.FromResult(result);
+                }
+            }
+
+            var task = _coreManager.GetStream(broadcastMetadata.Metadata, 1024 * 1024 * 32)
+                .ContinueWith((t) =>
+                {
+                    var stream = t.Result;
+                    if (stream == null) return null;
+
+                    var result = new BroadcastMessage<Store>(
+                        broadcastMetadata.Certificate.GetSignature(),
+                        broadcastMetadata.CreationTime,
+                        ContentConverter.FromStream<Store>(0, stream));
+
+                    _cache_Stores[broadcastMetadata] = result;
+
+                    return result;
+                });
+
+            return task;
+        }
+
+        private Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, IExchangeDecrypt exchangePrivateKey)
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
             if (exchangePrivateKey == null) throw new ArgumentNullException(nameof(exchangePrivateKey));
 
-            var type = typeof(T);
-
             return Task.Run(() =>
             {
-                VolatileHashDictionary<Metadata, object> dic;
+                var results = new List<UnicastMessage<MailMessage>>();
 
-                lock (_thisLock)
+                foreach (var unicastMetadata in _coreManager.GetUnicastMetadatas(signature, "MailMessage"))
                 {
-                    dic = _cachedMessages.GetOrAdd(type, (_) => new VolatileHashDictionary<Metadata, object>(new TimeSpan(0, 30, 0)));
-                }
+                    if (!_searchSignatures.Contains(unicastMetadata.Certificate.GetSignature())) continue;
 
-                foreach (var unicastMetadata in _coreManager.GetUnicastMetadatas(signature, type.Name))
-                {
-                    if (!_searchSignatures.Contains(unicastMetadata.Certificate.GetSignature()) && unicastMetadata.Cost.Value < limit) continue;
+                    var dic = _cache_MailMessages.GetOrAdd(unicastMetadata.Signature, (_) => new LockedHashDictionary<UnicastMetadata, UnicastMessage<MailMessage>>());
 
                     // Cache
                     {
-                        object cachedResult;
+                        UnicastMessage<MailMessage> result;
 
-                        if (dic.TryGetValue(broadcastMetadata.Metadata, out cachedResult))
+                        if (dic.TryGetValue(unicastMetadata, out result))
                         {
-                            return Task.FromResult((T)cachedResult);
+                            results.Add(result);
+
+                            continue;
                         }
+                    }
+
+                    {
+                        var stream = _coreManager.GetStream(unicastMetadata.Metadata, 1024 * 1024 * 1).Result;
+                        if (stream == null) continue;
+
+                        var result = new UnicastMessage<MailMessage>(
+                            unicastMetadata.Signature,
+                            unicastMetadata.Certificate.GetSignature(),
+                            unicastMetadata.CreationTime,
+                            ContentConverter.FromStream<MailMessage>(0, stream));
+
+                        dic[unicastMetadata] = result;
+
+                        results.Add(result);
                     }
                 }
 
-                var task = _coreManager.GetStream(broadcastMetadata.Metadata, _maxMessageSize)
-                    .ContinueWith((t) =>
-                    {
-                        var stream = t.Result;
-                        if (stream == null) return null;
-
-                        var result = ContentConverter.FromStream<T>(version, stream);
-                        dic[broadcastMetadata.Metadata] = result;
-
-                        return result;
-                    });
-
-                return task;
+                return (IEnumerable<UnicastMessage<MailMessage>>)results.ToArray();
             });
         }
 
-        public Task<Profile> GetProfile(Signature signature)
+        private Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, IExchangeDecrypt exchangePrivateKey)
         {
-            lock (_thisLock)
-            {
-                return this.GetBroadcastMessage<Profile>(0, signature);
-            }
-        }
+            if (tag == null) throw new ArgumentNullException(nameof(tag));
+            if (exchangePrivateKey == null) throw new ArgumentNullException(nameof(exchangePrivateKey));
 
-        public Task<Store> GetStore(Signature signature)
-        {
-            lock (_thisLock)
-            {
-                return this.GetBroadcastMessage<Store>(0, signature);
-            }
-        }
+            var now = DateTime.UtcNow;
 
-        public Task<MailMessage> GetMail(Signature signature)
-        {
-            lock (_thisLock)
+            return Task.Run(() =>
             {
-                return this.GetBroadcastMessage<MailMessage>(0, signature);
-            }
+                var results = new List<MulticastMessage<ChatMessage>>();
+
+                foreach (var multiastMetadata in _coreManager.GetMulticastMetadatas(tag, "ChatMessage"))
+                {
+                    if (!_searchSignatures.Contains(multiastMetadata.Certificate.GetSignature()))
+                    {
+                        if ((now - multiastMetadata.CreationTime).TotalDays > 7) continue;
+                    }
+
+                    var dic = _cache_ChatMessages.GetOrAdd(multiastMetadata.Tag, (_) => new LockedHashDictionary<MulticastMetadata, MulticastMessage<ChatMessage>>());
+
+                    // Cache
+                    {
+                        MulticastMessage<ChatMessage> result;
+
+                        if (dic.TryGetValue(multiastMetadata, out result))
+                        {
+                            results.Add(result);
+
+                            continue;
+                        }
+                    }
+
+                    {
+                        var stream = _coreManager.GetStream(multiastMetadata.Metadata, 1024 * 1024 * 1).Result;
+                        if (stream == null) continue;
+
+                        var result = new MulticastMessage<ChatMessage>(
+                            multiastMetadata.Tag,
+                            multiastMetadata.Certificate.GetSignature(),
+                            multiastMetadata.CreationTime,
+                            multiastMetadata.Cost,
+                            ContentConverter.FromStream<ChatMessage>(0, stream));
+
+                        dic[multiastMetadata] = result;
+
+                        results.Add(result);
+                    }
+                }
+
+                return (IEnumerable<MulticastMessage<ChatMessage>>)results.ToArray();
+            });
         }
 
         public override ManagerState State

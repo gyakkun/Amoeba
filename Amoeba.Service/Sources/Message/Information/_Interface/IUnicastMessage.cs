@@ -7,9 +7,9 @@ namespace Amoeba.Service
     interface IUnicastMessage<T>
         where T : ItemBase<T>
     {
-        Signature Signature { get; }
+        Signature TargetSignature { get; }
+        Signature AuthorSignature { get; }
         DateTime CreationTime { get; }
-        Cost Cost { get; }
         T Value { get; }
     }
 }

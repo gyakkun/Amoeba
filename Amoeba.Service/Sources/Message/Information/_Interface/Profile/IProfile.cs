@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Amoeba.Core;
 using Omnius.Security;
 
 namespace Amoeba.Service
@@ -7,6 +8,8 @@ namespace Amoeba.Service
     {
         string Comment { get; }
         ExchangePublicKey ExchangePublicKey { get; }
-        Link Link { get; }
+        IEnumerable<Signature> TrustSignatures { get; }
+        IEnumerable<Signature> DeleteSignatures { get; }
+        IEnumerable<Tag> Tags { get; }
     }
 }
