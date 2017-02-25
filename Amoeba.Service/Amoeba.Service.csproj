@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sources\Connection\CatharsisManager.cs" />
+    <Compile Include="Sources\Connection\ConnectionSettingManager.cs" />
+    <Compile Include="Sources\Connection\I2pConnectionManager.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessage.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessageCollection.cs" />
     <Compile Include="Sources\Message\Information\MulticastMessage.cs" />
@@ -131,9 +134,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sources\Content\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

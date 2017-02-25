@@ -700,7 +700,7 @@ namespace Amoeba.Core
                     }
                 }
 
-                throw new KeyNotFoundException();
+                return 0;
             }
         }
 

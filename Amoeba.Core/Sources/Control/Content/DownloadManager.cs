@@ -203,6 +203,8 @@ namespace Amoeba.Core
 
                 try
                 {
+                    if (!this.CheckSize(item)) throw new ArgumentException("download size too large.");
+
                     if (item.Depth == 0)
                     {
                         if (!_cacheManager.Contains(item.Metadata.Hash))
@@ -268,6 +270,22 @@ namespace Amoeba.Core
 
                     Log.Error(e);
                 }
+            }
+        }
+
+        private bool CheckSize(DownloadItemInfo info)
+        {
+            lock (_lockObject)
+            {
+                var hashes = new List<Hash>();
+                {
+                    if (info.Depth == 0) hashes.Add(info.Metadata.Hash);
+                    else hashes.AddRange(info.Index.Groups.SelectMany(n => n.Hashes));
+                }
+
+                long sumLength = hashes.Sum(n => _cacheManager.GetLength(n));
+
+                return (sumLength < (info.MaxLength * 3));
             }
         }
 
@@ -363,7 +381,7 @@ namespace Amoeba.Core
                                     {
                                         // Write
                                         {
-                                            var task = _cacheManager.Decoding(stream, hashes, (long)1024 * 1024 * 1024 * 4, tokenSource.Token);
+                                            var task = _cacheManager.Decoding(stream, hashes, item.MaxLength, tokenSource.Token);
 
                                             while (!task.IsCompleted)
                                             {
@@ -451,12 +469,23 @@ namespace Amoeba.Core
             {
                 info = _volatileDownloadItemInfoManager.GetInfo(metadata);
 
+                if (info.State == DownloadState.Error)
+                {
+                    _volatileDownloadItemInfoManager.Remove(metadata);
+                    info = null;
+                }
+
                 if (info == null)
                 {
                     info = new DownloadItemInfo(metadata);
                     info.State = DownloadState.Downloading;
+                    info.MaxLength = maxLength;
 
                     _volatileDownloadItemInfoManager.Add(info);
+                }
+                else
+                {
+                    info.MaxLength = Math.Max(info.MaxLength, maxLength);
                 }
 
                 if (info.State != DownloadState.Completed) return Task.FromResult<Stream>(null);
@@ -473,7 +502,7 @@ namespace Amoeba.Core
                     using (var wrapperStream = new WrapperStream(stream, true))
                     using (var tokenSource = new CancellationTokenSource())
                     {
-                        var task = _cacheManager.Decoding(wrapperStream, info.ResultHashes, maxLength, tokenSource.Token);
+                        var task = _cacheManager.Decoding(wrapperStream, info.ResultHashes, info.MaxLength, tokenSource.Token);
 
                         while (!task.IsCompleted)
                         {
@@ -544,7 +573,7 @@ namespace Amoeba.Core
             }
         }
 
-        public Task Export(Metadata metadata, Stream outStream, long maxLength, CancellationToken token)
+        public Task Export(Metadata metadata, Stream outStream, CancellationToken token)
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
             if (outStream == null) throw new ArgumentNullException(nameof(outStream));
@@ -554,22 +583,30 @@ namespace Amoeba.Core
                 var info = _downloadItemInfoManager.GetInfo(metadata);
                 if (info.State != DownloadState.Completed) throw new DownloadManagerException("Is not completed");
 
-                return _cacheManager.Decoding(outStream, info.ResultHashes, maxLength, token);
+                return _cacheManager.Decoding(outStream, info.ResultHashes, info.MaxLength, token);
             }
         }
 
-        public void Add(Metadata metadata)
+        public void Add(Metadata metadata, long maxLength)
         {
             if (metadata == null) throw new ArgumentNullException(nameof(metadata));
 
             lock (_lockObject)
             {
-                if (!_downloadItemInfoManager.Contains(metadata)) return;
+                if (!_downloadItemInfoManager.Contains(metadata))
+                {
+                    var info = new DownloadItemInfo(metadata);
+                    info.MaxLength = maxLength;
+                    info.State = DownloadState.Downloading;
 
-                var info = new DownloadItemInfo(metadata);
-                info.State = DownloadState.Downloading;
+                    _downloadItemInfoManager.Add(info);
+                }
+                else
+                {
+                    var info = _downloadItemInfoManager.GetInfo(metadata);
 
-                _downloadItemInfoManager.Add(info);
+                    info.MaxLength = Math.Max(info.MaxLength, maxLength);
+                }
             }
         }
 
@@ -577,8 +614,6 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                var info = _downloadItemInfoManager.GetInfo(metadata);
-
                 _downloadItemInfoManager.Remove(metadata);
             }
         }
@@ -587,8 +622,11 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
+                var info = _downloadItemInfoManager.GetInfo(metadata);
+                if (info == null) return;
+
                 this.Remove(metadata);
-                this.Add(metadata);
+                this.Add(metadata, info.MaxLength);
             }
         }
 
@@ -708,6 +746,16 @@ namespace Amoeba.Core
                 _downloadItemInfos.Add(info.Metadata, container);
 
                 this.OnAdd(container.Value);
+            }
+
+            public void Remove(Metadata metadata)
+            {
+                Container<DownloadItemInfo> container;
+                if (!_downloadItemInfos.TryGetValue(metadata, out container)) return;
+
+                _downloadItemInfos.Remove(metadata);
+
+                this.OnRemove(container.Value);
             }
 
             public bool Contains(Metadata metadata)
@@ -855,6 +903,8 @@ namespace Amoeba.Core
         {
             private Metadata _metadata;
 
+            private long _maxLength;
+
             private int _depth;
             private Index _index;
 
@@ -877,6 +927,19 @@ namespace Amoeba.Core
                 private set
                 {
                     _metadata = value;
+                }
+            }
+
+            [DataMember(Name = "MaxLength")]
+            public long MaxLength
+            {
+                get
+                {
+                    return _maxLength;
+                }
+                set
+                {
+                    _maxLength = value;
                 }
             }
 

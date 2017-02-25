@@ -281,6 +281,56 @@ namespace Amoeba.Service
             });
         }
 
+        public Task Upload(Profile profile, DigitalSignature digitalSignature, CancellationToken token)
+        {
+            if (profile == null) throw new ArgumentNullException(nameof(profile));
+            if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
+
+            return Task.Run(() =>
+            {
+                var metadata = _coreManager.Import(ContentConverter.ToStream(0, profile), new TimeSpan(0, 30, 0), token).Result;
+                _coreManager.UploadMetadata(new BroadcastMetadata("Profile", DateTime.UtcNow, metadata, digitalSignature));
+            }, token);
+        }
+
+        public Task Upload(Store store, DigitalSignature digitalSignature, CancellationToken token)
+        {
+            if (store == null) throw new ArgumentNullException(nameof(store));
+            if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
+
+            return Task.Run(() =>
+            {
+                var metadata = _coreManager.Import(ContentConverter.ToStream(0, store), new TimeSpan(0, 30, 0), token).Result;
+                _coreManager.UploadMetadata(new BroadcastMetadata("Store", DateTime.UtcNow, metadata, digitalSignature));
+            }, token);
+        }
+
+        public Task Upload(Signature targetSignature, MailMessage mailMessage, DigitalSignature digitalSignature, CancellationToken token)
+        {
+            if (targetSignature == null) throw new ArgumentNullException(nameof(targetSignature));
+            if (mailMessage == null) throw new ArgumentNullException(nameof(mailMessage));
+            if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
+
+            return Task.Run(() =>
+            {
+                var metadata = _coreManager.Import(ContentConverter.ToStream(0, mailMessage), new TimeSpan(0, 30, 0), token).Result;
+                _coreManager.UploadMetadata(new UnicastMetadata("MailMessage", targetSignature, DateTime.UtcNow, metadata, digitalSignature));
+            }, token);
+        }
+
+        public Task Upload(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, Miner miner, CancellationToken token)
+        {
+            if (tag == null) throw new ArgumentNullException(nameof(tag));
+            if (chatMessage == null) throw new ArgumentNullException(nameof(chatMessage));
+            if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
+
+            return Task.Run(() =>
+            {
+                var metadata = _coreManager.Import(ContentConverter.ToStream(0, chatMessage), new TimeSpan(0, 30, 0), token).Result;
+                _coreManager.UploadMetadata(new MulticastMetadata("ChatMessage", tag, DateTime.UtcNow, metadata, digitalSignature, miner, token));
+            }, token);
+        }
+
         #region ISettings
 
         public void Load()

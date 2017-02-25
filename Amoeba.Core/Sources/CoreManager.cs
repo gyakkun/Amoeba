@@ -255,13 +255,13 @@ namespace Amoeba.Core
             }
         }
 
-        public void Download(Metadata metadata)
+        public void Download(Metadata metadata, long maxLength)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _downloadManager.Add(metadata);
+                _downloadManager.Add(metadata, maxLength);
             }
         }
 
@@ -295,13 +295,13 @@ namespace Amoeba.Core
             }
         }
 
-        public Task Export(Metadata metadata, Stream outStream, long maxLength, CancellationToken token)
+        public Task Export(Metadata metadata, Stream outStream, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _downloadManager.Export(metadata, outStream, maxLength, token);
+                return _downloadManager.Export(metadata, outStream, token);
             }
         }
 
@@ -319,7 +319,7 @@ namespace Amoeba.Core
             }
         }
 
-        public void UploadMessage(UnicastMetadata metadata)
+        public void UploadMetadata(UnicastMetadata metadata)
         {
             this.Check();
 
@@ -329,7 +329,7 @@ namespace Amoeba.Core
             }
         }
 
-        public void UploadMessage(MulticastMetadata metadata)
+        public void UploadMetadata(MulticastMetadata metadata)
         {
             this.Check();
 

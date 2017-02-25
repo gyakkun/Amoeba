@@ -1437,13 +1437,6 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                foreach (var connection in _connections.Keys.ToArray())
-                {
-                    this.RemoveConnection(connection);
-                }
-
-                this.UpdateMyId();
-
                 _myLocation = location;
             }
         }
