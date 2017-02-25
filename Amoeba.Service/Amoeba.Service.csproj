@@ -68,7 +68,7 @@
     <Compile Include="Sources\Message\Information\_Interface\Profile\IProfile.cs" />
     <Compile Include="Sources\Message\Information\_Interface\Store\IBox.cs" />
     <Compile Include="Sources\Message\Information\_Interface\Store\IStore.cs" />
-    <Compile Include="Sources\Message\MessageDownloadManager.cs" />
+    <Compile Include="Sources\Message\MessageManager.cs" />
     <Compile Include="Sources\Message\Utilities\ContentConverter.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,7 @@ using System.Collections.Concurrent;
 
 namespace Amoeba.Service
 {
-    class MessageDownloadManager : StateManagerBase, ISettings
+    class MessageManager : ManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
@@ -35,12 +35,10 @@ namespace Amoeba.Service
 
         private Random _random = new Random();
 
-        private ManagerState _state = ManagerState.Stop;
-
-        private readonly object _syncObject = new object();
+        private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public MessageDownloadManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
+        public MessageManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _coreManager = coreManager;
@@ -57,7 +55,7 @@ namespace Amoeba.Service
 
         private void WatchTimer()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _cache_Profiles.Update();
                 _cache_Stores.Update();
@@ -70,7 +68,7 @@ namespace Amoeba.Service
         {
             get
             {
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     return _searchSignatures.ToArray();
                 }
@@ -79,7 +77,7 @@ namespace Amoeba.Service
 
         public void SetSearchSignatures(IEnumerable<Signature> signatures)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _searchSignatures.Clear();
                 _searchSignatures.UnionWith(signatures);
@@ -167,10 +165,20 @@ namespace Amoeba.Service
             {
                 var results = new List<UnicastMessage<MailMessage>>();
 
+                var trusts = new List<UnicastMetadata>();
+
                 foreach (var unicastMetadata in _coreManager.GetUnicastMetadatas(signature, "MailMessage"))
                 {
-                    if (!_searchSignatures.Contains(unicastMetadata.Certificate.GetSignature())) continue;
+                    if (_searchSignatures.Contains(unicastMetadata.Certificate.GetSignature()))
+                    {
+                        trusts.Add(unicastMetadata);
+                    }
+                }
 
+                trusts.Sort((x, y) => y.CreationTime.CompareTo(x.CreationTime));
+
+                foreach (var unicastMetadata in trusts.Take(1024))
+                {
                     var dic = _cache_MailMessages.GetOrAdd(unicastMetadata.Signature, (_) => new LockedHashDictionary<UnicastMetadata, UnicastMessage<MailMessage>>());
 
                     // Cache
@@ -216,20 +224,35 @@ namespace Amoeba.Service
             {
                 var results = new List<MulticastMessage<ChatMessage>>();
 
-                foreach (var multiastMetadata in _coreManager.GetMulticastMetadatas(tag, "ChatMessage"))
-                {
-                    if (!_searchSignatures.Contains(multiastMetadata.Certificate.GetSignature()))
-                    {
-                        if ((now - multiastMetadata.CreationTime).TotalDays > 7) continue;
-                    }
+                var trusts = new List<MulticastMetadata>();
+                var untrusts = new List<MulticastMetadata>();
 
-                    var dic = _cache_ChatMessages.GetOrAdd(multiastMetadata.Tag, (_) => new LockedHashDictionary<MulticastMetadata, MulticastMessage<ChatMessage>>());
+                foreach (var multicastMetadata in _coreManager.GetMulticastMetadatas(tag, "ChatMessage"))
+                {
+                    if (_searchSignatures.Contains(multicastMetadata.Certificate.GetSignature()))
+                    {
+                        trusts.Add(multicastMetadata);
+                    }
+                    else
+                    {
+                        if ((now - multicastMetadata.CreationTime).TotalDays > 7) continue;
+
+                        untrusts.Add(multicastMetadata);
+                    }
+                }
+
+                trusts.Sort((x, y) => y.CreationTime.CompareTo(x.CreationTime));
+                untrusts.Sort((x, y) => y.CreationTime.CompareTo(x.CreationTime));
+
+                foreach (var multicastMetadata in CollectionUtils.Unite(trusts.Take(1024), untrusts.Take(32)))
+                {
+                    var dic = _cache_ChatMessages.GetOrAdd(multicastMetadata.Tag, (_) => new LockedHashDictionary<MulticastMetadata, MulticastMessage<ChatMessage>>());
 
                     // Cache
                     {
                         MulticastMessage<ChatMessage> result;
 
-                        if (dic.TryGetValue(multiastMetadata, out result))
+                        if (dic.TryGetValue(multicastMetadata, out result))
                         {
                             results.Add(result);
 
@@ -238,17 +261,17 @@ namespace Amoeba.Service
                     }
 
                     {
-                        var stream = _coreManager.GetStream(multiastMetadata.Metadata, 1024 * 1024 * 1).Result;
+                        var stream = _coreManager.GetStream(multicastMetadata.Metadata, 1024 * 1024 * 1).Result;
                         if (stream == null) continue;
 
                         var result = new MulticastMessage<ChatMessage>(
-                            multiastMetadata.Tag,
-                            multiastMetadata.Certificate.GetSignature(),
-                            multiastMetadata.CreationTime,
-                            multiastMetadata.Cost,
+                            multicastMetadata.Tag,
+                            multicastMetadata.Certificate.GetSignature(),
+                            multicastMetadata.CreationTime,
+                            multicastMetadata.Cost,
                             ContentConverter.FromStream<ChatMessage>(0, stream));
 
-                        dic[multiastMetadata] = result;
+                        dic[multicastMetadata] = result;
 
                         results.Add(result);
                     }
@@ -258,51 +281,11 @@ namespace Amoeba.Service
             });
         }
 
-        public override ManagerState State
-        {
-            get
-            {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-                return _state;
-            }
-        }
-
-        private readonly object _stateLock = new object();
-
-        public override void Start()
-        {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-            lock (_stateLock)
-            {
-                lock (_syncObject)
-                {
-                    if (this.State == ManagerState.Start) return;
-                    _state = ManagerState.Start;
-                }
-            }
-        }
-
-        public override void Stop()
-        {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-            lock (_stateLock)
-            {
-                lock (_syncObject)
-                {
-                    if (this.State == ManagerState.Stop) return;
-                    _state = ManagerState.Stop;
-                }
-            }
-        }
-
         #region ISettings
 
         public void Load()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 int version = _settings.Load("Version", () => 0);
 
@@ -312,7 +295,7 @@ namespace Amoeba.Service
 
         public void Save()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _settings.Save("Version", 0);
 

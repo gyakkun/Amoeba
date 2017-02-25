@@ -22,7 +22,7 @@ namespace Amoeba.Core
 
         private bool _isLoaded = false;
 
-        private readonly object _syncObject = new object();
+        private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
         public CoreManager(string configPath, string blocksPath, BufferManager bufferManager)
@@ -69,7 +69,7 @@ namespace Amoeba.Core
             {
                 this.Check();
 
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     var contexts = new List<InformationContext>();
                     contexts.AddRange(_cacheManager.Information);
@@ -86,7 +86,7 @@ namespace Amoeba.Core
             {
                 this.Check();
 
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     return _networkManager.MyLocation;
                 }
@@ -99,7 +99,7 @@ namespace Amoeba.Core
             {
                 this.Check();
 
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     return _networkManager.CrowdLocations;
                 }
@@ -112,7 +112,7 @@ namespace Amoeba.Core
             {
                 this.Check();
 
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     return _networkManager.ConnectionCountLimit;
                 }
@@ -121,7 +121,7 @@ namespace Amoeba.Core
             {
                 this.Check();
 
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     _networkManager.ConnectionCountLimit = value;
                 }
@@ -134,7 +134,7 @@ namespace Amoeba.Core
             {
                 this.Check();
 
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     return _networkManager.BandwidthLimit;
                 }
@@ -143,7 +143,7 @@ namespace Amoeba.Core
             {
                 this.Check();
 
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     _networkManager.BandwidthLimit = value;
                 }
@@ -156,7 +156,7 @@ namespace Amoeba.Core
             {
                 this.Check();
 
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     return _cacheManager.Size;
                 }
@@ -167,7 +167,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _networkManager.GetConnectionInformations();
             }
@@ -177,7 +177,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _networkManager.SetMyLocation(location);
             }
@@ -187,7 +187,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _networkManager.SetCrowdLocations(locations);
             }
@@ -197,7 +197,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (this.State == ManagerState.Start)
                 {
@@ -217,7 +217,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _cacheManager.CheckBlocks(checkBlocksProgressEvent, token);
             }
@@ -229,7 +229,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _cacheManager.Import(path, token);
             }
@@ -239,7 +239,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _cacheManager.GetContentInformations();
             }
@@ -249,7 +249,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _cacheManager.RemoveContent(path);
             }
@@ -259,7 +259,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _downloadManager.Add(metadata);
             }
@@ -269,7 +269,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _downloadManager.GetDownloadInformations();
             }
@@ -279,7 +279,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _downloadManager.Remove(metadata);
             }
@@ -289,7 +289,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _downloadManager.Reset(metadata);
             }
@@ -299,7 +299,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _downloadManager.Export(metadata, outStream, maxLength, token);
             }
@@ -313,7 +313,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _networkManager.Upload(metadata);
             }
@@ -323,7 +323,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _networkManager.Upload(metadata);
             }
@@ -333,7 +333,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _networkManager.Upload(metadata);
             }
@@ -343,7 +343,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _networkManager.GetBroadcastMetadata(signature, type);
             }
@@ -353,7 +353,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _networkManager.GetUnicastMetadatas(signature, type);
             }
@@ -363,7 +363,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _networkManager.GetMulticastMetadatas(tag, type);
             }
@@ -373,7 +373,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _cacheManager.Import(stream, lifeSpan, token);
             }
@@ -383,7 +383,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return _downloadManager.GetStream(metadata, maxLength);
             }
@@ -405,7 +405,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (this.State == ManagerState.Start) return;
                 _state = ManagerState.Start;
@@ -419,7 +419,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (this.State == ManagerState.Stop) return;
                 _state = ManagerState.Stop;
@@ -435,7 +435,7 @@ namespace Amoeba.Core
         {
             if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (_isLoaded) throw new CoreManagerException("CoreManager was already loaded.");
                 _isLoaded = true;
@@ -473,7 +473,7 @@ namespace Amoeba.Core
         {
             this.Check();
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
 #if DEBUG
                 var stopwatch = new Stopwatch();

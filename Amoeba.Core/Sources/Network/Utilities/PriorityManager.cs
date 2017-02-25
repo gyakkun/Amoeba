@@ -13,7 +13,7 @@ namespace Amoeba.Core
 
         private readonly TimeSpan _survivalTime;
 
-        private readonly object _syncObject = new object();
+        private readonly object _lockObject = new object();
 
         public PriorityManager(TimeSpan survivalTime)
         {
@@ -30,7 +30,7 @@ namespace Amoeba.Core
 
         public void Increment()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 var now = DateTime.UtcNow;
                 now.AddTicks(-(now.Ticks % TimeSpan.TicksPerSecond));
@@ -41,7 +41,7 @@ namespace Amoeba.Core
 
         public void Decrement()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 var now = DateTime.UtcNow;
                 now.AddTicks(-(now.Ticks % TimeSpan.TicksPerSecond));
@@ -54,7 +54,7 @@ namespace Amoeba.Core
         {
             const int average = 256;
 
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 var priority = _table.Sum(n => n.Value);
                 priority = Math.Min(Math.Max(priority, -average), average);
@@ -65,7 +65,7 @@ namespace Amoeba.Core
 
         public void Update()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 var now = DateTime.UtcNow;
 

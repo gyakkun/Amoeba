@@ -21,9 +21,14 @@ namespace Amoeba.Service
             Deflate = 1,
         }
 
-        private enum ConvertCryptoAlgorithm : byte
+        private enum ConvertCryptoAlgorithm
         {
             Aes256 = 0,
+        }
+
+        private enum ConvertHashAlgorithm
+        {
+            Sha256 = 0,
         }
 
         private static BufferManager _bufferManager = BufferManager.Instance;
@@ -346,6 +351,43 @@ namespace Amoeba.Service
             }
         }
 
+        private static Stream AddHash(Stream stream)
+        {
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
+
+            var hashStream = new BufferStream(_bufferManager);
+            {
+                VintUtils.Write(hashStream, (int)ConvertHashAlgorithm.Sha256);
+                var value = Sha256.ComputeHash(new WrapperStream(stream, true));
+                hashStream.Write(value, 0, value.Length);
+            }
+
+            return new UniteStream(hashStream, stream);
+        }
+
+        private static Stream RemoveHash(Stream stream)
+        {
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
+
+            var type = (int)VintUtils.Get(stream);
+
+            if (type == (int)ConvertHashAlgorithm.Sha256)
+            {
+                var value = new byte[32];
+                stream.Read(value, 0, value.Length);
+
+                var dataStream = new RangeStream(stream, true);
+                if (!Unsafe.Equals(value, Sha256.ComputeHash(new WrapperStream(dataStream, true)))) throw new ArgumentException("Hash");
+
+                dataStream.Seek(0, SeekOrigin.Begin);
+                return dataStream;
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
         private static Stream AddPadding(Stream stream, int size)
         {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
@@ -453,7 +495,7 @@ namespace Amoeba.Service
 
             try
             {
-                return AddVersion(Encrypt(AddPadding(Compress(message.Export(_bufferManager)), paddingSize), publicKey), version);
+                return AddVersion(AddHash(Encrypt(AddPadding(Compress(message.Export(_bufferManager)), paddingSize), publicKey)), version);
             }
             catch (Exception)
             {
@@ -469,7 +511,7 @@ namespace Amoeba.Service
 
             try
             {
-                return ItemBase<T>.Import(Decompress(RemovePadding(Decrypt(RemoveVersion(stream, version), privateKey))), _bufferManager);
+                return ItemBase<T>.Import(Decompress(RemovePadding(RemoveHash(Decrypt(RemoveVersion(stream, version), privateKey)))), _bufferManager);
             }
             catch (Exception)
             {

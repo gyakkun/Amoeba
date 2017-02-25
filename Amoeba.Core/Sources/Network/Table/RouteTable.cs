@@ -14,7 +14,7 @@ namespace Amoeba.Core
 
         private LinkedList<Node<T>>[] _nodesList;
 
-        private readonly object _syncObject = new object();
+        private readonly object _lockObject = new object();
 
         private static byte[] _distanceHashtable = new byte[256];
 
@@ -48,14 +48,14 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     return _baseId;
                 }
             }
             set
             {
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     var tempList = this.ToArray();
                     this.Clear();
@@ -74,7 +74,7 @@ namespace Amoeba.Core
         {
             get
             {
-                lock (_syncObject)
+                lock (_lockObject)
                 {
                     return _nodesList
                         .Where(n => n != null)
@@ -174,7 +174,7 @@ namespace Amoeba.Core
 
         public bool Add(byte[] id, T value)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (id == null) throw new ArgumentNullException(nameof(id));
 
@@ -213,7 +213,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Node<T>> Search(byte[] targetId, int count)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (targetId == null) throw new ArgumentNullException(nameof(targetId));
                 if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
@@ -224,7 +224,7 @@ namespace Amoeba.Core
 
         public Node<T> Verify()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 for (int i = _nodesList.Length - 1; i >= 0; i--)
                 {
@@ -243,7 +243,7 @@ namespace Amoeba.Core
 
         public void Clear()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 for (int i = 0; i < _nodesList.Length; i++)
                 {
@@ -254,7 +254,7 @@ namespace Amoeba.Core
 
         public bool Contains(byte[] id)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (id == null) throw new ArgumentNullException(nameof(id));
 
@@ -274,7 +274,7 @@ namespace Amoeba.Core
 
         public Node<T> Get(byte[] id)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (id == null) throw new ArgumentNullException(nameof(id));
 
@@ -294,7 +294,7 @@ namespace Amoeba.Core
 
         public bool Remove(byte[] id)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 if (id == null) throw new ArgumentNullException(nameof(id));
 
@@ -314,7 +314,7 @@ namespace Amoeba.Core
 
         public Node<T>[] ToArray()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 var tempList = new List<Node<T>>();
 
@@ -332,7 +332,7 @@ namespace Amoeba.Core
 
         public IEnumerator<Node<T>> GetEnumerator()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 for (int i = 0; i < _nodesList.Length; i++)
                 {
@@ -349,7 +349,7 @@ namespace Amoeba.Core
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 return this.GetEnumerator();
             }

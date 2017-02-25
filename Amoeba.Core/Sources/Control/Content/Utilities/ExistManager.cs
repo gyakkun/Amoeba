@@ -10,7 +10,7 @@ namespace Amoeba.Core
     {
         private Dictionary<Group, GroupManager> _table = new Dictionary<Group, GroupManager>(new ReferenceEqualityComparer());
 
-        private readonly object _syncObject = new object();
+        private readonly object _lockObject = new object();
 
         public ExistManager()
         {
@@ -19,7 +19,7 @@ namespace Amoeba.Core
 
         public void Add(Group group, IEnumerable<Hash> hashes)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 var groupManager = new GroupManager(group);
 
@@ -36,7 +36,7 @@ namespace Amoeba.Core
 
         public void Remove(Group group)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 _table.Remove(group);
             }
@@ -44,7 +44,7 @@ namespace Amoeba.Core
 
         public void Set(Hash hash, bool state)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 foreach (var groupManager in _table.Values)
                 {
@@ -55,7 +55,7 @@ namespace Amoeba.Core
 
         public IEnumerable<Hash> GetHashes(Group group, bool state)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 GroupManager groupManager;
                 if (!_table.TryGetValue(group, out groupManager)) throw new Exception();
@@ -66,7 +66,7 @@ namespace Amoeba.Core
 
         public int GetCount(Group group)
         {
-            lock (_syncObject)
+            lock (_lockObject)
             {
                 GroupManager groupManager;
                 if (!_table.TryGetValue(group, out groupManager)) throw new Exception();
