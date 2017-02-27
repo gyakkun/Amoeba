@@ -343,7 +343,7 @@ namespace Amoeba.Core
                         {
                             var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(1024).ToList();
 
-                            lock (node.Value.SendInfo.PushBlockResultQueue.SyncObject)
+                            lock (node.Value.SendInfo.PushBlockResultQueue.LockObject)
                             {
                                 node.Value.SendInfo.PushBlockResultQueue.Clear();
 
@@ -424,7 +424,7 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushBlockLinkQueue.SyncObject)
+                                    lock (node.Value.SendInfo.PushBlockLinkQueue.LockObject)
                                     {
                                         node.Value.SendInfo.PushBlockLinkQueue.Clear();
                                         node.Value.SendInfo.PushBlockLinkQueue.AddRange(targets.Take(_maxBlockLinkCount));
@@ -454,7 +454,7 @@ namespace Amoeba.Core
                                     var node = pair.Key;
                                     var targets = pair.Value;
 
-                                    lock (node.Value.SendInfo.PushBlockRequestQueue.SyncObject)
+                                    lock (node.Value.SendInfo.PushBlockRequestQueue.LockObject)
                                     {
                                         node.Value.SendInfo.PushBlockRequestQueue.Clear();
                                         node.Value.SendInfo.PushBlockRequestQueue.AddRange(targets.Take(_maxBlockRequestCount).Randomize());
@@ -586,7 +586,7 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushBroadcastMetadataRequestQueue.SyncObject)
+                                    lock (node.Value.SendInfo.PushBroadcastMetadataRequestQueue.LockObject)
                                     {
                                         node.Value.SendInfo.PushBroadcastMetadataRequestQueue.Clear();
                                         node.Value.SendInfo.PushBroadcastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
@@ -613,7 +613,7 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushUnicastMetadataRequestQueue.SyncObject)
+                                    lock (node.Value.SendInfo.PushUnicastMetadataRequestQueue.LockObject)
                                     {
                                         node.Value.SendInfo.PushUnicastMetadataRequestQueue.Clear();
                                         node.Value.SendInfo.PushUnicastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
@@ -640,7 +640,7 @@ namespace Amoeba.Core
 
                                     _random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushMulticastMetadataRequestQueue.SyncObject)
+                                    lock (node.Value.SendInfo.PushMulticastMetadataRequestQueue.LockObject)
                                     {
                                         node.Value.SendInfo.PushMulticastMetadataRequestQueue.Clear();
                                         node.Value.SendInfo.PushMulticastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
@@ -969,7 +969,7 @@ namespace Amoeba.Core
                 {
                     Hash hash = null;
 
-                    lock (sessionInfo.SendInfo.PushBlockResultQueue.SyncObject)
+                    lock (sessionInfo.SendInfo.PushBlockResultQueue.LockObject)
                     {
                         if (sessionInfo.SendInfo.PushBlockResultQueue.Count > 0)
                         {
@@ -1437,6 +1437,16 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
+                if (!_myLocation.Uris.All(n => location.Uris.Contains(n)))
+                {
+                    foreach (var connection in _connections.Keys.ToArray())
+                    {
+                        this.RemoveConnection(connection);
+                    }
+
+                    this.UpdateMyId();
+                }
+
                 _myLocation = location;
             }
         }

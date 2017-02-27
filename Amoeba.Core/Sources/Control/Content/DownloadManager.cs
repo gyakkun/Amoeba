@@ -1002,7 +1002,19 @@ namespace Amoeba.Core
 
             if (disposing)
             {
+                if (_watchTimer != null)
+                {
+                    try
+                    {
+                        _watchTimer.Dispose();
+                    }
+                    catch (Exception)
+                    {
 
+                    }
+
+                    _watchTimer = null;
+                }
             }
         }
     }

@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Amoeba.Service
 {
-    class ConnectionSettingManager : StateManagerBase, Library.Configuration.ISettings
+    class TcpManager : StateManagerBase, Library.Configuration.ISettings
     {
         private AmoebaManager _amoebaManager;
 
@@ -18,7 +18,7 @@ namespace Amoeba.Service
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public ConnectionSettingManager(AmoebaManager amoebaManager)
+        public TcpManager(AmoebaManager amoebaManager)
         {
             _amoebaManager = amoebaManager;
 
@@ -111,7 +111,7 @@ namespace Amoeba.Service
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        var myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
+                        var myIpAddresses = new List<IPAddress>(TcpManager.GetIpAddresses());
 
                         foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
                         {
@@ -121,23 +121,23 @@ namespace Amoeba.Service
                             {
                                 continue;
                             }
-                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
-                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
+                            if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
+                                && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
-                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
+                            if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
+                                && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
-                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
+                            if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
+                                && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
                             {
                                 continue;
                             }
-                            if (ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
-                                && ConnectionSettingManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
+                            if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
+                                && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
                             {
                                 continue;
                             }
@@ -180,7 +180,7 @@ namespace Amoeba.Service
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        var myIpAddresses = new List<IPAddress>(ConnectionSettingManager.GetIpAddresses());
+                        var myIpAddresses = new List<IPAddress>(TcpManager.GetIpAddresses());
 
                         foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6))
                         {

@@ -17,33 +17,32 @@ using Omnius.Net.I2p;
 
 namespace Amoeba.Service
 {
-    class I2pConnectionManager : StateManagerBase, ISettings
+    class I2pManager : StateManagerBase, ISettings
     {
-        private CoreManager _coreManager;
         private BufferManager _bufferManager;
+        private CoreManager _coreManager;
 
         private Settings _settings;
 
         private string _samBridgeUri;
 
-        private Location _myLocation;
-
-        private string _oldSamBridgeUri;
         private SamManager _samManager;
-
-        private Regex _regex = new Regex(@"(.*?):(.*):(\d*)");
 
         private Thread _watchThread;
 
+        private List<string> _locationUris;
+
         private volatile ManagerState _state = ManagerState.Stop;
+
+        private readonly Regex _regex = new Regex(@"(.*?):(.*):(\d*)");
 
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public I2pConnectionManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
+        public I2pManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
         {
-            _coreManager = coreManager;
             _bufferManager = bufferManager;
+            _coreManager = coreManager;
 
             _settings = new Settings(configPath);
 
@@ -51,13 +50,13 @@ namespace Amoeba.Service
             _coreManager.AcceptCapEvent = (_) => this.AcceptCap();
         }
 
-        public Location MyLocation
+        public IEnumerable<string> LocationUris
         {
             get
             {
                 lock (_lockObject)
                 {
-                    return _myLocation;
+                    return _locationUris.ToArray();
                 }
             }
         }
@@ -180,26 +179,30 @@ namespace Amoeba.Service
 
         private void WatchThread()
         {
-            var checkSamStopwatch = new Stopwatch();
-            checkSamStopwatch.Start();
+            var checkStopwatch = new Stopwatch();
+            checkStopwatch.Start();
+
+            string nowSamBridgeUri = null;
 
             for (;;)
             {
                 Thread.Sleep(1000);
                 if (this.State == ManagerState.Stop) return;
 
-                if (!checkSamStopwatch.IsRunning || checkSamStopwatch.Elapsed.TotalSeconds >= 30)
+                if (!checkStopwatch.IsRunning || checkStopwatch.Elapsed.TotalSeconds >= 30)
                 {
-                    checkSamStopwatch.Restart();
+                    checkStopwatch.Restart();
+
+                    var targetSamBridgeUri = this.SamBridgeUri;
 
                     if ((_samManager == null || !_samManager.IsConnected)
-                        || _oldSamBridgeUri != this.SamBridgeUri)
+                        || nowSamBridgeUri != targetSamBridgeUri)
                     {
                         string i2pUri = null;
 
                         try
                         {
-                            var match = _regex.Match(this.SamBridgeUri);
+                            var match = _regex.Match(targetSamBridgeUri);
                             if (!match.Success) throw new Exception();
 
                             if (match.Groups[1].Value == "tcp")
@@ -236,9 +239,11 @@ namespace Amoeba.Service
 
                         lock (_lockObject)
                         {
-                            _myLocation = new Location(new string[] { i2pUri });
-                            _oldSamBridgeUri = this.SamBridgeUri;
+                            _locationUris.Clear();
+                            if (i2pUri != null) _locationUris.Add(i2pUri);
                         }
+
+                        nowSamBridgeUri = targetSamBridgeUri;
                     }
                 }
             }
@@ -265,7 +270,7 @@ namespace Amoeba.Service
 
                     _watchThread = new Thread(this.WatchThread);
                     _watchThread.Priority = ThreadPriority.Lowest;
-                    _watchThread.Name = "I2pConnectionManager_WatchThread";
+                    _watchThread.Name = "I2pManager_WatchThread";
                     _watchThread.Start();
                 }
             }
@@ -330,13 +335,5 @@ namespace Amoeba.Service
                 }
             }
         }
-    }
-
-    [Serializable]
-    class OverlayNetworkManagerException : ManagerException
-    {
-        public OverlayNetworkManagerException() : base() { }
-        public OverlayNetworkManagerException(string message) : base(message) { }
-        public OverlayNetworkManagerException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

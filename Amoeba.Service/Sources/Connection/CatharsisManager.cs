@@ -15,47 +15,43 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Xml;
+using Omnius.Base;
+using Omnius.Collections;
+using Omnius.Configuration;
+using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    class CatharsisManager : ManagerBase, Library.Configuration.ISettings
+    class CatharsisManager : ManagerBase, ISettings
     {
-        private ServiceManager _serviceManager;
         private BufferManager _bufferManager;
-        private AmoebaManager _amoebaManager;
 
         private Settings _settings;
 
-        private Regex _regex = new Regex(@"(.*?):(.*):(\d*)", RegexOptions.Compiled);
-        private Regex _regex2 = new Regex(@"(.*?):(.*)", RegexOptions.Compiled);
+        private HashSet<uint> _ipv4AddressSet;
+        private HashSet<SearchRange<uint>> _ipv4AddressRangeSet;
 
-        private System.Threading.Timer _watchTimer;
-        private volatile bool _isWatching = false;
+        private WatchTimer _watchTimer;
 
-        private VolatileHashSet<string> _succeededUris;
-        private VolatileHashSet<string> _failedUris;
+        private VolatileHashSet<uint> _succeededIpv4s;
+        private VolatileHashSet<uint> _failedIpv4s;
+
+        private readonly Regex _regex = new Regex(@"(.*?):(.*):(\d*)", RegexOptions.Compiled);
+        private readonly Regex _regex2 = new Regex(@"(.*?):(.*)", RegexOptions.Compiled);
 
         private readonly object _thisLock = new object();
         private volatile bool _disposed;
 
-        public CatharsisManager(AmoebaManager amoebaManager, BufferManager bufferManager, ServiceManager serviceManager)
+        public CatharsisManager(string configPath, BufferManager bufferManager)
         {
-            _amoebaManager = amoebaManager;
             _bufferManager = bufferManager;
-            _serviceManager = serviceManager;
 
-            _settings = new Settings();
+            _settings = new Settings(configPath);
 
-#if DEBUG
-            _watchTimer = new System.Threading.Timer(this.WatchTimer, null, new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0, 0));
-#else
-            _watchTimer = new System.Threading.Timer(this.WatchTimer, null, new TimeSpan(0, 3, 0), new TimeSpan(7, 0, 0, 0));
-#endif
+            _watchTimer = new WatchTimer(this.WatchThread, new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0, 0));
 
             _succeededUris = new VolatileHashSet<string>(new TimeSpan(1, 0, 0));
             _failedUris = new VolatileHashSet<string>(new TimeSpan(1, 0, 0));
-
-            _amoebaManager.CheckUriEvent = this.ResultCache_CheckUri;
         }
 
         private bool ResultCache_CheckUri(object sender, string uri)
@@ -80,7 +76,7 @@ namespace Amoeba.Service
             }
         }
 
-        private bool CheckUri(string uri)
+        private bool InternalCheckUri(string uri)
         {
             string host = null;
 
@@ -364,102 +360,6 @@ namespace Amoeba.Service
             return ip;
         }
 
-        // http://blogs.msdn.com/b/feroze_daud/archive/2004/03/30/104440.aspx
-        private static string Decode(WebResponse w)
-        {
-            BufferManager bufferManager = BufferManager.Instance;
-
-            //
-            // first see if content length header has charset = calue
-            //
-            string charset = null;
-
-            {
-                string content_type = w.Headers["content-type"];
-
-                if (content_type != null)
-                {
-                    int index = content_type.IndexOf("charset=");
-
-                    if (index != -1)
-                    {
-                        charset = content_type.Substring(index + 8);
-                    }
-                }
-            }
-
-            // save data to a rawStream
-            var rawStream = new BufferStream(bufferManager);
-
-            using (Stream stream = w.GetResponseStream())
-            using (var safeBuffer = bufferManager.CreateSafeBuffer(1024 * 4))
-            {
-                int length;
-
-                while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
-                {
-                    rawStream.Write(safeBuffer.Value, 0, length);
-
-                    if (rawStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
-                }
-            }
-
-            //
-            // if ContentType is null, or did not contain charset, we search in body
-            //
-            if (charset == null)
-            {
-                rawStream.Seek(0, SeekOrigin.Begin);
-
-                using (StreamReader reader = new StreamReader(new WrapperStream(rawStream, true), Encoding.ASCII))
-                {
-                    string meta = reader.ReadToEnd();
-
-                    if (!string.IsNullOrWhiteSpace(meta))
-                    {
-                        int start_index = meta.IndexOf("charset=");
-
-                        if (start_index != -1)
-                        {
-                            int end_index = meta.IndexOf("\"", start_index);
-
-                            if (end_index != -1)
-                            {
-                                start_index += 8;
-
-                                charset = meta.Substring(start_index, end_index - start_index);
-                            }
-                        }
-                    }
-                }
-            }
-
-            Encoding encoding = null;
-
-            if (charset == null)
-            {
-                encoding = Encoding.UTF8; //default encoding
-            }
-            else
-            {
-                try
-                {
-                    encoding = Encoding.GetEncoding(charset);
-                }
-                catch (Exception)
-                {
-                    encoding = Encoding.UTF8;
-                }
-            }
-
-            rawStream.Seek(0, SeekOrigin.Begin);
-
-            using (StreamReader reader = new StreamReader(rawStream, encoding))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
         #region ISettings
 
         public void Load(string directoryPath)
@@ -480,39 +380,60 @@ namespace Amoeba.Service
 
         #endregion
 
-        private class Settings : Library.Configuration.SettingsBase
+        [DataContract(Name = "Ipv4")]
+        struct Ipv4 : IComparable<Ipv4>, IEquatable<Ipv4>
         {
-            public Settings()
-                : base(new List<Library.Configuration.ISettingContent>() {
-                    new Library.Configuration.SettingContent<HashSet<uint>>() { Name = "Ipv4AddressSet", Value = new HashSet<uint>() },
-                    new Library.Configuration.SettingContent<HashSet<SearchRange<uint>>>() { Name = "Ipv4AddressRangeSet", Value = new HashSet<SearchRange<uint>>() },
-                })
-            {
+            private uint _value;
 
+            public Ipv4(IPAddress ipAddress)
+            {
+                if (ipAddress.AddressFamily != AddressFamily.InterNetwork) throw new ArgumentException(nameof(ipAddress));
+                _value = NetworkConverter.ToUInt32(ipAddress.GetAddressBytes());
             }
 
-            public HashSet<uint> Ipv4AddressSet
+            [DataMember(Name = "Value")]
+            private uint Value
             {
                 get
                 {
-                    return (HashSet<uint>)this["Ipv4AddressSet"];
+                    return _value;
                 }
                 set
                 {
-                    this["Ipv4AddressSet"] = value;
+                    _value = value;
                 }
             }
 
-            public HashSet<SearchRange<uint>> Ipv4AddressRangeSet
+            public override int GetHashCode()
             {
-                get
+                return (int)this.Value;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if ((object)obj == null || !(obj is Ipv4)) return false;
+
+                return this.Equals((Ipv4)obj);
+            }
+
+            public bool Equals(Ipv4 other)
+            {
+                if (this.Value != other.Value)
                 {
-                    return (HashSet<SearchRange<uint>>)this["Ipv4AddressRangeSet"];
+                    return false;
                 }
-                set
-                {
-                    this["Ipv4AddressRangeSet"] = value;
-                }
+
+                return true;
+            }
+
+            public int CompareTo(Ipv4 other)
+            {
+                return this.Value.CompareTo(other.Value);
+            }
+
+            public override string ToString()
+            {
+                return new IPAddress(NetworkConverter.GetBytes(this.Value)).ToString();
             }
         }
 

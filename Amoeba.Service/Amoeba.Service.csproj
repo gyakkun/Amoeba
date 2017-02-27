@@ -43,8 +43,9 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\Connection\CatharsisManager.cs" />
-    <Compile Include="Sources\Connection\ConnectionSettingManager.cs" />
-    <Compile Include="Sources\Connection\I2pConnectionManager.cs" />
+    <Compile Include="Sources\Connection\TcpManager.cs" />
+    <Compile Include="Sources\Connection\ConnectionManager.cs" />
+    <Compile Include="Sources\Connection\I2pManager.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessage.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessageCollection.cs" />
     <Compile Include="Sources\Message\Information\MulticastMessage.cs" />

@@ -235,7 +235,7 @@ namespace Amoeba.Service
                     }
                     else
                     {
-                        if ((now - multicastMetadata.CreationTime).TotalDays > 7) continue;
+                        if ((now - multicastMetadata.CreationTime).TotalDays < 7) continue;
 
                         untrusts.Add(multicastMetadata);
                     }
@@ -244,7 +244,7 @@ namespace Amoeba.Service
                 trusts.Sort((x, y) => y.CreationTime.CompareTo(x.CreationTime));
                 untrusts.Sort((x, y) => y.CreationTime.CompareTo(x.CreationTime));
 
-                foreach (var multicastMetadata in CollectionUtils.Unite(trusts.Take(1024), untrusts.Take(32)))
+                foreach (var multicastMetadata in CollectionUtils.Unite(trusts.Take(1024), untrusts.Take(256)))
                 {
                     var dic = _cache_ChatMessages.GetOrAdd(multicastMetadata.Tag, (_) => new LockedHashDictionary<MulticastMetadata, MulticastMessage<ChatMessage>>());
 
@@ -362,7 +362,19 @@ namespace Amoeba.Service
 
             if (disposing)
             {
+                if (_watchTimer != null)
+                {
+                    try
+                    {
+                        _watchTimer.Dispose();
+                    }
+                    catch (Exception)
+                    {
 
+                    }
+
+                    _watchTimer = null;
+                }
             }
         }
     }
