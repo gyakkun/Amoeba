@@ -242,9 +242,16 @@ namespace Amoeba.Service
                 }
 
                 trusts.Sort((x, y) => y.CreationTime.CompareTo(x.CreationTime));
-                untrusts.Sort((x, y) => y.CreationTime.CompareTo(x.CreationTime));
+                untrusts.Sort((x, y) =>
+                {
+                    int c;
+                    if (0 != (c = y.Cost.CashAlgorithm.CompareTo(x.Cost.CashAlgorithm))) return c;
+                    if (0 != (c = y.Cost.Value.CompareTo(x.Cost.Value))) return c;
 
-                foreach (var multicastMetadata in CollectionUtils.Unite(trusts.Take(1024), untrusts.Take(256)))
+                    return y.CreationTime.CompareTo(x.CreationTime);
+                });
+
+                foreach (var multicastMetadata in CollectionUtils.Unite(trusts.Take(1024), untrusts.Take(1024)))
                 {
                     var dic = _cache_ChatMessages.GetOrAdd(multicastMetadata.Tag, (_) => new LockedHashDictionary<MulticastMetadata, MulticastMessage<ChatMessage>>());
 

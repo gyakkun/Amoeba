@@ -57,8 +57,6 @@
     <Compile Include="Sources\Message\Information\UnicastMessage.cs" />
     <Compile Include="Sources\Message\Information\_Interface\ChatMessage\IChatMessage.cs" />
     <Compile Include="Sources\Message\Information\_Interface\Store\ISeed.cs" />
-    <Compile Include="Sources\Message\Information\Profile\Link\Link.cs" />
-    <Compile Include="Sources\Message\Information\Profile\Link\LinkCollection.cs" />
     <Compile Include="Sources\Message\Information\MailMessage\MailMessage.cs" />
     <Compile Include="Sources\Message\Information\MailMessage\MailMessageCollection.cs" />
     <Compile Include="Sources\Message\Information\Profile\Profile.cs" />

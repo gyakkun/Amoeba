@@ -28,13 +28,13 @@ namespace Amoeba.Service
 
         private Settings _settings;
 
-        private HashSet<uint> _ipv4AddressSet;
-        private HashSet<SearchRange<uint>> _ipv4AddressRangeSet;
+        private HashSet<Ipv4> _ipv4Set;
+        private HashSet<SearchRange<Ipv4>> _ipv4RangeSet;
 
         private WatchTimer _watchTimer;
 
-        private VolatileHashSet<uint> _succeededIpv4s;
-        private VolatileHashSet<uint> _failedIpv4s;
+        private VolatileHashSet<Ipv4> _succeededIpv4Set;
+        private VolatileHashSet<Ipv4> _failedIpv4Set;
 
         private readonly Regex _regex = new Regex(@"(.*?):(.*):(\d*)", RegexOptions.Compiled);
         private readonly Regex _regex2 = new Regex(@"(.*?):(.*)", RegexOptions.Compiled);
@@ -50,73 +50,23 @@ namespace Amoeba.Service
 
             _watchTimer = new WatchTimer(this.WatchThread, new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0, 0));
 
-            _succeededUris = new VolatileHashSet<string>(new TimeSpan(1, 0, 0));
-            _failedUris = new VolatileHashSet<string>(new TimeSpan(1, 0, 0));
+            _succeededIpv4Set = new VolatileHashSet<Ipv4>(new TimeSpan(0, 30, 0));
+            _failedIpv4Set = new VolatileHashSet<Ipv4>(new TimeSpan(0, 30, 0));
         }
 
-        private bool ResultCache_CheckUri(object sender, string uri)
+        public bool Check(IPAddress ip)
         {
-            _succeededUris.Update();
-            _failedUris.Update();
+            if (ip.AddressFamily != AddressFamily.InterNetwork) return false;
 
-            if (_succeededUris.Contains(uri)) return true;
-            if (_failedUris.Contains(uri)) return false;
+            var ipv4 = new Ipv4(ip);
 
-            if (this.CheckUri(uri))
+            lock (_thisLock)
             {
-                _succeededUris.Add(uri);
+                if (_settings.Ipv4AddressSet.Contains(uip)) return false;
 
-                return true;
-            }
-            else
-            {
-                _failedUris.Add(uri);
-
-                return false;
-            }
-        }
-
-        private bool InternalCheckUri(string uri)
-        {
-            string host = null;
-
-            {
-                var match = _regex.Match(uri);
-
-                if (match.Success)
+                foreach (var range in _settings.Ipv4AddressRangeSet)
                 {
-                    host = match.Groups[2].Value;
-                }
-                else
-                {
-                    var match2 = _regex2.Match(uri);
-
-                    if (match2.Success)
-                    {
-                        host = match2.Groups[2].Value;
-                    }
-                }
-            }
-
-            if (host == null) return false;
-
-            IPAddress ip;
-
-            if (IPAddress.TryParse(host, out ip))
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    uint uip = NetworkConverter.ToUInt32(ip.GetAddressBytes());
-
-                    lock (_thisLock)
-                    {
-                        if (_settings.Ipv4AddressSet.Contains(uip)) return false;
-
-                        foreach (var range in _settings.Ipv4AddressRangeSet)
-                        {
-                            if (range.Verify(uip)) return false;
-                        }
-                    }
+                    if (range.Verify(uip)) return false;
                 }
             }
 
