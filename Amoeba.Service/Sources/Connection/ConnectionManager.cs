@@ -16,23 +16,10 @@ using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;
 using Omnius.Net.I2p;
+using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    [Flags]
-    [DataContract(Name = "ConnectionTypes")]
-    enum ConnectionTypes
-    {
-        [EnumMember(Value = "Tcp")]
-        Tcp = 0x01,
-
-        [EnumMember(Value = "Tor")]
-        Tor = 0x02,
-
-        [EnumMember(Value = "I2p")]
-        I2p = 0x04,
-    }
-
     class ConnectionManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
@@ -41,9 +28,7 @@ namespace Amoeba.Service
 
         private Settings _settings;
 
-        private ConnectionTypes _connectionTypes;
-
-        private Thread _watchThread;
+        private WatchTimer _watchTimer;
 
         private volatile ManagerState _state = ManagerState.Stop;
 
@@ -54,30 +39,14 @@ namespace Amoeba.Service
         {
             _bufferManager = bufferManager;
             _coreManager = coreManager;
-            _i2pManager = new I2pManager(Path.Combine(configPath, "I2pManager"), coreManager, _bufferManager);
+            _i2pManager = new I2pManager(Path.Combine(configPath, "I2pManager"), _bufferManager);
 
             _settings = new Settings(configPath);
 
             _coreManager.ConnectCapEvent = (_, uri) => this.ConnectCap(uri);
             _coreManager.AcceptCapEvent = (_) => this.AcceptCap();
-        }
 
-        public ConnectionTypes ConnectionTypes
-        {
-            get
-            {
-                lock (_lockObject)
-                {
-                    return _connectionTypes;
-                }
-            }
-            set
-            {
-                lock (_lockObject)
-                {
-                    _connectionTypes = value;
-                }
-            }
+            _watchTimer = new WatchTimer(this.WatchThread);
         }
 
         public Cap ConnectCap(string uri)
@@ -86,7 +55,7 @@ namespace Amoeba.Service
             if (this.State == ManagerState.Stop) return null;
 
             Cap cap;
-            if (this.ConnectionTypes.HasFlag(ConnectionTypes.I2p) && (cap = _i2pManager.ConnectCap(uri)) != null) return cap;
+            if ((cap = _i2pManager.ConnectCap(uri)) != null) return cap;
 
             return null;
         }
@@ -97,54 +66,20 @@ namespace Amoeba.Service
             if (this.State == ManagerState.Stop) return null;
 
             Cap cap;
-            if (this.ConnectionTypes.HasFlag(ConnectionTypes.I2p) && (cap = _i2pManager.AcceptCap()) != null) return cap;
+            if ((cap = _i2pManager.AcceptCap()) != null) return cap;
 
             return null;
         }
 
         private void WatchThread()
         {
-            var checkStopwatch = new Stopwatch();
-            checkStopwatch.Start();
+            var targetUris = new List<string>();
 
-            var nowUris = new List<string>();
+            targetUris.AddRange(_i2pManager.LocationUris);
 
-            for (;;)
+            if (!CollectionUtils.Equals(_coreManager.MyLocation.Uris, targetUris))
             {
-                Thread.Sleep(1000);
-                if (this.State == ManagerState.Stop) return;
-
-                if (!checkStopwatch.IsRunning || checkStopwatch.Elapsed.TotalSeconds >= 5)
-                {
-                    checkStopwatch.Restart();
-
-                    var targetUris = new List<string>();
-
-                    if (this.ConnectionTypes.HasFlag(ConnectionTypes.I2p))
-                    {
-                        targetUris.AddRange(_i2pManager.LocationUris);
-
-                        if (_i2pManager.State == ManagerState.Stop)
-                        {
-                            _i2pManager.Start();
-                        }
-                    }
-                    else
-                    {
-                        if (_i2pManager.State == ManagerState.Start)
-                        {
-                            _i2pManager.Stop();
-                        }
-                    }
-
-                    if (!CollectionUtils.Equals(nowUris, targetUris))
-                    {
-                        _coreManager.SetMyLocation(new Location(targetUris));
-
-                        nowUris.Clear();
-                        nowUris.AddRange(targetUris);
-                    }
-                }
+                _coreManager.SetMyLocation(new Location(targetUris));
             }
         }
 
@@ -167,10 +102,9 @@ namespace Amoeba.Service
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    _watchThread = new Thread(this.WatchThread);
-                    _watchThread.Priority = ThreadPriority.Lowest;
-                    _watchThread.Name = "ConnectionManager_WatchThread";
-                    _watchThread.Start();
+                    _i2pManager.Start();
+
+                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));
                 }
             }
         }
@@ -185,8 +119,8 @@ namespace Amoeba.Service
                     _state = ManagerState.Stop;
                 }
 
-                _watchThread.Join();
-                _watchThread = null;
+                _watchTimer.Stop();
+                _coreManager.SetMyLocation(new Location(null));
 
                 _i2pManager.Stop();
             }
@@ -199,8 +133,6 @@ namespace Amoeba.Service
             lock (_lockObject)
             {
                 int version = _settings.Load("Version", () => 0);
-
-                _connectionTypes = _settings.Load<ConnectionTypes>("ConnectionTypes");
             }
         }
 
@@ -209,8 +141,6 @@ namespace Amoeba.Service
             lock (_lockObject)
             {
                 _settings.Save("Version", 0);
-
-                _settings.Save("ConnectionTypes", _connectionTypes);
             }
         }
 

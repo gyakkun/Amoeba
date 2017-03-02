@@ -59,7 +59,8 @@ namespace Amoeba.Core
             _downloadItemInfoManager.AddEvents += (info) => this.Event_AddInfo(info);
             _downloadItemInfoManager.RemoveEvents += (info) => this.Event_RemoveInfo(info);
 
-            _watchTimer = new WatchTimer(this.WatchThread, new TimeSpan(0, 1, 0));
+            _watchTimer = new WatchTimer(this.WatchThread);
+            _watchTimer.Start(new TimeSpan(0, 1, 0));
 
             _threadCount = Math.Max(1, Math.Min(System.Environment.ProcessorCount, 32) / 2);
 

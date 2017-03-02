@@ -50,7 +50,8 @@ namespace Amoeba.Service
             _cache_MailMessages = new VolatileHashDictionary<Signature, LockedHashDictionary<UnicastMetadata, UnicastMessage<MailMessage>>>(new TimeSpan(0, 30, 0));
             _cache_ChatMessages = new VolatileHashDictionary<Tag, LockedHashDictionary<MulticastMetadata, MulticastMessage<ChatMessage>>>(new TimeSpan(0, 30, 0));
 
-            _watchTimer = new WatchTimer(this.WatchTimer, new TimeSpan(0, 0, 30));
+            _watchTimer = new WatchTimer(this.WatchTimer);
+            _watchTimer.Start(new TimeSpan(0, 0, 30));
         }
 
         private void WatchTimer()

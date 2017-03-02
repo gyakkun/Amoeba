@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Amoeba.Service
 {
-    class TcpManager : StateManagerBase, Library.Configuration.ISettings
+    class TcpManager_ : StateManagerBase, Library.Configuration.ISettings
     {
         private AmoebaManager _amoebaManager;
 
@@ -101,56 +101,6 @@ namespace Amoeba.Service
                 {
                     string ipv4Uri = null;
 
-                    try
-                    {
-                        string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:{0}:", IPAddress.Any.ToString())));
-
-                        var regex = new Regex(@"(.*?):(.*):(\d*)");
-                        var match = regex.Match(uri);
-                        if (!match.Success) throw new Exception();
-
-                        int port = int.Parse(match.Groups[3].Value);
-
-                        var myIpAddresses = new List<IPAddress>(TcpManager.GetIpAddresses());
-
-                        foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
-                        {
-                            if (IPAddress.Any.ToString() == myIpAddress.ToString()
-                                || IPAddress.Loopback.ToString() == myIpAddress.ToString()
-                                || IPAddress.Broadcast.ToString() == myIpAddress.ToString())
-                            {
-                                continue;
-                            }
-                            if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
-                                && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
-                            {
-                                continue;
-                            }
-                            if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
-                                && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
-                            {
-                                continue;
-                            }
-                            if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
-                                && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
-                            {
-                                continue;
-                            }
-                            if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
-                                && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
-                            {
-                                continue;
-                            }
-
-                            ipv4Uri = string.Format("tcp:{0}:{1}", myIpAddress.ToString(), port);
-
-                            break;
-                        }
-                    }
-                    catch (Exception)
-                    {
-
-                    }
 
                     if (ipv4Uri != _settings.Ipv4Uri)
                     {
@@ -241,42 +191,6 @@ namespace Amoeba.Service
 
                         int port = int.Parse(match.Groups[3].Value);
 
-                        using (UpnpClient client = new UpnpClient())
-                        {
-                            client.Connect(new TimeSpan(0, 0, 10));
-
-                            string ip = client.GetExternalIpAddress(new TimeSpan(0, 0, 10));
-                            if (string.IsNullOrWhiteSpace(ip)) throw new Exception();
-
-                            upnpUri = string.Format("tcp:{0}:{1}", ip, port);
-
-                            if (upnpUri != _settings.UpnpUri)
-                            {
-                                if (_settings.UpnpUri != null)
-                                {
-                                    try
-                                    {
-                                        var match2 = regex.Match(_settings.UpnpUri);
-                                        if (!match2.Success) throw new Exception();
-                                        int port2 = int.Parse(match2.Groups[3].Value);
-
-                                        client.ClosePort(UpnpProtocolType.Tcp, port2, new TimeSpan(0, 0, 10));
-                                        Log.Information(string.Format("UPnP Close port: {0}", port2));
-                                    }
-                                    catch (Exception)
-                                    {
-
-                                    }
-                                }
-
-                                client.ClosePort(UpnpProtocolType.Tcp, port, new TimeSpan(0, 0, 10));
-
-                                if (client.OpenPort(UpnpProtocolType.Tcp, port, port, "Amoeba", new TimeSpan(0, 0, 10)))
-                                {
-                                    Log.Information(string.Format("UPnP Open port: {0}", port));
-                                }
-                            }
-                        }
                     }
                     catch (Exception)
                     {

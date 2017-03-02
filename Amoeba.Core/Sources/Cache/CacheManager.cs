@@ -72,7 +72,7 @@ namespace Amoeba.Core
 
             _cacheInfoManager = new CacheInfoManager();
 
-            _watchTimer = new WatchTimer(this.WatchTimer, Timeout.Infinite);
+            _watchTimer = new WatchTimer(this.WatchTimer);
         }
 
         private static long Roundup(long value, long unit)
@@ -1445,7 +1445,7 @@ namespace Amoeba.Core
                     _cacheInfoManager.Add(cacheInfo);
                 }
 
-                _watchTimer.Change(new TimeSpan(0, 0, 0), new TimeSpan(0, 5, 0));
+                _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 5, 0));
             }
         }
 

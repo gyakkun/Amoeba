@@ -14,40 +14,56 @@ using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;
 using Omnius.Net.I2p;
+using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
     class I2pManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
-        private CoreManager _coreManager;
 
         private Settings _settings;
 
-        private string _samBridgeUri;
+        private ConnectionI2pConfig _config;
 
         private SamManager _samManager;
 
-        private Thread _watchThread;
+        private WatchTimer _watchTimer;
 
         private List<string> _locationUris;
 
         private volatile ManagerState _state = ManagerState.Stop;
 
-        private readonly Regex _regex = new Regex(@"(.*?):(.*):(\d*)");
-
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public I2pManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
+        public I2pManager(string configPath, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
-            _coreManager = coreManager;
 
             _settings = new Settings(configPath);
 
-            _coreManager.ConnectCapEvent = (_, uri) => this.ConnectCap(uri);
-            _coreManager.AcceptCapEvent = (_) => this.AcceptCap();
+            _watchTimer = new WatchTimer(this.WatchThread);
+        }
+
+        public ConnectionI2pConfig Config
+        {
+            get
+            {
+                lock (_lockObject)
+                {
+                    return _config;
+                }
+            }
+            set
+            {
+                lock (_lockObject)
+                {
+                    _config = value;
+                }
+
+                _watchTimer.Run();
+            }
         }
 
         public IEnumerable<string> LocationUris
@@ -61,90 +77,38 @@ namespace Amoeba.Service
             }
         }
 
-        public string SamBridgeUri
-        {
-            get
-            {
-                lock (_lockObject)
-                {
-                    return _samBridgeUri;
-                }
-            }
-            set
-            {
-                lock (_lockObject)
-                {
-                    _samBridgeUri = value;
-                }
-            }
-        }
-
         public Cap ConnectCap(string uri)
         {
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
+            if (!this.Config.IsEnabled) return null;
 
             if (!uri.StartsWith("i2p:")) return null;
 
             try
             {
-                string scheme = null;
-                string host = null;
+                string scheme;
+                string host;
+                if (!ConnectionUtils.ParseUri(uri, out scheme, out host)) return null;
 
+                Socket socket = null;
+
+                try
                 {
-                    var regex = new Regex(@"(.*?):(.*)");
-                    var match = regex.Match(uri);
-
-                    if (match.Success)
+                    socket = _samManager.Connect(host);
+                }
+                catch (Exception)
+                {
+                    if (socket != null)
                     {
-                        scheme = match.Groups[1].Value;
-                        host = match.Groups[2].Value;
+                        socket.Dispose();
+                        socket = null;
                     }
+
+                    throw;
                 }
 
-                if (host == null) return null;
-
-                {
-                    string proxyScheme = null;
-                    string proxyHost = null;
-                    int proxyPort = -1;
-
-                    {
-                        var regex = new Regex(@"(.*?):(.*):(\d*)");
-                        var match = regex.Match(this.SamBridgeUri);
-
-                        if (match.Success)
-                        {
-                            proxyScheme = match.Groups[1].Value;
-                            proxyHost = match.Groups[2].Value;
-                            proxyPort = int.Parse(match.Groups[3].Value);
-                        }
-                    }
-
-                    if (proxyHost == null) return null;
-
-                    if (scheme == "i2p")
-                    {
-                        Socket socket = null;
-
-                        try
-                        {
-                            socket = _samManager.Connect(host);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (socket != null)
-                            {
-                                socket.Dispose();
-                                socket = null;
-                            }
-
-                            throw;
-                        }
-
-                        return new SocketCap(socket);
-                    }
-                }
+                return new SocketCap(socket);
             }
             catch (Exception)
             {
@@ -158,6 +122,7 @@ namespace Amoeba.Service
         {
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
+            if (!this.Config.IsEnabled) return null;
 
             Socket socket = null;
 
@@ -177,35 +142,34 @@ namespace Amoeba.Service
             return new SocketCap(socket);
         }
 
+        private volatile string _watchSamBridgeUri = null;
+
         private void WatchThread()
         {
-            var checkStopwatch = new Stopwatch();
-            checkStopwatch.Start();
-
-            string nowSamBridgeUri = null;
-
             for (;;)
             {
-                Thread.Sleep(1000);
-                if (this.State == ManagerState.Stop) return;
+                ConnectionI2pConfig config = null;
 
-                if (!checkStopwatch.IsRunning || checkStopwatch.Elapsed.TotalSeconds >= 30)
+                lock (_lockObject)
                 {
-                    checkStopwatch.Restart();
+                    config = this.Config;
+                }
 
-                    var targetSamBridgeUri = this.SamBridgeUri;
+                string i2pUri = null;
 
+                if (config.IsEnabled)
+                {
                     if ((_samManager == null || !_samManager.IsConnected)
-                        || nowSamBridgeUri != targetSamBridgeUri)
+                        || _watchSamBridgeUri != config.SamBridgeUri)
                     {
-                        string i2pUri = null;
-
                         try
                         {
-                            var match = _regex.Match(targetSamBridgeUri);
-                            if (!match.Success) throw new Exception();
+                            string scheme;
+                            string address;
+                            int port = 7656;
+                            if (!ConnectionUtils.ParseUri(config.SamBridgeUri, out scheme, out address, ref port)) throw new Exception();
 
-                            if (match.Groups[1].Value == "tcp")
+                            if (scheme == "tcp")
                             {
                                 {
                                     if (_samManager != null)
@@ -214,10 +178,7 @@ namespace Amoeba.Service
                                         _samManager = null;
                                     }
 
-                                    var host = match.Groups[2].Value;
-                                    var port = int.Parse(match.Groups[3].Value);
-
-                                    _samManager = new SamManager(host, port, "Amoeba");
+                                    _samManager = new SamManager(address, port, "Amoeba");
                                 }
 
                                 var base32Address = _samManager.Start();
@@ -226,6 +187,8 @@ namespace Amoeba.Service
                                 {
                                     i2pUri = string.Format("i2p:{0}", base32Address);
                                 }
+
+                                _watchSamBridgeUri = config.SamBridgeUri;
                             }
                         }
                         catch (Exception)
@@ -236,15 +199,23 @@ namespace Amoeba.Service
                                 _samManager = null;
                             }
                         }
-
-                        lock (_lockObject)
-                        {
-                            _locationUris.Clear();
-                            if (i2pUri != null) _locationUris.Add(i2pUri);
-                        }
-
-                        nowSamBridgeUri = targetSamBridgeUri;
                     }
+                }
+                else
+                {
+                    if (_samManager != null)
+                    {
+                        _samManager.Dispose();
+                        _samManager = null;
+                    }
+                }
+
+                lock (_lockObject)
+                {
+                    if (this.Config != config) continue;
+
+                    _locationUris.Clear();
+                    if (i2pUri != null) _locationUris.Add(i2pUri);
                 }
             }
         }
@@ -268,10 +239,7 @@ namespace Amoeba.Service
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    _watchThread = new Thread(this.WatchThread);
-                    _watchThread.Priority = ThreadPriority.Lowest;
-                    _watchThread.Name = "I2pManager_WatchThread";
-                    _watchThread.Start();
+                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 3, 0));
                 }
             }
         }
@@ -286,8 +254,7 @@ namespace Amoeba.Service
                     _state = ManagerState.Stop;
                 }
 
-                _watchThread.Join();
-                _watchThread = null;
+                _watchTimer.Stop();
 
                 if (_samManager != null)
                 {
@@ -305,7 +272,7 @@ namespace Amoeba.Service
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _samBridgeUri = _settings.Load<string>("SamBridgeUri");
+                _config = _settings.Load<ConnectionI2pConfig>("Config");
             }
         }
 
@@ -315,7 +282,7 @@ namespace Amoeba.Service
             {
                 _settings.Save("Version", 0);
 
-                _settings.Save("SamBridgeUri", _samBridgeUri);
+                _settings.Save("Config", _config);
             }
         }
 
@@ -328,6 +295,12 @@ namespace Amoeba.Service
 
             if (disposing)
             {
+                if (_watchTimer != null)
+                {
+                    _watchTimer.Dispose();
+                    _watchTimer = null;
+                }
+
                 if (_samManager != null)
                 {
                     _samManager.Dispose();
