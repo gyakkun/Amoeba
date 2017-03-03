@@ -464,29 +464,13 @@ namespace Amoeba.Service
             {
                 if (_watchTimer != null)
                 {
-                    try
-                    {
-                        _watchTimer.Dispose();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-
+                    _watchTimer.Dispose();
                     _watchTimer = null;
                 }
 
                 if (_updateTimer != null)
                 {
-                    try
-                    {
-                        _updateTimer.Dispose();
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-
+                    _updateTimer.Dispose();
                     _updateTimer = null;
                 }
             }

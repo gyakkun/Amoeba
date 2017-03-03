@@ -186,7 +186,7 @@ namespace Amoeba.Service
 
                 var asyncResult = socket.BeginConnect(remoteEndPoint, null, null);
 
-                if (!asyncResult.IsCompleted && !asyncResult.CompletedSynchronously)
+                if (!asyncResult.IsCompleted)
                 {
                     if (!asyncResult.AsyncWaitHandle.WaitOne(timeout, false))
                     {
@@ -222,23 +222,35 @@ namespace Amoeba.Service
                 var result = UriUtils.Parse(uri);
                 if (result == null) throw new Exception();
 
-                var scheme = result.Get<string>("Scheme");
+                var scheme = result.GetValue<string>("Scheme");
                 if (scheme != "tcp") return null;
 
-                var address = result.Get<string>("Address");
-                var port = result.Get<int>("Port", () => 4050);
+                var address = result.GetValue<string>("Address");
+                var port = result.GetValueOrDefault<int>("Port", () => 4050);
+
+                // Check
+                {
+                    IPAddress ipAddress;
+                    if (!IPAddress.TryParse(address, out ipAddress)) return null;
+
+#if !DEBUG
+                    if (!TcpManager.CheckGlobalIpAddress(ipAddress) return null;
+#endif
+
+                    if (!_catharsisManager.Check(ipAddress)) return null;
+                }
 
                 if (string.IsNullOrWhiteSpace(config.ProxyUri))
                 {
                     var result2 = UriUtils.Parse(config.ProxyUri);
                     if (result2 == null) throw new Exception();
 
-                    var proxyScheme = result.Get<string>("Scheme");
+                    var proxyScheme = result.GetValue<string>("Scheme");
 
                     if (proxyScheme == "socks5")
                     {
-                        var proxyAddress = result.Get<string>("Address");
-                        var proxyPort = result.Get<int>("Port", () => 1080);
+                        var proxyAddress = result.GetValue<string>("Address");
+                        var proxyPort = result.GetValueOrDefault<int>("Port", () => 1080);
 
                         var socket = TcpManager.Connect(new IPEndPoint(TcpManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
                         garbages.Add(socket);
@@ -293,6 +305,12 @@ namespace Amoeba.Service
                         var socket = _ipv4TcpListener.AcceptSocket();
                         garbages.Add(socket);
 
+                        // Check
+                        {
+                            var ipAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
+                            if (!_catharsisManager.Check(ipAddress)) return null;
+                        }
+
                         return new SocketCap(socket);
                     }
 
@@ -300,6 +318,12 @@ namespace Amoeba.Service
                     {
                         var socket = _ipv6TcpListener.AcceptSocket();
                         garbages.Add(socket);
+
+                        // Check
+                        {
+                            var ipAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
+                            if (!_catharsisManager.Check(ipAddress)) return null;
+                        }
 
                         return new SocketCap(socket);
                     }
@@ -553,6 +577,12 @@ namespace Amoeba.Service
 
             if (disposing)
             {
+                if (_watchTimer != null)
+                {
+                    _watchTimer.Dispose();
+                    _watchTimer = null;
+                }
+
                 if (_ipv4TcpListener != null)
                 {
                     _ipv4TcpListener.Server.Dispose();
