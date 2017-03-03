@@ -25,14 +25,14 @@ namespace Amoeba
     public class ConnectionTcpConfig
     {
         private ConnectionTcpType _type;
-        private string _socks5ProxyUri;
+        private string _proxyUri;
         private ushort _ipv4Port;
         private ushort _ipv6Port;
 
-        public ConnectionTcpConfig(ConnectionTcpType type, string socks5ProxyUri, ushort ipv4Port, ushort ipv6Port)
+        public ConnectionTcpConfig(ConnectionTcpType type, string proxyUri, ushort ipv4Port, ushort ipv6Port)
         {
             this.Type = type;
-            this.Socks5ProxyUri = socks5ProxyUri;
+            this.ProxyUri = proxyUri;
             this.Ipv4Port = ipv4Port;
             this.Ipv6Port = ipv6Port;
         }
@@ -50,16 +50,16 @@ namespace Amoeba
             }
         }
 
-        [DataMember(Name = "Socks5ProxyUri")]
-        public string Socks5ProxyUri
+        [DataMember(Name = "ProxyUri")]
+        public string ProxyUri
         {
             get
             {
-                return _socks5ProxyUri;
+                return _proxyUri;
             }
             private set
             {
-                _socks5ProxyUri = value;
+                _proxyUri = value;
             }
         }
 

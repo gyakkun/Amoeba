@@ -29,8 +29,6 @@ namespace Amoeba.Core
 
         private readonly int _hashCode;
 
-        private volatile string _toString;
-
         public static readonly int MaxNameLength = 256;
         public static readonly int MaxIdLength = 32;
 

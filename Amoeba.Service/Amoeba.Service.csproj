@@ -49,10 +49,9 @@
     <Compile Include="Sources\Connection\I2p\ConnectionI2pConfig.cs" />
     <Compile Include="Sources\Connection\Tcp\ConnectionTcpConfig.cs" />
     <Compile Include="Sources\Connection\Tcp\TcpManager.cs" />
-    <Compile Include="Sources\Connection\Tcp\TcpManager_.cs" />
     <Compile Include="Sources\Connection\ConnectionManager.cs" />
     <Compile Include="Sources\Connection\I2p\I2pManager.cs" />
-    <Compile Include="Sources\Connection\Utilities\ConnectionUtils.cs" />
+    <Compile Include="Sources\Connection\Utilities\UriUtils.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessage.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessageCollection.cs" />
     <Compile Include="Sources\Message\Information\MulticastMessage.cs" />

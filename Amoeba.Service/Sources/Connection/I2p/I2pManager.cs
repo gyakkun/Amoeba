@@ -87,15 +87,17 @@ namespace Amoeba.Service
 
             try
             {
-                string scheme;
-                string host;
-                if (!ConnectionUtils.ParseUri(uri, out scheme, out host)) return null;
+                var result = UriUtils.Parse(uri);
+                if (result == null) return null;
+
+                var scheme = result.Get<string>("Scheme");
+                var address = result.Get<string>("Address");
 
                 Socket socket = null;
 
                 try
                 {
-                    socket = _samManager.Connect(host);
+                    socket = _samManager.Connect(address);
                 }
                 catch (Exception)
                 {
@@ -164,10 +166,12 @@ namespace Amoeba.Service
                     {
                         try
                         {
-                            string scheme;
-                            string address;
-                            int port = 7656;
-                            if (!ConnectionUtils.ParseUri(config.SamBridgeUri, out scheme, out address, ref port)) throw new Exception();
+                            var result = UriUtils.Parse(config.SamBridgeUri);
+                            if (result == null) throw new Exception();
+
+                            var scheme = result.Get<string>("Scheme");
+                            var address = result.Get<string>("Address");
+                            var port = result.Get<int>("Port", () => 7656);
 
                             if (scheme == "tcp")
                             {

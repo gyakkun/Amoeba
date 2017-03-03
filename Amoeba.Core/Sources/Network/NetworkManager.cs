@@ -52,11 +52,11 @@ namespace Amoeba.Core
         private List<Thread> _connectThreads = new List<Thread>();
         private List<Thread> _acceptThreads = new List<Thread>();
 
-        private VolatileHashSet<Hash> _pushBlocksRequestSet;
+        private VolatileHashSet<Hash> _pushBlocksRequestSet = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
 
-        private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet;
-        private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet;
-        private VolatileHashSet<Tag> _pushMulticastMetadatasRequestSet;
+        private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
+        private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
+        private VolatileHashSet<Tag> _pushMulticastMetadatasRequestSet = new VolatileHashSet<Tag>(new TimeSpan(0, 30, 0));
 
         private SafeInteger _receivedByteCount = new SafeInteger();
         private SafeInteger _sentByteCount = new SafeInteger();

@@ -13,6 +13,8 @@ using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;
+using Omnius.Net.Proxy;
+using Omnius.Net.Upnp;
 using Omnius.Utilities;
 
 namespace Amoeba.Service
@@ -25,6 +27,9 @@ namespace Amoeba.Service
         private Settings _settings;
 
         private ConnectionTcpConfig _config;
+
+        private TcpListener _ipv4TcpListener;
+        private TcpListener _ipv6TcpListener;
 
         private WatchTimer _watchTimer;
 
@@ -42,7 +47,7 @@ namespace Amoeba.Service
 
             _settings = new Settings(configPath);
 
-            _watchTimer = new WatchTimer(this.WatchThread);
+            _watchTimer = new WatchTimer(this.WatchListenerThread);
         }
 
         public ConnectionTcpConfig Config
@@ -76,6 +81,131 @@ namespace Amoeba.Service
             }
         }
 
+        private static bool CheckGlobalIpAddress(IPAddress ipAddress)
+        {
+            if (ipAddress.AddressFamily == AddressFamily.InterNetwork)
+            {
+                if (IPAddress.Any.ToString() == ipAddress.ToString()
+                    || IPAddress.Loopback.ToString() == ipAddress.ToString()
+                    || IPAddress.Broadcast.ToString() == ipAddress.ToString())
+                {
+                    return false;
+                }
+                if (CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("10.0.0.0").GetAddressBytes()) >= 0
+                    && CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("10.255.255.255").GetAddressBytes()) <= 0)
+                {
+                    return false;
+                }
+                if (CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("172.16.0.0").GetAddressBytes()) >= 0
+                    && CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("172.31.255.255").GetAddressBytes()) <= 0)
+                {
+                    return false;
+                }
+                if (CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("127.0.0.0").GetAddressBytes()) >= 0
+                    && CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("127.255.255.255").GetAddressBytes()) <= 0)
+                {
+                    return false;
+                }
+                if (CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("192.168.0.0").GetAddressBytes()) >= 0
+                    && CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("192.168.255.255").GetAddressBytes()) <= 0)
+                {
+                    return false;
+                }
+            }
+            if (ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
+            {
+                if (IPAddress.IPv6Any.ToString() == ipAddress.ToString()
+                    || IPAddress.IPv6Loopback.ToString() == ipAddress.ToString()
+                    || IPAddress.IPv6None.ToString() == ipAddress.ToString())
+                {
+                    return false;
+                }
+                if (ipAddress.ToString().StartsWith("fe80:"))
+                {
+                    return false;
+                }
+                if (ipAddress.ToString().StartsWith("2001:"))
+                {
+                    return false;
+                }
+                if (ipAddress.ToString().StartsWith("2002:"))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static IEnumerable<IPAddress> GetMyGlobalIpAddresses()
+        {
+            var list = new HashSet<IPAddress>();
+
+            try
+            {
+                list.UnionWith(Dns.GetHostAddresses(Dns.GetHostName()).Where(n => TcpManager.CheckGlobalIpAddress(n)));
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return list;
+        }
+
+        private static IPAddress GetIpAddress(string host)
+        {
+            IPAddress remoteIp = null;
+
+            if (!IPAddress.TryParse(host, out remoteIp))
+            {
+                IPHostEntry hostEntry = Dns.GetHostEntry(host);
+
+                if (hostEntry.AddressList.Length > 0)
+                {
+                    remoteIp = hostEntry.AddressList[0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+
+            return remoteIp;
+        }
+
+        private static Socket Connect(IPEndPoint remoteEndPoint, TimeSpan timeout)
+        {
+            Socket socket = null;
+
+            try
+            {
+                socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                socket.ReceiveTimeout = (int)timeout.TotalMilliseconds;
+                socket.SendTimeout = (int)timeout.TotalMilliseconds;
+
+                var asyncResult = socket.BeginConnect(remoteEndPoint, null, null);
+
+                if (!asyncResult.IsCompleted && !asyncResult.CompletedSynchronously)
+                {
+                    if (!asyncResult.AsyncWaitHandle.WaitOne(timeout, false))
+                    {
+                        throw new ConnectionException();
+                    }
+                }
+
+                socket.EndConnect(asyncResult);
+
+                return socket;
+            }
+            catch (Exception)
+            {
+                if (socket != null) socket.Dispose();
+            }
+
+            throw new Exception();
+        }
+
         public Cap ConnectCap(string uri)
         {
             if (_disposed) return null;
@@ -83,27 +213,62 @@ namespace Amoeba.Service
 
             if (!uri.StartsWith("tcp:")) return null;
 
+            var garbages = new List<IDisposable>();
+
             try
             {
                 var config = this.Config;
 
-                string scheme = null;
-                string address = null;
-                int port = 4050;
-                if (!ConnectionUtils.ParseUri(uri, out scheme, out address, ref port)) return null;
+                var result = UriUtils.Parse(uri);
+                if (result == null) throw new Exception();
 
-                if (!string.IsNullOrWhiteSpace(config.Socks5ProxyUri))
+                var scheme = result.Get<string>("Scheme");
+                if (scheme != "tcp") return null;
+
+                var address = result.Get<string>("Address");
+                var port = result.Get<int>("Port", () => 4050);
+
+                if (string.IsNullOrWhiteSpace(config.ProxyUri))
                 {
-                    string proxyScheme = null;
-                    string proxyaddress = null;
-                    int proxyPort = 1080;
-                    if (!ConnectionUtils.ParseUri(config.Socks5ProxyUri, out proxyScheme, out proxyaddress, ref proxyPort)) return null;
+                    var result2 = UriUtils.Parse(config.ProxyUri);
+                    if (result2 == null) throw new Exception();
 
+                    var proxyScheme = result.Get<string>("Scheme");
+
+                    if (proxyScheme == "socks5")
+                    {
+                        var proxyAddress = result.Get<string>("Address");
+                        var proxyPort = result.Get<int>("Port", () => 1080);
+
+                        var socket = TcpManager.Connect(new IPEndPoint(TcpManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
+                        garbages.Add(socket);
+
+                        var proxy = new Socks5ProxyClient(null, null, address, port);
+                        proxy.Create(socket, new TimeSpan(0, 0, 30));
+
+                        var cap = new SocketCap(socket);
+                        garbages.Add(cap);
+
+                        return cap;
+                    }
+                }
+                else
+                {
+                    var socket = TcpManager.Connect(new IPEndPoint(IPAddress.Parse(address), port), new TimeSpan(0, 0, 10));
+                    garbages.Add(socket);
+
+                    var cap = new SocketCap(socket);
+                    garbages.Add(cap);
+
+                    return cap;
                 }
             }
             catch (Exception)
             {
-
+                foreach (var item in garbages)
+                {
+                    item.Dispose();
+                }
             }
 
             return null;
@@ -114,238 +279,193 @@ namespace Amoeba.Service
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
 
-            Socket socket = null;
+            var garbages = new List<IDisposable>();
+
 
             try
             {
-                string base32Address;
+                var config = this.Config;
 
-                socket = _samManager.Accept(out base32Address);
+                foreach (var p in new int[] { 0, 1 }.Randomize())
+                {
+                    if (p == 0 && config.Type.HasFlag(ConnectionTcpType.Ipv4) && _ipv4TcpListener.Pending())
+                    {
+                        var socket = _ipv4TcpListener.AcceptSocket();
+                        garbages.Add(socket);
+
+                        return new SocketCap(socket);
+                    }
+
+                    if (p == 1 && config.Type.HasFlag(ConnectionTcpType.Ipv6) && _ipv6TcpListener.Pending())
+                    {
+                        var socket = _ipv6TcpListener.AcceptSocket();
+                        garbages.Add(socket);
+
+                        return new SocketCap(socket);
+                    }
+                }
             }
-            catch (SamException)
+            catch (Exception)
             {
-                if (socket != null) socket.Dispose();
-
-                return null;
+                foreach (var item in garbages)
+                {
+                    item.Dispose();
+                }
             }
 
-            return new SocketCap(socket);
+            return null;
         }
 
-        private void WatchThread()
+        private int _watchIpv4Port = -1;
+        private int _watchIpv6Port = -1;
+
+        private void WatchListenerThread()
         {
-            var checkStopwatch = new Stopwatch();
-            checkStopwatch.Start();
-
-            string nowSamBridgeUri = null;
-
             for (;;)
             {
-                Thread.Sleep(1000);
-                if (this.State == ManagerState.Stop) return;
+                ConnectionTcpConfig config = null;
 
-                if (!checkStopwatch.IsRunning || checkStopwatch.Elapsed.TotalSeconds >= 30)
+                lock (_lockObject)
                 {
-                    checkStopwatch.Restart();
+                    config = this.Config;
+                }
 
-                    var targetSamBridgeUri = this.SamBridgeUri;
+                string ipv4Uri = null;
+                string ipv6Uri = null;
 
-                    if ((_samManager == null || !_samManager.IsConnected)
-                        || nowSamBridgeUri != targetSamBridgeUri)
+                if (config.Type.HasFlag(ConnectionTcpType.Ipv4))
+                {
+                    ipv4Uri = this.GetIpv4Uri(config.Ipv4Port);
+
+                    if (_ipv4TcpListener == null || _watchIpv4Port != config.Ipv4Port)
                     {
-                        string i2pUri = null;
+                        if (_ipv4TcpListener != null)
+                        {
+                            _ipv4TcpListener.Server.Dispose();
+                            _ipv4TcpListener.Stop();
 
+                            _ipv4TcpListener = null;
+                        }
+
+                        _ipv4TcpListener = new TcpListener(IPAddress.Any, config.Ipv4Port);
+                        _ipv4TcpListener.Start(3);
+
+                        // Port forwarding
                         try
                         {
-                            var match = _regex.Match(targetSamBridgeUri);
-                            if (!match.Success) throw new Exception();
-
-                            if (match.Groups[1].Value == "tcp")
+                            using (UpnpClient client = new UpnpClient())
                             {
-                                {
-                                    if (_samManager != null)
-                                    {
-                                        _samManager.Dispose();
-                                        _samManager = null;
-                                    }
+                                client.Connect(new TimeSpan(0, 0, 10));
 
-                                    var host = match.Groups[2].Value;
-                                    var port = int.Parse(match.Groups[3].Value);
+                                var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
+                                if (ipAddress == null || !TcpManager.CheckGlobalIpAddress(ipAddress)) throw new Exception();
 
-                                    _samManager = new SamManager(host, port, "Amoeba");
-                                }
-
-                                var base32Address = _samManager.Start();
-
-                                if (base32Address != null)
-                                {
-                                    i2pUri = string.Format("i2p:{0}", base32Address);
-                                }
+                                client.ClosePort(UpnpProtocolType.Tcp, config.Ipv4Port, new TimeSpan(0, 0, 10));
+                                client.OpenPort(UpnpProtocolType.Tcp, config.Ipv4Port, config.Ipv4Port, "Amoeba", new TimeSpan(0, 0, 10));
                             }
                         }
                         catch (Exception)
                         {
-                            if (_samManager != null)
-                            {
-                                _samManager.Dispose();
-                                _samManager = null;
-                            }
+
                         }
 
-                        lock (_lockObject)
-                        {
-                            _locationUris.Clear();
-                            if (i2pUri != null) _locationUris.Add(i2pUri);
-                        }
-
-                        nowSamBridgeUri = targetSamBridgeUri;
+                        _watchIpv4Port = config.Ipv4Port;
                     }
+                }
+                else
+                {
+                    if (_ipv4TcpListener != null)
+                    {
+                        _ipv4TcpListener.Server.Dispose();
+                        _ipv4TcpListener.Stop();
+
+                        _ipv4TcpListener = null;
+                    }
+                }
+
+                if (config.Type.HasFlag(ConnectionTcpType.Ipv6))
+                {
+                    ipv6Uri = this.GetIpv6Uri(config.Ipv6Port);
+
+                    if (_ipv6TcpListener == null || _watchIpv6Port != config.Ipv6Port)
+                    {
+                        if (_ipv6TcpListener != null)
+                        {
+                            _ipv6TcpListener.Server.Dispose();
+                            _ipv6TcpListener.Stop();
+
+                            _ipv6TcpListener = null;
+                        }
+
+                        _ipv6TcpListener = new TcpListener(IPAddress.IPv6Any, config.Ipv6Port);
+                        _ipv6TcpListener.Start(3);
+
+                        _watchIpv6Port = config.Ipv6Port;
+                    }
+                }
+                else
+                {
+                    if (_ipv6TcpListener != null)
+                    {
+                        _ipv6TcpListener.Server.Dispose();
+                        _ipv6TcpListener.Stop();
+
+                        _ipv6TcpListener = null;
+                    }
+                }
+
+                lock (_lockObject)
+                {
+                    if (this.Config != config) continue;
+
+                    _locationUris.Clear();
+                    if (ipv4Uri != null) _locationUris.Add(ipv4Uri);
+                    if (ipv6Uri != null) _locationUris.Add(ipv6Uri);
                 }
             }
         }
 
-        public string GetIpv4Uri(ushort port)
+        private string GetIpv4Uri(ushort port)
         {
+            {
+                var ipAddress = TcpManager.GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+
+                if (ipAddress != null)
+                {
+                    return string.Format("tcp:{0}:{1}", ipAddress.ToString(), port);
+                }
+            }
+
             try
             {
-                var myIpAddresses = new List<IPAddress>(TcpManager.GetIpAddresses());
-
-                foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork))
-                {
-                    if (IPAddress.Any.ToString() == myIpAddress.ToString()
-                        || IPAddress.Loopback.ToString() == myIpAddress.ToString()
-                        || IPAddress.Broadcast.ToString() == myIpAddress.ToString())
-                    {
-                        continue;
-                    }
-                    if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.0.0.0")) >= 0
-                        && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("10.255.255.255")) <= 0)
-                    {
-                        continue;
-                    }
-                    if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.16.0.0")) >= 0
-                        && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("172.31.255.255")) <= 0)
-                    {
-                        continue;
-                    }
-                    if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.0.0.0")) >= 0
-                        && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("127.255.255.255")) <= 0)
-                    {
-                        continue;
-                    }
-                    if (TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.0.0")) >= 0
-                        && TcpManager.IpAddressCompare(myIpAddress, IPAddress.Parse("192.168.255.255")) <= 0)
-                    {
-                        continue;
-                    }
-
-                    ipv4Uri = string.Format("tcp:{0}:{1}", myIpAddress.ToString(), port);
-
-                    break;
-                }
-
                 using (UpnpClient client = new UpnpClient())
                 {
                     client.Connect(new TimeSpan(0, 0, 10));
 
-                    string ip = client.GetExternalIpAddress(new TimeSpan(0, 0, 10));
-                    if (string.IsNullOrWhiteSpace(ip)) throw new Exception();
+                    var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
+                    if (ipAddress == null || !TcpManager.CheckGlobalIpAddress(ipAddress)) throw new Exception();
 
-                    upnpUri = string.Format("tcp:{0}:{1}", ip, port);
-
-                    if (upnpUri != _settings.UpnpUri)
-                    {
-                        if (_settings.UpnpUri != null)
-                        {
-                            try
-                            {
-                                var match2 = regex.Match(_settings.UpnpUri);
-                                if (!match2.Success) throw new Exception();
-                                int port2 = int.Parse(match2.Groups[3].Value);
-
-                                client.ClosePort(UpnpProtocolType.Tcp, port2, new TimeSpan(0, 0, 10));
-                                Log.Information(string.Format("UPnP Close port: {0}", port2));
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-
-                        client.ClosePort(UpnpProtocolType.Tcp, port, new TimeSpan(0, 0, 10));
-
-                        if (client.OpenPort(UpnpProtocolType.Tcp, port, port, "Amoeba", new TimeSpan(0, 0, 10)))
-                        {
-                            Log.Information(string.Format("UPnP Open port: {0}", port));
-                        }
-                    }
+                    return string.Format("tcp:{0}:{1}", ipAddress.ToString(), port);
                 }
-
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-        public string GetIpv6Uri(ushort port)
-        {
-            string uri = _amoebaManager.ListenUris.FirstOrDefault(n => n.StartsWith(string.Format("tcp:[{0}]:", IPAddress.IPv6Any.ToString())));
-
-            var regex = new Regex(@"(.*?):(.*):(\d*)");
-            var match = regex.Match(uri);
-            if (!match.Success) throw new Exception();
-
-            int port = int.Parse(match.Groups[3].Value);
-
-            var myIpAddresses = new List<IPAddress>(TcpManager.GetIpAddresses());
-
-            foreach (var myIpAddress in myIpAddresses.Where(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6))
-            {
-                if (IPAddress.IPv6Any.ToString() == myIpAddress.ToString()
-                    || IPAddress.IPv6Loopback.ToString() == myIpAddress.ToString()
-                    || IPAddress.IPv6None.ToString() == myIpAddress.ToString())
-                {
-                    continue;
-                }
-                if (myIpAddress.ToString().StartsWith("fe80:"))
-                {
-                    continue;
-                }
-                if (myIpAddress.ToString().StartsWith("2001:"))
-                {
-                    continue;
-                }
-                if (myIpAddress.ToString().StartsWith("2002:"))
-                {
-                    continue;
-                }
-
-                ipv6Uri = string.Format("tcp:[{0}]:{1}", myIpAddress.ToString(), port);
-
-                break;
-            }
-        }
-
-        private static IEnumerable<IPAddress> GetIpAddresses()
-        {
-            var list = new HashSet<IPAddress>();
-
-            try
-            {
-                list.UnionWith(Dns.GetHostAddresses(Dns.GetHostName()));
             }
             catch (Exception)
             {
 
             }
 
-            return list;
+            return null;
         }
 
-        private static int IpAddressCompare(IPAddress x, IPAddress y)
+        private string GetIpv6Uri(ushort port)
         {
-            return CollectionUtils.Compare(x.GetAddressBytes(), y.GetAddressBytes());
+            var ipAddress = TcpManager.GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6);
+
+            if (ipAddress != null)
+            {
+                return string.Format("tcp:[{0}]:{1}", ipAddress.ToString(), port);
+            }
+
+            return null;
         }
 
         public override ManagerState State
@@ -367,7 +487,7 @@ namespace Amoeba.Service
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 3, 0));
+                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 30, 0));
                 }
             }
         }
@@ -384,10 +504,20 @@ namespace Amoeba.Service
 
                 _watchTimer.Stop();
 
-                if (_samManager != null)
+                if (_ipv4TcpListener != null)
                 {
-                    _samManager.Dispose();
-                    _samManager = null;
+                    _ipv4TcpListener.Server.Dispose();
+                    _ipv4TcpListener.Stop();
+
+                    _ipv4TcpListener = null;
+                }
+
+                if (_ipv6TcpListener != null)
+                {
+                    _ipv6TcpListener.Server.Dispose();
+                    _ipv6TcpListener.Stop();
+
+                    _ipv6TcpListener = null;
                 }
             }
         }
@@ -423,10 +553,20 @@ namespace Amoeba.Service
 
             if (disposing)
             {
-                if (_samManager != null)
+                if (_ipv4TcpListener != null)
                 {
-                    _samManager.Dispose();
-                    _samManager = null;
+                    _ipv4TcpListener.Server.Dispose();
+                    _ipv4TcpListener.Stop();
+
+                    _ipv4TcpListener = null;
+                }
+
+                if (_ipv6TcpListener != null)
+                {
+                    _ipv6TcpListener.Server.Dispose();
+                    _ipv6TcpListener.Stop();
+
+                    _ipv6TcpListener = null;
                 }
             }
         }

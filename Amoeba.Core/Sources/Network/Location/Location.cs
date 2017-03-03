@@ -20,8 +20,6 @@ namespace Amoeba.Core
 
         private volatile UriCollection _uris;
 
-        private volatile int _hashCode;
-
         public static readonly int MaxUriCount = 32;
 
         public Location(IEnumerable<string> uris)
@@ -70,7 +68,8 @@ namespace Amoeba.Core
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            if (this.ProtectedUris.Count == 0) return 0;
+            else return this.ProtectedUris[0].GetHashCode();
         }
 
         public override bool Equals(object obj)
