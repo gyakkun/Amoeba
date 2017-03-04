@@ -33,7 +33,7 @@ namespace Amoeba.Core
             lock (_lockObject)
             {
                 var now = DateTime.UtcNow;
-                now.AddTicks(-(now.Ticks % TimeSpan.TicksPerSecond));
+                now = now.AddTicks(-(now.Ticks % TimeSpan.TicksPerSecond));
 
                 _table.AddOrUpdate(now, 1, (_, origin) => origin + 1);
             }
@@ -44,7 +44,7 @@ namespace Amoeba.Core
             lock (_lockObject)
             {
                 var now = DateTime.UtcNow;
-                now.AddTicks(-(now.Ticks % TimeSpan.TicksPerSecond));
+                now = now.AddTicks(-(now.Ticks % TimeSpan.TicksPerSecond));
 
                 _table.AddOrUpdate(now, -1, (_, origin) => origin - 1);
             }
