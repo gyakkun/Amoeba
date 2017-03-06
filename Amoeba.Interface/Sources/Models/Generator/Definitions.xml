@@ -1,0 +1,13 @@
+﻿<Config>
+  <Class Name="BoxInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property IsCollection="true" Type="Seed" Name="Seeds" />
+    <Property IsCollection="true" Type="Box" Name="Boxes" />
+  </Class>
+  <Class Name="SeedInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="long" Name="Length" IsEditable="true" />
+    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+    <Property Type="Metadata" Name="Metadata" IsEditable="true" />
+  </Class>
+</Config>

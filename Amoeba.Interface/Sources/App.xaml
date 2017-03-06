@@ -1,8 +1,8 @@
-﻿<Application x:Class="Amoeba.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Amoeba"
-             StartupUri="MainWindow.xaml">
+﻿<Application x:Class="Amoeba.Interface.App"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Amoeba.Interface"
+        StartupUri="Sources/Windows/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -11,6 +11,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepOrange.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.DeepOrange.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <ObjectDataProvider x:Key="_languages" ObjectInstance="{x:Static local:LanguagesManager.Instance}"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -10,7 +10,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "UnicastMetadata")]
+    [DataContract(Name = nameof(UnicastMetadata))]
     public sealed class UnicastMetadata : CertificateItemBase<UnicastMetadata>, IUnicastMetadata
     {
         private enum SerializeId
@@ -177,7 +177,7 @@ namespace Amoeba.Core
 
         #region IUnicastMetadata
 
-        [DataMember(Name = "Type")]
+        [DataMember(Name = nameof(Type))]
         public string Type
         {
             get
@@ -197,7 +197,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Signature")]
+        [DataMember(Name = nameof(Signature))]
         public Signature Signature
         {
             get
@@ -210,7 +210,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "CreationTime")]
+        [DataMember(Name = nameof(CreationTime))]
         public DateTime CreationTime
         {
             get
@@ -224,7 +224,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Metadata")]
+        [DataMember(Name = nameof(Metadata))]
         public Metadata Metadata
         {
             get

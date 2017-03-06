@@ -9,7 +9,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "Index")]
+    [DataContract(Name = nameof(Index))]
     sealed class Index : ItemBase<Index>, IIndex
     {
         private enum SerializeId
@@ -104,7 +104,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Groups")]
+        [DataMember(Name = nameof(Groups))]
         private GroupCollection ProtectedGroups
         {
             get

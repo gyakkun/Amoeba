@@ -10,7 +10,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = "Profile")]
+    [DataContract(Name = nameof(Profile))]
     public sealed class Profile : ItemBase<Profile>, IProfile
     {
         private enum SerializeId
@@ -171,7 +171,7 @@ namespace Amoeba.Service
 
         #region IProfile
 
-        [DataMember(Name = "Comment")]
+        [DataMember(Name = nameof(Comment))]
         public string Comment
         {
             get
@@ -191,7 +191,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "ExchangePublicKey")]
+        [DataMember(Name = nameof(ExchangePublicKey))]
         public ExchangePublicKey ExchangePublicKey
         {
             get
@@ -217,7 +217,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "TrustSignatures")]
+        [DataMember(Name = nameof(TrustSignatures))]
         private SignatureCollection ProtectedTrustSignatures
         {
             get
@@ -242,7 +242,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "DeleteSignatures")]
+        [DataMember(Name = nameof(DeleteSignatures))]
         private SignatureCollection ProtectedDeleteSignatures
         {
             get
@@ -267,7 +267,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "Tags")]
+        [DataMember(Name = nameof(Tags))]
         private TagCollection ProtectedTags
         {
             get

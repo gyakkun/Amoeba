@@ -1498,7 +1498,7 @@ namespace Amoeba.Core
 
         #endregion
 
-        [DataContract(Name = "ClusterInfo")]
+        [DataContract(Name = nameof(ClusterInfo))]
         private class ClusterInfo
         {
             private long[] _indexes;
@@ -1511,7 +1511,7 @@ namespace Amoeba.Core
                 this.Length = length;
             }
 
-            [DataMember(Name = "Indexes")]
+            [DataMember(Name = nameof(Indexes))]
             public long[] Indexes
             {
                 get
@@ -1524,7 +1524,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "Length")]
+            [DataMember(Name = nameof(Length))]
             public int Length
             {
                 get
@@ -1537,7 +1537,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "UpdateTime")]
+            [DataMember(Name = nameof(UpdateTime))]
             public DateTime UpdateTime
             {
                 get
@@ -1746,7 +1746,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataContract(Name = "CacheInfo")]
+        [DataContract(Name = nameof(CacheInfo))]
         private class CacheInfo
         {
             private DateTime _creationTime;
@@ -1766,7 +1766,7 @@ namespace Amoeba.Core
                 this.ShareInfo = shareInfo;
             }
 
-            [DataMember(Name = "CreationTime")]
+            [DataMember(Name = nameof(CreationTime))]
             public DateTime CreationTime
             {
                 get
@@ -1779,7 +1779,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "LifeSpan")]
+            [DataMember(Name = nameof(LifeSpan))]
             public TimeSpan LifeSpan
             {
                 get
@@ -1792,7 +1792,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "Metadata")]
+            [DataMember(Name = nameof(Metadata))]
             public Metadata Metadata
             {
                 get
@@ -1818,7 +1818,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "LockedHashes")]
+            [DataMember(Name = nameof(LockedHashes))]
             private HashCollection ProtectedLockedHashes
             {
                 get
@@ -1830,7 +1830,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "ShareInfo")]
+            [DataMember(Name = nameof(ShareInfo))]
             public ShareInfo ShareInfo
             {
                 get
@@ -1844,7 +1844,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataContract(Name = "ShareInfo")]
+        [DataContract(Name = nameof(ShareInfo))]
         private class ShareInfo
         {
             private string _path;
@@ -1860,7 +1860,7 @@ namespace Amoeba.Core
                 if (hashes != null) this.ProtectedHashes.AddRange(hashes);
             }
 
-            [DataMember(Name = "Path")]
+            [DataMember(Name = nameof(Path))]
             public string Path
             {
                 get
@@ -1873,7 +1873,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "FileLength")]
+            [DataMember(Name = nameof(FileLength))]
             public long FileLength
             {
                 get
@@ -1886,7 +1886,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "BlockLength")]
+            [DataMember(Name = nameof(BlockLength))]
             public int BlockLength
             {
                 get
@@ -1912,7 +1912,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "Hashes")]
+            [DataMember(Name = nameof(Hashes))]
             private HashCollection ProtectedHashes
             {
                 get

@@ -15,7 +15,7 @@ using Omnius.Utilities;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "Tag")]
+    [DataContract(Name = nameof(Tag))]
     public sealed class Tag : ItemBase<Tag>, ITag
     {
         private enum SerializeId
@@ -119,7 +119,7 @@ namespace Amoeba.Core
 
         #region ITag
 
-        [DataMember(Name = "Name")]
+        [DataMember(Name = nameof(Name))]
         public string Name
         {
             get
@@ -139,7 +139,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Id")]
+        [DataMember(Name = nameof(Id))]
         public byte[] Id
         {
             get

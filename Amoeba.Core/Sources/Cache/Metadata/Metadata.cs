@@ -9,7 +9,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "Metadata")]
+    [DataContract(Name = nameof(Metadata))]
     public sealed class Metadata : ItemBase<Metadata>, IMetadata
     {
         private enum SerializeId
@@ -97,7 +97,7 @@ namespace Amoeba.Core
 
         #region IMetadata
 
-        [DataMember(Name = "Depth")]
+        [DataMember(Name = nameof(Depth))]
         public int Depth
         {
             get
@@ -110,7 +110,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Hash")]
+        [DataMember(Name = nameof(Hash))]
         public Hash Hash
         {
             get

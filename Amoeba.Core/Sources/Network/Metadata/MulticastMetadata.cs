@@ -10,7 +10,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "MulticastMetadata")]
+    [DataContract(Name = nameof(MulticastMetadata))]
     public sealed class MulticastMetadata : CashItemBase<MulticastMetadata>, IMulticastMetadata
     {
         private enum SerializeId
@@ -235,7 +235,7 @@ namespace Amoeba.Core
 
         #region IMulticastMetadata
 
-        [DataMember(Name = "Type")]
+        [DataMember(Name = nameof(Type))]
         public string Type
         {
             get
@@ -255,7 +255,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Tag")]
+        [DataMember(Name = nameof(Tag))]
         public Tag Tag
         {
             get
@@ -268,7 +268,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "CreationTime")]
+        [DataMember(Name = nameof(CreationTime))]
         public DateTime CreationTime
         {
             get
@@ -282,7 +282,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Metadata")]
+        [DataMember(Name = nameof(Metadata))]
         public Metadata Metadata
         {
             get

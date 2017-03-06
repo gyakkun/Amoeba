@@ -8,7 +8,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "Group")]
+    [DataContract(Name = nameof(Group))]
     sealed class Group : ItemBase<Group>, IGroup
     {
         private enum SerializeId
@@ -131,7 +131,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "CorrectionAlgorithm")]
+        [DataMember(Name = nameof(CorrectionAlgorithm))]
         public CorrectionAlgorithm CorrectionAlgorithm
         {
             get
@@ -151,7 +151,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Length")]
+        [DataMember(Name = nameof(Length))]
         public long Length
         {
             get
@@ -164,7 +164,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Hashes")]
+        [DataMember(Name = nameof(Hashes))]
         private HashCollection ProtectedHashes
         {
             get

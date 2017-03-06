@@ -2,7 +2,7 @@
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "CorrectionAlgorithm")]
+    [DataContract(Name = nameof(CorrectionAlgorithm))]
     enum CorrectionAlgorithm : byte
     {
         [EnumMember(Value = "ReedSolomon8")]

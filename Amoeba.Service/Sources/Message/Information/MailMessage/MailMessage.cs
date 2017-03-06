@@ -6,7 +6,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = "MailMessage")]
+    [DataContract(Name = nameof(MailMessage))]
     public sealed class MailMessage : ItemBase<MailMessage>, IMailMessage
     {
         private enum SerializeId
@@ -81,7 +81,7 @@ namespace Amoeba.Service
 
         #region IMessage
 
-        [DataMember(Name = "Comment")]
+        [DataMember(Name = nameof(Comment))]
         public string Comment
         {
             get

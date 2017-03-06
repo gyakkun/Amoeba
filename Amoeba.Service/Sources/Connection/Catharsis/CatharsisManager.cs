@@ -319,7 +319,7 @@ namespace Amoeba.Service
 
         #endregion
 
-        [DataContract(Name = "Ipv4")]
+        [DataContract(Name = nameof(Ipv4))]
         struct Ipv4 : IComparable<Ipv4>, IEquatable<Ipv4>
         {
             private uint _value;
@@ -330,7 +330,7 @@ namespace Amoeba.Service
                 _value = NetworkConverter.ToUInt32(ipAddress.GetAddressBytes());
             }
 
-            [DataMember(Name = "Value")]
+            [DataMember(Name = nameof(Value))]
             private uint Value
             {
                 get
@@ -376,7 +376,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataContract(Name = "SearchRange")]
+        [DataContract(Name = nameof(SearchRange<T>))]
         struct SearchRange<T> : IEquatable<SearchRange<T>>
             where T : IComparable<T>, IEquatable<T>
         {
@@ -389,7 +389,7 @@ namespace Amoeba.Service
                 _max = (max.CompareTo(_min) < 0) ? _min : max;
             }
 
-            [DataMember(Name = "Min")]
+            [DataMember(Name = nameof(Min))]
             public T Min
             {
                 get
@@ -402,7 +402,7 @@ namespace Amoeba.Service
                 }
             }
 
-            [DataMember(Name = "Max")]
+            [DataMember(Name = nameof(Max))]
             public T Max
             {
                 get

@@ -10,7 +10,7 @@ using Omnius.Utilities;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "Location")]
+    [DataContract(Name = nameof(Location))]
     public sealed class Location : ItemBase<Location>, ILocation
     {
         private enum SerializeId
@@ -117,7 +117,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Uris")]
+        [DataMember(Name = nameof(Uris))]
         private UriCollection ProtectedUris
         {
             get

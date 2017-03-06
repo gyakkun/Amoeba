@@ -9,7 +9,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "BroadcastMetadata")]
+    [DataContract(Name = nameof(BroadcastMetadata))]
     public sealed class BroadcastMetadata : CertificateItemBase<BroadcastMetadata>, IBroadcastMetadata
     {
         private enum SerializeId
@@ -162,7 +162,7 @@ namespace Amoeba.Core
 
         #region IBroadcastMetadata
 
-        [DataMember(Name = "Type")]
+        [DataMember(Name = nameof(Type))]
         public string Type
         {
             get
@@ -182,7 +182,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "CreationTime")]
+        [DataMember(Name = nameof(CreationTime))]
         public DateTime CreationTime
         {
             get
@@ -196,7 +196,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Metadata")]
+        [DataMember(Name = nameof(Metadata))]
         public Metadata Metadata
         {
             get

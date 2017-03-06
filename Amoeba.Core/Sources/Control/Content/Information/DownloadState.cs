@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "DownloadState")]
+    [DataContract(Name = nameof(DownloadState))]
     public enum DownloadState
     {
         [EnumMember(Value = "Downloading")]

@@ -11,7 +11,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = "BroadcastMessage")]
+    [DataContract(Name = nameof(BroadcastMessage<T>))]
     public sealed class BroadcastMessage<T> : ItemBase<BroadcastMessage<T>>, IBroadcastMessage<T>
         where T : ItemBase<T>
     {
@@ -119,7 +119,7 @@ namespace Amoeba.Service
 
         #region IBroadcastMessage
 
-        [DataMember(Name = "AuthorSignature")]
+        [DataMember(Name = nameof(AuthorSignature))]
         public Signature AuthorSignature
         {
             get
@@ -132,7 +132,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "CreationTime")]
+        [DataMember(Name = nameof(CreationTime))]
         public DateTime CreationTime
         {
             get
@@ -146,7 +146,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "Value")]
+        [DataMember(Name = nameof(Value))]
         public T Value
         {
             get

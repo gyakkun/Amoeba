@@ -12,7 +12,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = "MulticastMessage")]
+    [DataContract(Name = nameof(MulticastMessage<T>))]
     public sealed class MulticastMessage<T> : ItemBase<MulticastMessage<T>>, IMulticastMessage<T>
         where T : ItemBase<T>
     {
@@ -148,7 +148,7 @@ namespace Amoeba.Service
 
         #region IMulticastMessage
 
-        [DataMember(Name = "Tag")]
+        [DataMember(Name = nameof(Tag))]
         public Tag Tag
         {
             get
@@ -161,7 +161,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "AuthorSignature")]
+        [DataMember(Name = nameof(AuthorSignature))]
         public Signature AuthorSignature
         {
             get
@@ -174,7 +174,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "CreationTime")]
+        [DataMember(Name = nameof(CreationTime))]
         public DateTime CreationTime
         {
             get
@@ -188,7 +188,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "Cost")]
+        [DataMember(Name = nameof(Cost))]
         public Cost Cost
         {
             get
@@ -201,7 +201,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "Value")]
+        [DataMember(Name = nameof(Value))]
         public T Value
         {
             get

@@ -9,7 +9,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = "Store")]
+    [DataContract(Name = nameof(Store))]
     public sealed class Store : ItemBase<Store>, IStore
     {
         private enum SerializeId
@@ -113,7 +113,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "Boxes")]
+        [DataMember(Name = nameof(Boxes))]
         private BoxCollection ProtectedBoxes
         {
             get

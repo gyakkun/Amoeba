@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Amoeba
 {
-    [DataContract(Name = "ConnectionI2pConfig")]
+    [DataContract(Name = nameof(ConnectionI2pConfig))]
     public class ConnectionI2pConfig
     {
         private bool _isEnabled;
@@ -19,7 +19,7 @@ namespace Amoeba
             this.SamBridgeUri = samBridgeUri;
         }
 
-        [DataMember(Name = "IsEnabled")]
+        [DataMember(Name = nameof(IsEnabled))]
         public bool IsEnabled
         {
             get
@@ -32,7 +32,7 @@ namespace Amoeba
             }
         }
 
-        [DataMember(Name = "SamBridgeUri")]
+        [DataMember(Name = nameof(SamBridgeUri))]
         public string SamBridgeUri
         {
             get

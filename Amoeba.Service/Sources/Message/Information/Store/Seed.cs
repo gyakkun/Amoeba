@@ -8,7 +8,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = "Seed")]
+    [DataContract(Name = nameof(Seed))]
     public sealed class Seed : ItemBase<Seed>, ISeed
     {
         private enum SerializeId
@@ -131,7 +131,7 @@ namespace Amoeba.Service
 
         #region ISeed
 
-        [DataMember(Name = "Name")]
+        [DataMember(Name = nameof(Name))]
         public string Name
         {
             get
@@ -151,7 +151,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "Length")]
+        [DataMember(Name = nameof(Length))]
         public long Length
         {
             get
@@ -164,7 +164,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "CreationTime")]
+        [DataMember(Name = nameof(CreationTime))]
         public DateTime CreationTime
         {
             get
@@ -178,7 +178,7 @@ namespace Amoeba.Service
             }
         }
 
-        [DataMember(Name = "Metadata")]
+        [DataMember(Name = nameof(Metadata))]
         public Metadata Metadata
         {
             get

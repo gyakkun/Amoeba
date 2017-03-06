@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Amoeba
 {
-    [DataContract(Name = "CatharsisIpv4Config")]
+    [DataContract(Name = nameof(CatharsisIpv4Config))]
     public class CatharsisIpv4Config
     {
         private List<string> _urls;
@@ -32,7 +32,7 @@ namespace Amoeba
             }
         }
 
-        [DataMember(Name = "Urls")]
+        [DataMember(Name = nameof(Urls))]
         private List<string> ProtectedUrls
         {
             get
@@ -57,7 +57,7 @@ namespace Amoeba
             }
         }
 
-        [DataMember(Name = "Paths")]
+        [DataMember(Name = nameof(Paths))]
         private List<string> ProtectedPaths
         {
             get

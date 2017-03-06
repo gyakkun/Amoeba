@@ -899,7 +899,7 @@ namespace Amoeba.Core
             #endregion
         }
 
-        [DataContract(Name = "DownloadItemInfo")]
+        [DataContract(Name = nameof(DownloadItemInfo))]
         private class DownloadItemInfo
         {
             private Metadata _metadata;
@@ -918,7 +918,7 @@ namespace Amoeba.Core
                 this.Metadata = metadata;
             }
 
-            [DataMember(Name = "Metadata")]
+            [DataMember(Name = nameof(Metadata))]
             public Metadata Metadata
             {
                 get
@@ -931,7 +931,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "MaxLength")]
+            [DataMember(Name = nameof(MaxLength))]
             public long MaxLength
             {
                 get
@@ -944,7 +944,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "Depth")]
+            [DataMember(Name = nameof(Depth))]
             public int Depth
             {
                 get
@@ -957,7 +957,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "Index")]
+            [DataMember(Name = nameof(Index))]
             public Index Index
             {
                 get
@@ -970,7 +970,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "State")]
+            [DataMember(Name = nameof(State))]
             public DownloadState State
             {
                 get
@@ -983,7 +983,7 @@ namespace Amoeba.Core
                 }
             }
 
-            [DataMember(Name = "ResultHashes")]
+            [DataMember(Name = nameof(ResultHashes))]
             public HashCollection ResultHashes
             {
                 get

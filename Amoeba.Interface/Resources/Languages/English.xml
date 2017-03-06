@@ -1,0 +1,14 @@
+﻿<Config>
+
+  <Property Name="FontFamily" Value="Segoe UI, Meiryo UI, Verdana" />
+  <Property Name="DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
+
+  <Property Name="Languages_English" Value="English" />
+  <Property Name="Languages_Japanese" Value="Japanese" />
+  <Property Name="Languages_Chinese_Traditional" Value="Chinese (Traditional)" />
+  <Property Name="Languages_Chinese_Simplified" Value="Chinese (Simplified)" />
+  <Property Name="Languages_Korean" Value="Korean" />
+  <Property Name="Languages_Ukrainian" Value="Ukrainian" />
+  <Property Name="Languages_Russian" Value="Russian" />
+
+</Config>

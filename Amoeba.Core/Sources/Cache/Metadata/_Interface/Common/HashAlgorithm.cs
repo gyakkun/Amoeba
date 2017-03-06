@@ -2,7 +2,7 @@
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "HashAlgorithm")]
+    [DataContract(Name = nameof(HashAlgorithm))]
     public enum HashAlgorithm : byte
     {
         [EnumMember(Value = "Sha256")]

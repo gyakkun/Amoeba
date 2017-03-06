@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "Node")]
+    [DataContract(Name = nameof(Node))]
     public struct Node<T>
     {
         public Node(byte[] id, T value)
@@ -16,10 +16,10 @@ namespace Amoeba.Core
             this.Value = value;
         }
 
-        [DataMember(Name = "Id")]
+        [DataMember(Name = nameof(Id))]
         public byte[] Id { get; private set; }
 
-        [DataMember(Name = "Value")]
+        [DataMember(Name = nameof(Value))]
         public T Value { get; private set; }
     }
 }

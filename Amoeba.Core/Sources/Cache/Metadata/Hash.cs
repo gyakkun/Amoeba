@@ -8,7 +8,7 @@ using Omnius.Base;
 
 namespace Amoeba.Core
 {
-    [DataContract(Name = "Hash")]
+    [DataContract(Name = nameof(Hash))]
     public sealed class Hash : ItemBase<Hash>, IHash
     {
         private HashAlgorithm _algorithm;
@@ -79,7 +79,7 @@ namespace Amoeba.Core
 
         #region IHash
 
-        [DataMember(Name = "Algorithm")]
+        [DataMember(Name = nameof(Algorithm))]
         public HashAlgorithm Algorithm
         {
             get
@@ -99,7 +99,7 @@ namespace Amoeba.Core
             }
         }
 
-        [DataMember(Name = "Value")]
+        [DataMember(Name = nameof(Value))]
         public byte[] Value
         {
             get
