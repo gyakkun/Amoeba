@@ -1,0 +1,33 @@
+﻿<Config>
+  <Import Namespace="System.Collections.ObjectModel" />
+  <Import Namespace="Amoeba.Service" />
+  <Import Namespace="Amoeba.Core" />
+
+  <Class Name="StoreCategoryInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="ObservableCollection(StoreInfo)" Name="StoreInfos" IsCollection="true" />
+    <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" IsCollection="true" />
+  </Class>
+
+  <Class Name="StoreInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" IsCollection="true" />
+  </Class>
+
+  <Class Name="BoxInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" IsCollection="true" />
+    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" IsCollection="true" />
+  </Class>
+
+  <Class Name="SeedInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="long" Name="Length" IsEditable="true" />
+    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+    <Property Type="Metadata" Name="Metadata" IsEditable="true" />
+  </Class>
+</Config>

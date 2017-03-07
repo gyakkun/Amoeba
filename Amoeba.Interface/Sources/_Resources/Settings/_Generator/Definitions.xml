@@ -1,5 +1,8 @@
 ﻿<Config>
+  <Import Namespace="System.Collections.ObjectModel" />
+
   <Property Type="string" Name="Test" />
   <Property Type="string" Name="Test2" IsEditable="true" />
   <Property Type="string" Name="Test3" IsEditable="false" />
+  <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
 </Config>

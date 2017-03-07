@@ -12,10 +12,10 @@ The goal is to eliminate the suppression on the Internet.
 
 ## Features
 
-Amoeba = (Freenet like network) + DHT + (Tcp, Tor, I2p, etc) + (WoT + PoW)
+Amoeba = (Freenet like network) + DHT + (Tcp, I2p, etc) + (WoT + PoW)
 
  * Provides a chat and file-sharing capabilities.
- * I2P, Tor, TCP, Socks5 proxy, Http proxy is available. Also works Port 0 (the connections is less).
+ * I2P, TCP, Socks5 proxy, is available. Also works Port 0 (the connections is less).
 
 ## Links
  

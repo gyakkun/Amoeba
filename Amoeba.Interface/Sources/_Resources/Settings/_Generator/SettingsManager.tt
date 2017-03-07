@@ -9,27 +9,9 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Xml" #>
 <#@ import namespace="System.Xml.Linq" #>
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Omnius.Configuration;
-
-namespace Amoeba.Interface
-{
-    partial class SettingsManager : ISettings
-    {
-        private Settings _settings;
-
-        public SettingsManager(string configPath)
-        {
-            _settings = new Settings(configPath);
-
-            this.Init();
-        }
 <#
-var properties = new List<PropertyInfo>();
+var namespaces = new List<string>();
+var propertyInfos = new List<PropertyInfo>();
 
 using (var stream = new FileStream(this.Host.ResolvePath("Definitions.xml"), FileMode.Open))
 using (var reader = new XmlTextReader(stream))
@@ -44,17 +26,49 @@ using (var reader = new XmlTextReader(stream))
                 var name = reader.GetAttribute("Name");
                 var isEditable = bool.Parse(reader.GetAttribute("IsEditable") ?? "false");
 
-                properties.Add(new PropertyInfo(type, name, isEditable));
+                propertyInfos.Add(new PropertyInfo(type, name, isEditable));
             }
+            else if (reader.LocalName == "Import")
+            {
+                namespaces.Add(reader.GetAttribute("Namespace"));
+            }
+
         }
     }
 }
 #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Omnius.Configuration;
+<#
+foreach(var value in namespaces)
+{
+#>
+using <#= value #>;
+<#
+}
+#>
+
+namespace Amoeba.Interface
+{
+    partial class SettingsManager : ISettings
+    {
+        private Settings _settings;
+
+        public SettingsManager(string configPath)
+        {
+            _settings = new Settings(configPath);
+
+            this.Init();
+        }
 
         public void Load()
         {
 <#
-foreach(var p in properties)
+foreach(var p in propertyInfos)
 {
 #>
             this.<#= p.Name #> = _settings.Load("<#= p.Name #>", () => this.<#= p.Name #>);
@@ -66,7 +80,7 @@ foreach(var p in properties)
         public void Save()
         {
 <#
-foreach(var p in properties)
+foreach(var p in propertyInfos)
 {
 #>
             _settings.Save("<#= p.Name #>", this.<#= p.Name #>);
@@ -76,16 +90,25 @@ foreach(var p in properties)
         }
 
 <#
-foreach(var p in properties)
+foreach(var p in propertyInfos)
 {
+    var normalizedTypeName = GetNormalizedTypeName(p.Type);
+
 #>
-        public <#= p.Type #> <#= p.Name #> { get; <# if(!p.IsEditable) {#>private <#}#>set; }
+        public <#= normalizedTypeName #> <#= p.Name #> { get; <# if(!p.IsEditable) {#>private <#}#>set; }
 <#
 }
 #>
     }
 }
 <#+
+private static string GetNormalizedTypeName(string name)
+{
+    var sb = new StringBuilder(name);
+    sb.Replace("(", "<");
+    sb.Replace(")", ">");
+    return sb.ToString();
+}
 private class PropertyInfo
 {
     public PropertyInfo(string type, string name, bool isEditable)

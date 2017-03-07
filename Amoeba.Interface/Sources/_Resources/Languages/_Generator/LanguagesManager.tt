@@ -22,7 +22,7 @@ namespace Amoeba.Interface
 <#
 var projectPath = this.Host.ResolveAssemblyReference("$(ProjectDir)");
 
-using (var stream = new FileStream(Path.Combine(projectPath, "Languages/English.xml"), FileMode.Open))
+using (var stream = new FileStream(Path.Combine(projectPath, "Resources/Languages/English.xml"), FileMode.Open))
 using (var reader = new XmlTextReader(stream))
 {
     while (reader.Read())

@@ -42,6 +42,10 @@
       <HintPath>..\packages\MaterialDesignThemes.2.2.1.750\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Prism, Version=6.2.0.0, Culture=neutral, PublicKeyToken=91a96d2a154366d8, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.6.2.0\lib\net45\Prism.dll</HintPath>
       <Private>True</Private>
@@ -79,6 +83,10 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -97,23 +105,44 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Sources\ViewModels\Converter\SortedCollectionConverter.cs" />
+    <Compile Include="Sources\Windows\Store\TemplateSelector\StoreTreeTemplateSelector.cs" />
+    <Compile Include="Sources\ViewModels\DragDrop\DragAcceptBehavior.cs" />
+    <Compile Include="Sources\ViewModels\DragDrop\DragAcceptDescription.cs" />
+    <Compile Include="Sources\ViewModels\DragDrop\DragStartBehavior.cs" />
+    <Compile Include="Sources\ViewModels\Base\TreeViewModelBase.cs" />
+    <Compile Include="Sources\Windows\Store\Items\StoreCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Items\StoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Items\SeedViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Items\BoxViewModel.cs" />
+    <Page Include="Sources\Windows\Chat\ChatControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Sources\Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Sources\Models\Generator\ModelsProperties.generated.cs">
-      <DependentUpon>ModelsProperties.tt</DependentUpon>
+    <Compile Include="Sources\Models\_Generator\Models.generated.cs">
+      <DependentUpon>Models.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Sources\Resources\Languages\LanguagesManager.cs" />
-    <Compile Include="Sources\Resources\Languages\LanguagesManager.generated.cs">
+    <Compile Include="Sources\ViewModels\DragDrop\_Interface\IDragable.cs" />
+    <Compile Include="Sources\ViewModels\DragDrop\_Interface\IDropable.cs" />
+    <Compile Include="Sources\Windows\Chat\ChatControl.xaml.cs">
+      <DependentUpon>ChatControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Chat\ChatControlViewModel.cs" />
+    <Compile Include="Sources\ViewModels\Utilities\Extensions.cs" />
+    <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
+    <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <DependentUpon>LanguagesManager.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Sources\Resources\Settings\SettingsManager.cs" />
-    <Compile Include="Sources\Resources\Settings\SettingsManager.generated.cs">
+    <Compile Include="Sources\_Resources\Settings\SettingsManager.cs" />
+    <Compile Include="Sources\_Resources\Settings\_Generator\SettingsManager.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SettingsManager.tt</DependentUpon>
@@ -137,17 +166,17 @@
     <Content Include="Resources\Languages\English.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Sources\Models\Generator\Definitions.xml" />
-    <Content Include="Sources\Models\Generator\ModelsProperties.tt">
+    <Resource Include="Sources\Models\_Generator\Definitions.xml" />
+    <Content Include="Sources\Models\_Generator\Models.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ModelsProperties.generated.cs</LastGenOutput>
+      <LastGenOutput>Models.generated.cs</LastGenOutput>
     </Content>
-    <Content Include="Sources\Resources\Languages\LanguagesManager.tt">
+    <Content Include="Sources\_Resources\Languages\_Generator\LanguagesManager.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>LanguagesManager.generated.cs</LastGenOutput>
     </Content>
-    <Content Include="Sources\Resources\Settings\Definitions.xml" />
-    <Content Include="Sources\Resources\Settings\SettingsManager.tt">
+    <Content Include="Sources\_Resources\Settings\_Generator\Definitions.xml" />
+    <Content Include="Sources\_Resources\Settings\_Generator\SettingsManager.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SettingsManager.generated.cs</LastGenOutput>
     </Content>
@@ -181,6 +210,10 @@
     <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj">
       <Project>{8796ee1c-25d5-483e-b273-a17710a61259}</Project>
       <Name>Amoeba.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
+      <Project>{63EADC1F-9A8A-4945-A562-DA666D0BCB7B}</Project>
+      <Name>Omnius.Base</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj">
       <Project>{197c654f-2461-446a-b531-4a789f14be19}</Project>

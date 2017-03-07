@@ -205,52 +205,49 @@ namespace Amoeba.Service
 
         private Stream GetStream(string url)
         {
-            for (int i = 0; i < 10; i++)
+            var bufferStream = new BufferStream(_bufferManager);
+
+            try
             {
-                var bufferStream = new BufferStream(_bufferManager);
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.AllowAutoRedirect = true;
+                request.Headers.Add("Pragma", "no-cache");
+                request.Headers.Add("Cache-Control", "no-cache");
+                request.Timeout = 1000 * 30;
+                request.ReadWriteTimeout = 1000 * 30;
 
-                try
+                using (WebResponse response = request.GetResponse())
                 {
-                    var request = (HttpWebRequest)WebRequest.Create(url);
-                    request.AllowAutoRedirect = true;
-                    request.Headers.Add("Pragma", "no-cache");
-                    request.Headers.Add("Cache-Control", "no-cache");
-                    request.Timeout = 1000 * 60 * 5;
-                    request.ReadWriteTimeout = 1000 * 60 * 5;
+                    if (response.ContentLength > 1024 * 1024 * 32) throw new Exception("too large");
 
-                    using (WebResponse response = request.GetResponse())
+                    using (Stream stream = response.GetResponseStream())
+                    using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                     {
-                        if (response.ContentLength > 1024 * 1024 * 32) throw new Exception("too large");
+                        int length;
 
-                        using (Stream stream = response.GetResponseStream())
-                        using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
+                        while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
                         {
-                            int length;
+                            bufferStream.Write(safeBuffer.Value, 0, length);
 
-                            while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
-                            {
-                                bufferStream.Write(safeBuffer.Value, 0, length);
-
-                                if (bufferStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
-                            }
+                            if (bufferStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
                         }
-
-                        if (response.ContentLength != -1 && bufferStream.Length != response.ContentLength)
-                        {
-                            continue;
-                        }
-
-                        bufferStream.Seek(0, SeekOrigin.Begin);
-                        return bufferStream;
                     }
-                }
-                catch (Exception)
-                {
-                    bufferStream.Dispose();
+
+                    if (response.ContentLength != -1 && bufferStream.Length != response.ContentLength)
+                    {
+                        return null;
+                    }
+
+                    bufferStream.Seek(0, SeekOrigin.Begin);
+                    return bufferStream;
                 }
             }
+            catch (Exception)
+            {
+                bufferStream.Dispose();
 
-            throw new Exception(string.Format("not found: {0}", url));
+                throw;
+            }
         }
 
         public override ManagerState State
@@ -272,7 +269,7 @@ namespace Amoeba.Service
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0, 0));
+                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(3, 0, 0));
                 }
             }
         }

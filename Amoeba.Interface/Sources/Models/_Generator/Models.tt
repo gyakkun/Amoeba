@@ -9,21 +9,9 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Xml" #>
 <#@ import namespace="System.Xml.Linq" #>
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-using System.Collections.ObjectModel;
-using Amoeba.Service;
-using Amoeba.Core;
-
-namespace Amoeba.Interface
-{
 <#
 var classInfos = new List<ClassInfo>();
+var namespaces = new List<string>();
 
 using (var stream = new FileStream(this.Host.ResolvePath("Definitions.xml"), FileMode.Open))
 using (var reader = new XmlTextReader(stream))
@@ -58,16 +46,39 @@ using (var reader = new XmlTextReader(stream))
 
                 classInfos.Add(new ClassInfo(className, propertyInfos));
             }
+            else if (reader.LocalName == "Import")
+            {
+                namespaces.Add(reader.GetAttribute("Namespace"));
+            }
         }
     }
 }
 #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Runtime.Serialization;
+<#
+foreach(var value in namespaces)
+{
+#>
+using <#= value #>;
+<#
+}
+#>
+
+namespace Amoeba.Interface
+{
 <#
 foreach(var c in classInfos)
 {
+    var normalizedClassName = GetNormalizedTypeName(c.Name);
 #>
-    [DataContract(Name = nameof(<#= c.Name #>))]
-    partial class <#= c.Name #> : INotifyPropertyChanged
+    [DataContract(Name = nameof(<#= normalizedClassName #>))]
+    partial class <#= normalizedClassName #> : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -76,17 +87,19 @@ foreach(var c in classInfos)
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 <#
-foreach(var p in c.PropertyInfos)
-{
-    if(!p.IsCollection)
+    foreach(var p in c.PropertyInfos)
     {
+        var normalizedTypeName = GetNormalizedTypeName(p.Type);
         var generatedFieldName = GetFieldName(p.Name);
+
+        if(!p.IsCollection)
+        {
 #>
 
-        private <#= p.Type #> <#= generatedFieldName #>;
+        private <#= normalizedTypeName #> <#= generatedFieldName #>;
 
         [DataMember(Name = nameof(<#= p.Name #>))]
-        public <#= p.Type #> <#= p.Name #>
+        public <#= normalizedTypeName #> <#= p.Name #>
         { 
             get
             {
@@ -102,29 +115,27 @@ foreach(var p in c.PropertyInfos)
             }
         }
 <#
-    }
-    else
-    {
-        var collectionType = "ObservableCollection<" + p.Type + ">";
-        var generatedFieldName = GetFieldName(p.Name);
+        }
+        else
+        {
 #>
 
-        private <#= collectionType #> <#= generatedFieldName #>;
+        private <#= normalizedTypeName #> <#= generatedFieldName #>;
 
         [DataMember(Name = nameof(<#= p.Name #>))]
-        public <#= collectionType #> <#= p.Name #>
+        public <#= normalizedTypeName #> <#= p.Name #>
         { 
             get
             {
                 if(<#= generatedFieldName #> == null)
-                    <#= generatedFieldName #> = new <#= collectionType #>();
+                    <#= generatedFieldName #> = new <#= normalizedTypeName #>();
 
                 return <#= generatedFieldName #>;
             }
         }
 <#
+        }
     }
-}
 #>
     }
 <#
@@ -132,6 +143,13 @@ foreach(var p in c.PropertyInfos)
 #>
 }
 <#+
+private static string GetNormalizedTypeName(string name)
+{
+    var sb = new StringBuilder(name);
+    sb.Replace("(", "<");
+    sb.Replace(")", ">");
+    return sb.ToString();
+}
 private static string GetFieldName(string name)
 {
     char[] chars = name.ToCharArray();

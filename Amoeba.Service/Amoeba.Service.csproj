@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\Connection\Catharsis\CatharsisManager.cs" />
-    <Compile Include="Sources\Connection\Catharsis\CatharsisIpv4Config.cs" />
+    <Compile Include="Sources\Connection\Catharsis\Ipv4CatharsisConfig.cs" />
     <Compile Include="Sources\Connection\I2p\ConnectionI2pConfig.cs" />
     <Compile Include="Sources\Connection\Tcp\ConnectionTcpConfig.cs" />
     <Compile Include="Sources\Connection\Tcp\TcpManager.cs" />

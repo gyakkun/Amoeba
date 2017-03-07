@@ -24,9 +24,9 @@ namespace Amoeba.Service
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
+        private CatharsisManager _catharsisManager;
+        private TcpManager _tcpManager;
         private I2pManager _i2pManager;
-
-        private Settings _settings;
 
         private WatchTimer _watchTimer;
 
@@ -39,9 +39,9 @@ namespace Amoeba.Service
         {
             _bufferManager = bufferManager;
             _coreManager = coreManager;
+            _catharsisManager = new CatharsisManager(Path.Combine(configPath, "CatharsisManager"), _bufferManager);
+            _tcpManager = new TcpManager(Path.Combine(configPath, "CatharsisManager"), _catharsisManager, _bufferManager);
             _i2pManager = new I2pManager(Path.Combine(configPath, "I2pManager"), _bufferManager);
-
-            _settings = new Settings(configPath);
 
             _coreManager.ConnectCapEvent = (_, uri) => this.ConnectCap(uri);
             _coreManager.AcceptCapEvent = (_) => this.AcceptCap();
@@ -55,6 +55,7 @@ namespace Amoeba.Service
             if (this.State == ManagerState.Stop) return null;
 
             Cap cap;
+            if ((cap = _tcpManager.ConnectCap(uri)) != null) return cap;
             if ((cap = _i2pManager.ConnectCap(uri)) != null) return cap;
 
             return null;
@@ -66,6 +67,7 @@ namespace Amoeba.Service
             if (this.State == ManagerState.Stop) return null;
 
             Cap cap;
+            if ((cap = _tcpManager.AcceptCap()) != null) return cap;
             if ((cap = _i2pManager.AcceptCap()) != null) return cap;
 
             return null;
@@ -75,6 +77,7 @@ namespace Amoeba.Service
         {
             var targetUris = new List<string>();
 
+            targetUris.AddRange(_tcpManager.LocationUris);
             targetUris.AddRange(_i2pManager.LocationUris);
 
             if (!CollectionUtils.Equals(_coreManager.MyLocation.Uris, targetUris))
@@ -102,6 +105,8 @@ namespace Amoeba.Service
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
+                    _catharsisManager.Start();
+                    _tcpManager.Start();
                     _i2pManager.Start();
 
                     _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));
@@ -122,6 +127,8 @@ namespace Amoeba.Service
                 _watchTimer.Stop();
                 _coreManager.SetMyLocation(new Location(null));
 
+                _catharsisManager.Stop();
+                _tcpManager.Stop();
                 _i2pManager.Stop();
             }
         }
@@ -132,7 +139,9 @@ namespace Amoeba.Service
         {
             lock (_lockObject)
             {
-                int version = _settings.Load("Version", () => 0);
+                _catharsisManager.Load();
+                _tcpManager.Load();
+                _i2pManager.Load();
             }
         }
 
@@ -140,7 +149,9 @@ namespace Amoeba.Service
         {
             lock (_lockObject)
             {
-                _settings.Save("Version", 0);
+                _catharsisManager.Save();
+                _tcpManager.Save();
+                _i2pManager.Save();
             }
         }
 
@@ -153,7 +164,9 @@ namespace Amoeba.Service
 
             if (disposing)
             {
-
+                _catharsisManager.Dispose();
+                _tcpManager.Dispose();
+                _i2pManager.Dispose();
             }
         }
     }
