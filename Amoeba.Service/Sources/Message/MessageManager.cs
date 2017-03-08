@@ -94,9 +94,7 @@ namespace Amoeba.Service
 
             // Cache
             {
-                BroadcastMessage<Profile> result;
-
-                if (_cache_Profiles.TryGetValue(broadcastMetadata, out result))
+                if (_cache_Profiles.TryGetValue(broadcastMetadata, out BroadcastMessage<Profile> result))
                 {
                     return Task.FromResult(result);
                 }
@@ -130,9 +128,7 @@ namespace Amoeba.Service
 
             // Cache
             {
-                BroadcastMessage<Store> result;
-
-                if (_cache_Stores.TryGetValue(broadcastMetadata, out result))
+                if (_cache_Stores.TryGetValue(broadcastMetadata, out BroadcastMessage<Store> result))
                 {
                     return Task.FromResult(result);
                 }
@@ -184,9 +180,7 @@ namespace Amoeba.Service
 
                     // Cache
                     {
-                        UnicastMessage<MailMessage> result;
-
-                        if (dic.TryGetValue(unicastMetadata, out result))
+                        if (dic.TryGetValue(unicastMetadata, out UnicastMessage<MailMessage> result))
                         {
                             results.Add(result);
 
@@ -258,9 +252,7 @@ namespace Amoeba.Service
 
                     // Cache
                     {
-                        MulticastMessage<ChatMessage> result;
-
-                        if (dic.TryGetValue(multicastMetadata, out result))
+                        if (dic.TryGetValue(multicastMetadata, out MulticastMessage<ChatMessage> result))
                         {
                             results.Add(result);
 

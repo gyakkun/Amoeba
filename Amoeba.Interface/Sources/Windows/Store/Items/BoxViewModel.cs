@@ -39,9 +39,9 @@ namespace Amoeba.Interface
 
         public override bool TryAdd(object value)
         {
-            if (value is BoxViewModel)
+            if (value is BoxViewModel viewModel)
             {
-                this.Model.BoxInfos.Add(((BoxViewModel)value).Model);
+                this.Model.BoxInfos.Add(viewModel.Model);
                 return true;
             }
 
@@ -50,9 +50,9 @@ namespace Amoeba.Interface
 
         public override bool TryRemove(object value)
         {
-            if (value is BoxViewModel)
+            if (value is BoxViewModel viewModel)
             {
-                return this.Model.BoxInfos.Remove(((BoxViewModel)value).Model);
+                return this.Model.BoxInfos.Remove(viewModel.Model);
             }
 
             return false;

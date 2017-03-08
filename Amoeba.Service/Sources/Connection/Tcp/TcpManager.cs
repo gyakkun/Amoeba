@@ -33,7 +33,7 @@ namespace Amoeba.Service
 
         private WatchTimer _watchTimer;
 
-        private List<string> _locationUris;
+        private List<string> _locationUris = new List<string>();
 
         private volatile ManagerState _state = ManagerState.Stop;
 
@@ -155,9 +155,7 @@ namespace Amoeba.Service
 
         private static IPAddress GetIpAddress(string host)
         {
-            IPAddress remoteIp = null;
-
-            if (!IPAddress.TryParse(host, out remoteIp))
+            if (!IPAddress.TryParse(host, out IPAddress remoteIp))
             {
                 IPHostEntry hostEntry = Dns.GetHostEntry(host);
 
@@ -230,11 +228,10 @@ namespace Amoeba.Service
 
                 // Check
                 {
-                    IPAddress ipAddress;
-                    if (!IPAddress.TryParse(address, out ipAddress)) return null;
+                    if (!IPAddress.TryParse(address, out IPAddress ipAddress)) return null;
 
 #if !DEBUG
-                    if (!TcpManager.CheckGlobalIpAddress(ipAddress) return null;
+                    if (!TcpManager.CheckGlobalIpAddress(ipAddress)) return null;
 #endif
 
                     if (!_catharsisManager.Check(ipAddress)) return null;

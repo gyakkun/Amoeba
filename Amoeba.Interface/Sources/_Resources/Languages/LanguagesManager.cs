@@ -144,9 +144,8 @@ namespace Amoeba.Interface
         {
             if (_currentLanguage == null) return null;
 
-            string result;
 
-            if (_dic[_currentLanguage].TryGetValue(key, out result))
+            if (_dic[_currentLanguage].TryGetValue(key, out string result))
             {
                 return Regex.Unescape(result);
             }

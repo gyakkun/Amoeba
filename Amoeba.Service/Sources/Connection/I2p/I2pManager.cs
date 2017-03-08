@@ -30,7 +30,7 @@ namespace Amoeba.Service
 
         private WatchTimer _watchTimer;
 
-        private List<string> _locationUris;
+        private List<string> _locationUris = new List<string>();
 
         private volatile ManagerState _state = ManagerState.Stop;
 
@@ -132,9 +132,7 @@ namespace Amoeba.Service
 
             try
             {
-                string base32Address;
-
-                socket = _samManager.Accept(out base32Address);
+                socket = _samManager.Accept(out string base32Address);
             }
             catch (SamException)
             {

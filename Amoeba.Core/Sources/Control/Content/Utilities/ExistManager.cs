@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Omnius.Base;
 using Omnius.Utilities;
 
 namespace Amoeba.Core
@@ -57,8 +58,7 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                GroupManager groupManager;
-                if (!_table.TryGetValue(group, out groupManager)) throw new Exception();
+                if (!_table.TryGetValue(group, out GroupManager groupManager)) throw new Exception();
 
                 return groupManager.GetHashes(state);
             }
@@ -68,8 +68,7 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                GroupManager groupManager;
-                if (!_table.TryGetValue(group, out groupManager)) throw new Exception();
+                if (!_table.TryGetValue(group, out GroupManager groupManager)) throw new Exception();
 
                 return groupManager.GetCount(true);
             }
@@ -101,9 +100,7 @@ namespace Amoeba.Core
 
                 foreach (var key in group.Hashes)
                 {
-                    State info;
-
-                    if (!_dic.TryGetValue(key, out info))
+                    if (!_dic.TryGetValue(key, out State info))
                     {
                         info = new State();
                         info.IsEnabled = false;
@@ -120,8 +117,7 @@ namespace Amoeba.Core
             {
                 if (!_bitmap.Get((key.GetHashCode() & 0x7FFFFFFF) % GroupManager.BitmapSize)) return;
 
-                State info;
-                if (!_dic.TryGetValue(key, out info)) return;
+                if (!_dic.TryGetValue(key, out State info)) return;
 
                 info.IsEnabled = state;
             }
@@ -130,11 +126,8 @@ namespace Amoeba.Core
             {
                 var list = new List<Hash>();
 
-                foreach (var pair in _dic)
+                foreach (var (hash, info) in _dic)
                 {
-                    var hash = pair.Key;
-                    var info = pair.Value;
-
                     if (info.IsEnabled == state)
                     {
                         for (int i = 0; i < info.Count; i++)

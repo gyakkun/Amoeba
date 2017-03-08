@@ -250,9 +250,7 @@ namespace Amoeba.Core
 
                 foreach (var dic in _broadcastMetadatas.Values)
                 {
-                    BroadcastMetadata broadcastMetadata;
-
-                    if (dic.TryGetValue(signature, out broadcastMetadata))
+                    if (dic.TryGetValue(signature, out BroadcastMetadata broadcastMetadata))
                     {
                         list.Add(broadcastMetadata);
                     }
@@ -268,13 +266,9 @@ namespace Amoeba.Core
             {
                 _broadcastTypes[type] = DateTime.UtcNow;
 
-                Dictionary<Signature, BroadcastMetadata> dic;
-
-                if (_broadcastMetadatas.TryGetValue(type, out dic))
+                if (_broadcastMetadatas.TryGetValue(type, out Dictionary<Signature, BroadcastMetadata> dic))
                 {
-                    BroadcastMetadata broadcastMetadata;
-
-                    if (dic.TryGetValue(signature, out broadcastMetadata))
+                    if (dic.TryGetValue(signature, out BroadcastMetadata broadcastMetadata))
                     {
                         return broadcastMetadata;
                     }
@@ -300,9 +294,7 @@ namespace Amoeba.Core
 
                 foreach (var dic in _unicastMetadatas.Values)
                 {
-                    Dictionary<Signature, HashSet<UnicastMetadata>> dic2;
-
-                    if (dic.TryGetValue(signature, out dic2))
+                    if (dic.TryGetValue(signature, out Dictionary<Signature, HashSet<UnicastMetadata>> dic2))
                     {
                         list.AddRange(dic2.Values.Extract());
                     }
@@ -320,13 +312,9 @@ namespace Amoeba.Core
 
                 var list = new List<UnicastMetadata>();
 
-                Dictionary<Signature, Dictionary<Signature, HashSet<UnicastMetadata>>> dic;
-
-                if (_unicastMetadatas.TryGetValue(type, out dic))
+                if (_unicastMetadatas.TryGetValue(type, out Dictionary<Signature, Dictionary<Signature, HashSet<UnicastMetadata>>> dic))
                 {
-                    Dictionary<Signature, HashSet<UnicastMetadata>> dic2;
-
-                    if (dic.TryGetValue(signature, out dic2))
+                    if (dic.TryGetValue(signature, out Dictionary<Signature, HashSet<UnicastMetadata>> dic2))
                     {
                         list.AddRange(dic2.Values.Extract());
                     }
@@ -352,9 +340,7 @@ namespace Amoeba.Core
 
                 foreach (var dic in _multicastMetadatas.Values)
                 {
-                    Dictionary<Signature, HashSet<MulticastMetadata>> dic2;
-
-                    if (dic.TryGetValue(tag, out dic2))
+                    if (dic.TryGetValue(tag, out Dictionary<Signature, HashSet<MulticastMetadata>> dic2))
                     {
                         list.AddRange(dic2.Values.Extract());
                     }
@@ -373,13 +359,9 @@ namespace Amoeba.Core
 
                 var list = new List<MulticastMetadata>();
 
-                Dictionary<Tag, Dictionary<Signature, HashSet<MulticastMetadata>>> dic;
-
-                if (_multicastMetadatas.TryGetValue(type, out dic))
+                if (_multicastMetadatas.TryGetValue(type, out Dictionary<Tag, Dictionary<Signature, HashSet<MulticastMetadata>>> dic))
                 {
-                    Dictionary<Signature, HashSet<MulticastMetadata>> dic2;
-
-                    if (dic.TryGetValue(tag, out dic2))
+                    if (dic.TryGetValue(tag, out Dictionary<Signature, HashSet<MulticastMetadata>> dic2))
                     {
                         list.AddRange(dic2.Values.Extract());
                     }
@@ -400,9 +382,7 @@ namespace Amoeba.Core
                     || (broadcastMetadata.CreationTime - now).TotalMinutes > 30
                     || broadcastMetadata.Certificate == null) return false;
 
-                Dictionary<Signature, BroadcastMetadata> dic;
-
-                if (!_broadcastMetadatas.TryGetValue(broadcastMetadata.Type, out dic))
+                if (!_broadcastMetadatas.TryGetValue(broadcastMetadata.Type, out Dictionary<Signature, BroadcastMetadata> dic))
                 {
                     dic = new Dictionary<Signature, BroadcastMetadata>();
                     _broadcastMetadatas[broadcastMetadata.Type] = dic;
@@ -410,9 +390,7 @@ namespace Amoeba.Core
 
                 var signature = broadcastMetadata.Certificate.GetSignature();
 
-                BroadcastMetadata tempMetadata;
-
-                if (!dic.TryGetValue(signature, out tempMetadata)
+                if (!dic.TryGetValue(signature, out BroadcastMetadata tempMetadata)
                     || broadcastMetadata.CreationTime > tempMetadata.CreationTime)
                 {
                     dic[signature] = broadcastMetadata;
@@ -436,17 +414,13 @@ namespace Amoeba.Core
                     || (unicastMetadata.CreationTime - now).TotalMinutes > 30
                     || unicastMetadata.Certificate == null) return false;
 
-                Dictionary<Signature, Dictionary<Signature, HashSet<UnicastMetadata>>> dic;
-
-                if (!_unicastMetadatas.TryGetValue(unicastMetadata.Type, out dic))
+                if (!_unicastMetadatas.TryGetValue(unicastMetadata.Type, out Dictionary<Signature, Dictionary<Signature, HashSet<UnicastMetadata>>> dic))
                 {
                     dic = new Dictionary<Signature, Dictionary<Signature, HashSet<UnicastMetadata>>>();
                     _unicastMetadatas[unicastMetadata.Type] = dic;
                 }
 
-                Dictionary<Signature, HashSet<UnicastMetadata>> dic2;
-
-                if (!dic.TryGetValue(unicastMetadata.Signature, out dic2))
+                if (!dic.TryGetValue(unicastMetadata.Signature, out Dictionary<Signature, HashSet<UnicastMetadata>> dic2))
                 {
                     dic2 = new Dictionary<Signature, HashSet<UnicastMetadata>>();
                     dic[unicastMetadata.Signature] = dic2;
@@ -454,9 +428,7 @@ namespace Amoeba.Core
 
                 var signature = unicastMetadata.Certificate.GetSignature();
 
-                HashSet<UnicastMetadata> hashset;
-
-                if (!dic2.TryGetValue(signature, out hashset))
+                if (!dic2.TryGetValue(signature, out HashSet<UnicastMetadata> hashset))
                 {
                     hashset = new HashSet<UnicastMetadata>();
                     dic2[signature] = hashset;
@@ -485,17 +457,13 @@ namespace Amoeba.Core
                     || (multicastMetadata.CreationTime - now).TotalMinutes > 30
                     || multicastMetadata.Certificate == null) return false;
 
-                Dictionary<Tag, Dictionary<Signature, HashSet<MulticastMetadata>>> dic;
-
-                if (!_multicastMetadatas.TryGetValue(multicastMetadata.Type, out dic))
+                if (!_multicastMetadatas.TryGetValue(multicastMetadata.Type, out Dictionary<Tag, Dictionary<Signature, HashSet<MulticastMetadata>>> dic))
                 {
                     dic = new Dictionary<Tag, Dictionary<Signature, HashSet<MulticastMetadata>>>();
                     _multicastMetadatas[multicastMetadata.Type] = dic;
                 }
 
-                Dictionary<Signature, HashSet<MulticastMetadata>> dic2;
-
-                if (!dic.TryGetValue(multicastMetadata.Tag, out dic2))
+                if (!dic.TryGetValue(multicastMetadata.Tag, out Dictionary<Signature, HashSet<MulticastMetadata>> dic2))
                 {
                     dic2 = new Dictionary<Signature, HashSet<MulticastMetadata>>();
                     dic[multicastMetadata.Tag] = dic2;
@@ -503,9 +471,7 @@ namespace Amoeba.Core
 
                 var signature = multicastMetadata.Certificate.GetSignature();
 
-                HashSet<MulticastMetadata> hashset;
-
-                if (!dic2.TryGetValue(signature, out hashset))
+                if (!dic2.TryGetValue(signature, out HashSet<MulticastMetadata> hashset))
                 {
                     hashset = new HashSet<MulticastMetadata>();
                     dic2[signature] = hashset;

@@ -417,11 +417,8 @@ namespace Amoeba.Core
                                     }
                                 }
 
-                                foreach (var pair in tempMap)
+                                foreach (var (node, targets) in tempMap)
                                 {
-                                    var node = pair.Key;
-                                    var targets = pair.Value;
-
                                     _random.Shuffle(targets);
 
                                     lock (node.Value.SendInfo.PushBlockLinkQueue.LockObject)
@@ -449,11 +446,8 @@ namespace Amoeba.Core
                                     }
                                 }
 
-                                foreach (var pair in tempMap)
+                                foreach (var (node, targets) in tempMap)
                                 {
-                                    var node = pair.Key;
-                                    var targets = pair.Value;
-
                                     lock (node.Value.SendInfo.PushBlockRequestQueue.LockObject)
                                     {
                                         node.Value.SendInfo.PushBlockRequestQueue.Clear();
@@ -579,11 +573,8 @@ namespace Amoeba.Core
                                     }
                                 }
 
-                                foreach (var pair in tempMap)
+                                foreach (var (node, targets) in tempMap)
                                 {
-                                    var node = pair.Key;
-                                    var targets = pair.Value;
-
                                     _random.Shuffle(targets);
 
                                     lock (node.Value.SendInfo.PushBroadcastMetadataRequestQueue.LockObject)
@@ -606,11 +597,8 @@ namespace Amoeba.Core
                                     }
                                 }
 
-                                foreach (var pair in tempMap)
+                                foreach (var (node, targets) in tempMap)
                                 {
-                                    var node = pair.Key;
-                                    var targets = pair.Value;
-
                                     _random.Shuffle(targets);
 
                                     lock (node.Value.SendInfo.PushUnicastMetadataRequestQueue.LockObject)
@@ -633,11 +621,8 @@ namespace Amoeba.Core
                                     }
                                 }
 
-                                foreach (var pair in tempMap)
+                                foreach (var (node, targets) in tempMap)
                                 {
-                                    var node = pair.Key;
-                                    var targets = pair.Value;
-
                                     _random.Shuffle(targets);
 
                                     lock (node.Value.SendInfo.PushMulticastMetadataRequestQueue.LockObject)
@@ -769,9 +754,7 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                SessionInfo sessionInfo;
-
-                if (_connections.TryGetValue(connection, out sessionInfo))
+                if (_connections.TryGetValue(connection, out SessionInfo sessionInfo))
                 {
                     _connections.Remove(connection);
 
