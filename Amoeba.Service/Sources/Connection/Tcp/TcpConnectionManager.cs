@@ -19,14 +19,14 @@ using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    class TcpManager : StateManagerBase, ISettings
+    class TcpConnectionManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CatharsisManager _catharsisManager;
 
         private Settings _settings;
 
-        private ConnectionTcpConfig _config;
+        private TcpConnectionConfig _config;
 
         private TcpListener _ipv4TcpListener;
         private TcpListener _ipv6TcpListener;
@@ -40,7 +40,7 @@ namespace Amoeba.Service
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public TcpManager(string configPath, CatharsisManager catharsisManager, BufferManager bufferManager)
+        public TcpConnectionManager(string configPath, CatharsisManager catharsisManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _catharsisManager = catharsisManager;
@@ -50,7 +50,7 @@ namespace Amoeba.Service
             _watchTimer = new WatchTimer(this.WatchListenerThread);
         }
 
-        public ConnectionTcpConfig Config
+        public TcpConnectionConfig Config
         {
             get
             {
@@ -143,7 +143,7 @@ namespace Amoeba.Service
 
             try
             {
-                list.UnionWith(Dns.GetHostAddresses(Dns.GetHostName()).Where(n => TcpManager.CheckGlobalIpAddress(n)));
+                list.UnionWith(Dns.GetHostAddresses(Dns.GetHostName()).Where(n => TcpConnectionManager.CheckGlobalIpAddress(n)));
             }
             catch (Exception)
             {
@@ -249,7 +249,7 @@ namespace Amoeba.Service
                         var proxyAddress = result.GetValue<string>("Address");
                         var proxyPort = result.GetValueOrDefault<int>("Port", () => 1080);
 
-                        var socket = TcpManager.Connect(new IPEndPoint(TcpManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
+                        var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
                         garbages.Add(socket);
 
                         var proxy = new Socks5ProxyClient(null, null, address, port);
@@ -260,10 +260,26 @@ namespace Amoeba.Service
 
                         return cap;
                     }
+                    else if (proxyScheme == "http")
+                    {
+                        var proxyAddress = result.GetValue<string>("Address");
+                        var proxyPort = result.GetValueOrDefault<int>("Port", () => 80);
+
+                        var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
+                        garbages.Add(socket);
+
+                        var proxy = new HttpProxyClient(address, port);
+                        proxy.Create(socket, new TimeSpan(0, 0, 30));
+
+                        var cap = new SocketCap(socket);
+                        garbages.Add(cap);
+
+                        return cap;
+                    }
                 }
                 else
                 {
-                    var socket = TcpManager.Connect(new IPEndPoint(IPAddress.Parse(address), port), new TimeSpan(0, 0, 10));
+                    var socket = TcpConnectionManager.Connect(new IPEndPoint(IPAddress.Parse(address), port), new TimeSpan(0, 0, 10));
                     garbages.Add(socket);
 
                     var cap = new SocketCap(socket);
@@ -297,7 +313,7 @@ namespace Amoeba.Service
 
                 foreach (var p in new int[] { 0, 1 }.Randomize())
                 {
-                    if (p == 0 && config.Type.HasFlag(ConnectionTcpType.Ipv4) && _ipv4TcpListener.Pending())
+                    if (p == 0 && config.Type.HasFlag(TcpConnectionType.Ipv4) && _ipv4TcpListener.Pending())
                     {
                         var socket = _ipv4TcpListener.AcceptSocket();
                         garbages.Add(socket);
@@ -311,7 +327,7 @@ namespace Amoeba.Service
                         return new SocketCap(socket);
                     }
 
-                    if (p == 1 && config.Type.HasFlag(ConnectionTcpType.Ipv6) && _ipv6TcpListener.Pending())
+                    if (p == 1 && config.Type.HasFlag(TcpConnectionType.Ipv6) && _ipv6TcpListener.Pending())
                     {
                         var socket = _ipv6TcpListener.AcceptSocket();
                         garbages.Add(socket);
@@ -344,7 +360,7 @@ namespace Amoeba.Service
         {
             for (;;)
             {
-                ConnectionTcpConfig config = null;
+                TcpConnectionConfig config = null;
 
                 lock (_lockObject)
                 {
@@ -354,7 +370,7 @@ namespace Amoeba.Service
                 string ipv4Uri = null;
                 string ipv6Uri = null;
 
-                if (config.Type.HasFlag(ConnectionTcpType.Ipv4))
+                if (config.Type.HasFlag(TcpConnectionType.Ipv4))
                 {
                     ipv4Uri = this.GetIpv4Uri(config.Ipv4Port);
 
@@ -379,7 +395,7 @@ namespace Amoeba.Service
                                 client.Connect(new TimeSpan(0, 0, 10));
 
                                 var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
-                                if (ipAddress == null || !TcpManager.CheckGlobalIpAddress(ipAddress)) throw new Exception();
+                                if (ipAddress == null || !TcpConnectionManager.CheckGlobalIpAddress(ipAddress)) throw new Exception();
 
                                 client.ClosePort(UpnpProtocolType.Tcp, config.Ipv4Port, new TimeSpan(0, 0, 10));
                                 client.OpenPort(UpnpProtocolType.Tcp, config.Ipv4Port, config.Ipv4Port, "Amoeba", new TimeSpan(0, 0, 10));
@@ -404,7 +420,7 @@ namespace Amoeba.Service
                     }
                 }
 
-                if (config.Type.HasFlag(ConnectionTcpType.Ipv6))
+                if (config.Type.HasFlag(TcpConnectionType.Ipv6))
                 {
                     ipv6Uri = this.GetIpv6Uri(config.Ipv6Port);
 
@@ -449,7 +465,7 @@ namespace Amoeba.Service
         private string GetIpv4Uri(ushort port)
         {
             {
-                var ipAddress = TcpManager.GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+                var ipAddress = TcpConnectionManager.GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
 
                 if (ipAddress != null)
                 {
@@ -464,7 +480,7 @@ namespace Amoeba.Service
                     client.Connect(new TimeSpan(0, 0, 10));
 
                     var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
-                    if (ipAddress == null || !TcpManager.CheckGlobalIpAddress(ipAddress)) throw new Exception();
+                    if (ipAddress == null || !TcpConnectionManager.CheckGlobalIpAddress(ipAddress)) throw new Exception();
 
                     return string.Format("tcp:{0}:{1}", ipAddress.ToString(), port);
                 }
@@ -479,7 +495,7 @@ namespace Amoeba.Service
 
         private string GetIpv6Uri(ushort port)
         {
-            var ipAddress = TcpManager.GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6);
+            var ipAddress = TcpConnectionManager.GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6);
 
             if (ipAddress != null)
             {
@@ -551,7 +567,7 @@ namespace Amoeba.Service
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _config = _settings.Load<ConnectionTcpConfig>("Config");
+                _config = _settings.Load<TcpConnectionConfig>("Config");
             }
         }
 

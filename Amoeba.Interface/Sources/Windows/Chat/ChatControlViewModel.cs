@@ -28,13 +28,6 @@ namespace Amoeba.Interface
                 boxInfo.SeedInfos.Add(new SeedInfo() { Name = "sssssssssss" });
 
                 _treeViewSource.Source = new BoxViewModel[] { new BoxViewModel(null, boxInfo) };
-
-                var liveShaping = _treeViewSource.View as ICollectionViewLiveShaping;
-                if (liveShaping != null && liveShaping.CanChangeLiveSorting)
-                {
-                    liveShaping.LiveSortingProperties.Add("Name.Value");
-                    liveShaping.IsLiveSorting = true;
-                }
             }
 
             this.DragAcceptDescription = new DragAcceptDescription();

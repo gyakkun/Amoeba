@@ -18,13 +18,13 @@ using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    class I2pManager : StateManagerBase, ISettings
+    class I2pConnectionManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
 
         private Settings _settings;
 
-        private ConnectionI2pConfig _config;
+        private I2pConnectionConfig _config;
 
         private SamManager _samManager;
 
@@ -37,7 +37,7 @@ namespace Amoeba.Service
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public I2pManager(string configPath, BufferManager bufferManager)
+        public I2pConnectionManager(string configPath, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
 
@@ -46,7 +46,7 @@ namespace Amoeba.Service
             _watchTimer = new WatchTimer(this.WatchThread);
         }
 
-        public ConnectionI2pConfig Config
+        public I2pConnectionConfig Config
         {
             get
             {
@@ -150,7 +150,7 @@ namespace Amoeba.Service
         {
             for (;;)
             {
-                ConnectionI2pConfig config = null;
+                I2pConnectionConfig config = null;
 
                 lock (_lockObject)
                 {
@@ -275,7 +275,7 @@ namespace Amoeba.Service
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _config = _settings.Load<ConnectionI2pConfig>("Config");
+                _config = _settings.Load<I2pConnectionConfig>("Config");
             }
         }
 

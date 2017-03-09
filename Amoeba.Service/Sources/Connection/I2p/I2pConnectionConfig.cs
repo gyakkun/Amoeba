@@ -7,13 +7,13 @@ using System.Text;
 
 namespace Amoeba
 {
-    [DataContract(Name = nameof(ConnectionI2pConfig))]
-    public class ConnectionI2pConfig
+    [DataContract(Name = nameof(I2pConnectionConfig))]
+    public class I2pConnectionConfig
     {
         private bool _isEnabled;
         private string _samBridgeUri;
 
-        public ConnectionI2pConfig(bool isEnabled, string samBridgeUri)
+        public I2pConnectionConfig(bool isEnabled, string samBridgeUri)
         {
             this.IsEnabled = isEnabled;
             this.SamBridgeUri = samBridgeUri;

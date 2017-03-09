@@ -1380,23 +1380,20 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                lock (_lockObject)
+                var list = new List<Information>();
+
+                foreach (var info in _cacheInfoManager.GetContentCacheInfos())
                 {
-                    var list = new List<Information>();
-
-                    foreach (var info in _cacheInfoManager.GetContentCacheInfos())
+                    var contexts = new List<InformationContext>();
                     {
-                        var contexts = new List<InformationContext>();
-                        {
-                            contexts.Add(new InformationContext("Metadata", info.Metadata));
-                            contexts.Add(new InformationContext("Path", info.ShareInfo.Path));
-                        }
-
-                        list.Add(new Information(contexts));
+                        contexts.Add(new InformationContext("Metadata", info.Metadata));
+                        contexts.Add(new InformationContext("Path", info.ShareInfo.Path));
                     }
 
-                    return list;
+                    list.Add(new Information(contexts));
                 }
+
+                return list;
             }
         }
 

@@ -50,11 +50,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\Connection\Catharsis\CatharsisManager.cs" />
     <Compile Include="Sources\Connection\Catharsis\Ipv4CatharsisConfig.cs" />
-    <Compile Include="Sources\Connection\I2p\ConnectionI2pConfig.cs" />
-    <Compile Include="Sources\Connection\Tcp\ConnectionTcpConfig.cs" />
-    <Compile Include="Sources\Connection\Tcp\TcpManager.cs" />
+    <Compile Include="Sources\Connection\I2p\I2pConnectionConfig.cs" />
+    <Compile Include="Sources\Connection\Tcp\TcpConnectionConfig.cs" />
+    <Compile Include="Sources\Connection\Tcp\TcpConnectionManager.cs" />
     <Compile Include="Sources\Connection\ConnectionManager.cs" />
-    <Compile Include="Sources\Connection\I2p\I2pManager.cs" />
+    <Compile Include="Sources\Connection\I2p\I2pConnectionManager.cs" />
     <Compile Include="Sources\Connection\Utilities\UriUtils.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessage.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessageCollection.cs" />

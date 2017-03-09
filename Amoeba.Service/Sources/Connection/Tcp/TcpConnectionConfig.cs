@@ -8,9 +8,9 @@ using System.Text;
 namespace Amoeba
 {
     [Flags]
-    [DataContract(Name = nameof(ConnectionTcpType))]
-    public enum ConnectionTcpType
-    {
+    [DataContract(Name = nameof(TcpConnectionType))]
+    public enum TcpConnectionType
+    { 
         [EnumMember(Value = "None")]
         None = 0,
 
@@ -21,15 +21,15 @@ namespace Amoeba
         Ipv6 = 0x02,
     }
 
-    [DataContract(Name = nameof(ConnectionTcpConfig))]
-    public class ConnectionTcpConfig
+    [DataContract(Name = nameof(TcpConnectionConfig))]
+    public class TcpConnectionConfig
     {
-        private ConnectionTcpType _type;
+        private TcpConnectionType _type;
         private string _proxyUri;
         private ushort _ipv4Port;
         private ushort _ipv6Port;
 
-        public ConnectionTcpConfig(ConnectionTcpType type, string proxyUri, ushort ipv4Port, ushort ipv6Port)
+        public TcpConnectionConfig(TcpConnectionType type, string proxyUri, ushort ipv4Port, ushort ipv6Port)
         {
             this.Type = type;
             this.ProxyUri = proxyUri;
@@ -38,7 +38,7 @@ namespace Amoeba
         }
 
         [DataMember(Name = nameof(Type))]
-        public ConnectionTcpType Type
+        public TcpConnectionType Type
         {
             get
             {
