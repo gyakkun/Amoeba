@@ -15,7 +15,7 @@ The goal is to eliminate the suppression on the Internet.
 Amoeba = (Freenet like network) + DHT + (Tcp, I2p, etc) + (WoT + PoW)
 
  * Provides a chat and file-sharing capabilities.
- * I2P, TCP, Socks5 proxy, is available. Also works Port 0 (the connections is less).
+ * TCP, I2P, Socks5 proxy, Http proxy is available. Also works Port 0 (the connections is less).
 
 ## Links
  
