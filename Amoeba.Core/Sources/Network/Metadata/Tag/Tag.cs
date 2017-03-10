@@ -27,7 +27,7 @@ namespace Amoeba.Core
         private string _name;
         private byte[] _id;
 
-        private readonly int _hashCode;
+        private int _hashCode;
 
         public static readonly int MaxNameLength = 256;
         public static readonly int MaxIdLength = 32;
@@ -36,6 +36,11 @@ namespace Amoeba.Core
         {
             this.Name = name;
             this.Id = id;
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
 
             _hashCode = (this.Id != null) ? ItemUtils.GetHashCode(this.Id) : 0;
         }

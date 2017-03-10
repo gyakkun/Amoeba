@@ -19,13 +19,18 @@ namespace Amoeba.Service
 
         private BoxCollection _boxes;
 
-        private readonly int _hashCode;
+        private int _hashCode;
 
         public static readonly int MaxBoxCount = 8192;
 
         public Store(IEnumerable<Box> boxes)
         {
             if (boxes != null) this.ProtectedBoxes.AddRange(boxes);
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
 
             _hashCode = this.Boxes.FirstOrDefault()?.GetHashCode() ?? 0;
         }

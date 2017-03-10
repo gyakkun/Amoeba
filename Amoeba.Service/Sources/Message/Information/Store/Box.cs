@@ -23,7 +23,7 @@ namespace Amoeba.Service
         private SeedCollection _seeds;
         private BoxCollection _boxes;
 
-        private readonly int _hashCode;
+        private int _hashCode;
 
         public static readonly int MaxNameLength = 256;
         public static readonly int MaxSeedCount = 1024 * 64;
@@ -34,6 +34,11 @@ namespace Amoeba.Service
             this.Name = name;
             if (seeds != null) this.ProtectedSeeds.AddRange(seeds);
             if (boxes != null) this.ProtectedBoxes.AddRange(boxes);
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
 
             _hashCode = this.Name?.GetHashCode() ?? 0
                 | this.Seeds.FirstOrDefault()?.GetHashCode() ?? 0

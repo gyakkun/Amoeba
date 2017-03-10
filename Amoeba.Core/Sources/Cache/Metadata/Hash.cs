@@ -14,7 +14,7 @@ namespace Amoeba.Core
         private HashAlgorithm _algorithm;
         private byte[] _value;
 
-        private readonly int _hashCode;
+        private int _hashCode;
 
         public static readonly int MaxValueLength = 32;
 
@@ -22,6 +22,11 @@ namespace Amoeba.Core
         {
             this.Algorithm = algorithm;
             this.Value = value;
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
 
             _hashCode = (this.Value != null) ? ItemUtils.GetHashCode(this.Value) : 0;
         }
