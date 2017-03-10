@@ -751,7 +751,8 @@ namespace Amoeba.Core
 
             public void Remove(Metadata metadata)
             {
-                if (!_downloadItemInfos.TryGetValue(metadata, out Container<DownloadItemInfo> container)) return;
+                Container<DownloadItemInfo> container;
+                if (!_downloadItemInfos.TryGetValue(metadata, out container)) return;
 
                 _downloadItemInfos.Remove(metadata);
 
@@ -765,7 +766,8 @@ namespace Amoeba.Core
 
             public DownloadItemInfo GetInfo(Metadata metadata)
             {
-                if (!_downloadItemInfos.TryGetValue(metadata, out Container<DownloadItemInfo> container)) return null;
+                Container<DownloadItemInfo> container;
+                if (!_downloadItemInfos.TryGetValue(metadata, out container)) return null;
 
                 container.UpdateTime = DateTime.UtcNow;
 
@@ -849,7 +851,8 @@ namespace Amoeba.Core
 
             public void Remove(Metadata metadata)
             {
-                if (!_downloadItemInfos.TryGetValue(metadata, out DownloadItemInfo info)) return;
+                DownloadItemInfo info;
+                if (!_downloadItemInfos.TryGetValue(metadata, out info)) return;
 
                 _downloadItemInfos.Remove(metadata);
 
@@ -863,7 +866,8 @@ namespace Amoeba.Core
 
             public DownloadItemInfo GetInfo(Metadata metadata)
             {
-                if (!_downloadItemInfos.TryGetValue(metadata, out DownloadItemInfo info)) return null;
+                DownloadItemInfo info;
+                if (!_downloadItemInfos.TryGetValue(metadata, out info)) return null;
 
                 return info;
             }

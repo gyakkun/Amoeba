@@ -754,7 +754,7 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                if (_connections.TryGetValue(connection, out SessionInfo sessionInfo))
+                if (_connections.TryGetValue(connection, out var sessionInfo))
                 {
                     _connections.Remove(connection);
 

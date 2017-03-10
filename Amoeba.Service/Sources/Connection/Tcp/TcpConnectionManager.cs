@@ -155,7 +155,9 @@ namespace Amoeba.Service
 
         private static IPAddress GetIpAddress(string host)
         {
-            if (!IPAddress.TryParse(host, out IPAddress remoteIp))
+            IPAddress remoteIp;
+
+            if (!IPAddress.TryParse(host, out remoteIp))
             {
                 IPHostEntry hostEntry = Dns.GetHostEntry(host);
 
@@ -228,7 +230,9 @@ namespace Amoeba.Service
 
                 // Check
                 {
-                    if (!IPAddress.TryParse(address, out IPAddress ipAddress)) return null;
+                    IPAddress ipAddress;
+
+                    if (!IPAddress.TryParse(address, out ipAddress)) return null;
 
 #if !DEBUG
                     if (!TcpManager.CheckGlobalIpAddress(ipAddress)) return null;
@@ -252,7 +256,7 @@ namespace Amoeba.Service
                         var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
                         garbages.Add(socket);
 
-                        var proxy = new Socks5ProxyClient(null, null, address, port);
+                        var proxy = new Socks5ProxyClient(address, port);
                         proxy.Create(socket, new TimeSpan(0, 0, 30));
 
                         var cap = new SocketCap(socket);

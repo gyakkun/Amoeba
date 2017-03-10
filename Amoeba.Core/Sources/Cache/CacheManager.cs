@@ -144,7 +144,7 @@ namespace Amoeba.Core
 
                     foreach (var hash in usingHashes)
                     {
-                        if (_clusterIndex.TryGetValue(hash, out ClusterInfo clusterInfo))
+                        if (_clusterIndex.TryGetValue(hash, out var clusterInfo))
                         {
                             size += clusterInfo.Indexes.Length * CacheManager.SectorSize;
                         }
@@ -269,7 +269,8 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                _lockedHashes.TryGetValue(hash, out int count);
+                int count;
+                _lockedHashes.TryGetValue(hash, out count);
 
                 count++;
 
@@ -281,7 +282,8 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                if (!_lockedHashes.TryGetValue(hash, out int count)) throw new KeyNotFoundException();
+                int count;
+                if (!_lockedHashes.TryGetValue(hash, out count)) throw new KeyNotFoundException();
 
                 count--;
 
@@ -336,7 +338,7 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                if (_clusterIndex.TryGetValue(hash, out ClusterInfo clusterInfo))
+                if (_clusterIndex.TryGetValue(hash, out var clusterInfo))
                 {
                     _clusterIndex.Remove(hash);
 
@@ -448,7 +450,7 @@ namespace Amoeba.Core
 
                     lock (_lockObject)
                     {
-                        if (_clusterIndex.TryGetValue(hash, out ClusterInfo clusterInfo))
+                        if (_clusterIndex.TryGetValue(hash, out var clusterInfo))
                         {
                             clusterInfo.UpdateTime = DateTime.UtcNow;
 
@@ -1574,10 +1576,7 @@ namespace Amoeba.Core
 
             public void RemoveMessage(Metadata metadata)
             {
-                if (_messageCacheInfos.TryGetValue(metadata, out CacheInfo cacheInfo))
-                {
-                    _messageCacheInfos.Remove(metadata);
-                }
+                _messageCacheInfos.Remove(metadata);
             }
 
             public bool ContainsMessage(Metadata metadata)
@@ -1592,7 +1591,8 @@ namespace Amoeba.Core
 
             public CacheInfo GetMessageCacheInfo(Metadata metadata)
             {
-                if (!_messageCacheInfos.TryGetValue(metadata, out CacheInfo cacheInfo)) return null;
+                CacheInfo cacheInfo;
+                if (!_messageCacheInfos.TryGetValue(metadata, out cacheInfo)) return null;
 
                 return cacheInfo;
             }
@@ -1603,8 +1603,7 @@ namespace Amoeba.Core
 
             public void RemoveContent(string path)
             {
-
-                if (_contentCacheInfos.TryGetValue(path, out CacheInfo cacheInfo))
+                if (_contentCacheInfos.TryGetValue(path, out var cacheInfo))
                 {
                     _contentCacheInfos.Remove(path);
 
@@ -1624,7 +1623,8 @@ namespace Amoeba.Core
 
             public CacheInfo GetContentCacheInfo(string path)
             {
-                if (!_contentCacheInfos.TryGetValue(path, out CacheInfo cacheInfo)) return null;
+                CacheInfo cacheInfo;
+                if (!_contentCacheInfos.TryGetValue(path, out cacheInfo)) return null;
 
                 return cacheInfo;
             }
@@ -1692,7 +1692,7 @@ namespace Amoeba.Core
                 {
                     foreach (var hash in info.Hashes)
                     {
-                        if (_map.TryGetValue(hash, out SmallList<ShareInfo> infos))
+                        if (_map.TryGetValue(hash, out var infos))
                         {
                             infos.Remove(info);
 
@@ -1706,7 +1706,7 @@ namespace Amoeba.Core
 
                 public ShareInfo Get(Hash hash)
                 {
-                    if (_map.TryGetValue(hash, out SmallList<ShareInfo> infos))
+                    if (_map.TryGetValue(hash, out var infos))
                     {
                         return infos[0];
                     }
@@ -1921,7 +1921,8 @@ namespace Amoeba.Core
                 }
 
                 {
-                    if (!_hashMap.TryGetValue(hash, out int result)) return -1;
+                    int result;
+                    if (!_hashMap.TryGetValue(hash, out result)) return -1;
 
                     return result;
                 }

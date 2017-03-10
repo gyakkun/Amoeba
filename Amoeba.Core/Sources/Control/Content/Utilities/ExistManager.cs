@@ -58,7 +58,8 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                if (!_table.TryGetValue(group, out GroupManager groupManager)) throw new Exception();
+                GroupManager groupManager;
+                if (!_table.TryGetValue(group, out groupManager)) throw new Exception();
 
                 return groupManager.GetHashes(state);
             }
@@ -68,7 +69,8 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                if (!_table.TryGetValue(group, out GroupManager groupManager)) throw new Exception();
+                GroupManager groupManager;
+                if (!_table.TryGetValue(group, out groupManager)) throw new Exception();
 
                 return groupManager.GetCount(true);
             }
@@ -100,7 +102,9 @@ namespace Amoeba.Core
 
                 foreach (var key in group.Hashes)
                 {
-                    if (!_dic.TryGetValue(key, out State info))
+                    State info;
+
+                    if (!_dic.TryGetValue(key, out info))
                     {
                         info = new State();
                         info.IsEnabled = false;
@@ -117,7 +121,8 @@ namespace Amoeba.Core
             {
                 if (!_bitmap.Get((key.GetHashCode() & 0x7FFFFFFF) % GroupManager.BitmapSize)) return;
 
-                if (!_dic.TryGetValue(key, out State info)) return;
+                State info;
+                if (!_dic.TryGetValue(key, out info)) return;
 
                 info.IsEnabled = state;
             }
