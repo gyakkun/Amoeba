@@ -179,7 +179,7 @@ namespace Amoeba.Core
 
                         // Info
                         {
-                            Type type = typeof(Info);
+                            var type = typeof(Info);
 
                             foreach (var property in type.GetProperties())
                             {
@@ -679,7 +679,7 @@ namespace Amoeba.Core
 
                     Cap cap = null;
 
-                    foreach (var uri in new HashSet<string>(location.Uris))
+                    foreach (string uri in new HashSet<string>(location.Uris))
                     {
                         cap = this.OnConnectCap(uri);
                         if (cap != null) break;
@@ -792,7 +792,7 @@ namespace Amoeba.Core
 
                     // Send
                     {
-                        var remain = _bandwidthLimit;
+                        int remain = _bandwidthLimit;
 
                         foreach (var connection in _connections.Keys.Randomize())
                         {
@@ -836,7 +836,7 @@ namespace Amoeba.Core
 
                     // Receive
                     {
-                        var remain = _bandwidthLimit;
+                        int remain = _bandwidthLimit;
 
                         foreach (var connection in _connections.Keys.Randomize())
                         {

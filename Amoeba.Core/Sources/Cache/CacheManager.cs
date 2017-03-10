@@ -109,7 +109,7 @@ namespace Amoeba.Core
 
                         // Info
                         {
-                            Type type = typeof(Info);
+                            var type = typeof(Info);
 
                             foreach (var property in type.GetProperties())
                             {
@@ -213,7 +213,7 @@ namespace Amoeba.Core
 
                     foreach (var clusterInfo in _clusterIndex.Values)
                     {
-                        foreach (var sector in clusterInfo.Indexes)
+                        foreach (long sector in clusterInfo.Indexes)
                         {
                             _bitmapManager.Set(sector, true);
                         }
@@ -344,7 +344,7 @@ namespace Amoeba.Core
 
                     if (_spaceSectors_Initialized)
                     {
-                        foreach (var sector in clusterInfo.Indexes)
+                        foreach (long sector in clusterInfo.Indexes)
                         {
                             _bitmapManager.Set(sector, false);
                             if (_spaceSectors.Count < CacheManager.SpaceSectorCount) _spaceSectors.Add(sector);
@@ -454,7 +454,7 @@ namespace Amoeba.Core
                         {
                             clusterInfo.UpdateTime = DateTime.UtcNow;
 
-                            byte[] buffer = _bufferManager.TakeBuffer(clusterInfo.Length);
+                            var buffer = _bufferManager.TakeBuffer(clusterInfo.Length);
 
                             try
                             {
@@ -528,7 +528,7 @@ namespace Amoeba.Core
 
                         if (shareInfo != null)
                         {
-                            byte[] buffer = _bufferManager.TakeBuffer(shareInfo.BlockLength);
+                            var buffer = _bufferManager.TakeBuffer(shareInfo.BlockLength);
 
                             try
                             {
@@ -616,7 +616,7 @@ namespace Amoeba.Core
 
                         sectorList.AddRange(_spaceSectors.Take(count));
 
-                        foreach (var sector in sectorList)
+                        foreach (long sector in sectorList)
                         {
                             _bitmapManager.Set(sector, true);
                             _spaceSectors.Remove(sector);
@@ -740,8 +740,8 @@ namespace Amoeba.Core
                 if (group.CorrectionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
                 {
                     var hashList = group.Hashes.ToList();
-                    var blockLength = group.Hashes.Max(n => this.GetLength(n));
-                    var informationCount = hashList.Count / 2;
+                    int blockLength = group.Hashes.Max(n => this.GetLength(n));
+                    int informationCount = hashList.Count / 2;
 
                     var buffers = new ArraySegment<byte>[informationCount];
                     var indexes = new int[informationCount];
@@ -800,7 +800,7 @@ namespace Amoeba.Core
                             if (count < informationCount) throw new BlockNotFoundException();
                         }
 
-                        using (ReedSolomon8 reedSolomon = new ReedSolomon8(informationCount, informationCount * 2, _threadCount, _bufferManager))
+                        using (var reedSolomon = new ReedSolomon8(informationCount, informationCount * 2, _threadCount, _bufferManager))
                         {
                             reedSolomon.Decode(buffers, indexes, blockLength, token);
                         }
@@ -850,7 +850,7 @@ namespace Amoeba.Core
                     const CorrectionAlgorithm correctionAlgorithm = CorrectionAlgorithm.ReedSolomon8;
 
                     int depth = 0;
-                    DateTime creationTime = DateTime.UtcNow;
+                    var creationTime = DateTime.UtcNow;
 
                     var groupList = new List<Group>();
 
@@ -862,7 +862,7 @@ namespace Amoeba.Core
 
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(blockLength))
                             {
-                                var length = (int)stream.Length;
+                                int length = (int)stream.Length;
                                 stream.Read(safeBuffer.Value, 0, length);
 
                                 if (hashAlgorithm == HashAlgorithm.Sha256)
@@ -900,11 +900,11 @@ namespace Amoeba.Core
                                     {
                                         token.ThrowIfCancellationRequested();
 
-                                        ArraySegment<byte> buffer = new ArraySegment<byte>();
+                                        var buffer = new ArraySegment<byte>();
 
                                         try
                                         {
-                                            var length = (int)Math.Min(stream.Length - stream.Position, blockLength);
+                                            int length = (int)Math.Min(stream.Length - stream.Position, blockLength);
                                             buffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(length), 0, length);
                                             stream.Read(buffer.Array, 0, length);
 
@@ -1029,7 +1029,7 @@ namespace Amoeba.Core
                     const CorrectionAlgorithm correctionAlgorithm = CorrectionAlgorithm.ReedSolomon8;
 
                     int depth = 0;
-                    DateTime creationTime = DateTime.UtcNow;
+                    var creationTime = DateTime.UtcNow;
 
                     var groupList = new List<Group>();
 
@@ -1042,7 +1042,7 @@ namespace Amoeba.Core
 
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(blockLength))
                             {
-                                var length = (int)stream.Length;
+                                int length = (int)stream.Length;
                                 stream.Read(safeBuffer.Value, 0, length);
 
                                 if (hashAlgorithm == HashAlgorithm.Sha256)
@@ -1070,11 +1070,11 @@ namespace Amoeba.Core
                                     {
                                         token.ThrowIfCancellationRequested();
 
-                                        ArraySegment<byte> buffer = new ArraySegment<byte>();
+                                        var buffer = new ArraySegment<byte>();
 
                                         try
                                         {
-                                            var length = (int)Math.Min(stream.Length - stream.Position, blockLength);
+                                            int length = (int)Math.Min(stream.Length - stream.Position, blockLength);
                                             buffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(length), 0, length);
                                             stream.Read(buffer.Array, 0, length);
 
@@ -1140,7 +1140,7 @@ namespace Amoeba.Core
 
                                 using (var safeBuffer = _bufferManager.CreateSafeBuffer(blockLength))
                                 {
-                                    var length = (int)stream.Length;
+                                    int length = (int)stream.Length;
                                     stream.Read(safeBuffer.Value, 0, length);
 
                                     if (hashAlgorithm == HashAlgorithm.Sha256)
@@ -1170,11 +1170,11 @@ namespace Amoeba.Core
                                         {
                                             token.ThrowIfCancellationRequested();
 
-                                            ArraySegment<byte> buffer = new ArraySegment<byte>();
+                                            var buffer = new ArraySegment<byte>();
 
                                             try
                                             {
-                                                var length = (int)Math.Min(stream.Length - stream.Position, blockLength);
+                                                int length = (int)Math.Min(stream.Length - stream.Position, blockLength);
                                                 buffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(length), 0, length);
                                                 stream.Read(buffer.Array, 0, length);
 
@@ -1273,7 +1273,7 @@ namespace Amoeba.Core
                     var targetBuffers = new ArraySegment<byte>[buffers.Count()];
                     var parityBuffers = new ArraySegment<byte>[buffers.Count()];
 
-                    var blockLength = buffers.Max(n => n.Count);
+                    int blockLength = buffers.Max(n => n.Count);
 
                     // Normalize
                     {
@@ -1314,7 +1314,7 @@ namespace Amoeba.Core
                         indexes[i] = targetBuffers.Length + i;
                     }
 
-                    using (ReedSolomon8 reedSolomon = new ReedSolomon8(targetBuffers.Length, targetBuffers.Length + parityBuffers.Length, _threadCount, _bufferManager))
+                    using (var reedSolomon = new ReedSolomon8(targetBuffers.Length, targetBuffers.Length + parityBuffers.Length, _threadCount, _bufferManager))
                     {
                         reedSolomon.Encode(targetBuffers, parityBuffers, indexes, blockLength, token);
                     }

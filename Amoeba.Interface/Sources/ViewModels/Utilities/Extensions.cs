@@ -18,11 +18,11 @@ namespace Amoeba.Interface
         [DllImport("ntdll.dll")]
         private static extern uint NtSetInformationProcess(IntPtr processHandle, uint processInformationClass, ref uint processInformation, uint processInformationLength);
 
-        const uint ProcessInformationMemoryPriority = 0x27;
+        private const uint ProcessInformationMemoryPriority = 0x27;
 
         public static void SetMemoryPriority(this Process process, int priority)
         {
-            var memoryPriority = (uint)priority;
+            uint memoryPriority = (uint)priority;
             ProcessExtensions.NtSetInformationProcess(process.Handle, ProcessExtensions.ProcessInformationMemoryPriority, ref memoryPriority, sizeof(uint));
         }
     }
@@ -55,7 +55,7 @@ namespace Amoeba.Interface
 
                 for (int i = 0; i < thisItemsControl.Items.Count; i++)
                 {
-                    Visual item = ItemsControlExtensions.GetItemsControlItem(thisItemsControl, i);
+                    var item = ItemsControlExtensions.GetItemsControlItem(thisItemsControl, i);
 
                     if (ItemsControlExtensions.IsMouseOverTarget(item, getPosition))
                     {
@@ -83,8 +83,8 @@ namespace Amoeba.Interface
         {
             if (target == null) return false;
 
-            Rect bounds = VisualTreeHelper.GetDescendantBounds(target);
-            Point mousePos = MouseUtils.GetMousePosition(target);
+            var bounds = VisualTreeHelper.GetDescendantBounds(target);
+            var mousePos = MouseUtils.GetMousePosition(target);
             return bounds.Contains(mousePos);
         }
     }
@@ -93,7 +93,7 @@ namespace Amoeba.Interface
     {
         public static void AddRange(this ItemCollection itemCollection, IEnumerable<object> collection)
         {
-            foreach (var item in collection)
+            foreach (object item in collection)
             {
                 itemCollection.Add(item);
             }
@@ -114,8 +114,8 @@ namespace Amoeba.Interface
         [StructLayout(LayoutKind.Sequential)]
         private struct Win32Point
         {
-            public Int32 X;
-            public Int32 Y;
+            public int X;
+            public int Y;
         };
 
         [DllImport("user32.dll")]
@@ -332,14 +332,14 @@ namespace Amoeba.Interface
 
             for (int i = 0; i < count; i++)
             {
-                DependencyObject child = VisualTreeHelper.GetChild(control, i);
+                var child = VisualTreeHelper.GetChild(control, i);
 
                 if (IsItemsHostPanel(generator, child))
                 {
                     return (Panel)child;
                 }
 
-                Panel panel = Find(generator, child);
+                var panel = Find(generator, child);
 
                 if (panel != null)
                 {
@@ -358,7 +358,7 @@ namespace Amoeba.Interface
 
         public static DependencyObject SearchContainerFromElement(this ItemsControl itemsControl, DependencyObject buttomControl)
         {
-            ItemsControl target = itemsControl;
+            var target = itemsControl;
 
             for (;;)
             {
@@ -374,7 +374,7 @@ namespace Amoeba.Interface
         public static object SearchItemFromElement(this ItemsControl itemsControl, DependencyObject buttomControl)
         {
             object parent = null;
-            ItemsControl target = itemsControl;
+            var target = itemsControl;
 
             for (;;)
             {

@@ -54,12 +54,12 @@ namespace Amoeba.Core
                     {
                         var removeTypes = new HashSet<string>(_broadcastTypes.OrderBy(n => n.Value).Select(n => n.Key).Take(_broadcastTypes.Count - 32));
 
-                        foreach (var type in removeTypes)
+                        foreach (string type in removeTypes)
                         {
                             _broadcastTypes.Remove(type);
                         }
 
-                        foreach (var type in _broadcastMetadatas.Keys.ToArray())
+                        foreach (string type in _broadcastMetadatas.Keys.ToArray())
                         {
                             if (!removeTypes.Contains(type)) continue;
                             _broadcastMetadatas.Remove(type);
@@ -82,12 +82,12 @@ namespace Amoeba.Core
                     {
                         var removeTypes = new HashSet<string>(_unicastTypes.OrderBy(n => n.Value).Select(n => n.Key).Take(_unicastTypes.Count - 32));
 
-                        foreach (var type in removeTypes)
+                        foreach (string type in removeTypes)
                         {
                             _unicastTypes.Remove(type);
                         }
 
-                        foreach (var type in _unicastMetadatas.Keys.ToArray())
+                        foreach (string type in _unicastMetadatas.Keys.ToArray())
                         {
                             if (!removeTypes.Contains(type)) continue;
                             _unicastMetadatas.Remove(type);
@@ -133,12 +133,12 @@ namespace Amoeba.Core
                     {
                         var removeTypes = new HashSet<string>(_multicastTypes.OrderBy(n => n.Value).Select(n => n.Key).Take(_multicastTypes.Count - 32));
 
-                        foreach (var type in removeTypes)
+                        foreach (string type in removeTypes)
                         {
                             _multicastTypes.Remove(type);
                         }
 
-                        foreach (var type in _multicastMetadatas.Keys.ToArray())
+                        foreach (string type in _multicastMetadatas.Keys.ToArray())
                         {
                             if (!removeTypes.Contains(type)) continue;
                             _multicastMetadatas.Remove(type);

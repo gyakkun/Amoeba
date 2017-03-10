@@ -78,8 +78,9 @@
     <Compile Include="Sources\Network\Metadata\Tag\TagCollection.cs" />
     <Compile Include="Sources\Network\Metadata\MulticastMetadata.cs" />
     <Compile Include="Sources\Network\Metadata\MulticastMetadataCollection.cs" />
-    <Compile Include="Sources\Network\Metadata\_Interface\Tag\ITag.cs" />
     <Compile Include="Sources\Network\Metadata\_Interface\IMulticastMetadata.cs" />
+    <Compile Include="Sources\Network\Metadata\_Interface\Tag\ITag.cs" />
+    <Compile Include="Sources\Network\Metadata\_Interface\IUnicastMetadata.cs" />
     <Compile Include="Sources\Network\Packet\BlocksLinkPacket.cs" />
     <Compile Include="Sources\Network\Packet\ProfilePacket.cs" />
     <Compile Include="Sources\Network\Packet\MulticastMetadatasRequestPacket.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="Sources\Network\Metadata\UnicastMetadataCollection.cs" />
     <Compile Include="Sources\Network\Metadata\UnicastMetadata.cs" />
     <Compile Include="Sources\Network\Metadata\_Interface\IBroadcastMetadata.cs" />
-    <Compile Include="Sources\Network\Metadata\_Interface\IUnicastMetadata.cs" />
     <Compile Include="Sources\Cache\Metadata\Hash.cs" />
     <Compile Include="Sources\Cache\Metadata\HashCollection.cs" />
     <Compile Include="Sources\Cache\Metadata\_Interface\IHash.cs" />
@@ -171,6 +171,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -225,7 +225,7 @@ namespace Amoeba.Core
                         {
                             item.State = DownloadState.Downloading;
 
-                            var limitCount = 1024;
+                            int limitCount = 1024;
 
                             foreach (var group in item.Index.Groups.Randomize())
                             {
@@ -725,8 +725,8 @@ namespace Amoeba.Core
                 _downloadItemInfos = new Dictionary<Metadata, Container<DownloadItemInfo>>();
             }
 
-            public Action<DownloadItemInfo> AddEvents;
-            public Action<DownloadItemInfo> RemoveEvents;
+            public event Action<DownloadItemInfo> AddEvents;
+            public event Action<DownloadItemInfo> RemoveEvents;
 
             private void OnAdd(DownloadItemInfo info)
             {
@@ -829,8 +829,8 @@ namespace Amoeba.Core
                 _downloadItemInfos = new Dictionary<Metadata, DownloadItemInfo>();
             }
 
-            public Action<DownloadItemInfo> AddEvents;
-            public Action<DownloadItemInfo> RemoveEvents;
+            public event Action<DownloadItemInfo> AddEvents;
+            public event Action<DownloadItemInfo> RemoveEvents;
 
             private void OnAdd(DownloadItemInfo info)
             {

@@ -90,10 +90,10 @@ namespace Amoeba.Service
                 var result = UriUtils.Parse(uri);
                 if (result == null) return null;
 
-                var scheme = result.GetValue<string>("Scheme");
+                string scheme = result.GetValue<string>("Scheme");
                 if (scheme != "i2p") return null;
 
-                var address = result.GetValue<string>("Address");
+                string address = result.GetValue<string>("Address");
 
                 Socket socket = null;
 
@@ -169,11 +169,11 @@ namespace Amoeba.Service
                             var result = UriUtils.Parse(config.SamBridgeUri);
                             if (result == null) throw new Exception();
 
-                            var scheme = result.GetValue<string>("Scheme");
+                            string scheme = result.GetValue<string>("Scheme");
                             if (scheme == "tcp") throw new Exception();
 
-                            var address = result.GetValue<string>("Address");
-                            var port = result.GetValueOrDefault<int>("Port", () => 7656);
+                            string address = result.GetValue<string>("Address");
+                            int port = result.GetValueOrDefault<int>("Port", () => 7656);
 
                             {
                                 if (_samManager != null)
@@ -185,7 +185,7 @@ namespace Amoeba.Service
                                 _samManager = new SamManager(address, port, "Amoeba");
                             }
 
-                            var base32Address = _samManager.Start();
+                            string base32Address = _samManager.Start();
 
                             if (base32Address != null)
                             {

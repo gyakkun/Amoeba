@@ -37,16 +37,16 @@ namespace Amoeba.Interface
 
         protected override void OnAttached()
         {
-            this.AssociatedObject.PreviewMouseDown += AssociatedObject_PreviewMouseDown;
-            this.AssociatedObject.PreviewMouseMove += AssociatedObject_PreviewMouseMove;
-            this.AssociatedObject.PreviewMouseUp += AssociatedObject_PreviewMouseUp;
+            this.AssociatedObject.PreviewMouseDown += this.AssociatedObject_PreviewMouseDown;
+            this.AssociatedObject.PreviewMouseMove += this.AssociatedObject_PreviewMouseMove;
+            this.AssociatedObject.PreviewMouseUp += this.AssociatedObject_PreviewMouseUp;
         }
 
         protected override void OnDetaching()
         {
-            this.AssociatedObject.PreviewMouseDown -= AssociatedObject_PreviewMouseDown;
-            this.AssociatedObject.PreviewMouseMove -= AssociatedObject_PreviewMouseMove;
-            this.AssociatedObject.PreviewMouseUp -= AssociatedObject_PreviewMouseUp;
+            this.AssociatedObject.PreviewMouseDown -= this.AssociatedObject_PreviewMouseDown;
+            this.AssociatedObject.PreviewMouseMove -= this.AssociatedObject_PreviewMouseMove;
+            this.AssociatedObject.PreviewMouseUp -= this.AssociatedObject_PreviewMouseUp;
         }
 
         void AssociatedObject_PreviewMouseDown(object sender, MouseButtonEventArgs e)

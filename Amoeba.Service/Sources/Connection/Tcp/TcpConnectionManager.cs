@@ -159,7 +159,7 @@ namespace Amoeba.Service
 
             if (!IPAddress.TryParse(host, out remoteIp))
             {
-                IPHostEntry hostEntry = Dns.GetHostEntry(host);
+                var hostEntry = Dns.GetHostEntry(host);
 
                 if (hostEntry.AddressList.Length > 0)
                 {
@@ -222,11 +222,11 @@ namespace Amoeba.Service
                 var result = UriUtils.Parse(uri);
                 if (result == null) throw new Exception();
 
-                var scheme = result.GetValue<string>("Scheme");
+                string scheme = result.GetValue<string>("Scheme");
                 if (scheme != "tcp") return null;
 
-                var address = result.GetValue<string>("Address");
-                var port = result.GetValueOrDefault<int>("Port", () => 4050);
+                string address = result.GetValue<string>("Address");
+                int port = result.GetValueOrDefault<int>("Port", () => 4050);
 
                 // Check
                 {
@@ -246,12 +246,12 @@ namespace Amoeba.Service
                     var result2 = UriUtils.Parse(config.ProxyUri);
                     if (result2 == null) throw new Exception();
 
-                    var proxyScheme = result.GetValue<string>("Scheme");
+                    string proxyScheme = result.GetValue<string>("Scheme");
 
                     if (proxyScheme == "socks5")
                     {
-                        var proxyAddress = result.GetValue<string>("Address");
-                        var proxyPort = result.GetValueOrDefault<int>("Port", () => 1080);
+                        string proxyAddress = result.GetValue<string>("Address");
+                        int proxyPort = result.GetValueOrDefault<int>("Port", () => 1080);
 
                         var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
                         garbages.Add(socket);
@@ -266,8 +266,8 @@ namespace Amoeba.Service
                     }
                     else if (proxyScheme == "http")
                     {
-                        var proxyAddress = result.GetValue<string>("Address");
-                        var proxyPort = result.GetValueOrDefault<int>("Port", () => 80);
+                        string proxyAddress = result.GetValue<string>("Address");
+                        int proxyPort = result.GetValueOrDefault<int>("Port", () => 80);
 
                         var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
                         garbages.Add(socket);
@@ -315,7 +315,7 @@ namespace Amoeba.Service
             {
                 var config = this.Config;
 
-                foreach (var p in new int[] { 0, 1 }.Randomize())
+                foreach (int p in new int[] { 0, 1 }.Randomize())
                 {
                     if (p == 0 && config.Type.HasFlag(TcpConnectionType.Ipv4) && _ipv4TcpListener.Pending())
                     {
@@ -394,7 +394,7 @@ namespace Amoeba.Service
                         // Port forwarding
                         try
                         {
-                            using (UpnpClient client = new UpnpClient())
+                            using (var client = new UpnpClient())
                             {
                                 client.Connect(new TimeSpan(0, 0, 10));
 
@@ -479,7 +479,7 @@ namespace Amoeba.Service
 
             try
             {
-                using (UpnpClient client = new UpnpClient())
+                using (var client = new UpnpClient())
                 {
                     client.Connect(new TimeSpan(0, 0, 10));
 

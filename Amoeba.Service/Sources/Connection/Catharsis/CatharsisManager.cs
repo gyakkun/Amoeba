@@ -118,7 +118,7 @@ namespace Amoeba.Service
 
                 {
                     // path
-                    foreach (var path in ipv4Config.Paths)
+                    foreach (string path in ipv4Config.Paths)
                     {
                         try
                         {
@@ -135,7 +135,7 @@ namespace Amoeba.Service
                     }
 
                     // Url
-                    foreach (var url in ipv4Config.Urls)
+                    foreach (string url in ipv4Config.Urls)
                     {
                         try
                         {
@@ -177,7 +177,7 @@ namespace Amoeba.Service
 
                 while ((line = reader.ReadLine()) != null)
                 {
-                    var index = line.LastIndexOf(':');
+                    int index = line.LastIndexOf(':');
                     if (index == -1) continue;
 
                     var items = line.Substring(index + 1).Split('-');
@@ -216,11 +216,11 @@ namespace Amoeba.Service
                 request.Timeout = 1000 * 30;
                 request.ReadWriteTimeout = 1000 * 30;
 
-                using (WebResponse response = request.GetResponse())
+                using (var response = request.GetResponse())
                 {
                     if (response.ContentLength > 1024 * 1024 * 32) throw new Exception("too large");
 
-                    using (Stream stream = response.GetResponseStream())
+                    using (var stream = response.GetResponseStream())
                     using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                     {
                         int length;

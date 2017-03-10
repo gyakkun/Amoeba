@@ -55,7 +55,7 @@ namespace Amoeba.Interface
                 {
                     var dic = new Dictionary<string, string>();
 
-                    using (XmlTextReader xml = new XmlTextReader(path))
+                    using (var xml = new XmlTextReader(path))
                     {
                         while (xml.Read())
                         {
@@ -116,7 +116,7 @@ namespace Amoeba.Interface
             {
                 var dic = new Dictionary<string, string>();
 
-                foreach (var path in _dic.Keys.ToList())
+                foreach (string path in _dic.Keys.ToList())
                 {
                     dic[System.IO.Path.GetFileNameWithoutExtension(path)] = path;
                 }

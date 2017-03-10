@@ -56,7 +56,7 @@ namespace Amoeba.Core
 
             lock (_lockObject)
             {
-                var priority = _table.Sum(n => n.Value);
+                int priority = _table.Sum(n => n.Value);
                 priority = Math.Min(Math.Max(priority, -average), average);
 
                 return ((double)(priority + average)) / (average * 2);

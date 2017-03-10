@@ -70,7 +70,7 @@ namespace Amoeba.Service
                     {
                         deflateBufferStream = new BufferStream(_bufferManager);
 
-                        using (DeflateStream deflateStream = new DeflateStream(deflateBufferStream, CompressionMode.Compress, true))
+                        using (var deflateStream = new DeflateStream(deflateBufferStream, CompressionMode.Compress, true))
                         using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                         {
                             int length;
@@ -139,7 +139,7 @@ namespace Amoeba.Service
             {
                 stream.Seek(0, SeekOrigin.Begin);
 
-                var type = (int)VintUtils.Get(stream);
+                int type = (int)VintUtils.Get(stream);
 
                 if (type == (int)ConvertCompressionAlgorithm.None)
                 {
@@ -153,7 +153,7 @@ namespace Amoeba.Service
                     {
                         deflateBufferStream = new BufferStream(_bufferManager);
 
-                        using (DeflateStream deflateStream = new DeflateStream(stream, CompressionMode.Decompress))
+                        using (var deflateStream = new DeflateStream(stream, CompressionMode.Decompress))
                         using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                         {
                             int length;
@@ -210,7 +210,7 @@ namespace Amoeba.Service
                     outStream = new BufferStream(_bufferManager);
                     VintUtils.Write(outStream, (int)ConvertCryptoAlgorithm.Aes256);
 
-                    byte[] cryptoKey = new byte[32];
+                    var cryptoKey = new byte[32];
                     _random.GetBytes(cryptoKey);
 
                     {
@@ -219,7 +219,7 @@ namespace Amoeba.Service
                         outStream.Write(encryptedBuffer, 0, encryptedBuffer.Length);
                     }
 
-                    byte[] iv = new byte[32];
+                    var iv = new byte[32];
                     _random.GetBytes(iv);
                     outStream.Write(iv, 0, iv.Length);
 
@@ -229,8 +229,8 @@ namespace Amoeba.Service
                         aes.Mode = CipherMode.CBC;
                         aes.Padding = PaddingMode.PKCS7;
 
-                        using (Stream inStream = new WrapperStream(stream, true))
-                        using (CryptoStream cs = new CryptoStream(inStream, aes.CreateEncryptor(cryptoKey, iv), CryptoStreamMode.Read))
+                        using (var inStream = new WrapperStream(stream, true))
+                        using (var cs = new CryptoStream(inStream, aes.CreateEncryptor(cryptoKey, iv), CryptoStreamMode.Read))
                         using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                         {
                             int length;
@@ -276,7 +276,7 @@ namespace Amoeba.Service
 
             try
             {
-                var type = (int)VintUtils.Get(stream);
+                int type = (int)VintUtils.Get(stream);
 
                 if (type == (int)ConvertCryptoAlgorithm.Aes256)
                 {
@@ -285,7 +285,7 @@ namespace Amoeba.Service
                     {
                         int length = (int)VintUtils.Get(stream);
 
-                        byte[] encryptedBuffer = new byte[length];
+                        var encryptedBuffer = new byte[length];
                         if (stream.Read(encryptedBuffer, 0, encryptedBuffer.Length) != encryptedBuffer.Length) throw new ArgumentException();
 
                         cryptoKey = Exchange.Decrypt(privateKey, encryptedBuffer);
@@ -307,7 +307,7 @@ namespace Amoeba.Service
                             aes.Padding = PaddingMode.PKCS7;
 
                             using (var inStream = new RangeStream(stream, stream.Position, stream.Length - stream.Position, true))
-                            using (CryptoStream cs = new CryptoStream(inStream, aes.CreateDecryptor(cryptoKey, iv), CryptoStreamMode.Read))
+                            using (var cs = new CryptoStream(inStream, aes.CreateDecryptor(cryptoKey, iv), CryptoStreamMode.Read))
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                             {
                                 int length;
@@ -369,7 +369,7 @@ namespace Amoeba.Service
         {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            var type = (int)VintUtils.Get(stream);
+            int type = (int)VintUtils.Get(stream);
 
             if (type == (int)ConvertHashAlgorithm.Sha256)
             {
@@ -401,7 +401,7 @@ namespace Amoeba.Service
                 {
                     Random random;
                     {
-                        byte[] seedBuffer = new byte[4];
+                        var seedBuffer = new byte[4];
                         _random.GetBytes(seedBuffer);
                         random = new Random(NetworkConverter.ToInt32(seedBuffer));
                     }

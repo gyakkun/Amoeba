@@ -23,21 +23,21 @@ namespace Amoeba.Interface
 
         protected override void OnAttached()
         {
-            this.AssociatedObject.PreviewDragOver += AssociatedObject_DragOver;
-            this.AssociatedObject.PreviewDrop += AssociatedObject_Drop;
+            this.AssociatedObject.PreviewDragOver += this.AssociatedObject_DragOver;
+            this.AssociatedObject.PreviewDrop += this.AssociatedObject_Drop;
             base.OnAttached();
         }
 
         protected override void OnDetaching()
         {
-            this.AssociatedObject.PreviewDragOver -= AssociatedObject_DragOver;
-            this.AssociatedObject.PreviewDrop -= AssociatedObject_Drop;
+            this.AssociatedObject.PreviewDragOver -= this.AssociatedObject_DragOver;
+            this.AssociatedObject.PreviewDrop -= this.AssociatedObject_Drop;
             base.OnDetaching();
         }
 
         void AssociatedObject_DragOver(object sender, DragEventArgs e)
         {
-            var desc = Description;
+            var desc = this.Description;
             if (desc == null)
             {
                 e.Effects = DragDropEffects.None;
@@ -50,7 +50,7 @@ namespace Amoeba.Interface
 
         void AssociatedObject_Drop(object sender, DragEventArgs e)
         {
-            var desc = Description;
+            var desc = this.Description;
             if (desc == null)
             {
                 e.Effects = DragDropEffects.None;

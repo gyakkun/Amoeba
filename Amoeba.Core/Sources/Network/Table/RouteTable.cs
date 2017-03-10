@@ -91,7 +91,7 @@ namespace Amoeba.Core
 
             for (int i = 0; i < length; i++)
             {
-                var value = (byte)(x[i] ^ y[i]);
+                byte value = (byte)(x[i] ^ y[i]);
 
                 result = _distanceHashtable[value];
 

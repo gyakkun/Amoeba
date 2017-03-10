@@ -54,7 +54,7 @@ namespace Amoeba.Core
             lock (_lockObject)
             {
                 {
-                    var size = BitmapManager.Roundup(length, 8);
+                    long size = BitmapManager.Roundup(length, 8);
 
                     _bitmapStream.SetLength(size);
                     _bitmapStream.Seek(0, SeekOrigin.Begin);
@@ -117,9 +117,9 @@ namespace Amoeba.Core
             {
                 if (point >= _length) throw new ArgumentOutOfRangeException(nameof(point));
 
-                var sectorOffset = (point / 8) / BitmapManager.SectorSize;
-                var bufferOffset = (int)((point / 8) % BitmapManager.SectorSize);
-                var bitOffset = (byte)(point % 8);
+                long sectorOffset = (point / 8) / BitmapManager.SectorSize;
+                int bufferOffset = (int)((point / 8) % BitmapManager.SectorSize);
+                byte bitOffset = (byte)(point % 8);
 
                 var buffer = this.GetBuffer(sectorOffset);
                 return ((buffer.Array[buffer.Offset + bufferOffset] << bitOffset) & 0x80) == 0x80;
@@ -132,9 +132,9 @@ namespace Amoeba.Core
             {
                 if (point >= _length) throw new ArgumentOutOfRangeException(nameof(point));
 
-                var sectorOffset = (point / 8) / BitmapManager.SectorSize;
-                var bufferOffset = (int)((point / 8) % BitmapManager.SectorSize);
-                var bitOffset = (byte)(point % 8);
+                long sectorOffset = (point / 8) / BitmapManager.SectorSize;
+                int bufferOffset = (int)((point / 8) % BitmapManager.SectorSize);
+                byte bitOffset = (byte)(point % 8);
 
                 if (state)
                 {

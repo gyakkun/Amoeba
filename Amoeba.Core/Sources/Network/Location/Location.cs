@@ -56,7 +56,7 @@ namespace Amoeba.Core
                     writer.Write((int)SerializeId.Uris);
                     writer.Write(this.ProtectedUris.Count);
 
-                    foreach (var uri in this.ProtectedUris)
+                    foreach (string uri in this.ProtectedUris)
                     {
                         writer.Write(uri);
                     }
@@ -99,7 +99,7 @@ namespace Amoeba.Core
 
         public override string ToString()
         {
-            return String.Join(", ", this.Uris);
+            return string.Join(", ", this.Uris);
         }
 
         #region ILocation
