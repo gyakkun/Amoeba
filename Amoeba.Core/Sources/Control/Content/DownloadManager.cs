@@ -298,7 +298,7 @@ namespace Amoeba.Core
 
             for (;;)
             {
-                Thread.Sleep(1000 * 3);
+                Thread.Sleep(1000 * 1);
                 if (this.State == ManagerState.Stop) return;
 
                 DownloadItemInfo item = null;

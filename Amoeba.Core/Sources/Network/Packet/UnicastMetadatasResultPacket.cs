@@ -25,6 +25,11 @@ namespace Amoeba.Core
             if (unicastMetadatas != null) this.ProtectedUnicastMetadatas.AddRange(unicastMetadatas);
         }
 
+        protected override void Initialize()
+        {
+
+        }
+
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))

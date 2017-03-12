@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NUnit.Framework;
 
-namespace Amoeba.UnitTest
+namespace Amoeba.Test
 {
     [SetUpFixture]
     public class Setup

@@ -42,6 +42,11 @@ namespace Amoeba.Core
             this.CreateCertificate(digitalSignature);
         }
 
+        protected override void Initialize()
+        {
+
+        }
+
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))

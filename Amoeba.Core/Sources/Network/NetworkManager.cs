@@ -79,7 +79,7 @@ namespace Amoeba.Core
 
             _settings = new Settings(configPath);
 
-            _routeTable = new RouteTable<SessionInfo>(256, 20);
+            _routeTable = new RouteTable<SessionInfo>(256, 32);
 
             _metadataManager = new MetadataManager();
             _metadataManager.GetLockSignaturesEvent += (_) => this.OnGetLockSignatures();
@@ -319,7 +319,7 @@ namespace Amoeba.Core
                         }
                     }
 
-                    if (reduceStopwatch.Elapsed.TotalMinutes >= 3)
+                    if (reduceStopwatch.Elapsed.TotalMinutes >= 10)
                     {
                         reduceStopwatch.Restart();
 
@@ -337,7 +337,7 @@ namespace Amoeba.Core
 
                     // アップロード
                     if (_routeTable.Count >= 3
-                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 60)
+                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushBlockUploadStopwatch.Restart();
 
@@ -359,7 +359,7 @@ namespace Amoeba.Core
 
                     // ダウンロード
                     if (_routeTable.Count >= 3
-                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 60)
+                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushBlockDownloadStopwatch.Restart();
 
@@ -413,7 +413,7 @@ namespace Amoeba.Core
 
                                 foreach (var hash in pushBlockLinkSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _myId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _myId, crowdNodes, 3))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
                                     }
@@ -437,7 +437,7 @@ namespace Amoeba.Core
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _myId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _myId, crowdNodes, 3))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
                                     }
@@ -462,7 +462,7 @@ namespace Amoeba.Core
 
                     // アップロード
                     if (_routeTable.Count >= 3
-                        && pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 60)
+                        && pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushMetadataUploadStopwatch.Restart();
 
@@ -496,7 +496,7 @@ namespace Amoeba.Core
 
                     // ダウンロード
                     if (_routeTable.Count >= 3
-                        && pushMetadataDownloadStopwatch.Elapsed.TotalSeconds >= 60)
+                        && pushMetadataDownloadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushMetadataDownloadStopwatch.Restart();
 
@@ -811,7 +811,7 @@ namespace Amoeba.Core
                         {
                             try
                             {
-                                int count = connection.Send(Math.Min(remain, 1024 * 1024));
+                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 8));
                                 _sentByteCount.Add(count);
 
                                 remain -= count;
@@ -859,7 +859,7 @@ namespace Amoeba.Core
                         {
                             try
                             {
-                                int count = connection.Receive(Math.Min(remain, 1024 * 1024));
+                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 8));
                                 _receivedByteCount.Add(count);
 
                                 remain -= count;
@@ -915,16 +915,15 @@ namespace Amoeba.Core
             }
 
             // Locations
-            if (sessionInfo.SendInfo.LocationStopwatch.Elapsed.TotalSeconds > 60)
+            if (sessionInfo.SendInfo.LocationStopwatch.Elapsed.TotalSeconds > 30)
             {
                 sessionInfo.SendInfo.LocationStopwatch.Restart();
 
-                var locations = new List<Location>();
-                locations.AddRange(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
-                locations.AddRange(_crowdLocations);
-                _random.Shuffle(locations);
+                var locations = new HashSet<Location>();
+                locations.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
+                locations.UnionWith(_crowdLocations);
 
-                var packet = new LocationsPacket(locations.Take(LocationsPacket.MaxLocationCount));
+                var packet = new LocationsPacket(locations.Randomize().Take(LocationsPacket.MaxLocationCount));
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.Write(typeStream, (int)SerializeId.Locations);
@@ -937,8 +936,13 @@ namespace Amoeba.Core
             // BlocksLink
             if (sessionInfo.SendInfo.PushBlockLinkQueue.Count > 0)
             {
-                var packet = new BlocksLinkPacket(sessionInfo.SendInfo.PushBlockLinkQueue);
-                sessionInfo.SendInfo.PushBlockLinkQueue.Clear();
+                BlocksLinkPacket packet;
+
+                lock (sessionInfo.SendInfo.PushBlockLinkQueue)
+                {
+                    packet = new BlocksLinkPacket(sessionInfo.SendInfo.PushBlockLinkQueue);
+                    sessionInfo.SendInfo.PushBlockLinkQueue.Clear();
+                }
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.Write(typeStream, (int)SerializeId.BlocksLink);
@@ -951,8 +955,13 @@ namespace Amoeba.Core
             // BlocksRequest
             if (sessionInfo.SendInfo.PushBlockRequestQueue.Count > 0)
             {
-                var packet = new BlocksRequestPacket(sessionInfo.SendInfo.PushBlockRequestQueue);
-                sessionInfo.SendInfo.PushBlockRequestQueue.Clear();
+                BlocksRequestPacket packet;
+
+                lock (sessionInfo.SendInfo.PushBlockRequestQueue)
+                {
+                    packet = new BlocksRequestPacket(sessionInfo.SendInfo.PushBlockRequestQueue);
+                    sessionInfo.SendInfo.PushBlockRequestQueue.Clear();
+                }
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.Write(typeStream, (int)SerializeId.BlocksRequest);
@@ -967,7 +976,7 @@ namespace Amoeba.Core
             {
                 sessionInfo.SendInfo.BlockStopwatch.Restart();
 
-                if (_random.Next(0, 100) < (sessionInfo.PriorityManager.GetPriority() * 100))
+                //if (_random.Next(0, 100) < (sessionInfo.PriorityManager.GetPriority() * 100))
                 {
                     Hash hash = null;
 
@@ -1019,8 +1028,13 @@ namespace Amoeba.Core
             // BroadcastMetadatasRequest
             if (sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.Count > 0)
             {
-                var packet = new BroadcastMetadatasRequestPacket(sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue);
-                sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.Clear();
+                BroadcastMetadatasRequestPacket packet;
+
+                lock (sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.LockObject)
+                {
+                    packet = new BroadcastMetadatasRequestPacket(sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue);
+                    sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.Clear();
+                }
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.Write(typeStream, (int)SerializeId.BroadcastMetadatasRequest);
@@ -1031,7 +1045,7 @@ namespace Amoeba.Core
             }
 
             // BroadcastMetadatasResult
-            if (sessionInfo.SendInfo.BroadcastMetadataStopwatch.Elapsed.TotalSeconds > 60)
+            if (sessionInfo.SendInfo.BroadcastMetadataStopwatch.Elapsed.TotalSeconds > 30)
             {
                 sessionInfo.SendInfo.BroadcastMetadataStopwatch.Restart();
 
@@ -1069,8 +1083,13 @@ namespace Amoeba.Core
             // UnicastMetadatasRequest
             if (sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.Count > 0)
             {
-                var packet = new UnicastMetadatasRequestPacket(sessionInfo.SendInfo.PushUnicastMetadataRequestQueue);
-                sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.Clear();
+                UnicastMetadatasRequestPacket packet;
+
+                lock (sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.LockObject)
+                {
+                    packet = new UnicastMetadatasRequestPacket(sessionInfo.SendInfo.PushUnicastMetadataRequestQueue);
+                    sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.Clear();
+                }
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.Write(typeStream, (int)SerializeId.UnicastMetadatasRequest);
@@ -1081,7 +1100,7 @@ namespace Amoeba.Core
             }
 
             // UnicastMetadatasResult
-            if (sessionInfo.SendInfo.UnicastMetadataStopwatch.Elapsed.TotalSeconds > 60)
+            if (sessionInfo.SendInfo.UnicastMetadataStopwatch.Elapsed.TotalSeconds > 30)
             {
                 sessionInfo.SendInfo.UnicastMetadataStopwatch.Restart();
 
@@ -1119,8 +1138,13 @@ namespace Amoeba.Core
             // MulticastMetadatasRequest
             if (sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.Count > 0)
             {
-                var packet = new MulticastMetadatasRequestPacket(sessionInfo.SendInfo.PushMulticastMetadataRequestQueue);
-                sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.Clear();
+                MulticastMetadatasRequestPacket packet;
+
+                lock (sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.LockObject)
+                {
+                    packet = new MulticastMetadatasRequestPacket(sessionInfo.SendInfo.PushMulticastMetadataRequestQueue);
+                    sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.Clear();
+                }
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.Write(typeStream, (int)SerializeId.MulticastMetadatasRequest);
@@ -1131,7 +1155,7 @@ namespace Amoeba.Core
             }
 
             // MulticastMetadatasResult
-            if (sessionInfo.SendInfo.MulticastMetadataStopwatch.Elapsed.TotalSeconds > 60)
+            if (sessionInfo.SendInfo.MulticastMetadataStopwatch.Elapsed.TotalSeconds > 30)
             {
                 sessionInfo.SendInfo.MulticastMetadataStopwatch.Restart();
 
@@ -1183,19 +1207,16 @@ namespace Amoeba.Core
                     {
                         var profile = ProfilePacket.Import(dataStream, _bufferManager);
 
-                        sessionInfo.Id = profile.Id;
-                        sessionInfo.Location = profile.Location;
-
                         lock (_lockObject)
                         {
                             if (Unsafe.Equals(profile.Id, _myId)) throw new ArgumentException("Conflict");
 
                             if (_connections.ContainsKey(sessionInfo.Connection))
                             {
-                                if (!_routeTable.Add(sessionInfo.Id, sessionInfo))
-                                {
-                                    throw new ArgumentException("RouteTable Overflow");
-                                }
+                                if (!_routeTable.Add(profile.Id, sessionInfo)) throw new ArgumentException("RouteTable Overflow");
+
+                                sessionInfo.Id = profile.Id;
+                                sessionInfo.Location = profile.Location;
                             }
                         }
                     }
@@ -1215,7 +1236,7 @@ namespace Amoeba.Core
                 {
                     if (id == (int)SerializeId.Locations)
                     {
-                        if (sessionInfo.ReceiveInfo.PullLocationSet.Count > _maxLocationCount * sessionInfo.ReceiveInfo.PullLocationSet.SurvivalTime.TotalMinutes) return;
+                        if (sessionInfo.ReceiveInfo.PullLocationSet.Count > _maxLocationCount * sessionInfo.ReceiveInfo.PullLocationSet.SurvivalTime.TotalMinutes * 2) return;
 
                         var packet = LocationsPacket.Import(dataStream, _bufferManager);
 
@@ -1225,7 +1246,7 @@ namespace Amoeba.Core
                     }
                     else if (id == (int)SerializeId.BlocksLink)
                     {
-                        if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes) return;
+                        if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
 
                         var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
 
@@ -1235,7 +1256,7 @@ namespace Amoeba.Core
                     }
                     else if (id == (int)SerializeId.BlocksRequest)
                     {
-                        if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes) return;
+                        if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                         var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
 
@@ -1268,7 +1289,7 @@ namespace Amoeba.Core
                     }
                     else if (id == (int)SerializeId.BroadcastMetadatasRequest)
                     {
-                        if (sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes) return;
+                        if (sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                         var packet = BroadcastMetadatasRequestPacket.Import(dataStream, _bufferManager);
 
@@ -1296,7 +1317,7 @@ namespace Amoeba.Core
                     }
                     else if (id == (int)SerializeId.UnicastMetadatasRequest)
                     {
-                        if (sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.SurvivalTime.TotalMinutes) return;
+                        if (sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                         var packet = UnicastMetadatasRequestPacket.Import(dataStream, _bufferManager);
 
@@ -1324,7 +1345,7 @@ namespace Amoeba.Core
                     }
                     else if (id == (int)SerializeId.MulticastMetadatasRequest)
                     {
-                        if (sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.SurvivalTime.TotalMinutes) return;
+                        if (sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                         var packet = MulticastMetadatasRequestPacket.Import(dataStream, _bufferManager);
 

@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Omnius.Base;
 using Omnius.Security;
 
-namespace Amoeba.UnitTest
+namespace Amoeba.Test
 {
     [TestFixture(Category = "Amoeba.Core.CacheManager")]
     class Test_CacheManager

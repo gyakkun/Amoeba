@@ -7,7 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Omnius.Base;
 
-namespace Amoeba.IntegrationTest
+namespace Amoeba.Test
 {
     static class Program
     {
@@ -15,6 +15,8 @@ namespace Amoeba.IntegrationTest
         static void Main(string[] args)
         {
             Program.Init();
+
+            ThreadPool.SetMinThreads(1024, 1024);
 
             var test = new Test_CoreManager();
             test.Setup();
@@ -56,7 +58,7 @@ namespace Amoeba.IntegrationTest
 
         private static void LogEvent(object sender, LogEventArgs e)
         {
-            Debug.WriteLine($"Log: {e.MessageLevel.ToString()}: {e.Message}");
+            Debug.WriteLine($"Log:\t{e.MessageLevel.ToString()}\r\n{e.Message}");
         }
     }
 }

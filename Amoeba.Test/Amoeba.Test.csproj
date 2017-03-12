@@ -7,8 +7,8 @@
     <ProjectGuid>{57DB853D-6357-4621-965B-EDDDD7955376}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Amoeba.UnitTest</RootNamespace>
-    <AssemblyName>Amoeba.UnitTest</AssemblyName>
+    <RootNamespace>Amoeba.Test</RootNamespace>
+    <AssemblyName>Amoeba.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -50,10 +50,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sources\IntegrationTest\Core\Test_CoreManager.cs" />
     <Compile Include="Sources\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sources\Core\Test_CacheManager.cs" />
+    <Compile Include="Sources\UnitTest\Core\Test_CacheManager.cs" />
     <Compile Include="Sources\Setup.cs" />
+    <Compile Include="Sources\Utilities\DisposeWrapper.cs" />
+    <Compile Include="Sources\Utilities\RandomProvider.cs" />
     <Compile Include="Sources\Utilities\UnlimitedObject.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -139,6 +142,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>call $(SolutionDir)Increment.bat</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

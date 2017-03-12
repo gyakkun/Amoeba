@@ -22,12 +22,12 @@ namespace Amoeba.Core
         {
             this.Algorithm = algorithm;
             this.Value = value;
+
+            this.Initialize();
         }
 
         protected override void Initialize()
         {
-            base.Initialize();
-
             _hashCode = (this.Value != null) ? ItemUtils.GetHashCode(this.Value) : 0;
         }
 

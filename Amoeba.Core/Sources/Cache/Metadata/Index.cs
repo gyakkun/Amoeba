@@ -24,6 +24,11 @@ namespace Amoeba.Core
             if (groupes != null) this.ProtectedGroups.AddRange(groupes);
         }
 
+        protected override void Initialize()
+        {
+
+        }
+
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))

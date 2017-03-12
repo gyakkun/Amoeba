@@ -27,6 +27,11 @@ namespace Amoeba.Core
             if (uris != null) this.ProtectedUris.AddRange(uris);
         }
 
+        protected override void Initialize()
+        {
+
+        }
+
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))

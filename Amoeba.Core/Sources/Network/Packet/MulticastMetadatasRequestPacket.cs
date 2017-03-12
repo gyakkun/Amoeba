@@ -26,6 +26,11 @@ namespace Amoeba.Core
             if (tags != null) this.ProtectedTags.AddRange(tags);
         }
 
+        protected override void Initialize()
+        {
+
+        }
+
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))

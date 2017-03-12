@@ -10,4 +10,7 @@ cd %BATDIR%
 set TOOL="Omnius\Omnius.Tools\bin\Debug\Omnius.Tools.exe"
 IF NOT EXIST %TOOL% exit
 
-call %TOOL% "Increment" Amoeba\Amoeba.csproj Properties\AssemblyInfo.cs
+call %TOOL% "Increment" Amoeba.Core
+call %TOOL% "Increment" Amoeba.Interface
+call %TOOL% "Increment" Amoeba.Service
+call %TOOL% "Increment" Amoeba.Test

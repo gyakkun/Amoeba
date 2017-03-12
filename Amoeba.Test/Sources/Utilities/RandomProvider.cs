@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Amoeba.IntegrationTest
+namespace Amoeba.Test
 {
     // http://neue.cc/2013/03/06_399.html
     public static class RandomProvider

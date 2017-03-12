@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Amoeba.UnitTest
+namespace Amoeba.Test
 {
     static class UnlimitedObjectExtensions
     {

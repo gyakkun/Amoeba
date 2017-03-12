@@ -15,7 +15,7 @@ using Omnius.Io;
 using Omnius.Net;
 using Omnius.Security;
 
-namespace Amoeba.IntegrationTest
+namespace Amoeba.Test
 {
     class Test_CoreManager
     {
@@ -269,6 +269,7 @@ namespace Amoeba.IntegrationTest
                 coreManager.Resize(1024 * 1024 * 1024);
             }
 
+            var hashList = new HashSet<Hash>();
             var metadataList = new List<Metadata>();
 
             Parallel.For(1, coreManagerList.Count, i =>
@@ -284,15 +285,14 @@ namespace Amoeba.IntegrationTest
                             int length = Math.Min(remain, safeBuffer.Value.Length);
 
                             random.NextBytes(safeBuffer.Value);
-                            stream.Write(safeBuffer.Value, 0, safeBuffer.Value.Length);
+                            stream.Write(safeBuffer.Value, 0, length);
                         }
                     }
 
-                    //stream.Seek(0, SeekOrigin.Begin);
-                    //Console.WriteLine($"{sw.Elapsed.ToString("hh\\:mm\\:ss")}: Upload {NetworkConverter.ToBase64UrlString(Sha256.ComputeHash(new WrapperStream(stream, true)))}");
+                    stream.Seek(0, SeekOrigin.Begin);
+                    hashList.Add(new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(new WrapperStream(stream, true))));
 
                     stream.Seek(0, SeekOrigin.Begin);
-
                     using (var tokenSource = new CancellationTokenSource())
                     {
                         metadataList.Add(coreManagerList[i].Import(stream, new TimeSpan(1, 0, 0), tokenSource.Token).Result);
@@ -313,7 +313,9 @@ namespace Amoeba.IntegrationTest
                         stream = coreManagerList[0].GetStream(metadata, 1024 * 1024 * 32).Result;
                         if (stream == null) continue;
 
-                        if (!Unsafe.Equals(metadata.Hash.Value, Sha256.ComputeHash(stream))) throw new ArgumentException("Broken");
+                        var hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(stream));
+                        if (!hashList.Contains(hash)) throw new ArgumentException("Broken");
+
                         Console.WriteLine($"{sw.Elapsed.ToString("hh\\:mm\\:ss")}: Success {NetworkConverter.ToBase64UrlString(metadata.Hash.Value)}");
 
                         return;

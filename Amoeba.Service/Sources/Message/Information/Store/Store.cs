@@ -26,12 +26,12 @@ namespace Amoeba.Service
         public Store(IEnumerable<Box> boxes)
         {
             if (boxes != null) this.ProtectedBoxes.AddRange(boxes);
+
+            this.Initialize();
         }
 
         protected override void Initialize()
         {
-            base.Initialize();
-
             _hashCode = this.Boxes.FirstOrDefault()?.GetHashCode() ?? 0;
         }
 

@@ -36,12 +36,12 @@ namespace Amoeba.Core
         {
             this.Name = name;
             this.Id = id;
+
+            this.Initialize();
         }
 
         protected override void Initialize()
         {
-            base.Initialize();
-
             _hashCode = (this.Id != null) ? ItemUtils.GetHashCode(this.Id) : 0;
         }
 
