@@ -49,6 +49,56 @@ namespace Amoeba.Service
             _watchTimer = new WatchTimer(this.WatchThread);
         }
 
+        public Information Information
+        {
+            get
+            {
+                lock (_lockObject)
+                {
+                    var contexts = new List<InformationContext>();
+                    contexts.AddRange(_tcpConnectionManager.Information);
+
+                    return new Information(contexts);
+                }
+            }
+        }
+
+        public CatharsisConfig CatharsisConfig
+        {
+            get
+            {
+                return _catharsisManager.Config;
+            }
+            set
+            {
+                _catharsisManager.Config = value;
+            }
+        }
+
+        public TcpConnectionConfig TcpConnectionConfig
+        {
+            get
+            {
+                return _tcpConnectionManager.Config;
+            }
+            set
+            {
+                _tcpConnectionManager.Config = value;
+            }
+        }
+
+        public I2pConnectionConfig I2pConnectionConfig
+        {
+            get
+            {
+                return _i2pConnectionManager.Config;
+            }
+            set
+            {
+                _i2pConnectionManager.Config = value;
+            }
+        }
+
         public Cap ConnectCap(string uri)
         {
             if (_disposed) return null;

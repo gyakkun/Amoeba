@@ -37,6 +37,8 @@ namespace Amoeba.Service
 
         private volatile ManagerState _state = ManagerState.Stop;
 
+        private SafeInteger _blockCount = new SafeInteger();
+
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
@@ -48,6 +50,20 @@ namespace Amoeba.Service
             _settings = new Settings(configPath);
 
             _watchTimer = new WatchTimer(this.WatchListenerThread);
+        }
+
+        public Information Information
+        {
+            get
+            {
+                lock (_lockObject)
+                {
+                    var contexts = new List<InformationContext>();
+                    contexts.Add(new InformationContext("CatharsisBlockCount", (long)_blockCount));
+
+                    return new Information(contexts);
+                }
+            }
         }
 
         public TcpConnectionConfig Config
@@ -184,21 +200,11 @@ namespace Amoeba.Service
                 socket.ReceiveTimeout = (int)timeout.TotalMilliseconds;
                 socket.SendTimeout = (int)timeout.TotalMilliseconds;
 
-                var asyncResult = socket.BeginConnect(remoteEndPoint, null, null);
-
-                if (!asyncResult.IsCompleted)
-                {
-                    if (!asyncResult.AsyncWaitHandle.WaitOne(timeout, false))
-                    {
-                        throw new ConnectionException();
-                    }
-                }
-
-                socket.EndConnect(asyncResult);
+                socket.Connect(remoteEndPoint);
 
                 return socket;
             }
-            catch (Exception)
+            catch (SocketException)
             {
                 if (socket != null) socket.Dispose();
             }
@@ -238,7 +244,12 @@ namespace Amoeba.Service
                     if (!TcpManager.CheckGlobalIpAddress(ipAddress)) return null;
 #endif
 
-                    if (!_catharsisManager.Check(ipAddress)) return null;
+                    if (!_catharsisManager.Check(ipAddress))
+                    {
+                        _blockCount.Increment();
+
+                        return null;
+                    }
                 }
 
                 if (string.IsNullOrWhiteSpace(config.ProxyUri))

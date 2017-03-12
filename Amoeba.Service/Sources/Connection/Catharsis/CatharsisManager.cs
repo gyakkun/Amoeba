@@ -29,7 +29,7 @@ namespace Amoeba.Service
 
         private Settings _settings;
 
-        private Ipv4CatharsisConfig _ipv4Config;
+        private CatharsisConfig _config;
 
         private HashSet<SearchRange<Ipv4>> _ipv4RangeSet;
 
@@ -56,20 +56,20 @@ namespace Amoeba.Service
             _ipv4ResultMap = new VolatileHashDictionary<Ipv4, bool>(new TimeSpan(0, 30, 0));
         }
 
-        public Ipv4CatharsisConfig Ipv4Config
+        public CatharsisConfig Config
         {
             get
             {
                 lock (_lockObject)
                 {
-                    return _ipv4Config;
+                    return _config;
                 }
             }
             set
             {
                 lock (_lockObject)
                 {
-                    _ipv4Config = value;
+                    _config = value;
                 }
 
                 _watchTimer.Run();
@@ -107,18 +107,19 @@ namespace Amoeba.Service
         {
             for (;;)
             {
-                Ipv4CatharsisConfig ipv4Config;
+                CatharsisConfig config;
 
                 lock (_lockObject)
                 {
-                    ipv4Config = _ipv4Config;
+                    config = _config;
                 }
 
                 var ipv4RangeSet = new HashSet<SearchRange<Ipv4>>();
 
+                // Ipv4
                 {
                     // path
-                    foreach (string path in ipv4Config.Paths)
+                    foreach (string path in config.Ipv4Config.Paths)
                     {
                         try
                         {
@@ -135,7 +136,7 @@ namespace Amoeba.Service
                     }
 
                     // Url
-                    foreach (string url in ipv4Config.Urls)
+                    foreach (string url in config.Ipv4Config.Urls)
                     {
                         try
                         {
@@ -155,7 +156,7 @@ namespace Amoeba.Service
 
                 lock (_lockObject)
                 {
-                    if (_ipv4Config != ipv4Config) continue;
+                    if (_config != config) continue;
 
                     _ipv4RangeSet.Clear();
                     _ipv4RangeSet.UnionWith(ipv4RangeSet);
@@ -296,7 +297,7 @@ namespace Amoeba.Service
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _ipv4Config = _settings.Load("Ipv4Config", () => new Ipv4CatharsisConfig(null, null));
+                _config = _settings.Load("CatharsisConfig", () => new CatharsisConfig(new CatharsisIpv4Config(null, null)));
 
                 _ipv4RangeSet = _settings.Load("Ipv4RangeSet", () => new HashSet<SearchRange<Ipv4>>());
             }
@@ -308,7 +309,7 @@ namespace Amoeba.Service
             {
                 _settings.Save("Version", 0);
 
-                _settings.Save("Ipv4Config", _ipv4Config);
+                _settings.Save("CatharsisConfig", _config);
 
                 _settings.Save("Ipv4RangeSet", _ipv4RangeSet);
             }

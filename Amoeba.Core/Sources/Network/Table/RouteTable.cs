@@ -186,9 +186,7 @@ namespace Amoeba.Core
                 // 生存率の高いNodeはFirstに、そうでないNodeはLastに
                 if (targetList != null)
                 {
-                    var orignal = targetList.FirstOrDefault(n => Unsafe.Equals(n.Id, id));
-
-                    if (orignal.Id != null)
+                    if (!targetList.Any(n => Unsafe.Equals(n.Id, id)))
                     {
                         if (targetList.Count < _col)
                         {

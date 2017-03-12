@@ -258,6 +258,8 @@ namespace Amoeba.Core
                 {
                     random.GetBytes(_myId);
                 }
+
+                _routeTable.BaseId = _myId;
             }
         }
 
@@ -326,7 +328,7 @@ namespace Amoeba.Core
                             var list = _routeTable.ToArray().Select(n => n.Value).ToList();
                             list.Sort((x, y) => x.PriorityManager.GetPriority().CompareTo(y.PriorityManager.GetPriority()));
 
-                            foreach (var sessionInfo in list.Where(n => (n.PriorityManager.GetPriority() * 100) < 25).Take(2))
+                            foreach (var sessionInfo in list.Take(1))
                             {
                                 this.RemoveConnection(sessionInfo.Connection);
                             }
@@ -460,7 +462,7 @@ namespace Amoeba.Core
 
                     // アップロード
                     if (_routeTable.Count >= 3
-                        && pushMetadataUploadStopwatch.Elapsed.TotalMinutes >= 3)
+                        && pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 60)
                     {
                         pushMetadataUploadStopwatch.Restart();
 
@@ -642,6 +644,8 @@ namespace Amoeba.Core
             }
         }
 
+        private VolatileHashSet<Location> _connectingLocations = new VolatileHashSet<Location>(new TimeSpan(0, 0, 30));
+
         private void ConnectThread()
         {
             try
@@ -659,22 +663,31 @@ namespace Amoeba.Core
 
                     Location location = null;
 
-                    for (;;)
+                    lock (_lockObject)
                     {
+                        _connectingLocations.Update();
+
                         switch (_random.Next(0, 2))
                         {
                             case 0:
-                                location = _crowdLocations.Randomize().FirstOrDefault();
+                                location = _crowdLocations.Randomize()
+                                    .Where(n => !_connectingLocations.Contains(n))
+                                    .FirstOrDefault();
                                 break;
                             case 1:
                                 var sessionInfo = _routeTable.ToArray().Randomize().Select(n => n.Value).FirstOrDefault();
                                 if (sessionInfo == null) break;
 
-                                location = sessionInfo.ReceiveInfo.PullLocationSet.Randomize().FirstOrDefault();
+                                location = sessionInfo.ReceiveInfo.PullLocationSet.Randomize()
+                                    .Where(n => !_connectingLocations.Contains(n))
+                                    .FirstOrDefault();
                                 break;
                         }
 
-                        if (location != null) break;
+                        if (location == null || _myLocation.Uris.Any(n => location.Uris.Contains(n))
+                            || _routeTable.Any(n => n.Value.Location.Uris.Any(m => location.Uris.Contains(m)))) continue;
+
+                        _connectingLocations.Add(location);
                     }
 
                     Cap cap = null;
@@ -765,12 +778,10 @@ namespace Amoeba.Core
                         _routeTable.Remove(sessionInfo.Id);
                     }
 
-                    _crowdLocations.Add(sessionInfo.Location);
+                    if (sessionInfo.Location != null) _crowdLocations.Add(sessionInfo.Location);
 
                     return;
                 }
-
-                throw new KeyNotFoundException();
             }
         }
 
@@ -782,9 +793,11 @@ namespace Amoeba.Core
             {
                 for (;;)
                 {
+                    //if (sw.ElapsedMilliseconds > 1000) Debug.WriteLine("SendConnectionsThread: " + sw.ElapsedMilliseconds);
+
                     // Timer
                     {
-                        Thread.Sleep((int)(1000 - sw.ElapsedMilliseconds));
+                        Thread.Sleep((int)(Math.Max(0, 1000 - sw.ElapsedMilliseconds)));
                         sw.Restart();
                     }
 
@@ -804,8 +817,10 @@ namespace Amoeba.Core
                                 remain -= count;
                                 if (remain == 0) break;
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
+                                Debug.WriteLine(e);
+
                                 this.RemoveConnection(connection);
                             }
                         }
@@ -826,9 +841,11 @@ namespace Amoeba.Core
             {
                 for (;;)
                 {
+                    //if (sw.ElapsedMilliseconds > 1000) Debug.WriteLine("ReceiveConnectionsThread: " + sw.ElapsedMilliseconds);
+
                     // Timer
                     {
-                        Thread.Sleep((int)(1000 - sw.ElapsedMilliseconds));
+                        Thread.Sleep((int)(Math.Max(0, 1000 - sw.ElapsedMilliseconds)));
                         sw.Restart();
                     }
 
@@ -848,8 +865,10 @@ namespace Amoeba.Core
                                 remain -= count;
                                 if (remain == 0) break;
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
+                                Debug.WriteLine(e);
+
                                 this.RemoveConnection(connection);
                             }
                         }
@@ -896,16 +915,16 @@ namespace Amoeba.Core
             }
 
             // Locations
-            if (sessionInfo.SendInfo.LocationStopwatch.Elapsed.TotalMinutes > 3)
+            if (sessionInfo.SendInfo.LocationStopwatch.Elapsed.TotalSeconds > 60)
             {
                 sessionInfo.SendInfo.LocationStopwatch.Restart();
 
                 var locations = new List<Location>();
-                locations.AddRange(_routeTable.ToArray().Select(n => n.Value.Location));
+                locations.AddRange(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
                 locations.AddRange(_crowdLocations);
                 _random.Shuffle(locations);
 
-                var packet = new LocationsPacket(locations);
+                var packet = new LocationsPacket(locations.Take(LocationsPacket.MaxLocationCount));
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.Write(typeStream, (int)SerializeId.Locations);
@@ -1116,7 +1135,7 @@ namespace Amoeba.Core
             {
                 sessionInfo.SendInfo.MulticastMetadataStopwatch.Restart();
 
-                var unicastMetadatas = new List<MulticastMetadata>();
+                var multicastMetadatas = new List<MulticastMetadata>();
 
                 var tags = sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.ToList();
                 _random.Shuffle(tags);
@@ -1125,18 +1144,18 @@ namespace Amoeba.Core
                 {
                     foreach (var metadata in _metadataManager.GetMulticastMetadatas(tag).Randomize())
                     {
-                        unicastMetadatas.Add(metadata);
+                        multicastMetadatas.Add(metadata);
 
-                        if (unicastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                        if (multicastMetadatas.Count >= _maxMetadataResultCount) goto End;
                     }
                 }
 
                 End:;
 
-                if (unicastMetadatas.Count > 0)
+                if (multicastMetadatas.Count > 0)
                 {
-                    var packet = new MulticastMetadatasResultPacket(unicastMetadatas);
-                    unicastMetadatas.Clear();
+                    var packet = new MulticastMetadatasResultPacket(multicastMetadatas);
+                    multicastMetadatas.Clear();
 
                     Stream typeStream = new BufferStream(_bufferManager);
                     VintUtils.Write(typeStream, (int)SerializeId.MulticastMetadatasResult);
@@ -1169,6 +1188,8 @@ namespace Amoeba.Core
 
                         lock (_lockObject)
                         {
+                            if (Unsafe.Equals(profile.Id, _myId)) throw new ArgumentException("Conflict");
+
                             if (_connections.ContainsKey(sessionInfo.Connection))
                             {
                                 if (!_routeTable.Add(sessionInfo.Id, sessionInfo))
@@ -1420,7 +1441,6 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                if (!_myLocation.Uris.All(n => location.Uris.Contains(n)))
                 {
                     foreach (var connection in _connections.Keys.ToArray())
                     {
@@ -1564,12 +1584,12 @@ namespace Amoeba.Core
 
                     _sendConnectionsThread = new Thread(this.SendConnectionsThread);
                     _sendConnectionsThread.Name = "NetworkManager_SendConnectionsThread";
-                    _sendConnectionsThread.Priority = ThreadPriority.Lowest;
+                    _sendConnectionsThread.Priority = ThreadPriority.BelowNormal;
                     _sendConnectionsThread.Start();
 
                     _receiveConnectionsThread = new Thread(this.ReceiveConnectionsThread);
                     _receiveConnectionsThread.Name = "NetworkManager_ReceiveConnectionsThread";
-                    _receiveConnectionsThread.Priority = ThreadPriority.Lowest;
+                    _receiveConnectionsThread.Priority = ThreadPriority.BelowNormal;
                     _receiveConnectionsThread.Start();
                 }
             }
@@ -1618,7 +1638,7 @@ namespace Amoeba.Core
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _myLocation = _settings.Load<Location>("MyLocation");
+                _myLocation = _settings.Load<Location>("MyLocation", () => new Location(null));
                 _crowdLocations.AddRange(_settings.Load<IEnumerable<Location>>("CrowdLocations", () => new List<Location>()));
                 _connectionCountLimit = _settings.Load<int>("ConnectionCountLimit", () => 256);
                 _bandwidthLimit = _settings.Load<int>("BandwidthLimit", () => 1024 * 1024 * 2);

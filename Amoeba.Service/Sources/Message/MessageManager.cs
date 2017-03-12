@@ -85,7 +85,7 @@ namespace Amoeba.Service
             }
         }
 
-        private Task<BroadcastMessage<Profile>> GetProfile(Signature signature)
+        public Task<BroadcastMessage<Profile>> GetProfile(Signature signature)
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
 
@@ -119,7 +119,7 @@ namespace Amoeba.Service
             return task;
         }
 
-        private Task<BroadcastMessage<Store>> GetStore(Signature signature)
+        public Task<BroadcastMessage<Store>> GetStore(Signature signature)
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
 
@@ -153,7 +153,7 @@ namespace Amoeba.Service
             return task;
         }
 
-        private Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, IExchangeDecrypt exchangePrivateKey)
+        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, IExchangeDecrypt exchangePrivateKey)
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
             if (exchangePrivateKey == null) throw new ArgumentNullException(nameof(exchangePrivateKey));
@@ -208,7 +208,7 @@ namespace Amoeba.Service
             });
         }
 
-        private Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, IExchangeDecrypt exchangePrivateKey)
+        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, IExchangeDecrypt exchangePrivateKey)
         {
             if (tag == null) throw new ArgumentNullException(nameof(tag));
             if (exchangePrivateKey == null) throw new ArgumentNullException(nameof(exchangePrivateKey));

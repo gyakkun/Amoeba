@@ -802,7 +802,7 @@ namespace Amoeba.Core
 
                         using (var reedSolomon = new ReedSolomon8(informationCount, informationCount * 2, _threadCount, _bufferManager))
                         {
-                            reedSolomon.Decode(buffers, indexes, blockLength, token);
+                            reedSolomon.Decode(buffers, indexes, blockLength, token).Wait();
                         }
 
                         // Set
@@ -825,7 +825,7 @@ namespace Amoeba.Core
                         }
                     }
 
-                    return group.Hashes.Take(informationCount);
+                    return (IEnumerable<Hash>)hashList.Take(informationCount).ToList();
                 }
                 else
                 {
@@ -1316,7 +1316,7 @@ namespace Amoeba.Core
 
                     using (var reedSolomon = new ReedSolomon8(targetBuffers.Length, targetBuffers.Length + parityBuffers.Length, _threadCount, _bufferManager))
                     {
-                        reedSolomon.Encode(targetBuffers, parityBuffers, indexes, blockLength, token);
+                        reedSolomon.Encode(targetBuffers, parityBuffers, indexes, blockLength, token).Wait();
                     }
 
                     token.ThrowIfCancellationRequested();
@@ -1939,6 +1939,7 @@ namespace Amoeba.Core
             if (disposing)
             {
                 _blockAddEventQueue.Dispose();
+                _blockRemoveEventQueue.Dispose();
 
                 if (_fileStream != null)
                 {

@@ -15,7 +15,7 @@ namespace Amoeba.Core
         {
             CorrectionAlgorithm = 0,
             Length = 1,
-            Hashes = 0,
+            Hashes = 2,
         }
 
         private CorrectionAlgorithm _correctionAlgorithm;

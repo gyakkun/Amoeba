@@ -382,7 +382,7 @@ namespace Amoeba.Core
                                     {
                                         // Write
                                         {
-                                            var task = _cacheManager.Decoding(stream, hashes, item.MaxLength, tokenSource.Token);
+                                            var task = _cacheManager.Decoding(new WrapperStream(stream, true), hashes, item.MaxLength, tokenSource.Token);
 
                                             while (!task.IsCompleted)
                                             {
@@ -470,7 +470,7 @@ namespace Amoeba.Core
             {
                 info = _volatileDownloadItemInfoManager.GetInfo(metadata);
 
-                if (info.State == DownloadState.Error)
+                if (info != null && info.State == DownloadState.Error)
                 {
                     _volatileDownloadItemInfoManager.Remove(metadata);
                     info = null;
@@ -500,10 +500,9 @@ namespace Amoeba.Core
                 {
                     stream = new BufferStream(_bufferManager);
 
-                    using (var wrapperStream = new WrapperStream(stream, true))
                     using (var tokenSource = new CancellationTokenSource())
                     {
-                        var task = _cacheManager.Decoding(wrapperStream, info.ResultHashes, info.MaxLength, tokenSource.Token);
+                        var task = _cacheManager.Decoding(new WrapperStream(stream, true), info.ResultHashes, info.MaxLength, tokenSource.Token);
 
                         while (!task.IsCompleted)
                         {
@@ -517,7 +516,7 @@ namespace Amoeba.Core
 
                     stream.Seek(0, SeekOrigin.Begin);
                 }
-                catch
+                catch(Exception)
                 {
                     if (stream != null)
                     {

@@ -7,13 +7,37 @@ using System.Text;
 
 namespace Amoeba
 {
-    [DataContract(Name = nameof(Ipv4CatharsisConfig))]
-    public class Ipv4CatharsisConfig
+    [DataContract(Name = nameof(CatharsisConfig))]
+    public class CatharsisConfig
+    {
+        private CatharsisIpv4Config _ipv4Config;
+
+        public CatharsisConfig(CatharsisIpv4Config ipv4Config)
+        {
+            this.Ipv4Config = ipv4Config;
+        }
+
+        [DataMember(Name = nameof(Ipv4Config))]
+        public CatharsisIpv4Config Ipv4Config
+        {
+            get
+            {
+                return _ipv4Config;
+            }
+            private set
+            {
+                _ipv4Config = value;
+            }
+        }
+    }
+
+    [DataContract(Name = nameof(CatharsisIpv4Config))]
+    public class CatharsisIpv4Config
     {
         private List<string> _urls;
         private List<string> _paths;
 
-        public Ipv4CatharsisConfig(IEnumerable<string> urls, IEnumerable<string> paths)
+        public CatharsisIpv4Config(IEnumerable<string> urls, IEnumerable<string> paths)
         {
             if (urls != null) this.ProtectedUrls.AddRange(urls);
             if (paths != null) this.ProtectedPaths.AddRange(paths);
