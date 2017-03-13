@@ -337,13 +337,13 @@ namespace Amoeba.Core
 
                     // アップロード
                     if (_routeTable.Count >= 3
-                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 30)
+                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 5)
                     {
                         pushBlockUploadStopwatch.Restart();
 
                         foreach (var node in _routeTable.ToArray())
                         {
-                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(1024).ToList();
+                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(32).ToList();
 
                             lock (node.Value.SendInfo.PushBlockResultQueue.LockObject)
                             {

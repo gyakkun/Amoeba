@@ -733,103 +733,108 @@ namespace Amoeba.Core
             }, token);
         }
 
+        private object _parityDecodingLockObject = new object();
+
         public Task<IEnumerable<Hash>> ParityDecoding(Group group, CancellationToken token)
         {
             return Task.Run(() =>
             {
-                if (group.CorrectionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
+                lock (_parityDecodingLockObject)
                 {
-                    var hashList = group.Hashes.ToList();
-                    int blockLength = group.Hashes.Max(n => this.GetLength(n));
-                    int informationCount = hashList.Count / 2;
-
-                    var buffers = new ArraySegment<byte>[informationCount];
-                    var indexes = new int[informationCount];
-
-                    try
+                    if (group.CorrectionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
                     {
-                        // Load
+                        var hashList = group.Hashes.ToList();
+                        int blockLength = group.Hashes.Max(n => this.GetLength(n));
+                        int informationCount = hashList.Count / 2;
+
+                        var buffers = new ArraySegment<byte>[informationCount];
+                        var indexes = new int[informationCount];
+
+                        try
                         {
-                            int count = 0;
-
-                            for (int i = 0; i < hashList.Count; i++)
+                            // Load
                             {
-                                token.ThrowIfCancellationRequested();
+                                int count = 0;
 
-                                if (!this.Contains(hashList[i])) continue;
-
-                                var buffer = new ArraySegment<byte>();
-
-                                try
+                                for (int i = 0; i < hashList.Count; i++)
                                 {
-                                    buffer = this[hashList[i]];
+                                    token.ThrowIfCancellationRequested();
 
-                                    if (buffer.Count < blockLength)
+                                    if (!this.Contains(hashList[i])) continue;
+
+                                    var buffer = new ArraySegment<byte>();
+
+                                    try
                                     {
-                                        var tempBuffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
-                                        Unsafe.Copy(buffer.Array, buffer.Offset, tempBuffer.Array, tempBuffer.Offset, buffer.Count);
-                                        Unsafe.Zero(tempBuffer.Array, tempBuffer.Offset + buffer.Count, tempBuffer.Count - buffer.Count);
+                                        buffer = this[hashList[i]];
 
-                                        _bufferManager.ReturnBuffer(buffer.Array);
+                                        if (buffer.Count < blockLength)
+                                        {
+                                            var tempBuffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
+                                            Unsafe.Copy(buffer.Array, buffer.Offset, tempBuffer.Array, tempBuffer.Offset, buffer.Count);
+                                            Unsafe.Zero(tempBuffer.Array, tempBuffer.Offset + buffer.Count, tempBuffer.Count - buffer.Count);
 
-                                        buffer = tempBuffer;
+                                            _bufferManager.ReturnBuffer(buffer.Array);
+
+                                            buffer = tempBuffer;
+                                        }
                                     }
-                                }
-                                catch (BlockNotFoundException)
-                                {
-
-                                }
-                                catch (Exception)
-                                {
-                                    if (buffer.Array != null)
+                                    catch (BlockNotFoundException)
                                     {
-                                        _bufferManager.ReturnBuffer(buffer.Array);
+
+                                    }
+                                    catch (Exception)
+                                    {
+                                        if (buffer.Array != null)
+                                        {
+                                            _bufferManager.ReturnBuffer(buffer.Array);
+                                        }
+
+                                        throw;
                                     }
 
-                                    throw;
+                                    indexes[count] = i;
+                                    buffers[count] = buffer;
+
+                                    count++;
+
+                                    if (count >= informationCount) break;
                                 }
 
-                                indexes[count] = i;
-                                buffers[count] = buffer;
-
-                                count++;
-
-                                if (count >= informationCount) break;
+                                if (count < informationCount) throw new BlockNotFoundException();
                             }
 
-                            if (count < informationCount) throw new BlockNotFoundException();
-                        }
-
-                        using (var reedSolomon = new ReedSolomon8(informationCount, informationCount * 2, _threadCount, _bufferManager))
-                        {
-                            reedSolomon.Decode(buffers, indexes, blockLength, token).Wait();
-                        }
-
-                        // Set
-                        {
-                            long length = group.Length;
-
-                            for (int i = 0; i < informationCount; length -= blockLength, i++)
+                            using (var reedSolomon = new ReedSolomon8(informationCount, informationCount * 2, _threadCount, _bufferManager))
                             {
-                                this[hashList[i]] = new ArraySegment<byte>(buffers[i].Array, buffers[i].Offset, (int)Math.Min(buffers[i].Count, length));
+                                reedSolomon.Decode(buffers, indexes, blockLength, token).Wait();
+                            }
+
+                            // Set
+                            {
+                                long length = group.Length;
+
+                                for (int i = 0; i < informationCount; length -= blockLength, i++)
+                                {
+                                    this[hashList[i]] = new ArraySegment<byte>(buffers[i].Array, buffers[i].Offset, (int)Math.Min(buffers[i].Count, length));
+                                }
                             }
                         }
-                    }
-                    finally
-                    {
-                        foreach (var buffer in buffers)
+                        finally
                         {
-                            if (buffer.Array == null) continue;
+                            foreach (var buffer in buffers)
+                            {
+                                if (buffer.Array == null) continue;
 
-                            _bufferManager.ReturnBuffer(buffer.Array);
+                                _bufferManager.ReturnBuffer(buffer.Array);
+                            }
                         }
-                    }
 
-                    return (IEnumerable<Hash>)hashList.Take(informationCount).ToList();
-                }
-                else
-                {
-                    throw new NotSupportedException();
+                        return (IEnumerable<Hash>)hashList.Take(informationCount).ToList();
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
                 }
             }, token);
         }
@@ -1260,99 +1265,104 @@ namespace Amoeba.Core
             }, token);
         }
 
+        private object _parityEncodingLockObject = new object();
+
         private IEnumerable<Hash> ParityEncoding(IEnumerable<ArraySegment<byte>> buffers, HashAlgorithm hashAlgorithm, CorrectionAlgorithm correctionAlgorithm, CancellationToken token)
         {
-            if (correctionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
+            lock (_parityEncodingLockObject)
             {
-                if (buffers.Count() > 128) throw new ArgumentOutOfRangeException(nameof(buffers));
-
-                var createBuffers = new List<ArraySegment<byte>>();
-
-                try
+                if (correctionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
                 {
-                    var targetBuffers = new ArraySegment<byte>[buffers.Count()];
-                    var parityBuffers = new ArraySegment<byte>[buffers.Count()];
+                    if (buffers.Count() > 128) throw new ArgumentOutOfRangeException(nameof(buffers));
 
-                    int blockLength = buffers.Max(n => n.Count);
+                    var createBuffers = new List<ArraySegment<byte>>();
 
-                    // Normalize
+                    try
                     {
-                        int index = 0;
+                        var targetBuffers = new ArraySegment<byte>[buffers.Count()];
+                        var parityBuffers = new ArraySegment<byte>[buffers.Count()];
 
-                        foreach (var buffer in buffers)
+                        int blockLength = buffers.Max(n => n.Count);
+
+                        // Normalize
                         {
-                            token.ThrowIfCancellationRequested();
+                            int index = 0;
 
-                            if (buffer.Count < blockLength)
+                            foreach (var buffer in buffers)
                             {
-                                var tempBuffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
-                                Unsafe.Copy(buffer.Array, buffer.Offset, tempBuffer.Array, tempBuffer.Offset, buffer.Count);
-                                Unsafe.Zero(tempBuffer.Array, tempBuffer.Offset + buffer.Count, tempBuffer.Count - buffer.Count);
+                                token.ThrowIfCancellationRequested();
 
-                                createBuffers.Add(tempBuffer);
+                                if (buffer.Count < blockLength)
+                                {
+                                    var tempBuffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
+                                    Unsafe.Copy(buffer.Array, buffer.Offset, tempBuffer.Array, tempBuffer.Offset, buffer.Count);
+                                    Unsafe.Zero(tempBuffer.Array, tempBuffer.Offset + buffer.Count, tempBuffer.Count - buffer.Count);
 
-                                targetBuffers[index] = tempBuffer;
+                                    createBuffers.Add(tempBuffer);
+
+                                    targetBuffers[index] = tempBuffer;
+                                }
+                                else
+                                {
+                                    targetBuffers[index] = buffer;
+                                }
+
+                                index++;
                             }
-                            else
-                            {
-                                targetBuffers[index] = buffer;
-                            }
-
-                            index++;
-                        }
-                    }
-
-                    for (int i = 0; i < parityBuffers.Length; i++)
-                    {
-                        parityBuffers[i] = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
-                    }
-
-                    var indexes = new int[parityBuffers.Length];
-
-                    for (int i = 0; i < parityBuffers.Length; i++)
-                    {
-                        indexes[i] = targetBuffers.Length + i;
-                    }
-
-                    using (var reedSolomon = new ReedSolomon8(targetBuffers.Length, targetBuffers.Length + parityBuffers.Length, _threadCount, _bufferManager))
-                    {
-                        reedSolomon.Encode(targetBuffers, parityBuffers, indexes, blockLength, token).Wait();
-                    }
-
-                    token.ThrowIfCancellationRequested();
-
-                    var parityHashes = new HashCollection();
-
-                    for (int i = 0; i < parityBuffers.Length; i++)
-                    {
-                        Hash hash = null;
-
-                        if (hashAlgorithm == HashAlgorithm.Sha256)
-                        {
-                            hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(parityBuffers[i]));
                         }
 
-                        this.Lock(hash);
-                        this[hash] = parityBuffers[i];
+                        for (int i = 0; i < parityBuffers.Length; i++)
+                        {
+                            parityBuffers[i] = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
+                        }
 
-                        parityHashes.Add(hash);
+                        var indexes = new int[parityBuffers.Length];
+
+                        for (int i = 0; i < parityBuffers.Length; i++)
+                        {
+                            indexes[i] = targetBuffers.Length + i;
+                        }
+
+                        using (var reedSolomon = new ReedSolomon8(targetBuffers.Length, targetBuffers.Length + parityBuffers.Length, _threadCount, _bufferManager))
+                        {
+                            reedSolomon.Encode(targetBuffers, parityBuffers, indexes, blockLength, token).Wait();
+                        }
+
+                        token.ThrowIfCancellationRequested();
+
+                        var parityHashes = new HashCollection();
+
+                        for (int i = 0; i < parityBuffers.Length; i++)
+                        {
+                            Hash hash = null;
+
+                            if (hashAlgorithm == HashAlgorithm.Sha256)
+                            {
+                                hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(parityBuffers[i]));
+                            }
+
+                            this.Lock(hash);
+                            this[hash] = parityBuffers[i];
+
+                            parityHashes.Add(hash);
+                        }
+
+                        return parityHashes;
                     }
-
-                    return parityHashes;
-                }
-                finally
-                {
-                    foreach (var buffer in createBuffers)
+                    finally
                     {
-                        if (buffer.Array == null) continue;
+                        foreach (var buffer in createBuffers)
+                        {
+                            if (buffer.Array == null) continue;
 
-                        _bufferManager.ReturnBuffer(buffer.Array);
+                            _bufferManager.ReturnBuffer(buffer.Array);
+                        }
                     }
                 }
-            }
-            else
-            {
-                throw new NotSupportedException();
+                else
+                {
+                    throw new NotSupportedException();
+                }
             }
         }
 

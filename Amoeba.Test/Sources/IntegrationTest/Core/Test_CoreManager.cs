@@ -139,15 +139,15 @@ namespace Amoeba.Test
                     wrapper.Value.SetCrowdLocations(new Location[] { wrapperList[0].Value.MyLocation });
                 }
 
-                //this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
+                this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
                 this.MessageUploadAndDownload(wrapperList.Select(n => n.Value));
             }
             finally
             {
-                foreach (var wrapper in wrapperList)
+                Parallel.ForEach(wrapperList, wrapper =>
                 {
                     wrapper.Dispose();
-                }
+                });
             }
         }
 
@@ -280,7 +280,7 @@ namespace Amoeba.Test
                 {
                     using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                     {
-                        for (int remain = _random.Next(1, 1024 * 1024 * 4); remain > 0; remain = Math.Max(0, remain - safeBuffer.Value.Length))
+                        for (int remain = _random.Next(1, 1024 * 1024); remain > 0; remain = Math.Max(0, remain - safeBuffer.Value.Length))
                         {
                             int length = Math.Min(remain, safeBuffer.Value.Length);
 
