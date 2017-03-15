@@ -1,7 +1,7 @@
 ﻿<Config>
 
-  <Property Name="FontFamily" Value="Segoe UI, Meiryo UI, Verdana" />
-  <Property Name="DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
+  <Property Name="Global_FontFamily" Value="Segoe UI, Meiryo UI, Verdana" />
+  <Property Name="Global_DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
 
   <Property Name="Languages_English" Value="English" />
   <Property Name="Languages_Japanese" Value="Japanese" />

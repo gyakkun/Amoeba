@@ -66,10 +66,8 @@ namespace Amoeba.Interface
 
             if (CheckDistance(point, _origin))
             {
-                if (this.DragDropData is IDragable)
+                if (this.DragDropData is IDragable dragObject)
                 {
-                    var dragObject = this.DragDropData as IDragable;
-
                     var data = new DataObject(dragObject.DragFormat, dragObject);
                     DragDrop.DoDragDrop(this.AssociatedObject, data, this.AllowedEffects);
                 }

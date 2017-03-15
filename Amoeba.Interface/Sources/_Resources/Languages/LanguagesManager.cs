@@ -18,7 +18,7 @@ namespace Amoeba.Interface
 
     partial class LanguagesManager
     {
-        private static LanguagesManager _defaultInstance = new LanguagesManager();
+        private static readonly LanguagesManager _defaultInstance = new LanguagesManager();
         private static Dictionary<string, Dictionary<string, string>> _dic = new Dictionary<string, Dictionary<string, string>>();
         private static string _currentLanguage;
 
@@ -34,10 +34,9 @@ namespace Amoeba.Interface
 #if DEBUG
             string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface\Languages";
 
-            if (!Directory.Exists(path))
-                path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
+            if (!Directory.Exists(path)) path = EnvironmentConfig.Paths.LanguagesPath;
 #else
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "Languages");
+            string path = EnvironmentConfig.Paths.LanguagesPath;
 #endif
 
             LanguagesManager.Load(path);

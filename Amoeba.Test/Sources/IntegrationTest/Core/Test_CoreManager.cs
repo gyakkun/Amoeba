@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Amoeba.Core;
 using Omnius.Base;
+using Omnius.Collections;
 using Omnius.Io;
 using Omnius.Net;
 using Omnius.Security;
@@ -21,7 +22,7 @@ namespace Amoeba.Test
     {
         private BufferManager _bufferManager = BufferManager.Instance;
 
-        private readonly string _workPath = "Test_CoreManager";
+        private readonly string _workPath = @"D:\Test_CoreManager";
         private readonly Random _random = new Random();
 
         public void Setup()
@@ -127,19 +128,27 @@ namespace Amoeba.Test
 
             try
             {
-                for (int i = 0; i < 32; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     var wrapper = this.CreateCoreManager(60000 + i);
                     wrapper.Value.Start();
                     wrapperList.Add(wrapper);
                 }
 
-                foreach (var wrapper in wrapperList.Skip(1))
+                foreach (var wrapper in wrapperList)
                 {
-                    wrapper.Value.SetCrowdLocations(new Location[] { wrapperList[0].Value.MyLocation });
+                    wrapper.Value.SetCrowdLocations(wrapperList.Select(n => n.Value.MyLocation));
                 }
 
-                this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
+                for (;;)
+                {
+                    Thread.Sleep(1000);
+
+                    var average = wrapperList.Select(n => n.Value.Information.GetValue<int>("Network_CrowdNodeCount")).Sum() / wrapperList.Count;
+                    if (average > wrapperList.Count - 5) break;
+                }
+
+                //this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
                 this.MessageUploadAndDownload(wrapperList.Select(n => n.Value));
             }
             finally
@@ -156,14 +165,12 @@ namespace Amoeba.Test
             Console.WriteLine("----- CoreManager Metadata Send and Receive Test -----");
             Console.WriteLine();
 
-            var sw = Stopwatch.StartNew();
-
             var coreManagerList = coreManagers.ToList();
 
-            foreach (var coreManager in coreManagerList)
+            Parallel.ForEach(coreManagerList, coreManager =>
             {
-                coreManager.Resize(1024 * 1024 * 256);
-            }
+                coreManager.Resize((long)1024 * 1024 * 256);
+            });
 
             var broadcastMetadataList = new List<BroadcastMetadata>();
             var unicastMetadataList = new List<UnicastMetadata>();
@@ -210,6 +217,8 @@ namespace Amoeba.Test
                 coreManagerList[_random.Next(1, coreManagerList.Count)].UploadMetadata(multicastMetadata);
                 multicastMetadataList.Add(multicastMetadata);
             }
+
+            var sw = Stopwatch.StartNew();
 
             {
                 var targetCoreManager = coreManagerList[0];
@@ -260,17 +269,15 @@ namespace Amoeba.Test
             Console.WriteLine("----- CoreManager Message Send and Receive Test -----");
             Console.WriteLine();
 
-            var sw = Stopwatch.StartNew();
-
             var coreManagerList = coreManagers.ToList();
 
-            foreach (var coreManager in coreManagerList)
+            Parallel.ForEach(coreManagerList, coreManager =>
             {
-                coreManager.Resize(1024 * 1024 * 1024);
-            }
+                coreManager.Resize((long)1024 * 1024 * 1024 * 4);
+            });
 
-            var hashList = new HashSet<Hash>();
-            var metadataList = new List<Metadata>();
+            var hashList = new LockedHashSet<Hash>();
+            var metadataList = new LockedList<Metadata>();
 
             Parallel.For(1, coreManagerList.Count, i =>
             {
@@ -280,7 +287,7 @@ namespace Amoeba.Test
                 {
                     using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                     {
-                        for (int remain = _random.Next(1, 1024 * 1024); remain > 0; remain = Math.Max(0, remain - safeBuffer.Value.Length))
+                        for (int remain = 1024 * 1024 * 32; remain > 0; remain = Math.Max(0, remain - safeBuffer.Value.Length))
                         {
                             int length = Math.Min(remain, safeBuffer.Value.Length);
 
@@ -300,7 +307,9 @@ namespace Amoeba.Test
                 }
             });
 
-            Parallel.ForEach(metadataList, metadata =>
+            var sw = Stopwatch.StartNew();
+
+            Parallel.ForEach(metadataList, new ParallelOptions() { MaxDegreeOfParallelism = 32 }, metadata =>
             {
                 for (;;)
                 {
@@ -310,7 +319,7 @@ namespace Amoeba.Test
 
                     try
                     {
-                        stream = coreManagerList[0].GetStream(metadata, 1024 * 1024 * 32).Result;
+                        stream = coreManagerList[0].GetStream(metadata, 1024 * 1024 * 256).Result;
                         if (stream == null) continue;
 
                         var hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(stream));

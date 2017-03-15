@@ -157,7 +157,7 @@ namespace Amoeba.Core
                 targetList[left] = temp;
             }
 
-            return targetList.TakeWhile(n => n.Node.HasValue).Select(n => n.Node.Value).Take(count).ToList();
+            return targetList.Take(count).TakeWhile(n => n.Node.HasValue).Select(n => n.Node.Value).ToList();
         }
 
         private struct SortInfo

@@ -32,8 +32,6 @@ namespace Amoeba.Core
 
         private Random _random = new Random();
 
-        private volatile byte[] _myId;
-
         private volatile Location _myLocation;
 
         private RouteTable<SessionInfo> _routeTable;
@@ -102,7 +100,11 @@ namespace Amoeba.Core
             {
                 lock (_lockObject)
                 {
-                    return CollectionUtils.Unite(_crowdLocations, _routeTable.ToArray().Select(n => n.Value.Location)).ToArray();
+                    var hashSet = new HashSet<Location>();
+                    hashSet.UnionWith(_crowdLocations);
+                    hashSet.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
+
+                    return hashSet.ToArray();
                 }
             }
         }
@@ -186,7 +188,7 @@ namespace Amoeba.Core
                                 string name = property.Name;
                                 object value = property.GetValue(_info);
 
-                                if (value is SafeInteger) value = (long)value;
+                                if (value is SafeInteger safeInteger) value = (long)safeInteger;
 
                                 contexts.Add(new InformationContext(prefix + name, value));
                             }
@@ -252,14 +254,14 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                _myId = new byte[32];
+                var baseId = new byte[32];
 
                 using (var random = RandomNumberGenerator.Create())
                 {
-                    random.GetBytes(_myId);
+                    random.GetBytes(baseId);
                 }
 
-                _routeTable.BaseId = _myId;
+                _routeTable.BaseId = baseId;
             }
         }
 
@@ -337,13 +339,13 @@ namespace Amoeba.Core
 
                     // アップロード
                     if (_routeTable.Count >= 3
-                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 5)
+                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 10)
                     {
                         pushBlockUploadStopwatch.Restart();
 
                         foreach (var node in _routeTable.ToArray())
                         {
-                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(32).ToList();
+                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(256).ToList();
 
                             lock (node.Value.SendInfo.PushBlockResultQueue.LockObject)
                             {
@@ -413,8 +415,10 @@ namespace Amoeba.Core
 
                                 foreach (var hash in pushBlockLinkSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _myId, crowdNodes, 3))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, crowdNodes, 2))
                                     {
+                                        if (node.Value.SendInfo.PushBlockLinkSet.Contains(hash)) continue;
+
                                         tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
                                     }
                                 }
@@ -437,13 +441,17 @@ namespace Amoeba.Core
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _myId, crowdNodes, 3))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, crowdNodes, 2))
                                     {
+                                        if (node.Value.SendInfo.PushBlockRequestSet.Contains(hash)) continue;
+
                                         tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
                                     }
 
                                     foreach (var node in crowdNodes.Where(n => n.Value.ReceiveInfo.PullBlockLinkSet.Contains(hash)))
                                     {
+                                        if (node.Value.SendInfo.PushBlockRequestSet.Contains(hash)) continue;
+
                                         tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
                                     }
                                 }
@@ -569,7 +577,7 @@ namespace Amoeba.Core
 
                                 foreach (var signature in pushBroadcastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _myId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _routeTable.BaseId, crowdNodes, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -593,7 +601,7 @@ namespace Amoeba.Core
 
                                 foreach (var signature in pushUnicastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _myId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _routeTable.BaseId, crowdNodes, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -617,7 +625,7 @@ namespace Amoeba.Core
 
                                 foreach (var tag in pushMulticastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(tag.Id, _myId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(tag.Id, _routeTable.BaseId, crowdNodes, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Tag>()).Add(tag);
                                     }
@@ -644,7 +652,7 @@ namespace Amoeba.Core
             }
         }
 
-        private VolatileHashSet<Location> _connectingLocations = new VolatileHashSet<Location>(new TimeSpan(0, 0, 30));
+        private VolatileHashSet<Location> _connectingLocations = new VolatileHashSet<Location>(new TimeSpan(0, 1, 0));
 
         private void ConnectThread()
         {
@@ -817,10 +825,8 @@ namespace Amoeba.Core
                                 remain -= count;
                                 if (remain == 0) break;
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
-                                Debug.WriteLine(e);
-
                                 this.RemoveConnection(connection);
                             }
                         }
@@ -865,10 +871,8 @@ namespace Amoeba.Core
                                 remain -= count;
                                 if (remain == 0) break;
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
-                                Debug.WriteLine(e);
-
                                 this.RemoveConnection(connection);
                             }
                         }
@@ -909,7 +913,7 @@ namespace Amoeba.Core
                 Stream versionStream = new BufferStream(_bufferManager);
                 VintUtils.Write(versionStream, 0);
 
-                var dataStream = (new ProfilePacket(_myId, _myLocation)).Export(_bufferManager);
+                var dataStream = (new ProfilePacket(_routeTable.BaseId, _myLocation)).Export(_bufferManager);
 
                 return new UniteStream(versionStream, dataStream);
             }
@@ -938,7 +942,7 @@ namespace Amoeba.Core
             {
                 BlocksLinkPacket packet;
 
-                lock (sessionInfo.SendInfo.PushBlockLinkQueue)
+                lock (sessionInfo.SendInfo.PushBlockLinkQueue.LockObject)
                 {
                     packet = new BlocksLinkPacket(sessionInfo.SendInfo.PushBlockLinkQueue);
                     sessionInfo.SendInfo.PushBlockLinkQueue.Clear();
@@ -949,6 +953,8 @@ namespace Amoeba.Core
 
                 _info.PushBlockLinkCount.Add(packet.Hashes.Count());
 
+                sessionInfo.SendInfo.PushBlockLinkSet.AddRange(packet.Hashes);
+
                 return new UniteStream(typeStream, packet.Export(_bufferManager));
             }
 
@@ -957,7 +963,7 @@ namespace Amoeba.Core
             {
                 BlocksRequestPacket packet;
 
-                lock (sessionInfo.SendInfo.PushBlockRequestQueue)
+                lock (sessionInfo.SendInfo.PushBlockRequestQueue.LockObject)
                 {
                     packet = new BlocksRequestPacket(sessionInfo.SendInfo.PushBlockRequestQueue);
                     sessionInfo.SendInfo.PushBlockRequestQueue.Clear();
@@ -968,6 +974,8 @@ namespace Amoeba.Core
 
                 _info.PushBlockRequestCount.Add(packet.Hashes.Count());
 
+                sessionInfo.SendInfo.PushBlockRequestSet.AddRange(packet.Hashes);
+
                 return new UniteStream(typeStream, packet.Export(_bufferManager));
             }
 
@@ -976,7 +984,7 @@ namespace Amoeba.Core
             {
                 sessionInfo.SendInfo.BlockStopwatch.Restart();
 
-                //if (_random.Next(0, 100) < (sessionInfo.PriorityManager.GetPriority() * 100))
+                if (_random.Next(0, 100) < (sessionInfo.PriorityManager.GetPriority() * 100))
                 {
                     Hash hash = null;
 
@@ -1019,6 +1027,9 @@ namespace Amoeba.Core
                         VintUtils.Write(typeStream, (int)SerializeId.BlockResult);
 
                         _info.PushBlockResultCount.Increment();
+
+                        sessionInfo.SendInfo.PushBlockResultSet.Add(hash);
+                        sessionInfo.ReceiveInfo.PullBlockRequestSet.Remove(hash);
 
                         return new UniteStream(typeStream, dataStream);
                     }
@@ -1209,7 +1220,7 @@ namespace Amoeba.Core
 
                         lock (_lockObject)
                         {
-                            if (Unsafe.Equals(profile.Id, _myId)) throw new ArgumentException("Conflict");
+                            if (Unsafe.Equals(profile.Id, _routeTable.BaseId)) throw new ArgumentException("Conflict");
 
                             if (_connections.ContainsKey(sessionInfo.Connection))
                             {
@@ -1262,7 +1273,7 @@ namespace Amoeba.Core
 
                         _info.PullBlockRequestCount.Add(packet.Hashes.Count());
 
-                        sessionInfo.ReceiveInfo.PullBlockRequestSet.AddRange(packet.Hashes);
+                        sessionInfo.ReceiveInfo.PullBlockRequestSet.AddRange(packet.Hashes.Where(n => !sessionInfo.SendInfo.PushBlockResultSet.Contains(n)));
                     }
                     else if (id == (int)SerializeId.BlockResult)
                     {
@@ -1273,6 +1284,8 @@ namespace Amoeba.Core
                         try
                         {
                             _cacheManager[packet.Hash] = packet.Value;
+
+                            sessionInfo.SendInfo.PushBlockResultSet.Add(packet.Hash);
 
                             if (sessionInfo.SendInfo.PushBlockRequestSet.Contains(packet.Hash))
                             {
@@ -1407,7 +1420,9 @@ namespace Amoeba.Core
         {
             public bool IsInitialized { get; set; }
 
+            public VolatileHashSet<Hash> PushBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
             public VolatileHashSet<Hash> PushBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
+            public VolatileHashSet<Hash> PushBlockResultSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(1, 0, 0));
 
             public Stopwatch LocationStopwatch { get; private set; } = Stopwatch.StartNew();
             public Stopwatch BlockStopwatch { get; private set; } = Stopwatch.StartNew();
@@ -1415,10 +1430,9 @@ namespace Amoeba.Core
             public Stopwatch UnicastMetadataStopwatch { get; private set; } = Stopwatch.StartNew();
             public Stopwatch MulticastMetadataStopwatch { get; private set; } = Stopwatch.StartNew();
 
-            public LockedQueue<Hash> PushBlockResultQueue { get; private set; } = new LockedQueue<Hash>();
-
             public LockedList<Hash> PushBlockLinkQueue { get; private set; } = new LockedList<Hash>();
             public LockedList<Hash> PushBlockRequestQueue { get; private set; } = new LockedList<Hash>();
+            public LockedQueue<Hash> PushBlockResultQueue { get; private set; } = new LockedQueue<Hash>();
 
             public LockedList<Signature> PushBroadcastMetadataRequestQueue { get; private set; } = new LockedList<Signature>();
             public LockedList<Signature> PushUnicastMetadataRequestQueue { get; private set; } = new LockedList<Signature>();
@@ -1426,7 +1440,9 @@ namespace Amoeba.Core
 
             public void Update()
             {
+                this.PushBlockLinkSet.Update();
                 this.PushBlockRequestSet.Update();
+                this.PushBlockResultSet.Update();
             }
         }
 
@@ -1480,14 +1496,6 @@ namespace Amoeba.Core
             lock (_lockObject)
             {
                 _crowdLocations.AddRange(locations);
-            }
-        }
-
-        public bool IsDownloadWaiting(Hash hash)
-        {
-            lock (_lockObject)
-            {
-                return _pushBlocksRequestSet.Contains(hash);
             }
         }
 

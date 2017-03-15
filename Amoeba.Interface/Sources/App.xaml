@@ -12,7 +12,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.DeepOrange.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <ObjectDataProvider x:Key="_languages" ObjectInstance="{x:Static local:LanguagesManager.Instance}"/>
+            <ObjectDataProvider x:Key="_languages" ObjectInstance="{x:Static local:LanguagesManager.Instance}" />
+            <ObjectDataProvider x:Key="_settings" ObjectInstance="{x:Static local:SettingsManager.Instance}" />
 
             <local:SortedCollectionConverter x:Key="SortedCollectionConverter"/>
         </ResourceDictionary>

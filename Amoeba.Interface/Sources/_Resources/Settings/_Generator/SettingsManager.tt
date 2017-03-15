@@ -22,11 +22,10 @@ using (var reader = new XmlTextReader(stream))
         {
             if (reader.LocalName == "Property")
             {
-                var type = reader.GetAttribute("Type");
+                var type = GetNormalizedTypeName(reader.GetAttribute("Type"));
                 var name = reader.GetAttribute("Name");
-                var isEditable = bool.Parse(reader.GetAttribute("IsEditable") ?? "false");
 
-                propertyInfos.Add(new PropertyInfo(type, name, isEditable));
+                propertyInfos.Add(new PropertyInfo(type, name));
             }
             else if (reader.LocalName == "Import")
             {
@@ -62,6 +61,16 @@ namespace Amoeba.Interface
         {
             _settings = new Settings(configPath);
 
+<#
+foreach(var p in propertyInfos)
+{
+    var normalizedTypeName = GetNormalizedTypeName(p.Type);
+#>
+            this.<#= p.Name #> = new SettingsContent<<#= p.Type #>>();
+<#
+}
+#>
+
             this.Init();
         }
 
@@ -71,7 +80,7 @@ namespace Amoeba.Interface
 foreach(var p in propertyInfos)
 {
 #>
-            this.<#= p.Name #> = _settings.Load("<#= p.Name #>", () => this.<#= p.Name #>);
+            lock (this.<#= p.Name #>.LockObject) { this.<#= p.Name #>.Value = _settings.Load("<#= p.Name #>", () => this.<#= p.Name #>.Value); }
 <#
 }
 #>
@@ -83,7 +92,7 @@ foreach(var p in propertyInfos)
 foreach(var p in propertyInfos)
 {
 #>
-            _settings.Save("<#= p.Name #>", this.<#= p.Name #>);
+            lock (this.<#= p.Name #>.LockObject) { _settings.Save("<#= p.Name #>", this.<#= p.Name #>.Value); }
 <#
 }
 #>
@@ -92,10 +101,8 @@ foreach(var p in propertyInfos)
 <#
 foreach(var p in propertyInfos)
 {
-    var normalizedTypeName = GetNormalizedTypeName(p.Type);
-
 #>
-        public <#= normalizedTypeName #> <#= p.Name #> { get; <# if(!p.IsEditable) {#>private <#}#>set; }
+        public SettingsContent<<#= p.Type #>> <#= p.Name #> { get; private set; }
 <#
 }
 #>
@@ -111,15 +118,13 @@ private static string GetNormalizedTypeName(string name)
 }
 private class PropertyInfo
 {
-    public PropertyInfo(string type, string name, bool isEditable)
+    public PropertyInfo(string type, string name)
     {
         this.Type = type;
         this.Name = name;
-        this.IsEditable = isEditable;
     }
 
     public string Type { get; private set; }
     public string Name { get; private set; }
-    public bool IsEditable { get; private set; }
 }
 #>

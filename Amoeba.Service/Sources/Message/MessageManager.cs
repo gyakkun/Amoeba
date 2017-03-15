@@ -52,6 +52,8 @@ namespace Amoeba.Service
 
             _watchTimer = new WatchTimer(this.WatchTimer);
             _watchTimer.Start(new TimeSpan(0, 0, 30));
+
+            _coreManager.GetLockSignaturesEvent = (_) => this.SearchSignatures;
         }
 
         private void WatchTimer()

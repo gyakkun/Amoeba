@@ -29,7 +29,7 @@ namespace Amoeba.Interface
         {
             this.Model = model;
 
-            this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
+            this.Name = model.ObserveProperty(n => n.Name).ToReactiveProperty().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.Seeds = model.SeedInfos.ToReadOnlyReactiveCollection(n => new SeedViewModel(this, n)).AddTo(_disposable);
             this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new BoxViewModel(this, n)).AddTo(_disposable);

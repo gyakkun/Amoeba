@@ -17,14 +17,12 @@ using System.Windows.Shapes;
 namespace Amoeba.Interface
 {
     /// <summary>
-    /// Interaction logic for ChatControl.xaml
+    /// Interaction logic for StoreControl.xaml
     /// </summary>
-    public partial class ChatControl : UserControl
+    public partial class StoreControl : UserControl
     {
-        public ChatControl()
+        public StoreControl()
         {
-            this.DataContext = new ChatControlViewModel();
-
             InitializeComponent();
         }
     }

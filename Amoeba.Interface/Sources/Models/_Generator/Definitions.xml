@@ -1,27 +1,32 @@
 ﻿<Config>
   <Import Namespace="System.Collections.ObjectModel" />
+  <Import Namespace="System.Windows" />
   <Import Namespace="Amoeba.Service" />
   <Import Namespace="Amoeba.Core" />
+
+  <Class Name="MainWindowSettings">
+    <Property Type="WindowSettings" Name="WindowSettings" IsEditable="true" />
+  </Class>
 
   <Class Name="StoreCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(StoreInfo)" Name="StoreInfos" IsCollection="true" />
-    <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" IsCollection="true" />
+    <Property Type="ObservableCollection(StoreInfo)" Name="StoreInfos" />
+    <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" />
   </Class>
 
   <Class Name="StoreInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" IsCollection="true" />
+    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
   </Class>
 
   <Class Name="BoxInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" IsCollection="true" />
-    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" IsCollection="true" />
+    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" />
+    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
   </Class>
 
   <Class Name="SeedInfo">

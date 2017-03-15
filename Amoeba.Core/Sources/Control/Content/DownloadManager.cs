@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -156,120 +157,71 @@ namespace Amoeba.Core
 
         private void DownloadThread()
         {
-            var random = new Random();
-            int round = 0;
+            var sw = Stopwatch.StartNew();
 
             for (;;)
             {
                 Thread.Sleep(1000 * 1);
                 if (this.State == ManagerState.Stop) return;
 
-                DownloadItemInfo item = null;
+                if (sw.Elapsed.TotalSeconds < 10) continue;
+                sw.Restart();
+
+                var items = new List<DownloadItemInfo>();
 
                 lock (_lockObject)
                 {
-                    var tempList = CollectionUtils.Unite(_volatileDownloadItemInfoManager, _downloadItemInfoManager).ToArray();
-
-                    if (tempList.Length > 0)
-                    {
-                        {
-                            var items = tempList
-                               .Where(n => n.State == DownloadState.Downloading)
-                               .Where(x =>
-                               {
-                                   if (x.Depth == 0) return _cacheManager.Contains(x.Metadata.Hash);
-                                   else return 0 == (x.Index.Groups.Sum(n => n.Hashes.Count() / 2) - x.Index.Groups.Sum(n => Math.Min(n.Hashes.Count() / 2, _existManager.GetCount(n))));
-                               })
-                               .ToList();
-
-                            item = items.FirstOrDefault();
-                        }
-
-                        if (item == null)
-                        {
-                            var items = tempList
-                                .Where(n => n.State == DownloadState.Downloading)
-                                .ToList();
-
-                            if (items.Count > 0)
-                            {
-                                round = (round >= items.Count) ? 0 : round;
-                                item = items[round++];
-                            }
-                        }
-                    }
+                    items.AddRange(CollectionUtils.Unite(_volatileDownloadItemInfoManager, _downloadItemInfoManager).ToArray()
+                        .Where(n => n.State == DownloadState.Downloading));
                 }
 
-                if (item == null) continue;
-
-                try
+                foreach (var item in items)
                 {
-                    if (!this.CheckSize(item)) throw new ArgumentException("download size too large.");
-
-                    if (item.Depth == 0)
+                    try
                     {
-                        if (!_cacheManager.Contains(item.Metadata.Hash))
-                        {
-                            item.State = DownloadState.Downloading;
+                        if (!this.CheckSize(item)) throw new ArgumentException("download size too large.");
 
-                            _networkManager.Download(item.Metadata.Hash);
+                        if (item.Depth == 0)
+                        {
+                            if (!_cacheManager.Contains(item.Metadata.Hash))
+                            {
+                                item.State = DownloadState.Downloading;
+
+                                _networkManager.Download(item.Metadata.Hash);
+                            }
+                            else
+                            {
+                                item.State = DownloadState.Decoding;
+                            }
                         }
                         else
                         {
-                            item.State = DownloadState.Decoding;
-                        }
-                    }
-                    else
-                    {
-                        if (!item.Index.Groups.All(n => _existManager.GetCount(n) >= n.Hashes.Count() / 2))
-                        {
-                            item.State = DownloadState.Downloading;
-
-                            int limitCount = 1024;
-
-                            foreach (var group in item.Index.Groups.Randomize())
+                            if (!item.Index.Groups.All(n => _existManager.GetCount(n) >= n.Hashes.Count() / 2))
                             {
-                                if (_existManager.GetCount(group) >= group.Hashes.Count() / 2) continue;
+                                item.State = DownloadState.Downloading;
 
-                                foreach (var hash in _existManager.GetHashes(group, false))
+                                foreach (var group in item.Index.Groups.Randomize())
                                 {
-                                    if (_networkManager.IsDownloadWaiting(hash))
-                                    {
-                                        if (--limitCount <= 0) goto End;
-                                    }
-                                }
-                            }
+                                    if (_existManager.GetCount(group) >= group.Hashes.Count() / 2) continue;
 
-                            foreach (var group in item.Index.Groups.Randomize())
-                            {
-                                if (_existManager.GetCount(group) >= group.Hashes.Count() / 2) continue;
-
-                                var tempHashes = new List<Hash>();
-
-                                foreach (var hash in _existManager.GetHashes(group, false))
-                                {
-                                    if (!_networkManager.IsDownloadWaiting(hash))
+                                    foreach (var hash in _existManager.GetHashes(group, false))
                                     {
                                         _networkManager.Download(hash);
-
-                                        if (--limitCount <= 0) goto End;
                                     }
                                 }
                             }
-
-                            End:;
-                        }
-                        else
-                        {
-                            item.State = DownloadState.ParityDecoding;
+                            else
+                            {
+                                item.State = DownloadState.ParityDecoding;
+                            }
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    item.State = DownloadState.Error;
+                    catch (Exception e)
+                    {
+                        item.State = DownloadState.Error;
 
-                    Log.Error(e);
+                        Log.Error(e);
+                    }
                 }
             }
         }
@@ -294,8 +246,6 @@ namespace Amoeba.Core
 
         private void DecodeThread()
         {
-            var random = new Random();
-
             for (;;)
             {
                 Thread.Sleep(1000 * 1);
@@ -348,11 +298,7 @@ namespace Amoeba.Core
                                         while (!task.IsCompleted)
                                         {
                                             if (this.State == ManagerState.Stop) tokenSource.Cancel();
-
-                                            lock (_lockObject)
-                                            {
-                                                if (item.State == DownloadState.Error) tokenSource.Cancel();
-                                            }
+                                            if (item.State == DownloadState.Error) tokenSource.Cancel();
 
                                             task.Wait(1000);
                                         }
@@ -387,11 +333,7 @@ namespace Amoeba.Core
                                             while (!task.IsCompleted)
                                             {
                                                 if (this.State == ManagerState.Stop) tokenSource.Cancel();
-
-                                                lock (_lockObject)
-                                                {
-                                                    if (item.State == DownloadState.Error) tokenSource.Cancel();
-                                                }
+                                                if (item.State == DownloadState.Error) tokenSource.Cancel();
 
                                                 task.Wait(1000);
                                             }
@@ -516,7 +458,7 @@ namespace Amoeba.Core
 
                     stream.Seek(0, SeekOrigin.Begin);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     if (stream != null)
                     {

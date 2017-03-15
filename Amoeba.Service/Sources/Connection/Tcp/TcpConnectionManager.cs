@@ -241,7 +241,7 @@ namespace Amoeba.Service
                     if (!IPAddress.TryParse(address, out ipAddress)) return null;
 
 #if !DEBUG
-                    if (!TcpManager.CheckGlobalIpAddress(ipAddress)) return null;
+                    if (!TcpConnectionManager.CheckGlobalIpAddress(ipAddress)) return null;
 #endif
 
                     if (!_catharsisManager.Check(ipAddress))

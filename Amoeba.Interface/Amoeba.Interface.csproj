@@ -105,16 +105,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Sources\ViewModels\Converter\SortedCollectionConverter.cs" />
-    <Compile Include="Sources\Windows\Store\TemplateSelector\StoreTreeTemplateSelector.cs" />
     <Compile Include="Sources\ViewModels\DragDrop\DragAcceptBehavior.cs" />
     <Compile Include="Sources\ViewModels\DragDrop\DragAcceptDescription.cs" />
     <Compile Include="Sources\ViewModels\DragDrop\DragStartBehavior.cs" />
     <Compile Include="Sources\ViewModels\Base\TreeViewModelBase.cs" />
+    <Compile Include="Sources\ViewModels\RestorableWindow\RestorableWindow.cs" />
+    <Compile Include="Sources\ViewModels\RestorableWindow\WindowSettings.cs" />
+    <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\StoreCategoryViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\StoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\SeedViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\BoxViewModel.cs" />
-    <Page Include="Sources\Windows\Chat\ChatControl.xaml">
+    <Page Include="Sources\Windows\Store\StoreControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -129,17 +131,19 @@
     </Compile>
     <Compile Include="Sources\ViewModels\DragDrop\_Interface\IDragable.cs" />
     <Compile Include="Sources\ViewModels\DragDrop\_Interface\IDropable.cs" />
-    <Compile Include="Sources\Windows\Chat\ChatControl.xaml.cs">
-      <DependentUpon>ChatControl.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Store\StoreControl.xaml.cs">
+      <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Chat\ChatControlViewModel.cs" />
-    <Compile Include="Sources\ViewModels\Utilities\Extensions.cs" />
+    <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
+    <Compile Include="Sources\ViewModels\Extensions\Extensions.cs" />
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <DependentUpon>LanguagesManager.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Sources\_Resources\Settings\EnvironmentConfig.cs" />
+    <Compile Include="Sources\_Resources\Settings\SettingsContent.cs" />
     <Compile Include="Sources\_Resources\Settings\SettingsManager.cs" />
     <Compile Include="Sources\_Resources\Settings\_Generator\SettingsManager.generated.cs">
       <AutoGen>True</AutoGen>
@@ -235,7 +239,9 @@
       <Name>Omnius.Serialization</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Sources\Windows\Chat\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -18,13 +18,6 @@ namespace Amoeba.Interface
             var sort = new SortDescription((string)parameter, ListSortDirection.Ascending);
             view.SortDescriptions.Add(sort);
 
-            //var liveShaping = view as ICollectionViewLiveShaping;
-            //if (liveShaping != null && liveShaping.CanChangeLiveSorting)
-            //{
-            //    liveShaping.LiveSortingProperties.Add((string)parameter);
-            //    liveShaping.IsLiveSorting = true;
-            //}
-
             return view;
         }
 

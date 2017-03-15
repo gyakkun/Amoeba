@@ -56,7 +56,7 @@ namespace Amoeba.Core
         private volatile bool _disposed;
 
         public static readonly int SectorSize = 1024 * 256;
-        public static readonly int SpaceSectorCount = 4 * 1024; // 1MB * 1024 = 1024MB
+        public static readonly int SpaceSectorCount = 4 * 1024; // SectorSize * 4 * 256 = 256MB
 
         private int _threadCount = 2;
 
@@ -116,7 +116,7 @@ namespace Amoeba.Core
                                 string name = property.Name;
                                 object value = property.GetValue(_info);
 
-                                if (value is SafeInteger) value = (long)value;
+                                if (value is SafeInteger safeInteger) value = (long)safeInteger;
 
                                 contexts.Add(new InformationContext(prefix + name, value));
                             }
@@ -1468,7 +1468,11 @@ namespace Amoeba.Core
         {
             lock (_lockObject)
             {
-                return _clusterIndex.Keys.ToArray();
+                var hashSet = new HashSet<Hash>();
+                hashSet.UnionWith(_clusterIndex.Keys);
+                hashSet.UnionWith(_cacheInfoManager.GetHashes());
+
+                return hashSet.ToArray();
             }
         }
 

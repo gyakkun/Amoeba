@@ -24,7 +24,7 @@ namespace Amoeba.Test
             test.Shutdown();
 
             Console.WriteLine("Finish!");
-            Console.ReadKey();
+            Console.Read();
         }
 
         private static void Init()
@@ -54,11 +54,22 @@ namespace Amoeba.Test
                         "System.Security.Cryptography.SHA256Managed");
                 }
             }
+
+            Thread.GetDomain().UnhandledException += (object sender, UnhandledExceptionEventArgs e) =>
+            {
+                var exception = e.ExceptionObject as Exception;
+                if (exception == null) return;
+
+                Log.Error(exception);
+            };
         }
 
         private static void LogEvent(object sender, LogEventArgs e)
         {
-            Debug.WriteLine($"Log:\t{e.MessageLevel.ToString()}\r\n{e.Message}");
+            Debug.WriteLine(string.Format("Time:\t\t{0}\r\n" +
+                "Level:\t\t{1}\r\n" +
+                "{2}",
+                DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
         }
     }
 }

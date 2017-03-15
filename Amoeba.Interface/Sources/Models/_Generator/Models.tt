@@ -22,7 +22,7 @@ using (var reader = new XmlTextReader(stream))
         {
             if (reader.LocalName == "Class")
             {
-                var className = reader.GetAttribute("Name");
+                var className = GetNormalizedTypeName(reader.GetAttribute("Name"));
                 var propertyInfos = new List<PropertyInfo>();
 
                 using (var reader2 = reader.ReadSubtree())
@@ -33,12 +33,11 @@ using (var reader = new XmlTextReader(stream))
                         {
                             if (reader2.LocalName == "Property")
                             {
-                                var type = reader2.GetAttribute("Type");
+                                var type = GetNormalizedTypeName(reader2.GetAttribute("Type"));
                                 var name = reader2.GetAttribute("Name");
                                 var isEditable = bool.Parse(reader2.GetAttribute("IsEditable") ?? "false");
-                                var isCollection = bool.Parse(reader2.GetAttribute("IsCollection") ?? "false");
 
-                                propertyInfos.Add(new PropertyInfo(type, name, isEditable, isCollection));
+                                propertyInfos.Add(new PropertyInfo(type, name, isEditable));
                             }
                         }
                     }
@@ -75,10 +74,9 @@ namespace Amoeba.Interface
 <#
 foreach(var c in classInfos)
 {
-    var normalizedClassName = GetNormalizedTypeName(c.Name);
 #>
-    [DataContract(Name = nameof(<#= normalizedClassName #>))]
-    partial class <#= normalizedClassName #> : INotifyPropertyChanged
+    [DataContract(Name = nameof(<#= c.Name #>))]
+    partial class <#= c.Name #> : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -89,23 +87,22 @@ foreach(var c in classInfos)
 <#
     foreach(var p in c.PropertyInfos)
     {
-        var normalizedTypeName = GetNormalizedTypeName(p.Type);
         var generatedFieldName = GetFieldName(p.Name);
 
-        if(!p.IsCollection)
+        if(p.IsEditable)
         {
 #>
 
-        private <#= normalizedTypeName #> <#= generatedFieldName #>;
+        private <#= p.Type #> <#= generatedFieldName #>;
 
         [DataMember(Name = nameof(<#= p.Name #>))]
-        public <#= normalizedTypeName #> <#= p.Name #>
+        public <#= p.Type #> <#= p.Name #>
         { 
             get
             {
                 return <#= generatedFieldName #>;
             }
-            <# if(!p.IsEditable) {#>private <#}#>set
+            set
             {
                 if (value != <#= generatedFieldName #>)
                 {
@@ -120,15 +117,15 @@ foreach(var c in classInfos)
         {
 #>
 
-        private <#= normalizedTypeName #> <#= generatedFieldName #>;
+        private <#= p.Type #> <#= generatedFieldName #>;
 
         [DataMember(Name = nameof(<#= p.Name #>))]
-        public <#= normalizedTypeName #> <#= p.Name #>
+        public <#= p.Type #> <#= p.Name #>
         { 
             get
             {
                 if(<#= generatedFieldName #> == null)
-                    <#= generatedFieldName #> = new <#= normalizedTypeName #>();
+                    <#= generatedFieldName #> = new <#= p.Type #>();
 
                 return <#= generatedFieldName #>;
             }
@@ -169,17 +166,15 @@ private class ClassInfo
 }
 private class PropertyInfo
 {
-    public PropertyInfo(string type, string name, bool isEditable, bool isCollection)
+    public PropertyInfo(string type, string name, bool isEditable)
     {
         this.Type = type;
         this.Name = name;
         this.IsEditable = isEditable;
-        this.IsCollection = isCollection;
     }
 
     public string Type { get; private set; }
     public string Name { get; private set; }
     public bool IsEditable { get; private set; }
-    public bool IsCollection { get; private set; }
 }
 #>

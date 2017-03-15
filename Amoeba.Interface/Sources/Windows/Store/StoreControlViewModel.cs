@@ -11,11 +11,11 @@ using Reactive.Bindings;
 
 namespace Amoeba.Interface
 {
-    class ChatControlViewModel
+    class StoreControlViewModel
     {
         private CollectionViewSource _treeViewSource;
 
-        public ChatControlViewModel()
+        public StoreControlViewModel()
         {
             _treeViewSource = new CollectionViewSource();
 
