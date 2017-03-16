@@ -1,4 +1,4 @@
-﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ output encoding="UTF-8" extension=".generated.cs" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
