@@ -49,10 +49,9 @@ namespace Amoeba.Core
         public bool Equals(Node<T> other)
         {
             if ((object)other == null) return false;
-            if (object.ReferenceEquals(this, other)) return true;
 
             if ((this.Id == null) != (other.Id == null)
-                || this.Value.Equals(other.Value))
+                || !this.Value.Equals(other.Value))
             {
                 return false;
             }

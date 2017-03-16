@@ -24,7 +24,7 @@ namespace Amoeba.Test
             test.Shutdown();
 
             Console.WriteLine("Finish!");
-            Console.Read();
+            Console.ReadLine();
         }
 
         private static void Init()

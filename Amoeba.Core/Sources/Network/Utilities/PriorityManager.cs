@@ -39,27 +39,17 @@ namespace Amoeba.Core
             }
         }
 
-        public void Decrement()
-        {
-            lock (_lockObject)
-            {
-                var now = DateTime.UtcNow;
-                now = now.AddTicks(-(now.Ticks % TimeSpan.TicksPerSecond));
-
-                _table.AddOrUpdate(now, -1, (_, origin) => origin - 1);
-            }
-        }
-
         public double GetPriority()
         {
-            const int average = 256;
+            const int min = 32;
+            const int max = 256;
 
             lock (_lockObject)
             {
                 int priority = _table.Sum(n => n.Value);
-                priority = Math.Min(Math.Max(priority, -average), average);
+                priority = Math.Min(Math.Max(priority, max), min);
 
-                return ((double)(priority + average)) / (average * 2);
+                return ((double)priority) / max;
             }
         }
 

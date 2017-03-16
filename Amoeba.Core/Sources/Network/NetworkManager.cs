@@ -65,8 +65,8 @@ namespace Amoeba.Core
         private volatile bool _disposed;
 
         private const int _maxLocationCount = 256;
-        private const int _maxBlockLinkCount = 8192;
-        private const int _maxBlockRequestCount = 8192;
+        private const int _maxBlockLinkCount = 1024;
+        private const int _maxBlockRequestCount = 1024;
         private const int _maxMetadataRequestCount = 1024;
         private const int _maxMetadataResultCount = 1024;
 
@@ -194,8 +194,8 @@ namespace Amoeba.Core
                             }
                         }
 
-                        contexts.Add(new InformationContext(prefix + "ReceivedByteCount", _receivedByteCount));
-                        contexts.Add(new InformationContext(prefix + "SentByteCount", _sentByteCount));
+                        contexts.Add(new InformationContext(prefix + "ReceivedByteCount", (long)_receivedByteCount));
+                        contexts.Add(new InformationContext(prefix + "SentByteCount", (long)_sentByteCount));
 
                         contexts.Add(new InformationContext(prefix + "CrowdNodeCount", _routeTable.Count));
                         contexts.Add(new InformationContext(prefix + "MessageCount", _metadataManager.Count));
@@ -339,13 +339,13 @@ namespace Amoeba.Core
 
                     // アップロード
                     if (_routeTable.Count >= 3
-                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 10)
+                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 5)
                     {
                         pushBlockUploadStopwatch.Restart();
 
                         foreach (var node in _routeTable.ToArray())
                         {
-                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(256).ToList();
+                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(32).ToList();
 
                             lock (node.Value.SendInfo.PushBlockResultQueue.LockObject)
                             {
@@ -361,7 +361,7 @@ namespace Amoeba.Core
 
                     // ダウンロード
                     if (_routeTable.Count >= 3
-                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 30)
+                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 10)
                     {
                         pushBlockDownloadStopwatch.Restart();
 
@@ -801,7 +801,7 @@ namespace Amoeba.Core
             {
                 for (;;)
                 {
-                    //if (sw.ElapsedMilliseconds > 1000) Debug.WriteLine("SendConnectionsThread: " + sw.ElapsedMilliseconds);
+                    if (sw.ElapsedMilliseconds > 1000) Debug.WriteLine("SendConnectionsThread: " + sw.ElapsedMilliseconds);
 
                     // Timer
                     {
@@ -819,7 +819,7 @@ namespace Amoeba.Core
                         {
                             try
                             {
-                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 8));
+                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 2));
                                 _sentByteCount.Add(count);
 
                                 remain -= count;
@@ -847,7 +847,7 @@ namespace Amoeba.Core
             {
                 for (;;)
                 {
-                    //if (sw.ElapsedMilliseconds > 1000) Debug.WriteLine("ReceiveConnectionsThread: " + sw.ElapsedMilliseconds);
+                    if (sw.ElapsedMilliseconds > 1000) Debug.WriteLine("ReceiveConnectionsThread: " + sw.ElapsedMilliseconds);
 
                     // Timer
                     {
@@ -865,7 +865,7 @@ namespace Amoeba.Core
                         {
                             try
                             {
-                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 8));
+                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 2));
                                 _receivedByteCount.Add(count);
 
                                 remain -= count;
@@ -919,9 +919,9 @@ namespace Amoeba.Core
             }
 
             // Locations
-            if (sessionInfo.SendInfo.LocationStopwatch.Elapsed.TotalSeconds > 30)
+            if (sessionInfo.SendInfo.LocationResultStopwatch.Elapsed.TotalSeconds > 30)
             {
-                sessionInfo.SendInfo.LocationStopwatch.Restart();
+                sessionInfo.SendInfo.LocationResultStopwatch.Restart();
 
                 var locations = new HashSet<Location>();
                 locations.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
@@ -980,9 +980,9 @@ namespace Amoeba.Core
             }
 
             // BlockResult
-            if (sessionInfo.SendInfo.BlockStopwatch.Elapsed.TotalSeconds > 1)
+            if (sessionInfo.SendInfo.BlockResultStopwatch.Elapsed.TotalSeconds > 1)
             {
-                sessionInfo.SendInfo.BlockStopwatch.Restart();
+                sessionInfo.SendInfo.BlockResultStopwatch.Restart();
 
                 if (_random.Next(0, 100) < (sessionInfo.PriorityManager.GetPriority() * 100))
                 {
@@ -1056,9 +1056,9 @@ namespace Amoeba.Core
             }
 
             // BroadcastMetadatasResult
-            if (sessionInfo.SendInfo.BroadcastMetadataStopwatch.Elapsed.TotalSeconds > 30)
+            if (sessionInfo.SendInfo.BroadcastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
             {
-                sessionInfo.SendInfo.BroadcastMetadataStopwatch.Restart();
+                sessionInfo.SendInfo.BroadcastMetadataResultStopwatch.Restart();
 
                 var broadcastMetadatas = new List<BroadcastMetadata>();
 
@@ -1111,9 +1111,9 @@ namespace Amoeba.Core
             }
 
             // UnicastMetadatasResult
-            if (sessionInfo.SendInfo.UnicastMetadataStopwatch.Elapsed.TotalSeconds > 30)
+            if (sessionInfo.SendInfo.UnicastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
             {
-                sessionInfo.SendInfo.UnicastMetadataStopwatch.Restart();
+                sessionInfo.SendInfo.UnicastMetadataResultStopwatch.Restart();
 
                 var unicastMetadatas = new List<UnicastMetadata>();
 
@@ -1166,9 +1166,9 @@ namespace Amoeba.Core
             }
 
             // MulticastMetadatasResult
-            if (sessionInfo.SendInfo.MulticastMetadataStopwatch.Elapsed.TotalSeconds > 30)
+            if (sessionInfo.SendInfo.MulticastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
             {
-                sessionInfo.SendInfo.MulticastMetadataStopwatch.Restart();
+                sessionInfo.SendInfo.MulticastMetadataResultStopwatch.Restart();
 
                 var multicastMetadatas = new List<MulticastMetadata>();
 
@@ -1257,7 +1257,7 @@ namespace Amoeba.Core
                     }
                     else if (id == (int)SerializeId.BlocksLink)
                     {
-                        if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
+                        if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 6) return;
 
                         var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
 
@@ -1267,7 +1267,7 @@ namespace Amoeba.Core
                     }
                     else if (id == (int)SerializeId.BlocksRequest)
                     {
-                        if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
+                        if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 6) return;
 
                         var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
 
@@ -1403,7 +1403,7 @@ namespace Amoeba.Core
             public byte[] Id { get; set; }
             public Location Location { get; set; }
 
-            public PriorityManager PriorityManager { get; private set; } = new PriorityManager(new TimeSpan(0, 30, 0));
+            public PriorityManager PriorityManager { get; private set; } = new PriorityManager(new TimeSpan(0, 10, 0));
 
             public SendInfo SendInfo { get; private set; } = new SendInfo();
             public ReceiveInfo ReceiveInfo { get; private set; } = new ReceiveInfo();
@@ -1420,15 +1420,15 @@ namespace Amoeba.Core
         {
             public bool IsInitialized { get; set; }
 
-            public VolatileHashSet<Hash> PushBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
-            public VolatileHashSet<Hash> PushBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
+            public VolatileHashSet<Hash> PushBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 10, 0));
+            public VolatileHashSet<Hash> PushBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 10, 0));
             public VolatileHashSet<Hash> PushBlockResultSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(1, 0, 0));
 
-            public Stopwatch LocationStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch BlockStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch BroadcastMetadataStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch UnicastMetadataStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch MulticastMetadataStopwatch { get; private set; } = Stopwatch.StartNew();
+            public Stopwatch LocationResultStopwatch { get; private set; } = Stopwatch.StartNew();
+            public Stopwatch BlockResultStopwatch { get; private set; } = Stopwatch.StartNew();
+            public Stopwatch BroadcastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
+            public Stopwatch UnicastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
+            public Stopwatch MulticastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
 
             public LockedList<Hash> PushBlockLinkQueue { get; private set; } = new LockedList<Hash>();
             public LockedList<Hash> PushBlockRequestQueue { get; private set; } = new LockedList<Hash>();
@@ -1584,18 +1584,16 @@ namespace Amoeba.Core
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    this.UpdateMyId();
-
                     _computeThread = new Thread(this.ComputeThread);
                     _computeThread.Name = "NetworkManager_ComputeThread";
-                    _computeThread.Priority = ThreadPriority.Lowest;
+                    _computeThread.Priority = ThreadPriority.BelowNormal;
                     _computeThread.Start();
 
                     for (int i = 0; i < 3; i++)
                     {
                         var thread = new Thread(this.ConnectThread);
                         thread.Name = "NetworkManager_ConnectThread";
-                        thread.Priority = ThreadPriority.Lowest;
+                        thread.Priority = ThreadPriority.BelowNormal;
                         thread.Start();
 
                         _connectThreads.Add(thread);
@@ -1605,7 +1603,7 @@ namespace Amoeba.Core
                     {
                         var thread = new Thread(this.AcceptThread);
                         thread.Name = "NetworkManager_AcceptThread";
-                        thread.Priority = ThreadPriority.Lowest;
+                        thread.Priority = ThreadPriority.BelowNormal;
                         thread.Start();
 
                         _acceptThreads.Add(thread);
@@ -1667,10 +1665,10 @@ namespace Amoeba.Core
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _myLocation = _settings.Load<Location>("MyLocation", () => new Location(null));
-                _crowdLocations.AddRange(_settings.Load<IEnumerable<Location>>("CrowdLocations", () => new List<Location>()));
-                _connectionCountLimit = _settings.Load<int>("ConnectionCountLimit", () => 256);
-                _bandwidthLimit = _settings.Load<int>("BandwidthLimit", () => 1024 * 1024 * 2);
+                this.SetMyLocation(_settings.Load<Location>("MyLocation", () => new Location(null)));
+                this.SetCrowdLocations(_settings.Load<IEnumerable<Location>>("CrowdLocations", () => new List<Location>()));
+                this.ConnectionCountLimit = _settings.Load<int>("ConnectionCountLimit", () => 256);
+                this.BandwidthLimit = _settings.Load<int>("BandwidthLimit", () => 1024 * 1024 * 32);
 
                 // MetadataManager
                 {
@@ -1719,10 +1717,10 @@ namespace Amoeba.Core
             {
                 _settings.Save("Version", 0);
 
-                _settings.Save("MyLocation", _myLocation);
-                _settings.Save("CrowdLocations", CollectionUtils.Unite(_crowdLocations, _routeTable.ToArray().Select(n => n.Value.Location)));
-                _settings.Save("ConnectionCountLimit", _connectionCountLimit);
-                _settings.Save("BandwidthLimit", _bandwidthLimit);
+                _settings.Save("MyLocation", this.MyLocation);
+                _settings.Save("CrowdLocations", this.CrowdLocations);
+                _settings.Save("ConnectionCountLimit", this.ConnectionCountLimit);
+                _settings.Save("BandwidthLimit", this.BandwidthLimit);
 
                 // MetadataManager
                 {

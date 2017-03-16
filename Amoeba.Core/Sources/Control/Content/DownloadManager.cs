@@ -361,8 +361,6 @@ namespace Amoeba.Core
 
                                 item.Index = index;
 
-                                this.CheckState(item.Index);
-
                                 foreach (var group in item.Index.Groups)
                                 {
                                     foreach (var hash in group.Hashes)
@@ -370,6 +368,8 @@ namespace Amoeba.Core
                                         _cacheManager.Lock(hash);
                                     }
                                 }
+
+                                this.CheckState(item.Index);
 
                                 item.Depth++;
 

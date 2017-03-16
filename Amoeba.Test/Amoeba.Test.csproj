@@ -55,6 +55,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sources\UnitTest\Core\Test_CacheManager.cs" />
     <Compile Include="Sources\Setup.cs" />
+    <Compile Include="Sources\UnitTest\Core\Test_RouteTable.cs" />
     <Compile Include="Sources\Utilities\DisposeWrapper.cs" />
     <Compile Include="Sources\Utilities\RandomProvider.cs" />
     <Compile Include="Sources\Utilities\UnlimitedObject.cs" />

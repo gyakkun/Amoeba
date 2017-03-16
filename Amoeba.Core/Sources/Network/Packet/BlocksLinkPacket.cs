@@ -18,7 +18,7 @@ namespace Amoeba.Core
 
         private HashCollection _hashes;
 
-        public const int MaxBlockRequestCount = 8192;
+        public const int MaxBlockLinkCount = 8192;
 
         public BlocksLinkPacket(IEnumerable<Hash> hashes)
         {
@@ -115,7 +115,7 @@ namespace Amoeba.Core
             get
             {
                 if (_hashes == null)
-                    _hashes = new HashCollection(MaxBlockRequestCount);
+                    _hashes = new HashCollection(MaxBlockLinkCount);
 
                 return _hashes;
             }

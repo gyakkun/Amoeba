@@ -40,7 +40,7 @@ namespace Amoeba.Test
         {
             var targetPath = Path.Combine(_workPath, type.ToString());
             var configPath = Path.Combine(targetPath, "CoreManager");
-            var blockPath = Path.Combine(targetPath, "cache.blocks"); ;
+            var blockPath = Path.Combine(targetPath, "cache.blocks");
 
             Directory.CreateDirectory(targetPath);
             Directory.CreateDirectory(configPath);
@@ -49,7 +49,7 @@ namespace Amoeba.Test
             coreManager.Load();
 
             var listener = new TcpListener(IPAddress.Loopback, type);
-            listener.Start(8);
+            listener.Start(3);
 
             // ConnectionSetting
             {
@@ -145,7 +145,7 @@ namespace Amoeba.Test
                     Thread.Sleep(1000);
 
                     var average = wrapperList.Select(n => n.Value.Information.GetValue<int>("Network_CrowdNodeCount")).Sum() / wrapperList.Count;
-                    if (average > wrapperList.Count - 5) break;
+                    if (average >= wrapperList.Count - 2) break;
                 }
 
                 //this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
@@ -279,7 +279,7 @@ namespace Amoeba.Test
             var hashList = new LockedHashSet<Hash>();
             var metadataList = new LockedList<Metadata>();
 
-            Parallel.For(1, coreManagerList.Count, i =>
+            Parallel.For(1, coreManagerList.Count, new ParallelOptions() { MaxDegreeOfParallelism = 3 }, i =>
             {
                 var random = RandomProvider.GetThreadRandom();
 
@@ -309,7 +309,7 @@ namespace Amoeba.Test
 
             var sw = Stopwatch.StartNew();
 
-            Parallel.ForEach(metadataList, new ParallelOptions() { MaxDegreeOfParallelism = 32 }, metadata =>
+            Parallel.ForEach(metadataList, metadata =>
             {
                 for (;;)
                 {

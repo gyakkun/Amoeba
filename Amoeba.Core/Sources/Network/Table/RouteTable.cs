@@ -168,8 +168,8 @@ namespace Amoeba.Core
                 this.Xor = xor;
             }
 
-            public Node<T>? Node { get; set; }
-            public byte[] Xor { get; set; }
+            public Node<T>? Node { get; private set; }
+            public byte[] Xor { get; private set; }
         }
 
         public bool Add(byte[] id, T value)
