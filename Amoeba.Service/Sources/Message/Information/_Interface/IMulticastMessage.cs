@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Amoeba.Core;
 using Omnius.Security;
 using Omnius.Serialization;

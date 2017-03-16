@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Omnius.Security;
 using Omnius.Serialization;
 

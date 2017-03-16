@@ -1,4 +1,4 @@
-﻿using Omnius.Base;
+using Omnius.Base;
 using Omnius.Io;
 using Omnius.Security;
 using Omnius.Serialization;

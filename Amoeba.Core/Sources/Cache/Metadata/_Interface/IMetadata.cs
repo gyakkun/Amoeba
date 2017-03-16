@@ -1,4 +1,4 @@
-﻿
+
 namespace Amoeba.Core
 {
     interface IMetadata

@@ -1,4 +1,4 @@
-﻿
+
 namespace Amoeba.Service
 {
     interface IChatMessage
