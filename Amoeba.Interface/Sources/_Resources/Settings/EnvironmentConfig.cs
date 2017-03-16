@@ -37,7 +37,7 @@ namespace Amoeba.Interface
             this.LogPath = @"../Log";
             this.WorkPath = @"../Work";
             this.LanguagesPath = "./Resources/Languages";
-            this.SettingsPath = Path.Combine(ConfigPath, "Settings");
+            this.SettingsPath = Path.Combine(this.ConfigPath, "Settings");
         }
     }
 }

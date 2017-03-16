@@ -45,7 +45,7 @@ namespace Amoeba.Interface
 
         private void Load()
         {
-            var configPath = Path.Combine(EnvironmentConfig.Paths.ConfigPath, "View", "MainWindow");
+            string configPath = Path.Combine(EnvironmentConfig.Paths.ConfigPath, "View", "MainWindow");
             if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
             _settings = new Settings(configPath);

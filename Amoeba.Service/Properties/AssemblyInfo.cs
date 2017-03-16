@@ -12,6 +12,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("8796ee1c-25d5-483e-b273-a17710a61259")]
-[assembly: AssemblyVersion("0.0.0.2")] // AEDABFDA6D294359AB9193617E6EE4B0F761C93B70A4D32026FE1824115BC19D
+[assembly: AssemblyVersion("0.0.0.3")] // 712FE01726C55A2848493ECA02E92920B9B42A5B1273CEC32A3B8C137FE6F8AD
 
 [assembly: InternalsVisibleTo("Amoeba.Test")]

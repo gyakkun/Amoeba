@@ -138,9 +138,9 @@
     <Compile Include="Sources\ViewModels\Extensions\Extensions.cs" />
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
-      <DependentUpon>LanguagesManager.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>LanguagesManager.tt</DependentUpon>
     </Compile>
     <Compile Include="Sources\_Resources\Settings\EnvironmentConfig.cs" />
     <Compile Include="Sources\_Resources\Settings\SettingsContent.cs" />

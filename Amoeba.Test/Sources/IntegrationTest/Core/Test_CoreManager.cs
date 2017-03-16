@@ -38,9 +38,9 @@ namespace Amoeba.Test
 
         private DisposeWrapper<CoreManager> CreateCoreManager(int type)
         {
-            var targetPath = Path.Combine(_workPath, type.ToString());
-            var configPath = Path.Combine(targetPath, "CoreManager");
-            var blockPath = Path.Combine(targetPath, "cache.blocks");
+            string targetPath = Path.Combine(_workPath, type.ToString());
+            string configPath = Path.Combine(targetPath, "CoreManager");
+            string blockPath = Path.Combine(targetPath, "cache.blocks");
 
             Directory.CreateDirectory(targetPath);
             Directory.CreateDirectory(configPath);
@@ -90,7 +90,7 @@ namespace Amoeba.Test
                 var match = regex.Match(uri);
 
                 var ipAddress = IPAddress.Parse(match.Groups[1].Value);
-                var port = int.Parse(match.Groups[2].Value);
+                int port = int.Parse(match.Groups[2].Value);
 
                 return new SocketCap(Connect(new IPEndPoint(ipAddress, port), new TimeSpan(0, 10, 0)));
             }
@@ -144,7 +144,7 @@ namespace Amoeba.Test
                 {
                     Thread.Sleep(1000);
 
-                    var average = wrapperList.Select(n => n.Value.Information.GetValue<int>("Network_CrowdNodeCount")).Sum() / wrapperList.Count;
+                    int average = wrapperList.Select(n => n.Value.Information.GetValue<int>("Network_CrowdNodeCount")).Sum() / wrapperList.Count;
                     if (average >= wrapperList.Count - 2) break;
                 }
 

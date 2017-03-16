@@ -27,9 +27,9 @@ namespace Amoeba.Test
             if (Directory.Exists(_workPath)) Directory.Delete(_workPath, true);
             Directory.CreateDirectory(_workPath);
 
-            var targetPath = Path.Combine(_workPath, "Main");
-            var configPath = Path.Combine(targetPath, "CacheManager");
-            var blockPath = Path.Combine(targetPath, "cache.blocks"); ;
+            string targetPath = Path.Combine(_workPath, "Main");
+            string configPath = Path.Combine(targetPath, "CacheManager");
+            string blockPath = Path.Combine(targetPath, "cache.blocks"); ;
 
             Directory.CreateDirectory(targetPath);
             Directory.CreateDirectory(configPath);
@@ -114,9 +114,9 @@ namespace Amoeba.Test
         [Test]
         public void Test_CheckBroken()
         {
-            var targetPath = Path.Combine(_workPath, "CheckBroken");
-            var configPath = Path.Combine(targetPath, "CacheManager");
-            var blockPath = Path.Combine(targetPath, "cache.blocks"); ;
+            string targetPath = Path.Combine(_workPath, "CheckBroken");
+            string configPath = Path.Combine(targetPath, "CacheManager");
+            string blockPath = Path.Combine(targetPath, "cache.blocks"); ;
 
             Directory.CreateDirectory(targetPath);
             Directory.CreateDirectory(configPath);
@@ -149,7 +149,7 @@ namespace Amoeba.Test
 
             using (var stream = new FileStream(blockPath, FileMode.Open))
             {
-                var b = stream.ReadByte();
+                int b = stream.ReadByte();
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.WriteByte((byte)(b ^ 0xFF));
             }
