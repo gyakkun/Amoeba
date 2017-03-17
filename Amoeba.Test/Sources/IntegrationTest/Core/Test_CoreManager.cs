@@ -273,7 +273,7 @@ namespace Amoeba.Test
 
             Parallel.ForEach(coreManagerList, coreManager =>
             {
-                coreManager.Resize((long)1024 * 1024 * 1024 * 4);
+                coreManager.Resize((long)1024 * 1024 * 1024 * 32);
             });
 
             var hashList = new LockedHashSet<Hash>();
@@ -287,7 +287,7 @@ namespace Amoeba.Test
                 {
                     using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                     {
-                        for (int remain = 1024 * 1024 * 32; remain > 0; remain = Math.Max(0, remain - safeBuffer.Value.Length))
+                        for (int remain = 1024 * 1024 * 256; remain > 0; remain = Math.Max(0, remain - safeBuffer.Value.Length))
                         {
                             int length = Math.Min(remain, safeBuffer.Value.Length);
 

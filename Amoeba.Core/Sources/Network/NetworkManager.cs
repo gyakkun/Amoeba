@@ -345,7 +345,7 @@ namespace Amoeba.Core
 
                         foreach (var node in _routeTable.ToArray())
                         {
-                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(32).ToList();
+                            var tempList = _cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(256).ToList();
 
                             lock (node.Value.SendInfo.PushBlockResultQueue.LockObject)
                             {
@@ -415,7 +415,7 @@ namespace Amoeba.Core
 
                                 foreach (var hash in pushBlockLinkSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, crowdNodes, 1))
                                     {
                                         if (node.Value.SendInfo.PushBlockLinkSet.Contains(hash)) continue;
 
@@ -441,7 +441,7 @@ namespace Amoeba.Core
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, crowdNodes, 1))
                                     {
                                         if (node.Value.SendInfo.PushBlockRequestSet.Contains(hash)) continue;
 
