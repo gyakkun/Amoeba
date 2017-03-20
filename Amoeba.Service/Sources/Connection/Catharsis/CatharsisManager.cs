@@ -65,15 +65,16 @@ namespace Amoeba.Service
                     return _config;
                 }
             }
-            set
-            {
-                lock (_lockObject)
-                {
-                    _config = value;
-                }
+        }
 
-                _watchTimer.Run();
+        public void SetConfig(CatharsisConfig config)
+        {
+            lock (_lockObject)
+            {
+                _config = config;
             }
+
+            _watchTimer.Run();
         }
 
         public bool Check(IPAddress ipAddress)
@@ -297,7 +298,7 @@ namespace Amoeba.Service
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _config = _settings.Load("CatharsisConfig", () => new CatharsisConfig(new CatharsisIpv4Config(null, null)));
+                _config = _settings.Load("Config", () => new CatharsisConfig(new CatharsisIpv4Config(null, null)));
 
                 _ipv4RangeSet = _settings.Load("Ipv4RangeSet", () => new HashSet<SearchRange<Ipv4>>());
             }
@@ -309,7 +310,7 @@ namespace Amoeba.Service
             {
                 _settings.Save("Version", 0);
 
-                _settings.Save("CatharsisConfig", _config);
+                _settings.Save("Config", _config);
 
                 _settings.Save("Ipv4RangeSet", _ipv4RangeSet);
             }

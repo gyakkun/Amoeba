@@ -46,9 +46,18 @@
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Nett, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nett.0.6.2\lib\Net40\Nett.dll</HintPath>
+    </Reference>
     <Reference Include="Prism, Version=6.2.0.0, Culture=neutral, PublicKeyToken=91a96d2a154366d8, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.6.2.0\lib\net45\Prism.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Prism.Wpf, Version=6.2.0.0, Culture=neutral, PublicKeyToken=91a96d2a154366d8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.6.2.0\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveProperty, Version=3.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ReactiveProperty.3.5.1\lib\net45\ReactiveProperty.dll</HintPath>
@@ -82,8 +91,8 @@
       <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.6.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
@@ -104,18 +113,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Sources\ViewModels\Converter\SortedCollectionConverter.cs" />
-    <Compile Include="Sources\ViewModels\DragDrop\DragAcceptBehavior.cs" />
-    <Compile Include="Sources\ViewModels\DragDrop\DragAcceptDescription.cs" />
-    <Compile Include="Sources\ViewModels\DragDrop\DragStartBehavior.cs" />
-    <Compile Include="Sources\ViewModels\Base\TreeViewModelBase.cs" />
-    <Compile Include="Sources\ViewModels\RestorableWindow\RestorableWindow.cs" />
-    <Compile Include="Sources\ViewModels\RestorableWindow\WindowSettings.cs" />
+    <Compile Include="Sources\Extensions\ProcessExtensions.cs" />
+    <Compile Include="Sources\Mvvm\Converters\BytesToHexStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\LongToSizeStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\SortedCollectionConverter.cs" />
+    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragAcceptBehavior.cs" />
+    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragAcceptDescription.cs" />
+    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragStartBehavior.cs" />
+    <Compile Include="Sources\Mvvm\ViewModels\SettingsViewModel\DynamicViewModelBase.cs" />
+    <Compile Include="Sources\Mvvm\ViewModels\SettingsViewModel\SettingsViewModelBase.cs" />
+    <Compile Include="Sources\Mvvm\ViewModels\TreeViewModel\TreeViewModelBase.cs" />
+    <Compile Include="Sources\Mvvm\Views\RestorableWindow\RestorableWindow.cs" />
+    <Compile Include="Sources\Mvvm\Views\RestorableWindow\WindowSettings.cs" />
+    <Compile Include="Sources\Windows\Info\InfoControl.xaml.cs">
+      <DependentUpon>InfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Info\InfoControlViewModel.cs" />
     <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\StoreCategoryViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\StoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\SeedViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\BoxViewModel.cs" />
+    <Page Include="Sources\Windows\Info\InfoControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Sources\Windows\Store\StoreControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -124,32 +146,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Sources\Models\_Generator\Models.generated.cs">
+    <Compile Include="Sources\Mvvm\Models\_Generator\Models.generated.cs">
       <DependentUpon>Models.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Sources\ViewModels\DragDrop\_Interface\IDragable.cs" />
-    <Compile Include="Sources\ViewModels\DragDrop\_Interface\IDropable.cs" />
+    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\_Interface\IDragable.cs" />
+    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\_Interface\IDropable.cs" />
     <Compile Include="Sources\Windows\Store\StoreControl.xaml.cs">
       <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
-    <Compile Include="Sources\ViewModels\Extensions\Extensions.cs" />
+    <Compile Include="Sources\Mvvm\Views\Extensions\Extensions.cs" />
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LanguagesManager.tt</DependentUpon>
     </Compile>
-    <Compile Include="Sources\_Resources\Settings\EnvironmentConfig.cs" />
-    <Compile Include="Sources\_Resources\Settings\SettingsContent.cs" />
-    <Compile Include="Sources\_Resources\Settings\SettingsManager.cs" />
-    <Compile Include="Sources\_Resources\Settings\_Generator\SettingsManager.generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SettingsManager.tt</DependentUpon>
-    </Compile>
+    <Compile Include="Sources\Environment\AmoebaEnvironment.cs" />
     <Compile Include="Sources\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -169,19 +184,14 @@
     <Content Include="Resources\Languages\English.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Sources\Models\_Generator\Definitions.xml" />
-    <Content Include="Sources\Models\_Generator\Models.tt">
+    <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml" />
+    <Content Include="Sources\Mvvm\Models\_Generator\Models.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Models.generated.cs</LastGenOutput>
     </Content>
     <Content Include="Sources\_Resources\Languages\_Generator\LanguagesManager.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>LanguagesManager.generated.cs</LastGenOutput>
-    </Content>
-    <Content Include="Sources\_Resources\Settings\_Generator\Definitions.xml" />
-    <Content Include="Sources\_Resources\Settings\_Generator\SettingsManager.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SettingsManager.generated.cs</LastGenOutput>
     </Content>
     <None Include="App.config" />
     <None Include="packages.config">

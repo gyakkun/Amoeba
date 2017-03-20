@@ -5,10 +5,10 @@
 
   <Property Name="Languages_English" Value="English" />
   <Property Name="Languages_Japanese" Value="Japanese" />
-  <Property Name="Languages_Chinese_Traditional" Value="Chinese (Traditional)" />
-  <Property Name="Languages_Chinese_Simplified" Value="Chinese (Simplified)" />
-  <Property Name="Languages_Korean" Value="Korean" />
-  <Property Name="Languages_Ukrainian" Value="Ukrainian" />
-  <Property Name="Languages_Russian" Value="Russian" />
+
+  <Property Name="MainWindow_Info" Value="Info" />
+  <Property Name="MainWindow_Store" Value="Store" />
+
+  <Property Name="InfoControl_Type" Value="Type" />
 
 </Config>

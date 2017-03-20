@@ -29,9 +29,9 @@ namespace Amoeba.Service
         public ServiceManager(string configPath, string blocksPath, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
-            _coreManager = new CoreManager(Path.Combine(configPath, "CoreManager"), blocksPath, _bufferManager);
-            _connectionManager = new ConnectionManager(Path.Combine(configPath, "ConnectionManager"), _coreManager, _bufferManager);
-            _messageManager = new MessageManager(Path.Combine(configPath, "MessageManager"), _coreManager, _bufferManager);
+            _coreManager = new CoreManager(Path.Combine(configPath, "Core"), blocksPath, _bufferManager);
+            _connectionManager = new ConnectionManager(Path.Combine(configPath, "Connection"), _coreManager, _bufferManager);
+            _messageManager = new MessageManager(Path.Combine(configPath, "Message"), _coreManager, _bufferManager);
         }
 
         private void Check()
@@ -224,15 +224,6 @@ namespace Amoeba.Service
                     return _connectionManager.CatharsisConfig;
                 }
             }
-            set
-            {
-                this.Check();
-
-                lock (_lockObject)
-                {
-                    _connectionManager.CatharsisConfig = value;
-                }
-            }
         }
 
         public TcpConnectionConfig TcpConnectionConfig
@@ -244,15 +235,6 @@ namespace Amoeba.Service
                 lock (_lockObject)
                 {
                     return _connectionManager.TcpConnectionConfig;
-                }
-            }
-            set
-            {
-                this.Check();
-
-                lock (_lockObject)
-                {
-                    _connectionManager.TcpConnectionConfig = value;
                 }
             }
         }
@@ -268,14 +250,35 @@ namespace Amoeba.Service
                     return _connectionManager.I2pConnectionConfig;
                 }
             }
-            set
-            {
-                this.Check();
+        }
 
-                lock (_lockObject)
-                {
-                    _connectionManager.I2pConnectionConfig = value;
-                }
+        public void SetCatharsisConfig(CatharsisConfig config)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                _connectionManager.SetCatharsisConfig(config);
+            }
+        }
+
+        public void SetTcpConnectionConfig(TcpConnectionConfig config)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                _connectionManager.SetTcpConnectionConfig(config);
+            }
+        }
+
+        public void SetI2pConnectionConfig(I2pConnectionConfig config)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                _connectionManager.SetI2pConnectionConfig(config);
             }
         }
 

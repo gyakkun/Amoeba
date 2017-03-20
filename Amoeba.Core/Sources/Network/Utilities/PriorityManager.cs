@@ -41,7 +41,7 @@ namespace Amoeba.Core
 
         public double GetPriority()
         {
-            const int min = 64;
+            const int min = 32;
             const int max = 256;
 
             lock (_lockObject)

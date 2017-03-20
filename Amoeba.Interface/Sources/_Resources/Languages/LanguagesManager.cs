@@ -32,9 +32,9 @@ namespace Amoeba.Interface
         static LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface\Languages";
+            string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface\bin\Debug\Resources\Languages";
 
-            if (!Directory.Exists(path)) path = EnvironmentConfig.Paths.LanguagesPath;
+            if (!Directory.Exists(path)) path = AmoebaEnvironment.Paths.LanguagesPath;
 #else
             string path = EnvironmentConfig.Paths.LanguagesPath;
 #endif
@@ -60,9 +60,9 @@ namespace Amoeba.Interface
                         {
                             if (xml.NodeType == XmlNodeType.Element)
                             {
-                                if (xml.LocalName == "Translate")
+                                if (xml.LocalName == "Property")
                                 {
-                                    dic.Add(xml.GetAttribute("Key"), xml.GetAttribute("Value"));
+                                    dic.Add(xml.GetAttribute("Name"), xml.GetAttribute("Value"));
                                 }
                             }
                         }

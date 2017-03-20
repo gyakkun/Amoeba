@@ -1,12 +1,8 @@
-﻿<Config>
+<Config>
   <Import Namespace="System.Collections.ObjectModel" />
   <Import Namespace="System.Windows" />
   <Import Namespace="Amoeba.Service" />
   <Import Namespace="Amoeba.Core" />
-
-  <Class Name="MainWindowSettings">
-    <Property Type="WindowSettings" Name="WindowSettings" IsEditable="true" />
-  </Class>
 
   <Class Name="StoreCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />

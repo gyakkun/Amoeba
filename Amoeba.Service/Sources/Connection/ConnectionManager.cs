@@ -39,9 +39,9 @@ namespace Amoeba.Service
         {
             _bufferManager = bufferManager;
             _coreManager = coreManager;
-            _catharsisManager = new CatharsisManager(Path.Combine(configPath, "CatharsisManager"), _bufferManager);
-            _tcpConnectionManager = new TcpConnectionManager(Path.Combine(configPath, "TcpConnectionManager"), _catharsisManager, _bufferManager);
-            _i2pConnectionManager = new I2pConnectionManager(Path.Combine(configPath, "I2pConnectionManager"), _bufferManager);
+            _catharsisManager = new CatharsisManager(Path.Combine(configPath, "Catharsis"), _bufferManager);
+            _tcpConnectionManager = new TcpConnectionManager(Path.Combine(configPath, "TcpConnection"), _catharsisManager, _bufferManager);
+            _i2pConnectionManager = new I2pConnectionManager(Path.Combine(configPath, "I2pConnection"), _bufferManager);
 
             _coreManager.ConnectCapEvent = (_, uri) => this.ConnectCap(uri);
             _coreManager.AcceptCapEvent = (_) => this.AcceptCap();
@@ -69,10 +69,6 @@ namespace Amoeba.Service
             {
                 return _catharsisManager.Config;
             }
-            set
-            {
-                _catharsisManager.Config = value;
-            }
         }
 
         public TcpConnectionConfig TcpConnectionConfig
@@ -80,10 +76,6 @@ namespace Amoeba.Service
             get
             {
                 return _tcpConnectionManager.Config;
-            }
-            set
-            {
-                _tcpConnectionManager.Config = value;
             }
         }
 
@@ -93,10 +85,21 @@ namespace Amoeba.Service
             {
                 return _i2pConnectionManager.Config;
             }
-            set
-            {
-                _i2pConnectionManager.Config = value;
-            }
+        }
+
+        public void SetCatharsisConfig(CatharsisConfig config)
+        {
+            _catharsisManager.SetConfig(config);
+        }
+
+        public void SetTcpConnectionConfig(TcpConnectionConfig config)
+        {
+            _tcpConnectionManager.SetConfig(config);
+        }
+
+        public void SetI2pConnectionConfig(I2pConnectionConfig config)
+        {
+            _i2pConnectionManager.SetConfig(config);
         }
 
         public Cap ConnectCap(string uri)

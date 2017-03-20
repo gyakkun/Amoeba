@@ -22,7 +22,7 @@ namespace Amoeba.Test
     {
         private BufferManager _bufferManager = BufferManager.Instance;
 
-        private readonly string _workPath = @"D:\Test_CoreManager";
+        private readonly string _workPath = @"E:\Test_CoreManager";
         private readonly Random _random = new Random();
 
         public void Setup()
@@ -148,7 +148,7 @@ namespace Amoeba.Test
                     if (average >= wrapperList.Count - 2) break;
                 }
 
-                //this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
+                this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
                 this.MessageUploadAndDownload(wrapperList.Select(n => n.Value));
             }
             finally
@@ -279,7 +279,7 @@ namespace Amoeba.Test
             var hashList = new LockedHashSet<Hash>();
             var metadataList = new LockedList<Metadata>();
 
-            Parallel.For(1, coreManagerList.Count, new ParallelOptions() { MaxDegreeOfParallelism = 3 }, i =>
+            Parallel.For(1, 5, new ParallelOptions() { MaxDegreeOfParallelism = 3 }, i =>
             {
                 var random = RandomProvider.GetThreadRandom();
 

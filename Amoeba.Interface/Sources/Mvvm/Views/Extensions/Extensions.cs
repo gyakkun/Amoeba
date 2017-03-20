@@ -13,20 +13,6 @@ using System.Windows.Threading;
 
 namespace Amoeba.Interface
 {
-    static class ProcessExtensions
-    {
-        [DllImport("ntdll.dll")]
-        private static extern uint NtSetInformationProcess(IntPtr processHandle, uint processInformationClass, ref uint processInformation, uint processInformationLength);
-
-        private const uint ProcessInformationMemoryPriority = 0x27;
-
-        public static void SetMemoryPriority(this Process process, int priority)
-        {
-            uint memoryPriority = (uint)priority;
-            ProcessExtensions.NtSetInformationProcess(process.Handle, ProcessExtensions.ProcessInformationMemoryPriority, ref memoryPriority, sizeof(uint));
-        }
-    }
-
     static class UIElementExtensions
     {
         public static TAncestor FindAncestor<TAncestor>(this UIElement element)

@@ -75,15 +75,16 @@ namespace Amoeba.Service
                     return _config;
                 }
             }
-            set
-            {
-                lock (_lockObject)
-                {
-                    _config = value;
-                }
+        }
 
-                _watchTimer.Run();
+        public void SetConfig(TcpConnectionConfig config)
+        {
+            lock (_lockObject)
+            {
+                _config = config;
             }
+
+            _watchTimer.Run();
         }
 
         public IEnumerable<string> LocationUris
@@ -468,7 +469,7 @@ namespace Amoeba.Service
 
                 lock (_lockObject)
                 {
-                    if (this.Config != config) continue;
+                    if (this.Config!= config) continue;
 
                     _locationUris.Clear();
                     if (ipv4Uri != null) _locationUris.Add(ipv4Uri);

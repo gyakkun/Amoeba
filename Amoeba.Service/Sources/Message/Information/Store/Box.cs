@@ -41,8 +41,8 @@ namespace Amoeba.Service
         protected override void Initialize()
         {
             _hashCode = this.Name?.GetHashCode() ?? 0
-                | this.Seeds.FirstOrDefault()?.GetHashCode() ?? 0
-                | this.Boxes.FirstOrDefault()?.GetHashCode() ?? 0;
+                ^ this.Seeds.FirstOrDefault()?.GetHashCode() ?? 0
+                ^ this.Boxes.FirstOrDefault()?.GetHashCode() ?? 0;
         }
 
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)

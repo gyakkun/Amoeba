@@ -16,8 +16,6 @@ namespace Amoeba.Test
         {
             Program.Init();
 
-            ThreadPool.SetMinThreads(1024, 1024);
-
             var test = new Test_CoreManager();
             test.Setup();
             test.Test_SendReceive();

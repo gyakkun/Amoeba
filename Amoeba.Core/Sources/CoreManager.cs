@@ -28,9 +28,9 @@ namespace Amoeba.Core
         public CoreManager(string configPath, string blocksPath, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
-            _cacheManager = new CacheManager(Path.Combine(configPath, "CacheManager"), blocksPath, _bufferManager);
-            _networkManager = new NetworkManager(Path.Combine(configPath, "NetworkManager"), _cacheManager, _bufferManager);
-            _downloadManager = new DownloadManager(Path.Combine(configPath, "DownloadManager"), _networkManager, _cacheManager, _bufferManager);
+            _cacheManager = new CacheManager(Path.Combine(configPath, "Cache"), blocksPath, _bufferManager);
+            _networkManager = new NetworkManager(Path.Combine(configPath, "Network"), _cacheManager, _bufferManager);
+            _downloadManager = new DownloadManager(Path.Combine(configPath, "Download"), _networkManager, _cacheManager, _bufferManager);
 
             _networkManager.ConnectCapEvent = (_, uri) => this.OnConnectCap(uri);
             _networkManager.AcceptCapEvent = (_) => this.OnAcceptCap();

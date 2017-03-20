@@ -13,9 +13,10 @@
             </ResourceDictionary.MergedDictionaries>
 
             <ObjectDataProvider x:Key="_languages" ObjectInstance="{x:Static local:LanguagesManager.Instance}" />
-            <ObjectDataProvider x:Key="_settings" ObjectInstance="{x:Static local:SettingsManager.Instance}" />
 
             <local:SortedCollectionConverter x:Key="SortedCollectionConverter"/>
+            <local:BytesToHexStringConverter x:Key="BytesToHexStringConverter"/>
+            <local:LongToSizeStringConverter x:Key="LongToSizeStringConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

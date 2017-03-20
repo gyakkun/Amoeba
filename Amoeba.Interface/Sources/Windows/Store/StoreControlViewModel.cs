@@ -11,9 +11,11 @@ using Reactive.Bindings;
 
 namespace Amoeba.Interface
 {
-    class StoreControlViewModel
+    class StoreControlViewModel : SettingsViewModelBase
     {
         private CollectionViewSource _treeViewSource;
+
+        private volatile bool _disposed;
 
         public StoreControlViewModel()
         {
@@ -78,6 +80,20 @@ namespace Amoeba.Interface
             if (element == null) return null;
 
             return element.DataContext as TreeViewModelBase;
+        }
+
+        public override void Load()
+        {
+        }
+
+        public override void Save()
+        {
+        }
+
+        public override void Dispose()
+        {
+            if (_disposed) return;
+            _disposed = true;
         }
     }
 }

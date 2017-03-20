@@ -23,6 +23,12 @@ namespace Amoeba.Core
     public delegate Cap ConnectCapEventHandler(object sender, string uri);
     public delegate Cap AcceptCapEventHandler(object sender);
 
+    public enum SessionType
+    {
+        Connect,
+        Accept,
+    }
+
     class NetworkManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
@@ -236,7 +242,7 @@ namespace Amoeba.Core
                 {
                     var contexts = new List<InformationContext>();
                     {
-                        contexts.Add(new InformationContext("Version", sessionInfo.Version));
+                        contexts.Add(new InformationContext("Type", sessionInfo.Type));
                         contexts.Add(new InformationContext("Id", sessionInfo.Id));
                         contexts.Add(new InformationContext("Location", sessionInfo.Location));
                         contexts.Add(new InformationContext("ReceivedByteCount", sessionInfo.Connection.ReceivedByteCount));
@@ -1386,12 +1392,6 @@ namespace Amoeba.Core
                     }
                 }
             }
-        }
-
-        private enum SessionType
-        {
-            Connect,
-            Accept,
         }
 
         private class SessionInfo

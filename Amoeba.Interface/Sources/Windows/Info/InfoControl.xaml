@@ -1,0 +1,50 @@
+<UserControl x:Class="Amoeba.Interface.InfoControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:Amoeba.Interface"
+        mc:Ignorable="d" 
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        d:DesignHeight="300" d:DesignWidth="300">
+
+    <Grid>
+        <ListView VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.Resources>
+                <DataTemplate x:Key="CellTemplate_Type">
+                    <TextBlock Text="{Binding Path=Type, Mode=OneWay}" />
+                </DataTemplate>
+                <DataTemplate x:Key="CellTemplate_Id">
+                    <TextBlock Text="{Binding Path=Id, Mode=OneWay, Converter={StaticResource BytesToHexStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="CellTemplate_Priority">
+                    <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
+                </DataTemplate>
+                <DataTemplate x:Key="CellTemplate_ReceivedByteCount">
+                    <TextBlock Text="{Binding Path=ReceivedByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                </DataTemplate>
+                <DataTemplate x:Key="CellTemplate_SentByteCount">
+                    <TextBlock Text="{Binding Path=SentByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                </DataTemplate>
+            </ListView.Resources>
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="{Binding Path=InfoControl_Copy, Source={StaticResource _languages}}" />
+                    <MenuItem Header="{Binding Path=InfoControl_Paste, Source={StaticResource _languages}}" />
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="{Binding Path=InfoControl_Type, Source={StaticResource _languages}}"
+                            CellTemplate="{StaticResource CellTemplate_Type}" 
+                            Width="{Binding Path=ConnetionList_Type_Width, Mode=TwoWay}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

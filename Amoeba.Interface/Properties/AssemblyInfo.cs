@@ -14,6 +14,6 @@ using System.Windows;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
-[assembly: AssemblyVersion("0.0.0.27")] // 5B915FA53877E10806CAD28F1F97E82C0BC9166AA59CE62E19767A446C0015B2
+[assembly: AssemblyVersion("0.0.0.33")] // 3BF98FE8B0A4C208919D8936483511385A885D8A06FF1D484A24AC5890C62862
 
 [assembly: InternalsVisibleTo("Amoeba.Test")]
