@@ -115,11 +115,13 @@
     </ApplicationDefinition>
     <Compile Include="Sources\Extensions\ProcessExtensions.cs" />
     <Compile Include="Sources\Mvvm\Converters\BytesToHexStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\DoubleToGridLengthConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\LongToSizeStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SortedCollectionConverter.cs" />
     <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragAcceptBehavior.cs" />
     <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragAcceptDescription.cs" />
     <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragStartBehavior.cs" />
+    <Compile Include="Sources\Mvvm\Helpers\GridViewSortHelper.cs" />
     <Compile Include="Sources\Mvvm\ViewModels\SettingsViewModel\DynamicViewModelBase.cs" />
     <Compile Include="Sources\Mvvm\ViewModels\SettingsViewModel\SettingsViewModelBase.cs" />
     <Compile Include="Sources\Mvvm\ViewModels\TreeViewModel\TreeViewModelBase.cs" />

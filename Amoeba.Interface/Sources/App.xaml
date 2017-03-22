@@ -17,6 +17,7 @@
             <local:SortedCollectionConverter x:Key="SortedCollectionConverter"/>
             <local:BytesToHexStringConverter x:Key="BytesToHexStringConverter"/>
             <local:LongToSizeStringConverter x:Key="LongToSizeStringConverter"/>
+            <local:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -20,12 +20,24 @@ using Omnius.Utilities;
 
 namespace Amoeba.Core
 {
-    public delegate void CheckBlocksProgressEventHandler(object sender, int badBlockCount, int checkedBlockCount, int blockCount);
-
     interface ISetOperators<T>
     {
         IEnumerable<T> IntersectFrom(IEnumerable<T> collection);
         IEnumerable<T> ExceptFrom(IEnumerable<T> collection);
+    }
+
+    public struct CheckBlocksProgressInfo
+    {
+        public long BadBlockCount { get; }
+        public long CheckedBlockCount { get; }
+        public long BlockCount { get; }
+
+        public CheckBlocksProgressInfo(long badBlockCount, long checkedBlockCount, int blockCount)
+        {
+            this.BadBlockCount = badBlockCount;
+            this.CheckedBlockCount = checkedBlockCount;
+            this.BlockCount = blockCount;
+        }
     }
 
     class CacheManager : ManagerBase, ISettings, ISetOperators<Hash>, IEnumerable<Hash>
@@ -84,7 +96,7 @@ namespace Amoeba.Core
         private void WatchTimer()
         {
             this.CheckInformation();
-            this.CheckMessageContents();
+            this.CheckMessages();
         }
 
         private volatile Info _info = new Info();
@@ -381,7 +393,7 @@ namespace Amoeba.Core
             }
         }
 
-        public Task CheckBlocks(CheckBlocksProgressEventHandler checkBlocksProgressEvent, CancellationToken token)
+        public Task CheckBlocks(IProgress<CheckBlocksProgressInfo> progress, CancellationToken token)
         {
             return Task.Run(() =>
             {
@@ -395,7 +407,7 @@ namespace Amoeba.Core
 
                     token.ThrowIfCancellationRequested();
 
-                    checkBlocksProgressEvent?.Invoke(this, badBlockCount, checkedBlockCount, blockCount);
+                    progress.Report(new CheckBlocksProgressInfo(badBlockCount, checkedBlockCount, blockCount));
 
                     foreach (var hash in list)
                     {
@@ -429,11 +441,11 @@ namespace Amoeba.Core
 
                         if (checkedBlockCount % 8 == 0)
                         {
-                            checkBlocksProgressEvent?.Invoke(this, badBlockCount, checkedBlockCount, blockCount);
+                            progress.Report(new CheckBlocksProgressInfo(badBlockCount, checkedBlockCount, blockCount));
                         }
                     }
 
-                    checkBlocksProgressEvent?.Invoke(this, badBlockCount, checkedBlockCount, blockCount);
+                    progress.Report(new CheckBlocksProgressInfo(badBlockCount, checkedBlockCount, blockCount));
                 }
             }, token);
         }
@@ -698,39 +710,14 @@ namespace Amoeba.Core
             }
         }
 
-        public Task Decoding(Stream outStream, IEnumerable<Hash> hashes, long maxLength, CancellationToken token)
+        public Stream Decoding(IEnumerable<Hash> hashes)
         {
-            return Task.Run(() =>
+            if (hashes == null) throw new ArgumentNullException(nameof(hashes));
+
+            lock (_lockObject)
             {
-                if (outStream == null) throw new ArgumentNullException(nameof(outStream));
-
-                try
-                {
-                    foreach (var hash in hashes)
-                    {
-                        token.ThrowIfCancellationRequested();
-
-                        var block = new ArraySegment<byte>();
-
-                        try
-                        {
-                            block = this[hash];
-
-                            outStream.Write(block.Array, block.Offset, block.Count);
-
-                            if (outStream.Length > maxLength) throw new CacheManagerException("Size too large");
-                        }
-                        finally
-                        {
-                            if (block.Array != null) _bufferManager.ReturnBuffer(block.Array);
-                        }
-                    }
-                }
-                finally
-                {
-                    outStream.Close();
-                }
-            }, token);
+                return new CacheStreamReader(hashes.ToList(), this, _bufferManager);
+            }
         }
 
         private object _parityDecodingLockObject = new object();
@@ -1368,7 +1355,7 @@ namespace Amoeba.Core
 
         #region Message
 
-        private void CheckMessageContents()
+        private void CheckMessages()
         {
             lock (_lockObject)
             {
@@ -1427,6 +1414,7 @@ namespace Amoeba.Core
                 _blockRemoveEventQueue.Enqueue(cacheInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
             }
         }
+
 
         #endregion
 

@@ -213,17 +213,25 @@ namespace Amoeba.Core
             }
         }
 
-        public Task CheckBlocks(CheckBlocksProgressEventHandler checkBlocksProgressEvent, CancellationToken token)
+        public Task CheckBlocks(IProgress<CheckBlocksProgressInfo> progress, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _cacheManager.CheckBlocks(checkBlocksProgressEvent, token);
+                return _cacheManager.CheckBlocks(progress, token);
             }
         }
 
-        #region Content
+        public Task<Metadata> Import(Stream stream, TimeSpan lifeSpan, CancellationToken token)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return _cacheManager.Import(stream, lifeSpan, token);
+            }
+        }
 
         public Task<Metadata> Import(string path, CancellationToken token)
         {
@@ -255,13 +263,13 @@ namespace Amoeba.Core
             }
         }
 
-        public void Download(Metadata metadata, long maxLength)
+        public Task<Stream> GetStream(Metadata metadata, long maxLength, bool isBackground)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _downloadManager.Add(metadata, maxLength);
+                return _downloadManager.GetStream(metadata, maxLength, isBackground);
             }
         }
 
@@ -294,20 +302,6 @@ namespace Amoeba.Core
                 _downloadManager.Reset(metadata);
             }
         }
-
-        public Task Export(Metadata metadata, Stream outStream, CancellationToken token)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _downloadManager.Export(metadata, outStream, token);
-            }
-        }
-
-        #endregion
-
-        #region Message
 
         public void UploadMetadata(BroadcastMetadata metadata)
         {
@@ -368,28 +362,6 @@ namespace Amoeba.Core
                 return _networkManager.GetMulticastMetadatas(tag, type);
             }
         }
-
-        public Task<Metadata> Import(Stream stream, TimeSpan lifeSpan, CancellationToken token)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _cacheManager.Import(stream, lifeSpan, token);
-            }
-        }
-
-        public Task<Stream> GetStream(Metadata metadata, long maxLength)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _downloadManager.GetStream(metadata, maxLength);
-            }
-        }
-
-        #endregion
 
         public override ManagerState State
         {

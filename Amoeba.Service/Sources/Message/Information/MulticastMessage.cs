@@ -31,7 +31,7 @@ namespace Amoeba.Service
         private Cost _cost;
         private T _value;
 
-        public MulticastMessage(Tag tag, Signature authorSignature, DateTime creationTime, Cost cost, T value)
+        internal MulticastMessage(Tag tag, Signature authorSignature, DateTime creationTime, Cost cost, T value)
         {
             this.Tag = tag;
             this.AuthorSignature = authorSignature;

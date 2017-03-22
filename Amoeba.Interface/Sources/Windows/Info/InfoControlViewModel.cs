@@ -22,7 +22,6 @@ namespace Amoeba.Interface
 {
     class InfoControlViewModel : SettingsViewModelBase
     {
-        private BufferManager _bufferManager;
         private ServiceManager _serviceManager;
 
         private Settings _settings;
@@ -31,9 +30,8 @@ namespace Amoeba.Interface
 
         private volatile bool _disposed;
 
-        public InfoControlViewModel(BufferManager bufferManager, ServiceManager serviceManager)
+        public InfoControlViewModel(ServiceManager serviceManager)
         {
-            _bufferManager = bufferManager;
             _serviceManager = serviceManager;
         }
 
@@ -44,13 +42,13 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
-                base.SetPairs(_settings.Load("DynamicSettings", () => new Dictionary<string, object>()));
+                this.SetPairs(_settings.Load("DynamicSettings", () => new Dictionary<string, object>()));
             }
         }
 
         public override void Save()
         {
-            _settings.Save("DynamicSettings", base.GetPairs());
+            _settings.Save("DynamicSettings", this.GetPairs());
         }
 
         public override void Dispose()

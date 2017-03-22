@@ -56,6 +56,7 @@
     <Compile Include="Sources\Connection\ConnectionManager.cs" />
     <Compile Include="Sources\Connection\I2p\I2pConnectionManager.cs" />
     <Compile Include="Sources\Connection\Utilities\UriUtils.cs" />
+    <Compile Include="Sources\Content\ContentManager.cs" />
     <Compile Include="Sources\ServiceManager.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessage.cs" />
     <Compile Include="Sources\Message\Information\ChatMessage\ChatMessageCollection.cs" />

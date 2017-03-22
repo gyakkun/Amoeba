@@ -23,7 +23,6 @@ namespace Amoeba.Interface
 {
     class MainWindowViewModel : SettingsViewModelBase
     {
-        private BufferManager _bufferManager;
         private ServiceManager _serviceManager;
 
         private Settings _settings;
@@ -44,15 +43,11 @@ namespace Amoeba.Interface
         public override void Load()
         {
             {
-                _bufferManager = new BufferManager(1024 * 1024 * 1024, 1024 * 1024 * 256);
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
+                if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
-                {
-                    string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
-                    if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
-
-                    _serviceManager = new ServiceManager(configPath, AmoebaEnvironment.Config.Cache.BlocksPath, _bufferManager);
-                    _serviceManager.Load();
-                }
+                _serviceManager = new ServiceManager(configPath, AmoebaEnvironment.Config.Cache.BlocksPath, BufferManager.Instance);
+                _serviceManager.Load();
             }
 
             {
@@ -68,11 +63,12 @@ namespace Amoeba.Interface
 
                 _settings = new Settings(configPath);
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
+                this.SetPairs(_settings.Load("DynamicSettings", () => new Dictionary<string, object>()));
             }
 
             {
-                this.ViewModels.Add(new StoreControlViewModel().AddTo(_disposable));
-                this.ViewModels.Add(new InfoControlViewModel(_bufferManager, _serviceManager).AddTo(_disposable));
+                this.ViewModels.Add(new StoreControlViewModel());
+                this.ViewModels.Add(new InfoControlViewModel(_serviceManager));
 
                 foreach (var viewModel in this.ViewModels)
                 {
@@ -86,6 +82,7 @@ namespace Amoeba.Interface
             _serviceManager.Save();
 
             _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
+            _settings.Save("DynamicSettings", this.GetPairs());
 
             foreach (var viewModel in this.ViewModels)
             {

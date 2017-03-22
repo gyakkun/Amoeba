@@ -444,7 +444,7 @@ namespace Amoeba.Core
 
                     using (var tokenSource = new CancellationTokenSource())
                     {
-                        var task = _cacheManager.Decoding(new WrapperStream(stream, true), info.ResultHashes, info.MaxLength, tokenSource.Token);
+                        var task = _cacheManager.Decoding(new WrapperStream(stream, true), info.ResultHashes, maxLength, tokenSource.Token);
 
                         while (!task.IsCompleted)
                         {

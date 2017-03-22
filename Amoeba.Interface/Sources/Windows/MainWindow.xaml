@@ -10,10 +10,12 @@
         xmlns:local="clr-namespace:Amoeba.Interface"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        TextElement.FontWeight="Medium"
-        TextElement.FontSize="14"
-        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        FontFamily="{DynamicResource MaterialDesignFont}"
         Title="MainWindow"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}">
     <i:Interaction.Triggers>
@@ -23,9 +25,11 @@
     </i:Interaction.Triggers>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="187*"/>
-            <ColumnDefinition Width="573*"/>
+            <ColumnDefinition Width="{Binding Path=TabListBox_Width, Mode=TwoWay, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200}" />
+            <ColumnDefinition Width="4" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
         <ListBox Name="TabListBox" Grid.Column="0" SelectionMode="Single" SelectedIndex="0" ItemsSource="{Binding Path=ViewModels}">
             <ListBox.Resources>
                 <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
@@ -36,7 +40,7 @@
                 </DataTemplate>
             </ListBox.Resources>
         </ListBox>
-        <ContentControl Grid.Column="1" Content="{Binding SelectedItem, ElementName=TabListBox, Mode=OneWay}">
+        <ContentControl Grid.Column="2" Content="{Binding SelectedItem, ElementName=TabListBox, Mode=OneWay}">
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
                     <local:InfoControl DataContext="{Binding}" />

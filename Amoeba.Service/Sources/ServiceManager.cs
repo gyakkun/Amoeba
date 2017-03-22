@@ -203,13 +203,13 @@ namespace Amoeba.Service
             }
         }
 
-        public Task CheckBlocks(CheckBlocksProgressEventHandler checkBlocksProgressEvent, CancellationToken token)
+        public Task CheckBlocks(IProgress<CheckBlocksProgressInfo> progress, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _coreManager.CheckBlocks(checkBlocksProgressEvent, token);
+                return _coreManager.CheckBlocks(progress, token);
             }
         }
 
@@ -284,16 +284,6 @@ namespace Amoeba.Service
 
         #region Content
 
-        public Task<Metadata> Import(string path, CancellationToken token)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _coreManager.Import(path, token);
-            }
-        }
-
         public IEnumerable<Information> GetContentInformations()
         {
             this.Check();
@@ -301,6 +291,16 @@ namespace Amoeba.Service
             lock (_lockObject)
             {
                 return _coreManager.GetContentInformations();
+            }
+        }
+
+        public Task<Metadata> Import(string path, CancellationToken token)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return _coreManager.Import(path, token);
             }
         }
 
@@ -320,7 +320,7 @@ namespace Amoeba.Service
 
             lock (_lockObject)
             {
-                _coreManager.Download(metadata, maxLength);
+                _coreManager.AddDownload(metadata, maxLength);
             }
         }
 

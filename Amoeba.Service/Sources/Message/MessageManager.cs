@@ -382,10 +382,10 @@ namespace Amoeba.Service
     }
 
     [Serializable]
-    class MessageDownloadManagerException : ManagerException
+    class MessageManagerException : ManagerException
     {
-        public MessageDownloadManagerException() : base() { }
-        public MessageDownloadManagerException(string message) : base(message) { }
-        public MessageDownloadManagerException(string message, Exception innerException) : base(message, innerException) { }
+        public MessageManagerException() : base() { }
+        public MessageManagerException(string message) : base(message) { }
+        public MessageManagerException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

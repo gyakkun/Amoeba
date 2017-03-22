@@ -28,7 +28,7 @@ namespace Amoeba.Service
         private DateTime _creationTime;
         private T _value;
 
-        public UnicastMessage(Signature targetSignature, Signature authorSignature, DateTime creationTime, T value)
+        internal UnicastMessage(Signature targetSignature, Signature authorSignature, DateTime creationTime, T value)
         {
             this.TargetSignature = targetSignature;
             this.AuthorSignature = authorSignature;
