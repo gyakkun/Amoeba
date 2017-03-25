@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Omnius.Base;
 
 namespace Amoeba.Core
 {
     class CacheStreamReader : Stream
     {
-        private List<Hash> _hashes;
+        private List<Hash> _hashes = new List<Hash>();
         private int _hashesIndex;
 
         private CacheManager _cacheManager;
@@ -24,11 +25,11 @@ namespace Amoeba.Core
 
         public CacheStreamReader(IEnumerable<Hash> hashes, CacheManager cacheManager, BufferManager bufferManager)
         {
-            _hashes = hashes.ToList();
+            _hashes.AddRange(hashes);
             _cacheManager = cacheManager;
             _bufferManager = bufferManager;
 
-            _length = hashes.Sum(n => (long)cacheManager.GetLength(n));
+            _length = _hashes.Sum(n => (long)cacheManager.GetLength(n));
         }
 
         public override bool CanRead
@@ -57,7 +58,7 @@ namespace Amoeba.Core
             {
                 if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
 
-                return false;
+                return true;
             }
         }
 

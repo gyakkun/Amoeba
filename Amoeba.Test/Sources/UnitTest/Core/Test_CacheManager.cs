@@ -81,7 +81,7 @@ namespace Amoeba.Test
 
                 using (var tokenSource = new CancellationTokenSource())
                 {
-                    var hashSet = new HashSet<Hash>(_cacheManager.ParityDecoding(group, tokenSource.Token).Result);
+                    var hashSet = new HashSet<Hash>(_cacheManager.ParityDecoding(group, tokenSource.Token));
                     if (!hashSet.SetEquals(hashes)) throw new ArgumentException("Broken");
                 }
             }

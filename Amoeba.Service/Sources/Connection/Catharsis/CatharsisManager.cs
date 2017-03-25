@@ -260,11 +260,11 @@ namespace Amoeba.Service
             }
         }
 
-        private readonly object _stateLock = new object();
+        private readonly object _stateLockObject = new object();
 
         public override void Start()
         {
-            lock (_stateLock)
+            lock (_stateLockObject)
             {
                 lock (_lockObject)
                 {
@@ -278,7 +278,7 @@ namespace Amoeba.Service
 
         public override void Stop()
         {
-            lock (_stateLock)
+            lock (_stateLockObject)
             {
                 lock (_lockObject)
                 {

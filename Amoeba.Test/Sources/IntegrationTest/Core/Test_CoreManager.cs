@@ -148,7 +148,7 @@ namespace Amoeba.Test
                     if (average >= wrapperList.Count - 2) break;
                 }
 
-                this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
+                //this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
                 this.MessageUploadAndDownload(wrapperList.Select(n => n.Value));
             }
             finally
@@ -279,7 +279,7 @@ namespace Amoeba.Test
             var hashList = new LockedHashSet<Hash>();
             var metadataList = new LockedList<Metadata>();
 
-            Parallel.For(1, 5, new ParallelOptions() { MaxDegreeOfParallelism = 3 }, i =>
+            Parallel.For(1, 9, new ParallelOptions() { MaxDegreeOfParallelism = 3 }, i =>
             {
                 var random = RandomProvider.GetThreadRandom();
 
@@ -302,7 +302,7 @@ namespace Amoeba.Test
                     stream.Seek(0, SeekOrigin.Begin);
                     using (var tokenSource = new CancellationTokenSource())
                     {
-                        metadataList.Add(coreManagerList[i].Import(stream, new TimeSpan(1, 0, 0), tokenSource.Token).Result);
+                        metadataList.Add(coreManagerList[i].VolatileSetStream(stream, new TimeSpan(1, 0, 0), tokenSource.Token).Result);
                     }
                 }
             });
@@ -319,7 +319,7 @@ namespace Amoeba.Test
 
                     try
                     {
-                        stream = coreManagerList[0].GetStream(metadata, 1024 * 1024 * 256).Result;
+                        stream = coreManagerList[0].VolatileGetStream(metadata, 1024 * 1024 * 256);
                         if (stream == null) continue;
 
                         var hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(stream));

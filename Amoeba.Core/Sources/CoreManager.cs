@@ -163,6 +163,19 @@ namespace Amoeba.Core
             }
         }
 
+        public string BasePath
+        {
+            get
+            {
+                this.Check();
+
+                lock (_lockObject)
+                {
+                    return _downloadManager.BasePath;
+                }
+            }
+        }
+
         public IEnumerable<Information> GetConnectionInformations()
         {
             this.Check();
@@ -223,13 +236,23 @@ namespace Amoeba.Core
             }
         }
 
-        public Task<Metadata> Import(Stream stream, TimeSpan lifeSpan, CancellationToken token)
+        public Task<Metadata> VolatileSetStream(Stream stream, TimeSpan lifeSpan, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
                 return _cacheManager.Import(stream, lifeSpan, token);
+            }
+        }
+
+        public Stream VolatileGetStream(Metadata metadata, long maxLength)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return _downloadManager.GetStream(metadata, maxLength);
             }
         }
 
@@ -263,16 +286,6 @@ namespace Amoeba.Core
             }
         }
 
-        public Task<Stream> GetStream(Metadata metadata, long maxLength, bool isBackground)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _downloadManager.GetStream(metadata, maxLength, isBackground);
-            }
-        }
-
         public IEnumerable<Information> GetDownloadInformations()
         {
             this.Check();
@@ -283,23 +296,33 @@ namespace Amoeba.Core
             }
         }
 
-        public void RemoveDownload(Metadata metadata)
+        public void AddDownload(Metadata metadata, string path, long maxLength)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _downloadManager.Remove(metadata);
+                _downloadManager.Add(metadata, path, maxLength);
             }
         }
 
-        public void ResetDownload(Metadata metadata)
+        public void RemoveDownload(Metadata metadata, string path)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _downloadManager.Reset(metadata);
+                _downloadManager.Remove(metadata, path);
+            }
+        }
+
+        public void ResetDownload(Metadata metadata, string path)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                _downloadManager.Reset(metadata, path);
             }
         }
 

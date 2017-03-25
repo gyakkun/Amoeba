@@ -25,7 +25,7 @@ namespace Amoeba.Interface
 
         private static void Load()
         {
-            var configPath = Path.Combine(Paths.ConfigPath, "Config.toml");
+            string configPath = Path.Combine(Paths.ConfigPath, "Config.toml");
 
             if (!File.Exists(configPath))
             {

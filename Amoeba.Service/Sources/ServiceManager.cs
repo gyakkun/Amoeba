@@ -282,7 +282,15 @@ namespace Amoeba.Service
             }
         }
 
-        #region Content
+        public Task<Metadata> Import(string path, CancellationToken token)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return _coreManager.Import(path, token);
+            }
+        }
 
         public IEnumerable<Information> GetContentInformations()
         {
@@ -291,16 +299,6 @@ namespace Amoeba.Service
             lock (_lockObject)
             {
                 return _coreManager.GetContentInformations();
-            }
-        }
-
-        public Task<Metadata> Import(string path, CancellationToken token)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _coreManager.Import(path, token);
             }
         }
 
@@ -314,16 +312,6 @@ namespace Amoeba.Service
             }
         }
 
-        public void Download(Metadata metadata, long maxLength)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                _coreManager.AddDownload(metadata, maxLength);
-            }
-        }
-
         public IEnumerable<Information> GetDownloadInformations()
         {
             this.Check();
@@ -334,77 +322,33 @@ namespace Amoeba.Service
             }
         }
 
-        public void RemoveDownload(Metadata metadata)
+        public void AddDownload(Metadata metadata, string path, long maxLength)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _coreManager.RemoveDownload(metadata);
+                _coreManager.AddDownload(metadata, path, maxLength);
             }
         }
 
-        public void ResetDownload(Metadata metadata)
+        public void RemoveDownload(Metadata metadata, string path)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _coreManager.ResetDownload(metadata);
+                _coreManager.RemoveDownload(metadata, path);
             }
         }
 
-        public Task Export(Metadata metadata, Stream outStream, CancellationToken token)
+        public void ResetDownload(Metadata metadata, string path)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _coreManager.Export(metadata, outStream, token);
-            }
-        }
-
-        #endregion
-
-        #region Message
-
-        public Task<BroadcastMessage<Profile>> GetProfile(Signature signature)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _messageManager.GetProfile(signature);
-            }
-        }
-
-        public Task<BroadcastMessage<Store>> GetStore(Signature signature)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _messageManager.GetStore(signature);
-            }
-        }
-
-        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, IExchangeDecrypt exchangePrivateKey)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _messageManager.GetMailMessages(signature, exchangePrivateKey);
-            }
-        }
-
-        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, IExchangeDecrypt exchangePrivateKey)
-        {
-            this.Check();
-
-            lock (_lockObject)
-            {
-                return _messageManager.GetChatMessages(tag, exchangePrivateKey);
+                _coreManager.ResetDownload(metadata, path);
             }
         }
 
@@ -448,7 +392,45 @@ namespace Amoeba.Service
             }
         }
 
-        #endregion
+        public Task<BroadcastMessage<Profile>> GetProfile(Signature signature)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return _messageManager.GetProfile(signature);
+            }
+        }
+
+        public Task<BroadcastMessage<Store>> GetStore(Signature signature)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return _messageManager.GetStore(signature);
+            }
+        }
+
+        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, IExchangeDecrypt exchangePrivateKey)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return _messageManager.GetMailMessages(signature, exchangePrivateKey);
+            }
+        }
+
+        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, IExchangeDecrypt exchangePrivateKey)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return _messageManager.GetChatMessages(tag, exchangePrivateKey);
+            }
+        }
 
         public override ManagerState State
         {

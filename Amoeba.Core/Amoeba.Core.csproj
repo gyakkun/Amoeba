@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sources\Cache\Utilities\CacheStreamReader.cs" />
     <Compile Include="Sources\Cache\Metadata\Group.cs" />
     <Compile Include="Sources\Cache\Metadata\GroupCollection.cs" />
     <Compile Include="Sources\Cache\Metadata\Index.cs" />

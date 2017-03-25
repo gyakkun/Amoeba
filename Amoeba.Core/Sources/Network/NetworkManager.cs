@@ -50,11 +50,11 @@ namespace Amoeba.Core
 
         private MetadataManager _metadataManager;
 
-        private Thread _computeThread;
-        private Thread _sendConnectionsThread;
-        private Thread _receiveConnectionsThread;
-        private List<Thread> _connectThreads = new List<Thread>();
-        private List<Thread> _acceptThreads = new List<Thread>();
+        private List<TaskManager> _connectTaskManagers = new List<TaskManager>();
+        private List<TaskManager> _acceptTaskManagers = new List<TaskManager>();
+        private TaskManager _computeTaskManager;
+        private TaskManager _sendTaskManager;
+        private TaskManager _receiveTaskManager;
 
         private VolatileHashSet<Hash> _pushBlocksRequestSet = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
 
@@ -87,6 +87,16 @@ namespace Amoeba.Core
 
             _metadataManager = new MetadataManager();
             _metadataManager.GetLockSignaturesEvent += (_) => this.OnGetLockSignatures();
+
+            for (int i = 0; i < 3; i++)
+            {
+                _connectTaskManagers.Add(new TaskManager(this.ConnectThread));
+                _acceptTaskManagers.Add(new TaskManager(this.AcceptThread));
+            }
+
+            _computeTaskManager = new TaskManager(this.ComputeThread);
+            _sendTaskManager = new TaskManager(this.SendThread);
+            _receiveTaskManager = new TaskManager(this.ReceiveThread);
         }
 
         public Location MyLocation
@@ -271,7 +281,146 @@ namespace Amoeba.Core
             }
         }
 
-        private void ComputeThread()
+        private VolatileHashSet<Location> _connectingLocations = new VolatileHashSet<Location>(new TimeSpan(0, 1, 0));
+
+        private void ConnectThread(CancellationToken token)
+        {
+            try
+            {
+                for (;;)
+                {
+                    if (token.WaitHandle.WaitOne(1000)) return;
+
+                    // 接続数を制限する。
+                    {
+                        int connectionCount = _routeTable.ToArray().Select(n => n.Value).Count(n => n.Type == SessionType.Connect);
+                        if (connectionCount >= (this.ConnectionCountLimit / 2)) continue;
+                    }
+
+                    Location location = null;
+
+                    lock (_lockObject)
+                    {
+                        _connectingLocations.Update();
+
+                        switch (_random.Next(0, 2))
+                        {
+                            case 0:
+                                location = _crowdLocations.Randomize()
+                                    .Where(n => !_connectingLocations.Contains(n))
+                                    .FirstOrDefault();
+                                break;
+                            case 1:
+                                var sessionInfo = _routeTable.ToArray().Randomize().Select(n => n.Value).FirstOrDefault();
+                                if (sessionInfo == null) break;
+
+                                location = sessionInfo.ReceiveInfo.PullLocationSet.Randomize()
+                                    .Where(n => !_connectingLocations.Contains(n))
+                                    .FirstOrDefault();
+                                break;
+                        }
+
+                        if (location == null || _myLocation.Uris.Any(n => location.Uris.Contains(n))
+                            || _routeTable.Any(n => n.Value.Location.Uris.Any(m => location.Uris.Contains(m)))) continue;
+
+                        _connectingLocations.Add(location);
+                    }
+
+                    Cap cap = null;
+
+                    foreach (string uri in new HashSet<string>(location.Uris))
+                    {
+                        cap = this.OnConnectCap(uri);
+                        if (cap != null) break;
+                    }
+
+                    if (cap == null)
+                    {
+                        if (_crowdLocations.Count > 1024) _crowdLocations.Remove(location);
+
+                        continue;
+                    }
+
+                    _info.ConnectCount.Increment();
+
+                    this.CreateConnection(cap, SessionType.Connect);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        private void AcceptThread(CancellationToken token)
+        {
+            try
+            {
+                for (;;)
+                {
+                    if (token.WaitHandle.WaitOne(1000)) return;
+
+                    // 接続数を制限する。
+                    {
+                        int connectionCount = _routeTable.ToArray().Select(n => n.Value).Count(n => n.Type == SessionType.Accept);
+                        if (connectionCount >= (this.ConnectionCountLimit / 2)) continue;
+                    }
+
+                    var cap = this.OnAcceptCap();
+                    if (cap == null) continue;
+
+                    _info.AcceptCount.Increment();
+
+                    this.CreateConnection(cap, SessionType.Accept);
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        private void CreateConnection(Cap cap, SessionType type)
+        {
+            lock (_lockObject)
+            {
+                var connection = new Connection(1024 * 1024 * 8, _bufferManager);
+                connection.Connect(cap);
+
+                var sessionInfo = new SessionInfo();
+                sessionInfo.Connection = connection;
+                sessionInfo.Type = type;
+
+                connection.SendEvent = (_) => this.Send(sessionInfo);
+                connection.ReceiveEvent = (_, stream) => this.Receive(sessionInfo, stream);
+
+                _connections.Add(connection, sessionInfo);
+            }
+        }
+
+        private void RemoveConnection(Connection connection)
+        {
+            lock (_lockObject)
+            {
+                if (_connections.TryGetValue(connection, out var sessionInfo))
+                {
+                    _connections.Remove(connection);
+
+                    connection.Dispose();
+
+                    if (sessionInfo.Id != null)
+                    {
+                        _routeTable.Remove(sessionInfo.Id);
+                    }
+
+                    if (sessionInfo.Location != null) _crowdLocations.Add(sessionInfo.Location);
+
+                    return;
+                }
+            }
+        }
+
+        private void ComputeThread(CancellationToken token)
         {
             var refreshStopwatch = Stopwatch.StartNew();
             var reduceStopwatch = Stopwatch.StartNew();
@@ -286,8 +435,7 @@ namespace Amoeba.Core
             {
                 for (;;)
                 {
-                    Thread.Sleep(1000);
-                    if (this.State == ManagerState.Stop) return;
+                    if (token.WaitHandle.WaitOne(1000)) return;
 
                     if (refreshStopwatch.Elapsed.TotalSeconds >= 30)
                     {
@@ -658,148 +806,7 @@ namespace Amoeba.Core
             }
         }
 
-        private VolatileHashSet<Location> _connectingLocations = new VolatileHashSet<Location>(new TimeSpan(0, 1, 0));
-
-        private void ConnectThread()
-        {
-            try
-            {
-                for (;;)
-                {
-                    Thread.Sleep(1000);
-                    if (this.State == ManagerState.Stop) return;
-
-                    // 接続数を制限する。
-                    {
-                        int connectionCount = _routeTable.ToArray().Select(n => n.Value).Count(n => n.Type == SessionType.Connect);
-                        if (connectionCount >= (this.ConnectionCountLimit / 2)) continue;
-                    }
-
-                    Location location = null;
-
-                    lock (_lockObject)
-                    {
-                        _connectingLocations.Update();
-
-                        switch (_random.Next(0, 2))
-                        {
-                            case 0:
-                                location = _crowdLocations.Randomize()
-                                    .Where(n => !_connectingLocations.Contains(n))
-                                    .FirstOrDefault();
-                                break;
-                            case 1:
-                                var sessionInfo = _routeTable.ToArray().Randomize().Select(n => n.Value).FirstOrDefault();
-                                if (sessionInfo == null) break;
-
-                                location = sessionInfo.ReceiveInfo.PullLocationSet.Randomize()
-                                    .Where(n => !_connectingLocations.Contains(n))
-                                    .FirstOrDefault();
-                                break;
-                        }
-
-                        if (location == null || _myLocation.Uris.Any(n => location.Uris.Contains(n))
-                            || _routeTable.Any(n => n.Value.Location.Uris.Any(m => location.Uris.Contains(m)))) continue;
-
-                        _connectingLocations.Add(location);
-                    }
-
-                    Cap cap = null;
-
-                    foreach (string uri in new HashSet<string>(location.Uris))
-                    {
-                        cap = this.OnConnectCap(uri);
-                        if (cap != null) break;
-                    }
-
-                    if (cap == null)
-                    {
-                        if (_crowdLocations.Count > 1024) _crowdLocations.Remove(location);
-
-                        continue;
-                    }
-
-                    _info.ConnectCount.Increment();
-
-                    this.CreateConnection(cap, SessionType.Connect);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-        }
-
-        private void AcceptThread()
-        {
-            try
-            {
-                for (;;)
-                {
-                    Thread.Sleep(1000);
-                    if (this.State == ManagerState.Stop) return;
-
-                    // 接続数を制限する。
-                    {
-                        int connectionCount = _routeTable.ToArray().Select(n => n.Value).Count(n => n.Type == SessionType.Accept);
-                        if (connectionCount >= (this.ConnectionCountLimit / 2)) continue;
-                    }
-
-                    var cap = this.OnAcceptCap();
-                    if (cap == null) continue;
-
-                    _info.AcceptCount.Increment();
-
-                    this.CreateConnection(cap, SessionType.Accept);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-        }
-
-        private void CreateConnection(Cap cap, SessionType type)
-        {
-            lock (_lockObject)
-            {
-                var connection = new Connection(1024 * 1024 * 8, _bufferManager);
-                connection.Connect(cap);
-
-                var sessionInfo = new SessionInfo();
-                sessionInfo.Connection = connection;
-                sessionInfo.Type = type;
-
-                connection.SendEvent = (_) => this.Send(sessionInfo);
-                connection.ReceiveEvent = (_, stream) => this.Receive(sessionInfo, stream);
-
-                _connections.Add(connection, sessionInfo);
-            }
-        }
-
-        private void RemoveConnection(Connection connection)
-        {
-            lock (_lockObject)
-            {
-                if (_connections.TryGetValue(connection, out var sessionInfo))
-                {
-                    _connections.Remove(connection);
-
-                    connection.Dispose();
-
-                    if (sessionInfo.Id != null)
-                    {
-                        _routeTable.Remove(sessionInfo.Id);
-                    }
-
-                    if (sessionInfo.Location != null) _crowdLocations.Add(sessionInfo.Location);
-
-                    return;
-                }
-            }
-        }
-
-        private void SendConnectionsThread()
+        private void SendThread(CancellationToken token)
         {
             var sw = Stopwatch.StartNew();
 
@@ -811,11 +818,9 @@ namespace Amoeba.Core
 
                     // Timer
                     {
-                        Thread.Sleep((int)(Math.Max(0, 1000 - sw.ElapsedMilliseconds)));
+                        if (token.WaitHandle.WaitOne((int)(Math.Max(0, 1000 - sw.ElapsedMilliseconds)))) return;
                         sw.Restart();
                     }
-
-                    if (this.State == ManagerState.Stop) return;
 
                     // Send
                     {
@@ -845,7 +850,7 @@ namespace Amoeba.Core
             }
         }
 
-        private void ReceiveConnectionsThread()
+        private void ReceiveThread(CancellationToken token)
         {
             var sw = Stopwatch.StartNew();
 
@@ -857,7 +862,7 @@ namespace Amoeba.Core
 
                     // Timer
                     {
-                        Thread.Sleep((int)(Math.Max(0, 1000 - sw.ElapsedMilliseconds)));
+                        if (token.WaitHandle.WaitOne((int)(Math.Max(0, 1000 - sw.ElapsedMilliseconds)))) return;
                         sw.Restart();
                     }
 
@@ -1571,53 +1576,32 @@ namespace Amoeba.Core
             }
         }
 
-        private readonly object _stateLock = new object();
+        private readonly object _stateLockObject = new object();
 
         public override void Start()
         {
             if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
 
-            lock (_stateLock)
+            lock (_stateLockObject)
             {
                 lock (_lockObject)
                 {
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    _computeThread = new Thread(this.ComputeThread);
-                    _computeThread.Name = "NetworkManager_ComputeThread";
-                    _computeThread.Priority = ThreadPriority.BelowNormal;
-                    _computeThread.Start();
-
-                    for (int i = 0; i < 3; i++)
+                    foreach (var taskManager in _connectTaskManagers)
                     {
-                        var thread = new Thread(this.ConnectThread);
-                        thread.Name = "NetworkManager_ConnectThread";
-                        thread.Priority = ThreadPriority.BelowNormal;
-                        thread.Start();
-
-                        _connectThreads.Add(thread);
+                        taskManager.Start();
                     }
 
-                    for (int i = 0; i < 3; i++)
+                    foreach (var taskManager in _acceptTaskManagers)
                     {
-                        var thread = new Thread(this.AcceptThread);
-                        thread.Name = "NetworkManager_AcceptThread";
-                        thread.Priority = ThreadPriority.BelowNormal;
-                        thread.Start();
-
-                        _acceptThreads.Add(thread);
+                        taskManager.Start();
                     }
 
-                    _sendConnectionsThread = new Thread(this.SendConnectionsThread);
-                    _sendConnectionsThread.Name = "NetworkManager_SendConnectionsThread";
-                    _sendConnectionsThread.Priority = ThreadPriority.BelowNormal;
-                    _sendConnectionsThread.Start();
-
-                    _receiveConnectionsThread = new Thread(this.ReceiveConnectionsThread);
-                    _receiveConnectionsThread.Name = "NetworkManager_ReceiveConnectionsThread";
-                    _receiveConnectionsThread.Priority = ThreadPriority.BelowNormal;
-                    _receiveConnectionsThread.Start();
+                    _computeTaskManager.Start();
+                    _sendTaskManager.Start();
+                    _receiveTaskManager.Start();
                 }
             }
         }
@@ -1626,7 +1610,7 @@ namespace Amoeba.Core
         {
             if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
 
-            lock (_stateLock)
+            lock (_stateLockObject)
             {
                 lock (_lockObject)
                 {
@@ -1634,26 +1618,19 @@ namespace Amoeba.Core
                     _state = ManagerState.Stop;
                 }
 
-                _computeThread.Join();
-                _computeThread = null;
-
-                foreach (var thread in _connectThreads)
+                foreach (var taskManager in _connectTaskManagers)
                 {
-                    thread.Join();
+                    taskManager.Stop();
                 }
-                _connectThreads.Clear();
 
-                foreach (var thread in _acceptThreads)
+                foreach (var taskManager in _acceptTaskManagers)
                 {
-                    thread.Join();
+                    taskManager.Stop();
                 }
-                _acceptThreads.Clear();
 
-                _sendConnectionsThread.Join();
-                _sendConnectionsThread = null;
-
-                _receiveConnectionsThread.Join();
-                _receiveConnectionsThread = null;
+                _computeTaskManager.Stop();
+                _sendTaskManager.Stop();
+                _receiveTaskManager.Stop();
             }
         }
 
@@ -1740,7 +1717,26 @@ namespace Amoeba.Core
 
             if (disposing)
             {
+                foreach (var taskManager in _connectTaskManagers)
+                {
+                    taskManager.Dispose();
+                }
+                _connectTaskManagers.Clear();
 
+                foreach (var taskManager in _acceptTaskManagers)
+                {
+                    taskManager.Dispose();
+                }
+                _acceptTaskManagers.Clear();
+
+                _computeTaskManager.Dispose();
+                _computeTaskManager = null;
+
+                _sendTaskManager.Dispose();
+                _sendTaskManager = null;
+
+                _receiveTaskManager.Dispose();
+                _receiveTaskManager = null;
             }
         }
     }

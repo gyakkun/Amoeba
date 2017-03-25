@@ -102,23 +102,20 @@ namespace Amoeba.Service
                 }
             }
 
-            var task = _coreManager.GetStream(broadcastMetadata.Metadata, 1024 * 1024 * 32)
-                .ContinueWith((t) =>
-                {
-                    var stream = t.Result;
-                    if (stream == null) return null;
+            return Task.Run(() =>
+            {
+                var stream = _coreManager.VolatileGetStream(broadcastMetadata.Metadata, 1024 * 1024 * 32);
+                if (stream == null) return null;
 
-                    var result = new BroadcastMessage<Profile>(
-                        broadcastMetadata.Certificate.GetSignature(),
-                        broadcastMetadata.CreationTime,
-                        ContentConverter.FromStream<Profile>(0, stream));
+                var result = new BroadcastMessage<Profile>(
+                    broadcastMetadata.Certificate.GetSignature(),
+                    broadcastMetadata.CreationTime,
+                    ContentConverter.FromStream<Profile>(0, stream));
 
-                    _cache_Profiles[broadcastMetadata] = result;
+                _cache_Profiles[broadcastMetadata] = result;
 
-                    return result;
-                });
-
-            return task;
+                return result;
+            });
         }
 
         public Task<BroadcastMessage<Store>> GetStore(Signature signature)
@@ -136,23 +133,20 @@ namespace Amoeba.Service
                 }
             }
 
-            var task = _coreManager.GetStream(broadcastMetadata.Metadata, 1024 * 1024 * 32)
-                .ContinueWith((t) =>
-                {
-                    var stream = t.Result;
-                    if (stream == null) return null;
+            return Task.Run(() =>
+            {
+                var stream = _coreManager.VolatileGetStream(broadcastMetadata.Metadata, 1024 * 1024 * 32);
+                if (stream == null) return null;
 
-                    var result = new BroadcastMessage<Store>(
-                        broadcastMetadata.Certificate.GetSignature(),
-                        broadcastMetadata.CreationTime,
-                        ContentConverter.FromStream<Store>(0, stream));
+                var result = new BroadcastMessage<Store>(
+                    broadcastMetadata.Certificate.GetSignature(),
+                    broadcastMetadata.CreationTime,
+                    ContentConverter.FromStream<Store>(0, stream));
 
-                    _cache_Stores[broadcastMetadata] = result;
+                _cache_Stores[broadcastMetadata] = result;
 
-                    return result;
-                });
-
-            return task;
+                return result;
+            });
         }
 
         public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, IExchangeDecrypt exchangePrivateKey)
@@ -191,7 +185,7 @@ namespace Amoeba.Service
                     }
 
                     {
-                        var stream = _coreManager.GetStream(unicastMetadata.Metadata, 1024 * 1024 * 1).Result;
+                        var stream = _coreManager.VolatileGetStream(unicastMetadata.Metadata, 1024 * 1024 * 1);
                         if (stream == null) continue;
 
                         var result = new UnicastMessage<MailMessage>(
@@ -263,7 +257,7 @@ namespace Amoeba.Service
                     }
 
                     {
-                        var stream = _coreManager.GetStream(multicastMetadata.Metadata, 1024 * 1024 * 1).Result;
+                        var stream = _coreManager.VolatileGetStream(multicastMetadata.Metadata, 1024 * 1024 * 1);
                         if (stream == null) continue;
 
                         var result = new MulticastMessage<ChatMessage>(
@@ -288,11 +282,11 @@ namespace Amoeba.Service
             if (profile == null) throw new ArgumentNullException(nameof(profile));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return Task.Run(() =>
-            {
-                var metadata = _coreManager.Import(ContentConverter.ToStream(0, profile), new TimeSpan(0, 30, 0), token).Result;
-                _coreManager.UploadMetadata(new BroadcastMetadata("Profile", DateTime.UtcNow, metadata, digitalSignature));
-            }, token);
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, profile), new TimeSpan(0, 30, 0), token)
+                .ContinueWith(task =>
+                {
+                    _coreManager.UploadMetadata(new BroadcastMetadata("Profile", DateTime.UtcNow, task.Result, digitalSignature));
+                });
         }
 
         public Task Upload(Store store, DigitalSignature digitalSignature, CancellationToken token)
@@ -300,11 +294,11 @@ namespace Amoeba.Service
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return Task.Run(() =>
-            {
-                var metadata = _coreManager.Import(ContentConverter.ToStream(0, store), new TimeSpan(0, 30, 0), token).Result;
-                _coreManager.UploadMetadata(new BroadcastMetadata("Store", DateTime.UtcNow, metadata, digitalSignature));
-            }, token);
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, store), new TimeSpan(0, 30, 0), token)
+                .ContinueWith(task =>
+                {
+                    _coreManager.UploadMetadata(new BroadcastMetadata("Store", DateTime.UtcNow, task.Result, digitalSignature));
+                });
         }
 
         public Task Upload(Signature targetSignature, MailMessage mailMessage, DigitalSignature digitalSignature, CancellationToken token)
@@ -313,11 +307,11 @@ namespace Amoeba.Service
             if (mailMessage == null) throw new ArgumentNullException(nameof(mailMessage));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return Task.Run(() =>
-            {
-                var metadata = _coreManager.Import(ContentConverter.ToStream(0, mailMessage), new TimeSpan(0, 30, 0), token).Result;
-                _coreManager.UploadMetadata(new UnicastMetadata("MailMessage", targetSignature, DateTime.UtcNow, metadata, digitalSignature));
-            }, token);
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, mailMessage), new TimeSpan(0, 30, 0), token)
+                .ContinueWith(task =>
+                {
+                    _coreManager.UploadMetadata(new UnicastMetadata("MailMessage", targetSignature, DateTime.UtcNow, task.Result, digitalSignature));
+                });
         }
 
         public Task Upload(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, Miner miner, CancellationToken token)
@@ -326,11 +320,11 @@ namespace Amoeba.Service
             if (chatMessage == null) throw new ArgumentNullException(nameof(chatMessage));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return Task.Run(() =>
-            {
-                var metadata = _coreManager.Import(ContentConverter.ToStream(0, chatMessage), new TimeSpan(0, 30, 0), token).Result;
-                _coreManager.UploadMetadata(new MulticastMetadata("ChatMessage", tag, DateTime.UtcNow, metadata, digitalSignature, miner, token));
-            }, token);
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, chatMessage), new TimeSpan(0, 30, 0), token)
+                .ContinueWith(task =>
+                {
+                    _coreManager.UploadMetadata(new MulticastMetadata("ChatMessage", tag, DateTime.UtcNow, task.Result, digitalSignature, miner, token));
+                });
         }
 
         #region ISettings
