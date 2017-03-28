@@ -18,7 +18,7 @@ using Omnius.Security;
 
 namespace Amoeba.Tests
 {
-    public class Test_CoreManager
+    public class CoreManagerTests 
     {
         private BufferManager _bufferManager = BufferManager.Instance;
 

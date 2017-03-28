@@ -9,10 +9,11 @@ using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Security;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Amoeba.Tests
 {
-    public class Test_CacheManager : TestSetupBase, IDisposable
+    public class CacheManagerTests : TestSetupBase, IDisposable
     {
         private BufferManager _bufferManager = BufferManager.Instance;
         private CacheManager _cacheManager;
@@ -20,7 +21,7 @@ namespace Amoeba.Tests
         private readonly string _workPath = "Test_CacheManager";
         private readonly Random _random = new Random();
 
-        public Test_CacheManager()
+        public CacheManagerTests(ITestOutputHelper output) : base(output)
         {
             if (Directory.Exists(_workPath)) Directory.Delete(_workPath, true);
             Directory.CreateDirectory(_workPath);
@@ -45,7 +46,7 @@ namespace Amoeba.Tests
         }
 
         [Fact]
-        public void Test_ReadWrite()
+        public void ReadWriteTest()
         {
             for (int i = 0; i < 256; i++)
             {
@@ -69,7 +70,7 @@ namespace Amoeba.Tests
         }
 
         [Fact]
-        public void Test_CheckBroken()
+        public void CheckBrokenTest()
         {
             string targetPath = Path.Combine(_workPath, "CheckBroken");
             string configPath = Path.Combine(targetPath, "CacheManager");

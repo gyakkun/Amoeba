@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 using Amoeba.Core;
 using Omnius.Base;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Amoeba.Tests
 {
-    public class Test_RouteTable : TestSetupBase
+    public class RouteTableTests : TestSetupBase
     {
         private readonly Random _random = new Random();
 
+        public RouteTableTests(ITestOutputHelper output) : base(output)
+        {
+
+        }
+
         [Fact]
-        public void Test_Search()
+        public void SearchTest()
         {
             var tempList = new List<Node<int>>();
 
