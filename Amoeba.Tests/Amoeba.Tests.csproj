@@ -1,20 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>    
-    <TargetFramework>netcoreapp1.1</TargetFramework>    
-    <Authors>Lyrise</Authors>    
-    <Company>Alliance-Network</Company>    
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>    
-    <FileVersion>0.0.0.0</FileVersion>    
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <Authors>Lyrise</Authors>
+    <Company>Alliance-Network</Company>
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0.0</FileVersion>
     <Version>0.0.0</Version>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj" />
@@ -30,9 +32,7 @@
     <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-
 </Project>

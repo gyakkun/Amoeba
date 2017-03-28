@@ -7,6 +7,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:prism="http://prismlibrary.com/"
         xmlns:local="clr-namespace:Amoeba.Interface"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -18,37 +19,66 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="MainWindow"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Closed">
-            <i:InvokeCommandAction Command="{Binding CloseCommand}"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{Binding Path=TabListBox_Width, Mode=TwoWay, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200}" />
-            <ColumnDefinition Width="4" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
-        <ListBox Name="TabListBox" Grid.Column="0" SelectionMode="Single" SelectedIndex="0" ItemsSource="{Binding Path=ViewModels}">
-            <ListBox.Resources>
-                <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
-                    <TextBlock Text="{Binding Path=MainWindow_Info, Source={StaticResource _languages}}" />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
-                    <TextBlock Text="{Binding Path=MainWindow_Store, Source={StaticResource _languages}}" />
-                </DataTemplate>
-            </ListBox.Resources>
-        </ListBox>
-        <ContentControl Grid.Column="2" Content="{Binding SelectedItem, ElementName=TabListBox, Mode=OneWay}">
-            <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
-                    <local:InfoControl DataContext="{Binding}" />
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
-                    <local:StoreControl DataContext="{Binding}" />
-                </DataTemplate>
-            </ContentControl.Resources>
-        </ContentControl>
-    </Grid>
+    <DockPanel>
+        <Menu IsMainMenu="True" DockPanel.Dock="Top">
+            <MenuItem Header="_Service">
+                <MenuItem Header="Start" InputGestureText="Ctrl+S">
+                    <MenuItem.Icon>
+                        <md:PackIcon Kind="Play" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Stop" InputGestureText="Ctrl+T">
+                    <MenuItem.Icon>
+                        <md:PackIcon Kind="Stop" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Exit" InputGestureText="Ctrl+E">
+                    <MenuItem.Icon>
+                        <md:PackIcon Kind="ExitToApp" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Options" InputGestureText="Ctrl+O" Command="{Binding OptionsCommand}">
+                    <MenuItem.Icon>
+                        <md:PackIcon Kind="Settings" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Languages" />
+            <MenuItem Header="_Help">
+                <MenuItem Header="Version" InputGestureText="Ctrl+V" />
+            </MenuItem>
+        </Menu>
+        <DockPanel>
+            <ListBox DockPanel.Dock="Left" Name="TabListBox" SelectionMode="Single" SelectedIndex="0"
+                    ItemsSource="{Binding Path=ViewModels}">
+                <ListBox.Resources>
+                    <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
+                        <WrapPanel Margin="8,0,8,0">
+                            <md:PackIcon Kind="Cloud" Width="32" Height="32"/>
+                            <TextBlock VerticalAlignment="Center" Padding="16,0,0,0" FontSize="16" Text="{Binding Path=MainWindow_Info, Source={StaticResource _languages}}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
+                        <WrapPanel Margin="8,0,8,0">
+                            <md:PackIcon Kind="Basket" Width="32" Height="32"/>
+                            <TextBlock VerticalAlignment="Center" Padding="16,0,0,0" FontSize="16" Text="{Binding Path=MainWindow_Store, Source={StaticResource _languages}}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.Resources>
+            </ListBox>
+            <ContentControl Content="{Binding SelectedItem, ElementName=TabListBox, Mode=OneWay}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
+                        <local:InfoControl DataContext="{Binding}" />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
+                        <local:StoreControl DataContext="{Binding}" />
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+        </DockPanel>
+    </DockPanel>
 </local:RestorableWindow>

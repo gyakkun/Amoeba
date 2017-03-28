@@ -16,14 +16,14 @@ using System.Windows.Shapes;
 
 namespace Amoeba.Interface
 {
-    /// <summary>
-    /// Interaction logic for InfoControl.xaml
-    /// </summary>
-    public partial class InfoControl : UserControl
-    {
-        public InfoControl()
-        {
-            InitializeComponent();
-        }
-    }
+	/// <summary>
+	/// Interaction logic for InfoControl.xaml
+	/// </summary>
+	public partial class InfoControl : UserControl
+	{
+		public InfoControl()
+		{
+			InitializeComponent();
+		}
+	}
 }

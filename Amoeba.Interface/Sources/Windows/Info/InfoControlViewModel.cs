@@ -56,7 +56,6 @@ namespace Amoeba.Interface
             if (_disposed) return;
             _disposed = true;
 
-            _serviceManager.Dispose();
             _disposable.Dispose();
         }
     }

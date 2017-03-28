@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>App.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Windows" />
@@ -68,6 +71,10 @@
     <Compile Include="Sources\Mvvm\ViewModels\TreeViewModel\TreeViewModelBase.cs" />
     <Compile Include="Sources\Mvvm\Views\RestorableWindow\RestorableWindow.cs" />
     <Compile Include="Sources\Mvvm\Views\RestorableWindow\WindowSettings.cs" />
+    <Compile Include="Sources\Windows\Options\OptionsWindow.xaml.cs">
+      <DependentUpon>OptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Options\OptionsWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Info\InfoControl.xaml.cs">
       <DependentUpon>InfoControl.xaml</DependentUpon>
     </Compile>
@@ -77,6 +84,10 @@
     <Compile Include="Sources\Windows\Store\Items\StoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\SeedViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\BoxViewModel.cs" />
+    <Page Include="Sources\Windows\Options\OptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Sources\Windows\Info\InfoControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -127,7 +138,9 @@
     <Content Include="Resources\Languages\English.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="App.manifest" />
     <None Include="project.json" />
+    <Compile Include="Sources\Mvvm\Messenger\MainWindowMessenger.cs" />
     <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml" />
     <Content Include="Sources\Mvvm\Models\_Generator\Models.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -142,12 +155,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons\Amoeba.ico">
+    <Content Include="Resources\Icons\Amoeba.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Icons\Files\Box.ico">
+    </Content>
+    <Content Include="Resources\Icons\Files\Box.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

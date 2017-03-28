@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -15,50 +15,60 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Omnius.Configuration;
+using Prism.Events;
 
 namespace Amoeba.Interface
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    partial class MainWindow : RestorableWindow
-    {
-        public MainWindow()
-        {
-            this.DataContext = new MainWindowViewModel();
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	partial class MainWindow : RestorableWindow
+	{
+		public MainWindow()
+		{
+			this.DataContext = new MainWindowViewModel();
 
-            if (this.DataContext is ISettings settings)
-            {
-                settings.Load();
-            }
+			if (this.DataContext is ISettings settings)
+			{
+				settings.Load();
+			}
 
-            InitializeComponent();
-        }
+			InitializeComponent();
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            base.OnClosing(e);
+			this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
 
-            if (MessageBoxResult.No == MessageBox.Show(this, "èIóπÇµÇ‹Ç∑Ç©ÅH", "Amoeba",
-                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes))
-            {
-                e.Cancel = true;
-            }
-        }
+			MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<OptionsWindowViewModel>>()
+				.Subscribe(viewModel =>
+				{
+					var window = new OptionsWindow(viewModel);
+					window.ShowDialog();
+				});
+		}
 
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			base.OnClosing(e);
 
-            if (this.DataContext is ISettings settings)
-            {
-                settings.Save();
-            }
+			if (MessageBoxResult.No == MessageBox.Show(this, "ÁµÇ‰∫Ü„Åó„Åæ„Åô„ÅãÔºü", "Amoeba",
+				MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes))
+			{
+				e.Cancel = true;
+			}
+		}
 
-            if (this.DataContext is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-        }
-    }
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+
+			if (this.DataContext is ISettings settings)
+			{
+				settings.Save();
+			}
+
+			if (this.DataContext is IDisposable disposable)
+			{
+				disposable.Dispose();
+			}
+		}
+	}
 }
