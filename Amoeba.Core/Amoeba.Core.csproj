@@ -1,197 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{82230C99-6599-4130-AAC9-FC926ABC0724}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Amoeba.Core</RootNamespace>
-    <AssemblyName>Amoeba.Core</AssemblyName>
-    <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation />
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <NoStdLib>False</NoStdLib>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <TargetFramework>netstandard1.5</TargetFramework>
+    <Version>0.0.0</Version>
+    <Authors>Lyrise</Authors>
+    <Company>Alliance-Network</Company>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>none</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DebugSymbols>True</DebugSymbols>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <BaseAddress>4194304</BaseAddress>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>True</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <BaseAddress>4194304</BaseAddress>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowedReferenceRelatedFileExtensions>-</AllowedReferenceRelatedFileExtensions>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ValueTuple, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Correction\Omnius.Correction.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Io\Omnius.Io.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Messaging\Omnius.Messaging.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Net\Omnius.Net.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Sources\Cache\Utilities\CacheStreamReader.cs" />
-    <Compile Include="Sources\Cache\Metadata\Group.cs" />
-    <Compile Include="Sources\Cache\Metadata\GroupCollection.cs" />
-    <Compile Include="Sources\Cache\Metadata\Index.cs" />
-    <Compile Include="Sources\Cache\Metadata\_Interface\Common\CorrectionAlgorithm.cs" />
-    <Compile Include="Sources\Cache\Metadata\_Interface\IGroup.cs" />
-    <Compile Include="Sources\Control\Content\Information\DownloadState.cs" />
-    <Compile Include="Sources\Network\Metadata\Tag\Tag.cs" />
-    <Compile Include="Sources\Network\Metadata\Tag\TagCollection.cs" />
-    <Compile Include="Sources\Network\Metadata\MulticastMetadata.cs" />
-    <Compile Include="Sources\Network\Metadata\MulticastMetadataCollection.cs" />
-    <Compile Include="Sources\Network\Metadata\_Interface\IMulticastMetadata.cs" />
-    <Compile Include="Sources\Network\Metadata\_Interface\Tag\ITag.cs" />
-    <Compile Include="Sources\Network\Metadata\_Interface\IUnicastMetadata.cs" />
-    <Compile Include="Sources\Network\Packet\BlocksLinkPacket.cs" />
-    <Compile Include="Sources\Network\Packet\ProfilePacket.cs" />
-    <Compile Include="Sources\Network\Packet\MulticastMetadatasRequestPacket.cs" />
-    <Compile Include="Sources\Network\Packet\MulticastMetadatasResultPacket.cs" />
-    <Compile Include="Sources\Network\Utilities\PriorityManager.cs" />
-    <Compile Include="Sources\Network\Utilities\MetadataManager.cs" />
-    <Compile Include="Sources\Network\NetworkManager.cs" />
-    <Compile Include="Sources\Network\Table\RouteTable.cs" />
-    <Compile Include="Sources\Network\Table\Node.cs" />
-    <Compile Include="Sources\CoreManager.cs" />
-    <Compile Include="Sources\Cache\Utilities\BitmapManager.cs" />
-    <Compile Include="Sources\Network\Metadata\BroadcastMetadata.cs" />
-    <Compile Include="Sources\Network\Metadata\BroadcastMetadataCollection.cs" />
-    <Compile Include="Sources\Network\Metadata\UnicastMetadataCollection.cs" />
-    <Compile Include="Sources\Network\Metadata\UnicastMetadata.cs" />
-    <Compile Include="Sources\Network\Metadata\_Interface\IBroadcastMetadata.cs" />
-    <Compile Include="Sources\Cache\Metadata\Hash.cs" />
-    <Compile Include="Sources\Cache\Metadata\HashCollection.cs" />
-    <Compile Include="Sources\Cache\Metadata\_Interface\IHash.cs" />
-    <Compile Include="Sources\Cache\Metadata\Metadata.cs" />
-    <Compile Include="Sources\Cache\Metadata\MetadataCollection.cs" />
-    <Compile Include="Sources\Cache\Metadata\_Interface\IMetadata.cs" />
-    <Compile Include="Sources\Network\Location\Location.cs" />
-    <Compile Include="Sources\Network\Location\LocationCollection.cs" />
-    <Compile Include="Sources\Network\Location\_Interface\ILocation.cs" />
-    <Compile Include="Sources\Network\Location\UriCollection.cs" />
-    <Compile Include="Sources\Network\Packet\BlockResultPacket.cs" />
-    <Compile Include="Sources\Network\Packet\UnicastMetadatasRequestPacket.cs" />
-    <Compile Include="Sources\Network\Packet\UnicastMetadatasResultPacket.cs" />
-    <Compile Include="Sources\Network\Packet\BroadcastMetadatasResultPacket.cs" />
-    <Compile Include="Sources\Network\Packet\BroadcastMetadatasRequestPacket.cs" />
-    <Compile Include="Sources\Network\Packet\BlocksRequestPacket.cs" />
-    <Compile Include="Sources\Network\Packet\LocationsPacket.cs" />
-    <Compile Include="Sources\Control\Content\Utilities\ExistManager.cs" />
-    <Compile Include="Sources\Control\Content\DownloadManager.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sources\Cache\Metadata\_Interface\Common\HashAlgorithm.cs" />
-    <Compile Include="Sources\Cache\Metadata\_Interface\IIndex.cs" />
-    <Compile Include="Sources\Cache\Metadata\IndexCollection.cs" />
-    <Compile Include="Sources\Cache\CacheManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Properties\Amoeba.Core.License">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Properties\Amoeba.Core.Readme">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
-      <Project>{63eadc1f-9a8a-4945-a562-da666d0bcb7b}</Project>
-      <Name>Omnius.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj">
-      <Project>{197c654f-2461-446a-b531-4a789f14be19}</Project>
-      <Name>Omnius.Collections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj">
-      <Project>{9aa70f88-4a83-4b3f-b494-7d37ea95766a}</Project>
-      <Name>Omnius.Configuration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Correction\Omnius.Correction.csproj">
-      <Project>{a8ad7b39-85fc-4abf-9d04-5e1241cd79b3}</Project>
-      <Name>Omnius.Correction</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Io\Omnius.Io.csproj">
-      <Project>{74597e45-7f3c-4958-8b6a-b16de8de47b9}</Project>
-      <Name>Omnius.Io</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Messaging\Omnius.Messaging.csproj">
-      <Project>{8617b9ae-bcbf-4f85-a09c-4daf0dbb9614}</Project>
-      <Name>Omnius.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Net\Omnius.Net.csproj">
-      <Project>{7cfde01d-4a0e-4e10-acc2-34db897dbe0f}</Project>
-      <Name>Omnius.Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj">
-      <Project>{d314c626-a6fc-4fd5-be3c-9d36c2738418}</Project>
-      <Name>Omnius.Security</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj">
-      <Project>{0c3f6508-1567-44fe-a0c8-aa8cb52edb51}</Project>
-      <Name>Omnius.Serialization</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
+
   <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <BaseAddress>4194304</BaseAddress>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(OS)'=='Windows'">
-    <DefineConstants>$(DefineConstants);Windows</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(OS)'=='Unix'">
-    <DefineConstants>$(DefineConstants);Unix</DefineConstants>
-  </PropertyGroup>
+
 </Project>

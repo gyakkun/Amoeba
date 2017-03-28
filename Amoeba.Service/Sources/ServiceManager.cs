@@ -9,6 +9,9 @@ using Omnius.Security;
 using Omnius.Net;
 using System.Threading;
 using Amoeba.Core;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Amoeba.Tests")]
 
 namespace Amoeba.Service
 {
@@ -561,7 +564,6 @@ namespace Amoeba.Service
         }
     }
 
-    [Serializable]
     class ServiceManagerException : StateManagerException
     {
         public ServiceManagerException() : base() { }

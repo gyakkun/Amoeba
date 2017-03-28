@@ -6,14 +6,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Amoeba.Core;
-using NUnit.Framework;
 using Omnius.Base;
 using Omnius.Security;
+using Xunit;
 
-namespace Amoeba.Test
+namespace Amoeba.Tests
 {
-    [TestFixture(Category = "Amoeba.Core.CacheManager")]
-    class Test_CacheManager
+    public class Test_CacheManager : TestSetupBase, IDisposable
     {
         private BufferManager _bufferManager = BufferManager.Instance;
         private CacheManager _cacheManager;
@@ -21,8 +20,7 @@ namespace Amoeba.Test
         private readonly string _workPath = "Test_CacheManager";
         private readonly Random _random = new Random();
 
-        [SetUp]
-        public void Setup()
+        public Test_CacheManager()
         {
             if (Directory.Exists(_workPath)) Directory.Delete(_workPath, true);
             Directory.CreateDirectory(_workPath);
@@ -39,55 +37,14 @@ namespace Amoeba.Test
             _cacheManager.Resize(1024 * 1024 * 256);
         }
 
-        [TearDown]
-        public void Shutdown()
+        public void Dispose()
         {
             _cacheManager.Dispose();
 
             if (Directory.Exists(_workPath)) Directory.Delete(_workPath, true);
         }
 
-        [Test]
-        public void Test_DecodeEncode()
-        {
-            //private IEnumerable<Hash> ParityEncoding(IEnumerable<ArraySegment<byte>> buffers, HashAlgorithm hashAlgorithm, CorrectionAlgorithm correctionAlgorithm, CancellationToken token)
-
-            var hashes = new List<Hash>();
-            var parityHashes = new List<Hash>();
-
-            {
-                var blocks = new List<ArraySegment<byte>>();
-
-                for (int i = 0; i < 4; i++)
-                {
-                    var buffer = _bufferManager.TakeBuffer(1024 * 1024);
-                    _random.NextBytes(buffer);
-
-                    var block = new ArraySegment<byte>(buffer, 0, 1024 * 1024);
-                    var hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(block));
-
-                    hashes.Add(hash);
-                    blocks.Add(block);
-                }
-
-                using (var tokenSource = new CancellationTokenSource())
-                {
-                    parityHashes.AddRange(_cacheManager.ToUnlimited().ParityEncoding(blocks, HashAlgorithm.Sha256, CorrectionAlgorithm.ReedSolomon8, tokenSource.Token));
-                }
-            }
-
-            {
-                var group = new Group(CorrectionAlgorithm.ReedSolomon8, 1024 * 1024 * 4, CollectionUtils.Unite(hashes, parityHashes));
-
-                using (var tokenSource = new CancellationTokenSource())
-                {
-                    var hashSet = new HashSet<Hash>(_cacheManager.ParityDecoding(group, tokenSource.Token));
-                    if (!hashSet.SetEquals(hashes)) throw new ArgumentException("Broken");
-                }
-            }
-        }
-
-        [Test]
+        [Fact]
         public void Test_ReadWrite()
         {
             for (int i = 0; i < 256; i++)
@@ -104,14 +61,14 @@ namespace Amoeba.Test
                     _cacheManager[hash] = block;
                     var result = _cacheManager[hash];
 
-                    Assert.IsTrue(Unsafe.Equals(block.Array, block.Offset, result.Array, result.Offset, size));
+                    Assert.True(Unsafe.Equals(block.Array, block.Offset, result.Array, result.Offset, size));
 
                     _bufferManager.ReturnBuffer(result.Array);
                 }
             }
         }
 
-        [Test]
+        [Fact]
         public void Test_CheckBroken()
         {
             string targetPath = Path.Combine(_workPath, "CheckBroken");
@@ -158,21 +115,18 @@ namespace Amoeba.Test
                 var cacheManager = new CacheManager(configPath, blockPath, _bufferManager);
                 cacheManager.Load();
 
-                Assert.IsTrue(new HashSet<Hash>(list).SetEquals(cacheManager.ToArray()));
+                Assert.True(new HashSet<Hash>(list).SetEquals(cacheManager.ToArray()));
 
                 Assert.Throws<BlockNotFoundException>(() =>
                 {
                     var result = cacheManager[list[0]];
                 });
 
-                Assert.DoesNotThrow(() =>
+                foreach (var hash in list.Skip(1))
                 {
-                    foreach (var hash in list.Skip(1))
-                    {
-                        var result = cacheManager[hash];
-                        _bufferManager.ReturnBuffer(result.Array);
-                    }
-                });
+                    var result = cacheManager[hash];
+                    _bufferManager.ReturnBuffer(result.Array);
+                }
 
                 cacheManager.Save();
                 cacheManager.Dispose();

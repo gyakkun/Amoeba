@@ -10,7 +10,7 @@ namespace Amoeba
     [Flags]
     [DataContract(Name = nameof(TcpConnectionType))]
     public enum TcpConnectionType
-    { 
+    {
         [EnumMember(Value = "None")]
         None = 0,
 
@@ -28,6 +28,8 @@ namespace Amoeba
         private string _proxyUri;
         private ushort _ipv4Port;
         private ushort _ipv6Port;
+
+        private TcpConnectionConfig() { }
 
         public TcpConnectionConfig(TcpConnectionType type, string proxyUri, ushort ipv4Port, ushort ipv6Port)
         {

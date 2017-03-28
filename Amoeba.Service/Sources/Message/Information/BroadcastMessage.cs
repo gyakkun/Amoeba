@@ -26,6 +26,8 @@ namespace Amoeba.Service
         private DateTime _creationTime;
         private T _value;
 
+        private BroadcastMessage() { }
+
         internal BroadcastMessage(Signature authorSignature, DateTime creationTime, T value)
         {
             this.AuthorSignature = authorSignature;

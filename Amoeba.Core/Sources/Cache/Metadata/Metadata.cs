@@ -21,6 +21,8 @@ namespace Amoeba.Core
         private int _depth;
         private Hash _hash;
 
+        private Metadata() { }
+
         public Metadata(int depth, Hash hash)
         {
             this.Depth = depth;

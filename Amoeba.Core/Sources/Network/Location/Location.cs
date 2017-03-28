@@ -22,6 +22,8 @@ namespace Amoeba.Core
 
         public static readonly int MaxUriCount = 32;
 
+        private Location() { }
+
         public Location(IEnumerable<string> uris)
         {
             if (uris != null) this.ProtectedUris.AddRange(uris);

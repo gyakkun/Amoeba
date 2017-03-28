@@ -34,6 +34,8 @@ namespace Amoeba.Core
 
         public static readonly int MaxTypeLength = 256;
 
+        private MulticastMetadata() { }
+
         public MulticastMetadata(string type, Tag tag, DateTime creationTime, Metadata metadata, DigitalSignature digitalSignature, Miner miner, CancellationToken token)
         {
             this.Type = type;

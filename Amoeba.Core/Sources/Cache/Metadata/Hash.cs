@@ -18,6 +18,8 @@ namespace Amoeba.Core
 
         public static readonly int MaxValueLength = 32;
 
+        private Hash() { }
+
         public Hash(HashAlgorithm algorithm, byte[] value)
         {
             this.Algorithm = algorithm;

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -160,7 +159,7 @@ namespace Amoeba.Service
 
             try
             {
-                list.UnionWith(Dns.GetHostAddresses(Dns.GetHostName()).Where(n => TcpConnectionManager.CheckGlobalIpAddress(n)));
+                list.UnionWith(Dns.GetHostAddressesAsync(Dns.GetHostName()).Result.Where(n => TcpConnectionManager.CheckGlobalIpAddress(n)));
             }
             catch (Exception)
             {
@@ -176,7 +175,7 @@ namespace Amoeba.Service
 
             if (!IPAddress.TryParse(host, out remoteIp))
             {
-                var hostEntry = Dns.GetHostEntry(host);
+                var hostEntry = Dns.GetHostEntryAsync(host).Result;
 
                 if (hostEntry.AddressList.Length > 0)
                 {
@@ -331,7 +330,7 @@ namespace Amoeba.Service
                 {
                     if (p == 0 && config.Type.HasFlag(TcpConnectionType.Ipv4) && _ipv4TcpListener.Pending())
                     {
-                        var socket = _ipv4TcpListener.AcceptSocket();
+                        var socket = _ipv4TcpListener.AcceptSocketAsync().Result;
                         garbages.Add(socket);
 
                         // Check
@@ -345,7 +344,7 @@ namespace Amoeba.Service
 
                     if (p == 1 && config.Type.HasFlag(TcpConnectionType.Ipv6) && _ipv6TcpListener.Pending())
                     {
-                        var socket = _ipv6TcpListener.AcceptSocket();
+                        var socket = _ipv6TcpListener.AcceptSocketAsync().Result;
                         garbages.Add(socket);
 
                         // Check

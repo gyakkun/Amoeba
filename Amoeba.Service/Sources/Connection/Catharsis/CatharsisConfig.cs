@@ -12,6 +12,8 @@ namespace Amoeba
     {
         private CatharsisIpv4Config _ipv4Config;
 
+        private CatharsisConfig() { }
+
         public CatharsisConfig(CatharsisIpv4Config ipv4Config)
         {
             this.Ipv4Config = ipv4Config;
@@ -36,6 +38,8 @@ namespace Amoeba
     {
         private List<string> _urls;
         private List<string> _paths;
+
+        private CatharsisIpv4Config() { }
 
         public CatharsisIpv4Config(IEnumerable<string> urls, IEnumerable<string> paths)
         {

@@ -36,7 +36,7 @@ namespace Amoeba.Interface
 
             if (!Directory.Exists(path)) path = AmoebaEnvironment.Paths.LanguagesPath;
 #else
-            string path = EnvironmentConfig.Paths.LanguagesPath;
+            string path = AmoebaEnvironment.Paths.LanguagesPath;
 #endif
 
             LanguagesManager.Load(path);

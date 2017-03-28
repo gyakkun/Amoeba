@@ -19,6 +19,8 @@ namespace Amoeba.Core
 
         private GroupCollection _groups;
 
+        private Index() { }
+
         public Index(IEnumerable<Group> groupes)
         {
             if (groupes != null) this.ProtectedGroups.AddRange(groupes);

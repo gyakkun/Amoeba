@@ -22,6 +22,8 @@ namespace Amoeba.Core
         private long _length;
         private HashCollection _hashes;
 
+        private Group() { }
+
         public Group(CorrectionAlgorithm correctionAlgorithm, long length, IEnumerable<Hash> hashes)
         {
             this.CorrectionAlgorithm = correctionAlgorithm;

@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Security.Cryptography;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Omnius.Base;
@@ -123,7 +123,7 @@ namespace Amoeba.Core
                         {
                             var type = typeof(Info);
 
-                            foreach (var property in type.GetProperties())
+                            foreach (var property in type.GetTypeInfo().GetProperties())
                             {
                                 string name = property.Name;
                                 object value = property.GetValue(_info);
@@ -722,110 +722,113 @@ namespace Amoeba.Core
 
         private object _parityDecodingLockObject = new object();
 
-        public IEnumerable<Hash> ParityDecoding(Group group, CancellationToken token)
+        public Task<IEnumerable<Hash>> ParityDecoding(Group group, CancellationToken token)
         {
-            lock (_parityDecodingLockObject)
+            return Task.Run(() =>
             {
-                if (group.CorrectionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
+                lock (_parityDecodingLockObject)
                 {
-                    var hashList = group.Hashes.ToList();
-                    int blockLength = group.Hashes.Max(n => this.GetLength(n));
-                    int informationCount = hashList.Count / 2;
-
-                    if (hashList.Take(informationCount).All(n => this.Contains(n)))
+                    if (group.CorrectionAlgorithm == CorrectionAlgorithm.ReedSolomon8)
                     {
-                        return hashList.Take(informationCount).ToList();
-                    }
+                        var hashList = group.Hashes.ToList();
+                        int blockLength = group.Hashes.Max(n => this.GetLength(n));
+                        int informationCount = hashList.Count / 2;
 
-                    var buffers = new ArraySegment<byte>[informationCount];
-                    var indexes = new int[informationCount];
-
-                    try
-                    {
-                        // Load
+                        if (hashList.Take(informationCount).All(n => this.Contains(n)))
                         {
-                            int count = 0;
+                            return (IEnumerable<Hash>)hashList.Take(informationCount).ToList();
+                        }
 
-                            for (int i = 0; i < hashList.Count; i++)
+                        var buffers = new ArraySegment<byte>[informationCount];
+                        var indexes = new int[informationCount];
+
+                        try
+                        {
+                            // Load
                             {
-                                token.ThrowIfCancellationRequested();
+                                int count = 0;
 
-                                if (!this.Contains(hashList[i])) continue;
-
-                                var buffer = new ArraySegment<byte>();
-
-                                try
+                                for (int i = 0; i < hashList.Count; i++)
                                 {
-                                    buffer = this[hashList[i]];
+                                    token.ThrowIfCancellationRequested();
 
-                                    if (buffer.Count < blockLength)
+                                    if (!this.Contains(hashList[i])) continue;
+
+                                    var buffer = new ArraySegment<byte>();
+
+                                    try
                                     {
-                                        var tempBuffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
-                                        Unsafe.Copy(buffer.Array, buffer.Offset, tempBuffer.Array, tempBuffer.Offset, buffer.Count);
-                                        Unsafe.Zero(tempBuffer.Array, tempBuffer.Offset + buffer.Count, tempBuffer.Count - buffer.Count);
+                                        buffer = this[hashList[i]];
 
-                                        _bufferManager.ReturnBuffer(buffer.Array);
+                                        if (buffer.Count < blockLength)
+                                        {
+                                            var tempBuffer = new ArraySegment<byte>(_bufferManager.TakeBuffer(blockLength), 0, blockLength);
+                                            Unsafe.Copy(buffer.Array, buffer.Offset, tempBuffer.Array, tempBuffer.Offset, buffer.Count);
+                                            Unsafe.Zero(tempBuffer.Array, tempBuffer.Offset + buffer.Count, tempBuffer.Count - buffer.Count);
 
-                                        buffer = tempBuffer;
+                                            _bufferManager.ReturnBuffer(buffer.Array);
+
+                                            buffer = tempBuffer;
+                                        }
                                     }
-                                }
-                                catch (BlockNotFoundException)
-                                {
-
-                                }
-                                catch (Exception)
-                                {
-                                    if (buffer.Array != null)
+                                    catch (BlockNotFoundException)
                                     {
-                                        _bufferManager.ReturnBuffer(buffer.Array);
+
+                                    }
+                                    catch (Exception)
+                                    {
+                                        if (buffer.Array != null)
+                                        {
+                                            _bufferManager.ReturnBuffer(buffer.Array);
+                                        }
+
+                                        throw;
                                     }
 
-                                    throw;
+                                    indexes[count] = i;
+                                    buffers[count] = buffer;
+
+                                    count++;
+
+                                    if (count >= informationCount) break;
                                 }
 
-                                indexes[count] = i;
-                                buffers[count] = buffer;
-
-                                count++;
-
-                                if (count >= informationCount) break;
+                                if (count < informationCount) throw new BlockNotFoundException();
                             }
 
-                            if (count < informationCount) throw new BlockNotFoundException();
-                        }
-
-                        using (var reedSolomon = new ReedSolomon8(informationCount, informationCount * 2, _threadCount, _bufferManager))
-                        {
-                            reedSolomon.Decode(buffers, indexes, blockLength, token).Wait();
-                        }
-
-                        // Set
-                        {
-                            long length = group.Length;
-
-                            for (int i = 0; i < informationCount; length -= blockLength, i++)
+                            using (var reedSolomon = new ReedSolomon8(informationCount, informationCount * 2, _threadCount, _bufferManager))
                             {
-                                this[hashList[i]] = new ArraySegment<byte>(buffers[i].Array, buffers[i].Offset, (int)Math.Min(buffers[i].Count, length));
+                                reedSolomon.Decode(buffers, indexes, blockLength, token).Wait();
+                            }
+
+                            // Set
+                            {
+                                long length = group.Length;
+
+                                for (int i = 0; i < informationCount; length -= blockLength, i++)
+                                {
+                                    this[hashList[i]] = new ArraySegment<byte>(buffers[i].Array, buffers[i].Offset, (int)Math.Min(buffers[i].Count, length));
+                                }
                             }
                         }
-                    }
-                    finally
-                    {
-                        foreach (var buffer in buffers)
+                        finally
                         {
-                            if (buffer.Array == null) continue;
+                            foreach (var buffer in buffers)
+                            {
+                                if (buffer.Array == null) continue;
 
-                            _bufferManager.ReturnBuffer(buffer.Array);
+                                _bufferManager.ReturnBuffer(buffer.Array);
+                            }
                         }
-                    }
 
-                    return hashList.Take(informationCount).ToList();
+                        return (IEnumerable<Hash>)hashList.Take(informationCount).ToList();
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
                 }
-                else
-                {
-                    throw new NotSupportedException();
-                }
-            }
+            });
         }
 
         public Task<Metadata> Import(Stream stream, TimeSpan lifeSpan, CancellationToken token)
@@ -1500,6 +1503,8 @@ namespace Amoeba.Core
             private int _length;
             private DateTime _updateTime;
 
+            private ClusterInfo() { }
+
             public ClusterInfo(long[] indexes, int length)
             {
                 this.Indexes = indexes;
@@ -1740,6 +1745,8 @@ namespace Amoeba.Core
             private HashCollection _lockedHashes;
             private ShareInfo _shareInfo;
 
+            private CacheInfo() { }
+
             public CacheInfo(DateTime creationTime, TimeSpan lifeTime, Metadata metadata, IEnumerable<Hash> lockedHashes, ShareInfo shareInfo)
             {
                 this.CreationTime = creationTime;
@@ -1835,6 +1842,8 @@ namespace Amoeba.Core
             private long _fileLength;
             private int _blockLength;
             private HashCollection _hashes;
+
+            private ShareInfo() { }
 
             public ShareInfo(string path, long fileLength, int blockLength, IEnumerable<Hash> hashes)
             {
@@ -1976,7 +1985,6 @@ namespace Amoeba.Core
         }
     }
 
-    [Serializable]
     class CacheManagerException : ManagerException
     {
         public CacheManagerException() : base() { }
@@ -1984,7 +1992,6 @@ namespace Amoeba.Core
         public CacheManagerException(string message, Exception innerException) : base(message, innerException) { }
     }
 
-    [Serializable]
     class SpaceNotFoundException : CacheManagerException
     {
         public SpaceNotFoundException() : base() { }
@@ -1992,7 +1999,6 @@ namespace Amoeba.Core
         public SpaceNotFoundException(string message, Exception innerException) : base(message, innerException) { }
     }
 
-    [Serializable]
     class BlockNotFoundException : CacheManagerException
     {
         public BlockNotFoundException() : base() { }
@@ -2000,7 +2006,6 @@ namespace Amoeba.Core
         public BlockNotFoundException(string message, Exception innerException) : base(message, innerException) { }
     }
 
-    [Serializable]
     class BadBlockException : CacheManagerException
     {
         public BadBlockException() : base() { }

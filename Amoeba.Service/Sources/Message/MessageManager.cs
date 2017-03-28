@@ -375,7 +375,6 @@ namespace Amoeba.Service
         }
     }
 
-    [Serializable]
     class MessageManagerException : ManagerException
     {
         public MessageManagerException() : base() { }

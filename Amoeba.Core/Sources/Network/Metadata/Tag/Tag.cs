@@ -32,6 +32,8 @@ namespace Amoeba.Core
         public static readonly int MaxNameLength = 256;
         public static readonly int MaxIdLength = 32;
 
+        private Tag() { }
+
         public Tag(string name, byte[] id)
         {
             this.Name = name;

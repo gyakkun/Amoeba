@@ -154,13 +154,6 @@ namespace Amoeba.Core
             if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
         }
 
-        public override void Close()
-        {
-            if (_disposed) return;
-
-            base.Close();
-        }
-
         protected override void Dispose(bool disposing)
         {
             try

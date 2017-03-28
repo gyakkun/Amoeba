@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Omnius.Base;
@@ -199,7 +200,7 @@ namespace Amoeba.Core
                         {
                             var type = typeof(Info);
 
-                            foreach (var property in type.GetProperties())
+                            foreach (var property in type.GetTypeInfo().GetProperties())
                             {
                                 string name = property.Name;
                                 object value = property.GetValue(_info);
@@ -1741,7 +1742,6 @@ namespace Amoeba.Core
         }
     }
 
-    [Serializable]
     class NetworkManagerException : ManagerException
     {
         public NetworkManagerException() : base() { }

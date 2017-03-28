@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Amoeba.Core;
-using NUnit.Framework;
 using Omnius.Base;
+using Xunit;
 
-namespace Amoeba.Test
+namespace Amoeba.Tests
 {
-    [TestFixture(Category = "Amoeba.Core.RouteTable<T>")]
-    class Test_RouteTable
+    public class Test_RouteTable : TestSetupBase
     {
         private readonly Random _random = new Random();
 
-        [Test]
+        [Fact]
         public void Test_Search()
         {
             var tempList = new List<Node<int>>();
@@ -29,7 +28,7 @@ namespace Amoeba.Test
 
             tempList.Sort((x, y) => Unsafe.Compare(x.Id, y.Id));
 
-            Assert.IsTrue(CollectionUtils.Equals(sortedList.Select(n => n.Value), tempList.Select(n => n.Value).Take(32)));
+            Assert.True(CollectionUtils.Equals(sortedList.Select(n => n.Value), tempList.Select(n => n.Value).Take(32)));
         }
     }
 }

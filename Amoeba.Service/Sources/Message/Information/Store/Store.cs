@@ -23,6 +23,8 @@ namespace Amoeba.Service
 
         public static readonly int MaxBoxCount = 8192;
 
+        private Store() { }
+
         public Store(IEnumerable<Box> boxes)
         {
             if (boxes != null) this.ProtectedBoxes.AddRange(boxes);

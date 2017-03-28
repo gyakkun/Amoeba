@@ -18,6 +18,8 @@ namespace Amoeba.Service
 
         public static readonly int MaxCommentLength = 1024 * 8;
 
+        private MailMessage() { }
+
         public MailMessage(string comment)
         {
             this.Comment = comment;

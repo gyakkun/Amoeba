@@ -8,6 +8,9 @@ using Omnius.Configuration;
 using Omnius.Security;
 using Omnius.Net;
 using System.Threading;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Amoeba.Tests")]
 
 namespace Amoeba.Core
 {
@@ -515,7 +518,6 @@ namespace Amoeba.Core
         }
     }
 
-    [Serializable]
     class CoreManagerException : StateManagerException
     {
         public CoreManagerException() : base() { }

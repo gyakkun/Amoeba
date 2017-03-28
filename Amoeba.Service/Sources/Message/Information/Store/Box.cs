@@ -29,6 +29,8 @@ namespace Amoeba.Service
         public static readonly int MaxSeedCount = 1024 * 64;
         public static readonly int MaxBoxCount = 8192;
 
+        private Box() { }
+
         public Box(string name, IEnumerable<Seed> seeds, IEnumerable<Box> boxes)
         {
             this.Name = name;

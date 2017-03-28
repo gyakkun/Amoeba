@@ -29,6 +29,8 @@ namespace Amoeba.Core
 
         public static readonly int MaxTypeLength = 256;
 
+        private BroadcastMetadata() { }
+
         public BroadcastMetadata(string type, DateTime creationTime, Metadata metadata, DigitalSignature digitalSignature)
         {
             this.Type = type;

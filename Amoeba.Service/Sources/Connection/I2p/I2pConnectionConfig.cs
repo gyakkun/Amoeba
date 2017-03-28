@@ -13,6 +13,8 @@ namespace Amoeba
         private bool _isEnabled;
         private string _samBridgeUri;
 
+        public I2pConnectionConfig() { }
+
         public I2pConnectionConfig(bool isEnabled, string samBridgeUri)
         {
             this.IsEnabled = isEnabled;

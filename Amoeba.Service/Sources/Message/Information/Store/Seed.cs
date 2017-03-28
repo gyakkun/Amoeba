@@ -26,6 +26,8 @@ namespace Amoeba.Service
 
         public static readonly int MaxNameLength = 256;
 
+        private Seed() { }
+
         public Seed(string name, long length, DateTime creationTime, Metadata metadata)
         {
             this.Name = name;

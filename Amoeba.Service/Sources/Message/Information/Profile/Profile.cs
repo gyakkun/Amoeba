@@ -33,6 +33,8 @@ namespace Amoeba.Service
         public static readonly int MaxDeleteSignatureCount = 1024;
         public static readonly int MaxTagCount = 1024;
 
+        private Profile() { }
+
         public Profile(string comment, ExchangePublicKey exchangePublicKey,
             IEnumerable<Signature> trustSignatures, IEnumerable<Signature> deleteSignatures,
             IEnumerable<Tag> tags)

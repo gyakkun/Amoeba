@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Security.Cryptography;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Omnius.Base;
@@ -305,7 +305,7 @@ namespace Amoeba.Core
                             {
                                 foreach (var group in item.Index.Groups)
                                 {
-                                    hashes.AddRange(_cacheManager.ParityDecoding(group, token));
+                                    hashes.AddRange(_cacheManager.ParityDecoding(group, token).Result);
                                 }
                             }
                             catch (Exception)
@@ -873,6 +873,8 @@ namespace Amoeba.Core
 
             private HashCollection _resultHashes;
 
+            private DownloadItemInfo() { }
+
             public DownloadItemInfo(Metadata metadata, string path)
             {
                 this.Metadata = metadata;
@@ -1003,7 +1005,6 @@ namespace Amoeba.Core
         }
     }
 
-    [Serializable]
     class DownloadManagerException : ManagerException
     {
         public DownloadManagerException() : base() { }

@@ -1,15 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.5</TargetFramework>
+  <PropertyGroup>    
+    <TargetFramework>netcoreapp1.1</TargetFramework>    
+    <Authors>Lyrise</Authors>    
+    <Company>Alliance-Network</Company>    
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>    
+    <FileVersion>0.0.0.0</FileVersion>    
     <Version>0.0.0</Version>
-    <Authors>Lyrise</Authors>
-    <Company>Alliance-Network</Company>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Amoeba.Core\Amoeba.Core.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj" />
@@ -24,6 +31,8 @@
     <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj" />
   </ItemGroup>
 
-  <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
 
 </Project>

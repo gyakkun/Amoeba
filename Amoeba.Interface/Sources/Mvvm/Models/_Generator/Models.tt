@@ -79,11 +79,13 @@ foreach(var c in classInfos)
     partial class <#= c.Name #> : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         protected virtual void OnPropertyChanged(string name)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public <#= c.Name #>() { }
 <#
     foreach(var p in c.PropertyInfos)
     {
@@ -97,7 +99,7 @@ foreach(var c in classInfos)
 
         [DataMember(Name = nameof(<#= p.Name #>))]
         public <#= p.Type #> <#= p.Name #>
-        { 
+        {
             get
             {
                 return <#= generatedFieldName #>;
@@ -121,10 +123,10 @@ foreach(var c in classInfos)
 
         [DataMember(Name = nameof(<#= p.Name #>))]
         public <#= p.Type #> <#= p.Name #>
-        { 
+        {
             get
             {
-                if(<#= generatedFieldName #> == null)
+                if (<#= generatedFieldName #> == null)
                     <#= generatedFieldName #> = new <#= p.Type #>();
 
                 return <#= generatedFieldName #>;

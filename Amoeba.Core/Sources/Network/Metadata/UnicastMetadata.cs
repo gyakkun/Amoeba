@@ -32,6 +32,8 @@ namespace Amoeba.Core
 
         public static readonly int MaxTypeLength = 256;
 
+        private UnicastMetadata() { }
+
         public UnicastMetadata(string type, Signature signature, DateTime creationTime, Metadata metadata, DigitalSignature digitalSignature)
         {
             this.Type = type;

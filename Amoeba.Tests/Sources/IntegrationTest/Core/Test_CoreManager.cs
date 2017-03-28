@@ -16,9 +16,9 @@ using Omnius.Io;
 using Omnius.Net;
 using Omnius.Security;
 
-namespace Amoeba.Test
+namespace Amoeba.Tests
 {
-    class Test_CoreManager
+    public class Test_CoreManager
     {
         private BufferManager _bufferManager = BufferManager.Instance;
 
@@ -74,7 +74,7 @@ namespace Amoeba.Test
             try
             {
                 if (!listener.Pending()) return null;
-                return new SocketCap(listener.AcceptSocket());
+                return new SocketCap(listener.AcceptSocketAsync().Result);
             }
             catch (Exception)
             {

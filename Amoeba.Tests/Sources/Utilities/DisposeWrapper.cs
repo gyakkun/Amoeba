@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Omnius.Base;
 
-namespace Amoeba.Test
+namespace Amoeba.Tests
 {
     class DisposeWrapper<T> : ManagerBase
     {

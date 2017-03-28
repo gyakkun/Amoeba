@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Management;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -211,37 +211,27 @@ namespace Amoeba.Service
 
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                request.AllowAutoRedirect = true;
-                request.Headers.Add("Pragma", "no-cache");
-                request.Headers.Add("Cache-Control", "no-cache");
-                request.Timeout = 1000 * 30;
-                request.ReadWriteTimeout = 1000 * 30;
-
-                using (var response = request.GetResponse())
+                using (var client = new HttpClient())
                 {
-                    if (response.ContentLength > 1024 * 1024 * 32) throw new Exception("too large");
-
-                    using (var stream = response.GetResponseStream())
-                    using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
+                    using (var stream = client.GetStreamAsync(url).Result)
                     {
-                        int length;
+                        if (stream.Length > 1024 * 1024 * 32) throw new Exception("too large");
 
-                        while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
+                        using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                         {
-                            bufferStream.Write(safeBuffer.Value, 0, length);
+                            int length;
 
-                            if (bufferStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
+                            while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
+                            {
+                                bufferStream.Write(safeBuffer.Value, 0, length);
+
+                                if (bufferStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
+                            }
                         }
-                    }
 
-                    if (response.ContentLength != -1 && bufferStream.Length != response.ContentLength)
-                    {
-                        return null;
+                        bufferStream.Seek(0, SeekOrigin.Begin);
+                        return bufferStream;
                     }
-
-                    bufferStream.Seek(0, SeekOrigin.Begin);
-                    return bufferStream;
                 }
             }
             catch (Exception)
