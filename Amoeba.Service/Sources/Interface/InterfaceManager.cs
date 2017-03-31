@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -35,9 +35,26 @@ namespace Amoeba.Service
 
         private void WatchThread()
         {
-            for (;;)
+            using (var reader = new NetworkStreamReader(_stream, _bufferManager))
+            using (var writer = new NetworkStreamWriter(_stream, _bufferManager))
             {
-                long type = VintUtils.Get(_stream);
+                for (;;)
+                {
+                    string functionName = reader.GetString();
+                    long sesstionId = reader.GetLong();
+
+                    switch (functionName)
+                    {
+                        case "Start":
+                            string configPath = JsonUtils.Deserialize<string>(reader.GetStream());
+                            string blocksPath = JsonUtils.Deserialize<string>(reader.GetStream());
+
+                            _serviceManager = new ControlManager(configPath, blocksPath, _bufferManager);
+                            _serviceManager.Start();
+
+                            break;
+                    }
+                }
             }
         }
 
