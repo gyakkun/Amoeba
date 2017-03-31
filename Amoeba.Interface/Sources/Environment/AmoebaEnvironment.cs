@@ -59,26 +59,6 @@ namespace Amoeba.Interface
 			}
 		}
 
-		public class EnvironmentConfig
-		{
-			public CacheConfig Cache { get; private set; }
-
-			public EnvironmentConfig()
-			{
-				this.Cache = new CacheConfig();
-			}
-
-			public class CacheConfig
-			{
-				public CacheConfig()
-				{
-					this.BlocksPath = "../Config/Cache.blocks";
-				}
-
-				public string BlocksPath { get; private set; }
-			}
-		}
-
 		public class EnvironmentIcons
 		{
 			public BitmapImage AmoebaIcon { get; }
@@ -98,6 +78,26 @@ namespace Amoeba.Interface
 				if (icon.CanFreeze) icon.Freeze();
 
 				return icon;
+			}
+		}
+
+		public class EnvironmentConfig
+		{
+			public CacheConfig Cache { get; private set; }
+
+			public EnvironmentConfig()
+			{
+				this.Cache = new CacheConfig();
+			}
+
+			public class CacheConfig
+			{
+				public CacheConfig()
+				{
+					this.BlocksPath = "../Config/Cache.blocks";
+				}
+
+				public string BlocksPath { get; private set; }
 			}
 		}
 	}

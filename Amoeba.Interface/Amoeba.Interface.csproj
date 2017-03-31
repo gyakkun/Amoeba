@@ -41,6 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,20 +58,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Sources\Extensions\ProcessExtensions.cs" />
-    <Compile Include="Sources\Mvvm\Converters\BytesToHexStringConverter.cs" />
-    <Compile Include="Sources\Mvvm\Converters\DoubleToGridLengthConverter.cs" />
-    <Compile Include="Sources\Mvvm\Converters\LongToSizeStringConverter.cs" />
-    <Compile Include="Sources\Mvvm\Converters\SortedCollectionConverter.cs" />
-    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragAcceptBehavior.cs" />
-    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragAcceptDescription.cs" />
-    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\DragStartBehavior.cs" />
-    <Compile Include="Sources\Mvvm\Helpers\GridViewSortHelper.cs" />
-    <Compile Include="Sources\Mvvm\ViewModels\SettingsViewModel\DynamicViewModelBase.cs" />
-    <Compile Include="Sources\Mvvm\ViewModels\SettingsViewModel\SettingsViewModelBase.cs" />
-    <Compile Include="Sources\Mvvm\ViewModels\TreeViewModel\TreeViewModelBase.cs" />
-    <Compile Include="Sources\Mvvm\Views\RestorableWindow\RestorableWindow.cs" />
-    <Compile Include="Sources\Mvvm\Views\RestorableWindow\WindowSettings.cs" />
     <Compile Include="Sources\Windows\Options\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
@@ -105,13 +92,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\_Interface\IDragable.cs" />
-    <Compile Include="Sources\Mvvm\Behaviors\DragDrop\_Interface\IDropable.cs" />
     <Compile Include="Sources\Windows\Store\StoreControl.xaml.cs">
       <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
-    <Compile Include="Sources\Mvvm\Views\Extensions\Extensions.cs" />
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <AutoGen>True</AutoGen>
@@ -170,10 +154,6 @@
       <Project>{82230c99-6599-4130-aac9-fc926abc0724}</Project>
       <Name>Amoeba.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj">
-      <Project>{8796ee1c-25d5-483e-b273-a17710a61259}</Project>
-      <Name>Amoeba.Service</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
       <Project>{63EADC1F-9A8A-4945-A562-DA666D0BCB7B}</Project>
       <Name>Omnius.Base</Name>
@@ -221,6 +201,10 @@
     <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj">
       <Project>{0c3f6508-1567-44fe-a0c8-aa8cb52edb51}</Project>
       <Name>Omnius.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Wpf\Omnius.Wpf.csproj">
+      <Project>{4636e8e7-cea8-48f4-bbd8-dddc2e20c5fa}</Project>
+      <Name>Omnius.Wpf</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

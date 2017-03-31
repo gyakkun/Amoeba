@@ -18,7 +18,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj" />

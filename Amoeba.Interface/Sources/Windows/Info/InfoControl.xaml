@@ -11,8 +11,7 @@
 
     <Grid>
         <ListView VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
-                IsSynchronizedWithCurrentItem="True"
-                local:GridViewSortHelper.AutoSort="True">
+                IsSynchronizedWithCurrentItem="True">
             <ListView.Resources>
                 <DataTemplate x:Key="CellTemplate_Type">
                     <TextBlock Text="{Binding Path=Type, Mode=OneWay}" />

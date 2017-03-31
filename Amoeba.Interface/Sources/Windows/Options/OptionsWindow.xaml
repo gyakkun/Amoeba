@@ -1,4 +1,4 @@
-<local:RestorableWindow x:Class="Amoeba.Interface.OptionsWindow"
+<omnius:RestorableWindow x:Class="Amoeba.Interface.OptionsWindow"
         x:Name="OptionsWindows"
         x:ClassModifier="internal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,6 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:local="clr-namespace:Amoeba.Interface"
+        xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -21,4 +22,4 @@
     <Grid>
         
     </Grid>
-</local:RestorableWindow>
+</omnius:RestorableWindow>

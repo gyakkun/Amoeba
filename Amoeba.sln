@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio 15
-VisualStudioVersion = 15.0.26228.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{82B6AA13-3A9A-4158-8AE2-9B6DCFE87523}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Base", "Omnius\Omnius.Base\Omnius.Base.csproj", "{DBFD22CE-159B-4DB0-8052-111686395656}"
 EndProject
@@ -41,11 +39,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Core", "Amoeba.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Interface", "Amoeba.Interface\Amoeba.Interface.csproj", "{19E45677-BD12-4F48-8C19-87E60B7CBA36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Wpf", "Omnius\Omnius.Wpf\Omnius.Wpf.csproj", "{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{8B7279F7-93C4-4EB4-96A3-0C5E210B3651}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0a55926d-70ce-41ba-a838-99937a3b219d}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{4a98d6cb-93d3-4665-a169-a9f7096a82f5}*SharedItemsImports = 4
-		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{82b6aa13-3a9a-4158-8ae2-9b6dcfe87523}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{ea43e2b5-9b8a-4003-8b5e-e8093e3e7708}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,10 +54,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{82B6AA13-3A9A-4158-8AE2-9B6DCFE87523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82B6AA13-3A9A-4158-8AE2-9B6DCFE87523}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82B6AA13-3A9A-4158-8AE2-9B6DCFE87523}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82B6AA13-3A9A-4158-8AE2-9B6DCFE87523}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DBFD22CE-159B-4DB0-8052-111686395656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DBFD22CE-159B-4DB0-8052-111686395656}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBFD22CE-159B-4DB0-8052-111686395656}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -121,6 +118,14 @@ Global
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B7279F7-93C4-4EB4-96A3-0C5E210B3651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B7279F7-93C4-4EB4-96A3-0C5E210B3651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B7279F7-93C4-4EB4-96A3-0C5E210B3651}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B7279F7-93C4-4EB4-96A3-0C5E210B3651}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,5 +144,6 @@ Global
 		{EA43E2B5-9B8A-4003-8B5E-E8093E3E7708} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
 		{47EB59D3-5A52-4F50-92EF-5878643929B8} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
 		{55B34959-925A-46F9-A2DC-809E58479277} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
+		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
 	EndGlobalSection
 EndGlobal

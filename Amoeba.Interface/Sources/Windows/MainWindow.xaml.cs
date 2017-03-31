@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,7 +16,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Omnius.Configuration;
+using Omnius.Wpf;
 using Prism.Events;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -24,6 +28,8 @@ namespace Amoeba.Interface
 	/// </summary>
 	partial class MainWindow : RestorableWindow
 	{
+		private CompositeDisposable _disposable = new CompositeDisposable();
+
 		public MainWindow()
 		{
 			this.DataContext = new MainWindowViewModel();
@@ -42,7 +48,7 @@ namespace Amoeba.Interface
 				{
 					var window = new OptionsWindow(viewModel);
 					window.ShowDialog();
-				});
+				}).AddTo(_disposable);
 		}
 
 		protected override void OnClosing(CancelEventArgs e)
@@ -69,6 +75,8 @@ namespace Amoeba.Interface
 			{
 				disposable.Dispose();
 			}
+
+			_disposable.Dispose();
 		}
 	}
 }

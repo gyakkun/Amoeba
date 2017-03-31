@@ -15,6 +15,7 @@ using System.Windows.Data;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Wpf;
 using Prism.Interactivity.InteractionRequest;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -58,7 +59,7 @@ namespace Amoeba.Interface
 			_serviceManager.Save();
 
 			_settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-			_settings.Save("DynamicSettings", this.GetPairs());
+			_settings.Save("DynamicSettings", this.GetPairs(), true);
 		}
 
 		public override void Dispose()

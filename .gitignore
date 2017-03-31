@@ -184,6 +184,3 @@ FakesAssemblies/
 *.pidb
 *.resources
 test-results/
-
-# T4 Codes
-*.generated.cs

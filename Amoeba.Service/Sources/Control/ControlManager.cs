@@ -15,7 +15,7 @@ using System.Runtime.CompilerServices;
 
 namespace Amoeba.Service
 {
-    public sealed class ServiceManager : StateManagerBase, ISettings
+    public sealed class ControlManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
@@ -29,7 +29,7 @@ namespace Amoeba.Service
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public ServiceManager(string configPath, string blocksPath, BufferManager bufferManager)
+        public ControlManager(string configPath, string blocksPath, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
             _coreManager = new CoreManager(Path.Combine(configPath, "Core"), blocksPath, _bufferManager);
@@ -40,7 +40,7 @@ namespace Amoeba.Service
         private void Check()
         {
             if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-            if (!_isLoaded) throw new ServiceManagerException("ServiceManager is not loaded.");
+            if (!_isLoaded) throw new ControlManagerException("ServiceManager is not loaded.");
         }
 
         public Information Information
@@ -481,7 +481,7 @@ namespace Amoeba.Service
 
             lock (_lockObject)
             {
-                if (_isLoaded) throw new ServiceManagerException("ServiceManager was already loaded.");
+                if (_isLoaded) throw new ControlManagerException("ServiceManager was already loaded.");
                 _isLoaded = true;
 
 #if DEBUG
@@ -564,10 +564,10 @@ namespace Amoeba.Service
         }
     }
 
-    class ServiceManagerException : StateManagerException
+    class ControlManagerException : StateManagerException
     {
-        public ServiceManagerException() : base() { }
-        public ServiceManagerException(string message) : base(message) { }
-        public ServiceManagerException(string message, Exception innerException) : base(message, innerException) { }
+        public ControlManagerException() : base() { }
+        public ControlManagerException(string message) : base(message) { }
+        public ControlManagerException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:local="clr-namespace:Amoeba.Interface"
+        xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
         mc:Ignorable="d"
         d:DesignHeight="300" d:DesignWidth="300">
 
@@ -15,13 +16,13 @@
                 <HierarchicalDataTemplate DataType="{x:Type local:BoxViewModel}" ItemsSource="{Binding Boxes, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Name.Value}">
                     <TextBlock Text="{Binding Path=Name.Value}">
                         <i:Interaction.Behaviors>
-                            <local:DragStartBehavior AllowedEffects="Move" DragDropData="{Binding}" />
+                            <omnius:DragStartBehavior AllowedEffects="Move" DragDropData="{Binding}" />
                         </i:Interaction.Behaviors>
                     </TextBlock>
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
             <i:Interaction.Behaviors>
-                <local:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
+                <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
             </i:Interaction.Behaviors>
         </TreeView>
     </Grid>
