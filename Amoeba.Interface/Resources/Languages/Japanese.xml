@@ -1,0 +1,14 @@
+<Config>
+
+  <Property Name="Global_FontFamily" Value="Segoe UI, Meiryo UI, Verdana" />
+  <Property Name="Global_DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
+
+  <Property Name="Languages_English" Value="英語 (English)" />
+  <Property Name="Languages_Japanese" Value="日本語 (Japanese)" />
+
+  <Property Name="MainWindow_Info" Value="クラウド" />
+  <Property Name="MainWindow_Store" Value="ストア" />
+
+  <Property Name="InfoControl_Type" Value="タイプ" />
+
+</Config>

@@ -1,0 +1,233 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{19E45677-BD12-4F48-8C19-87E60B7CBA36}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Amoeba.Interface</RootNamespace>
+    <AssemblyName>Amoeba.Interface</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Core\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Core\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>App.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="Sources\App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Sources\Windows\Options\OptionsWindow.xaml.cs">
+      <DependentUpon>OptionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Options\OptionsWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Info\InfoControl.xaml.cs">
+      <DependentUpon>InfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Info\InfoControlViewModel.cs" />
+    <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Items\StoreCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Items\StoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Items\SeedViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Items\BoxViewModel.cs" />
+    <Page Include="Sources\Windows\Options\OptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\Windows\Info\InfoControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Store\StoreControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\Windows\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="Sources\Mvvm\Models\_Generator\Models.generated.cs">
+      <DependentUpon>Models.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Sources\Windows\Store\StoreControl.xaml.cs">
+      <DependentUpon>StoreControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
+    <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
+    <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LanguagesManager.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Environment\AmoebaEnvironment.cs" />
+    <Compile Include="Sources\App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Sources\Windows\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Languages\Japanese.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Languages\English.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="App.manifest" />
+    <None Include="project.json" />
+    <Compile Include="Sources\Mvvm\Messenger\MainWindowMessenger.cs" />
+    <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml" />
+    <Content Include="Sources\Mvvm\Models\_Generator\Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Models.generated.cs</LastGenOutput>
+    </Content>
+    <Content Include="Sources\_Resources\Languages\_Generator\LanguagesManager.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LanguagesManager.generated.cs</LastGenOutput>
+    </Content>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Icons\Amoeba.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Icons\Files\Box.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Amoeba.Core\Amoeba.Core.csproj">
+      <Project>{82230c99-6599-4130-aac9-fc926abc0724}</Project>
+      <Name>Amoeba.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj">
+      <Project>{7d516c9f-7d8a-4166-8d12-d6af798f6da9}</Project>
+      <Name>Amoeba.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
+      <Project>{63EADC1F-9A8A-4945-A562-DA666D0BCB7B}</Project>
+      <Name>Omnius.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj">
+      <Project>{197c654f-2461-446a-b531-4a789f14be19}</Project>
+      <Name>Omnius.Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj">
+      <Project>{9AA70F88-4A83-4B3F-B494-7D37EA95766A}</Project>
+      <Name>Omnius.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Correction\Omnius.Correction.csproj">
+      <Project>{cbe313c0-ab44-48e4-bd43-da36d5a7eb5e}</Project>
+      <Name>Omnius.Correction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Io\Omnius.Io.csproj">
+      <Project>{74597e45-7f3c-4958-8b6a-b16de8de47b9}</Project>
+      <Name>Omnius.Io</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Messaging\Omnius.Messaging.csproj">
+      <Project>{e25cac1d-d9c2-4f34-b270-7aa309e3ebec}</Project>
+      <Name>Omnius.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Net.I2p\Omnius.Net.I2p.csproj">
+      <Project>{172183af-a62d-4d91-9973-f3718441fcef}</Project>
+      <Name>Omnius.Net.I2p</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Net.Proxy\Omnius.Net.Proxy.csproj">
+      <Project>{55b34959-925a-46f9-a2dc-809e58479277}</Project>
+      <Name>Omnius.Net.Proxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Net.Upnp\Omnius.Net.Upnp.csproj">
+      <Project>{e3ea88a5-fcf9-48e9-8572-59d85fa46c01}</Project>
+      <Name>Omnius.Net.Upnp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Net\Omnius.Net.csproj">
+      <Project>{e01c79b7-a79f-41d8-9c0b-00228602f356}</Project>
+      <Name>Omnius.Net</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj">
+      <Project>{d314c626-a6fc-4fd5-be3c-9d36c2738418}</Project>
+      <Name>Omnius.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj">
+      <Project>{0c3f6508-1567-44fe-a0c8-aa8cb52edb51}</Project>
+      <Name>Omnius.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Wpf\Omnius.Wpf.csproj">
+      <Project>{4636e8e7-cea8-48f4-bbd8-dddc2e20c5fa}</Project>
+      <Name>Omnius.Wpf</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sources\Windows\Chat\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties project_1json__JSONSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
