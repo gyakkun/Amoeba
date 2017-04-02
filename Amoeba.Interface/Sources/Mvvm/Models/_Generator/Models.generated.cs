@@ -12,8 +12,8 @@ using Amoeba.Core;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(TcpConnectionOpitons))]
-    partial class TcpConnectionOpitons : INotifyPropertyChanged
+    [DataContract(Name = nameof(ServiceTcpConfig))]
+    partial class ServiceTcpConfig : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -22,7 +22,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public TcpConnectionOpitons() { }
+        public ServiceTcpConfig() { }
 
         private bool _ipv4IsEnabled;
 
@@ -43,10 +43,10 @@ namespace Amoeba.Interface
             }
         }
 
-        private int _ipv4Port;
+        private ushort _ipv4Port;
 
         [DataMember(Name = nameof(Ipv4Port))]
-        public int Ipv4Port
+        public ushort Ipv4Port
         {
             get
             {
@@ -58,6 +58,63 @@ namespace Amoeba.Interface
                 {
                     _ipv4Port = value;
                     this.OnPropertyChanged(nameof(Ipv4Port));
+                }
+            }
+        }
+
+        private bool _ipv6IsEnabled;
+
+        [DataMember(Name = nameof(Ipv6IsEnabled))]
+        public bool Ipv6IsEnabled
+        {
+            get
+            {
+                return _ipv6IsEnabled;
+            }
+            set
+            {
+                if (value != _ipv6IsEnabled)
+                {
+                    _ipv6IsEnabled = value;
+                    this.OnPropertyChanged(nameof(Ipv6IsEnabled));
+                }
+            }
+        }
+
+        private ushort _ipv6Port;
+
+        [DataMember(Name = nameof(Ipv6Port))]
+        public ushort Ipv6Port
+        {
+            get
+            {
+                return _ipv6Port;
+            }
+            set
+            {
+                if (value != _ipv6Port)
+                {
+                    _ipv6Port = value;
+                    this.OnPropertyChanged(nameof(Ipv6Port));
+                }
+            }
+        }
+
+        private string _proxyUri;
+
+        [DataMember(Name = nameof(ProxyUri))]
+        public string ProxyUri
+        {
+            get
+            {
+                return _proxyUri;
+            }
+            set
+            {
+                if (value != _proxyUri)
+                {
+                    _proxyUri = value;
+                    this.OnPropertyChanged(nameof(ProxyUri));
                 }
             }
         }

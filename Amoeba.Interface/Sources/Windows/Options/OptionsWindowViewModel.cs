@@ -33,7 +33,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public TcpConnectionOpitons TcpConnectionOptions { get; } = new TcpConnectionOpitons();
+        public ServiceTcpConfig Tcp { get; } = new ServiceTcpConfig();
 
         public OptionsWindowViewModel(ServiceManager serviceManager)
         {
@@ -57,14 +57,26 @@ namespace Amoeba.Interface
 
             {
                 var config = _serviceManager.TcpConnectionConfig;
-                var options = this.TcpConnectionOptions;
-                options.Ipv4IsEnabled = (config.Type == TcpConnectionType.Ipv4);
-                options.Ipv4Port = config.Ipv4Port;
+                this.Tcp.ProxyUri = config.ProxyUri;
+                this.Tcp.Ipv4IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv4);
+                this.Tcp.Ipv4Port = config.Ipv4Port;
+                this.Tcp.Ipv6IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv6);
+                this.Tcp.Ipv6Port = config.Ipv6Port;
             }
         }
 
         public override void Save()
         {
+            // Tcp
+            {
+                TcpConnectionType type = TcpConnectionType.None;
+                if (this.Tcp.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
+                if (this.Tcp.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
+
+                _serviceManager.SetTcpConnectionConfig(
+                    new TcpConnectionConfig(type, this.Tcp.ProxyUri, this.Tcp.Ipv4Port, this.Tcp.Ipv6Port));
+            }
+
             _serviceManager.Save();
 
             _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);

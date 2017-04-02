@@ -4,9 +4,12 @@
   <Import Namespace="Amoeba.Service" />
   <Import Namespace="Amoeba.Core" />
 
-  <Class Name="TcpConnectionOpitons">
+  <Class Name="ServiceTcpConfig">
+    <Property Type="string" Name="ProxyUri" IsEditable="true" />
     <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
-    <Property Type="int" Name="Ipv4Port" IsEditable="true" />
+    <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
+    <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
+    <Property Type="ushort" Name="Ipv6Port" IsEditable="true" />
   </Class>
 
   <Class Name="StoreCategoryInfo">

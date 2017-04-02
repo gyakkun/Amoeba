@@ -67,16 +67,16 @@
                     ItemsSource="{Binding Path=ViewModels}">
                 <ListBox.Resources>
                     <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
-                        <WrapPanel Margin="8,0,8,0">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
                             <md:PackIcon Kind="Cloud" Width="32" Height="32"/>
                             <TextBlock VerticalAlignment="Center" Padding="16,0,0,0" FontSize="16" Text="{Binding Path=MainWindow_Info, Source={StaticResource Languages}}" />
-                        </WrapPanel>
+                        </StackPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
-                        <WrapPanel Margin="8,0,8,0">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
                             <md:PackIcon Kind="Basket" Width="32" Height="32"/>
                             <TextBlock VerticalAlignment="Center" Padding="16,0,0,0" FontSize="16" Text="{Binding Path=MainWindow_Store, Source={StaticResource Languages}}" />
-                        </WrapPanel>
+                        </StackPanel>
                     </DataTemplate>
                 </ListBox.Resources>
             </ListBox>

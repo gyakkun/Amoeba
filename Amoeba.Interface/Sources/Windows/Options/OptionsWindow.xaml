@@ -19,23 +19,35 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="OptionsWindow"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}">
-    <DockPanel>
-        <TreeView DockPanel.Dock="Left" Name="TabTreeView">
-            <TreeViewItem Header="{Binding Path=OptionsWindow_Connection, Source={StaticResource Languages}}" IsExpanded="True">
-                <TreeViewItem Name="TcpConnectionTreeViewItem" Header="{Binding Path=OptionsWindow_TcpConnection, Source={StaticResource Languages}}" IsSelected="True" />
-            </TreeViewItem>
-        </TreeView>
+    <Grid>
+        <DockPanel Margin="0,0,0,64">
+            <ListBox DockPanel.Dock="Left" Name="TabListBox" SelectedIndex="0"
+                    VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <ListBoxItem Name="ConnectionListBoxItem" Content="{Binding Path=OptionsWindow_Connection, Source={StaticResource Languages}}" Height="48" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="16,8" />
+            </ListBox>
 
-        <ContentControl Visibility="{Binding ElementName=TcpConnectionTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <WrapPanel Margin="20" Orientation="Vertical">
-                <md:Card Width="{Binding Path=ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}}" VerticalAlignment="Stretch" Padding="20" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                    <Grid>
-                        <CheckBox Content="IPv4 IsEnabled" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <Label Content="IPv4 Port: " VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="64,37.2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                        <TextBox Text="1231313" Height="24" Margin="240,38.2,0,0" HorizontalAlignment="Left" Width="120" VerticalContentAlignment="Stretch" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" />
-                    </Grid>
-                </md:Card>
-            </WrapPanel>
-        </ContentControl>
-    </DockPanel>
+            <ContentControl Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <GroupBox Header="Tcp Settings" Padding="16"
+                                Style="{DynamicResource MaterialDesignCardGroupBox}" 
+                                Width="{Binding Path=ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}}" 
+                                VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                            <Grid>
+                                <CheckBox Content="IPv4 IsEnabled" HorizontalAlignment="Left" VerticalAlignment="Top" Height="24" IsChecked="{Binding Tcp.Ipv4IsEnabled}"/>
+                                <Label Content="IPv4 Port: " VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" Margin="64,32,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="32" />
+                                <TextBox Text="{Binding Tcp.Ipv4Port}" Height="32" Margin="240,32,0,0" HorizontalAlignment="Left" Width="120" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" />
+                                <CheckBox Content="IPv6 IsEnabled" HorizontalAlignment="Left" VerticalAlignment="Top" Height="24" IsChecked="{Binding Tcp.Ipv6IsEnabled}" Margin="0,72,0,0"/>
+                                <Label Content="IPv6 Port: " VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" Margin="64,107.2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="32" />
+                                <TextBox Text="{Binding Tcp.Ipv6Port}" Height="32" Margin="240,107.2,0,0" HorizontalAlignment="Left" Width="120" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" />
+                                <Label Content="Proxy Uri:" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" Margin="0,147.2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="32" />
+                                <TextBox Text="{Binding Tcp.ProxyUri}" Height="32" Margin="240,147.2,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" />
+                            </Grid>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </ContentControl>
+        </DockPanel>
+        <Button Content="Ok" Margin="0,0,16,16" Height="32" Width="120" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+    </Grid>
 </omnius:RestorableWindow>
