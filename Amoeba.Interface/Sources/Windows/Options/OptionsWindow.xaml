@@ -12,7 +12,7 @@
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
-        TextElement.FontSize="13"
+        TextElement.FontSize="16"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -21,14 +21,21 @@
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}">
     <DockPanel>
         <TreeView DockPanel.Dock="Left" Name="TabTreeView">
-            <TreeViewItem Header="{Binding Path=MainWindow_Info, Source={StaticResource Languages}}" DataContext="{Binding Path=TcpConnectionOptions}" />
+            <TreeViewItem Header="{Binding Path=OptionsWindow_Connection, Source={StaticResource Languages}}" IsExpanded="True">
+                <TreeViewItem Name="TcpConnectionTreeViewItem" Header="{Binding Path=OptionsWindow_TcpConnection, Source={StaticResource Languages}}" IsSelected="True" />
+            </TreeViewItem>
         </TreeView>
-        <ContentControl Content="{Binding SelectedItem, ElementName=TabTreeView, Mode=OneWay}">
-            <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type local:TcpConnectionOpitons}">
-                    <local:StoreControl DataContext="{Binding}" />
-                </DataTemplate>
-            </ContentControl.Resources>
+
+        <ContentControl Visibility="{Binding ElementName=TcpConnectionTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <WrapPanel Margin="20" Orientation="Vertical">
+                <md:Card Width="{Binding Path=ActualWidth, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type WrapPanel}}}" VerticalAlignment="Stretch" Padding="20" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Grid>
+                        <CheckBox Content="IPv4 IsEnabled" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Label Content="IPv4 Port: " VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="64,37.2,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                        <TextBox Text="1231313" Height="24" Margin="240,38.2,0,0" HorizontalAlignment="Left" Width="120" VerticalContentAlignment="Stretch" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" />
+                    </Grid>
+                </md:Card>
+            </WrapPanel>
         </ContentControl>
     </DockPanel>
 </omnius:RestorableWindow>

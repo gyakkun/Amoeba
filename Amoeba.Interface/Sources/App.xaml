@@ -15,6 +15,7 @@
 
             <ObjectDataProvider x:Key="Languages" ObjectInstance="{x:Static local:LanguagesManager.Instance}" />
 
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <omnius:SortedCollectionConverter x:Key="SortedCollectionConverter"/>
             <omnius:BytesToHexStringConverter x:Key="BytesToHexStringConverter"/>
             <omnius:LongToSizeStringConverter x:Key="LongToSizeStringConverter"/>

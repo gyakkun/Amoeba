@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+# Blend for Visual Studio 15
+VisualStudioVersion = 15.0.26228.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
@@ -47,6 +47,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0a55926d-70ce-41ba-a838-99937a3b219d}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{4a98d6cb-93d3-4665-a169-a9f7096a82f5}*SharedItemsImports = 4
+		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{7d516c9f-7d8a-4166-8d12-d6af798f6da9}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{ea43e2b5-9b8a-4003-8b5e-e8093e3e7708}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

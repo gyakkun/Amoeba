@@ -121,6 +121,7 @@
   <ItemGroup>
     <Content Include="Resources\Languages\Japanese.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Resources\Languages\English.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

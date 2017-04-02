@@ -9,6 +9,10 @@
   <Property Name="MainWindow_Info" Value="Info" />
   <Property Name="MainWindow_Store" Value="Store" />
 
+  <Property Name="OptionsWindow_Connection" Value="Connection" />
+  <Property Name="OptionsWindow_TcpConnection" Value="Tcp Connection" />
+  <Property Name="OptionsWindow_I2pConnection" Value="I2p Connection" />
+
   <Property Name="InfoControl_Type" Value="Type" />
 
 </Config>
