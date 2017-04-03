@@ -85,7 +85,7 @@ namespace Amoeba.Service
 
                 lock (_lockObject)
                 {
-                    return _ipv4ResultMap.GetOrAdd(ipv4, (_) => _ipv4RangeSet.Any(n => n.Verify(ipv4)));
+                    return !_ipv4ResultMap.GetOrAdd(ipv4, (_) => _ipv4RangeSet.Any(n => n.Verify(ipv4)));
                 }
             }
 

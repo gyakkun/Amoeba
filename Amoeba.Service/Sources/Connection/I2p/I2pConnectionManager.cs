@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;
@@ -132,9 +131,10 @@ namespace Amoeba.Service
 
             try
             {
+                if (_samManager == null) return null;
                 socket = _samManager.Accept(out string base32Address);
             }
-            catch (SamException)
+            catch (Exception)
             {
                 if (socket != null) socket.Dispose();
 
@@ -220,6 +220,8 @@ namespace Amoeba.Service
                     _locationUris.Clear();
                     if (i2pUri != null) _locationUris.Add(i2pUri);
                 }
+
+                return;
             }
         }
 
@@ -275,7 +277,7 @@ namespace Amoeba.Service
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _config = _settings.Load<I2pConnectionConfig>("Config", ()=>new I2pConnectionConfig(true, "tcp:127.0.0.1:7656"));
+                _config = _settings.Load<I2pConnectionConfig>("Config", () => new I2pConnectionConfig(true, "tcp:127.0.0.1:7656"));
             }
         }
 

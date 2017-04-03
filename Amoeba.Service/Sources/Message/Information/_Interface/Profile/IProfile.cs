@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Amoeba.Core;
 using Omnius.Security;
 
 namespace Amoeba.Service

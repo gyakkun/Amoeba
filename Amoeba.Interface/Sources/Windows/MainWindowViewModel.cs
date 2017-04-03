@@ -23,7 +23,7 @@ using Omnius.Wpf;
 
 namespace Amoeba.Interface
 {
-    class MainWindowViewModel : SettingsViewModelBase
+    class MainWindowViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
 
@@ -33,19 +33,20 @@ namespace Amoeba.Interface
         public ReactiveCommand<string> LanguageCommand { get; private set; }
         public ReactiveCommand OptionsCommand { get; private set; }
 
+        public InteractionRequest<Notification> NotificationRequest { get; } = new InteractionRequest<Notification>();
+
+        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public ObservableCollection<ManagerBase> ViewModels { get; private set; } = new ObservableCollection<ManagerBase>();
+
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public InteractionRequest<Notification> NotificationRequest { get; } = new InteractionRequest<Notification>();
-
-        public ObservableCollection<SettingsViewModelBase> ViewModels { get; private set; } = new ObservableCollection<SettingsViewModelBase>();
-
         public MainWindowViewModel()
         {
-
+            this.Load();
         }
 
-        public override void Load()
+        public void Load()
         {
             {
                 string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
@@ -53,6 +54,7 @@ namespace Amoeba.Interface
 
                 _serviceManager = new ServiceManager(configPath, AmoebaEnvironment.Config.Cache.BlocksPath, BufferManager.Instance);
                 _serviceManager.Load();
+                _serviceManager.Start();
             }
 
             {
@@ -71,31 +73,21 @@ namespace Amoeba.Interface
 
                 _settings = new Settings(configPath);
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
-                this.SetPairs(_settings.Load("DynamicSettings", () => new Dictionary<string, object>()));
+                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
             }
 
             {
-                this.ViewModels.Add(new InfoControlViewModel(_serviceManager));
+                this.ViewModels.Add(new CrowdControlViewModel(_serviceManager));
                 this.ViewModels.Add(new StoreControlViewModel());
-
-                foreach (var viewModel in this.ViewModels)
-                {
-                    viewModel.Load();
-                }
             }
         }
 
-        public override void Save()
+        public void Save()
         {
             _serviceManager.Save();
 
             _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-            _settings.Save("DynamicSettings", this.GetPairs());
-
-            foreach (var viewModel in this.ViewModels)
-            {
-                viewModel.Save();
-            }
+            _settings.Save("Config", this.Config.GetPairs());
         }
 
         private void Options()
@@ -104,18 +96,25 @@ namespace Amoeba.Interface
                 .Publish(new OptionsWindowViewModel(_serviceManager));
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
             _disposed = true;
 
-            _serviceManager.Dispose();
-
-            _disposable.Dispose();
-
-            foreach (var viewModel in this.ViewModels)
+            if (disposing)
             {
-                viewModel.Dispose();
+                _serviceManager.Stop();
+
+                this.Save();
+
+                _serviceManager.Dispose();
+
+                _disposable.Dispose();
+
+                foreach (var viewModel in this.ViewModels)
+                {
+                    viewModel.Dispose();
+                }
             }
         }
     }

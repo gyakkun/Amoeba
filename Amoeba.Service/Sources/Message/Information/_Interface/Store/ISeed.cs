@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Amoeba.Core;
 
 namespace Amoeba.Service
 {

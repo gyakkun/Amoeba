@@ -8,7 +8,6 @@ using Omnius.Configuration;
 using Omnius.Security;
 using Omnius.Net;
 using System.Threading;
-using Amoeba.Core;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Amoeba.Tests")]

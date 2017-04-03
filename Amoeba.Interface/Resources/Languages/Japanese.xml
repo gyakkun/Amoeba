@@ -6,13 +6,13 @@
   <Property Name="Languages_English" Value="英語 (English)" />
   <Property Name="Languages_Japanese" Value="日本語 (Japanese)" />
 
-  <Property Name="MainWindow_Info" Value="クラウド" />
+  <Property Name="MainWindow_Crowd" Value="クラウド" />
   <Property Name="MainWindow_Store" Value="ストア" />
 
   <Property Name="OptionsWindow_Connection" Value="接続" />
   <Property Name="OptionsWindow_TcpConnection" Value="Tcp接続" />
   <Property Name="OptionsWindow_I2pConnection" Value="I2p接続" />
 
-  <Property Name="InfoControl_Type" Value="タイプ" />
+  <Property Name="CrowdControl_Type" Value="タイプ" />
 
 </Config>

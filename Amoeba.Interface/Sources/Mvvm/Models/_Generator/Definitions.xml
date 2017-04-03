@@ -2,9 +2,16 @@
   <Import Namespace="System.Collections.ObjectModel" />
   <Import Namespace="System.Windows" />
   <Import Namespace="Amoeba.Service" />
-  <Import Namespace="Amoeba.Core" />
 
-  <Class Name="ServiceTcpConfig">
+  <Class Name="InfoStateViewModel">
+    <Property Type="string" Name="Location" IsEditable="true" />
+  </Class>
+
+  <Class Name="ServiceOptions">
+    <Property Type="ServiceTcpOptions" Name="Tcp" />
+  </Class>
+
+  <Class Name="ServiceTcpOptions">
     <Property Type="string" Name="ProxyUri" IsEditable="true" />
     <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
     <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />

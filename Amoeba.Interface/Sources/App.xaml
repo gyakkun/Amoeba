@@ -21,6 +21,7 @@
             <omnius:LongToSizeStringConverter x:Key="LongToSizeStringConverter"/>
             <omnius:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
             <omnius:ConditionalValueConverter x:Key="ConditionalValueConverter" />
+            <omnius:UshortToStringConverter x:Key="UshortToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

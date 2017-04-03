@@ -8,12 +8,11 @@ using System.Runtime.Serialization;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Amoeba.Service;
-using Amoeba.Core;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(ServiceTcpConfig))]
-    partial class ServiceTcpConfig : INotifyPropertyChanged
+    [DataContract(Name = nameof(InfoStateViewModel))]
+    partial class InfoStateViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -22,7 +21,83 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ServiceTcpConfig() { }
+        public InfoStateViewModel() { }
+
+        private string _location;
+
+        [DataMember(Name = nameof(Location))]
+        public string Location
+        {
+            get
+            {
+                return _location;
+            }
+            set
+            {
+                if (value != _location)
+                {
+                    _location = value;
+                    this.OnPropertyChanged(nameof(Location));
+                }
+            }
+        }
+    }
+    [DataContract(Name = nameof(ServiceOptions))]
+    partial class ServiceOptions : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ServiceOptions() { }
+
+        private ServiceTcpOptions _tcp;
+
+        [DataMember(Name = nameof(Tcp))]
+        public ServiceTcpOptions Tcp
+        {
+            get
+            {
+                if (_tcp == null)
+                    _tcp = new ServiceTcpOptions();
+
+                return _tcp;
+            }
+        }
+    }
+    [DataContract(Name = nameof(ServiceTcpOptions))]
+    partial class ServiceTcpOptions : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ServiceTcpOptions() { }
+
+        private string _proxyUri;
+
+        [DataMember(Name = nameof(ProxyUri))]
+        public string ProxyUri
+        {
+            get
+            {
+                return _proxyUri;
+            }
+            set
+            {
+                if (value != _proxyUri)
+                {
+                    _proxyUri = value;
+                    this.OnPropertyChanged(nameof(ProxyUri));
+                }
+            }
+        }
 
         private bool _ipv4IsEnabled;
 
@@ -96,25 +171,6 @@ namespace Amoeba.Interface
                 {
                     _ipv6Port = value;
                     this.OnPropertyChanged(nameof(Ipv6Port));
-                }
-            }
-        }
-
-        private string _proxyUri;
-
-        [DataMember(Name = nameof(ProxyUri))]
-        public string ProxyUri
-        {
-            get
-            {
-                return _proxyUri;
-            }
-            set
-            {
-                if (value != _proxyUri)
-                {
-                    _proxyUri = value;
-                    this.OnPropertyChanged(nameof(ProxyUri));
                 }
             }
         }

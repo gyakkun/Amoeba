@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.Serialization;
-using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Security;
 using Omnius.Serialization;

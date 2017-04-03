@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
-using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Io;
 using Omnius.Serialization;

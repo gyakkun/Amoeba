@@ -10,7 +10,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;

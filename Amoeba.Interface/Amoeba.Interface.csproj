@@ -58,14 +58,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Sources\Utilities\Clipboard.cs" />
+    <Compile Include="Sources\Utilities\JsonUtils.cs" />
     <Compile Include="Sources\Windows\Options\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Options\OptionsWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Info\InfoControl.xaml.cs">
-      <DependentUpon>InfoControl.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Crowd\CrowdControl.xaml.cs">
+      <DependentUpon>CrowdControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Info\InfoControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Crowd\CrowdControlViewModel.cs" />
     <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\StoreCategoryViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\StoreViewModel.cs" />
@@ -75,7 +77,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\Windows\Info\InfoControl.xaml">
+    <Page Include="Sources\Windows\Crowd\CrowdControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -154,10 +156,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Amoeba.Core\Amoeba.Core.csproj">
-      <Project>{82230c99-6599-4130-aac9-fc926abc0724}</Project>
-      <Name>Amoeba.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj">
       <Project>{7d516c9f-7d8a-4166-8d12-d6af798f6da9}</Project>
       <Name>Amoeba.Service</Name>
@@ -218,6 +216,7 @@
   <ItemGroup>
     <Folder Include="Sources\Windows\Chat\" />
   </ItemGroup>
+  <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>

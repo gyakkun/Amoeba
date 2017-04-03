@@ -22,7 +22,7 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class OptionsWindowViewModel : SettingsViewModelBase
+    class OptionsWindowViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
 
@@ -30,17 +30,20 @@ namespace Amoeba.Interface
 
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
+        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public ServiceOptions Options { get; } = new ServiceOptions();
+
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
-
-        public ServiceTcpConfig Tcp { get; } = new ServiceTcpConfig();
 
         public OptionsWindowViewModel(ServiceManager serviceManager)
         {
             _serviceManager = serviceManager;
+
+            this.Load();
         }
 
-        public override void Load()
+        public void Load()
         {
             {
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
@@ -52,43 +55,47 @@ namespace Amoeba.Interface
 
                 _settings = new Settings(configPath);
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
-                this.SetPairs(_settings.Load("DynamicSettings", () => new Dictionary<string, object>()));
+                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
             }
 
             {
                 var config = _serviceManager.TcpConnectionConfig;
-                this.Tcp.ProxyUri = config.ProxyUri;
-                this.Tcp.Ipv4IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv4);
-                this.Tcp.Ipv4Port = config.Ipv4Port;
-                this.Tcp.Ipv6IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv6);
-                this.Tcp.Ipv6Port = config.Ipv6Port;
+                this.Options.Tcp.ProxyUri = config.ProxyUri;
+                this.Options.Tcp.Ipv4IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv4);
+                this.Options.Tcp.Ipv4Port = config.Ipv4Port;
+                this.Options.Tcp.Ipv6IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv6);
+                this.Options.Tcp.Ipv6Port = config.Ipv6Port;
             }
         }
 
-        public override void Save()
+        public void Save()
         {
             // Tcp
             {
+                var tcp = this.Options.Tcp;
                 TcpConnectionType type = TcpConnectionType.None;
-                if (this.Tcp.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
-                if (this.Tcp.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
+                if (tcp.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
+                if (tcp.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
 
                 _serviceManager.SetTcpConnectionConfig(
-                    new TcpConnectionConfig(type, this.Tcp.ProxyUri, this.Tcp.Ipv4Port, this.Tcp.Ipv6Port));
+                    new TcpConnectionConfig(type, tcp.ProxyUri, tcp.Ipv4Port, tcp.Ipv6Port));
             }
 
-            _serviceManager.Save();
-
             _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-            _settings.Save("DynamicSettings", this.GetPairs());
+            _settings.Save("Config", this.Config.GetPairs());
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
             _disposed = true;
 
-            _disposable.Dispose();
+            if (disposing)
+            {
+                this.Save();
+
+                _disposable.Dispose();
+            }
         }
     }
 }

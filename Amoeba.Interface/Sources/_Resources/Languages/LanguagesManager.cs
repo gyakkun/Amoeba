@@ -75,14 +75,7 @@ namespace Amoeba.Interface
                 }
             }
 
-            if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Contains("Japanese"))
-            {
-                this.SetCurrentLanguage("Japanese");
-            }
-            else if (_dic.Keys.Any(n => n == "English"))
-            {
-                this.SetCurrentLanguage("English");
-            }
+            this.SetCurrentLanguage("English");
         }
 
         public static LanguagesManager Instance

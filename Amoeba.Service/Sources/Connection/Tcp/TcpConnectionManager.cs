@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;
@@ -254,7 +253,7 @@ namespace Amoeba.Service
                     }
                 }
 
-                if (string.IsNullOrWhiteSpace(config.ProxyUri))
+                if (!string.IsNullOrWhiteSpace(config.ProxyUri))
                 {
                     var result2 = UriUtils.Parse(config.ProxyUri);
                     if (result2 == null) throw new Exception();
@@ -330,7 +329,7 @@ namespace Amoeba.Service
 
                 foreach (int p in new int[] { 0, 1 }.Randomize())
                 {
-                    if (p == 0 && config.Type.HasFlag(TcpConnectionType.Ipv4) && _ipv4TcpListener.Pending())
+                    if (p == 0 && config.Type.HasFlag(TcpConnectionType.Ipv4) && _ipv4TcpListener != null && _ipv4TcpListener.Pending())
                     {
                         var socket = _ipv4TcpListener.AcceptSocketAsync().Result;
                         garbages.Add(socket);
@@ -344,7 +343,7 @@ namespace Amoeba.Service
                         return new SocketCap(socket);
                     }
 
-                    if (p == 1 && config.Type.HasFlag(TcpConnectionType.Ipv6) && _ipv6TcpListener.Pending())
+                    if (p == 1 && config.Type.HasFlag(TcpConnectionType.Ipv6) && _ipv6TcpListener != null && _ipv6TcpListener.Pending())
                     {
                         var socket = _ipv6TcpListener.AcceptSocketAsync().Result;
                         garbages.Add(socket);
@@ -475,7 +474,14 @@ namespace Amoeba.Service
                     _locationUris.Clear();
                     if (ipv4Uri != null) _locationUris.Add(ipv4Uri);
                     if (ipv6Uri != null) _locationUris.Add(ipv6Uri);
+
+#if DEBUG
+                    _locationUris.Add($"tcp:{IPAddress.Loopback}:{config.Ipv4Port}");
+                    _locationUris.Add($"tcp:{IPAddress.IPv6Loopback}:{config.Ipv6Port}");
+#endif
                 }
+
+                return;
             }
         }
 

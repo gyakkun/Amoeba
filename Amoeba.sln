@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio 15
-VisualStudioVersion = 15.0.26228.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
@@ -35,8 +35,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Tests", "Amoeba.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Simulation", "Amoeba.Simulation\Amoeba.Simulation.csproj", "{A84BC62E-A1D9-4114-9EE0-25AE0562AB02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Core", "Amoeba.Core\Amoeba.Core.csproj", "{4A98D6CB-93D3-4665-A169-A9F7096A82F5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Wpf", "Omnius\Omnius.Wpf\Omnius.Wpf.csproj", "{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{7D516C9F-7D8A-4166-8D12-D6AF798F6DA9}"
@@ -46,7 +44,7 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0a55926d-70ce-41ba-a838-99937a3b219d}*SharedItemsImports = 4
-		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{4a98d6cb-93d3-4665-a169-a9f7096a82f5}*SharedItemsImports = 4
+		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{19e45677-bd12-4f48-8c19-87e60b7cba36}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{7d516c9f-7d8a-4166-8d12-d6af798f6da9}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{ea43e2b5-9b8a-4003-8b5e-e8093e3e7708}*SharedItemsImports = 13
 	EndGlobalSection
@@ -111,10 +109,6 @@ Global
 		{A84BC62E-A1D9-4114-9EE0-25AE0562AB02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A84BC62E-A1D9-4114-9EE0-25AE0562AB02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A84BC62E-A1D9-4114-9EE0-25AE0562AB02}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A98D6CB-93D3-4665-A169-A9F7096A82F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A98D6CB-93D3-4665-A169-A9F7096A82F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A98D6CB-93D3-4665-A169-A9F7096A82F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A98D6CB-93D3-4665-A169-A9F7096A82F5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA}.Release|Any CPU.ActiveCfg = Release|Any CPU

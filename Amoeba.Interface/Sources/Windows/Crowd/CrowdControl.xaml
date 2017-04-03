@@ -1,0 +1,146 @@
+<UserControl x:Class="Amoeba.Interface.CrowdControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:Amoeba.Interface"
+        xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+        mc:Ignorable="d"
+        d:DesignHeight="600" d:DesignWidth="600">
+
+    <DockPanel md:ColorZoneAssist.Mode="Dark">
+        <ListBox DockPanel.Dock="Left" Name="TabListBox" MinWidth="120" SelectedIndex="0"
+                    VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+            <ListBoxItem Name="ConnectionListBoxItem" Content="{Binding Path=CrowdControl_Connection, Source={StaticResource Languages}}" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="16,8" />
+            <ListBoxItem Name="StateListBoxItem" Content="{Binding Path=CrowdControl_State, Source={StaticResource Languages}}" Height="32" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="16,8" IsSelected="True" />
+        </ListBox>
+
+        <ContentControl Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <DockPanel>
+                <ToolBarTray DockPanel.Dock="Top" Width="Auto" >
+                    <ToolBar Style="{DynamicResource MaterialDesignToolBar}" ToolBarTray.IsLocked="True" ClipToBounds="False">
+                        <Button ToolTip="Copy some locations" Command="{Binding Path=CopyLocationCommand}">
+                            <md:PackIcon Kind="ContentCopy" />
+                        </Button>
+                        <Separator />
+                        <Button ToolTip="Paste some location" Command="{Binding Path=PasteLocationCommand}">
+                            <md:PackIcon Kind="ContentPaste" />
+                        </Button>
+                    </ToolBar>
+                </ToolBarTray>
+
+                <ListView VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                        IsSynchronizedWithCurrentItem="True"
+                        ItemsSource="{Binding Path=ConnectionInformations.Values}">
+                    <ListView.Resources>
+                        <DataTemplate x:Key="CellTemplate_Type">
+                            <TextBlock Text="{Binding Path=Type, Mode=OneWay}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="CellTemplate_Id">
+                            <TextBlock Text="{Binding Path=Id, Mode=OneWay, Converter={StaticResource BytesToHexStringConverter}}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="CellTemplate_Priority">
+                            <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="CellTemplate_ReceivedByteCount">
+                            <TextBlock Text="{Binding Path=ReceivedByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="CellTemplate_SentByteCount">
+                            <TextBlock Text="{Binding Path=SentByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                        </DataTemplate>
+                    </ListView.Resources>
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{Binding Path=CrowdControl_Copy, Source={StaticResource Languages}}" />
+                            <MenuItem Header="{Binding Path=CrowdControl_Paste, Source={StaticResource Languages}}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="False">
+                            <GridViewColumn Header="{Binding Path=CrowdControl_Type, Source={StaticResource Languages}}"
+                            CellTemplate="{StaticResource CellTemplate_Type}" 
+                            Width="{Binding Path=Config.ConnetionListView_Type_Width, Mode=TwoWay, FallbackValue=120}" />
+                            <GridViewColumn Header="{Binding Path=CrowdControl_Id, Source={StaticResource Languages}}"
+                            CellTemplate="{StaticResource CellTemplate_Id}" 
+                            Width="{Binding Path=Config.ConnetionListView_Id_Width, Mode=TwoWay, FallbackValue=120}" />
+                            <GridViewColumn Header="{Binding Path=CrowdControl_Priority, Source={StaticResource Languages}}"
+                            CellTemplate="{StaticResource CellTemplate_Priority}" 
+                            Width="{Binding Path=Config.ConnetionListView_Priority_Width, Mode=TwoWay, FallbackValue=120}" />
+                            <GridViewColumn Header="{Binding Path=CrowdControl_ReceivedByteCount, Source={StaticResource Languages}}"
+                            CellTemplate="{StaticResource CellTemplate_ReceivedByteCount}" 
+                            Width="{Binding Path=Config.ConnetionListView_ReceivedByteCount_Width, Mode=TwoWay, FallbackValue=120}" />
+                            <GridViewColumn Header="{Binding Path=CrowdControl_SentByteCount, Source={StaticResource Languages}}"
+                            CellTemplate="{StaticResource CellTemplate_SentByteCount}" 
+                            Width="{Binding Path=Config.ConnetionListView_SentByteCount_Width, Mode=TwoWay, FallbackValue=120}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </DockPanel>
+        </ContentControl>
+
+        <ContentControl Visibility="{Binding ElementName=StateListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="20">
+                    <GroupBox Header="Information"
+                                Style="{DynamicResource MaterialDesignCardGroupBox}" 
+                                VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="0,0,0,16">
+                        <GroupBox.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="8,0" Text="{Binding}"/>
+                            </DataTemplate>
+                        </GroupBox.HeaderTemplate>
+                        <Grid Margin="8">
+                            <Label Content="Proxy Uri:" VerticalContentAlignment="Center" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" VerticalAlignment="Top" Height="32" />
+                            <TextBox Text="{Binding Path=State.Location}" Height="32" Margin="240,0,0,0" VerticalContentAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" IsReadOnly="True" />
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Header="Information"
+                                Style="{DynamicResource MaterialDesignCardGroupBox}" 
+                                VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <GroupBox.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="8,0" Text="{Binding}"/>
+                            </DataTemplate>
+                        </GroupBox.HeaderTemplate>
+                        <Grid Margin="8">
+                            <ListView VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                    IsSynchronizedWithCurrentItem="True"
+                                    ItemsSource="{Binding Path=Information}">
+                                <i:Interaction.Behaviors>
+                                    <omnius:IgnoreMouseWheelBehavior />
+                                </i:Interaction.Behaviors>
+                                <ListView.Resources>
+                                    <DataTemplate x:Key="CellTemplate_Name">
+                                        <TextBlock Text="{Binding Path=Key, Mode=OneWay}" />
+                                    </DataTemplate>
+                                    <DataTemplate x:Key="CellTemplate_Value">
+                                        <TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </ListView.Resources>
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{Binding Path=CrowdControl_Copy, Source={StaticResource Languages}}" />
+                                        <MenuItem Header="{Binding Path=CrowdControl_Paste, Source={StaticResource Languages}}" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                                <ListView.View>
+                                    <GridView AllowsColumnReorder="False">
+                                        <GridViewColumn Header="{Binding Path=CrowdControl_Name, Source={StaticResource Languages}}"
+                                                CellTemplate="{StaticResource CellTemplate_Name}" 
+                                                Width="{Binding Path=Config.StateListView_Name_Width, Mode=TwoWay, FallbackValue=120}" />
+                                        <GridViewColumn Header="{Binding Path=CrowdControl_Value, Source={StaticResource Languages}}"
+                                                CellTemplate="{StaticResource CellTemplate_Value}" 
+                                                Width="{Binding Path=Config.StateListView_Value_Width, Mode=TwoWay, FallbackValue=120}" />
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </Grid>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+        </ContentControl>
+
+    </DockPanel>
+</UserControl>

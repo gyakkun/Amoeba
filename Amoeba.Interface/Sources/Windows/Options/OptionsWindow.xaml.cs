@@ -16,36 +16,41 @@ using Omnius.Wpf;
 
 namespace Amoeba.Interface
 {
-	/// <summary>
-	/// OptionsWindow.xaml の相互作用ロジック
-	/// </summary>
-	partial class OptionsWindow : RestorableWindow
-	{
-		public OptionsWindow(OptionsWindowViewModel viewModel)
-		{
-			this.DataContext = viewModel;
+    /// <summary>
+    /// OptionsWindow.xaml の相互作用ロジック
+    /// </summary>
+    partial class OptionsWindow : RestorableWindow
+    {
+        public OptionsWindow(OptionsWindowViewModel viewModel)
+        {
+            this.DataContext = viewModel;
 
-			if (this.DataContext is ISettings settings)
-			{
-				settings.Load();
-			}
+            if (this.DataContext is ISettings settings)
+            {
+                settings.Load();
+            }
 
-			InitializeComponent();
-		}
+            InitializeComponent();
+        }
 
-		protected override void OnClosed(EventArgs e)
-		{
-			base.OnClosed(e);
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
 
-			if (this.DataContext is ISettings settings)
-			{
-				settings.Save();
-			}
+            if (this.DataContext is ISettings settings)
+            {
+                settings.Save();
+            }
 
-			if (this.DataContext is IDisposable disposable)
-			{
-				disposable.Dispose();
-			}
-		}
-	}
+            if (this.DataContext is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+        }
+
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+    }
 }

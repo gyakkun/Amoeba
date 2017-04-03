@@ -12,7 +12,7 @@
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
-        TextElement.FontSize="16"
+        TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -63,13 +63,13 @@
             </MenuItem>
         </Menu>
         <DockPanel>
-            <ListBox DockPanel.Dock="Left" Name="TabListBox" SelectionMode="Single" SelectedIndex="0"
+            <ListBox DockPanel.Dock="Left" Name="TabListBox" SelectionMode="Single" SelectedIndex="0" MinWidth="120"
                     ItemsSource="{Binding Path=ViewModels}">
                 <ListBox.Resources>
-                    <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
+                    <DataTemplate DataType="{x:Type local:CrowdControlViewModel}">
                         <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
                             <md:PackIcon Kind="Cloud" Width="32" Height="32"/>
-                            <TextBlock VerticalAlignment="Center" Padding="16,0,0,0" FontSize="16" Text="{Binding Path=MainWindow_Info, Source={StaticResource Languages}}" />
+                            <TextBlock VerticalAlignment="Center" Padding="16,0,0,0" FontSize="16" Text="{Binding Path=MainWindow_Crowd, Source={StaticResource Languages}}" />
                         </StackPanel>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
@@ -82,8 +82,8 @@
             </ListBox>
             <ContentControl Content="{Binding SelectedItem, ElementName=TabListBox, Mode=OneWay}">
                 <ContentControl.Resources>
-                    <DataTemplate DataType="{x:Type local:InfoControlViewModel}">
-                        <local:InfoControl DataContext="{Binding}" />
+                    <DataTemplate DataType="{x:Type local:CrowdControlViewModel}">
+                        <local:CrowdControl DataContext="{Binding}" />
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
                         <local:StoreControl DataContext="{Binding}" />

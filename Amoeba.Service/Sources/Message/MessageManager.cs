@@ -6,7 +6,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;

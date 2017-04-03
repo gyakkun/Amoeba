@@ -9,10 +9,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Omnius.Wpf;
 using Reactive.Bindings;
+using Omnius.Base;
 
 namespace Amoeba.Interface
 {
-    class StoreControlViewModel : SettingsViewModelBase
+    class StoreControlViewModel : ManagerBase
     {
         private CollectionViewSource _treeViewSource;
 
@@ -83,18 +84,9 @@ namespace Amoeba.Interface
             return element.DataContext as TreeViewModelBase;
         }
 
-        public override void Load()
+        protected override void Dispose(bool disposing)
         {
-        }
 
-        public override void Save()
-        {
-        }
-
-        public override void Dispose()
-        {
-            if (_disposed) return;
-            _disposed = true;
         }
     }
 }
