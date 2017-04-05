@@ -1,6 +1,6 @@
-{
+﻿{
   "dependencies": {
-    "MaterialDesignThemes": "2.3.0.823",
+    "AvalonEdit": "5.0.3",
     "NETStandard.Library": "1.6.1",
     "Nett": "0.6.2",
     "Prism.Wpf": "6.3.0",

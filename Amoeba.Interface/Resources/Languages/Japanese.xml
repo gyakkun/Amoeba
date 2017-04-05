@@ -7,12 +7,21 @@
   <Property Name="Languages_Japanese" Value="日本語 (Japanese)" />
 
   <Property Name="MainWindow_Crowd" Value="クラウド" />
+  <Property Name="MainWindow_Chat" Value="Chat" />
   <Property Name="MainWindow_Store" Value="ストア" />
 
   <Property Name="OptionsWindow_Connection" Value="接続" />
   <Property Name="OptionsWindow_TcpConnection" Value="Tcp接続" />
   <Property Name="OptionsWindow_I2pConnection" Value="I2p接続" />
 
+  <Property Name="CrowdControl_Connection" Value="Connection" />
+  <Property Name="CrowdControl_State" Value="State" />
   <Property Name="CrowdControl_Type" Value="タイプ" />
+  <Property Name="CrowdControl_Id" Value="ID" />
+  <Property Name="CrowdControl_Priority" Value="Priority" />
+  <Property Name="CrowdControl_ReceivedByteCount" Value="Received byte count" />
+  <Property Name="CrowdControl_SentByteCount" Value="Sent byte count" />
+  <Property Name="CrowdControl_Name" Value="Name" />
+  <Property Name="CrowdControl_Value" Value="Value" />
 
 </Config>

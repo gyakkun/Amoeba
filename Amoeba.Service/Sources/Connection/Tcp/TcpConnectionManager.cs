@@ -59,7 +59,7 @@ namespace Amoeba.Service
                 lock (_lockObject)
                 {
                     var contexts = new List<InformationContext>();
-                    contexts.Add(new InformationContext("CatharsisBlockCount", (long)_blockCount));
+                    contexts.Add(new InformationContext("Network_CatharsisBlockCount", (long)_blockCount));
 
                     return new Information(contexts);
                 }

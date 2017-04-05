@@ -25,22 +25,12 @@ namespace Amoeba.Interface
         {
             this.DataContext = viewModel;
 
-            if (this.DataContext is ISettings settings)
-            {
-                settings.Load();
-            }
-
             InitializeComponent();
         }
 
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-
-            if (this.DataContext is ISettings settings)
-            {
-                settings.Save();
-            }
 
             if (this.DataContext is IDisposable disposable)
             {

@@ -92,10 +92,14 @@ namespace Amoeba.Interface
 
                         App.Current.Dispatcher.InvokeAsync(() =>
                         {
+                            if (token.IsCancellationRequested) return;
+
                             foreach (var (key, value) in this.ConnectionInformations.ToArray())
                             {
-                                if (dic.ContainsKey(key)) continue;
-                                this.ConnectionInformations.Remove(key);
+                                if (!dic.ContainsKey(key))
+                                {
+                                    this.ConnectionInformations.Remove(key);
+                                }
                             }
 
                             foreach (var (key, info) in dic)
@@ -119,6 +123,8 @@ namespace Amoeba.Interface
                     {
                         App.Current.Dispatcher.InvokeAsync(() =>
                         {
+                            if (token.IsCancellationRequested) return;
+
                             this.State.Location = AmoebaConverter.ToLocationString(_serviceManager.MyLocation);
                         });
                     }
@@ -128,6 +134,8 @@ namespace Amoeba.Interface
 
                         App.Current.Dispatcher.InvokeAsync(() =>
                         {
+                            if (token.IsCancellationRequested) return;
+
                             foreach (var (key, value) in information)
                             {
                                 this.Information[key] = value.ToString();

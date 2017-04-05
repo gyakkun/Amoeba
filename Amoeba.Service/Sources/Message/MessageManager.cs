@@ -203,10 +203,9 @@ namespace Amoeba.Service
             });
         }
 
-        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, IExchangeDecrypt exchangePrivateKey)
+        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag)
         {
             if (tag == null) throw new ArgumentNullException(nameof(tag));
-            if (exchangePrivateKey == null) throw new ArgumentNullException(nameof(exchangePrivateKey));
 
             var now = DateTime.UtcNow;
 
@@ -225,7 +224,7 @@ namespace Amoeba.Service
                     }
                     else
                     {
-                        if ((now - multicastMetadata.CreationTime).TotalDays < 7) continue;
+                        if ((now - multicastMetadata.CreationTime).TotalDays > 7) continue;
 
                         untrusts.Add(multicastMetadata);
                     }

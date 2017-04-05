@@ -7,6 +7,7 @@
   <Property Name="Languages_Japanese" Value="Japanese" />
 
   <Property Name="MainWindow_Crowd" Value="Crowd" />
+  <Property Name="MainWindow_Chat" Value="Chat" />
   <Property Name="MainWindow_Store" Value="Store" />
 
   <Property Name="OptionsWindow_Connection" Value="Connection" />

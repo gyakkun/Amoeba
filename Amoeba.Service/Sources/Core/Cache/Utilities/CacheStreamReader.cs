@@ -74,7 +74,7 @@ namespace Amoeba.Service
             {
                 if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
 
-                throw new NotSupportedException();
+                if (_position != value) throw new NotSupportedException();
             }
         }
 

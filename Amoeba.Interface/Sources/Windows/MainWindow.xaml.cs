@@ -23,60 +23,56 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	partial class MainWindow : RestorableWindow
-	{
-		private CompositeDisposable _disposable = new CompositeDisposable();
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    partial class MainWindow : RestorableWindow
+    {
+        private CompositeDisposable _disposable = new CompositeDisposable();
 
-		public MainWindow()
-		{
-			this.DataContext = new MainWindowViewModel();
+        public MainWindow()
+        {
+            this.DataContext = new MainWindowViewModel();
 
-			if (this.DataContext is ISettings settings)
-			{
-				settings.Load();
-			}
+            InitializeComponent();
 
-			InitializeComponent();
+            this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
 
-			this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
+            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<OptionsWindowViewModel>>()
+                .Subscribe(viewModel =>
+                {
+                    var window = new OptionsWindow(viewModel);
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
+                .Subscribe(viewModel =>
+                {
+                    var window = new ChatMessageEditWindow(viewModel);
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+        }
 
-			MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<OptionsWindowViewModel>>()
-				.Subscribe(viewModel =>
-				{
-					var window = new OptionsWindow(viewModel);
-					window.ShowDialog();
-				}).AddTo(_disposable);
-		}
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
 
-		protected override void OnClosing(CancelEventArgs e)
-		{
-			base.OnClosing(e);
+            if (MessageBoxResult.No == MessageBox.Show(this, "終了しますか？", "Amoeba",
+                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes))
+            {
+                e.Cancel = true;
+            }
+        }
 
-			if (MessageBoxResult.No == MessageBox.Show(this, "終了しますか？", "Amoeba",
-				MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes))
-			{
-				e.Cancel = true;
-			}
-		}
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
 
-		protected override void OnClosed(EventArgs e)
-		{
-			base.OnClosed(e);
+            if (this.DataContext is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
 
-			if (this.DataContext is ISettings settings)
-			{
-				settings.Save();
-			}
-
-			if (this.DataContext is IDisposable disposable)
-			{
-				disposable.Dispose();
-			}
-
-			_disposable.Dispose();
-		}
-	}
+            _disposable.Dispose();
+        }
+    }
 }

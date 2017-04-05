@@ -13,6 +13,7 @@ namespace Amoeba.Interface
         public string Languages_English { get { return this.Translate("Languages_English"); } }
         public string Languages_Japanese { get { return this.Translate("Languages_Japanese"); } }
         public string MainWindow_Crowd { get { return this.Translate("MainWindow_Crowd"); } }
+        public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }
         public string OptionsWindow_Connection { get { return this.Translate("OptionsWindow_Connection"); } }
         public string OptionsWindow_TcpConnection { get { return this.Translate("OptionsWindow_TcpConnection"); } }

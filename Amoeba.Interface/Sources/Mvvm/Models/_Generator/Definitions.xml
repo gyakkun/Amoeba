@@ -3,6 +3,11 @@
   <Import Namespace="System.Windows" />
   <Import Namespace="Amoeba.Service" />
 
+  <Class Name="ChatMessageInfo">
+    <Property Type="ChatMessageState" Name="State" IsEditable="true" />
+    <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
+  </Class>
+
   <Class Name="InfoStateViewModel">
     <Property Type="string" Name="Location" IsEditable="true" />
   </Class>
@@ -17,6 +22,18 @@
     <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
     <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
     <Property Type="ushort" Name="Ipv6Port" IsEditable="true" />
+  </Class>
+
+  <Class Name="ChatCategoryInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="ObservableCollection(ChatInfo)" Name="ChatInfos" />
+    <Property Type="ObservableCollection(ChatCategoryInfo)" Name="CategoryInfos" />
+  </Class>
+
+  <Class Name="ChatInfo">
+    <Property Type="Tag" Name="Tag" IsEditable="true" />
+    <Property Type="List(MulticastMessage(ChatMessage))" Name="Messages" />
   </Class>
 
   <Class Name="StoreCategoryInfo">
@@ -46,4 +63,5 @@
     <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
     <Property Type="Metadata" Name="Metadata" IsEditable="true" />
   </Class>
+  
 </Config>

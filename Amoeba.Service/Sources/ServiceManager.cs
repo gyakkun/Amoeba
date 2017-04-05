@@ -424,13 +424,13 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, IExchangeDecrypt exchangePrivateKey)
+        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.GetChatMessages(tag, exchangePrivateKey);
+                return _messageManager.GetChatMessages(tag);
             }
         }
 

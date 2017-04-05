@@ -73,7 +73,7 @@ namespace Amoeba.Interface
             // Tcp
             {
                 var tcp = this.Options.Tcp;
-                TcpConnectionType type = TcpConnectionType.None;
+                var type = TcpConnectionType.None;
                 if (tcp.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
                 if (tcp.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
 

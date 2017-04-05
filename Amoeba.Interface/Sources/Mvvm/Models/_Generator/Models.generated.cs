@@ -11,6 +11,56 @@ using Amoeba.Service;
 
 namespace Amoeba.Interface
 {
+    [DataContract(Name = nameof(ChatMessageInfo))]
+    partial class ChatMessageInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ChatMessageInfo() { }
+
+        private ChatMessageState _state;
+
+        [DataMember(Name = nameof(State))]
+        public ChatMessageState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                if (value != _state)
+                {
+                    _state = value;
+                    this.OnPropertyChanged(nameof(State));
+                }
+            }
+        }
+
+        private MulticastMessage<ChatMessage> _message;
+
+        [DataMember(Name = nameof(Message))]
+        public MulticastMessage<ChatMessage> Message
+        {
+            get
+            {
+                return _message;
+            }
+            set
+            {
+                if (value != _message)
+                {
+                    _message = value;
+                    this.OnPropertyChanged(nameof(Message));
+                }
+            }
+        }
+    }
     [DataContract(Name = nameof(InfoStateViewModel))]
     partial class InfoStateViewModel : INotifyPropertyChanged
     {
@@ -172,6 +222,129 @@ namespace Amoeba.Interface
                     _ipv6Port = value;
                     this.OnPropertyChanged(nameof(Ipv6Port));
                 }
+            }
+        }
+    }
+    [DataContract(Name = nameof(ChatCategoryInfo))]
+    partial class ChatCategoryInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ChatCategoryInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (value != _name)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private bool _isExpanded;
+
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (value != _isExpanded)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
+            }
+        }
+
+        private ObservableCollection<ChatInfo> _chatInfos;
+
+        [DataMember(Name = nameof(ChatInfos))]
+        public ObservableCollection<ChatInfo> ChatInfos
+        {
+            get
+            {
+                if (_chatInfos == null)
+                    _chatInfos = new ObservableCollection<ChatInfo>();
+
+                return _chatInfos;
+            }
+        }
+
+        private ObservableCollection<ChatCategoryInfo> _categoryInfos;
+
+        [DataMember(Name = nameof(CategoryInfos))]
+        public ObservableCollection<ChatCategoryInfo> CategoryInfos
+        {
+            get
+            {
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<ChatCategoryInfo>();
+
+                return _categoryInfos;
+            }
+        }
+    }
+    [DataContract(Name = nameof(ChatInfo))]
+    partial class ChatInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ChatInfo() { }
+
+        private Tag _tag;
+
+        [DataMember(Name = nameof(Tag))]
+        public Tag Tag
+        {
+            get
+            {
+                return _tag;
+            }
+            set
+            {
+                if (value != _tag)
+                {
+                    _tag = value;
+                    this.OnPropertyChanged(nameof(Tag));
+                }
+            }
+        }
+
+        private List<MulticastMessage<ChatMessage>> _messages;
+
+        [DataMember(Name = nameof(Messages))]
+        public List<MulticastMessage<ChatMessage>> Messages
+        {
+            get
+            {
+                if (_messages == null)
+                    _messages = new List<MulticastMessage<ChatMessage>>();
+
+                return _messages;
             }
         }
     }

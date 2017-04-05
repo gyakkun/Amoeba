@@ -30,10 +30,9 @@ namespace Amoeba.Interface
         private Settings _settings;
 
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
+
         public ReactiveCommand<string> LanguageCommand { get; private set; }
         public ReactiveCommand OptionsCommand { get; private set; }
-
-        public InteractionRequest<Notification> NotificationRequest { get; } = new InteractionRequest<Notification>();
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
         public ObservableCollection<ManagerBase> ViewModels { get; private set; } = new ObservableCollection<ManagerBase>();
@@ -78,14 +77,13 @@ namespace Amoeba.Interface
 
             {
                 this.ViewModels.Add(new CrowdControlViewModel(_serviceManager));
+                this.ViewModels.Add(new ChatControlViewModel(_serviceManager));
                 this.ViewModels.Add(new StoreControlViewModel());
             }
         }
 
         public void Save()
         {
-            _serviceManager.Save();
-
             _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
             _settings.Save("Config", this.Config.GetPairs());
         }
@@ -103,18 +101,17 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
-                _serviceManager.Stop();
-
-                this.Save();
-
-                _serviceManager.Dispose();
-
-                _disposable.Dispose();
-
                 foreach (var viewModel in this.ViewModels)
                 {
                     viewModel.Dispose();
                 }
+
+                this.Save();
+
+                _serviceManager.Stop();
+                _serviceManager.Dispose();
+
+                _disposable.Dispose();
             }
         }
     }
