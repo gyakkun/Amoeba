@@ -60,7 +60,8 @@
                 <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value}" />
                     <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value}" />
-                    <Setter Property="omnius:SupplementaryInteraction.Behaviors">
+                    <Setter Property="omnius:MouseClickHelper.Command" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.Tab_ClickCommand}" />
+                    <Setter Property="omnius:StyleInteraction.Behaviors">
                         <Setter.Value>
                             <omnius:Behaviors>
                                 <omnius:IgnoreRequestBringIntoViewBehavior />

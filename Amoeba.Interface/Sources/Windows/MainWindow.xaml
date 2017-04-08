@@ -76,68 +76,67 @@
                     Name="TabListBox"
                     MinWidth="120"
                     DockPanel.Dock="Left"
-                    ItemsSource="{Binding Path=ViewModels}"
                     SelectedIndex="0"
                     SelectionMode="Single">
-                <ListBox.Resources>
-                    <DataTemplate DataType="{x:Type local:CrowdControlViewModel}">
-                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
-                            <md:PackIcon
-                                    Width="32"
-                                    Height="32"
-                                    Kind="Cloud" />
-                            <TextBlock
-                                    Padding="16,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="16"
-                                    Text="{Binding Path=MainWindow_Crowd, Source={StaticResource Languages}}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type local:ChatControlViewModel}">
-                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
-                            <md:PackIcon
-                                    Width="32"
-                                    Height="32"
-                                    Kind="Comment" />
-                            <TextBlock
-                                    Padding="16,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="16"
-                                    Text="{Binding Path=MainWindow_Chat, Source={StaticResource Languages}}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
-                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
-                            <md:PackIcon
-                                    Width="32"
-                                    Height="32"
-                                    Kind="Basket" />
-                            <TextBlock
-                                    Padding="16,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="16"
-                                    Text="{Binding Path=MainWindow_Store, Source={StaticResource Languages}}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.Resources>
+                <ListBoxItem Name="CloudListBoxItem">
+                    <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                        <md:PackIcon
+                                Width="32"
+                                Height="32"
+                                Kind="Cloud" />
+                        <TextBlock
+                                Padding="16,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding Path=MainWindow_Crowd, Source={StaticResource Languages}}" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Name="ChatListBoxItem">
+                    <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                        <md:PackIcon
+                                Width="32"
+                                Height="32"
+                                Kind="Comment" />
+                        <TextBlock
+                                Padding="16,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding Path=MainWindow_Chat, Source={StaticResource Languages}}" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Name="StoreListBoxItem">
+                    <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                        <md:PackIcon
+                                Width="32"
+                                Height="32"
+                                Kind="Basket" />
+                        <TextBlock
+                                Padding="16,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="{Binding Path=MainWindow_Store, Source={StaticResource Languages}}" />
+                    </StackPanel>
+                </ListBoxItem>
             </ListBox>
 
             <Grid Background="{DynamicResource MaterialDesignCardBackground}">
                 <ContentControl
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
-                        Content="{Binding SelectedItem, ElementName=TabListBox, Mode=OneWay}">
-                    <ContentControl.Resources>
-                        <DataTemplate DataType="{x:Type local:CrowdControlViewModel}">
-                            <local:CrowdControl DataContext="{Binding}" />
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type local:ChatControlViewModel}">
-                            <local:ChatControl DataContext="{Binding}" />
-                        </DataTemplate>
-                        <DataTemplate DataType="{x:Type local:StoreControlViewModel}">
-                            <local:StoreControl DataContext="{Binding}" />
-                        </DataTemplate>
-                    </ContentControl.Resources>
+                        Visibility="{Binding ElementName=CloudListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <local:CrowdControl DataContext="{Binding Path=CrowdControlViewModel}" />
+                </ContentControl>
+                <ContentControl
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Visibility="{Binding ElementName=ChatListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <local:ChatControl DataContext="{Binding Path=ChatControlViewModel}" />
+                </ContentControl>
+                <ContentControl
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Visibility="{Binding ElementName=StoreListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <local:StoreControl DataContext="{Binding Path=StoreControlViewModel}" />
                 </ContentControl>
             </Grid>
         </DockPanel>

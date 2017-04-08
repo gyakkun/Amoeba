@@ -26,7 +26,9 @@ namespace Amoeba.Interface
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
-        public ObservableCollection<ManagerBase> ViewModels { get; private set; } = new ObservableCollection<ManagerBase>();
+        public CrowdControlViewModel CrowdControlViewModel { get; private set; }
+        public ChatControlViewModel ChatControlViewModel { get; private set; }
+        public StoreControlViewModel StoreControlViewModel { get; private set; }
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -67,9 +69,9 @@ namespace Amoeba.Interface
             }
 
             {
-                this.ViewModels.Add(new CrowdControlViewModel(_serviceManager));
-                this.ViewModels.Add(new ChatControlViewModel(_serviceManager));
-                this.ViewModels.Add(new StoreControlViewModel());
+                this.CrowdControlViewModel = new CrowdControlViewModel(_serviceManager);
+                this.ChatControlViewModel = new ChatControlViewModel(_serviceManager);
+                this.StoreControlViewModel = new StoreControlViewModel();
             }
         }
 
@@ -86,16 +88,16 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
-                foreach (var viewModel in this.ViewModels)
-                {
-                    viewModel.Dispose();
-                }
+                this.CrowdControlViewModel.Dispose();
+                this.ChatControlViewModel.Dispose();
+                this.StoreControlViewModel.Dispose();
 
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
                 _settings.Save("Config", this.Config.GetPairs());
                 _disposable.Dispose();
 
                 _serviceManager.Stop();
+                _serviceManager.Save();
                 _serviceManager.Dispose();
             }
         }

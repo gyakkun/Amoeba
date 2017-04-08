@@ -31,6 +31,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        public ReactiveCommand Tab_ClickCommand { get; private set; }
+
         public ReactiveCommand Tab_NewCategoryCommand { get; private set; }
         public ReactiveCommand Tab_NewChatCommand { get; private set; }
         public ReactiveCommand Tab_CopyCommand { get; private set; }
@@ -96,6 +98,9 @@ namespace Amoeba.Interface
                 this.Tab_SelectedItem.Subscribe((viewModel) => this.SelectChanged(viewModel)).AddTo(_disposable);
 
                 this.Messages = new ReactiveProperty<ChatMessageInfo[]>().AddTo(_disposable);
+
+                this.Tab_ClickCommand = new ReactiveCommand();
+                this.Tab_ClickCommand.Subscribe(() => this.SelectChanged(this.Tab_SelectedItem.Value)).AddTo(_disposable);
 
                 this.Tab_NewCategoryCommand = this.Tab_SelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand();
                 this.Tab_NewCategoryCommand.Subscribe(() => this.NewCategory()).AddTo(_disposable);
