@@ -15,7 +15,6 @@ using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Wpf;
-using Prism.Interactivity.InteractionRequest;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System.Collections.ObjectModel;
@@ -28,18 +27,25 @@ namespace Amoeba.Interface
     class ChatControlViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
+        private TaskManager _watchTaskManager;
 
         private Settings _settings;
 
-        private TaskManager _watchTaskManager;
-
-        public ReactiveProperty<ChatMessageInfo[]> Messages { get; private set; }
+        public ReactiveCommand Tab_NewCategoryCommand { get; private set; }
+        public ReactiveCommand Tab_NewChatCommand { get; private set; }
+        public ReactiveCommand Tab_CopyCommand { get; private set; }
+        public ReactiveCommand Tab_PasteCommand { get; private set; }
 
         public ReactiveCommand NewMessageCommand { get; private set; }
+
+        public ReactiveProperty<TreeViewModelBase> Tab_SelectedItem { get; private set; }
+
+        public ReactiveProperty<ChatMessageInfo[]> Messages { get; private set; }
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
 
         private CollectionViewSource _treeViewSource;
+        public DragAcceptDescription DragAcceptDescription { get; private set; }
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -48,84 +54,31 @@ namespace Amoeba.Interface
         {
             _serviceManager = serviceManager;
 
-            _treeViewSource = new CollectionViewSource();
-
-            {
-                var boxInfo = new ChatCategoryInfo() { Name = "Category" };
-                boxInfo.CategoryInfos.Add(new ChatCategoryInfo() { Name = "Amoeba" });
-                boxInfo.ChatInfos.Add(new ChatInfo() { });
-
-                _treeViewSource.Source = new ChatCategoryViewModel[] { new ChatCategoryViewModel(null, boxInfo) };
-            }
-
-            this.Load();
-        }
-
-        public void Load()
-        {
-            {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(CrowdControl));
-                if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
-
-                _settings = new Settings(configPath);
-                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
-            }
-
-            {
-                this.Messages = new ReactiveProperty<ChatMessageInfo[]>().AddTo(_disposable);
-
-                this.NewMessageCommand = new ReactiveCommand();
-                this.NewMessageCommand.Subscribe(() => this.NewMessage());
-            }
+            this.Init();
 
             _watchTaskManager = new TaskManager(this.WatchThread);
             _watchTaskManager.Start();
 
+            this.DragAcceptDescription = new DragAcceptDescription()
             {
-                this.DragAcceptDescription = new DragAcceptDescription();
-                this.DragAcceptDescription.DragOver += this.OnDragOver;
-                this.DragAcceptDescription.DragDrop += this.OnDragDrop;
-            }
+                Effects = DragDropEffects.Move,
+                Format = "Chat",
+            };
+            this.DragAcceptDescription.DragDrop += this.DragAcceptDescription_DragDrop;
         }
 
-        public void Save()
+        private void DragAcceptDescription_DragDrop(DragAcceptEventArgs args)
         {
-            _settings.Save("Config", this.Config.GetPairs());
-        }
+            var source = args.Source as TreeViewModelBase;
+            var dest = args.Destination as TreeViewModelBase;
+            if (source == null || dest == null) return;
 
-        private void WatchThread(CancellationToken token)
-        {
-            var tag = new Tag("Amoeba", Sha256.ComputeHash("Amoeba"));
+            if (dest.GetAncestors().Contains(source)) return;
 
-            for (;;)
+            if (dest.TryAdd(source))
             {
-                if (token.WaitHandle.WaitOne(1000)) return;
-                {
-                    var infos = new List<ChatMessageInfo>();
-
-                    foreach (var message in _serviceManager.GetChatMessages(tag).Result)
-                    {
-                        infos.Add(new ChatMessageInfo() { Message = message });
-                    }
-
-                    infos.Sort((x, y) => x.Message.CreationTime.CompareTo(y.Message.CreationTime));
-
-                    if (infos.Count != 0)
-                    {
-                        this.Messages.Value = infos.ToArray();
-                    }
-                }
+                source.Parent.TryRemove(source);
             }
-        }
-
-        public void CopyLocation()
-        {
-
-        }
-
-        public void PasteLocation()
-        {
-            _serviceManager.SetCrowdLocations(Clipboard.GetLocations());
         }
 
         public ICollectionView TreeView
@@ -136,47 +89,145 @@ namespace Amoeba.Interface
             }
         }
 
-        public DragAcceptDescription DragAcceptDescription { get; private set; }
-
-        private void OnDragOver(DragEventArgs args)
+        public void Init()
         {
-            if (args.AllowedEffects.HasFlag(DragDropEffects.Move))
             {
-                args.Effects = DragDropEffects.Move;
+                this.Tab_SelectedItem = new ReactiveProperty<TreeViewModelBase>();
+                this.Tab_SelectedItem.Subscribe((viewModel) => this.SelectChanged(viewModel)).AddTo(_disposable);
+
+                this.Messages = new ReactiveProperty<ChatMessageInfo[]>().AddTo(_disposable);
+
+                this.Tab_NewCategoryCommand = this.Tab_SelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand();
+                this.Tab_NewCategoryCommand.Subscribe(() => this.NewCategory()).AddTo(_disposable);
+
+                this.Tab_NewChatCommand = this.Tab_SelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand();
+                this.Tab_NewChatCommand.Subscribe(() => this.NewChat()).AddTo(_disposable);
+
+                this.NewMessageCommand = this.Tab_SelectedItem.Select(n => n is ChatViewModel).ToReactiveCommand();
+                this.NewMessageCommand.Subscribe(() => this.NewMessage()).AddTo(_disposable);
             }
-        }
 
-        void OnDragDrop(DragEventArgs args)
-        {
-            var target = this.GetDropDestination((UIElement)args.OriginalSource);
-            if (target == null) return;
-
-            if (args.Data.GetDataPresent("Store"))
             {
-                var source = args.Data.GetData("Store") as TreeViewModelBase;
-                if (source == null) return;
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(ChatControl));
+                if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
-                if (target.GetAncestors().Contains(source)) return;
+                _settings = new Settings(configPath);
+                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
 
-                if (target.TryAdd(source))
                 {
-                    source.Parent.TryRemove(source);
+                    var chatCategoryInfo = _settings.Load("Category", () =>
+                    {
+                        var categoryInfo = new ChatCategoryInfo() { Name = "Category", IsExpanded = true };
+                        categoryInfo.ChatInfos.Add(new ChatInfo() { Tag = new Tag("Amoeba", Sha256.ComputeHash("Amoeba")) });
+
+                        return categoryInfo;
+                    });
+
+                    _treeViewSource = new CollectionViewSource();
+                    _treeViewSource.Source = new ChatCategoryViewModel[] { new ChatCategoryViewModel(null, chatCategoryInfo) };
                 }
             }
         }
 
-        private TreeViewModelBase GetDropDestination(UIElement originalSource)
+        private void SelectChanged(TreeViewModelBase viewModel)
         {
-            var element = originalSource.FindAncestor<TreeViewItem>();
-            if (element == null) return null;
+            if (viewModel is ChatCategoryViewModel chatCategoryViewModel)
+            {
+                this.Messages.Value = Array.Empty<ChatMessageInfo>();
+            }
+            else if (viewModel is ChatViewModel chatViewModel)
+            {
+                this.Messages.Value = chatViewModel.Model.Messages.ToArray();
+            }
+        }
 
-            return element.DataContext as TreeViewModelBase;
+        private void WatchThread(CancellationToken token)
+        {
+            for (;;)
+            {
+                var chatInfos = new List<ChatInfo>();
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    var chatCategoryInfos = new List<ChatCategoryInfo>(((ChatCategoryViewModel[])_treeViewSource.Source).Select(n => n.Model));
+
+                    for (int i = 0; i < chatCategoryInfos.Count; i++)
+                    {
+                        chatCategoryInfos.AddRange(chatCategoryInfos[i].CategoryInfos);
+                        chatInfos.AddRange(chatCategoryInfos[i].ChatInfos);
+                    }
+                });
+
+                foreach (var chatInfo in chatInfos)
+                {
+                    if (token.IsCancellationRequested) return;
+
+                    var messages = new HashSet<MulticastMessage<ChatMessage>>(_serviceManager.GetChatMessages(chatInfo.Tag).Result);
+
+                    lock (chatInfo.Messages.LockObject)
+                    {
+                        messages.ExceptWith(chatInfo.Messages.Select(n => n.Message));
+
+                        foreach (var chatMessageInfo in chatInfo.Messages)
+                        {
+                            chatMessageInfo.State |= ~ChatMessageState.New;
+                        }
+
+                        foreach (var message in messages)
+                        {
+                            chatInfo.Messages.Add(new ChatMessageInfo() { Message = message, State = ChatMessageState.New });
+                        }
+
+                        chatInfo.Messages.Sort((x, y) => x.Message.CreationTime.CompareTo(y.Message.CreationTime));
+                    }
+                }
+
+                if (token.WaitHandle.WaitOne(1000 * 30)) return;
+            }
+        }
+
+        private void NewCategory()
+        {
+            var viewModel = new NameEditWindowViewModel();
+            viewModel.OkEvent += (s, e) =>
+            {
+                var chatCategoryViewModel = this.Tab_SelectedItem.Value as ChatCategoryViewModel;
+                if (chatCategoryViewModel == null) return;
+
+                chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = e.Name });
+            };
+
+            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<NameEditWindowViewModel>>()
+                .Publish(viewModel);
+        }
+
+        private void NewChat()
+        {
+            var viewModel = new NameEditWindowViewModel();
+            viewModel.OkEvent += (s, e) =>
+            {
+                var chatCategoryViewModel = this.Tab_SelectedItem.Value as ChatCategoryViewModel;
+                if (chatCategoryViewModel == null) return;
+
+                var random = new Random();
+                var id = random.GetBytes(32);
+
+                chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = new Tag(e.Name, id) });
+            };
+
+            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<NameEditWindowViewModel>>()
+                .Publish(viewModel);
         }
 
         private void NewMessage()
         {
+            var chatViewModel = this.Tab_SelectedItem.Value as ChatViewModel;
+            if (chatViewModel == null) return;
+
+            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, _serviceManager);
+
             MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
-                .Publish(new ChatMessageEditWindowViewModel(_serviceManager));
+                .Publish(viewModel);
         }
 
         protected override void Dispose(bool disposing)
@@ -189,7 +240,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                this.Save();
+                _settings.Save("Config", this.Config.GetPairs());
 
                 _disposable.Dispose();
             }

@@ -52,7 +52,7 @@ namespace Amoeba.Interface
             return default(T);
         }
 
-        public static void Save(Stream stream, object value)
+        public static void Save<T>(Stream stream, T value)
         {
             try
             {

@@ -1,35 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Utilities;
 using Omnius.Wpf;
-using Prism.Interactivity.InteractionRequest;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using Omnius.Utilities;
 
 namespace Amoeba.Interface
 {
     class CrowdControlViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
+        private TaskManager _watchTaskManager;
 
         private Settings _settings;
-
-        private TaskManager _watchTaskManager;
 
         public ReactiveCommand CopyLocationCommand { get; private set; }
         public ReactiveCommand PasteLocationCommand { get; private set; }
@@ -46,10 +37,13 @@ namespace Amoeba.Interface
         {
             _serviceManager = serviceManager;
 
-            this.Load();
+            this.Init();
+
+            _watchTaskManager = new TaskManager(this.WatchThread);
+            _watchTaskManager.Start();
         }
 
-        public void Load()
+        public void Init()
         {
             {
                 this.CopyLocationCommand = new ReactiveCommand().AddTo(_disposable);
@@ -66,14 +60,6 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
             }
-
-            _watchTaskManager = new TaskManager(this.WatchThread);
-            _watchTaskManager.Start();
-        }
-
-        public void Save()
-        {
-            _settings.Save("Config", this.Config.GetPairs());
         }
 
         private void WatchThread(CancellationToken token)
@@ -166,8 +152,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                this.Save();
-
+                _settings.Save("Config", this.Config.GetPairs());
                 _disposable.Dispose();
             }
         }

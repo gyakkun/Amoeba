@@ -22,23 +22,21 @@
                 MinWidth="120"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                SelectedIndex="0">
+                SelectedIndex="{Binding Path=Config.TabListBox_SelectedIndex, FallbackValue=0}">
             <ListBoxItem
                     Name="ConnectionListBoxItem"
                     Height="32"
                     Padding="16,8"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="{Binding Path=CrowdControl_Connection, Source={StaticResource Languages}}"
-                    IsSelected="True" />
+                    Content="{Binding Path=CrowdControl_Connection, Source={StaticResource Languages}}" />
             <ListBoxItem
                     Name="StateListBoxItem"
                     Height="32"
                     Padding="16,8"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="{Binding Path=CrowdControl_State, Source={StaticResource Languages}}"
-                    IsSelected="True" />
+                    Content="{Binding Path=CrowdControl_State, Source={StaticResource Languages}}" />
         </ListBox>
 
         <ContentControl Grid.Column="1" Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -53,7 +51,7 @@
                         VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <ListView.Resources>
                         <DataTemplate x:Key="CellTemplate_Type">
-                            <TextBlock Text="{Binding Path=Value.Type, Mode=OneWay}" />
+                            <TextBlock Text="{Binding Path=Value.Type, Mode=OneWay, Converter={StaticResource SessionTypeToStringConverter}}" />
                         </DataTemplate>
                         <DataTemplate x:Key="CellTemplate_Id">
                             <TextBlock Text="{Binding Path=Value.Id, Mode=OneWay, Converter={StaticResource BytesToHexStringConverter}}" />
@@ -204,7 +202,7 @@
                                                 Header="{Binding Path=CrowdControl_Name, Source={StaticResource Languages}}" />
                                         <GridViewColumn
                                                 Width="{Binding Path=Config.StateListView_Value_Width, Mode=TwoWay, FallbackValue=120}"
-                                                omnius:GridViewSortHelper.PropertyName="Valu"
+                                                omnius:GridViewSortHelper.PropertyName="Value"
                                                 CellTemplate="{StaticResource CellTemplate_Value}"
                                                 Header="{Binding Path=CrowdControl_Value, Source={StaticResource Languages}}" />
                                     </GridView>

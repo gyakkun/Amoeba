@@ -67,21 +67,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Sources\Mvvm\Converters\ObjectToInfoStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\SessionTypeToStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\TagToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\CustomAvalonEditHelperBase.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\AvalonEditChatMessagesHelper.cs" />
     <Compile Include="Sources\Mvvm\Models\Chat\ChatMessageState.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
+    <Compile Include="Sources\Utilities\Inspect.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />
+    <Compile Include="Sources\Utilities\MessageConverter.cs" />
     <Compile Include="Sources\Windows\Chat\ChatControl.xaml.cs">
       <DependentUpon>ChatControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Chat\ChatControlViewModel.cs" />
     <Compile Include="Sources\Windows\Chat\Items\ChatCategoryViewModel.cs" />
     <Compile Include="Sources\Windows\Chat\Items\ChatViewModel.cs" />
-    <Compile Include="Sources\Windows\Chat\ChatMessageEditWindow.xaml.cs">
+    <Compile Include="Sources\Windows\Chat\Windows\ChatMessageEditWindow.xaml.cs">
       <DependentUpon>ChatMessageEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Chat\ChatMessageEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Chat\Windows\ChatMessageEditWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Options\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
@@ -99,7 +104,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Chat\ChatMessageEditWindow.xaml">
+    <Page Include="Sources\Windows\Chat\Windows\ChatMessageEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -128,6 +133,10 @@
       <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Utilities\NameEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Utilities\NameEditWindow.xaml.cs">
+      <DependentUpon>NameEditWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <AutoGen>True</AutoGen>
@@ -146,6 +155,10 @@
     <Page Include="Resources\Themes\Amoeba.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\Windows\Utilities\NameEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

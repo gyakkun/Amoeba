@@ -16,8 +16,5 @@ namespace Amoeba.Interface
 
         [EnumMember(Value = "New")]
         New = 0x01,
-
-        [EnumMember(Value = "Trusted")]
-        Trusted = 0x02,
     }
 }

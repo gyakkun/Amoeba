@@ -1,22 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Wpf;
-using Prism.Interactivity.InteractionRequest;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
@@ -31,7 +19,7 @@ namespace Amoeba.Interface
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
-        public ServiceOptions Options { get; } = new ServiceOptions();
+        public ServiceOptionsViewModel Options { get; } = new ServiceOptionsViewModel();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -40,10 +28,10 @@ namespace Amoeba.Interface
         {
             _serviceManager = serviceManager;
 
-            this.Load();
+            this.Init();
         }
 
-        public void Load()
+        public void Init()
         {
             {
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
@@ -58,6 +46,12 @@ namespace Amoeba.Interface
                 this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
             }
 
+            this.GetOptions();
+        }
+
+        public void GetOptions()
+        {
+            // Tcp
             {
                 var config = _serviceManager.TcpConnectionConfig;
                 this.Options.Tcp.ProxyUri = config.ProxyUri;
@@ -68,7 +62,7 @@ namespace Amoeba.Interface
             }
         }
 
-        public void Save()
+        public void SetOpitons()
         {
             // Tcp
             {
@@ -80,9 +74,6 @@ namespace Amoeba.Interface
                 _serviceManager.SetTcpConnectionConfig(
                     new TcpConnectionConfig(type, tcp.ProxyUri, tcp.Ipv4Port, tcp.Ipv6Port));
             }
-
-            _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-            _settings.Save("Config", this.Config.GetPairs());
         }
 
         protected override void Dispose(bool disposing)
@@ -92,8 +83,10 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
-                this.Save();
+                this.SetOpitons();
 
+                _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
+                _settings.Save("Config", this.Config.GetPairs());
                 _disposable.Dispose();
             }
         }

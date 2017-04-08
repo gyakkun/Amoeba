@@ -8,6 +8,7 @@ using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Amoeba.Service;
+using System.Reactive.Linq;
 
 namespace Amoeba.Interface
 {
@@ -23,7 +24,7 @@ namespace Amoeba.Interface
         {
             this.Model = model;
 
-            //this.Name = model.ToReactivePropertyAsSynchronized(n => n.Tag.Name).AddTo(_disposable);
+            this.Name = model.ObserveProperty(n => n.Tag).Select(n => MessageConverter.ToTagString(n)).ToReactiveProperty().AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Chat"; } }

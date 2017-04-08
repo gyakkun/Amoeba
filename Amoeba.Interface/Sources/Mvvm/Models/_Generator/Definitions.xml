@@ -2,21 +2,18 @@
   <Import Namespace="System.Collections.ObjectModel" />
   <Import Namespace="System.Windows" />
   <Import Namespace="Amoeba.Service" />
-
-  <Class Name="ChatMessageInfo">
-    <Property Type="ChatMessageState" Name="State" IsEditable="true" />
-    <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
-  </Class>
+  <Import Namespace="Omnius" />
+  <Import Namespace="Omnius.Collections" />
 
   <Class Name="InfoStateViewModel">
     <Property Type="string" Name="Location" IsEditable="true" />
   </Class>
 
-  <Class Name="ServiceOptions">
-    <Property Type="ServiceTcpOptions" Name="Tcp" />
+  <Class Name="ServiceOptionsViewModel">
+    <Property Type="ServiceTcpOptionsViewModel" Name="Tcp" />
   </Class>
 
-  <Class Name="ServiceTcpOptions">
+  <Class Name="ServiceTcpOptionsViewModel">
     <Property Type="string" Name="ProxyUri" IsEditable="true" />
     <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
     <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
@@ -33,7 +30,12 @@
 
   <Class Name="ChatInfo">
     <Property Type="Tag" Name="Tag" IsEditable="true" />
-    <Property Type="List(MulticastMessage(ChatMessage))" Name="Messages" />
+    <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
+  </Class>
+
+  <Class Name="ChatMessageInfo">
+    <Property Type="ChatMessageState" Name="State" IsEditable="true" />
+    <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
   </Class>
 
   <Class Name="StoreCategoryInfo">

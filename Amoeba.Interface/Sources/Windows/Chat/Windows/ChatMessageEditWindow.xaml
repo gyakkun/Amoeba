@@ -8,7 +8,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
-        x:Name="ChatMessageEditWindows"
         Title="ChatMessageEditWindow"
         x:ClassModifier="internal"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -37,6 +36,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Command="{Binding Path=OkCommand}"
-                Content="Ok" />
+                Content="Ok"
+                IsDefault="True" />
     </Grid>
 </omnius:RestorableWindow>

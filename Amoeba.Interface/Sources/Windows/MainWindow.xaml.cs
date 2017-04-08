@@ -32,22 +32,30 @@ namespace Amoeba.Interface
 
         public MainWindow()
         {
-            this.DataContext = new MainWindowViewModel();
+            var viewModel = new MainWindowViewModel();
+
+            this.DataContext = viewModel;
 
             InitializeComponent();
 
             this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
 
             MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<OptionsWindowViewModel>>()
-                .Subscribe(viewModel =>
+                .Subscribe(vm =>
                 {
-                    var window = new OptionsWindow(viewModel);
+                    var window = new OptionsWindow(vm);
                     window.ShowDialog();
                 }).AddTo(_disposable);
             MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
-                .Subscribe(viewModel =>
+                .Subscribe(vm =>
                 {
-                    var window = new ChatMessageEditWindow(viewModel);
+                    var window = new ChatMessageEditWindow(vm);
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<NameEditWindowViewModel>>()
+                .Subscribe(vm =>
+                {
+                    var window = new NameEditWindow(vm);
                     window.ShowDialog();
                 }).AddTo(_disposable);
         }

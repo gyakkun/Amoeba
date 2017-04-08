@@ -1,0 +1,43 @@
+<omnius:RestorableWindow
+        x:Class="Amoeba.Interface.NameEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:Amoeba.Interface"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+        Title="NameEditWindow"
+        x:ClassModifier="internal"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        SizeToContent="Height"
+        TextElement.FontSize="13"
+        TextElement.FontWeight="Regular"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
+        mc:Ignorable="d">
+    <Grid>
+        <TextBox
+                Height="32"
+                Margin="0,0,0,64"
+                VerticalAlignment="Top"
+                AcceptsReturn="True"
+                AcceptsTab="True"
+                AutoWordSelection="True"
+                Text="{Binding Path=Name.Value}"
+                TextWrapping="Wrap" />
+        <Button
+                Width="120"
+                Height="32"
+                Margin="624,48,16,16"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Command="{Binding Path=OkCommand}"
+                Content="Ok"
+                IsDefault="True" />
+    </Grid>
+</omnius:RestorableWindow>

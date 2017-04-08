@@ -1,25 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
-using Prism.Interactivity.InteractionRequest;
+using Omnius.Wpf;
+using Prism.Events;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Prism.Events;
-using Omnius.Wpf;
 
 namespace Amoeba.Interface
 {
@@ -29,10 +20,10 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
-
         public ReactiveCommand<string> LanguageCommand { get; private set; }
         public ReactiveCommand OptionsCommand { get; private set; }
+
+        public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
         public ObservableCollection<ManagerBase> ViewModels { get; private set; } = new ObservableCollection<ManagerBase>();
@@ -42,10 +33,10 @@ namespace Amoeba.Interface
 
         public MainWindowViewModel()
         {
-            this.Load();
+            this.Init();
         }
 
-        public void Load()
+        public void Init()
         {
             {
                 string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
@@ -57,13 +48,13 @@ namespace Amoeba.Interface
             }
 
             {
-                this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
-
                 this.LanguageCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.LanguageCommand.Subscribe((n) => LanguagesManager.Instance.SetCurrentLanguage(n)).AddTo(_disposable);
 
                 this.OptionsCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OptionsCommand.Subscribe(() => this.Options()).AddTo(_disposable);
+
+                this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
             }
 
             {
@@ -80,12 +71,6 @@ namespace Amoeba.Interface
                 this.ViewModels.Add(new ChatControlViewModel(_serviceManager));
                 this.ViewModels.Add(new StoreControlViewModel());
             }
-        }
-
-        public void Save()
-        {
-            _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-            _settings.Save("Config", this.Config.GetPairs());
         }
 
         private void Options()
@@ -106,12 +91,12 @@ namespace Amoeba.Interface
                     viewModel.Dispose();
                 }
 
-                this.Save();
+                _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
+                _settings.Save("Config", this.Config.GetPairs());
+                _disposable.Dispose();
 
                 _serviceManager.Stop();
                 _serviceManager.Dispose();
-
-                _disposable.Dispose();
             }
         }
     }

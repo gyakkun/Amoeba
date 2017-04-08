@@ -8,59 +8,11 @@ using System.Runtime.Serialization;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Amoeba.Service;
+using Omnius;
+using Omnius.Collections;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(ChatMessageInfo))]
-    partial class ChatMessageInfo : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public ChatMessageInfo() { }
-
-        private ChatMessageState _state;
-
-        [DataMember(Name = nameof(State))]
-        public ChatMessageState State
-        {
-            get
-            {
-                return _state;
-            }
-            set
-            {
-                if (value != _state)
-                {
-                    _state = value;
-                    this.OnPropertyChanged(nameof(State));
-                }
-            }
-        }
-
-        private MulticastMessage<ChatMessage> _message;
-
-        [DataMember(Name = nameof(Message))]
-        public MulticastMessage<ChatMessage> Message
-        {
-            get
-            {
-                return _message;
-            }
-            set
-            {
-                if (value != _message)
-                {
-                    _message = value;
-                    this.OnPropertyChanged(nameof(Message));
-                }
-            }
-        }
-    }
     [DataContract(Name = nameof(InfoStateViewModel))]
     partial class InfoStateViewModel : INotifyPropertyChanged
     {
@@ -92,8 +44,8 @@ namespace Amoeba.Interface
             }
         }
     }
-    [DataContract(Name = nameof(ServiceOptions))]
-    partial class ServiceOptions : INotifyPropertyChanged
+    [DataContract(Name = nameof(ServiceOptionsViewModel))]
+    partial class ServiceOptionsViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -102,24 +54,24 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ServiceOptions() { }
+        public ServiceOptionsViewModel() { }
 
-        private ServiceTcpOptions _tcp;
+        private ServiceTcpOptionsViewModel _tcp;
 
         [DataMember(Name = nameof(Tcp))]
-        public ServiceTcpOptions Tcp
+        public ServiceTcpOptionsViewModel Tcp
         {
             get
             {
                 if (_tcp == null)
-                    _tcp = new ServiceTcpOptions();
+                    _tcp = new ServiceTcpOptionsViewModel();
 
                 return _tcp;
             }
         }
     }
-    [DataContract(Name = nameof(ServiceTcpOptions))]
-    partial class ServiceTcpOptions : INotifyPropertyChanged
+    [DataContract(Name = nameof(ServiceTcpOptionsViewModel))]
+    partial class ServiceTcpOptionsViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -128,7 +80,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ServiceTcpOptions() { }
+        public ServiceTcpOptionsViewModel() { }
 
         private string _proxyUri;
 
@@ -334,17 +286,67 @@ namespace Amoeba.Interface
             }
         }
 
-        private List<MulticastMessage<ChatMessage>> _messages;
+        private LockedList<ChatMessageInfo> _messages;
 
         [DataMember(Name = nameof(Messages))]
-        public List<MulticastMessage<ChatMessage>> Messages
+        public LockedList<ChatMessageInfo> Messages
         {
             get
             {
                 if (_messages == null)
-                    _messages = new List<MulticastMessage<ChatMessage>>();
+                    _messages = new LockedList<ChatMessageInfo>();
 
                 return _messages;
+            }
+        }
+    }
+    [DataContract(Name = nameof(ChatMessageInfo))]
+    partial class ChatMessageInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ChatMessageInfo() { }
+
+        private ChatMessageState _state;
+
+        [DataMember(Name = nameof(State))]
+        public ChatMessageState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                if (value != _state)
+                {
+                    _state = value;
+                    this.OnPropertyChanged(nameof(State));
+                }
+            }
+        }
+
+        private MulticastMessage<ChatMessage> _message;
+
+        [DataMember(Name = nameof(Message))]
+        public MulticastMessage<ChatMessage> Message
+        {
+            get
+            {
+                return _message;
+            }
+            set
+            {
+                if (value != _message)
+                {
+                    _message = value;
+                    this.OnPropertyChanged(nameof(Message));
+                }
             }
         }
     }

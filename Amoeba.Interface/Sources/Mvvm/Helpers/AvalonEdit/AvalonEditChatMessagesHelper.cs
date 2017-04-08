@@ -92,15 +92,9 @@ namespace Amoeba.Interface
         {
             var document = new StringBuilder();
             var settings = new List<CustomElementSetting>();
-            var trustSignatures = new HashSet<Signature>();
 
             foreach (var target in collection)
             {
-                if (target.State.HasFlag(ChatMessageState.Trusted))
-                {
-                    trustSignatures.Add(target.Message.AuthorSignature);
-                }
-
                 int startOffset = document.Length;
 
                 {
@@ -121,7 +115,7 @@ namespace Amoeba.Interface
                         settings.Add(new CustomElementSetting("Signature", document.Length, item3.Length));
                         document.Append(item3);
 
-                        if (!target.State.HasFlag(ChatMessageState.Trusted) && target.Message.Cost != null)
+                        if (!Inspect.ContainTrustSignature(target.Message.AuthorSignature) && target.Message.Cost != null)
                         {
                             document.Append(" +");
                             document.Append(target.Message.Cost.Value);
@@ -167,7 +161,7 @@ namespace Amoeba.Interface
 
             textEditor.Document.Text = document.ToString();
 
-            var elementGenerator = new CustomElementGenerator(trustSignatures, settings);
+            var elementGenerator = new CustomElementGenerator(settings);
             elementGenerator.SelectEvent += (CustomElementRange range) => textEditor.Select(range.Start, range.End - range.Start);
             elementGenerator.ClickEvent += (string text) =>
             {
@@ -191,12 +185,10 @@ namespace Amoeba.Interface
 
         class CustomElementGenerator : AbstractCustomElementGenerator
         {
-            private HashSet<Signature> _trustSignatures = new HashSet<Signature>();
-
-            public CustomElementGenerator(IEnumerable<Signature> trustSignatures, IEnumerable<CustomElementSetting> settings)
+            public CustomElementGenerator(IEnumerable<CustomElementSetting> settings)
                 : base(settings)
             {
-                _trustSignatures.UnionWith(trustSignatures);
+
             }
 
             public override VisualLineElement ConstructElement(int offset)
@@ -226,7 +218,7 @@ namespace Amoeba.Interface
                     {
                         Brush brush;
 
-                        if (_trustSignatures.Contains(Signature.Parse(result.Value)))
+                        if (Inspect.ContainTrustSignature(Signature.Parse(result.Value)))
                         {
                             brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(AmoebaEnvironment.Config.Color.Message_Trust));
                         }

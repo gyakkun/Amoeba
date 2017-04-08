@@ -151,7 +151,7 @@ namespace Amoeba.Interface
             {
                 var list = new List<Location>();
 
-                foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (string item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     try
                     {
@@ -182,7 +182,7 @@ namespace Amoeba.Interface
         {
             lock (_thisLock)
             {
-                foreach (var item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (string item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (item.StartsWith("Tag:")) return true;
                 }

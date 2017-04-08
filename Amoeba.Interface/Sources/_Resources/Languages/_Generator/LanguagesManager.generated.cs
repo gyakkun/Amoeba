@@ -12,6 +12,20 @@ namespace Amoeba.Interface
         public string Global_DateTime_StringFormat { get { return this.Translate("Global_DateTime_StringFormat"); } }
         public string Languages_English { get { return this.Translate("Languages_English"); } }
         public string Languages_Japanese { get { return this.Translate("Languages_Japanese"); } }
+        public string SessionType_Connect { get { return this.Translate("SessionType_Connect"); } }
+        public string SessionType_Accept { get { return this.Translate("SessionType_Accept"); } }
+        public string Tag_Name { get { return this.Translate("Tag_Name"); } }
+        public string Tag_Id { get { return this.Translate("Tag_Id"); } }
+        public string Seed_Name { get { return this.Translate("Seed_Name"); } }
+        public string Seed_Signature { get { return this.Translate("Seed_Signature"); } }
+        public string Seed_Length { get { return this.Translate("Seed_Length"); } }
+        public string Seed_Keywords { get { return this.Translate("Seed_Keywords"); } }
+        public string Seed_CreationTime { get { return this.Translate("Seed_CreationTime"); } }
+        public string Seed_Comment { get { return this.Translate("Seed_Comment"); } }
+        public string Box_Name { get { return this.Translate("Box_Name"); } }
+        public string Box_Signature { get { return this.Translate("Box_Signature"); } }
+        public string Box_CreationTime { get { return this.Translate("Box_CreationTime"); } }
+        public string Box_Comment { get { return this.Translate("Box_Comment"); } }
         public string MainWindow_Crowd { get { return this.Translate("MainWindow_Crowd"); } }
         public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }

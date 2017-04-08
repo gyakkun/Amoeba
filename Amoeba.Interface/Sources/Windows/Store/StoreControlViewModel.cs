@@ -1,21 +1,16 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using Omnius.Wpf;
-using Reactive.Bindings;
 using Omnius.Base;
+using Omnius.Wpf;
 
 namespace Amoeba.Interface
 {
     class StoreControlViewModel : ManagerBase
     {
         private CollectionViewSource _treeViewSource;
+        public DragAcceptDescription DragAcceptDescription { get; private set; }
 
         private volatile bool _disposed;
 
@@ -35,7 +30,8 @@ namespace Amoeba.Interface
             }
 
             this.DragAcceptDescription = new DragAcceptDescription();
-            this.DragAcceptDescription.DragOver += this.OnDragOver;
+            this.DragAcceptDescription.Effects = DragDropEffects.Move;
+            this.DragAcceptDescription.Format = "Store";
             this.DragAcceptDescription.DragDrop += this.OnDragDrop;
         }
 
@@ -47,41 +43,18 @@ namespace Amoeba.Interface
             }
         }
 
-        public DragAcceptDescription DragAcceptDescription { get; private set; }
-
-        private void OnDragOver(DragEventArgs args)
+        void OnDragDrop(DragAcceptEventArgs args)
         {
-            if (args.AllowedEffects.HasFlag(DragDropEffects.Move))
+            var source = args.Source as TreeViewModelBase;
+            var dest = args.Destination as TreeViewModelBase;
+            if (source == null || dest == null) return;
+
+            if (dest.GetAncestors().Contains(source)) return;
+
+            if (dest.TryAdd(source))
             {
-                args.Effects = DragDropEffects.Move;
+                source.Parent.TryRemove(source);
             }
-        }
-
-        void OnDragDrop(DragEventArgs args)
-        {
-            var target = this.GetDropDestination((UIElement)args.OriginalSource);
-            if (target == null) return;
-
-            if (args.Data.GetDataPresent("Store"))
-            {
-                var source = args.Data.GetData("Store") as TreeViewModelBase;
-                if (source == null) return;
-
-                if (target.GetAncestors().Contains(source)) return;
-
-                if (target.TryAdd(source))
-                {
-                    source.Parent.TryRemove(source);
-                }
-            }
-        }
-
-        private TreeViewModelBase GetDropDestination(UIElement originalSource)
-        {
-            var element = originalSource.FindAncestor<TreeViewItem>();
-            if (element == null) return null;
-
-            return element.DataContext as TreeViewModelBase;
         }
 
         protected override void Dispose(bool disposing)

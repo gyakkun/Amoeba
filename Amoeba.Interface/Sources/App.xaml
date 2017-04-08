@@ -26,6 +26,10 @@
             <omnius:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
             <omnius:ConditionalValueConverter x:Key="ConditionalValueConverter" />
             <omnius:UshortToStringConverter x:Key="UshortToStringConverter" />
+            <omnius:CompositeCollectionConverter x:Key="CompositeCollectionConverter" />
+            <local:ObjectToInfoStringConverter x:Key="ObjectToInfoStringConverter" />
+            <local:SessionTypeToStringConverter x:Key="SessionTypeToStringConverter" />
+            <local:TagToStringConverter x:Key="TagToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

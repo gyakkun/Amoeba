@@ -14,7 +14,7 @@
         mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="{Binding Path=Config.TabColumnWidth, Mode=TwoWay, FallbackValue=120}" />
+            <ColumnDefinition Width="{Binding Path=Config.TabColumnWidth, Mode=TwoWay, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200}" />
             <ColumnDefinition Width="4" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -24,7 +24,19 @@
                 AllowDrop="True"
                 ItemsSource="{Binding TreeView}">
             <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local:ChatCategoryViewModel}" ItemsSource="{Binding Path=Categories, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Name.Value}">
+                <HierarchicalDataTemplate DataType="{x:Type local:ChatCategoryViewModel}">
+                    <HierarchicalDataTemplate.ItemsSource>
+                        <MultiBinding Converter="{StaticResource CompositeCollectionConverter}">
+                            <Binding
+                                    Converter="{StaticResource SortedCollectionConverter}"
+                                    ConverterParameter="Name.Value"
+                                    Path="Categories" />
+                            <Binding
+                                    Converter="{StaticResource SortedCollectionConverter}"
+                                    ConverterParameter="Name.Value"
+                                    Path="Chats" />
+                        </MultiBinding>
+                    </HierarchicalDataTemplate.ItemsSource>
                     <TextBlock Text="{Binding Path=Name.Value}">
                         <i:Interaction.Behaviors>
                             <omnius:DragStartBehavior AllowedEffects="Move" DragDropData="{Binding}" />
@@ -40,8 +52,60 @@
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
             <i:Interaction.Behaviors>
+                <omnius:IgnoreRequestBringIntoViewBehavior />
                 <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
+                <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=Tab_SelectedItem.Value}" />
             </i:Interaction.Behaviors>
+            <TreeView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value}" />
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value}" />
+                    <Setter Property="omnius:SupplementaryInteraction.Behaviors">
+                        <Setter.Value>
+                            <omnius:Behaviors>
+                                <omnius:IgnoreRequestBringIntoViewBehavior />
+                            </omnius:Behaviors>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                            Command="{Binding Path=Tab_NewCategoryCommand}"
+                            Header="New category"
+                            InputGestureText="Ctrl+S">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Play" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                            Command="{Binding Path=Tab_NewChatCommand}"
+                            Header="New chat"
+                            InputGestureText="Ctrl+T">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Stop" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem
+                            Command="{Binding Path=Tab_CopyCommand}"
+                            Header="Copy"
+                            InputGestureText="Ctrl+E">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ExitToApp" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                            Command="{Binding Path=Tab_PasteCommand}"
+                            Header="Paste"
+                            InputGestureText="Ctrl+E">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ExitToApp" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </TreeView.ContextMenu>
         </TreeView>
 
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />

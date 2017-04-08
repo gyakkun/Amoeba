@@ -6,6 +6,24 @@
   <Property Name="Languages_English" Value="English" />
   <Property Name="Languages_Japanese" Value="Japanese" />
 
+  <Property Name="SessionType_Connect" Value="Connect" />
+  <Property Name="SessionType_Accept" Value="Accept" />
+
+  <Property Name="Tag_Name" Value="Name" />
+  <Property Name="Tag_Id" Value="ID" />
+
+  <Property Name="Seed_Name" Value="Name" />
+  <Property Name="Seed_Signature" Value="Signature" />
+  <Property Name="Seed_Length" Value="Length" />
+  <Property Name="Seed_Keywords" Value="Keywords" />
+  <Property Name="Seed_CreationTime" Value="Creation time" />
+  <Property Name="Seed_Comment" Value="Comment" />
+
+  <Property Name="Box_Name" Value="Name" />
+  <Property Name="Box_Signature" Value="Signature" />
+  <Property Name="Box_CreationTime" Value="Creation time" />
+  <Property Name="Box_Comment" Value="Comment" />
+  
   <Property Name="MainWindow_Crowd" Value="Crowd" />
   <Property Name="MainWindow_Chat" Value="Chat" />
   <Property Name="MainWindow_Store" Value="Store" />
