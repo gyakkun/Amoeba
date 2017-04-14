@@ -14,7 +14,7 @@ namespace Amoeba.Interface
 {
     static class MessageConverter
     {
-        public static string ToTagString(Tag tag)
+        public static string ToString(Tag tag)
         {
             if (tag.Name == null || tag.Id == null) return null;
 

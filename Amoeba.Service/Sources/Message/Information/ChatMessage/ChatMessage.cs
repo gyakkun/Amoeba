@@ -63,7 +63,7 @@ namespace Amoeba.Service
 
         public override int GetHashCode()
         {
-            return this.Comment.GetHashCode();
+            return this.Comment?.GetHashCode() ?? 0;
         }
 
         public override bool Equals(object obj)

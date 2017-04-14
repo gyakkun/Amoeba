@@ -106,7 +106,7 @@ foreach(var c in classInfos)
             }
             set
             {
-                if (value != <#= generatedFieldName #>)
+                if (<#= generatedFieldName #> != value)
                 {
                     <#= generatedFieldName #> = value;
                     this.OnPropertyChanged(nameof(<#= p.Name #>));

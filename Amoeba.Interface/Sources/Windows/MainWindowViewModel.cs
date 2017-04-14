@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Security;
 using Omnius.Wpf;
 using Prism.Events;
 using Reactive.Bindings;
@@ -26,6 +27,7 @@ namespace Amoeba.Interface
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
+
         public CrowdControlViewModel CrowdControlViewModel { get; private set; }
         public ChatControlViewModel ChatControlViewModel { get; private set; }
         public StoreControlViewModel StoreControlViewModel { get; private set; }
@@ -41,6 +43,15 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
+                SettingsManager.Instance.Load();
+
+                {
+                    if(SettingsManager.Instance.DigitalSignature == null)
+                    {
+                        SettingsManager.Instance.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256);
+                    }
+                }
+
                 string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
@@ -99,6 +110,8 @@ namespace Amoeba.Interface
                 _serviceManager.Stop();
                 _serviceManager.Save();
                 _serviceManager.Dispose();
+
+                SettingsManager.Instance.Save();
             }
         }
     }

@@ -10,11 +10,12 @@ using System.Windows;
 using Amoeba.Service;
 using Omnius;
 using Omnius.Collections;
+using Omnius.Security;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(InfoStateViewModel))]
-    partial class InfoStateViewModel : INotifyPropertyChanged
+    [DataContract(Name = nameof(NameEditInfo))]
+    partial class NameEditInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -23,7 +24,38 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public InfoStateViewModel() { }
+        public NameEditInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+    }
+    [DataContract(Name = nameof(CrowdStateInfo))]
+    partial class CrowdStateInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public CrowdStateInfo() { }
 
         private string _location;
 
@@ -36,7 +68,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _location)
+                if (_location != value)
                 {
                     _location = value;
                     this.OnPropertyChanged(nameof(Location));
@@ -44,8 +76,8 @@ namespace Amoeba.Interface
             }
         }
     }
-    [DataContract(Name = nameof(ServiceOptionsViewModel))]
-    partial class ServiceOptionsViewModel : INotifyPropertyChanged
+    [DataContract(Name = nameof(ServiceOptionsInfo))]
+    partial class ServiceOptionsInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -54,24 +86,38 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ServiceOptionsViewModel() { }
+        public ServiceOptionsInfo() { }
 
-        private ServiceTcpOptionsViewModel _tcp;
+        private ServiceTcpOptionsInfo _tcp;
 
         [DataMember(Name = nameof(Tcp))]
-        public ServiceTcpOptionsViewModel Tcp
+        public ServiceTcpOptionsInfo Tcp
         {
             get
             {
                 if (_tcp == null)
-                    _tcp = new ServiceTcpOptionsViewModel();
+                    _tcp = new ServiceTcpOptionsInfo();
 
                 return _tcp;
             }
         }
+
+        private ServiceAccountOptionsInfo _account;
+
+        [DataMember(Name = nameof(Account))]
+        public ServiceAccountOptionsInfo Account
+        {
+            get
+            {
+                if (_account == null)
+                    _account = new ServiceAccountOptionsInfo();
+
+                return _account;
+            }
+        }
     }
-    [DataContract(Name = nameof(ServiceTcpOptionsViewModel))]
-    partial class ServiceTcpOptionsViewModel : INotifyPropertyChanged
+    [DataContract(Name = nameof(ServiceTcpOptionsInfo))]
+    partial class ServiceTcpOptionsInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -80,7 +126,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ServiceTcpOptionsViewModel() { }
+        public ServiceTcpOptionsInfo() { }
 
         private string _proxyUri;
 
@@ -93,7 +139,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _proxyUri)
+                if (_proxyUri != value)
                 {
                     _proxyUri = value;
                     this.OnPropertyChanged(nameof(ProxyUri));
@@ -112,7 +158,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _ipv4IsEnabled)
+                if (_ipv4IsEnabled != value)
                 {
                     _ipv4IsEnabled = value;
                     this.OnPropertyChanged(nameof(Ipv4IsEnabled));
@@ -131,7 +177,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _ipv4Port)
+                if (_ipv4Port != value)
                 {
                     _ipv4Port = value;
                     this.OnPropertyChanged(nameof(Ipv4Port));
@@ -150,7 +196,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _ipv6IsEnabled)
+                if (_ipv6IsEnabled != value)
                 {
                     _ipv6IsEnabled = value;
                     this.OnPropertyChanged(nameof(Ipv6IsEnabled));
@@ -169,10 +215,41 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _ipv6Port)
+                if (_ipv6Port != value)
                 {
                     _ipv6Port = value;
                     this.OnPropertyChanged(nameof(Ipv6Port));
+                }
+            }
+        }
+    }
+    [DataContract(Name = nameof(ServiceAccountOptionsInfo))]
+    partial class ServiceAccountOptionsInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ServiceAccountOptionsInfo() { }
+
+        private DigitalSignature _digitalSignature;
+
+        [DataMember(Name = nameof(DigitalSignature))]
+        public DigitalSignature DigitalSignature
+        {
+            get
+            {
+                return _digitalSignature;
+            }
+            set
+            {
+                if (_digitalSignature != value)
+                {
+                    _digitalSignature = value;
+                    this.OnPropertyChanged(nameof(DigitalSignature));
                 }
             }
         }
@@ -200,7 +277,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _name)
+                if (_name != value)
                 {
                     _name = value;
                     this.OnPropertyChanged(nameof(Name));
@@ -219,7 +296,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _isExpanded)
+                if (_isExpanded != value)
                 {
                     _isExpanded = value;
                     this.OnPropertyChanged(nameof(IsExpanded));
@@ -278,7 +355,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _tag)
+                if (_tag != value)
                 {
                     _tag = value;
                     this.OnPropertyChanged(nameof(Tag));
@@ -323,7 +400,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _state)
+                if (_state != value)
                 {
                     _state = value;
                     this.OnPropertyChanged(nameof(State));
@@ -342,7 +419,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _message)
+                if (_message != value)
                 {
                     _message = value;
                     this.OnPropertyChanged(nameof(Message));
@@ -373,7 +450,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _name)
+                if (_name != value)
                 {
                     _name = value;
                     this.OnPropertyChanged(nameof(Name));
@@ -392,7 +469,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _isExpanded)
+                if (_isExpanded != value)
                 {
                     _isExpanded = value;
                     this.OnPropertyChanged(nameof(IsExpanded));
@@ -451,7 +528,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _name)
+                if (_name != value)
                 {
                     _name = value;
                     this.OnPropertyChanged(nameof(Name));
@@ -470,7 +547,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _isExpanded)
+                if (_isExpanded != value)
                 {
                     _isExpanded = value;
                     this.OnPropertyChanged(nameof(IsExpanded));
@@ -489,7 +566,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _isUpdated)
+                if (_isUpdated != value)
                 {
                     _isUpdated = value;
                     this.OnPropertyChanged(nameof(IsUpdated));
@@ -534,7 +611,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _name)
+                if (_name != value)
                 {
                     _name = value;
                     this.OnPropertyChanged(nameof(Name));
@@ -553,7 +630,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _isExpanded)
+                if (_isExpanded != value)
                 {
                     _isExpanded = value;
                     this.OnPropertyChanged(nameof(IsExpanded));
@@ -612,7 +689,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _name)
+                if (_name != value)
                 {
                     _name = value;
                     this.OnPropertyChanged(nameof(Name));
@@ -631,7 +708,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _length)
+                if (_length != value)
                 {
                     _length = value;
                     this.OnPropertyChanged(nameof(Length));
@@ -650,7 +727,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _creationTime)
+                if (_creationTime != value)
                 {
                     _creationTime = value;
                     this.OnPropertyChanged(nameof(CreationTime));
@@ -669,7 +746,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (value != _metadata)
+                if (_metadata != value)
                 {
                     _metadata = value;
                     this.OnPropertyChanged(nameof(Metadata));

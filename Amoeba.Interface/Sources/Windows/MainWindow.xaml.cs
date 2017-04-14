@@ -52,12 +52,6 @@ namespace Amoeba.Interface
                     var window = new ChatMessageEditWindow(vm);
                     window.ShowDialog();
                 }).AddTo(_disposable);
-            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<NameEditWindowViewModel>>()
-                .Subscribe(vm =>
-                {
-                    var window = new NameEditWindow(vm);
-                    window.ShowDialog();
-                }).AddTo(_disposable);
         }
 
         protected override void OnClosing(CancelEventArgs e)

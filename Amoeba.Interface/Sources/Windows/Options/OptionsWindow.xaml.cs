@@ -24,6 +24,7 @@ namespace Amoeba.Interface
         public OptionsWindow(OptionsWindowViewModel viewModel)
         {
             this.DataContext = viewModel;
+            viewModel.CloseEvent += (sender, e) => this.Close();
 
             InitializeComponent();
         }
@@ -36,11 +37,6 @@ namespace Amoeba.Interface
             {
                 disposable.Dispose();
             }
-        }
-
-        private void OkButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Amoeba.Interface
         {
             this.Model = model;
 
-            this.Name = model.ObserveProperty(n => n.Tag).Select(n => MessageConverter.ToTagString(n)).ToReactiveProperty().AddTo(_disposable);
+            this.Name = model.ObserveProperty(n => n.Tag).Select(n => MessageConverter.ToString(n)).ToReactiveProperty().AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Chat"; } }

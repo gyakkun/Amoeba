@@ -4,21 +4,31 @@
   <Import Namespace="Amoeba.Service" />
   <Import Namespace="Omnius" />
   <Import Namespace="Omnius.Collections" />
+  <Import Namespace="Omnius.Security" />
 
-  <Class Name="InfoStateViewModel">
+  <Class Name="NameEditInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+  </Class>
+
+  <Class Name="CrowdStateInfo">
     <Property Type="string" Name="Location" IsEditable="true" />
   </Class>
 
-  <Class Name="ServiceOptionsViewModel">
-    <Property Type="ServiceTcpOptionsViewModel" Name="Tcp" />
+  <Class Name="ServiceOptionsInfo">
+    <Property Type="ServiceTcpOptionsInfo" Name="Tcp" />
+    <Property Type="ServiceAccountOptionsInfo" Name="Account" />
   </Class>
 
-  <Class Name="ServiceTcpOptionsViewModel">
+  <Class Name="ServiceTcpOptionsInfo">
     <Property Type="string" Name="ProxyUri" IsEditable="true" />
     <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
     <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
     <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
     <Property Type="ushort" Name="Ipv6Port" IsEditable="true" />
+  </Class>
+
+  <Class Name="ServiceAccountOptionsInfo">
+    <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
   </Class>
 
   <Class Name="ChatCategoryInfo">

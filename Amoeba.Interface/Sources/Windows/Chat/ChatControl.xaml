@@ -9,10 +9,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+        xmlns:prism="http://prismlibrary.com/"
         d:DesignHeight="600"
         d:DesignWidth="600"
         mc:Ignorable="d">
     <Grid>
+        <i:Interaction.Triggers>
+            <prism:InteractionRequestTrigger SourceObject="{Binding Path=ConfirmRequest}">
+                <local:ConfirmAction Id="RootDialog" />
+            </prism:InteractionRequestTrigger>
+            <prism:InteractionRequestTrigger SourceObject="{Binding Path=NameEditRequest}">
+                <local:NameEditAction Id="RootDialog" />
+            </prism:InteractionRequestTrigger>
+        </i:Interaction.Triggers>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding Path=Config.TabColumnWidth, Mode=TwoWay, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200}" />
             <ColumnDefinition Width="4" />
@@ -22,7 +31,7 @@
                 Name="TabTreeView"
                 Grid.Column="0"
                 AllowDrop="True"
-                ItemsSource="{Binding TreeView}">
+                ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:ChatCategoryViewModel}">
                     <HierarchicalDataTemplate.ItemsSource>
@@ -45,6 +54,11 @@
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type local:ChatViewModel}">
                     <TextBlock Text="{Binding Path=Name.Value}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding Path=TabClickCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <i:Interaction.Behaviors>
                             <omnius:DragStartBehavior AllowedEffects="Move" DragDropData="{Binding}" />
                         </i:Interaction.Behaviors>
@@ -54,13 +68,12 @@
             <i:Interaction.Behaviors>
                 <omnius:IgnoreRequestBringIntoViewBehavior />
                 <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
-                <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=Tab_SelectedItem.Value}" />
+                <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
             </i:Interaction.Behaviors>
             <TreeView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value}" />
                     <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value}" />
-                    <Setter Property="omnius:MouseClickHelper.Command" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.Tab_ClickCommand}" />
                     <Setter Property="omnius:StyleInteraction.Behaviors">
                         <Setter.Value>
                             <omnius:Behaviors>
@@ -73,36 +86,52 @@
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem
-                            Command="{Binding Path=Tab_NewCategoryCommand}"
+                            Command="{Binding Path=TabNewCategoryCommand}"
                             Header="New category"
-                            InputGestureText="Ctrl+S">
+                            InputGestureText="Ctrl+N">
                         <MenuItem.Icon>
-                            <md:PackIcon Kind="Play" />
+                            <md:PackIcon Kind="Folder" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem
-                            Command="{Binding Path=Tab_NewChatCommand}"
+                            Command="{Binding Path=TabNewChatCommand}"
                             Header="New chat"
-                            InputGestureText="Ctrl+T">
+                            InputGestureText="Ctrl+W">
                         <MenuItem.Icon>
-                            <md:PackIcon Kind="Stop" />
+                            <md:PackIcon Kind="Comment" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                            Command="{Binding Path=TabEditCommand}"
+                            Header="Edit"
+                            InputGestureText="Ctrl+E">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Pencil" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                            Command="{Binding Path=TabDeleteCommand}"
+                            Header="Delete"
+                            InputGestureText="Ctrl+D">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Delete" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
                     <MenuItem
-                            Command="{Binding Path=Tab_CopyCommand}"
+                            Command="{Binding Path=TabCopyCommand}"
                             Header="Copy"
-                            InputGestureText="Ctrl+E">
+                            InputGestureText="Ctrl+C">
                         <MenuItem.Icon>
-                            <md:PackIcon Kind="ExitToApp" />
+                            <md:PackIcon Kind="ContentCopy" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem
-                            Command="{Binding Path=Tab_PasteCommand}"
+                            Command="{Binding Path=TabPasteCommand}"
                             Header="Paste"
-                            InputGestureText="Ctrl+E">
+                            InputGestureText="Ctrl+V">
                         <MenuItem.Icon>
-                            <md:PackIcon Kind="ExitToApp" />
+                            <md:PackIcon Kind="ContentPaste" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>

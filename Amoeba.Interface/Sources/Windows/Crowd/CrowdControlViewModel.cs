@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Text;
 using System.Threading;
 using Amoeba.Service;
 using Omnius.Base;
@@ -22,13 +25,19 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ReactiveCommand CopyLocationCommand { get; private set; }
-        public ReactiveCommand PasteLocationCommand { get; private set; }
+        public ObservableDictionary<byte[], DynamicViewModel> ConnectionInformations { get; } = new ObservableDictionary<byte[], DynamicViewModel>(new ByteArrayEqualityComparer());
+        public ObservableCollection<object> ConnectionSelectedItems { get; } = new ObservableCollection<object>();
+
+        public ReactiveCommand ConnectionCopyCommand { get; private set; }
+        public ReactiveCommand ConnectionPasteCommand { get; private set; }
+
+        public CrowdStateInfo State { get; } = new CrowdStateInfo();
+        public ObservableDictionary<string, string> Information { get; } = new ObservableDictionary<string, string>();
+        public ObservableCollection<object> StateSelectedItems { get; } = new ObservableCollection<object>();
+
+        public ReactiveCommand StateCopyCommand { get; private set; }
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
-        public ObservableDictionary<byte[], DynamicViewModel> ConnectionInformations { get; } = new ObservableDictionary<byte[], DynamicViewModel>(new ByteArrayEqualityComparer());
-        public ObservableDictionary<string, string> Information { get; } = new ObservableDictionary<string, string>();
-        public InfoStateViewModel State { get; } = new InfoStateViewModel();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -46,11 +55,14 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
-                this.CopyLocationCommand = new ReactiveCommand().AddTo(_disposable);
-                this.CopyLocationCommand.Subscribe(() => this.CopyLocation()).AddTo(_disposable);
+                this.ConnectionCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.ConnectionCopyCommand.Subscribe(() => this.ConnectionCopy()).AddTo(_disposable);
 
-                this.PasteLocationCommand = new ReactiveCommand().AddTo(_disposable);
-                this.PasteLocationCommand.Subscribe(() => this.PasteLocation()).AddTo(_disposable);
+                this.ConnectionPasteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.ConnectionPasteCommand.Subscribe(() => this.ConnectionPaste()).AddTo(_disposable);
+
+                this.StateCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.StateCopyCommand.Subscribe(() => this.StateCopy()).AddTo(_disposable);
             }
 
             {
@@ -64,6 +76,15 @@ namespace Amoeba.Interface
 
         private void WatchThread(CancellationToken token)
         {
+            var sizeTypeHashSet = new HashSet<string>()
+            {
+                "Cache_FreeSpace",
+                "Cache_LockSpace",
+                "Cache_UsingSpace",
+                "Network_ReceivedByteCount",
+                "Network_SentByteCount",
+            };
+
             for (;;)
             {
                 if (token.WaitHandle.WaitOne(1000)) return;
@@ -88,7 +109,7 @@ namespace Amoeba.Interface
                                 }
                             }
 
-                            foreach (var (key, info) in dic)
+                            foreach (var (i, key, info) in dic.Select((item, i) => (i, item.Key, item.Value)))
                             {
                                 DynamicViewModel viewModel;
 
@@ -98,9 +119,11 @@ namespace Amoeba.Interface
                                     this.ConnectionInformations[key] = viewModel;
                                 }
 
+                                viewModel.SetValue("Index", i);
+
                                 foreach (var (name, value) in info)
                                 {
-                                    viewModel[name] = value;
+                                    viewModel.SetValue(name, value);
                                 }
                             }
                         });
@@ -124,7 +147,14 @@ namespace Amoeba.Interface
 
                             foreach (var (key, value) in information)
                             {
-                                this.Information[key] = value.ToString();
+                                if (sizeTypeHashSet.Contains(key))
+                                {
+                                    this.Information[key] = NetworkConverter.ToSizeString((long)value);
+                                }
+                                else
+                                {
+                                    this.Information[key] = value.ToString();
+                                }
                             }
                         });
                     }
@@ -132,14 +162,33 @@ namespace Amoeba.Interface
             }
         }
 
-        public void CopyLocation()
+        public void ConnectionCopy()
         {
+            var list = new List<Location>();
 
+            foreach (var (key, value) in this.ConnectionSelectedItems.Cast<KeyValuePair<byte[], DynamicViewModel>>())
+            {
+                list.Add(value.GetValue<Location>("Location"));
+            }
+
+            Clipboard.SetLocations(list);
         }
 
-        public void PasteLocation()
+        public void ConnectionPaste()
         {
             _serviceManager.SetCrowdLocations(Clipboard.GetLocations());
+        }
+
+        public void StateCopy()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var (key, value) in this.StateSelectedItems.Cast<KeyValuePair<string, string>>())
+            {
+                sb.AppendLine($"{key}: {value}");
+            }
+
+            Clipboard.SetText(sb.ToString());
         }
 
         protected override void Dispose(bool disposing)

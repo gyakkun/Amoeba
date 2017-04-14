@@ -52,6 +52,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml.Linq" />
@@ -73,6 +74,7 @@
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\CustomAvalonEditHelperBase.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\AvalonEditChatMessagesHelper.cs" />
     <Compile Include="Sources\Mvvm\Models\Chat\ChatMessageState.cs" />
+    <Compile Include="Sources\Mvvm\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
     <Compile Include="Sources\Utilities\Inspect.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />
@@ -100,6 +102,12 @@
     <Compile Include="Sources\Windows\Store\Items\StoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\SeedViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Items\BoxViewModel.cs" />
+    <Compile Include="Sources\_Resources\Settings\SettingsManager.cs" />
+    <Compile Include="Sources\_Resources\Settings\_Generator\SettingsManager.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SettingsManager.tt</DependentUpon>
+    </Compile>
     <Page Include="Sources\Windows\Chat\ChatControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -133,10 +141,14 @@
       <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Utilities\NameEditWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Utilities\NameEditWindow.xaml.cs">
-      <DependentUpon>NameEditWindow.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Utilities\NameEditDialog\NameEditAction.cs" />
+    <Compile Include="Sources\Windows\Utilities\NameEditDialog\NameEditDialogControl.xaml.cs">
+      <DependentUpon>NameEditDialogControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sources\Windows\Utilities\ConfirmDialog\ConfirmDialogControl.xaml.cs">
+      <DependentUpon>ConfirmDialogControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Utilities\ConfirmDialog\ConfirmAction.cs" />
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <AutoGen>True</AutoGen>
@@ -156,9 +168,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\Windows\Utilities\NameEditWindow.xaml">
+    <Page Include="Sources\Windows\Utilities\NameEditDialog\NameEditDialogControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Utilities\ConfirmDialog\ConfirmDialogControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +199,11 @@
     </Content>
     <Content Include="Resources\Languages\English.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Sources\_Resources\Settings\_Generator\Definitions.xml" />
+    <Content Include="Sources\_Resources\Settings\_Generator\SettingsManager.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SettingsManager.generated.cs</LastGenOutput>
     </Content>
     <None Include="App.manifest" />
     <None Include="Licenses\Amoeba.Interface.Readme">

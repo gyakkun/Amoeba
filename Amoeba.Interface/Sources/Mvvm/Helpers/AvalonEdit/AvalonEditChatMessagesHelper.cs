@@ -130,7 +130,7 @@ namespace Amoeba.Interface
                 }
 
                 {
-                    foreach (var line in target.Message.Value.Comment
+                    foreach (var line in (target.Message.Value.Comment ?? "")
                         .Trim('\r', '\n')
                         .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
                         .Take(128))

@@ -78,14 +78,21 @@ namespace Amoeba.Interface
 
             private static BitmapImage GetIcon(string path)
             {
-                var icon = new BitmapImage();
+                try
+                {
+                    var icon = new BitmapImage();
 
-                icon.BeginInit();
-                icon.StreamSource = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), "Resources/Icons/", path), FileMode.Open, FileAccess.Read, FileShare.Read);
-                icon.EndInit();
-                if (icon.CanFreeze) icon.Freeze();
+                    icon.BeginInit();
+                    icon.StreamSource = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), "Resources/Icons/", path), FileMode.Open, FileAccess.Read, FileShare.Read);
+                    icon.EndInit();
+                    if (icon.CanFreeze) icon.Freeze();
 
-                return icon;
+                    return icon;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
         }
 

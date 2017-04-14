@@ -18,6 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <ObjectDataProvider x:Key="Languages" ObjectInstance="{x:Static local:LanguagesManager.Instance}" />
+            <ObjectDataProvider x:Key="Settings" ObjectInstance="{x:Static local:SettingsManager.Instance}" />
 
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <omnius:SortedCollectionConverter x:Key="SortedCollectionConverter" />
@@ -27,9 +28,8 @@
             <omnius:ConditionalValueConverter x:Key="ConditionalValueConverter" />
             <omnius:UshortToStringConverter x:Key="UshortToStringConverter" />
             <omnius:CompositeCollectionConverter x:Key="CompositeCollectionConverter" />
-            <local:ObjectToInfoStringConverter x:Key="ObjectToInfoStringConverter" />
+            <omnius:EnumerateConverter x:Key="EnumerateConverter" />
             <local:SessionTypeToStringConverter x:Key="SessionTypeToStringConverter" />
-            <local:TagToStringConverter x:Key="TagToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

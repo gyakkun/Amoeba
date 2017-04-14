@@ -77,7 +77,7 @@ namespace Amoeba.Interface
         private void Ok()
         {
             var miner = new Miner(CashAlgorithm.Version1, 0, TimeSpan.Zero);
-            _serviceManager.Upload(_tag, new ChatMessage(this.Comment.Value), new DigitalSignature("_TEST_", DigitalSignatureAlgorithm.EcDsaP521_Sha256), miner, new CancellationToken());
+            _serviceManager.Upload(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.DigitalSignature, miner, new CancellationToken());
 
             this.OnCloseEvent();
         }

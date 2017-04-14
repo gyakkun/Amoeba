@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using Omnius.Utilities;
 using Omnius.Security;
 using Prism.Events;
+using Prism.Interactivity.InteractionRequest;
 
 namespace Amoeba.Interface
 {
@@ -31,23 +32,27 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ReactiveCommand Tab_ClickCommand { get; private set; }
+        public InteractionRequest<Confirmation> ConfirmRequest { get; private set; }
+        public InteractionRequest<Confirmation> NameEditRequest { get; private set; }
 
-        public ReactiveCommand Tab_NewCategoryCommand { get; private set; }
-        public ReactiveCommand Tab_NewChatCommand { get; private set; }
-        public ReactiveCommand Tab_CopyCommand { get; private set; }
-        public ReactiveCommand Tab_PasteCommand { get; private set; }
+        public ReactiveProperty<ChatCategoryViewModel> TabViewModel { get; private set; }
+        public ReactiveProperty<TreeViewModelBase> TabSelectedItem { get; private set; }
+        public DragAcceptDescription DragAcceptDescription { get; private set; }
 
-        public ReactiveCommand NewMessageCommand { get; private set; }
+        public ReactiveCommand TabClickCommand { get; private set; }
 
-        public ReactiveProperty<TreeViewModelBase> Tab_SelectedItem { get; private set; }
+        public ReactiveCommand TabNewCategoryCommand { get; private set; }
+        public ReactiveCommand TabNewChatCommand { get; private set; }
+        public ReactiveCommand TabEditCommand { get; private set; }
+        public ReactiveCommand TabDeleteCommand { get; private set; }
+        public ReactiveCommand TabCopyCommand { get; private set; }
+        public ReactiveCommand TabPasteCommand { get; private set; }
 
         public ReactiveProperty<ChatMessageInfo[]> Messages { get; private set; }
 
-        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public ReactiveCommand NewMessageCommand { get; private set; }
 
-        private CollectionViewSource _treeViewSource;
-        public DragAcceptDescription DragAcceptDescription { get; private set; }
+        public DynamicViewModel Config { get; } = new DynamicViewModel();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -61,11 +66,7 @@ namespace Amoeba.Interface
             _watchTaskManager = new TaskManager(this.WatchThread);
             _watchTaskManager.Start();
 
-            this.DragAcceptDescription = new DragAcceptDescription()
-            {
-                Effects = DragDropEffects.Move,
-                Format = "Chat",
-            };
+            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Chat" };
             this.DragAcceptDescription.DragDrop += this.DragAcceptDescription_DragDrop;
         }
 
@@ -83,32 +84,41 @@ namespace Amoeba.Interface
             }
         }
 
-        public ICollectionView TreeView
-        {
-            get
-            {
-                return _treeViewSource.View;
-            }
-        }
-
         public void Init()
         {
             {
-                this.Tab_SelectedItem = new ReactiveProperty<TreeViewModelBase>();
-                this.Tab_SelectedItem.Subscribe((viewModel) => this.SelectChanged(viewModel)).AddTo(_disposable);
+                this.ConfirmRequest = new InteractionRequest<Confirmation>();
+                this.NameEditRequest = new InteractionRequest<Confirmation>();
+
+                this.TabViewModel = new ReactiveProperty<ChatCategoryViewModel>().AddTo(_disposable);
+
+                this.TabSelectedItem = new ReactiveProperty<TreeViewModelBase>().AddTo(_disposable);
+                this.TabSelectedItem.Subscribe((viewModel) => this.TabSelectChanged(viewModel)).AddTo(_disposable);
 
                 this.Messages = new ReactiveProperty<ChatMessageInfo[]>().AddTo(_disposable);
 
-                this.Tab_ClickCommand = new ReactiveCommand();
-                this.Tab_ClickCommand.Subscribe(() => this.SelectChanged(this.Tab_SelectedItem.Value)).AddTo(_disposable);
+                this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
 
-                this.Tab_NewCategoryCommand = this.Tab_SelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand();
-                this.Tab_NewCategoryCommand.Subscribe(() => this.NewCategory()).AddTo(_disposable);
+                this.TabNewCategoryCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabNewCategoryCommand.Subscribe(() => this.NewCategory()).AddTo(_disposable);
 
-                this.Tab_NewChatCommand = this.Tab_SelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand();
-                this.Tab_NewChatCommand.Subscribe(() => this.NewChat()).AddTo(_disposable);
+                this.TabNewChatCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabNewChatCommand.Subscribe(() => this.NewChat()).AddTo(_disposable);
 
-                this.NewMessageCommand = this.Tab_SelectedItem.Select(n => n is ChatViewModel).ToReactiveCommand();
+                this.TabEditCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabEditCommand.Subscribe(() => this.TabEdit()).AddTo(_disposable);
+
+                this.TabDeleteCommand = this.TabSelectedItem.Select(n => n != this.TabViewModel.Value).ToReactiveCommand().AddTo(_disposable);
+                this.TabDeleteCommand.Subscribe(() => this.TabDelete()).AddTo(_disposable);
+
+                this.TabCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
+
+                this.TabPasteCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
+
+                this.NewMessageCommand = this.TabSelectedItem.Select(n => n is ChatViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.NewMessageCommand.Subscribe(() => this.NewMessage()).AddTo(_disposable);
             }
 
@@ -120,7 +130,7 @@ namespace Amoeba.Interface
                 this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
 
                 {
-                    var chatCategoryInfo = _settings.Load("Category", () =>
+                    var model = _settings.Load("Tab", () =>
                     {
                         var categoryInfo = new ChatCategoryInfo() { Name = "Category", IsExpanded = true };
                         categoryInfo.ChatInfos.Add(new ChatInfo() { Tag = new Tag("Amoeba", Sha256.ComputeHash("Amoeba")) });
@@ -128,13 +138,12 @@ namespace Amoeba.Interface
                         return categoryInfo;
                     });
 
-                    _treeViewSource = new CollectionViewSource();
-                    _treeViewSource.Source = new ChatCategoryViewModel[] { new ChatCategoryViewModel(null, chatCategoryInfo) };
+                    this.TabViewModel.Value = new ChatCategoryViewModel(null, model);
                 }
             }
         }
 
-        private void SelectChanged(TreeViewModelBase viewModel)
+        private void TabSelectChanged(TreeViewModelBase viewModel)
         {
             if (viewModel is ChatCategoryViewModel chatCategoryViewModel)
             {
@@ -154,7 +163,10 @@ namespace Amoeba.Interface
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    var chatCategoryInfos = new List<ChatCategoryInfo>(((ChatCategoryViewModel[])_treeViewSource.Source).Select(n => n.Model));
+                    if (token.IsCancellationRequested) return;
+
+                    var chatCategoryInfos = new List<ChatCategoryInfo>();
+                    chatCategoryInfos.Add(this.TabViewModel.Value.Model);
 
                     for (int i = 0; i < chatCategoryInfos.Count; i++)
                     {
@@ -193,46 +205,94 @@ namespace Amoeba.Interface
 
         private void NewCategory()
         {
-            var viewModel = new NameEditWindowViewModel();
-            viewModel.OkEvent += (s, e) =>
+            this.NameEditRequest.Raise(new Confirmation() { Content = "" }, n =>
             {
-                var chatCategoryViewModel = this.Tab_SelectedItem.Value as ChatCategoryViewModel;
+                if (!n.Confirmed) return;
+
+                var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;
                 if (chatCategoryViewModel == null) return;
 
-                chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = e.Name });
-            };
-
-            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<NameEditWindowViewModel>>()
-                .Publish(viewModel);
+                chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = (string)n.Content });
+            });
         }
 
         private void NewChat()
         {
-            var viewModel = new NameEditWindowViewModel();
-            viewModel.OkEvent += (s, e) =>
+            this.NameEditRequest.Raise(new Confirmation() { Content = "" }, n =>
             {
-                var chatCategoryViewModel = this.Tab_SelectedItem.Value as ChatCategoryViewModel;
+                if (!n.Confirmed) return;
+
+                var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;
                 if (chatCategoryViewModel == null) return;
 
                 var random = new Random();
                 var id = random.GetBytes(32);
 
-                chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = new Tag(e.Name, id) });
-            };
-
-            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<NameEditWindowViewModel>>()
-                .Publish(viewModel);
+                chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = new Tag((string)n.Content, id) });
+            });
         }
 
         private void NewMessage()
         {
-            var chatViewModel = this.Tab_SelectedItem.Value as ChatViewModel;
+            var chatViewModel = this.TabSelectedItem.Value as ChatViewModel;
             if (chatViewModel == null) return;
 
             var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, _serviceManager);
 
             MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
                 .Publish(viewModel);
+        }
+
+        private void TabEdit()
+        {
+            this.NameEditRequest.Raise(new Confirmation() { Content = this.TabSelectedItem.Value.Name.Value }, n =>
+            {
+                if (!n.Confirmed) return;
+
+                var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;
+                if (chatCategoryViewModel == null) return;
+
+                chatCategoryViewModel.Model.Name = (string)n.Content;
+            });
+        }
+
+        private void TabDelete()
+        {
+            this.ConfirmRequest.Raise(new Confirmation() { Content = ConfirmDialogType.Delete }, n =>
+            {
+                if (!n.Confirmed) return;
+
+                if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
+                {
+                    if (chatCategoryViewModel.Parent == null) return;
+                    chatCategoryViewModel.Parent.TryRemove(chatCategoryViewModel);
+                }
+                else if (this.TabSelectedItem.Value is ChatViewModel chatViewModel)
+                {
+                    chatViewModel.Parent.TryRemove(chatViewModel);
+                }
+            });
+        }
+
+        private void TabCopy()
+        {
+            if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
+            {
+                Clipboard.SetChatCategoryInfos(new ChatCategoryInfo[] { chatCategoryViewModel.Model });
+            }
+            else if (this.TabSelectedItem.Value is ChatViewModel chatViewModel)
+            {
+                Clipboard.SetChatInfos(new ChatInfo[] { chatViewModel.Model });
+            }
+        }
+
+        private void TabPaste()
+        {
+            if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
+            {
+                chatCategoryViewModel.Model.CategoryInfos.AddRange(Clipboard.GetChatCategoryInfos());
+                chatCategoryViewModel.Model.ChatInfos.AddRange(Clipboard.GetChatInfos());
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -246,6 +306,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Dispose();
 
                 _settings.Save("Config", this.Config.GetPairs());
+                _settings.Save("Tab", this.TabViewModel.Value.Model);
 
                 _disposable.Dispose();
             }

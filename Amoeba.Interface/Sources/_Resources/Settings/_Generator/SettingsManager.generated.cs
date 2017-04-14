@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
 using Omnius.Configuration;
 using System.Collections.ObjectModel;
+using Omnius.Security;
 
 namespace Amoeba.Interface
 {
@@ -21,23 +23,32 @@ namespace Amoeba.Interface
 
         public void Load()
         {
-            this.Test = _settings.Load("Test", () => this.Test);
-            this.Test2 = _settings.Load("Test2", () => this.Test2);
-            this.Test3 = _settings.Load("Test3", () => this.Test3);
-            this.BoxInfos = _settings.Load("BoxInfos", () => this.BoxInfos);
+            this.DigitalSignature = _settings.Load("DigitalSignature", () => this.DigitalSignature);
         }
 
         public void Save()
         {
-            _settings.Save("Test", this.Test);
-            _settings.Save("Test2", this.Test2);
-            _settings.Save("Test3", this.Test3);
-            _settings.Save("BoxInfos", this.BoxInfos);
+            _settings.Save("DigitalSignature", this.DigitalSignature);
         }
 
-        public string Test { get; private set; }
-        public string Test2 { get; set; }
-        public string Test3 { get; private set; }
-        public ObservableCollection<BoxInfo> BoxInfos { get; private set; }
+
+        private DigitalSignature _digitalSignature;
+
+        [DataMember(Name = nameof(DigitalSignature))]
+        public DigitalSignature DigitalSignature
+        {
+            get
+            {
+                return _digitalSignature;
+            }
+            set
+            {
+                if (_digitalSignature != value)
+                {
+                    _digitalSignature = value;
+                    this.OnPropertyChanged(nameof(DigitalSignature));
+                }
+            }
+        }
     }
 }

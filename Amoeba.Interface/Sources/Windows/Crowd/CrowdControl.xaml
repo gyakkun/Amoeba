@@ -42,9 +42,11 @@
         <ContentControl Grid.Column="1" Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
                 <ListView
+                        x:Name="ConnectionListView"
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
                         omnius:GridViewSortHelper.AutoSort="True"
+                        omnius:ListBoxHelper.SelectedItems="{Binding Path=ConnectionSelectedItems}"
                         IsSynchronizedWithCurrentItem="True"
                         ItemsSource="{Binding Path=ConnectionInformations}"
                         VirtualizingStackPanel.IsVirtualizing="True"
@@ -68,8 +70,23 @@
                     </ListView.Resources>
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="{Binding Path=CrowdControl_Copy, Source={StaticResource Languages}}" />
-                            <MenuItem Header="{Binding Path=CrowdControl_Paste, Source={StaticResource Languages}}" />
+                            <MenuItem
+                                    Command="{Binding Path=ConnectionCopyCommand}"
+                                    CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                    Header="{Binding Path=CrowdControl_Copy, Source={StaticResource Languages}}"
+                                    InputGestureText="Ctrl+C">
+                                <MenuItem.Icon>
+                                    <md:PackIcon Kind="ContentCopy" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem
+                                    Command="{Binding Path=ConnectionPasteCommand}"
+                                    Header="{Binding Path=CrowdControl_Paste, Source={StaticResource Languages}}"
+                                    InputGestureText="Ctrl+V">
+                                <MenuItem.Icon>
+                                    <md:PackIcon Kind="ContentPaste" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
                     <ListView.View>
@@ -104,15 +121,17 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
                         PlacementMode="TopAndAlignCentres"
-                        RenderTransformOrigin="0.5,0.5"
+                        PopupMode="Click"
                         Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
-                        ToolTip="PopupBox"
                         ToolTipService.Placement="Left">
                     <StackPanel>
-                        <Button Command="{Binding Path=CopyLocationCommand}" ToolTip="Copy that location">
+                        <Button
+                                Command="{Binding Path=ConnectionCopyCommand}"
+                                CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
+                                ToolTip="Copy that location">
                             <md:PackIcon Kind="ContentCopy" />
                         </Button>
-                        <Button Command="{Binding Path=PasteLocationCommand}" ToolTip="Paste some location">
+                        <Button Command="{Binding Path=ConnectionPasteCommand}" ToolTip="Paste some location">
                             <md:PackIcon Kind="ContentPaste" />
                         </Button>
                     </StackPanel>
@@ -126,9 +145,9 @@
                 VerticalContentAlignment="Stretch"
                 Visibility="{Binding ElementName=StateListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="16">
+                <StackPanel Margin="20">
                     <GroupBox
-                            Margin="0,0,0,16"
+                            Margin="0,0,0,20"
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
@@ -170,9 +189,9 @@
                         </GroupBox.HeaderTemplate>
                         <Grid Margin="8">
                             <ListView
-                                    omnius:GridViewSortHelper.AutoSort="True"
+                                    omnius:ListBoxHelper.SelectedItems="{Binding Path=StateSelectedItems}"
                                     IsSynchronizedWithCurrentItem="True"
-                                    ItemsSource="{Binding Path=Information}"
+                                    ItemsSource="{Binding Path=Information, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Index}"
                                     VirtualizingStackPanel.IsVirtualizing="True"
                                     VirtualizingStackPanel.VirtualizationMode="Recycling">
                                 <i:Interaction.Behaviors>
@@ -189,20 +208,24 @@
                                 </ListView.Resources>
                                 <ListView.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="{Binding Path=CrowdControl_Copy, Source={StaticResource Languages}}" />
-                                        <MenuItem Header="{Binding Path=CrowdControl_Paste, Source={StaticResource Languages}}" />
+                                        <MenuItem
+                                                Command="{Binding Path=StateCopyCommand}"
+                                                Header="{Binding Path=CrowdControl_Copy, Source={StaticResource Languages}}"
+                                                InputGestureText="Ctrl+C">
+                                            <MenuItem.Icon>
+                                                <md:PackIcon Kind="ContentCopy" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
                                     </ContextMenu>
                                 </ListView.ContextMenu>
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
                                         <GridViewColumn
                                                 Width="{Binding Path=Config.StateListView_Name_Width, Mode=TwoWay, FallbackValue=120}"
-                                                omnius:GridViewSortHelper.PropertyName="Key"
                                                 CellTemplate="{StaticResource CellTemplate_Name}"
                                                 Header="{Binding Path=CrowdControl_Name, Source={StaticResource Languages}}" />
                                         <GridViewColumn
                                                 Width="{Binding Path=Config.StateListView_Value_Width, Mode=TwoWay, FallbackValue=120}"
-                                                omnius:GridViewSortHelper.PropertyName="Value"
                                                 CellTemplate="{StaticResource CellTemplate_Value}"
                                                 Header="{Binding Path=CrowdControl_Value, Source={StaticResource Languages}}" />
                                     </GridView>

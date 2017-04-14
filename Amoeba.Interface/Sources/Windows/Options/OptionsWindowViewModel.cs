@@ -1,10 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reactive.Disposables;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Security;
 using Omnius.Wpf;
+using Prism.Interactivity.InteractionRequest;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
@@ -16,10 +20,22 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        public InteractionRequest<Confirmation> ConfirmRequest { get; private set; }
+        public InteractionRequest<Confirmation> NameEditRequest { get; private set; }
+
+        public event EventHandler<EventArgs> CloseEvent;
+
+        public ServiceOptionsInfo Options { get; } = new ServiceOptionsInfo();
+
+        public ReactiveCommand SignatureNewCommand { get; private set; }
+        public ReactiveCommand SignatureImportCommand { get; private set; }
+        public ReactiveCommand SignatureExportCommand { get; private set; }
+
+        public ReactiveCommand OkCommand { get; private set; }
+
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
-        public ServiceOptionsViewModel Options { get; } = new ServiceOptionsViewModel();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -34,6 +50,21 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
+                this.ConfirmRequest = new InteractionRequest<Confirmation>();
+                this.NameEditRequest = new InteractionRequest<Confirmation>();
+
+                this.SignatureNewCommand = new ReactiveCommand().AddTo(_disposable);
+                this.SignatureNewCommand.Subscribe(() => this.SignatureNew());
+
+                this.SignatureImportCommand = new ReactiveCommand().AddTo(_disposable);
+                this.SignatureImportCommand.Subscribe(() => this.SignatureImport());
+
+                this.SignatureExportCommand = new ReactiveCommand().AddTo(_disposable);
+                this.SignatureExportCommand.Subscribe(() => this.SignatureExport());
+
+                this.OkCommand = new ReactiveCommand().AddTo(_disposable);
+                this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
+
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
             }
 
@@ -49,6 +80,11 @@ namespace Amoeba.Interface
             this.GetOptions();
         }
 
+        private void OnCloseEvent()
+        {
+            this.CloseEvent?.Invoke(this, EventArgs.Empty);
+        }
+
         public void GetOptions()
         {
             // Tcp
@@ -60,9 +96,14 @@ namespace Amoeba.Interface
                 this.Options.Tcp.Ipv6IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv6);
                 this.Options.Tcp.Ipv6Port = config.Ipv6Port;
             }
+
+            // Account
+            {
+                this.Options.Account.DigitalSignature = SettingsManager.Instance.DigitalSignature;
+            }
         }
 
-        public void SetOpitons()
+        public void SetOptions()
         {
             // Tcp
             {
@@ -74,6 +115,82 @@ namespace Amoeba.Interface
                 _serviceManager.SetTcpConnectionConfig(
                     new TcpConnectionConfig(type, tcp.ProxyUri, tcp.Ipv4Port, tcp.Ipv6Port));
             }
+
+            // Account
+            {
+                SettingsManager.Instance.DigitalSignature = this.Options.Account.DigitalSignature;
+            }
+        }
+
+        public void SignatureNew()
+        {
+            this.NameEditRequest.Raise(new Confirmation() { Content = "" }, n =>
+            {
+                if (!n.Confirmed) return;
+
+                var digitalSignature = new DigitalSignature((string)n.Content, DigitalSignatureAlgorithm.EcDsaP521_Sha256);
+                this.Options.Account.DigitalSignature = digitalSignature;
+            });
+        }
+
+        public void SignatureImport()
+        {
+            using (var dialog = new System.Windows.Forms.OpenFileDialog())
+            {
+                dialog.Multiselect = false;
+                dialog.RestoreDirectory = true;
+                dialog.DefaultExt = ".ds";
+                dialog.Filter = "DigitalSignature (*.ds)|*.ds";
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string filePath = dialog.FileNames.FirstOrDefault();
+                    if (filePath == null) return;
+
+                    using (var stream = new FileStream(filePath, FileMode.Open))
+                    {
+                        var digitalSignature = DigitalSignatureConverter.FromDigitalSignatureStream(stream);
+                        if (digitalSignature == null) return;
+
+                        this.Options.Account.DigitalSignature = digitalSignature;
+                    }
+                }
+            }
+        }
+
+        public void SignatureExport()
+        {
+            using (var dialog = new System.Windows.Forms.SaveFileDialog())
+            {
+                dialog.RestoreDirectory = true;
+                dialog.FileName = this.Options.Account.DigitalSignature.GetSignature().ToString();
+                dialog.DefaultExt = ".ds";
+                dialog.Filter = "DigitalSignature (*.ds)|*.ds";
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string fileName = dialog.FileName;
+
+                    using (var fileStream = new FileStream(fileName, FileMode.Create))
+                    using (var digitalSignatureStream = DigitalSignatureConverter.ToDigitalSignatureStream(this.Options.Account.DigitalSignature))
+                    using (var safeBuffer = BufferManager.Instance.CreateSafeBuffer(1024 * 4))
+                    {
+                        int length;
+
+                        while ((length = digitalSignatureStream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
+                        {
+                            fileStream.Write(safeBuffer.Value, 0, length);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void Ok()
+        {
+            this.SetOptions();
+
+            this.OnCloseEvent();
         }
 
         protected override void Dispose(bool disposing)
@@ -83,8 +200,6 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
-                this.SetOpitons();
-
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
                 _settings.Save("Config", this.Config.GetPairs());
                 _disposable.Dispose();
