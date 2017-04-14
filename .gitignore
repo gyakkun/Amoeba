@@ -5,6 +5,8 @@
 *.suo
 *.user
 *.sln.docstates
+.vs/
+project.lock.json
 
 # Build results
 [Dd]ebug/
@@ -63,6 +65,7 @@ ipch/
 *.ncb
 *.opensdf
 *.sdf
+*.VC.db
 *.cachefile
 
 # Visual Studio profiler

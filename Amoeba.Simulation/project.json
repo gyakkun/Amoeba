@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "MaterialDesignThemes": "2.3.0.823",
+    "NETStandard.Library": "1.6.1",
+    "Nett": "0.6.2",
+    "Prism.Wpf": "6.3.0",
+    "ReactiveProperty": "3.6.0",
+    "System.Reactive": "3.1.1",
+    "System.ValueTuple": "4.3.0"
+  },
+  "runtimes": {
+    "win": {}
+  },
+  "frameworks": {
+    "net462": {}
+  }
+}

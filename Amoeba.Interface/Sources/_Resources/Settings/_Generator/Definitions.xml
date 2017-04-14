@@ -1,0 +1,6 @@
+<Config>
+  <Import Namespace="System.Collections.ObjectModel" />
+  <Import Namespace="Omnius.Security" />
+
+  <Property Type="DigitalSignature" Name="DigitalSignature" />
+</Config>

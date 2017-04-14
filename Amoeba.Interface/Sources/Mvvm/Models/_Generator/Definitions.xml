@@ -1,0 +1,79 @@
+<Config>
+  <Import Namespace="System.Collections.ObjectModel" />
+  <Import Namespace="System.Windows" />
+  <Import Namespace="Amoeba.Service" />
+  <Import Namespace="Omnius" />
+  <Import Namespace="Omnius.Collections" />
+  <Import Namespace="Omnius.Security" />
+
+  <Class Name="NameEditInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+  </Class>
+
+  <Class Name="CrowdStateInfo">
+    <Property Type="string" Name="Location" IsEditable="true" />
+  </Class>
+
+  <Class Name="ServiceOptionsInfo">
+    <Property Type="ServiceTcpOptionsInfo" Name="Tcp" />
+    <Property Type="ServiceAccountOptionsInfo" Name="Account" />
+  </Class>
+
+  <Class Name="ServiceTcpOptionsInfo">
+    <Property Type="string" Name="ProxyUri" IsEditable="true" />
+    <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
+    <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
+    <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
+    <Property Type="ushort" Name="Ipv6Port" IsEditable="true" />
+  </Class>
+
+  <Class Name="ServiceAccountOptionsInfo">
+    <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
+  </Class>
+
+  <Class Name="ChatCategoryInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="ObservableCollection(ChatInfo)" Name="ChatInfos" />
+    <Property Type="ObservableCollection(ChatCategoryInfo)" Name="CategoryInfos" />
+  </Class>
+
+  <Class Name="ChatInfo">
+    <Property Type="Tag" Name="Tag" IsEditable="true" />
+    <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
+  </Class>
+
+  <Class Name="ChatMessageInfo">
+    <Property Type="ChatMessageState" Name="State" IsEditable="true" />
+    <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
+  </Class>
+
+  <Class Name="StoreCategoryInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="ObservableCollection(StoreInfo)" Name="StoreInfos" />
+    <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" />
+  </Class>
+
+  <Class Name="StoreInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
+  </Class>
+
+  <Class Name="BoxInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" />
+    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
+  </Class>
+
+  <Class Name="SeedInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="long" Name="Length" IsEditable="true" />
+    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+    <Property Type="Metadata" Name="Metadata" IsEditable="true" />
+  </Class>
+  
+</Config>

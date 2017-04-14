@@ -1,6 +1,7 @@
 set BATDIR=%~dp0
 cd %BATDIR%
 
-set TOOL="Library\Library.Tools\bin\Debug\Library.Tools.exe"
+set TOOL="Omnius\Omnius.Tools\bin\Debug\Omnius.Tools.exe"
+IF NOT EXIST %TOOL% exit
 
-IF EXIST %TOOL% call %TOOL% "Languages" "Amoeba.Wpf\Properties\LanguagesManager.cs" "Amoeba.Wpf\Languages"
+call %TOOL% "Languages" "Amoeba.Interface\Resources\Languages"
