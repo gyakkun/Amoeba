@@ -262,8 +262,8 @@ namespace Amoeba.Service
 
                     if (proxyScheme == "socks5")
                     {
-                        string proxyAddress = result.GetValue<string>("Address");
-                        int proxyPort = result.GetValueOrDefault<int>("Port", () => 1080);
+                        string proxyAddress = result2.GetValue<string>("Address");
+                        int proxyPort = result2.GetValueOrDefault<int>("Port", () => 1080);
 
                         var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
                         garbages.Add(socket);
@@ -278,8 +278,8 @@ namespace Amoeba.Service
                     }
                     else if (proxyScheme == "http")
                     {
-                        string proxyAddress = result.GetValue<string>("Address");
-                        int proxyPort = result.GetValueOrDefault<int>("Port", () => 80);
+                        string proxyAddress = result2.GetValue<string>("Address");
+                        int proxyPort = result2.GetValueOrDefault<int>("Port", () => 80);
 
                         var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
                         garbages.Add(socket);
@@ -403,12 +403,17 @@ namespace Amoeba.Service
                         _ipv4TcpListener = new TcpListener(IPAddress.Any, config.Ipv4Port);
                         _ipv4TcpListener.Start(3);
 
-                        // Port forwarding
+                        // Open port
                         try
                         {
                             using (var client = new UpnpClient())
                             {
                                 client.Connect(new TimeSpan(0, 0, 10));
+
+                                if (_watchIpv4Port != -1)
+                                {
+                                    client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                                }
 
                                 var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
                                 if (ipAddress == null || !TcpConnectionManager.CheckGlobalIpAddress(ipAddress)) throw new Exception();
@@ -433,6 +438,26 @@ namespace Amoeba.Service
                         _ipv4TcpListener.Stop();
 
                         _ipv4TcpListener = null;
+
+                        // Close port
+                        try
+                        {
+                            if (_watchIpv4Port != -1)
+                            {
+                                using (var client = new UpnpClient())
+                                {
+                                    client.Connect(new TimeSpan(0, 0, 10));
+
+                                    client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        _watchIpv4Port = -1;
                     }
                 }
 
@@ -464,6 +489,8 @@ namespace Amoeba.Service
                         _ipv6TcpListener.Stop();
 
                         _ipv6TcpListener = null;
+
+                        _watchIpv6Port = -1;
                     }
                 }
 
@@ -570,6 +597,26 @@ namespace Amoeba.Service
                     _ipv4TcpListener.Stop();
 
                     _ipv4TcpListener = null;
+
+                    // Close port
+                    try
+                    {
+                        if (_watchIpv4Port != -1)
+                        {
+                            using (var client = new UpnpClient())
+                            {
+                                client.Connect(new TimeSpan(0, 0, 10));
+
+                                client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    _watchIpv4Port = -1;
                 }
 
                 if (_ipv6TcpListener != null)
@@ -578,6 +625,8 @@ namespace Amoeba.Service
                     _ipv6TcpListener.Stop();
 
                     _ipv6TcpListener = null;
+
+                    _watchIpv6Port = -1;
                 }
             }
         }
