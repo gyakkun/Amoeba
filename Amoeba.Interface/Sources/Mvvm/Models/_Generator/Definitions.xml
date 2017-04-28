@@ -1,4 +1,5 @@
 <Config>
+  
   <Import Namespace="System.Collections.ObjectModel" />
   <Import Namespace="System.Windows" />
   <Import Namespace="Amoeba.Service" />
@@ -6,7 +7,7 @@
   <Import Namespace="Omnius.Collections" />
   <Import Namespace="Omnius.Security" />
 
-  <Class Name="NameEditInfo">
+  <Class Name="NameEditDialogInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
   </Class>
 
@@ -48,17 +49,35 @@
     <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
   </Class>
 
-  <Class Name="StoreCategoryInfo">
+  <Class Name="UploadStoreCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(StoreInfo)" Name="StoreInfos" />
-    <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" />
+    <Property Type="ObservableCollection(UploadStoreInfo)" Name="StoreInfos" />
+    <Property Type="ObservableCollection(UploadStoreCategoryInfo)" Name="CategoryInfos" />
   </Class>
 
-  <Class Name="StoreInfo">
+  <Class Name="UploadStoreInfo">
+    <Property Type="string" Name="Path" IsEditable="true" />
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" />
+    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
+  </Class>
+
+  <Class Name="DownloadStoreCategoryInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="ObservableCollection(DownloadStoreInfo)" Name="StoreInfos" />
+    <Property Type="ObservableCollection(DownloadStoreCategoryInfo)" Name="CategoryInfos" />
+  </Class>
+
+  <Class Name="DownloadStoreInfo">
+    <Property Type="Signature" Name="Signature" IsEditable="true" />
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" />
     <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
   </Class>
 
@@ -75,5 +94,5 @@
     <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
     <Property Type="Metadata" Name="Metadata" IsEditable="true" />
   </Class>
-  
+
 </Config>

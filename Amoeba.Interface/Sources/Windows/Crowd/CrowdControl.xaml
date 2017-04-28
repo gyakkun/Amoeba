@@ -191,7 +191,7 @@
                             <ListView
                                     omnius:ListBoxHelper.SelectedItems="{Binding Path=StateSelectedItems}"
                                     IsSynchronizedWithCurrentItem="True"
-                                    ItemsSource="{Binding Path=Information, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Index}"
+                                    ItemsSource="{Binding Path=Information, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Value.Index}"
                                     VirtualizingStackPanel.IsVirtualizing="True"
                                     VirtualizingStackPanel.VirtualizationMode="Recycling">
                                 <i:Interaction.Behaviors>
@@ -203,7 +203,7 @@
                                         <TextBlock Text="{Binding Path=Key, Mode=OneWay}" />
                                     </DataTemplate>
                                     <DataTemplate x:Key="CellTemplate_Value">
-                                        <TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
+                                        <TextBlock Text="{Binding Path=Value.Content, Mode=OneWay}" />
                                     </DataTemplate>
                                 </ListView.Resources>
                                 <ListView.ContextMenu>

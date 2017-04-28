@@ -14,8 +14,8 @@ using Omnius.Security;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(NameEditInfo))]
-    partial class NameEditInfo : INotifyPropertyChanged
+    [DataContract(Name = nameof(NameEditDialogInfo))]
+    partial class NameEditDialogInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -24,7 +24,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public NameEditInfo() { }
+        public NameEditDialogInfo() { }
 
         private string _name;
 
@@ -427,8 +427,8 @@ namespace Amoeba.Interface
             }
         }
     }
-    [DataContract(Name = nameof(StoreCategoryInfo))]
-    partial class StoreCategoryInfo : INotifyPropertyChanged
+    [DataContract(Name = nameof(UploadStoreCategoryInfo))]
+    partial class UploadStoreCategoryInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -437,7 +437,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public StoreCategoryInfo() { }
+        public UploadStoreCategoryInfo() { }
 
         private string _name;
 
@@ -477,36 +477,36 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<StoreInfo> _storeInfos;
+        private ObservableCollection<UploadStoreInfo> _storeInfos;
 
         [DataMember(Name = nameof(StoreInfos))]
-        public ObservableCollection<StoreInfo> StoreInfos
+        public ObservableCollection<UploadStoreInfo> StoreInfos
         {
             get
             {
                 if (_storeInfos == null)
-                    _storeInfos = new ObservableCollection<StoreInfo>();
+                    _storeInfos = new ObservableCollection<UploadStoreInfo>();
 
                 return _storeInfos;
             }
         }
 
-        private ObservableCollection<StoreCategoryInfo> _categoryInfos;
+        private ObservableCollection<UploadStoreCategoryInfo> _categoryInfos;
 
         [DataMember(Name = nameof(CategoryInfos))]
-        public ObservableCollection<StoreCategoryInfo> CategoryInfos
+        public ObservableCollection<UploadStoreCategoryInfo> CategoryInfos
         {
             get
             {
                 if (_categoryInfos == null)
-                    _categoryInfos = new ObservableCollection<StoreCategoryInfo>();
+                    _categoryInfos = new ObservableCollection<UploadStoreCategoryInfo>();
 
                 return _categoryInfos;
             }
         }
     }
-    [DataContract(Name = nameof(StoreInfo))]
-    partial class StoreInfo : INotifyPropertyChanged
+    [DataContract(Name = nameof(UploadStoreInfo))]
+    partial class UploadStoreInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -515,7 +515,26 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public StoreInfo() { }
+        public UploadStoreInfo() { }
+
+        private string _path;
+
+        [DataMember(Name = nameof(Path))]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                if (_path != value)
+                {
+                    _path = value;
+                    this.OnPropertyChanged(nameof(Path));
+                }
+            }
+        }
 
         private string _name;
 
@@ -571,6 +590,214 @@ namespace Amoeba.Interface
                     _isUpdated = value;
                     this.OnPropertyChanged(nameof(IsUpdated));
                 }
+            }
+        }
+
+        private ObservableCollection<SeedInfo> _seedInfos;
+
+        [DataMember(Name = nameof(SeedInfos))]
+        public ObservableCollection<SeedInfo> SeedInfos
+        {
+            get
+            {
+                if (_seedInfos == null)
+                    _seedInfos = new ObservableCollection<SeedInfo>();
+
+                return _seedInfos;
+            }
+        }
+
+        private ObservableCollection<BoxInfo> _boxInfos;
+
+        [DataMember(Name = nameof(BoxInfos))]
+        public ObservableCollection<BoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<BoxInfo>();
+
+                return _boxInfos;
+            }
+        }
+    }
+    [DataContract(Name = nameof(DownloadStoreCategoryInfo))]
+    partial class DownloadStoreCategoryInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public DownloadStoreCategoryInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private bool _isExpanded;
+
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
+            }
+        }
+
+        private ObservableCollection<DownloadStoreInfo> _storeInfos;
+
+        [DataMember(Name = nameof(StoreInfos))]
+        public ObservableCollection<DownloadStoreInfo> StoreInfos
+        {
+            get
+            {
+                if (_storeInfos == null)
+                    _storeInfos = new ObservableCollection<DownloadStoreInfo>();
+
+                return _storeInfos;
+            }
+        }
+
+        private ObservableCollection<DownloadStoreCategoryInfo> _categoryInfos;
+
+        [DataMember(Name = nameof(CategoryInfos))]
+        public ObservableCollection<DownloadStoreCategoryInfo> CategoryInfos
+        {
+            get
+            {
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<DownloadStoreCategoryInfo>();
+
+                return _categoryInfos;
+            }
+        }
+    }
+    [DataContract(Name = nameof(DownloadStoreInfo))]
+    partial class DownloadStoreInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public DownloadStoreInfo() { }
+
+        private Signature _signature;
+
+        [DataMember(Name = nameof(Signature))]
+        public Signature Signature
+        {
+            get
+            {
+                return _signature;
+            }
+            set
+            {
+                if (_signature != value)
+                {
+                    _signature = value;
+                    this.OnPropertyChanged(nameof(Signature));
+                }
+            }
+        }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private bool _isExpanded;
+
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
+            }
+        }
+
+        private bool _isUpdated;
+
+        [DataMember(Name = nameof(IsUpdated))]
+        public bool IsUpdated
+        {
+            get
+            {
+                return _isUpdated;
+            }
+            set
+            {
+                if (_isUpdated != value)
+                {
+                    _isUpdated = value;
+                    this.OnPropertyChanged(nameof(IsUpdated));
+                }
+            }
+        }
+
+        private ObservableCollection<SeedInfo> _seedInfos;
+
+        [DataMember(Name = nameof(SeedInfos))]
+        public ObservableCollection<SeedInfo> SeedInfos
+        {
+            get
+            {
+                if (_seedInfos == null)
+                    _seedInfos = new ObservableCollection<SeedInfo>();
+
+                return _seedInfos;
             }
         }
 

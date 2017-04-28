@@ -21,14 +21,14 @@
         TextOptions.TextRenderingMode="Auto"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
         mc:Ignorable="d">
-    <md:DialogHost Identifier="OptionRootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+    <md:DialogHost Identifier="OptionRootDialog">
         <Grid>
             <i:Interaction.Triggers>
                 <prism:InteractionRequestTrigger SourceObject="{Binding Path=ConfirmRequest}">
-                    <local:ConfirmAction Id="OptionRootDialog" />
+                    <local:ConfirmAction Identifier="OptionRootDialog" />
                 </prism:InteractionRequestTrigger>
                 <prism:InteractionRequestTrigger SourceObject="{Binding Path=NameEditRequest}">
-                    <local:NameEditAction Id="OptionRootDialog" />
+                    <local:NameEditAction Identifier="OptionRootDialog" />
                 </prism:InteractionRequestTrigger>
             </i:Interaction.Triggers>
             <Grid Margin="0,0,0,64">

@@ -39,6 +39,7 @@
   <Property Name="MainWindow_Store" Value="ストア" />
 
   <Property Name="OptionsWindow_Connection" Value="接続" />
+  <Property Name="OptionsWindow_Signature" Value="Signature" />
   <Property Name="OptionsWindow_TcpConnection" Value="Tcp接続" />
   <Property Name="OptionsWindow_I2pConnection" Value="I2p接続" />
 

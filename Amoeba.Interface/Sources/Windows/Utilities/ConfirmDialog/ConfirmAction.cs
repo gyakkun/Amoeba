@@ -19,13 +19,13 @@ namespace Amoeba.Interface
 
     public class ConfirmAction : TriggerAction<DependencyObject>
     {
-        public static readonly DependencyProperty IdProperty =
-            DependencyProperty.Register("Id", typeof(string), typeof(ConfirmAction), new PropertyMetadata(null));
+        public static readonly DependencyProperty IdentifierProperty =
+            DependencyProperty.Register("Identifier", typeof(string), typeof(ConfirmAction), new PropertyMetadata(null));
 
-        public string Id
+        public string Identifier
         {
-            get { return (string)GetValue(IdProperty); }
-            set { SetValue(IdProperty, value); }
+            get { return (string)GetValue(IdentifierProperty); }
+            set { SetValue(IdentifierProperty, value); }
         }
 
         protected override async void Invoke(object parameter)
@@ -43,7 +43,7 @@ namespace Amoeba.Interface
             }
 
             var view = new ConfirmDialogControl { DataContext = message };
-            context.Confirmed = (bool)await DialogHost.Show(view, this.Id);
+            context.Confirmed = (bool)await DialogHost.Show(view, this.Identifier);
 
             args.Callback();
         }

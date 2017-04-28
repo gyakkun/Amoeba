@@ -54,13 +54,13 @@ namespace Amoeba.Interface
                 this.NameEditRequest = new InteractionRequest<Confirmation>();
 
                 this.SignatureNewCommand = new ReactiveCommand().AddTo(_disposable);
-                this.SignatureNewCommand.Subscribe(() => this.SignatureNew());
+                this.SignatureNewCommand.Subscribe(() => this.SignatureNew()).AddTo(_disposable);
 
                 this.SignatureImportCommand = new ReactiveCommand().AddTo(_disposable);
-                this.SignatureImportCommand.Subscribe(() => this.SignatureImport());
+                this.SignatureImportCommand.Subscribe(() => this.SignatureImport()).AddTo(_disposable);
 
                 this.SignatureExportCommand = new ReactiveCommand().AddTo(_disposable);
-                this.SignatureExportCommand.Subscribe(() => this.SignatureExport());
+                this.SignatureExportCommand.Subscribe(() => this.SignatureExport()).AddTo(_disposable);
 
                 this.OkCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);

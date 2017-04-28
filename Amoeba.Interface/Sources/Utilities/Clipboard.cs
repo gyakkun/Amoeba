@@ -376,7 +376,7 @@ namespace Amoeba.Interface
             {
                 try
                 {
-                    using (Stream stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_ChatInfos"))
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_ChatInfos"))
                     {
                         return Clipboard.FromStream<IEnumerable<ChatInfo>>(stream);
                     }

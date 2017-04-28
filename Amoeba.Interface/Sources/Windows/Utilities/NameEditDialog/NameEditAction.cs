@@ -14,13 +14,13 @@ namespace Amoeba.Interface
 {
     public class NameEditAction : TriggerAction<DependencyObject>
     {
-        public static readonly DependencyProperty IdProperty =
-            DependencyProperty.Register("Id", typeof(string), typeof(NameEditAction), new PropertyMetadata(null));
+        public static readonly DependencyProperty IdentifierProperty =
+            DependencyProperty.Register("Identifier", typeof(string), typeof(NameEditAction), new PropertyMetadata(null));
 
-        public string Id
+        public string Identifier
         {
-            get { return (string)GetValue(IdProperty); }
-            set { SetValue(IdProperty, value); }
+            get { return (string)GetValue(IdentifierProperty); }
+            set { SetValue(IdentifierProperty, value); }
         }
 
         protected override async void Invoke(object parameter)
@@ -28,10 +28,10 @@ namespace Amoeba.Interface
             var args = parameter as InteractionRequestedEventArgs;
             var context = args.Context as Confirmation;
             string name = context.Content as string;
-            var info = new NameEditInfo() { Name = name };
+            var info = new NameEditDialogInfo() { Name = name };
 
             var view = new NameEditDialogControl { DataContext = info };
-            context.Confirmed = (bool)await DialogHost.Show(view, this.Id);
+            context.Confirmed = (bool)await DialogHost.Show(view, this.Identifier);
             if (context.Confirmed) context.Content = info.Name;
 
             args.Callback();

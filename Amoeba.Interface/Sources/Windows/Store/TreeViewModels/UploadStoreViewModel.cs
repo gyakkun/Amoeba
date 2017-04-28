@@ -1,60 +1,47 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Data;
-using Omnius.Base;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class BoxViewModel : TreeViewModelBase
+    class UploadStoreViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ReadOnlyReactiveCollection<SeedViewModel> Seeds { get; private set; }
+        public ReactiveProperty<bool> IsUpdated { get; private set; }
         public ReadOnlyReactiveCollection<BoxViewModel> Boxes { get; private set; }
+        public ReadOnlyReactiveCollection<SeedViewModel> Seeds { get; private set; }
 
-        public BoxInfo Model { get; private set; }
+        public UploadStoreInfo Model { get; private set; }
 
-        public BoxViewModel(TreeViewModelBase parent, BoxInfo model)
+        public UploadStoreViewModel(TreeViewModelBase parent, UploadStoreInfo model)
             : base(parent)
         {
             this.Model = model;
 
-            this.Name = model.ObserveProperty(n => n.Name).ToReactiveProperty().AddTo(_disposable);
+            this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
-            this.Seeds = model.SeedInfos.ToReadOnlyReactiveCollection(n => new SeedViewModel(this, n)).AddTo(_disposable);
+            this.IsUpdated = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);
             this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new BoxViewModel(this, n)).AddTo(_disposable);
+            this.Seeds = model.SeedInfos.ToReadOnlyReactiveCollection(n => new SeedViewModel(this, n)).AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Store"; } }
 
         public override bool TryAdd(object value)
         {
-            if (value is BoxViewModel viewModel)
-            {
-                this.Model.BoxInfos.Add(viewModel.Model);
-                return true;
-            }
-
             return false;
         }
 
         public override bool TryRemove(object value)
         {
-            if (value is BoxViewModel viewModel)
-            {
-                return this.Model.BoxInfos.Remove(viewModel.Model);
-            }
-
             return false;
         }
 

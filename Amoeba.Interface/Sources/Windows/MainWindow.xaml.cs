@@ -40,13 +40,13 @@ namespace Amoeba.Interface
 
             this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
 
-            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<OptionsWindowViewModel>>()
+            Messenger.Instance.GetEvent<PubSubEvent<OptionsWindowViewModel>>()
                 .Subscribe(vm =>
                 {
                     var window = new OptionsWindow(vm);
                     window.ShowDialog();
                 }).AddTo(_disposable);
-            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
+            Messenger.Instance.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
                 .Subscribe(vm =>
                 {
                     var window = new ChatMessageEditWindow(vm);

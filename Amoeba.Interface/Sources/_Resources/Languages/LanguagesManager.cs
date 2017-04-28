@@ -23,10 +23,10 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private static readonly LanguagesManager _defaultInstance = new LanguagesManager();
-
         private Dictionary<string, Dictionary<string, string>> _dic = new Dictionary<string, Dictionary<string, string>>();
         private string _currentLanguage;
+
+        public static LanguagesManager Instance { get; } = new LanguagesManager();
 
         public LanguagesManager()
         {
@@ -76,14 +76,6 @@ namespace Amoeba.Interface
             }
 
             this.SetCurrentLanguage("English");
-        }
-
-        public static LanguagesManager Instance
-        {
-            get
-            {
-                return _defaultInstance;
-            }
         }
 
         public IEnumerable<string> Languages

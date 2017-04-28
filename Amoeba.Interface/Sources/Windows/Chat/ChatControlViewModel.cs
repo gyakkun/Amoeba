@@ -101,10 +101,10 @@ namespace Amoeba.Interface
                 this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
 
                 this.TabNewCategoryCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
-                this.TabNewCategoryCommand.Subscribe(() => this.NewCategory()).AddTo(_disposable);
+                this.TabNewCategoryCommand.Subscribe(() => this.TabNewCategory()).AddTo(_disposable);
 
                 this.TabNewChatCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
-                this.TabNewChatCommand.Subscribe(() => this.NewChat()).AddTo(_disposable);
+                this.TabNewChatCommand.Subscribe(() => this.TabNewChat()).AddTo(_disposable);
 
                 this.TabEditCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabEditCommand.Subscribe(() => this.TabEdit()).AddTo(_disposable);
@@ -203,7 +203,7 @@ namespace Amoeba.Interface
             }
         }
 
-        private void NewCategory()
+        private void TabNewCategory()
         {
             this.NameEditRequest.Raise(new Confirmation() { Content = "" }, n =>
             {
@@ -216,7 +216,7 @@ namespace Amoeba.Interface
             });
         }
 
-        private void NewChat()
+        private void TabNewChat()
         {
             this.NameEditRequest.Raise(new Confirmation() { Content = "" }, n =>
             {
@@ -230,17 +230,6 @@ namespace Amoeba.Interface
 
                 chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = new Tag((string)n.Content, id) });
             });
-        }
-
-        private void NewMessage()
-        {
-            var chatViewModel = this.TabSelectedItem.Value as ChatViewModel;
-            if (chatViewModel == null) return;
-
-            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, _serviceManager);
-
-            MainWindowMessenger.ShowEvent.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
-                .Publish(viewModel);
         }
 
         private void TabEdit()
@@ -292,7 +281,24 @@ namespace Amoeba.Interface
             {
                 chatCategoryViewModel.Model.CategoryInfos.AddRange(Clipboard.GetChatCategoryInfos());
                 chatCategoryViewModel.Model.ChatInfos.AddRange(Clipboard.GetChatInfos());
+
+                foreach (var tag in Clipboard.GetTags())
+                {
+                    if (chatCategoryViewModel.Model.ChatInfos.Any(n => n.Tag == tag)) continue;
+                    chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = tag });
+                }
             }
+        }
+
+        private void NewMessage()
+        {
+            var chatViewModel = this.TabSelectedItem.Value as ChatViewModel;
+            if (chatViewModel == null) return;
+
+            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, _serviceManager);
+
+            Messenger.Instance.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
+                .Publish(viewModel);
         }
 
         protected override void Dispose(bool disposing)

@@ -31,7 +31,6 @@ using (var reader = new XmlTextReader(stream))
             {
                 namespaces.Add(reader.GetAttribute("Namespace"));
             }
-
         }
     }
 }
@@ -88,7 +87,6 @@ foreach(var p in propertyInfos)
 }
 #>
         }
-
 <#
     foreach(var p in propertyInfos)
     {

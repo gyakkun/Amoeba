@@ -31,7 +31,6 @@ namespace Amoeba.Interface
             obj.SetValue(CommandProperty, value);
         }
 
-        // Using a DependencyProperty as the backing store for Command.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(AvalonEditChatMessagesHelper), new PropertyMetadata(null));
 

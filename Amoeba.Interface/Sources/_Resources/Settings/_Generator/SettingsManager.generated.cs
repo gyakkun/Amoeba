@@ -31,7 +31,6 @@ namespace Amoeba.Interface
             _settings.Save("DigitalSignature", this.DigitalSignature);
         }
 
-
         private DigitalSignature _digitalSignature;
 
         [DataMember(Name = nameof(DigitalSignature))]

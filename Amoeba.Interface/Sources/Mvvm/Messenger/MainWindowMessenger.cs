@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Amoeba.Interface
 {
-	public class MainWindowMessenger : EventAggregator
+	public class Messenger : EventAggregator
 	{
-		public static MainWindowMessenger ShowEvent { get; } = new MainWindowMessenger();
+		public static Messenger Instance { get; } = new Messenger();
 	}
 }

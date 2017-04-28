@@ -20,7 +20,7 @@
         TextOptions.TextRenderingMode="Auto"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
         mc:Ignorable="d">
-    <md:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=MainSnackbar, Path=MessageQueue}">
+    <md:DialogHost Identifier="RootDialog">
         <DockPanel>
             <Menu DockPanel.Dock="Top" IsMainMenu="True">
                 <MenuItem Header="_Service">

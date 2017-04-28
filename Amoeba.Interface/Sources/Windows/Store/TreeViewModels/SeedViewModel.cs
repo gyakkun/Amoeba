@@ -27,13 +27,13 @@ namespace Amoeba.Interface
         {
             this.Model = model;
 
-            this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
-            this.Length = model.ToReactivePropertyAsSynchronized(n => n.Length).AddTo(_disposable);
-            this.CreationTime = model.ToReactivePropertyAsSynchronized(n => n.CreationTime).AddTo(_disposable);
-            this.Metadata = model.ToReactivePropertyAsSynchronized(n => n.Metadata).AddTo(_disposable);
+            this.Name = model.ObserveProperty(n => n.Name).ToReactiveProperty().AddTo(_disposable);
+            this.Length = model.ObserveProperty(n => n.Length).ToReactiveProperty().AddTo(_disposable);
+            this.CreationTime = model.ObserveProperty(n => n.CreationTime).ToReactiveProperty().AddTo(_disposable);
+            this.Metadata = model.ObserveProperty(n => n.Metadata).ToReactiveProperty().AddTo(_disposable);
         }
 
-        public override string DragFormat { get { return "Store"; } }
+        public override string DragFormat { get { return null; } }
 
         public override bool TryAdd(object value)
         {

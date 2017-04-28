@@ -98,10 +98,10 @@
     </Compile>
     <Compile Include="Sources\Windows\Crowd\CrowdControlViewModel.cs" />
     <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Items\StoreCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Items\StoreViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Items\SeedViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Items\BoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\TreeViewModels\UploadStoreCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\TreeViewModels\UploadStoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\TreeViewModels\SeedViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\TreeViewModels\BoxViewModel.cs" />
     <Compile Include="Sources\_Resources\Settings\SettingsManager.cs" />
     <Compile Include="Sources\_Resources\Settings\_Generator\SettingsManager.generated.cs">
       <AutoGen>True</AutoGen>

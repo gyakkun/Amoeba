@@ -18,19 +18,11 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private static readonly SettingsManager _defaultInstance = new SettingsManager(System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "Settings"));
+        public static SettingsManager Instance { get; } = new SettingsManager(System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "Settings"));
 
         private void Init()
         {
 
-        }
-
-        public static SettingsManager Instance
-        {
-            get
-            {
-                return _defaultInstance;
-            }
         }
     }
 }

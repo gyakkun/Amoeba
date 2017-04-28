@@ -16,10 +16,10 @@
     <Grid>
         <i:Interaction.Triggers>
             <prism:InteractionRequestTrigger SourceObject="{Binding Path=ConfirmRequest}">
-                <local:ConfirmAction Id="RootDialog" />
+                <local:ConfirmAction Identifier="RootDialog" />
             </prism:InteractionRequestTrigger>
             <prism:InteractionRequestTrigger SourceObject="{Binding Path=NameEditRequest}">
-                <local:NameEditAction Id="RootDialog" />
+                <local:NameEditAction Identifier="RootDialog" />
             </prism:InteractionRequestTrigger>
         </i:Interaction.Triggers>
         <Grid.ColumnDefinitions>
@@ -32,6 +32,11 @@
                 Grid.Column="0"
                 AllowDrop="True"
                 ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                    <i:InvokeCommandAction Command="{Binding Path=TabClickCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:ChatCategoryViewModel}">
                     <HierarchicalDataTemplate.ItemsSource>
@@ -48,19 +53,14 @@
                     </HierarchicalDataTemplate.ItemsSource>
                     <TextBlock Text="{Binding Path=Name.Value}">
                         <i:Interaction.Behaviors>
-                            <omnius:DragStartBehavior AllowedEffects="Move" DragDropData="{Binding}" />
+                            <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
                         </i:Interaction.Behaviors>
                     </TextBlock>
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type local:ChatViewModel}">
                     <TextBlock Text="{Binding Path=Name.Value}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                                <i:InvokeCommandAction Command="{Binding Path=TabClickCommand}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                         <i:Interaction.Behaviors>
-                            <omnius:DragStartBehavior AllowedEffects="Move" DragDropData="{Binding}" />
+                            <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
                         </i:Interaction.Behaviors>
                     </TextBlock>
                 </HierarchicalDataTemplate>

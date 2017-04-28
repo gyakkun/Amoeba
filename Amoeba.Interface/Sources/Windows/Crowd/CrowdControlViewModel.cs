@@ -32,7 +32,7 @@ namespace Amoeba.Interface
         public ReactiveCommand ConnectionPasteCommand { get; private set; }
 
         public CrowdStateInfo State { get; } = new CrowdStateInfo();
-        public ObservableDictionary<string, string> Information { get; } = new ObservableDictionary<string, string>();
+        public ObservableDictionary<string, DynamicViewModel> Information { get; } = new ObservableDictionary<string, DynamicViewModel>();
         public ObservableCollection<object> StateSelectedItems { get; } = new ObservableCollection<object>();
 
         public ReactiveCommand StateCopyCommand { get; private set; }
@@ -76,7 +76,7 @@ namespace Amoeba.Interface
 
         private void WatchThread(CancellationToken token)
         {
-            var sizeTypeHashSet = new HashSet<string>()
+            var matchSizeTypeHashSet = new HashSet<string>()
             {
                 "Cache_FreeSpace",
                 "Cache_LockSpace",
@@ -109,7 +109,7 @@ namespace Amoeba.Interface
                                 }
                             }
 
-                            foreach (var (i, key, info) in dic.Select((item, i) => (i, item.Key, item.Value)))
+                            foreach (var (key, info) in dic)
                             {
                                 DynamicViewModel viewModel;
 
@@ -118,8 +118,6 @@ namespace Amoeba.Interface
                                     viewModel = new DynamicViewModel();
                                     this.ConnectionInformations[key] = viewModel;
                                 }
-
-                                viewModel.SetValue("Index", i);
 
                                 foreach (var (name, value) in info)
                                 {
@@ -134,7 +132,16 @@ namespace Amoeba.Interface
                         {
                             if (token.IsCancellationRequested) return;
 
-                            this.State.Location = AmoebaConverter.ToLocationString(_serviceManager.MyLocation);
+                            var location = _serviceManager.MyLocation;
+
+                            if (location.Uris.Count() > 0)
+                            {
+                                this.State.Location = AmoebaConverter.ToLocationString(location);
+                            }
+                            else
+                            {
+                                this.State.Location = null;
+                            }
                         });
                     }
 
@@ -145,15 +152,25 @@ namespace Amoeba.Interface
                         {
                             if (token.IsCancellationRequested) return;
 
-                            foreach (var (key, value) in information)
+                            foreach (var (i, key, value) in information.Select((item, i) => (i, item.Key, item.Value)))
                             {
-                                if (sizeTypeHashSet.Contains(key))
+                                DynamicViewModel viewModel;
+
+                                if (!this.Information.TryGetValue(key, out viewModel))
                                 {
-                                    this.Information[key] = NetworkConverter.ToSizeString((long)value);
+                                    viewModel = new DynamicViewModel();
+                                    this.Information[key] = viewModel;
+                                }
+
+                                viewModel.SetValue("Index", i);
+
+                                if (matchSizeTypeHashSet.Contains(key))
+                                {
+                                    viewModel.SetValue("Content", NetworkConverter.ToSizeString((long)value));
                                 }
                                 else
                                 {
-                                    this.Information[key] = value.ToString();
+                                    viewModel.SetValue("Content", value.ToString());
                                 }
                             }
                         });
