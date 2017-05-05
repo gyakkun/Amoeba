@@ -102,6 +102,7 @@
     <Compile Include="Sources\Windows\Store\TreeViewModels\UploadStoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\TreeViewModels\SeedViewModel.cs" />
     <Compile Include="Sources\Windows\Store\TreeViewModels\BoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Utilities\NameEditDialog\NameEditDialogViewModel.cs" />
     <Compile Include="Sources\_Resources\Settings\SettingsManager.cs" />
     <Compile Include="Sources\_Resources\Settings\_Generator\SettingsManager.generated.cs">
       <AutoGen>True</AutoGen>

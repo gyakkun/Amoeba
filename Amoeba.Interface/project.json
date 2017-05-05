@@ -1,8 +1,9 @@
 ﻿{
   "dependencies": {
     "AvalonEdit": "5.0.3",
+    "DotNetZip": "1.10.1",
     "NETStandard.Library": "1.6.1",
-    "Nett": "0.6.2",
+    "Nett": "0.6.3",
     "Prism.Wpf": "6.3.0",
     "ReactiveProperty": "3.6.0",
     "System.Reactive": "3.1.1",

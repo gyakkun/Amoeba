@@ -32,6 +32,7 @@ namespace Amoeba.Interface
         {
             var args = parameter as InteractionRequestedEventArgs;
             var context = args.Context as Confirmation;
+
             string message = null;
 
             if (context.Content is ConfirmDialogType type)

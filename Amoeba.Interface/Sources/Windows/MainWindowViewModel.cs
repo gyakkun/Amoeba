@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -43,15 +42,6 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
-                SettingsManager.Instance.Load();
-
-                {
-                    if (SettingsManager.Instance.DigitalSignature == null)
-                    {
-                        SettingsManager.Instance.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256);
-                    }
-                }
-
                 string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
@@ -68,6 +58,15 @@ namespace Amoeba.Interface
                 this.OptionsCommand.Subscribe(() => this.Options()).AddTo(_disposable);
 
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
+            }
+
+            {
+                SettingsManager.Instance.Load();
+
+                if (SettingsManager.Instance.DigitalSignature == null)
+                {
+                    SettingsManager.Instance.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256);
+                }
             }
 
             {
@@ -107,11 +106,11 @@ namespace Amoeba.Interface
                 _settings.Save("Config", this.Config.GetPairs());
                 _disposable.Dispose();
 
+                SettingsManager.Instance.Save();
+
                 _serviceManager.Stop();
                 _serviceManager.Save();
                 _serviceManager.Dispose();
-
-                SettingsManager.Instance.Save();
             }
         }
     }

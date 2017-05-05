@@ -44,12 +44,14 @@ namespace Amoeba.Interface
                 .Subscribe(vm =>
                 {
                     var window = new OptionsWindow(vm);
+                    window.Owner = this;
                     window.ShowDialog();
                 }).AddTo(_disposable);
             Messenger.Instance.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
                 .Subscribe(vm =>
                 {
                     var window = new ChatMessageEditWindow(vm);
+                    window.Owner = this;
                     window.ShowDialog();
                 }).AddTo(_disposable);
         }

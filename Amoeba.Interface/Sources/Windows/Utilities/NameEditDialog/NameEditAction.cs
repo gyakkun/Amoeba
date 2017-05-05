@@ -27,12 +27,14 @@ namespace Amoeba.Interface
         {
             var args = parameter as InteractionRequestedEventArgs;
             var context = args.Context as Confirmation;
-            string name = context.Content as string;
-            var info = new NameEditDialogInfo() { Name = name };
 
-            var view = new NameEditDialogControl { DataContext = info };
+            var viewModel = new NameEditDialogViewModel();
+            viewModel.Name.Value = (string)context.Content;
+
+            var view = new NameEditDialogControl { DataContext = viewModel };
             context.Confirmed = (bool)await DialogHost.Show(view, this.Identifier);
-            if (context.Confirmed) context.Content = info.Name;
+
+            context.Content = viewModel.Name.Value;
 
             args.Callback();
         }

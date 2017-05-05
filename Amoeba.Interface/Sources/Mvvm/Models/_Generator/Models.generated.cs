@@ -14,37 +14,6 @@ using Omnius.Security;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(NameEditDialogInfo))]
-    partial class NameEditDialogInfo : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public NameEditDialogInfo() { }
-
-        private string _name;
-
-        [DataMember(Name = nameof(Name))]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-    }
     [DataContract(Name = nameof(CrowdStateInfo))]
     partial class CrowdStateInfo : INotifyPropertyChanged
     {

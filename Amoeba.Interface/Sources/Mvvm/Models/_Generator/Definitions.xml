@@ -7,10 +7,6 @@
   <Import Namespace="Omnius.Collections" />
   <Import Namespace="Omnius.Security" />
 
-  <Class Name="NameEditDialogInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-  </Class>
-
   <Class Name="CrowdStateInfo">
     <Property Type="string" Name="Location" IsEditable="true" />
   </Class>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{7D516C9F-7D8A-4166-8D12-D6AF798F6DA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Interface", "Amoeba.Interface\Amoeba.Interface.csproj", "{19E45677-BD12-4F48-8C19-87E60B7CBA36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Update", "Amoeba.Update\Amoeba.Update.csproj", "{7847434C-5101-4937-8C4E-B51D8415ABD6}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -121,6 +123,10 @@ Global
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7847434C-5101-4937-8C4E-B51D8415ABD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7847434C-5101-4937-8C4E-B51D8415ABD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7847434C-5101-4937-8C4E-B51D8415ABD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7847434C-5101-4937-8C4E-B51D8415ABD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
