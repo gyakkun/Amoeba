@@ -11,37 +11,37 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class UploadStoreCategoryViewModel : TreeViewModelBase
+    class StoreCategoryViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ReadOnlyReactiveCollection<UploadStoreViewModel> Stores { get; private set; }
-        public ReadOnlyReactiveCollection<UploadStoreCategoryViewModel> Categories { get; private set; }
+        public ReadOnlyReactiveCollection<StoreViewModel> Stores { get; private set; }
+        public ReadOnlyReactiveCollection<StoreCategoryViewModel> Categories { get; private set; }
 
-        public UploadStoreCategoryInfo Model { get; private set; }
+        public StoreCategoryInfo Model { get; private set; }
 
-        public UploadStoreCategoryViewModel(TreeViewModelBase parent, UploadStoreCategoryInfo model)
+        public StoreCategoryViewModel(TreeViewModelBase parent, StoreCategoryInfo model)
             : base(parent)
         {
             this.Model = model;
 
             this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
-            this.Stores = model.StoreInfos.ToReadOnlyReactiveCollection(n => new UploadStoreViewModel(this, n)).AddTo(_disposable);
-            this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new UploadStoreCategoryViewModel(this, n)).AddTo(_disposable);
+            this.Stores = model.StoreInfos.ToReadOnlyReactiveCollection(n => new StoreViewModel(this, n)).AddTo(_disposable);
+            this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new StoreCategoryViewModel(this, n)).AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Store"; } }
 
         public override bool TryAdd(object value)
         {
-            if (value is UploadStoreCategoryViewModel categoryViewModel)
+            if (value is StoreCategoryViewModel categoryViewModel)
             {
                 this.Model.CategoryInfos.Add(categoryViewModel.Model);
                 return true;
             }
-            else if (value is UploadStoreViewModel storeViewModel)
+            else if (value is StoreViewModel storeViewModel)
             {
                 this.Model.StoreInfos.Add(storeViewModel.Model);
                 return true;
@@ -52,11 +52,11 @@ namespace Amoeba.Interface
 
         public override bool TryRemove(object value)
         {
-            if (value is UploadStoreCategoryViewModel categoryViewModel)
+            if (value is StoreCategoryViewModel categoryViewModel)
             {
                 return this.Model.CategoryInfos.Remove(categoryViewModel.Model);
             }
-            else if (value is UploadStoreViewModel storeViewModel)
+            else if (value is StoreViewModel storeViewModel)
             {
                 return this.Model.StoreInfos.Remove(storeViewModel.Model);
             }

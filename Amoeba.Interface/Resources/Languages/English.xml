@@ -55,4 +55,10 @@
   <Property Name="CrowdControl_Name" Value="Name" />
   <Property Name="CrowdControl_Value" Value="Value" />
 
+  <Property Name="StoreControl_Search" Value="Search" />
+  <Property Name="StoreControl_Download" Value="Download" />
+  <Property Name="StoreControl_Upload" Value="Upload" />
+  <Property Name="StoreControl_State" Value="State" />
+  <Property Name="StoreControl_Share" Value="Share" />
+
 </Config>

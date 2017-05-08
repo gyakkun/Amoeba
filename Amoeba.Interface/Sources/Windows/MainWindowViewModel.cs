@@ -81,7 +81,7 @@ namespace Amoeba.Interface
             {
                 this.CrowdControlViewModel = new CrowdControlViewModel(_serviceManager);
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager);
-                this.StoreControlViewModel = new StoreControlViewModel();
+                this.StoreControlViewModel = new StoreControlViewModel(_serviceManager);
             }
         }
 

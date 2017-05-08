@@ -37,6 +37,8 @@ namespace Amoeba.Interface
             context.Content = viewModel.Name.Value;
 
             args.Callback();
+
+            viewModel.Dispose();
         }
     }
 }

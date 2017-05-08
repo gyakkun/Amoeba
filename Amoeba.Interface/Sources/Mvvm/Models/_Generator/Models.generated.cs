@@ -396,8 +396,8 @@ namespace Amoeba.Interface
             }
         }
     }
-    [DataContract(Name = nameof(UploadStoreCategoryInfo))]
-    partial class UploadStoreCategoryInfo : INotifyPropertyChanged
+    [DataContract(Name = nameof(SearchInfo))]
+    partial class SearchInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -406,7 +406,136 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public UploadStoreCategoryInfo() { }
+        public SearchInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private ObservableCollection<SearchContains<string>> _searchNames;
+
+        [DataMember(Name = nameof(SearchNames))]
+        public ObservableCollection<SearchContains<string>> SearchNames
+        {
+            get
+            {
+                if (_searchNames == null)
+                    _searchNames = new ObservableCollection<SearchContains<string>>();
+
+                return _searchNames;
+            }
+        }
+
+        private ObservableCollection<SearchContains<SearchRegex>> _searchRegexes;
+
+        [DataMember(Name = nameof(SearchRegexes))]
+        public ObservableCollection<SearchContains<SearchRegex>> SearchRegexes
+        {
+            get
+            {
+                if (_searchRegexes == null)
+                    _searchRegexes = new ObservableCollection<SearchContains<SearchRegex>>();
+
+                return _searchRegexes;
+            }
+        }
+
+        private ObservableCollection<SearchContains<Signature>> _searchSignatures;
+
+        [DataMember(Name = nameof(SearchSignatures))]
+        public ObservableCollection<SearchContains<Signature>> SearchSignatures
+        {
+            get
+            {
+                if (_searchSignatures == null)
+                    _searchSignatures = new ObservableCollection<SearchContains<Signature>>();
+
+                return _searchSignatures;
+            }
+        }
+
+        private ObservableCollection<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRanges;
+
+        [DataMember(Name = nameof(SearchCreationTimeRanges))]
+        public ObservableCollection<SearchContains<SearchRange<DateTime>>> SearchCreationTimeRanges
+        {
+            get
+            {
+                if (_searchCreationTimeRanges == null)
+                    _searchCreationTimeRanges = new ObservableCollection<SearchContains<SearchRange<DateTime>>>();
+
+                return _searchCreationTimeRanges;
+            }
+        }
+
+        private ObservableCollection<SearchContains<SearchRange<long>>> _searchLengthRanges;
+
+        [DataMember(Name = nameof(SearchLengthRanges))]
+        public ObservableCollection<SearchContains<SearchRange<long>>> SearchLengthRanges
+        {
+            get
+            {
+                if (_searchLengthRanges == null)
+                    _searchLengthRanges = new ObservableCollection<SearchContains<SearchRange<long>>>();
+
+                return _searchLengthRanges;
+            }
+        }
+
+        private ObservableCollection<SearchContains<Metadata>> _searchMetadatas;
+
+        [DataMember(Name = nameof(SearchMetadatas))]
+        public ObservableCollection<SearchContains<Metadata>> SearchMetadatas
+        {
+            get
+            {
+                if (_searchMetadatas == null)
+                    _searchMetadatas = new ObservableCollection<SearchContains<Metadata>>();
+
+                return _searchMetadatas;
+            }
+        }
+
+        private ObservableCollection<SearchContains<SearchState>> _searchStates;
+
+        [DataMember(Name = nameof(SearchStates))]
+        public ObservableCollection<SearchContains<SearchState>> SearchStates
+        {
+            get
+            {
+                if (_searchStates == null)
+                    _searchStates = new ObservableCollection<SearchContains<SearchState>>();
+
+                return _searchStates;
+            }
+        }
+    }
+    [DataContract(Name = nameof(StoreCategoryInfo))]
+    partial class StoreCategoryInfo : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public StoreCategoryInfo() { }
 
         private string _name;
 
@@ -446,36 +575,36 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<UploadStoreInfo> _storeInfos;
+        private ObservableCollection<StoreInfo> _storeInfos;
 
         [DataMember(Name = nameof(StoreInfos))]
-        public ObservableCollection<UploadStoreInfo> StoreInfos
+        public ObservableCollection<StoreInfo> StoreInfos
         {
             get
             {
                 if (_storeInfos == null)
-                    _storeInfos = new ObservableCollection<UploadStoreInfo>();
+                    _storeInfos = new ObservableCollection<StoreInfo>();
 
                 return _storeInfos;
             }
         }
 
-        private ObservableCollection<UploadStoreCategoryInfo> _categoryInfos;
+        private ObservableCollection<StoreCategoryInfo> _categoryInfos;
 
         [DataMember(Name = nameof(CategoryInfos))]
-        public ObservableCollection<UploadStoreCategoryInfo> CategoryInfos
+        public ObservableCollection<StoreCategoryInfo> CategoryInfos
         {
             get
             {
                 if (_categoryInfos == null)
-                    _categoryInfos = new ObservableCollection<UploadStoreCategoryInfo>();
+                    _categoryInfos = new ObservableCollection<StoreCategoryInfo>();
 
                 return _categoryInfos;
             }
         }
     }
-    [DataContract(Name = nameof(UploadStoreInfo))]
-    partial class UploadStoreInfo : INotifyPropertyChanged
+    [DataContract(Name = nameof(StoreInfo))]
+    partial class StoreInfo : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -484,201 +613,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public UploadStoreInfo() { }
-
-        private string _path;
-
-        [DataMember(Name = nameof(Path))]
-        public string Path
-        {
-            get
-            {
-                return _path;
-            }
-            set
-            {
-                if (_path != value)
-                {
-                    _path = value;
-                    this.OnPropertyChanged(nameof(Path));
-                }
-            }
-        }
-
-        private string _name;
-
-        [DataMember(Name = nameof(Name))]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        private bool _isExpanded;
-
-        [DataMember(Name = nameof(IsExpanded))]
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
-            }
-        }
-
-        private bool _isUpdated;
-
-        [DataMember(Name = nameof(IsUpdated))]
-        public bool IsUpdated
-        {
-            get
-            {
-                return _isUpdated;
-            }
-            set
-            {
-                if (_isUpdated != value)
-                {
-                    _isUpdated = value;
-                    this.OnPropertyChanged(nameof(IsUpdated));
-                }
-            }
-        }
-
-        private ObservableCollection<SeedInfo> _seedInfos;
-
-        [DataMember(Name = nameof(SeedInfos))]
-        public ObservableCollection<SeedInfo> SeedInfos
-        {
-            get
-            {
-                if (_seedInfos == null)
-                    _seedInfos = new ObservableCollection<SeedInfo>();
-
-                return _seedInfos;
-            }
-        }
-
-        private ObservableCollection<BoxInfo> _boxInfos;
-
-        [DataMember(Name = nameof(BoxInfos))]
-        public ObservableCollection<BoxInfo> BoxInfos
-        {
-            get
-            {
-                if (_boxInfos == null)
-                    _boxInfos = new ObservableCollection<BoxInfo>();
-
-                return _boxInfos;
-            }
-        }
-    }
-    [DataContract(Name = nameof(DownloadStoreCategoryInfo))]
-    partial class DownloadStoreCategoryInfo : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public DownloadStoreCategoryInfo() { }
-
-        private string _name;
-
-        [DataMember(Name = nameof(Name))]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        private bool _isExpanded;
-
-        [DataMember(Name = nameof(IsExpanded))]
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
-            }
-        }
-
-        private ObservableCollection<DownloadStoreInfo> _storeInfos;
-
-        [DataMember(Name = nameof(StoreInfos))]
-        public ObservableCollection<DownloadStoreInfo> StoreInfos
-        {
-            get
-            {
-                if (_storeInfos == null)
-                    _storeInfos = new ObservableCollection<DownloadStoreInfo>();
-
-                return _storeInfos;
-            }
-        }
-
-        private ObservableCollection<DownloadStoreCategoryInfo> _categoryInfos;
-
-        [DataMember(Name = nameof(CategoryInfos))]
-        public ObservableCollection<DownloadStoreCategoryInfo> CategoryInfos
-        {
-            get
-            {
-                if (_categoryInfos == null)
-                    _categoryInfos = new ObservableCollection<DownloadStoreCategoryInfo>();
-
-                return _categoryInfos;
-            }
-        }
-    }
-    [DataContract(Name = nameof(DownloadStoreInfo))]
-    partial class DownloadStoreInfo : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public DownloadStoreInfo() { }
+        public StoreInfo() { }
 
         private Signature _signature;
 

@@ -38,21 +38,35 @@
                     Padding="16,8"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="{Binding Path=StoreControl_Connection, Source={StaticResource Languages}}" />
+                    Content="{Binding Path=StoreControl_Search, Source={StaticResource Languages}}" />
             <ListBoxItem
-                    Name="DownloadListBoxItem"
+                    Name="StoreDownloadListBoxItem"
+                    Height="32"
+                    Padding="16,8"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=StoreControl_Download, Source={StaticResource Languages}}" />
+            <ListBoxItem
+                    Name="StoreUploadListBoxItem"
+                    Height="32"
+                    Padding="16,8"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=StoreControl_Upload, Source={StaticResource Languages}}" />
+            <ListBoxItem
+                    Name="StateListBoxItem"
                     Height="32"
                     Padding="16,8"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="{Binding Path=StoreControl_State, Source={StaticResource Languages}}" />
             <ListBoxItem
-                    Name="UploadListBoxItem"
+                    Name="ShareListBoxItem"
                     Height="32"
                     Padding="16,8"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="{Binding Path=StoreControl_State, Source={StaticResource Languages}}" />
+                    Content="{Binding Path=StoreControl_Share, Source={StaticResource Languages}}" />
         </ListBox>
 
         <ContentControl Grid.Column="1" Visibility="{Binding ElementName=SearchListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">

@@ -45,30 +45,25 @@
     <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
   </Class>
 
-  <Class Name="UploadStoreCategoryInfo">
+  <Class Name="SearchInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(UploadStoreInfo)" Name="StoreInfos" />
-    <Property Type="ObservableCollection(UploadStoreCategoryInfo)" Name="CategoryInfos" />
+    <Property Type="ObservableCollection(SearchContains(string))" Name="SearchNames" />
+    <Property Type="ObservableCollection(SearchContains(SearchRegex))" Name="SearchRegexes" />
+    <Property Type="ObservableCollection(SearchContains(Signature))" Name="SearchSignatures" />
+    <Property Type="ObservableCollection(SearchContains(SearchRange(DateTime)))" Name="SearchCreationTimeRanges" />
+    <Property Type="ObservableCollection(SearchContains(SearchRange(long)))" Name="SearchLengthRanges" />
+    <Property Type="ObservableCollection(SearchContains(Metadata))" Name="SearchMetadatas" />
+    <Property Type="ObservableCollection(SearchContains(SearchState))" Name="SearchStates" />
   </Class>
 
-  <Class Name="UploadStoreInfo">
-    <Property Type="string" Name="Path" IsEditable="true" />
+  <Class Name="StoreCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" />
-    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
+    <Property Type="ObservableCollection(StoreInfo)" Name="StoreInfos" />
+    <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" />
   </Class>
 
-  <Class Name="DownloadStoreCategoryInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(DownloadStoreInfo)" Name="StoreInfos" />
-    <Property Type="ObservableCollection(DownloadStoreCategoryInfo)" Name="CategoryInfos" />
-  </Class>
-
-  <Class Name="DownloadStoreInfo">
+  <Class Name="StoreInfo">
     <Property Type="Signature" Name="Signature" IsEditable="true" />
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />

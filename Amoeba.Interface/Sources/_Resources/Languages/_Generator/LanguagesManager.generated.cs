@@ -51,5 +51,10 @@ namespace Amoeba.Interface
         public string CrowdControl_SentByteCount { get { return this.Translate("CrowdControl_SentByteCount"); } }
         public string CrowdControl_Name { get { return this.Translate("CrowdControl_Name"); } }
         public string CrowdControl_Value { get { return this.Translate("CrowdControl_Value"); } }
+        public string StoreControl_Search { get { return this.Translate("StoreControl_Search"); } }
+        public string StoreControl_State { get { return this.Translate("StoreControl_State"); } }
+        public string StoreControl_Share { get { return this.Translate("StoreControl_Share"); } }
+        public string StoreControl_Download { get { return this.Translate("StoreControl_Download"); } }
+        public string StoreControl_Upload { get { return this.Translate("StoreControl_Upload"); } }
     }
 }

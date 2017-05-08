@@ -10,7 +10,7 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class UploadStoreViewModel : TreeViewModelBase
+    class StoreViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -19,9 +19,9 @@ namespace Amoeba.Interface
         public ReadOnlyReactiveCollection<BoxViewModel> Boxes { get; private set; }
         public ReadOnlyReactiveCollection<SeedViewModel> Seeds { get; private set; }
 
-        public UploadStoreInfo Model { get; private set; }
+        public StoreInfo Model { get; private set; }
 
-        public UploadStoreViewModel(TreeViewModelBase parent, UploadStoreInfo model)
+        public StoreViewModel(TreeViewModelBase parent, StoreInfo model)
             : base(parent)
         {
             this.Model = model;

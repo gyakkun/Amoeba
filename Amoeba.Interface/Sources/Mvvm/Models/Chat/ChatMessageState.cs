@@ -9,7 +9,7 @@ namespace Amoeba.Interface
 {
     [Flags]
     [DataContract(Name = nameof(ChatMessageState))]
-    public enum ChatMessageState
+    enum ChatMessageState
     {
         [EnumMember(Value = "None")]
         None = 0,

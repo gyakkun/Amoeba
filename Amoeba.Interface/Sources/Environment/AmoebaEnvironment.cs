@@ -94,12 +94,12 @@ namespace Amoeba.Interface
         public class EnvironmentConfig
         {
             public CacheConfig Cache { get; private set; }
-            public ColorConfig Color { get; private set; }
+            public ColorsConfig Colors { get; private set; }
 
             public EnvironmentConfig()
             {
                 this.Cache = new CacheConfig();
-                this.Color = new ColorConfig();
+                this.Colors = new ColorsConfig();
             }
 
             public class CacheConfig
@@ -112,9 +112,9 @@ namespace Amoeba.Interface
                 public string BlocksPath { get; private set; }
             }
 
-            public class ColorConfig
+            public class ColorsConfig
             {
-                public ColorConfig()
+                public ColorsConfig()
                 {
                     this.Tree_Hit = System.Windows.Media.Colors.LightPink.ToString();
                     this.Link = System.Windows.Media.Colors.SkyBlue.ToString();

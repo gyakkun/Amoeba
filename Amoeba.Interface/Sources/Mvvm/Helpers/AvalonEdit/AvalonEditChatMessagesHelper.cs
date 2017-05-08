@@ -215,11 +215,11 @@ namespace Amoeba.Interface
 
                         if (Inspect.ContainTrustSignature(Signature.Parse(result.Value)))
                         {
-                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(AmoebaEnvironment.Config.Color.Message_Trust));
+                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(AmoebaEnvironment.Config.Colors.Message_Trust));
                         }
                         else
                         {
-                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(AmoebaEnvironment.Config.Color.Message_Untrust));
+                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(AmoebaEnvironment.Config.Colors.Message_Untrust));
                         }
 
                         var element = new CustomTextElement(result.Value);

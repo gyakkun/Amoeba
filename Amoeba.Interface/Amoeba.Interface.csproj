@@ -74,6 +74,10 @@
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\CustomAvalonEditHelperBase.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\AvalonEditChatMessagesHelper.cs" />
     <Compile Include="Sources\Mvvm\Models\Chat\ChatMessageState.cs" />
+    <Compile Include="Sources\Mvvm\Models\Store\Search\SearchContains.cs" />
+    <Compile Include="Sources\Mvvm\Models\Store\Search\SearchRange.cs" />
+    <Compile Include="Sources\Mvvm\Models\Store\Search\SearchRegex.cs" />
+    <Compile Include="Sources\Mvvm\Models\Store\Search\SearchState.cs" />
     <Compile Include="Sources\Mvvm\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
     <Compile Include="Sources\Utilities\Inspect.cs" />
@@ -83,8 +87,8 @@
       <DependentUpon>ChatControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Chat\ChatControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Chat\Items\ChatCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Chat\Items\ChatViewModel.cs" />
+    <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatViewModel.cs" />
     <Compile Include="Sources\Windows\Chat\Windows\ChatMessageEditWindow.xaml.cs">
       <DependentUpon>ChatMessageEditWindow.xaml</DependentUpon>
     </Compile>
@@ -211,7 +215,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="project.json" />
-    <Compile Include="Sources\Mvvm\Messenger\MainWindowMessenger.cs" />
+    <Compile Include="Sources\Utilities\Messenger.cs" />
     <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml" />
     <Content Include="Sources\Mvvm\Models\_Generator\Models.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
