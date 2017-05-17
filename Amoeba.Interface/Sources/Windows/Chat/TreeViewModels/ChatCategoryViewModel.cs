@@ -29,7 +29,7 @@ namespace Amoeba.Interface
         {
             this.Model = model;
 
-            this.Name = model.ObserveProperty(n => n.Name).ToReactiveProperty().AddTo(_disposable);
+            this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.Chats = model.ChatInfos.ToReadOnlyReactiveCollection(n => new ChatViewModel(this, n)).AddTo(_disposable);
             this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new ChatCategoryViewModel(this, n)).AddTo(_disposable);
@@ -67,12 +67,15 @@ namespace Amoeba.Interface
             return false;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
             _disposed = true;
 
-            _disposable.Dispose();
+            if (disposing)
+            {
+                _disposable.Dispose();
+            }
         }
     }
 }

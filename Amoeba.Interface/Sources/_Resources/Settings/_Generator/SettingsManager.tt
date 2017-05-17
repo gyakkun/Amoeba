@@ -24,8 +24,9 @@ using (var reader = new XmlTextReader(stream))
             {
                 var type = GetNormalizedTypeName(reader.GetAttribute("Type"));
                 var name = reader.GetAttribute("Name");
+                var isEditable = bool.Parse(reader.GetAttribute("IsEditable") ?? "false");
 
-                propertyInfos.Add(new PropertyInfo(type, name));
+                propertyInfos.Add(new PropertyInfo(type, name, isEditable));
             }
             else if (reader.LocalName == "Import")
             {
@@ -53,47 +54,16 @@ using <#= value #>;
 
 namespace Amoeba.Interface
 {
-    partial class SettingsManager : ISettings
+    partial class SettingsManager
     {
-        private Settings _settings;
-
-        public SettingsManager(string configPath)
-        {
-            _settings = new Settings(configPath);
-
-            this.Init();
-        }
-
-        public void Load()
-        {
-<#
-foreach(var p in propertyInfos)
-{
-#>
-            this.<#= p.Name #> = _settings.Load("<#= p.Name #>", () => this.<#= p.Name #>);
-<#
-}
-#>
-        }
-
-        public void Save()
-        {
-<#
-foreach(var p in propertyInfos)
-{
-#>
-            _settings.Save("<#= p.Name #>", this.<#= p.Name #>);
-<#
-}
-#>
-        }
 <#
     foreach(var p in propertyInfos)
     {
         var generatedFieldName = GetFieldName(p.Name);
 
+        if(p.IsEditable)
+        {
 #>
-
         private <#= p.Type #> <#= generatedFieldName #>;
 
         [DataMember(Name = nameof(<#= p.Name #>))]
@@ -112,7 +82,28 @@ foreach(var p in propertyInfos)
                 }
             }
         }
+
 <#
+        }
+        else
+        {
+#>
+        private <#= p.Type #> <#= generatedFieldName #>;
+
+        [DataMember(Name = nameof(<#= p.Name #>))]
+        public <#= p.Type #> <#= p.Name #>
+        {
+            get
+            {
+                if (<#= generatedFieldName #> == null)
+                    <#= generatedFieldName #> = new <#= p.Type #>();
+
+                return <#= generatedFieldName #>;
+            }
+        }
+
+<#
+        }
     }
 #>
     }
@@ -133,13 +124,15 @@ private static string GetFieldName(string name)
 }
 private class PropertyInfo
 {
-    public PropertyInfo(string type, string name)
+    public PropertyInfo(string type, string name, bool isEditable)
     {
         this.Type = type;
         this.Name = name;
+        this.IsEditable = isEditable;
     }
 
     public string Type { get; private set; }
     public string Name { get; private set; }
+    public bool IsEditable { get; private set; }
 }
 #>

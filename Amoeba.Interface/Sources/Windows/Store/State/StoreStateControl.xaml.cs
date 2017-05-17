@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Amoeba.Interface
 {
     /// <summary>
-    /// NameEditDialogControl.xaml の相互作用ロジック
+    /// StoreStateControl.xaml の相互作用ロジック
     /// </summary>
-    public partial class NameEditDialogControl : UserControl
+    public partial class StoreStateControl : UserControl
     {
-        public NameEditDialogControl()
+        public StoreStateControl()
         {
             InitializeComponent();
         }

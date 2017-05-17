@@ -1128,8 +1128,11 @@ namespace Amoeba.Service
 
                     while (groupList.Count > 0)
                     {
+                        var index = new Index(groupList);
+                        groupList.Clear();
+
                         // Index
-                        using (var stream = (new Index(groupList)).Export(_bufferManager))
+                        using (var stream = index.Export(_bufferManager))
                         {
                             if (stream.Length <= blockLength)
                             {
@@ -1390,6 +1393,8 @@ namespace Amoeba.Service
                 {
                     var contexts = new List<InformationContext>();
                     {
+                        contexts.Add(new InformationContext("CreationTime", info.CreationTime));
+                        contexts.Add(new InformationContext("Length", info.ShareInfo.FileLength));
                         contexts.Add(new InformationContext("Metadata", info.Metadata));
                         contexts.Add(new InformationContext("Path", info.ShareInfo.Path));
                     }
@@ -1419,7 +1424,6 @@ namespace Amoeba.Service
                 _blockRemoveEventQueue.Enqueue(cacheInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
             }
         }
-
 
         #endregion
 

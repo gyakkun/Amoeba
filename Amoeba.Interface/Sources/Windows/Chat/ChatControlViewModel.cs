@@ -32,9 +32,6 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public InteractionRequest<Confirmation> ConfirmRequest { get; private set; }
-        public InteractionRequest<Confirmation> NameEditRequest { get; private set; }
-
         public ReactiveProperty<ChatCategoryViewModel> TabViewModel { get; private set; }
         public ReactiveProperty<TreeViewModelBase> TabSelectedItem { get; private set; }
         public DragAcceptDescription DragAcceptDescription { get; private set; }
@@ -87,9 +84,6 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
-                this.ConfirmRequest = new InteractionRequest<Confirmation>();
-                this.NameEditRequest = new InteractionRequest<Confirmation>();
-
                 this.TabViewModel = new ReactiveProperty<ChatCategoryViewModel>().AddTo(_disposable);
 
                 this.TabSelectedItem = new ReactiveProperty<TreeViewModelBase>().AddTo(_disposable);
@@ -205,52 +199,57 @@ namespace Amoeba.Interface
 
         private void TabNewCategory()
         {
-            this.NameEditRequest.Raise(new Confirmation() { Content = "" }, n =>
+            var viewModel = new NameEditWindowViewModel("");
+            viewModel.Callback += (name) =>
             {
-                if (!n.Confirmed) return;
-
                 var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;
                 if (chatCategoryViewModel == null) return;
 
-                chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = (string)n.Content });
-            });
+                chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = name });
+            };
+
+            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+                .Publish(viewModel);
         }
 
         private void TabNewChat()
         {
-            this.NameEditRequest.Raise(new Confirmation() { Content = "" }, n =>
+            var viewModel = new NameEditWindowViewModel("");
+            viewModel.Callback += (name) =>
             {
-                if (!n.Confirmed) return;
-
                 var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;
                 if (chatCategoryViewModel == null) return;
 
                 var random = new Random();
                 var id = random.GetBytes(32);
 
-                chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = new Tag((string)n.Content, id) });
-            });
+                chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = new Tag(name, id) });
+            };
+
+            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+                .Publish(viewModel);
         }
 
         private void TabEdit()
         {
-            this.NameEditRequest.Raise(new Confirmation() { Content = this.TabSelectedItem.Value.Name.Value }, n =>
+            var viewModel = new NameEditWindowViewModel(this.TabSelectedItem.Value.Name.Value);
+            viewModel.Callback += (name) =>
             {
-                if (!n.Confirmed) return;
-
                 var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;
                 if (chatCategoryViewModel == null) return;
 
-                chatCategoryViewModel.Model.Name = (string)n.Content;
-            });
+                chatCategoryViewModel.Model.Name = name;
+            };
+
+            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+                .Publish(viewModel);
         }
 
         private void TabDelete()
         {
-            this.ConfirmRequest.Raise(new Confirmation() { Content = ConfirmDialogType.Delete }, n =>
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
             {
-                if (!n.Confirmed) return;
-
                 if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
                 {
                     if (chatCategoryViewModel.Parent == null) return;
@@ -260,7 +259,10 @@ namespace Amoeba.Interface
                 {
                     chatViewModel.Parent.TryRemove(chatViewModel);
                 }
-            });
+            };
+
+            Messenger.Instance.GetEvent<ConfirmWindowViewModelShowEvent>()
+                .Publish(viewModel);
         }
 
         private void TabCopy()
@@ -297,7 +299,7 @@ namespace Amoeba.Interface
 
             var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, _serviceManager);
 
-            Messenger.Instance.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
+            Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
                 .Publish(viewModel);
         }
 

@@ -68,7 +68,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Sources\Mvvm\Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\ObjectToInfoStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\SearchStateFlagToStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\SearchStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SessionTypeToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\TagToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\CustomAvalonEditHelperBase.cs" />
@@ -78,7 +81,12 @@
     <Compile Include="Sources\Mvvm\Models\Store\Search\SearchRange.cs" />
     <Compile Include="Sources\Mvvm\Models\Store\Search\SearchRegex.cs" />
     <Compile Include="Sources\Mvvm\Models\Store\Search\SearchState.cs" />
-    <Compile Include="Sources\Mvvm\ValidationRules\NotEmptyValidationRule.cs" />
+    <Compile Include="Sources\Mvvm\Models\_Generator\Models.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Models.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
     <Compile Include="Sources\Utilities\Inspect.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />
@@ -102,11 +110,34 @@
     </Compile>
     <Compile Include="Sources\Windows\Crowd\CrowdControlViewModel.cs" />
     <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\TreeViewModels\UploadStoreCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\TreeViewModels\UploadStoreViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\TreeViewModels\SeedViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\TreeViewModels\BoxViewModel.cs" />
-    <Compile Include="Sources\Windows\Utilities\NameEditDialog\NameEditDialogViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Publish\StorePublishControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Publish\Windows\PublishDirectoryInfoEditWindow.xaml.cs">
+      <DependentUpon>PublishDirectoryInfoEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Store\Publish\Windows\PublishDirectoryInfoEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml.cs">
+      <DependentUpon>StoreSubscribeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Store\Search\StoreSearchControl.xaml.cs">
+      <DependentUpon>StoreSearchControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Store\Publish\StorePublishControl.xaml.cs">
+      <DependentUpon>StorePublishControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Store\State\StoreStateControl.xaml.cs">
+      <DependentUpon>StoreStateControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Store\Search\ViewModels\SearchViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeItemViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeStoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeBoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Utilities\ConfirmWindow\ConfirmWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindow.xaml.cs">
+      <DependentUpon>NameEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindowViewModel.cs" />
     <Compile Include="Sources\_Resources\Settings\SettingsManager.cs" />
     <Compile Include="Sources\_Resources\Settings\_Generator\SettingsManager.generated.cs">
       <AutoGen>True</AutoGen>
@@ -129,6 +160,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Sources\Windows\Store\Publish\Windows\PublishDirectoryInfoEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Sources\Windows\Store\StoreControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -137,23 +172,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Sources\Mvvm\Models\_Generator\Models.generated.cs">
-      <DependentUpon>Models.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Sources\Windows\Store\StoreControl.xaml.cs">
       <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Utilities\NameEditDialog\NameEditAction.cs" />
-    <Compile Include="Sources\Windows\Utilities\NameEditDialog\NameEditDialogControl.xaml.cs">
-      <DependentUpon>NameEditDialogControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Utilities\ConfirmDialog\ConfirmDialogControl.xaml.cs">
-      <DependentUpon>ConfirmDialogControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Utilities\ConfirmDialog\ConfirmAction.cs" />
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <AutoGen>True</AutoGen>
@@ -173,13 +195,25 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\Windows\Utilities\NameEditDialog\NameEditDialogControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\Windows\Utilities\ConfirmDialog\ConfirmDialogControl.xaml">
+    <Page Include="Sources\Windows\Store\Search\StoreSearchControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\Windows\Store\Publish\StorePublishControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\Windows\Store\State\StoreStateControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -210,13 +244,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SettingsManager.generated.cs</LastGenOutput>
     </Content>
-    <None Include="App.manifest" />
+    <None Include="App.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Licenses\Amoeba.Interface.Readme">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="project.json" />
     <Compile Include="Sources\Utilities\Messenger.cs" />
-    <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml" />
+    <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Content Include="Sources\Mvvm\Models\_Generator\Models.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Models.generated.cs</LastGenOutput>
@@ -246,51 +283,27 @@
       <Name>Amoeba.Service</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
-      <Project>{63EADC1F-9A8A-4945-A562-DA666D0BCB7B}</Project>
+      <Project>{dbfd22ce-159b-4db0-8052-111686395656}</Project>
       <Name>Omnius.Base</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj">
-      <Project>{197c654f-2461-446a-b531-4a789f14be19}</Project>
+      <Project>{247f38b8-90e9-4e9d-a938-8e11812e411c}</Project>
       <Name>Omnius.Collections</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj">
-      <Project>{9AA70F88-4A83-4B3F-B494-7D37EA95766A}</Project>
+      <Project>{47eb59d3-5a52-4f50-92ef-5878643929b8}</Project>
       <Name>Omnius.Configuration</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Correction\Omnius.Correction.csproj">
-      <Project>{cbe313c0-ab44-48e4-bd43-da36d5a7eb5e}</Project>
-      <Name>Omnius.Correction</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Io\Omnius.Io.csproj">
-      <Project>{74597e45-7f3c-4958-8b6a-b16de8de47b9}</Project>
+      <Project>{fcf17fb0-f23a-4eba-b150-ffda35627aa1}</Project>
       <Name>Omnius.Io</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Messaging\Omnius.Messaging.csproj">
-      <Project>{e25cac1d-d9c2-4f34-b270-7aa309e3ebec}</Project>
-      <Name>Omnius.Messaging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Net.I2p\Omnius.Net.I2p.csproj">
-      <Project>{172183af-a62d-4d91-9973-f3718441fcef}</Project>
-      <Name>Omnius.Net.I2p</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Net.Proxy\Omnius.Net.Proxy.csproj">
-      <Project>{55b34959-925a-46f9-a2dc-809e58479277}</Project>
-      <Name>Omnius.Net.Proxy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Net.Upnp\Omnius.Net.Upnp.csproj">
-      <Project>{e3ea88a5-fcf9-48e9-8572-59d85fa46c01}</Project>
-      <Name>Omnius.Net.Upnp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omnius\Omnius.Net\Omnius.Net.csproj">
-      <Project>{e01c79b7-a79f-41d8-9c0b-00228602f356}</Project>
-      <Name>Omnius.Net</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj">
-      <Project>{d314c626-a6fc-4fd5-be3c-9d36c2738418}</Project>
+      <Project>{0a55926d-70ce-41ba-a838-99937a3b219d}</Project>
       <Name>Omnius.Security</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj">
-      <Project>{0c3f6508-1567-44fe-a0c8-aa8cb52edb51}</Project>
+      <Project>{cc9c486e-838d-478e-a89b-79dfc5524274}</Project>
       <Name>Omnius.Serialization</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Wpf\Omnius.Wpf.csproj">
@@ -298,7 +311,32 @@
       <Name>Omnius.Wpf</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit">
+      <Version>5.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="DotNetZip">
+      <Version>1.10.1</Version>
+    </PackageReference>
+    <PackageReference Include="NETStandard.Library">
+      <Version>1.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="Nett">
+      <Version>0.6.3</Version>
+    </PackageReference>
+    <PackageReference Include="Prism.Wpf">
+      <Version>6.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="ReactiveProperty">
+      <Version>3.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive">
+      <Version>3.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.3.1</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

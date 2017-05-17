@@ -644,7 +644,7 @@ namespace Amoeba.Service
 
                 this.BasePath = _settings.Load("BasePath", () => "Download");
 
-                foreach (var info in _settings.Load<DownloadItemInfo[]>("DownloadItemInfos", () => new DownloadItemInfo[0]))
+                foreach (var info in _settings.Load<DownloadItemInfo[]>("DownloadItemInfos", () => Array.Empty<DownloadItemInfo>()))
                 {
                     _downloadItemInfoManager.Add(info);
                 }

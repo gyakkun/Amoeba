@@ -20,136 +20,45 @@
         TextOptions.TextRenderingMode="Auto"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
         mc:Ignorable="d">
-    <md:DialogHost Identifier="OptionRootDialog">
-        <Grid>
-            <i:Interaction.Triggers>
-                <prism:InteractionRequestTrigger SourceObject="{Binding Path=ConfirmRequest}">
-                    <local:ConfirmAction Identifier="OptionRootDialog" />
-                </prism:InteractionRequestTrigger>
-                <prism:InteractionRequestTrigger SourceObject="{Binding Path=NameEditRequest}">
-                    <local:NameEditAction Identifier="OptionRootDialog" />
-                </prism:InteractionRequestTrigger>
-            </i:Interaction.Triggers>
-            <Grid Margin="0,0,0,64">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid Margin="0,0,0,64">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-                <ListBox
-                        Name="TabListBox"
-                        Grid.Column="0"
-                        MinWidth="120"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        SelectedIndex="0">
-                    <ListBoxItem
-                            Name="ConnectionListBoxItem"
-                            Height="32"
-                            Padding="16,8"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Content="{Binding Path=OptionsWindow_Connection, Source={StaticResource Languages}}" />
-                    <ListBoxItem
-                            Name="SignatureListBoxItem"
-                            Height="32"
-                            Padding="16,8"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Content="{Binding Path=OptionsWindow_Signature, Source={StaticResource Languages}}" />
-                </ListBox>
+            <ListBox
+                    Name="TabListBox"
+                    Grid.Column="0"
+                    MinWidth="120"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    SelectedIndex="0">
+                <ListBoxItem
+                        Name="ConnectionListBoxItem"
+                        Height="32"
+                        Padding="16,8"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="{Binding Path=OptionsWindow_Connection, Source={StaticResource Languages}}" />
+                <ListBoxItem
+                        Name="SignatureListBoxItem"
+                        Height="32"
+                        Padding="16,8"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="{Binding Path=OptionsWindow_Signature, Source={StaticResource Languages}}" />
+            </ListBox>
 
-                <Grid Grid.Column="1" Background="{DynamicResource MaterialDesignCardBackground}">
-                    <ContentControl Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="20">
-                                <GroupBox
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        Header="Tcp Settings"
-                                        Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="8,0" Text="{Binding}" />
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
-                                    <Grid Margin="8">
-                                        <CheckBox
-                                                Height="24"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Content="IPv4 IsEnabled"
-                                                IsChecked="{Binding Path=Options.Tcp.Ipv4IsEnabled}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="64,32,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="IPv4 Port: " />
-                                        <TextBox
-                                                Width="120"
-                                                Height="32"
-                                                Margin="240,32,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Path=Options.Tcp.Ipv4Port, Converter={StaticResource UshortToStringConverter}}" />
-                                        <CheckBox
-                                                Height="24"
-                                                Margin="0,72,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Content="IPv6 IsEnabled"
-                                                IsChecked="{Binding Path=Options.Tcp.Ipv6IsEnabled}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="64,107.2,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="IPv6 Port: " />
-                                        <TextBox
-                                                Width="120"
-                                                Height="32"
-                                                Margin="240,107.2,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Path=Options.Tcp.Ipv6Port, Converter={StaticResource UshortToStringConverter}}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="0,147.2,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="Proxy Uri:" />
-                                        <TextBox
-                                                Height="32"
-                                                Margin="240,147.2,0,0"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Path=Options.Tcp.ProxyUri}" />
-                                    </Grid>
-                                </GroupBox>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </ContentControl>
-
-                    <ContentControl Visibility="{Binding ElementName=SignatureListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid Margin="20">
+            <Grid Grid.Column="1" Background="{DynamicResource MaterialDesignCardBackground}">
+                <ContentControl Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="20">
                             <GroupBox
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"
-                                    Header="Signature Settings"
+                                    Header="Tcp Settings"
                                     Style="{DynamicResource MaterialDesignCardGroupBox}">
                                 <GroupBox.HeaderTemplate>
                                     <DataTemplate>
@@ -157,60 +66,141 @@
                                     </DataTemplate>
                                 </GroupBox.HeaderTemplate>
                                 <Grid Margin="8">
+                                    <CheckBox
+                                            Height="24"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Content="IPv4 IsEnabled"
+                                            IsChecked="{Binding Path=Options.Tcp.Ipv4IsEnabled}" />
                                     <Label
                                             Height="32"
+                                            Margin="64,32,0,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            Content="Signature:" />
+                                            Content="IPv4 Port: " />
+                                    <TextBox
+                                            Width="120"
+                                            Height="32"
+                                            Margin="240,32,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding Path=Options.Tcp.Ipv4Port, Converter={StaticResource UshortToStringConverter}}" />
+                                    <CheckBox
+                                            Height="24"
+                                            Margin="0,72,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Content="IPv6 IsEnabled"
+                                            IsChecked="{Binding Path=Options.Tcp.Ipv6IsEnabled}" />
+                                    <Label
+                                            Height="32"
+                                            Margin="64,107.2,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Content="IPv6 Port: " />
+                                    <TextBox
+                                            Width="120"
+                                            Height="32"
+                                            Margin="240,107.2,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding Path=Options.Tcp.Ipv6Port, Converter={StaticResource UshortToStringConverter}}" />
+                                    <Label
+                                            Height="32"
+                                            Margin="0,147.2,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Content="Proxy Uri:" />
                                     <TextBox
                                             Height="32"
-                                            Margin="240,0,0,0"
+                                            Margin="240,147.2,0,0"
                                             VerticalAlignment="Top"
-                                            IsReadOnly="True"
-                                            Text="{Binding Path=Options.Account.DigitalSignature, Mode=OneWay}" />
-                                    <Button
-                                            Width="120"
-                                            Height="32"
-                                            Margin="0,48,0,0"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Command="{Binding SignatureNewCommand}"
-                                            Content="New" />
-                                    <Button
-                                            Width="120"
-                                            Height="32"
-                                            Margin="0,48,272,0"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Command="{Binding SignatureImportCommand}"
-                                            Content="Import" />
-                                    <Button
-                                            Width="120"
-                                            Height="32"
-                                            Margin="0,48,136,0"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Top"
-                                            Command="{Binding SignatureExportCommand}"
-                                            Content="Export" />
-
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding Path=Options.Tcp.ProxyUri}" />
                                 </Grid>
                             </GroupBox>
-                        </Grid>
-                    </ContentControl>
-                </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </ContentControl>
 
+                <ContentControl Visibility="{Binding ElementName=SignatureListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid Margin="20">
+                        <GroupBox
+                                VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                Header="Signature Settings"
+                                Style="{DynamicResource MaterialDesignCardGroupBox}">
+                            <GroupBox.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="8,0" Text="{Binding}" />
+                                </DataTemplate>
+                            </GroupBox.HeaderTemplate>
+                            <Grid Margin="8">
+                                <Label
+                                        Height="32"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Center"
+                                        Content="Signature:" />
+                                <TextBox
+                                        Height="32"
+                                        Margin="240,0,0,0"
+                                        VerticalAlignment="Top"
+                                        IsReadOnly="True"
+                                        Text="{Binding Path=Options.Account.DigitalSignature, Mode=OneWay}" />
+                                <Button
+                                        Width="120"
+                                        Height="32"
+                                        Margin="0,48,0,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding SignatureNewCommand}"
+                                        Content="New" />
+                                <Button
+                                        Width="120"
+                                        Height="32"
+                                        Margin="0,48,272,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding SignatureImportCommand}"
+                                        Content="Import" />
+                                <Button
+                                        Width="120"
+                                        Height="32"
+                                        Margin="0,48,136,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Command="{Binding SignatureExportCommand}"
+                                        Content="Export" />
+
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </ContentControl>
             </Grid>
 
-            <Button
-                    Width="120"
-                    Height="32"
-                    Margin="0,0,16,16"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Command="{Binding Path=OkCommand}"
-                    Content="Ok" />
         </Grid>
-    </md:DialogHost>
+
+        <Button
+                Width="120"
+                Height="32"
+                Margin="0,0,16,16"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Command="{Binding Path=OkCommand}"
+                Content="Ok" />
+    </Grid>
 </omnius:RestorableWindow>

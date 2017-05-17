@@ -87,95 +87,94 @@ namespace Amoeba.Interface
 
             for (;;)
             {
-                if (token.WaitHandle.WaitOne(1000)) return;
                 {
+                    var dic = new Dictionary<byte[], Information>(new ByteArrayEqualityComparer());
+
+                    foreach (var info in _serviceManager.GetConnectionInformations())
                     {
-                        var dic = new Dictionary<byte[], Information>(new ByteArrayEqualityComparer());
-
-                        foreach (var info in _serviceManager.GetConnectionInformations())
-                        {
-                            dic.Add(info.GetValue<byte[]>("Id"), info);
-                        }
-
-                        App.Current.Dispatcher.InvokeAsync(() =>
-                        {
-                            if (token.IsCancellationRequested) return;
-
-                            foreach (var (key, value) in this.ConnectionInformations.ToArray())
-                            {
-                                if (!dic.ContainsKey(key))
-                                {
-                                    this.ConnectionInformations.Remove(key);
-                                }
-                            }
-
-                            foreach (var (key, info) in dic)
-                            {
-                                DynamicViewModel viewModel;
-
-                                if (!this.ConnectionInformations.TryGetValue(key, out viewModel))
-                                {
-                                    viewModel = new DynamicViewModel();
-                                    this.ConnectionInformations[key] = viewModel;
-                                }
-
-                                foreach (var (name, value) in info)
-                                {
-                                    viewModel.SetValue(name, value);
-                                }
-                            }
-                        });
+                        dic.Add(info.GetValue<byte[]>("Id"), info);
                     }
 
+                    App.Current.Dispatcher.InvokeAsync(() =>
                     {
-                        App.Current.Dispatcher.InvokeAsync(() =>
+                        if (token.IsCancellationRequested) return;
+
+                        foreach (var key in this.ConnectionInformations.Keys.ToArray())
                         {
-                            if (token.IsCancellationRequested) return;
-
-                            var location = _serviceManager.MyLocation;
-
-                            if (location.Uris.Count() > 0)
+                            if (!dic.ContainsKey(key))
                             {
-                                this.State.Location = AmoebaConverter.ToLocationString(location);
+                                this.ConnectionInformations.Remove(key);
+                            }
+                        }
+
+                        foreach (var (key, info) in dic)
+                        {
+                            DynamicViewModel viewModel;
+
+                            if (!this.ConnectionInformations.TryGetValue(key, out viewModel))
+                            {
+                                viewModel = new DynamicViewModel();
+                                this.ConnectionInformations[key] = viewModel;
+                            }
+
+                            foreach (var (name, value) in info)
+                            {
+                                viewModel.SetValue(name, value);
+                            }
+                        }
+                    });
+                }
+
+                {
+                    App.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        if (token.IsCancellationRequested) return;
+
+                        var location = _serviceManager.MyLocation;
+
+                        if (location.Uris.Count() > 0)
+                        {
+                            this.State.Location = AmoebaConverter.ToLocationString(location);
+                        }
+                        else
+                        {
+                            this.State.Location = null;
+                        }
+                    });
+                }
+
+                {
+                    var information = _serviceManager.Information;
+
+                    App.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        if (token.IsCancellationRequested) return;
+
+                        foreach (var (i, key, value) in information.Select((item, i) => (i, item.Key, item.Value)))
+                        {
+                            DynamicViewModel viewModel;
+
+                            if (!this.Information.TryGetValue(key, out viewModel))
+                            {
+                                viewModel = new DynamicViewModel();
+                                this.Information[key] = viewModel;
+                            }
+
+                            viewModel.SetValue("Index", i);
+
+                            if (matchSizeTypeHashSet.Contains(key))
+                            {
+                                viewModel.SetValue("Content", NetworkConverter.ToSizeString((long)value));
                             }
                             else
                             {
-                                this.State.Location = null;
+                                viewModel.SetValue("Content", value.ToString());
                             }
-                        });
-                    }
-
-                    {
-                        var information = _serviceManager.Information;
-
-                        App.Current.Dispatcher.InvokeAsync(() =>
-                        {
-                            if (token.IsCancellationRequested) return;
-
-                            foreach (var (i, key, value) in information.Select((item, i) => (i, item.Key, item.Value)))
-                            {
-                                DynamicViewModel viewModel;
-
-                                if (!this.Information.TryGetValue(key, out viewModel))
-                                {
-                                    viewModel = new DynamicViewModel();
-                                    this.Information[key] = viewModel;
-                                }
-
-                                viewModel.SetValue("Index", i);
-
-                                if (matchSizeTypeHashSet.Contains(key))
-                                {
-                                    viewModel.SetValue("Content", NetworkConverter.ToSizeString((long)value));
-                                }
-                                else
-                                {
-                                    viewModel.SetValue("Content", value.ToString());
-                                }
-                            }
-                        });
-                    }
+                        }
+                    });
                 }
+
+                if (token.WaitHandle.WaitOne(1000)) return;
             }
         }
 

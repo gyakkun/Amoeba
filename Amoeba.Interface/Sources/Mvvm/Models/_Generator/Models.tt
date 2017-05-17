@@ -60,6 +60,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Omnius.Base;
 <#
 foreach(var value in namespaces)
 {
@@ -76,7 +77,7 @@ foreach(var c in classInfos)
 {
 #>
     [DataContract(Name = nameof(<#= c.Name #>))]
-    partial class <#= c.Name #> : INotifyPropertyChanged
+    partial class <#= c.Name #> : INotifyPropertyChanged, ICloneable<<#= c.Name #>>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -136,7 +137,13 @@ foreach(var c in classInfos)
         }
     }
 #>
+
+        public <#= c.Name #> Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
+
 <#
 }
 #>

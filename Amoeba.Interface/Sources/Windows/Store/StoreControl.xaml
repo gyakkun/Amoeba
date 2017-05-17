@@ -13,18 +13,11 @@
         d:DesignWidth="300"
         mc:Ignorable="d">
     <Grid>
-        <i:Interaction.Triggers>
-            <prism:InteractionRequestTrigger SourceObject="{Binding Path=ConfirmRequest}">
-                <local:ConfirmAction Identifier="RootDialog" />
-            </prism:InteractionRequestTrigger>
-            <prism:InteractionRequestTrigger SourceObject="{Binding Path=NameEditRequest}">
-                <local:NameEditAction Identifier="RootDialog" />
-            </prism:InteractionRequestTrigger>
-        </i:Interaction.Triggers>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+
         <ListBox
                 Name="TabListBox"
                 Grid.Column="0"
@@ -40,19 +33,19 @@
                     VerticalContentAlignment="Center"
                     Content="{Binding Path=StoreControl_Search, Source={StaticResource Languages}}" />
             <ListBoxItem
-                    Name="StoreDownloadListBoxItem"
+                    Name="StoreSubscribeListBoxItem"
                     Height="32"
                     Padding="16,8"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="{Binding Path=StoreControl_Download, Source={StaticResource Languages}}" />
+                    Content="{Binding Path=StoreControl_Subscribe, Source={StaticResource Languages}}" />
             <ListBoxItem
-                    Name="StoreUploadListBoxItem"
+                    Name="StorePublishListBoxItem"
                     Height="32"
                     Padding="16,8"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    Content="{Binding Path=StoreControl_Upload, Source={StaticResource Languages}}" />
+                    Content="{Binding Path=StoreControl_Publish, Source={StaticResource Languages}}" />
             <ListBoxItem
                     Name="StateListBoxItem"
                     Height="32"
@@ -60,136 +53,35 @@
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="{Binding Path=StoreControl_State, Source={StaticResource Languages}}" />
-            <ListBoxItem
-                    Name="ShareListBoxItem"
-                    Height="32"
-                    Padding="16,8"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                    Content="{Binding Path=StoreControl_Share, Source={StaticResource Languages}}" />
         </ListBox>
 
-        <ContentControl Grid.Column="1" Visibility="{Binding ElementName=SearchListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding Path=Config.TabColumnWidth, Mode=TwoWay, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200}" />
-                    <ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TreeView
-                        Name="TabTreeView"
-                        Grid.Column="0"
-                        AllowDrop="True"
-                        ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                            <i:InvokeCommandAction Command="{Binding Path=TabClickCommand}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type local:ChatCategoryViewModel}">
-                            <HierarchicalDataTemplate.ItemsSource>
-                                <MultiBinding Converter="{StaticResource CompositeCollectionConverter}">
-                                    <Binding
-                                            Converter="{StaticResource SortedCollectionConverter}"
-                                            ConverterParameter="Name.Value"
-                                            Path="Categories" />
-                                    <Binding
-                                            Converter="{StaticResource SortedCollectionConverter}"
-                                            ConverterParameter="Name.Value"
-                                            Path="Chats" />
-                                </MultiBinding>
-                            </HierarchicalDataTemplate.ItemsSource>
-                            <TextBlock Text="{Binding Path=Name.Value}">
-                                <i:Interaction.Behaviors>
-                                    <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
-                                </i:Interaction.Behaviors>
-                            </TextBlock>
-                        </HierarchicalDataTemplate>
-                        <HierarchicalDataTemplate DataType="{x:Type local:ChatViewModel}">
-                            <TextBlock Text="{Binding Path=Name.Value}">
-                                <i:Interaction.Behaviors>
-                                    <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
-                                </i:Interaction.Behaviors>
-                            </TextBlock>
-                        </HierarchicalDataTemplate>
-                    </TreeView.Resources>
-                    <i:Interaction.Behaviors>
-                        <omnius:IgnoreRequestBringIntoViewBehavior />
-                        <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
-                        <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
-                    </i:Interaction.Behaviors>
-                    <TreeView.ItemContainerStyle>
-                        <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
-                            <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value}" />
-                            <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value}" />
-                            <Setter Property="omnius:StyleInteraction.Behaviors">
-                                <Setter.Value>
-                                    <omnius:Behaviors>
-                                        <omnius:IgnoreRequestBringIntoViewBehavior />
-                                    </omnius:Behaviors>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TreeView.ItemContainerStyle>
-                    <TreeView.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem
-                                    Command="{Binding Path=TabNewCategoryCommand}"
-                                    Header="New category"
-                                    InputGestureText="Ctrl+N">
-                                <MenuItem.Icon>
-                                    <md:PackIcon Kind="Folder" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem
-                                    Command="{Binding Path=TabNewChatCommand}"
-                                    Header="New chat"
-                                    InputGestureText="Ctrl+W">
-                                <MenuItem.Icon>
-                                    <md:PackIcon Kind="Comment" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem
-                                    Command="{Binding Path=TabEditCommand}"
-                                    Header="Edit"
-                                    InputGestureText="Ctrl+E">
-                                <MenuItem.Icon>
-                                    <md:PackIcon Kind="Pencil" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem
-                                    Command="{Binding Path=TabDeleteCommand}"
-                                    Header="Delete"
-                                    InputGestureText="Ctrl+D">
-                                <MenuItem.Icon>
-                                    <md:PackIcon Kind="Delete" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <Separator />
-                            <MenuItem
-                                    Command="{Binding Path=TabCopyCommand}"
-                                    Header="Copy"
-                                    InputGestureText="Ctrl+C">
-                                <MenuItem.Icon>
-                                    <md:PackIcon Kind="ContentCopy" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem
-                                    Command="{Binding Path=TabPasteCommand}"
-                                    Header="Paste"
-                                    InputGestureText="Ctrl+V">
-                                <MenuItem.Icon>
-                                    <md:PackIcon Kind="ContentPaste" />
-                                </MenuItem.Icon>
-                            </MenuItem>
-                        </ContextMenu>
-                    </TreeView.ContextMenu>
-                </TreeView>
-
-                <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
-
-            </Grid>
+        <ContentControl
+                Grid.Column="1"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Visibility="{Binding ElementName=SearchListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <local:StoreSearchControl DataContext="{Binding Path=StoreSearchControlViewModel}" />
+        </ContentControl>
+        <ContentControl
+                Grid.Column="1"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Visibility="{Binding ElementName=StoreSubscribeListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <local:StoreSubscribeControl DataContext="{Binding Path=StoreSubscribeControlViewModel}" />
+        </ContentControl>
+        <ContentControl
+                Grid.Column="1"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Visibility="{Binding ElementName=StorePublishListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <local:StorePublishControl DataContext="{Binding Path=StorePublishControlViewModel}" />
+        </ContentControl>
+        <ContentControl
+                Grid.Column="1"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Visibility="{Binding ElementName=StateListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <local:StoreStateControl DataContext="{Binding Path=StoreStateControlViewModel}" />
         </ContentControl>
 
     </Grid>

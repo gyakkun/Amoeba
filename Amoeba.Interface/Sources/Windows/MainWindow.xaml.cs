@@ -26,7 +26,7 @@ namespace Amoeba.Interface
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    partial class MainWindow : RestorableWindow
+    public partial class MainWindow : RestorableWindow
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
 
@@ -40,19 +40,43 @@ namespace Amoeba.Interface
 
             this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
 
-            Messenger.Instance.GetEvent<PubSubEvent<OptionsWindowViewModel>>()
+            Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
                 .Subscribe(vm =>
                 {
                     var window = new OptionsWindow(vm);
                     window.Owner = this;
                     window.ShowDialog();
                 }).AddTo(_disposable);
-            Messenger.Instance.GetEvent<PubSubEvent<ChatMessageEditWindowViewModel>>()
+
+            Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
                 .Subscribe(vm =>
                 {
                     var window = new ChatMessageEditWindow(vm);
                     window.Owner = this;
                     window.ShowDialog();
+                }).AddTo(_disposable);
+
+            Messenger.Instance.GetEvent<PublishDirectoryInfoEditWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new PublishDirectoryInfoEditWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
+            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new NameEditWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
+            Messenger.Instance.GetEvent<ConfirmWindowViewModelShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var result = MessageBox.Show(vm.Message, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
+                    if (result == MessageBoxResult.OK) vm.Ok();
                 }).AddTo(_disposable);
         }
 

@@ -47,6 +47,12 @@
 
   <Class Name="SearchInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="SearchCondition" Name="Condition" />
+    <Property Type="ObservableCollection(SearchInfo)" Name="Children" />
+  </Class>
+
+  <Class Name="SearchCondition">
     <Property Type="ObservableCollection(SearchContains(string))" Name="SearchNames" />
     <Property Type="ObservableCollection(SearchContains(SearchRegex))" Name="SearchRegexes" />
     <Property Type="ObservableCollection(SearchContains(Signature))" Name="SearchSignatures" />
@@ -56,34 +62,31 @@
     <Property Type="ObservableCollection(SearchContains(SearchState))" Name="SearchStates" />
   </Class>
 
-  <Class Name="StoreCategoryInfo">
+  <Class Name="PublishDirectoryInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="string" Name="Path" IsEditable="true" />
+  </Class>
+  
+  <Class Name="SubscribeCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(StoreInfo)" Name="StoreInfos" />
-    <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" />
+    <Property Type="ObservableCollection(SubscribeStoreInfo)" Name="StoreInfos" />
+    <Property Type="ObservableCollection(SubscribeCategoryInfo)" Name="CategoryInfos" />
   </Class>
 
-  <Class Name="StoreInfo">
-    <Property Type="Signature" Name="Signature" IsEditable="true" />
-    <Property Type="string" Name="Name" IsEditable="true" />
+  <Class Name="SubscribeStoreInfo">
+    <Property Type="Signature" Name="AuthorSignature" IsEditable="true" />
+    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" />
-    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
+    <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
   </Class>
 
-  <Class Name="BoxInfo">
+  <Class Name="SubscribeBoxInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(SeedInfo)" Name="SeedInfos" />
-    <Property Type="ObservableCollection(BoxInfo)" Name="BoxInfos" />
-  </Class>
-
-  <Class Name="SeedInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="long" Name="Length" IsEditable="true" />
-    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
-    <Property Type="Metadata" Name="Metadata" IsEditable="true" />
+    <Property Type="ObservableCollection(Seed)" Name="Seeds" />
+    <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
   </Class>
 
 </Config>

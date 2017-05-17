@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using Omnius.Base;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Amoeba.Service;
@@ -15,7 +16,7 @@ using Omnius.Security;
 namespace Amoeba.Interface
 {
     [DataContract(Name = nameof(CrowdStateInfo))]
-    partial class CrowdStateInfo : INotifyPropertyChanged
+    partial class CrowdStateInfo : INotifyPropertyChanged, ICloneable<CrowdStateInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -44,9 +45,15 @@ namespace Amoeba.Interface
                 }
             }
         }
+
+        public CrowdStateInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
+
     [DataContract(Name = nameof(ServiceOptionsInfo))]
-    partial class ServiceOptionsInfo : INotifyPropertyChanged
+    partial class ServiceOptionsInfo : INotifyPropertyChanged, ICloneable<ServiceOptionsInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -84,9 +91,15 @@ namespace Amoeba.Interface
                 return _account;
             }
         }
+
+        public ServiceOptionsInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
+
     [DataContract(Name = nameof(ServiceTcpOptionsInfo))]
-    partial class ServiceTcpOptionsInfo : INotifyPropertyChanged
+    partial class ServiceTcpOptionsInfo : INotifyPropertyChanged, ICloneable<ServiceTcpOptionsInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -191,9 +204,15 @@ namespace Amoeba.Interface
                 }
             }
         }
+
+        public ServiceTcpOptionsInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
+
     [DataContract(Name = nameof(ServiceAccountOptionsInfo))]
-    partial class ServiceAccountOptionsInfo : INotifyPropertyChanged
+    partial class ServiceAccountOptionsInfo : INotifyPropertyChanged, ICloneable<ServiceAccountOptionsInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -222,9 +241,15 @@ namespace Amoeba.Interface
                 }
             }
         }
+
+        public ServiceAccountOptionsInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
+
     [DataContract(Name = nameof(ChatCategoryInfo))]
-    partial class ChatCategoryInfo : INotifyPropertyChanged
+    partial class ChatCategoryInfo : INotifyPropertyChanged, ICloneable<ChatCategoryInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -300,9 +325,15 @@ namespace Amoeba.Interface
                 return _categoryInfos;
             }
         }
+
+        public ChatCategoryInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
+
     [DataContract(Name = nameof(ChatInfo))]
-    partial class ChatInfo : INotifyPropertyChanged
+    partial class ChatInfo : INotifyPropertyChanged, ICloneable<ChatInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -345,9 +376,15 @@ namespace Amoeba.Interface
                 return _messages;
             }
         }
+
+        public ChatInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
+
     [DataContract(Name = nameof(ChatMessageInfo))]
-    partial class ChatMessageInfo : INotifyPropertyChanged
+    partial class ChatMessageInfo : INotifyPropertyChanged, ICloneable<ChatMessageInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -395,9 +432,15 @@ namespace Amoeba.Interface
                 }
             }
         }
+
+        public ChatMessageInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
+
     [DataContract(Name = nameof(SearchInfo))]
-    partial class SearchInfo : INotifyPropertyChanged
+    partial class SearchInfo : INotifyPropertyChanged, ICloneable<SearchInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -426,6 +469,71 @@ namespace Amoeba.Interface
                 }
             }
         }
+
+        private bool _isExpanded;
+
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
+            }
+        }
+
+        private SearchCondition _condition;
+
+        [DataMember(Name = nameof(Condition))]
+        public SearchCondition Condition
+        {
+            get
+            {
+                if (_condition == null)
+                    _condition = new SearchCondition();
+
+                return _condition;
+            }
+        }
+
+        private ObservableCollection<SearchInfo> _children;
+
+        [DataMember(Name = nameof(Children))]
+        public ObservableCollection<SearchInfo> Children
+        {
+            get
+            {
+                if (_children == null)
+                    _children = new ObservableCollection<SearchInfo>();
+
+                return _children;
+            }
+        }
+
+        public SearchInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(SearchCondition))]
+    partial class SearchCondition : INotifyPropertyChanged, ICloneable<SearchCondition>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public SearchCondition() { }
 
         private ObservableCollection<SearchContains<string>> _searchNames;
 
@@ -524,9 +632,15 @@ namespace Amoeba.Interface
                 return _searchStates;
             }
         }
+
+        public SearchCondition Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
-    [DataContract(Name = nameof(StoreCategoryInfo))]
-    partial class StoreCategoryInfo : INotifyPropertyChanged
+
+    [DataContract(Name = nameof(PublishDirectoryInfo))]
+    partial class PublishDirectoryInfo : INotifyPropertyChanged, ICloneable<PublishDirectoryInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -535,7 +649,63 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public StoreCategoryInfo() { }
+        public PublishDirectoryInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private string _path;
+
+        [DataMember(Name = nameof(Path))]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                if (_path != value)
+                {
+                    _path = value;
+                    this.OnPropertyChanged(nameof(Path));
+                }
+            }
+        }
+
+        public PublishDirectoryInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(SubscribeCategoryInfo))]
+    partial class SubscribeCategoryInfo : INotifyPropertyChanged, ICloneable<SubscribeCategoryInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public SubscribeCategoryInfo() { }
 
         private string _name;
 
@@ -575,36 +745,42 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<StoreInfo> _storeInfos;
+        private ObservableCollection<SubscribeStoreInfo> _storeInfos;
 
         [DataMember(Name = nameof(StoreInfos))]
-        public ObservableCollection<StoreInfo> StoreInfos
+        public ObservableCollection<SubscribeStoreInfo> StoreInfos
         {
             get
             {
                 if (_storeInfos == null)
-                    _storeInfos = new ObservableCollection<StoreInfo>();
+                    _storeInfos = new ObservableCollection<SubscribeStoreInfo>();
 
                 return _storeInfos;
             }
         }
 
-        private ObservableCollection<StoreCategoryInfo> _categoryInfos;
+        private ObservableCollection<SubscribeCategoryInfo> _categoryInfos;
 
         [DataMember(Name = nameof(CategoryInfos))]
-        public ObservableCollection<StoreCategoryInfo> CategoryInfos
+        public ObservableCollection<SubscribeCategoryInfo> CategoryInfos
         {
             get
             {
                 if (_categoryInfos == null)
-                    _categoryInfos = new ObservableCollection<StoreCategoryInfo>();
+                    _categoryInfos = new ObservableCollection<SubscribeCategoryInfo>();
 
                 return _categoryInfos;
             }
         }
+
+        public SubscribeCategoryInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
-    [DataContract(Name = nameof(StoreInfo))]
-    partial class StoreInfo : INotifyPropertyChanged
+
+    [DataContract(Name = nameof(SubscribeStoreInfo))]
+    partial class SubscribeStoreInfo : INotifyPropertyChanged, ICloneable<SubscribeStoreInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -613,42 +789,42 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public StoreInfo() { }
+        public SubscribeStoreInfo() { }
 
-        private Signature _signature;
+        private Signature _authorSignature;
 
-        [DataMember(Name = nameof(Signature))]
-        public Signature Signature
+        [DataMember(Name = nameof(AuthorSignature))]
+        public Signature AuthorSignature
         {
             get
             {
-                return _signature;
+                return _authorSignature;
             }
             set
             {
-                if (_signature != value)
+                if (_authorSignature != value)
                 {
-                    _signature = value;
-                    this.OnPropertyChanged(nameof(Signature));
+                    _authorSignature = value;
+                    this.OnPropertyChanged(nameof(AuthorSignature));
                 }
             }
         }
 
-        private string _name;
+        private DateTime _creationTime;
 
-        [DataMember(Name = nameof(Name))]
-        public string Name
+        [DataMember(Name = nameof(CreationTime))]
+        public DateTime CreationTime
         {
             get
             {
-                return _name;
+                return _creationTime;
             }
             set
             {
-                if (_name != value)
+                if (_creationTime != value)
                 {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
+                    _creationTime = value;
+                    this.OnPropertyChanged(nameof(CreationTime));
                 }
             }
         }
@@ -691,36 +867,28 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<SeedInfo> _seedInfos;
-
-        [DataMember(Name = nameof(SeedInfos))]
-        public ObservableCollection<SeedInfo> SeedInfos
-        {
-            get
-            {
-                if (_seedInfos == null)
-                    _seedInfos = new ObservableCollection<SeedInfo>();
-
-                return _seedInfos;
-            }
-        }
-
-        private ObservableCollection<BoxInfo> _boxInfos;
+        private ObservableCollection<SubscribeBoxInfo> _boxInfos;
 
         [DataMember(Name = nameof(BoxInfos))]
-        public ObservableCollection<BoxInfo> BoxInfos
+        public ObservableCollection<SubscribeBoxInfo> BoxInfos
         {
             get
             {
                 if (_boxInfos == null)
-                    _boxInfos = new ObservableCollection<BoxInfo>();
+                    _boxInfos = new ObservableCollection<SubscribeBoxInfo>();
 
                 return _boxInfos;
             }
         }
+
+        public SubscribeStoreInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
     }
-    [DataContract(Name = nameof(BoxInfo))]
-    partial class BoxInfo : INotifyPropertyChanged
+
+    [DataContract(Name = nameof(SubscribeBoxInfo))]
+    partial class SubscribeBoxInfo : INotifyPropertyChanged, ICloneable<SubscribeBoxInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -729,7 +897,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public BoxInfo() { }
+        public SubscribeBoxInfo() { }
 
         private string _name;
 
@@ -769,120 +937,38 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<SeedInfo> _seedInfos;
+        private ObservableCollection<Seed> _seeds;
 
-        [DataMember(Name = nameof(SeedInfos))]
-        public ObservableCollection<SeedInfo> SeedInfos
+        [DataMember(Name = nameof(Seeds))]
+        public ObservableCollection<Seed> Seeds
         {
             get
             {
-                if (_seedInfos == null)
-                    _seedInfos = new ObservableCollection<SeedInfo>();
+                if (_seeds == null)
+                    _seeds = new ObservableCollection<Seed>();
 
-                return _seedInfos;
+                return _seeds;
             }
         }
 
-        private ObservableCollection<BoxInfo> _boxInfos;
+        private ObservableCollection<SubscribeBoxInfo> _boxInfos;
 
         [DataMember(Name = nameof(BoxInfos))]
-        public ObservableCollection<BoxInfo> BoxInfos
+        public ObservableCollection<SubscribeBoxInfo> BoxInfos
         {
             get
             {
                 if (_boxInfos == null)
-                    _boxInfos = new ObservableCollection<BoxInfo>();
+                    _boxInfos = new ObservableCollection<SubscribeBoxInfo>();
 
                 return _boxInfos;
             }
         }
-    }
-    [DataContract(Name = nameof(SeedInfo))]
-    partial class SeedInfo : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged(string name)
+        public SubscribeBoxInfo Clone()
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public SeedInfo() { }
-
-        private string _name;
-
-        [DataMember(Name = nameof(Name))]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        private long _length;
-
-        [DataMember(Name = nameof(Length))]
-        public long Length
-        {
-            get
-            {
-                return _length;
-            }
-            set
-            {
-                if (_length != value)
-                {
-                    _length = value;
-                    this.OnPropertyChanged(nameof(Length));
-                }
-            }
-        }
-
-        private DateTime _creationTime;
-
-        [DataMember(Name = nameof(CreationTime))]
-        public DateTime CreationTime
-        {
-            get
-            {
-                return _creationTime;
-            }
-            set
-            {
-                if (_creationTime != value)
-                {
-                    _creationTime = value;
-                    this.OnPropertyChanged(nameof(CreationTime));
-                }
-            }
-        }
-
-        private Metadata _metadata;
-
-        [DataMember(Name = nameof(Metadata))]
-        public Metadata Metadata
-        {
-            get
-            {
-                return _metadata;
-            }
-            set
-            {
-                if (_metadata != value)
-                {
-                    _metadata = value;
-                    this.OnPropertyChanged(nameof(Metadata));
-                }
-            }
+            return JsonUtils.Clone(this);
         }
     }
+
 }

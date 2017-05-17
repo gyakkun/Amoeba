@@ -20,9 +20,6 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public InteractionRequest<Confirmation> ConfirmRequest { get; private set; }
-        public InteractionRequest<Confirmation> NameEditRequest { get; private set; }
-
         public event EventHandler<EventArgs> CloseEvent;
 
         public ServiceOptionsInfo Options { get; } = new ServiceOptionsInfo();
@@ -50,9 +47,6 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
-                this.ConfirmRequest = new InteractionRequest<Confirmation>();
-                this.NameEditRequest = new InteractionRequest<Confirmation>();
-
                 this.SignatureNewCommand = new ReactiveCommand().AddTo(_disposable);
                 this.SignatureNewCommand.Subscribe(() => this.SignatureNew()).AddTo(_disposable);
 
@@ -124,13 +118,15 @@ namespace Amoeba.Interface
 
         public void SignatureNew()
         {
-            this.NameEditRequest.Raise(new Confirmation() { Content = "" }, n =>
+            var viewModel = new NameEditWindowViewModel("Anonymous");
+            viewModel.Callback += (name) =>
             {
-                if (!n.Confirmed) return;
-
-                var digitalSignature = new DigitalSignature((string)n.Content, DigitalSignatureAlgorithm.EcDsaP521_Sha256);
+                var digitalSignature = new DigitalSignature(name, DigitalSignatureAlgorithm.EcDsaP521_Sha256);
                 this.Options.Account.DigitalSignature = digitalSignature;
-            });
+            };
+
+            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+                .Publish(viewModel);
         }
 
         public void SignatureImport()

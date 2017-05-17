@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Amoeba.Interface
 {
     /// <summary>
-    /// ConfirmDialogControl.xaml の相互作用ロジック
+    /// StoreSubscribeControl.xaml の相互作用ロジック
     /// </summary>
-    public partial class ConfirmDialogControl : UserControl
+    public partial class StoreSubscribeControl : UserControl
     {
-        public ConfirmDialogControl()
+        public StoreSubscribeControl()
         {
             InitializeComponent();
         }

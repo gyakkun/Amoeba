@@ -62,11 +62,6 @@ namespace Amoeba.Interface
 
             {
                 SettingsManager.Instance.Load();
-
-                if (SettingsManager.Instance.DigitalSignature == null)
-                {
-                    SettingsManager.Instance.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256);
-                }
             }
 
             {
@@ -87,7 +82,7 @@ namespace Amoeba.Interface
 
         private void Options()
         {
-            Messenger.Instance.GetEvent<PubSubEvent<OptionsWindowViewModel>>()
+            Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
                 .Publish(new OptionsWindowViewModel(_serviceManager));
         }
 

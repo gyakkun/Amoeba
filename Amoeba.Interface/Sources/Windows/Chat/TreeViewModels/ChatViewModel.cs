@@ -39,12 +39,15 @@ namespace Amoeba.Interface
             return false;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
             _disposed = true;
 
-            _disposable.Dispose();
+            if (disposing)
+            {
+                _disposable.Dispose();
+            }
         }
     }
 }

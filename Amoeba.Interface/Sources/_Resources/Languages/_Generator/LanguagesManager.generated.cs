@@ -27,12 +27,12 @@ namespace Amoeba.Interface
         public string Box_Signature { get { return this.Translate("Box_Signature"); } }
         public string Box_CreationTime { get { return this.Translate("Box_CreationTime"); } }
         public string Box_Comment { get { return this.Translate("Box_Comment"); } }
-        public string ConfirmDialog_DeleteMessage { get { return this.Translate("ConfirmDialog_DeleteMessage"); } }
-        public string ConfirmDialog_Ok { get { return this.Translate("ConfirmDialog_Ok"); } }
-        public string ConfirmDialog_Cancel { get { return this.Translate("ConfirmDialog_Cancel"); } }
-        public string NameEditDialog_Name { get { return this.Translate("NameEditDialog_Name"); } }
-        public string NameEditDialog_Ok { get { return this.Translate("NameEditDialog_Ok"); } }
-        public string NameEditDialog_Cancel { get { return this.Translate("NameEditDialog_Cancel"); } }
+        public string SearchState_Cache { get { return this.Translate("SearchState_Cache"); } }
+        public string SearchState_Download { get { return this.Translate("SearchState_Download"); } }
+        public string SearchState_Flag_Cache { get { return this.Translate("SearchState_Flag_Cache"); } }
+        public string SearchState_Flag_Download { get { return this.Translate("SearchState_Flag_Download"); } }
+        public string ConfirmWindow_DeleteMessage { get { return this.Translate("ConfirmWindow_DeleteMessage"); } }
+        public string NameEditWindow_Name { get { return this.Translate("NameEditWindow_Name"); } }
         public string MainWindow_Crowd { get { return this.Translate("MainWindow_Crowd"); } }
         public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }
@@ -52,9 +52,18 @@ namespace Amoeba.Interface
         public string CrowdControl_Name { get { return this.Translate("CrowdControl_Name"); } }
         public string CrowdControl_Value { get { return this.Translate("CrowdControl_Value"); } }
         public string StoreControl_Search { get { return this.Translate("StoreControl_Search"); } }
+        public string StoreControl_Subscribe { get { return this.Translate("StoreControl_Subscribe"); } }
+        public string StoreControl_Publish { get { return this.Translate("StoreControl_Publish"); } }
         public string StoreControl_State { get { return this.Translate("StoreControl_State"); } }
         public string StoreControl_Share { get { return this.Translate("StoreControl_Share"); } }
-        public string StoreControl_Download { get { return this.Translate("StoreControl_Download"); } }
-        public string StoreControl_Upload { get { return this.Translate("StoreControl_Upload"); } }
+        public string StorePublishControl_Name { get { return this.Translate("StorePublishControl_Name"); } }
+        public string StorePublishControl_Path { get { return this.Translate("StorePublishControl_Path"); } }
+        public string StorePublishControl_Add { get { return this.Translate("StorePublishControl_Add"); } }
+        public string StorePublishControl_Edit { get { return this.Translate("StorePublishControl_Edit"); } }
+        public string StorePublishControl_Delete { get { return this.Translate("StorePublishControl_Delete"); } }
+        public string StoreSubscribeControl_Name { get { return this.Translate("StoreSubscribeControl_Name"); } }
+        public string StoreSubscribeControl_Length { get { return this.Translate("StoreSubscribeControl_Length"); } }
+        public string StoreSubscribeControl_CreationTime { get { return this.Translate("StoreSubscribeControl_CreationTime"); } }
+        public string StoreSubscribeControl_State { get { return this.Translate("StoreSubscribeControl_State"); } }
     }
 }

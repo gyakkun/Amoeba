@@ -7,30 +7,29 @@ using System.Threading.Tasks;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using System.Reactive.Linq;
 
 namespace Amoeba.Interface
 {
-    class StoreViewModel : TreeViewModelBase
+    class SubscribeStoreViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
         public ReactiveProperty<bool> IsUpdated { get; private set; }
-        public ReadOnlyReactiveCollection<BoxViewModel> Boxes { get; private set; }
-        public ReadOnlyReactiveCollection<SeedViewModel> Seeds { get; private set; }
+        public ReadOnlyReactiveCollection<SubscribeBoxViewModel> Boxes { get; private set; }
 
-        public StoreInfo Model { get; private set; }
+        public SubscribeStoreInfo Model { get; private set; }
 
-        public StoreViewModel(TreeViewModelBase parent, StoreInfo model)
+        public SubscribeStoreViewModel(TreeViewModelBase parent, SubscribeStoreInfo model)
             : base(parent)
         {
             this.Model = model;
 
-            this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
+            this.Name = model.ObserveProperty(n => n.AuthorSignature).Select(n => n.ToString()).ToReactiveProperty().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
-            this.IsUpdated = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);
-            this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new BoxViewModel(this, n)).AddTo(_disposable);
-            this.Seeds = model.SeedInfos.ToReadOnlyReactiveCollection(n => new SeedViewModel(this, n)).AddTo(_disposable);
+            this.IsUpdated = model.ObserveProperty(n => n.IsUpdated).ToReactiveProperty().AddTo(_disposable);
+            this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new SubscribeBoxViewModel(this, n)).AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Store"; } }
@@ -45,12 +44,15 @@ namespace Amoeba.Interface
             return false;
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
             _disposed = true;
 
-            _disposable.Dispose();
+            if (disposing)
+            {
+                _disposable.Dispose();
+            }
         }
     }
 }

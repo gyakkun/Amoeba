@@ -42,7 +42,6 @@
         <ContentControl Grid.Column="1" Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
                 <ListView
-                        x:Name="ConnectionListView"
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
                         omnius:GridViewSortHelper.AutoSort="True"
@@ -51,28 +50,10 @@
                         ItemsSource="{Binding Path=ConnectionInformations}"
                         VirtualizingStackPanel.IsVirtualizing="True"
                         VirtualizingStackPanel.VirtualizationMode="Recycling">
-                    <ListView.Resources>
-                        <DataTemplate x:Key="CellTemplate_Type">
-                            <TextBlock Text="{Binding Path=Value.Type, Mode=OneWay, Converter={StaticResource SessionTypeToStringConverter}}" />
-                        </DataTemplate>
-                        <DataTemplate x:Key="CellTemplate_Id">
-                            <TextBlock Text="{Binding Path=Value.Id, Mode=OneWay, Converter={StaticResource BytesToHexStringConverter}}" />
-                        </DataTemplate>
-                        <DataTemplate x:Key="CellTemplate_Priority">
-                            <TextBlock Text="{Binding Path=Value.Priority, Mode=OneWay}" />
-                        </DataTemplate>
-                        <DataTemplate x:Key="CellTemplate_ReceivedByteCount">
-                            <TextBlock Text="{Binding Path=Value.ReceivedByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
-                        </DataTemplate>
-                        <DataTemplate x:Key="CellTemplate_SentByteCount">
-                            <TextBlock Text="{Binding Path=Value.SentByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
-                        </DataTemplate>
-                    </ListView.Resources>
                     <ListView.ContextMenu>
                         <ContextMenu>
                             <MenuItem
                                     Command="{Binding Path=ConnectionCopyCommand}"
-                                    CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
                                     Header="{Binding Path=CrowdControl_Copy, Source={StaticResource Languages}}"
                                     InputGestureText="Ctrl+C">
                                 <MenuItem.Icon>
@@ -91,26 +72,41 @@
                     </ListView.ContextMenu>
                     <ListView.View>
                         <GridView AllowsColumnReorder="False">
-                            <GridViewColumn
-                                    Width="{Binding Path=Config.ConnetionListView_Type_Width, Mode=TwoWay, FallbackValue=120}"
-                                    CellTemplate="{StaticResource CellTemplate_Type}"
-                                    Header="{Binding Path=CrowdControl_Type, Source={StaticResource Languages}}" />
-                            <GridViewColumn
-                                    Width="{Binding Path=Config.ConnetionListView_Id_Width, Mode=TwoWay, FallbackValue=120}"
-                                    CellTemplate="{StaticResource CellTemplate_Id}"
-                                    Header="{Binding Path=CrowdControl_Id, Source={StaticResource Languages}}" />
-                            <GridViewColumn
-                                    Width="{Binding Path=Config.ConnetionListView_Priority_Width, Mode=TwoWay, FallbackValue=120}"
-                                    CellTemplate="{StaticResource CellTemplate_Priority}"
-                                    Header="{Binding Path=CrowdControl_Priority, Source={StaticResource Languages}}" />
-                            <GridViewColumn
-                                    Width="{Binding Path=Config.ConnetionListView_ReceivedByteCount_Width, Mode=TwoWay, FallbackValue=120}"
-                                    CellTemplate="{StaticResource CellTemplate_ReceivedByteCount}"
-                                    Header="{Binding Path=CrowdControl_ReceivedByteCount, Source={StaticResource Languages}}" />
-                            <GridViewColumn
-                                    Width="{Binding Path=Config.ConnetionListView_SentByteCount_Width, Mode=TwoWay, FallbackValue=120}"
-                                    CellTemplate="{StaticResource CellTemplate_SentByteCount}"
-                                    Header="{Binding Path=CrowdControl_SentByteCount, Source={StaticResource Languages}}" />
+                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_Type_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Type, Source={StaticResource Languages}}">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Value.Type, Mode=OneWay, Converter={StaticResource SessionTypeToStringConverter}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_Id_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Id, Source={StaticResource Languages}}">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Value.Id, Mode=OneWay, Converter={StaticResource BytesToHexStringConverter}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_Priority_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Priority, Source={StaticResource Languages}}">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Value.Priority, Mode=OneWay}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_ReceivedByteCount_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_ReceivedByteCount, Source={StaticResource Languages}}">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Value.ReceivedByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_SentByteCount_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_SentByteCount, Source={StaticResource Languages}}">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path=Value.SentByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>
@@ -125,10 +121,7 @@
                         Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
                         ToolTipService.Placement="Left">
                     <StackPanel>
-                        <Button
-                                Command="{Binding Path=ConnectionCopyCommand}"
-                                CommandParameter="{Binding Path=SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}"
-                                ToolTip="Copy that location">
+                        <Button Command="{Binding Path=ConnectionCopyCommand}" ToolTip="Copy that location">
                             <md:PackIcon Kind="ContentCopy" />
                         </Button>
                         <Button Command="{Binding Path=ConnectionPasteCommand}" ToolTip="Paste some location">
@@ -198,14 +191,6 @@
                                     <omnius:IgnoreMouseWheelBehavior />
                                     <omnius:IgnoreRequestBringIntoViewBehavior />
                                 </i:Interaction.Behaviors>
-                                <ListView.Resources>
-                                    <DataTemplate x:Key="CellTemplate_Name">
-                                        <TextBlock Text="{Binding Path=Key, Mode=OneWay}" />
-                                    </DataTemplate>
-                                    <DataTemplate x:Key="CellTemplate_Value">
-                                        <TextBlock Text="{Binding Path=Value.Content, Mode=OneWay}" />
-                                    </DataTemplate>
-                                </ListView.Resources>
                                 <ListView.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem
@@ -220,14 +205,20 @@
                                 </ListView.ContextMenu>
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
-                                        <GridViewColumn
-                                                Width="{Binding Path=Config.StateListView_Name_Width, Mode=TwoWay, FallbackValue=120}"
-                                                CellTemplate="{StaticResource CellTemplate_Name}"
-                                                Header="{Binding Path=CrowdControl_Name, Source={StaticResource Languages}}" />
-                                        <GridViewColumn
-                                                Width="{Binding Path=Config.StateListView_Value_Width, Mode=TwoWay, FallbackValue=120}"
-                                                CellTemplate="{StaticResource CellTemplate_Value}"
-                                                Header="{Binding Path=CrowdControl_Value, Source={StaticResource Languages}}" />
+                                        <GridViewColumn Width="{Binding Path=Config.StateListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Name, Source={StaticResource Languages}}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Key, Mode=OneWay}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="{Binding Path=Config.StateListView_Value_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Value, Source={StaticResource Languages}}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Path=Value.Content, Mode=OneWay}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
                                     </GridView>
                                 </ListView.View>
                             </ListView>

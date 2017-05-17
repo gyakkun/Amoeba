@@ -3,6 +3,7 @@
   <Import Namespace="System.Collections.ObjectModel" />
   <Import Namespace="Omnius.Security" />
 
-  <Property Type="DigitalSignature" Name="DigitalSignature" />
+  <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
+  <Property Type="ObservableCollection(PublishDirectoryInfo)" Name="PublishDirectoryInfos" />
 
 </Config>

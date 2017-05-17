@@ -26,13 +26,15 @@
   <Property Name="Box_CreationTime" Value="Creation time" />
   <Property Name="Box_Comment" Value="Comment" />
 
-  <Property Name="ConfirmDialog_DeleteMessage" Value="Are you sure you want to delete?" />
-  <Property Name="ConfirmDialog_Ok" Value="Ok" />
-  <Property Name="ConfirmDialog_Cancel" Value="Cancel" />
+  <Property Name="SearchState_Cache" Value="Cache" />
+  <Property Name="SearchState_Download" Value="Download" />
 
-  <Property Name="NameEditDialog_Name" Value="Name" />
-  <Property Name="NameEditDialog_Ok" Value="Ok" />
-  <Property Name="NameEditDialog_Cancel" Value="Cancel" />
+  <Property Name="SearchState_Flag_Cache" Value="C" />
+  <Property Name="SearchState_Flag_Download" Value="D" />
+
+  <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
+
+  <Property Name="NameEditWindow_Name" Value="Name: " />
 
   <Property Name="MainWindow_Crowd" Value="Crowd" />
   <Property Name="MainWindow_Chat" Value="Chat" />
@@ -56,9 +58,20 @@
   <Property Name="CrowdControl_Value" Value="Value" />
 
   <Property Name="StoreControl_Search" Value="Search" />
-  <Property Name="StoreControl_Download" Value="Download" />
-  <Property Name="StoreControl_Upload" Value="Upload" />
+  <Property Name="StoreControl_Subscribe" Value="Subscribe" />
+  <Property Name="StoreControl_Publish" Value="Publish" />
   <Property Name="StoreControl_State" Value="State" />
   <Property Name="StoreControl_Share" Value="Share" />
+
+  <Property Name="StorePublishControl_Name" Value="Name" />
+  <Property Name="StorePublishControl_Path" Value="Path" />
+  <Property Name="StorePublishControl_Add" Value="Add" />
+  <Property Name="StorePublishControl_Edit" Value="Edit" />
+  <Property Name="StorePublishControl_Delete" Value="Delete" />
+
+  <Property Name="StoreSubscribeControl_Name" Value="Name" />
+  <Property Name="StoreSubscribeControl_Length" Value="Length" />
+  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
+  <Property Name="StoreSubscribeControl_State" Value="State" />
 
 </Config>

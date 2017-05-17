@@ -72,7 +72,7 @@ namespace Amoeba.Service
                     {
                         for (int i = reader.GetInt() - 1; i >= 0; i--)
                         {
-                            this.ProtectedBoxes.Add(Box.Import(reader.GetStream(), bufferManager));
+                            this.ProtectedBoxes.Add(Box.Import(reader.GetStream(), bufferManager, depth + 1));
                         }
                     }
                 }
@@ -110,7 +110,7 @@ namespace Amoeba.Service
 
                     foreach (var item in this.Boxes)
                     {
-                        writer.Write(item.Export(bufferManager));
+                        writer.Write(item.Export(bufferManager, depth + 1));
                     }
                 }
 

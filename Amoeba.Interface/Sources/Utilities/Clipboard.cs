@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Amoeba.Service;
+using Omnius.Security;
 
 namespace Amoeba.Interface
 {
@@ -126,6 +127,52 @@ namespace Amoeba.Interface
             }
         }
 
+        public static bool ContainsSignatures()
+        {
+            lock (_thisLock)
+            {
+                foreach (string item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (Signature.Parse(item) != null) return true;
+                }
+
+                return false;
+            }
+        }
+
+        public static IEnumerable<Signature> GetSignatures()
+        {
+            lock (_thisLock)
+            {
+                var list = new List<Signature>();
+
+                foreach (string item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    try
+                    {
+                        var signature = Signature.Parse(item);
+                        if (signature == null) continue;
+
+                        list.Add(signature);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+
+                return list;
+            }
+        }
+
+        public static void SetSignatures(IEnumerable<Signature> signatures)
+        {
+            lock (_thisLock)
+            {
+                Clipboard.SetText(string.Join("\r\n", signatures.Select(n => n.ToString())));
+            }
+        }
+
         public static bool ContainsLocations()
         {
             lock (_thisLock)
@@ -164,11 +211,11 @@ namespace Amoeba.Interface
             }
         }
 
-        public static void SetLocations(IEnumerable<Location> nodes)
+        public static void SetLocations(IEnumerable<Location> locations)
         {
             lock (_thisLock)
             {
-                Clipboard.SetText(string.Join("\r\n", nodes.Select(n => AmoebaConverter.ToLocationString(n))));
+                Clipboard.SetText(string.Join("\r\n", locations.Select(n => AmoebaConverter.ToLocationString(n))));
             }
         }
 
@@ -218,14 +265,6 @@ namespace Amoeba.Interface
             }
         }
 
-        public static bool ContainsChatCategorizeTreeItems()
-        {
-            lock (_thisLock)
-            {
-                return System.Windows.Clipboard.ContainsData("Amoeba_ChatCategorizeTreeItems");
-            }
-        }
-
         public static bool ContainsSeeds()
         {
             lock (_thisLock)
@@ -269,57 +308,6 @@ namespace Amoeba.Interface
             lock (_thisLock)
             {
                 Clipboard.SetText(string.Join("\r\n", seeds.Select(n => AmoebaConverter.ToSeedString(n))));
-            }
-        }
-
-        public static bool ContainsBoxes()
-        {
-            lock (_thisLock)
-            {
-                return System.Windows.Clipboard.ContainsData("Amoeba_Boxes");
-            }
-        }
-
-        public static IEnumerable<Box> GetBoxes()
-        {
-            lock (_thisLock)
-            {
-                try
-                {
-                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_Boxes"))
-                    {
-                        return Clipboard.FromStream<IEnumerable<Box>>(stream);
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-
-                return Enumerable.Empty<Box>();
-            }
-        }
-
-        public static void SetBoxes(IEnumerable<Box> boxes)
-        {
-            lock (_thisLock)
-            {
-                var dataObject = new System.Windows.DataObject();
-                dataObject.SetData("Amoeba_Boxes", Clipboard.ToStream(boxes));
-
-                System.Windows.Clipboard.SetDataObject(dataObject);
-            }
-        }
-
-        public static void SetBoxesAndSeeds(IEnumerable<Box> boxes, IEnumerable<Seed> seeds)
-        {
-            lock (_thisLock)
-            {
-                var dataObject = new System.Windows.DataObject();
-                dataObject.SetText(string.Join("\r\n", seeds.Select(n => AmoebaConverter.ToSeedString(n))));
-                dataObject.SetData("Amoeba_Boxes", Clipboard.ToStream(boxes));
-
-                System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -397,6 +385,85 @@ namespace Amoeba.Interface
                 var dataObject = new System.Windows.DataObject();
                 dataObject.SetText(string.Join("\r\n", items.Select(n => AmoebaConverter.ToTagString(n.Tag))));
                 dataObject.SetData("Amoeba_ChatInfos", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        public static bool ContainsSubscribeCategoryInfo()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_SubscribeCategoryInfos");
+            }
+        }
+
+        public static IEnumerable<SubscribeCategoryInfo> GetSubscribeCategoryInfos()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_SubscribeCategoryInfos"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<SubscribeCategoryInfo>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return Enumerable.Empty<SubscribeCategoryInfo>();
+            }
+        }
+
+        public static void SetSubscribeCategoryInfos(IEnumerable<SubscribeCategoryInfo> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_SubscribeCategoryInfos", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        public static bool ContainsSubscribeStoreInfo()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_SubscribeStoreInfos");
+            }
+        }
+
+        public static IEnumerable<SubscribeStoreInfo> GetSubscribeStoreInfos()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_SubscribeStoreInfos"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<SubscribeStoreInfo>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return Enumerable.Empty<SubscribeStoreInfo>();
+            }
+        }
+
+        public static void SetSubscribeStoreInfos(IEnumerable<SubscribeStoreInfo> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetText(string.Join("\r\n", items.Select(n => n.AuthorSignature.ToString())));
+                dataObject.SetData("Amoeba_SubscribeStoreInfos", Clipboard.ToStream(items));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
             }

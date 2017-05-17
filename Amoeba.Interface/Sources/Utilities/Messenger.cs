@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace Amoeba.Interface
 {
-	public class Messenger : EventAggregator
-	{
-		public static Messenger Instance { get; } = new Messenger();
-	}
+    class ChatMessageEditWindowShowEvent : PubSubEvent<ChatMessageEditWindowViewModel> { }
+    class OptionsWindowShowEvent : PubSubEvent<OptionsWindowViewModel> { }
+    class PublishDirectoryInfoEditWindowShowEvent : PubSubEvent<PublishDirectoryInfoEditWindowViewModel> { }
+    class NameEditWindowViewModelShowEvent : PubSubEvent<NameEditWindowViewModel> { }
+    class ConfirmWindowViewModelShowEvent : PubSubEvent<ConfirmWindowViewModel> { }
+
+    class Messenger : EventAggregator
+    {
+        public static Messenger Instance { get; } = new Messenger();
+    }
 }

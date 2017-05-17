@@ -10,27 +10,8 @@ using Omnius.Security;
 
 namespace Amoeba.Interface
 {
-    partial class SettingsManager : ISettings
+    partial class SettingsManager
     {
-        private Settings _settings;
-
-        public SettingsManager(string configPath)
-        {
-            _settings = new Settings(configPath);
-
-            this.Init();
-        }
-
-        public void Load()
-        {
-            this.DigitalSignature = _settings.Load("DigitalSignature", () => this.DigitalSignature);
-        }
-
-        public void Save()
-        {
-            _settings.Save("DigitalSignature", this.DigitalSignature);
-        }
-
         private DigitalSignature _digitalSignature;
 
         [DataMember(Name = nameof(DigitalSignature))]
@@ -49,5 +30,20 @@ namespace Amoeba.Interface
                 }
             }
         }
+
+        private ObservableCollection<PublishDirectoryInfo> _publishDirectoryInfos;
+
+        [DataMember(Name = nameof(PublishDirectoryInfos))]
+        public ObservableCollection<PublishDirectoryInfo> PublishDirectoryInfos
+        {
+            get
+            {
+                if (_publishDirectoryInfos == null)
+                    _publishDirectoryInfos = new ObservableCollection<PublishDirectoryInfo>();
+
+                return _publishDirectoryInfos;
+            }
+        }
+
     }
 }
