@@ -77,8 +77,8 @@
             </i:Interaction.Behaviors>
             <TreeView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value}" />
-                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value}" />
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value, Mode=TwoWay}" />
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value, Mode=TwoWay}" />
                     <Setter Property="omnius:StyleInteraction.Behaviors">
                         <Setter.Value>
                             <omnius:Behaviors>
@@ -167,7 +167,7 @@
                     <GridViewColumn Width="{Binding Path=Config.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreSubscribeControl_Length, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Length, Mode=OneWay}" />
+                                <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -200,14 +200,8 @@
                 Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
                 ToolTipService.Placement="Left">
             <StackPanel>
-                <Button Command="{Binding Path=AddCommand}" ToolTip="Copy that location">
-                    <md:PackIcon Kind="Folder" />
-                </Button>
-                <Button Command="{Binding Path=EditCommand}" ToolTip="Paste some location">
-                    <md:PackIcon Kind="Pencil" />
-                </Button>
-                <Button Command="{Binding Path=DeleteCommand}" ToolTip="Copy that location">
-                    <md:PackIcon Kind="Delete" />
+                <Button Command="{Binding Path=DownloadCommand}" ToolTip="Copy that location">
+                    <md:PackIcon Kind="CloudDownload" />
                 </Button>
             </StackPanel>
         </md:PopupBox>

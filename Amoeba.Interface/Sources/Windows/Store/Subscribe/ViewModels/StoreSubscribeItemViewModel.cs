@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Amoeba.Interface
 {
-    class SubscribeItemViewModel
+    class StoreSubscribeItemViewModel
     {
         public string Name { get; set; }
         public long Length { get; set; }

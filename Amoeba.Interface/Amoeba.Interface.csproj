@@ -71,6 +71,7 @@
     <Compile Include="Sources\Mvvm\Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\ObjectToInfoStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SearchStateFlagToStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\DownloadStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SearchStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SessionTypeToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\TagToStringConverter.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Sources\Mvvm\Models\Store\Search\SearchRange.cs" />
     <Compile Include="Sources\Mvvm\Models\Store\Search\SearchRegex.cs" />
     <Compile Include="Sources\Mvvm\Models\Store\Search\SearchState.cs" />
+    <Compile Include="Sources\Mvvm\Models\Store\State\DownloadItemInfo.cs" />
     <Compile Include="Sources\Mvvm\Models\_Generator\Models.generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -115,6 +117,7 @@
       <DependentUpon>PublishDirectoryInfoEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Store\Publish\Windows\PublishDirectoryInfoEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\State\StoreStateControlViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControlViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml.cs">
       <DependentUpon>StoreSubscribeControl.xaml</DependentUpon>
@@ -130,7 +133,7 @@
     </Compile>
     <Compile Include="Sources\Windows\Store\Search\ViewModels\SearchViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeItemViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\StoreSubscribeItemViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeStoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeBoxViewModel.cs" />
     <Compile Include="Sources\Windows\Utilities\ConfirmWindow\ConfirmWindowViewModel.cs" />
@@ -250,7 +253,7 @@
     <None Include="Licenses\Amoeba.Interface.Readme">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Compile Include="Sources\Utilities\Messenger.cs" />
+    <Compile Include="Sources\Mvvm\Utilities\Messenger.cs" />
     <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml">
       <SubType>Designer</SubType>
     </Resource>
@@ -281,6 +284,10 @@
     <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj">
       <Project>{7d516c9f-7d8a-4166-8d12-d6af798f6da9}</Project>
       <Name>Amoeba.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Amoeba.Update\Amoeba.Update.csproj">
+      <Project>{7847434c-5101-4937-8c4e-b51d8415abd6}</Project>
+      <Name>Amoeba.Update</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
       <Project>{dbfd22ce-159b-4db0-8052-111686395656}</Project>

@@ -47,6 +47,12 @@ namespace Amoeba.Interface
 
                 _serviceManager = new ServiceManager(configPath, AmoebaEnvironment.Config.Cache.BlocksPath, BufferManager.Instance);
                 _serviceManager.Load();
+
+                if (_serviceManager.BasePath == null)
+                {
+                    _serviceManager.BasePath = AmoebaEnvironment.Paths.DownloadsPath;
+                }
+
                 _serviceManager.Start();
             }
 
@@ -99,6 +105,7 @@ namespace Amoeba.Interface
 
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
                 _settings.Save("Config", this.Config.GetPairs());
+
                 _disposable.Dispose();
 
                 SettingsManager.Instance.Save();

@@ -639,62 +639,6 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(PublishDirectoryInfo))]
-    partial class PublishDirectoryInfo : INotifyPropertyChanged, ICloneable<PublishDirectoryInfo>
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public PublishDirectoryInfo() { }
-
-        private string _name;
-
-        [DataMember(Name = nameof(Name))]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        private string _path;
-
-        [DataMember(Name = nameof(Path))]
-        public string Path
-        {
-            get
-            {
-                return _path;
-            }
-            set
-            {
-                if (_path != value)
-                {
-                    _path = value;
-                    this.OnPropertyChanged(nameof(Path));
-                }
-            }
-        }
-
-        public PublishDirectoryInfo Clone()
-        {
-            return JsonUtils.Clone(this);
-        }
-    }
-
     [DataContract(Name = nameof(SubscribeCategoryInfo))]
     partial class SubscribeCategoryInfo : INotifyPropertyChanged, ICloneable<SubscribeCategoryInfo>
     {
@@ -966,6 +910,62 @@ namespace Amoeba.Interface
         }
 
         public SubscribeBoxInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(PublishDirectoryInfo))]
+    partial class PublishDirectoryInfo : INotifyPropertyChanged, ICloneable<PublishDirectoryInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public PublishDirectoryInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private string _path;
+
+        [DataMember(Name = nameof(Path))]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                if (_path != value)
+                {
+                    _path = value;
+                    this.OnPropertyChanged(nameof(Path));
+                }
+            }
+        }
+
+        public PublishDirectoryInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

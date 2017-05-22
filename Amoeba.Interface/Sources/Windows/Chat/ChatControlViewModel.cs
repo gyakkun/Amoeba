@@ -69,15 +69,15 @@ namespace Amoeba.Interface
 
         private void DragAcceptDescription_DragDrop(DragAcceptEventArgs args)
         {
-            var source = args.Source as TreeViewModelBase;
+            var src = args.Source as TreeViewModelBase;
             var dest = args.Destination as TreeViewModelBase;
-            if (source == null || dest == null) return;
+            if (src == null || dest == null) return;
 
-            if (dest.GetAncestors().Contains(source)) return;
+            if (dest.GetAncestors().Contains(src)) return;
 
-            if (dest.TryAdd(source))
+            if (dest.TryAdd(src))
             {
-                source.Parent.TryRemove(source);
+                src.Parent.TryRemove(src);
             }
         }
 

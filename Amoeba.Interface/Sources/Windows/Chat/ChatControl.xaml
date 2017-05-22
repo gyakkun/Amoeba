@@ -64,8 +64,8 @@
             </i:Interaction.Behaviors>
             <TreeView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value}" />
-                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value}" />
+                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value, Mode=TwoWay}" />
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value, Mode=TwoWay}" />
                     <Setter Property="omnius:StyleInteraction.Behaviors">
                         <Setter.Value>
                             <omnius:Behaviors>

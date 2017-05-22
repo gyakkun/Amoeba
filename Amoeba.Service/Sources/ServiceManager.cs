@@ -155,6 +155,28 @@ namespace Amoeba.Service
             }
         }
 
+        public string BasePath
+        {
+            get
+            {
+                this.Check();
+
+                lock (_lockObject)
+                {
+                    return _coreManager.BasePath;
+                }
+            }
+            set
+            {
+                this.Check();
+
+                lock (_lockObject)
+                {
+                    _coreManager.BasePath = value;
+                }
+            }
+        }
+
         public IEnumerable<Information> GetConnectionInformations()
         {
             this.Check();

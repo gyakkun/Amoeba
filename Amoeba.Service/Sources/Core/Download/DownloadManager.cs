@@ -363,6 +363,8 @@ namespace Amoeba.Service
                                     if (Path.IsPathRooted(item.Path)) targetPath = item.Path;
                                     else targetPath = Path.Combine(this.BasePath, item.Path);
 
+                                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+
                                     using (var inStream = _cacheManager.Decoding(hashes))
                                     using (var outStream = DownloadManager.GetUniqueFileStream(targetPath))
                                     using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 32))
@@ -519,28 +521,30 @@ namespace Amoeba.Service
                     var contexts = new List<InformationContext>();
                     {
                         contexts.Add(new InformationContext("Metadata", info.Metadata));
+                        contexts.Add(new InformationContext("Path", info.Path));
                         contexts.Add(new InformationContext("State", info.State));
                         contexts.Add(new InformationContext("Depth", info.Depth));
 
-                        if (info.State != DownloadState.Error)
+                        if (info.State == DownloadState.Downloading || info.State == DownloadState.Decoding || info.State == DownloadState.ParityDecoding)
                         {
-                            if (info.State == DownloadState.Downloading || info.State == DownloadState.Decoding || info.State == DownloadState.ParityDecoding)
-                            {
-                                if (info.Depth == 1) contexts.Add(new InformationContext("DownloadBlockCount", _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0));
-                                else contexts.Add(new InformationContext("DownloadBlockCount", info.Index.Groups.Sum(n => Math.Min(n.Hashes.Count() / 2, _existManager.GetCount(n)))));
-                            }
-                            else if (info.State == DownloadState.Completed)
-                            {
-                                if (info.Depth == 1) contexts.Add(new InformationContext("DownloadBlockCount", _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0));
-                                else contexts.Add(new InformationContext("DownloadBlockCount", info.Index.Groups.Sum(n => _existManager.GetCount(n))));
-                            }
-
-                            if (info.Depth == 1) contexts.Add(new InformationContext("ParityBlockCount", 0));
-                            else contexts.Add(new InformationContext("ParityBlockCount", info.Index.Groups.Sum(n => n.Hashes.Count() / 2)));
-
-                            if (info.Depth == 1) contexts.Add(new InformationContext("BlockCount", 1));
-                            else contexts.Add(new InformationContext("BlockCount", info.Index.Groups.Sum(n => n.Hashes.Count())));
+                            if (info.Depth == 0) contexts.Add(new InformationContext("DownloadBlockCount", _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0));
+                            else contexts.Add(new InformationContext("DownloadBlockCount", info.Index.Groups.Sum(n => Math.Min(n.Hashes.Count() / 2, _existManager.GetCount(n)))));
                         }
+                        else if (info.State == DownloadState.Completed)
+                        {
+                            if (info.Depth == 0) contexts.Add(new InformationContext("DownloadBlockCount", _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0));
+                            else contexts.Add(new InformationContext("DownloadBlockCount", info.Index.Groups.Sum(n => _existManager.GetCount(n))));
+                        }
+                        else
+                        {
+                            contexts.Add(new InformationContext("DownloadBlockCount", 0));
+                        }
+
+                        if (info.Depth == 0) contexts.Add(new InformationContext("ParityBlockCount", 0));
+                        else contexts.Add(new InformationContext("ParityBlockCount", info.Index.Groups.Sum(n => n.Hashes.Count() / 2)));
+
+                        if (info.Depth == 0) contexts.Add(new InformationContext("BlockCount", 1));
+                        else contexts.Add(new InformationContext("BlockCount", info.Index.Groups.Sum(n => n.Hashes.Count())));
                     }
 
                     list.Add(new Information(contexts));

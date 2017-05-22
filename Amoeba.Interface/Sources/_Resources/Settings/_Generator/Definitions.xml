@@ -2,8 +2,10 @@
   
   <Import Namespace="System.Collections.ObjectModel" />
   <Import Namespace="Omnius.Security" />
+  <Import Namespace="Omnius.Collections" />
 
   <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
   <Property Type="ObservableCollection(PublishDirectoryInfo)" Name="PublishDirectoryInfos" />
+  <Property Type="LockedList(DownloadItemInfo)" Name="DownloadItemInfos" />
 
 </Config>

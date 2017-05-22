@@ -8,6 +8,7 @@ using System.Windows;
 using Omnius.Configuration;
 using Omnius.Security;
 using System.Collections.ObjectModel;
+using Omnius.Collections;
 
 namespace Amoeba.Interface
 {
@@ -33,12 +34,14 @@ namespace Amoeba.Interface
         {
             this.DigitalSignature = _settings.Load(nameof(DigitalSignature), () => new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256));
             this.PublishDirectoryInfos.AddRange(_settings.Load(nameof(PublishDirectoryInfos), () => new ObservableCollection<PublishDirectoryInfo>()));
+            this.DownloadItemInfos.AddRange(_settings.Load(nameof(DownloadItemInfos), () => new LockedList<DownloadItemInfo>()));
         }
 
         public void Save()
         {
             _settings.Save(nameof(DigitalSignature), this.DigitalSignature);
             _settings.Save(nameof(PublishDirectoryInfos), this.PublishDirectoryInfos);
+            _settings.Save(nameof(DownloadItemInfos), this.DownloadItemInfos);
         }
     }
 }

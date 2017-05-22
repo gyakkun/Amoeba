@@ -177,6 +177,15 @@ namespace Amoeba.Service
                     return _downloadManager.BasePath;
                 }
             }
+            set
+            {
+                this.Check();
+
+                lock (_lockObject)
+                {
+                    _downloadManager.BasePath = value;
+                }
+            }
         }
 
         public IEnumerable<Information> GetConnectionInformations()

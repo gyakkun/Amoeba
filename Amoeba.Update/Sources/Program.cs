@@ -14,8 +14,6 @@ namespace Amoeba.Update
         [STAThread]
         static void Main(string[] args)
         {
-            if (args.Length != 5) return;
-
             try
             {
                 string sessionId = args[0];
@@ -24,7 +22,7 @@ namespace Amoeba.Update
                 string runExePath = args[3];
 
                 var mutex = new Mutex(false, sessionId);
-                if (!mutex.WaitOne(1000 * 10)) return;
+                if (!mutex.WaitOne(1000 * 30)) return;
 
                 {
                     string tempDirectoryPath = Program.GetUniqueDirectoryPath(targetDirectoryPath);

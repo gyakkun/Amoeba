@@ -13,9 +13,123 @@
         d:DesignWidth="300"
         mc:Ignorable="d">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        <ListView
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                omnius:GridViewSortHelper.AutoSort="True"
+                omnius:ListBoxHelper.SelectedItems="{Binding Path=SelectedItems}"
+                IsSynchronizedWithCurrentItem="True"
+                ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
+                ItemsSource="{Binding Path=Contents}"
+                VirtualizingStackPanel.IsVirtualizing="True"
+                VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                            Command="{Binding Path=DeleteCommand}"
+                            Header="{Binding Path=StoreStateControl_Delete, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+D">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Delete" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                            Command="{Binding Path=CopyCommand}"
+                            Header="{Binding Path=StoreStateControl_Copy, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+C">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ContentCopy" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                            Command="{Binding Path=PasteCommand}"
+                            Header="{Binding Path=StoreStateControl_Paste, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+V">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ContentPaste" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Width="{Binding Path=Config.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Name, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Value.Name, Mode=OneWay}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding Path=Config.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Length, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Value.Length, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding Path=Config.ListView_CreationTime_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_CreationTime, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Value.CreationTime, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding Path=Config.ListView_Rate_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Rate, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <ProgressBar
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            md:TransitionAssist.DisableTransitions="True"
+                                            Value="{Binding Path=Value.Rate_Value, Mode=OneWay}" />
+                                    <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Foreground="{DynamicResource TextBrush}"
+                                            Text="{Binding Path=Value.Rate_Text, Mode=OneWay}" />
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding Path=Config.ListView_State_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_State, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Value.State, Mode=OneWay, Converter={StaticResource DownloadStateToStringConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="{Binding Path=Config.ListView_Path_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Path, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Value.Path, Mode=OneWay}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <md:PopupBox
+                Width="48"
+                Height="48"
+                Margin="0,0,20,20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                PlacementMode="TopAndAlignCentres"
+                PopupMode="Click"
+                Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
+                ToolTipService.Placement="Left">
+            <StackPanel>
+                <Button Command="{Binding Path=DeleteCommand}" ToolTip="Copy that location">
+                    <md:PackIcon Kind="Delete" />
+                </Button>
+                <Button Command="{Binding Path=CopyCommand}" ToolTip="Copy that location">
+                    <md:PackIcon Kind="ContentCopy" />
+                </Button>
+                <Button Command="{Binding Path=PasteCommand}" ToolTip="Paste some location">
+                    <md:PackIcon Kind="ContentPaste" />
+                </Button>
+            </StackPanel>
+        </md:PopupBox>
     </Grid>
 </UserControl>

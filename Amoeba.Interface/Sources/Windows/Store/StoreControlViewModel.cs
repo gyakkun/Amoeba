@@ -31,9 +31,9 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public StorePublishControlViewModel StorePublishControlViewModel { get; private set; }
         public StoreSubscribeControlViewModel StoreSubscribeControlViewModel { get; private set; }
-
+        public StorePublishControlViewModel StorePublishControlViewModel { get; private set; }
+        public StoreStateControlViewModel StoreStateControlViewModel { get; private set; }
         public DynamicViewModel Config { get; } = new DynamicViewModel();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
@@ -51,6 +51,7 @@ namespace Amoeba.Interface
             {
                 this.StoreSubscribeControlViewModel = new StoreSubscribeControlViewModel(_serviceManager);
                 this.StorePublishControlViewModel = new StorePublishControlViewModel(_serviceManager);
+                this.StoreStateControlViewModel = new StoreStateControlViewModel(_serviceManager);
             }
 
             {
@@ -71,6 +72,7 @@ namespace Amoeba.Interface
             {
                 this.StoreSubscribeControlViewModel.Dispose();
                 this.StorePublishControlViewModel.Dispose();
+                this.StoreStateControlViewModel.Dispose();
 
                 _settings.Save("Config", this.Config.GetPairs());
 

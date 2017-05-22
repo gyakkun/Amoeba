@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using Omnius.Configuration;
 using System.Collections.ObjectModel;
 using Omnius.Security;
+using Omnius.Collections;
 
 namespace Amoeba.Interface
 {
@@ -42,6 +43,20 @@ namespace Amoeba.Interface
                     _publishDirectoryInfos = new ObservableCollection<PublishDirectoryInfo>();
 
                 return _publishDirectoryInfos;
+            }
+        }
+
+        private LockedList<DownloadItemInfo> _downloadItemInfos;
+
+        [DataMember(Name = nameof(DownloadItemInfos))]
+        public LockedList<DownloadItemInfo> DownloadItemInfos
+        {
+            get
+            {
+                if (_downloadItemInfos == null)
+                    _downloadItemInfos = new LockedList<DownloadItemInfo>();
+
+                return _downloadItemInfos;
             }
         }
 

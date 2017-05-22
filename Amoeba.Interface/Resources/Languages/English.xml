@@ -32,6 +32,12 @@
   <Property Name="SearchState_Flag_Cache" Value="C" />
   <Property Name="SearchState_Flag_Download" Value="D" />
 
+  <Property Name="DownloadState_Downloading" Value="Downloading" />
+  <Property Name="DownloadState_ParityDecoding" Value="ParityDecoding" />
+  <Property Name="DownloadState_Decoding" Value="Decoding" />
+  <Property Name="DownloadState_Completed" Value="Completed" />
+  <Property Name="DownloadState_Error" Value="Error" />
+
   <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
 
   <Property Name="NameEditWindow_Name" Value="Name: " />
@@ -63,15 +69,22 @@
   <Property Name="StoreControl_State" Value="State" />
   <Property Name="StoreControl_Share" Value="Share" />
 
+  <Property Name="StoreSubscribeControl_Name" Value="Name" />
+  <Property Name="StoreSubscribeControl_Length" Value="Length" />
+  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
+  <Property Name="StoreSubscribeControl_State" Value="State" />
+
   <Property Name="StorePublishControl_Name" Value="Name" />
   <Property Name="StorePublishControl_Path" Value="Path" />
   <Property Name="StorePublishControl_Add" Value="Add" />
   <Property Name="StorePublishControl_Edit" Value="Edit" />
   <Property Name="StorePublishControl_Delete" Value="Delete" />
 
-  <Property Name="StoreSubscribeControl_Name" Value="Name" />
-  <Property Name="StoreSubscribeControl_Length" Value="Length" />
-  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
-  <Property Name="StoreSubscribeControl_State" Value="State" />
+  <Property Name="StoreStateControl_Name" Value="Name" />
+  <Property Name="StoreStateControl_Length" Value="Length" />
+  <Property Name="StoreStateControl_CreationTime" Value="CreationTime" />
+  <Property Name="StoreStateControl_Rate" Value="Rate" />
+  <Property Name="StoreStateControl_State" Value="State" />
+  <Property Name="StoreStateControl_Path" Value="Path" />
 
 </Config>

@@ -11,4 +11,16 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="SnapsToDevicePixels" Value="true" />
     </Style>
+
+    <Style BasedOn="{StaticResource {x:Type ProgressBar}}" TargetType="{x:Type ProgressBar}">
+        <Setter Property="Height" Value="Auto" />
+    </Style>
+
+    <Style
+            x:Key="CustomMaterialDesignListViewItem"
+            BasedOn="{StaticResource MaterialDesignGridViewItem}"
+            TargetType="{x:Type ListViewItem}">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    </Style>
+
 </ResourceDictionary>

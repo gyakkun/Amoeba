@@ -45,7 +45,10 @@ namespace Amoeba.Interface
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
-        public ObservableCollection<SubscribeItemViewModel> Contents { get; } = new ObservableCollection<SubscribeItemViewModel>();
+        public ReactiveCommand DownloadCommand { get; private set; }
+
+        public ObservableCollection<StoreSubscribeItemViewModel> Contents { get; } = new ObservableCollection<StoreSubscribeItemViewModel>();
+        public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
 
         public DynamicViewModel Config { get; } = new DynamicViewModel();
 
@@ -67,15 +70,15 @@ namespace Amoeba.Interface
 
         private void DragAcceptDescription_DragDrop(DragAcceptEventArgs args)
         {
-            var source = args.Source as TreeViewModelBase;
+            var src = args.Source as TreeViewModelBase;
             var dest = args.Destination as TreeViewModelBase;
-            if (source == null || dest == null) return;
+            if (src == null || dest == null) return;
 
-            if (dest.GetAncestors().Contains(source)) return;
+            if (dest.GetAncestors().Contains(src)) return;
 
-            if (dest.TryAdd(source))
+            if (dest.TryAdd(src))
             {
-                source.Parent.TryRemove(source);
+                src.Parent.TryRemove(src);
             }
         }
 
@@ -107,6 +110,9 @@ namespace Amoeba.Interface
 
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
+
+                this.DownloadCommand = new ReactiveCommand().AddTo(_disposable);
+                this.DownloadCommand.Subscribe(() => this.Download()).AddTo(_disposable);
             }
 
             {
@@ -140,11 +146,11 @@ namespace Amoeba.Interface
             {
                 storeViewModel.Model.IsUpdated = false;
 
-                var list = new List<SubscribeItemViewModel>();
+                var list = new List<StoreSubscribeItemViewModel>();
 
                 foreach (var item in storeViewModel.Model.BoxInfos)
                 {
-                    var vm = new SubscribeItemViewModel();
+                    var vm = new StoreSubscribeItemViewModel();
                     vm.Name = item.Name;
 
                     list.Add(vm);
@@ -155,11 +161,11 @@ namespace Amoeba.Interface
             }
             else if (viewModel is SubscribeBoxViewModel boxViewModel)
             {
-                var list = new List<SubscribeItemViewModel>();
+                var list = new List<StoreSubscribeItemViewModel>();
 
                 foreach (var item in boxViewModel.Model.BoxInfos)
                 {
-                    var vm = new SubscribeItemViewModel();
+                    var vm = new StoreSubscribeItemViewModel();
                     vm.Name = item.Name;
                     vm.Model = item;
 
@@ -168,7 +174,7 @@ namespace Amoeba.Interface
 
                 foreach (var item in boxViewModel.Model.Seeds)
                 {
-                    var vm = new SubscribeItemViewModel();
+                    var vm = new StoreSubscribeItemViewModel();
                     vm.Name = item.Name;
                     vm.CreationTime = item.CreationTime;
                     vm.Length = item.Length;
@@ -293,6 +299,14 @@ namespace Amoeba.Interface
                     if (subscribeCategoryViewModel.Model.StoreInfos.Any(n => n.AuthorSignature == signature)) continue;
                     subscribeCategoryViewModel.Model.StoreInfos.Add(new SubscribeStoreInfo() { AuthorSignature = signature });
                 }
+            }
+        }
+
+        private void Download()
+        {
+            foreach (var item in this.SelectedItems.OfType<StoreSubscribeItemViewModel>())
+            {
+                SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo((Seed)item.Model, ((Seed)item.Model).Name));
             }
         }
 

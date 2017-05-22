@@ -33,6 +33,7 @@
             <local:SessionTypeToStringConverter x:Key="SessionTypeToStringConverter" />
             <local:SearchStateToStringConverter x:Key="SearchStateToStringConverter" />
             <local:SearchStateFlagToStringConverter x:Key="SearchStateFlagToStringConverter" />
+            <local:DownloadStateToStringConverter x:Key="DownloadStateToStringConverter" />
             <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>

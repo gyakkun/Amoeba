@@ -53,92 +53,99 @@ namespace Amoeba.Interface
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            string sessionId = NetworkConverter.ToHexString(Sha256.ComputeHash(Path.GetFullPath(Assembly.GetEntryAssembly().Location)));
-
-            // 多重起動防止
+            try
             {
-                _mutex = new Mutex(false, sessionId);
+                string sessionId = NetworkConverter.ToHexString(Sha256.ComputeHash(Path.GetFullPath(Assembly.GetEntryAssembly().Location)));
 
-                if (!_mutex.WaitOne(0))
+                // 多重起動防止
                 {
-                    this.Shutdown();
-                    return;
-                }
-            }
+                    _mutex = new Mutex(false, sessionId);
 
-            // アップデート
-            {
-                // 一時的に作成された"Amoeba.Update.exe"を削除する。
-                try
-                {
-                    string tempUpdateExeFilePath = Path.Combine(AmoebaEnvironment.Paths.WorkPath, "Amoeba.Update.exe");
-
-                    if (File.Exists(tempUpdateExeFilePath))
+                    if (!_mutex.WaitOne(0))
                     {
-                        File.Delete(tempUpdateExeFilePath);
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-
-                if (Directory.Exists(AmoebaEnvironment.Paths.UpdatePath))
-                {
-                    string zipFilePath = Directory.GetFiles(AmoebaEnvironment.Paths.UpdatePath)
-                        .Where(n => Path.GetFileName(n).StartsWith("Amoeba"))
-                        .FirstOrDefault();
-
-                    if (zipFilePath != null)
-                    {
-                        string tempUpdateDirectoryPath = Path.Combine(AmoebaEnvironment.Paths.WorkPath, "Update");
-
-                        if (Directory.Exists(tempUpdateDirectoryPath))
-                        {
-                            Directory.Delete(tempUpdateDirectoryPath, true);
-                        }
-
-                        using (var zipfile = new ZipFile(zipFilePath))
-                        {
-                            zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
-                            zipfile.ExtractAll(tempUpdateDirectoryPath);
-                        }
-
-                        if (File.Exists(zipFilePath))
-                        {
-                            File.Delete(zipFilePath);
-                        }
-
-                        string tempUpdateExeFilePath = Path.Combine(AmoebaEnvironment.Paths.WorkPath, "Amoeba.Update.exe");
-
-                        File.Copy("Amoeba.Update.exe", tempUpdateExeFilePath);
-
-                        var startInfo = new ProcessStartInfo();
-                        startInfo.FileName = Path.GetFullPath(tempUpdateExeFilePath);
-                        startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\"",
-                            sessionId,
-                            Path.Combine(tempUpdateDirectoryPath, "Core"),
-                            Directory.GetCurrentDirectory(),
-                            Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.Interface.exe"));
-                        startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName(tempUpdateExeFilePath));
-
-                        Process.Start(startInfo);
-
                         this.Shutdown();
                         return;
                     }
                 }
-            }
 
-            {
-                foreach (var propertyInfo in typeof(AmoebaEnvironment.EnvironmentPaths).GetProperties())
+                // アップデート
                 {
-                    string path = propertyInfo.GetValue(AmoebaEnvironment.Paths) as string;
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                }
-            }
+                    // 一時的に作成された"Amoeba.Update.exe"を削除する。
+                    try
+                    {
+                        string tempUpdateExeFilePath = Path.Combine(AmoebaEnvironment.Paths.WorkPath, "Amoeba.Update.exe");
 
-            this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
+                        if (File.Exists(tempUpdateExeFilePath))
+                        {
+                            File.Delete(tempUpdateExeFilePath);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    if (Directory.Exists(AmoebaEnvironment.Paths.UpdatePath))
+                    {
+                        string zipFilePath = Directory.GetFiles(AmoebaEnvironment.Paths.UpdatePath)
+                            .Where(n => Path.GetFileName(n).StartsWith("Amoeba"))
+                            .FirstOrDefault();
+
+                        if (zipFilePath != null)
+                        {
+                            string tempUpdateDirectoryPath = Path.Combine(AmoebaEnvironment.Paths.WorkPath, "Update");
+
+                            if (Directory.Exists(tempUpdateDirectoryPath))
+                            {
+                                Directory.Delete(tempUpdateDirectoryPath, true);
+                            }
+
+                            using (var zipfile = new ZipFile(zipFilePath))
+                            {
+                                zipfile.ExtractExistingFile = ExtractExistingFileAction.OverwriteSilently;
+                                zipfile.ExtractAll(tempUpdateDirectoryPath);
+                            }
+
+                            if (File.Exists(zipFilePath))
+                            {
+                                File.Delete(zipFilePath);
+                            }
+
+                            string tempUpdateExeFilePath = Path.Combine(AmoebaEnvironment.Paths.WorkPath, "Amoeba.Update.exe");
+
+                            File.Copy("Amoeba.Update.exe", tempUpdateExeFilePath);
+
+                            var startInfo = new ProcessStartInfo();
+                            startInfo.FileName = Path.GetFullPath(tempUpdateExeFilePath);
+                            startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"",
+                                sessionId,
+                                Path.Combine(tempUpdateDirectoryPath, "Core"),
+                                Directory.GetCurrentDirectory(),
+                                Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.Interface.exe"));
+                            startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName(tempUpdateExeFilePath));
+
+                            Process.Start(startInfo);
+
+                            this.Shutdown();
+                            return;
+                        }
+                    }
+                }
+
+                {
+                    foreach (var propertyInfo in typeof(AmoebaEnvironment.EnvironmentPaths).GetProperties())
+                    {
+                        string path = propertyInfo.GetValue(AmoebaEnvironment.Paths) as string;
+                        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                    }
+                }
+
+                this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

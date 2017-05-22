@@ -62,11 +62,6 @@
     <Property Type="ObservableCollection(SearchContains(SearchState))" Name="SearchStates" />
   </Class>
 
-  <Class Name="PublishDirectoryInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="string" Name="Path" IsEditable="true" />
-  </Class>
-  
   <Class Name="SubscribeCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
@@ -89,4 +84,9 @@
     <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
   </Class>
 
+  <Class Name="PublishDirectoryInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="string" Name="Path" IsEditable="true" />
+  </Class>
+  
 </Config>
