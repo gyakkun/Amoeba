@@ -42,9 +42,10 @@ namespace Amoeba.Interface
         public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }
         public string OptionsWindow_Connection { get { return this.Translate("OptionsWindow_Connection"); } }
-        public string OptionsWindow_Signature { get { return this.Translate("OptionsWindow_Signature"); } }
         public string OptionsWindow_TcpConnection { get { return this.Translate("OptionsWindow_TcpConnection"); } }
         public string OptionsWindow_I2pConnection { get { return this.Translate("OptionsWindow_I2pConnection"); } }
+        public string OptionsWindow_Acount { get { return this.Translate("OptionsWindow_Acount"); } }
+        public string OptionsWindow_Signature { get { return this.Translate("OptionsWindow_Signature"); } }
         public string CrowdControl_Connection { get { return this.Translate("CrowdControl_Connection"); } }
         public string CrowdControl_State { get { return this.Translate("CrowdControl_State"); } }
         public string CrowdControl_Copy { get { return this.Translate("CrowdControl_Copy"); } }

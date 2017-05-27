@@ -33,7 +33,8 @@
                     MinWidth="120"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
-                    SelectedIndex="0">
+                    SelectedIndex="{Binding Path=Config.TabListBox_SelectedIndex, FallbackValue=0}"
+                    SelectionMode="Single">
                 <ListBoxItem
                         Name="ConnectionListBoxItem"
                         Height="32"
@@ -42,12 +43,26 @@
                         VerticalContentAlignment="Center"
                         Content="{Binding Path=OptionsWindow_Connection, Source={StaticResource Languages}}" />
                 <ListBoxItem
-                        Name="SignatureListBoxItem"
+                        Name="CatharsisListBoxItem"
                         Height="32"
                         Padding="16,8"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        Content="{Binding Path=OptionsWindow_Signature, Source={StaticResource Languages}}" />
+                        Content="{Binding Path=OptionsWindow_Catharsis, Source={StaticResource Languages}}" />
+                <ListBoxItem
+                        Name="AcountListBoxItem"
+                        Height="32"
+                        Padding="16,8"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="{Binding Path=OptionsWindow_Acount, Source={StaticResource Languages}}" />
+                <ListBoxItem
+                        Name="AcountListBoxItem"
+                        Height="32"
+                        Padding="16,8"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="{Binding Path=OptionsWindow_Acount, Source={StaticResource Languages}}" />
             </ListBox>
 
             <Grid Grid.Column="1" Background="{DynamicResource MaterialDesignCardBackground}">
@@ -55,6 +70,7 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="20">
                             <GroupBox
+                                    Margin="0,0,0,20"
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"
@@ -71,10 +87,10 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             Content="IPv4 IsEnabled"
-                                            IsChecked="{Binding Path=Options.Tcp.Ipv4IsEnabled}" />
+                                            IsChecked="{Binding Options.Tcp.Ipv4IsEnabled}" />
                                     <Label
-                                            Height="32"
-                                            Margin="64,32,0,0"
+                                            Height="24"
+                                            Margin="64,40,0,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
@@ -88,34 +104,35 @@
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            Text="{Binding Path=Options.Tcp.Ipv4Port, Converter={StaticResource UshortToStringConverter}}" />
+                                            Text="{Binding Options.Tcp.Ipv4Port, Converter={StaticResource UshortToStringConverter}}" />
                                     <CheckBox
                                             Height="24"
-                                            Margin="0,72,0,0"
+                                            Margin="0,80,0,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             Content="IPv6 IsEnabled"
-                                            IsChecked="{Binding Path=Options.Tcp.Ipv6IsEnabled}" />
+                                            IsChecked="{Binding Options.Tcp.Ipv6IsEnabled}" />
                                     <Label
-                                            Height="32"
-                                            Margin="64,107.2,0,0"
+                                            Height="24"
+                                            Margin="64,120,0,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            Content="IPv6 Port: " />
+                                            Content="IPv6 Port: "
+                                            RenderTransformOrigin="0.491,0.294" />
                                     <TextBox
                                             Width="120"
                                             Height="32"
-                                            Margin="240,107.2,0,0"
+                                            Margin="240,112,0,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            Text="{Binding Path=Options.Tcp.Ipv6Port, Converter={StaticResource UshortToStringConverter}}" />
+                                            Text="{Binding Options.Tcp.Ipv6Port, Converter={StaticResource UshortToStringConverter}}" />
                                     <Label
-                                            Height="32"
-                                            Margin="0,147.2,0,0"
+                                            Height="24"
+                                            Margin="0,160,0,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
@@ -123,18 +140,53 @@
                                             Content="Proxy Uri:" />
                                     <TextBox
                                             Height="32"
-                                            Margin="240,147.2,0,0"
+                                            Margin="240,152,0,0"
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            Text="{Binding Path=Options.Tcp.ProxyUri}" />
+                                            Text="{Binding Options.Tcp.ProxyUri}" />
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Header="I2p Settings"
+                                    Style="{DynamicResource MaterialDesignCardGroupBox}">
+                                <GroupBox.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="8,0" Text="{Binding}" />
+                                    </DataTemplate>
+                                </GroupBox.HeaderTemplate>
+                                <Grid Margin="8">
+                                    <CheckBox
+                                            Height="24"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Content="I2p IsEnabled"
+                                            IsChecked="{Binding Options.Tcp.Ipv4IsEnabled}" />
+                                    <Label
+                                            Height="32"
+                                            Margin="64,40,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Content="Sam bridge uri: " />
+                                    <TextBox
+                                            Height="32"
+                                            Margin="240,40,0,0"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding Options.Tcp.Ipv4Port, Converter={StaticResource UshortToStringConverter}}" />
                                 </Grid>
                             </GroupBox>
                         </StackPanel>
                     </ScrollViewer>
                 </ContentControl>
 
-                <ContentControl Visibility="{Binding ElementName=SignatureListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ContentControl Visibility="{Binding ElementName=AcountListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid Margin="20">
                         <GroupBox
                                 VerticalAlignment="Stretch"

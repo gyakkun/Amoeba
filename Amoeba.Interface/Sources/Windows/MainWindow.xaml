@@ -75,7 +75,7 @@
                     Name="TabListBox"
                     MinWidth="120"
                     DockPanel.Dock="Left"
-                    SelectedIndex="0"
+                    SelectedIndex="{Binding Path=Config.TabListBox_SelectedIndex, FallbackValue=0}"
                     SelectionMode="Single">
                 <ListBoxItem Name="CloudListBoxItem">
                     <StackPanel Margin="8,0,8,0" Orientation="Horizontal">

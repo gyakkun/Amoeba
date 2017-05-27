@@ -47,9 +47,10 @@
   <Property Name="MainWindow_Store" Value="Store" />
 
   <Property Name="OptionsWindow_Connection" Value="Connection" />
-  <Property Name="OptionsWindow_Signature" Value="Signature" />
   <Property Name="OptionsWindow_TcpConnection" Value="Tcp Connection" />
   <Property Name="OptionsWindow_I2pConnection" Value="I2p Connection" />
+  <Property Name="OptionsWindow_Acount" Value="Acount" />
+  <Property Name="OptionsWindow_Signature" Value="Signature" />
 
   <Property Name="CrowdControl_Connection" Value="Connection" />
   <Property Name="CrowdControl_State" Value="State" />

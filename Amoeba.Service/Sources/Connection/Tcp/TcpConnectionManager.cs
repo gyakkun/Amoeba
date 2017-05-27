@@ -386,7 +386,8 @@ namespace Amoeba.Service
                 string ipv4Uri = null;
                 string ipv6Uri = null;
 
-                if (config.Type.HasFlag(TcpConnectionType.Ipv4))
+                if (config.Type.HasFlag(TcpConnectionType.Ipv4)
+                    && config.Ipv4Port != 0)
                 {
                     ipv4Uri = this.GetIpv4Uri(config.Ipv4Port);
 
@@ -442,14 +443,11 @@ namespace Amoeba.Service
                         // Close port
                         try
                         {
-                            if (_watchIpv4Port != -1)
+                            using (var client = new UpnpClient())
                             {
-                                using (var client = new UpnpClient())
-                                {
-                                    client.Connect(new TimeSpan(0, 0, 10));
+                                client.Connect(new TimeSpan(0, 0, 10));
 
-                                    client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
-                                }
+                                client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
                             }
                         }
                         catch (Exception)
@@ -461,7 +459,8 @@ namespace Amoeba.Service
                     }
                 }
 
-                if (config.Type.HasFlag(TcpConnectionType.Ipv6))
+                if (config.Type.HasFlag(TcpConnectionType.Ipv6)
+                    && config.Ipv6Port != 0)
                 {
                     ipv6Uri = this.GetIpv6Uri(config.Ipv6Port);
 
@@ -601,14 +600,11 @@ namespace Amoeba.Service
                     // Close port
                     try
                     {
-                        if (_watchIpv4Port != -1)
+                        using (var client = new UpnpClient())
                         {
-                            using (var client = new UpnpClient())
-                            {
-                                client.Connect(new TimeSpan(0, 0, 10));
+                            client.Connect(new TimeSpan(0, 0, 10));
 
-                                client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
-                            }
+                            client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
                         }
                     }
                     catch (Exception)
