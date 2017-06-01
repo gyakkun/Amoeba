@@ -13,21 +13,21 @@ namespace Amoeba.Interface
 {
     partial class SettingsManager
     {
-        private DigitalSignature _digitalSignature;
+        private AccountInfo _accountInfo;
 
-        [DataMember(Name = nameof(DigitalSignature))]
-        public DigitalSignature DigitalSignature
+        [DataMember(Name = nameof(AccountInfo))]
+        public AccountInfo AccountInfo
         {
             get
             {
-                return _digitalSignature;
+                return _accountInfo;
             }
             set
             {
-                if (_digitalSignature != value)
+                if (_accountInfo != value)
                 {
-                    _digitalSignature = value;
-                    this.OnPropertyChanged(nameof(DigitalSignature));
+                    _accountInfo = value;
+                    this.OnPropertyChanged(nameof(AccountInfo));
                 }
             }
         }

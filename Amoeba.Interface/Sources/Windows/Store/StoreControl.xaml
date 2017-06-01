@@ -24,7 +24,7 @@
                 MinWidth="120"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                SelectedIndex="{Binding Path=Config.TabListBox_SelectedIndex, FallbackValue=0}"
+                SelectedIndex="{Binding Path=DynamicOptions.TabListBox_SelectedIndex, FallbackValue=0}"
                 SelectionMode="Single">
             <ListBoxItem
                     Name="SearchListBoxItem"

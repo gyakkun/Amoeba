@@ -24,6 +24,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <omnius:SortedCollectionConverter x:Key="SortedCollectionConverter" />
             <omnius:BytesToHexStringConverter x:Key="BytesToHexStringConverter" />
+            <omnius:BytesToBase64StringConverter x:Key="BytesToBase64StringConverter" />
             <omnius:LongToSizeStringConverter x:Key="LongToSizeStringConverter" />
             <omnius:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
             <omnius:ConditionalValueConverter x:Key="ConditionalValueConverter" />
@@ -35,6 +36,8 @@
             <local:SearchStateFlagToStringConverter x:Key="SearchStateFlagToStringConverter" />
             <local:DownloadStateToStringConverter x:Key="DownloadStateToStringConverter" />
             <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
+            <local:SignatureToStringConverter x:Key="SignatureToStringConverter" />
+            <local:TagToStringConverter x:Key="TagToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

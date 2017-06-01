@@ -53,28 +53,28 @@
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Width="{Binding Path=Config.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Name, Source={StaticResource Languages}}">
+                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Name, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.Name, Mode=OneWay}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=Config.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Length, Source={StaticResource Languages}}">
+                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Length, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.Length, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=Config.ListView_CreationTime_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_CreationTime, Source={StaticResource Languages}}">
+                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_CreationTime_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_CreationTime, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.CreationTime, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=Config.ListView_Rate_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Rate, Source={StaticResource Languages}}">
+                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Rate_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Rate, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -92,14 +92,14 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=Config.ListView_State_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_State, Source={StaticResource Languages}}">
+                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_State_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_State, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.State, Mode=OneWay, Converter={StaticResource DownloadStateToStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=Config.ListView_Path_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Path, Source={StaticResource Languages}}">
+                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Path_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Path, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.Path, Mode=OneWay}" />

@@ -50,7 +50,7 @@ namespace Amoeba.Interface
         public ObservableCollection<StoreSubscribeItemViewModel> Contents { get; } = new ObservableCollection<StoreSubscribeItemViewModel>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
 
-        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -82,7 +82,7 @@ namespace Amoeba.Interface
             }
         }
 
-        public void Init()
+        private void Init()
         {
             {
                 this.TabViewModel = new ReactiveProperty<SubscribeCategoryViewModel>().AddTo(_disposable);
@@ -120,7 +120,7 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
-                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
 
                 {
                     var model = _settings.Load("Tab", () =>
@@ -263,7 +263,7 @@ namespace Amoeba.Interface
                 subscribeCategoryViewModel.Model.CategoryInfos.Add(new SubscribeCategoryInfo() { Name = name });
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
                 .Publish(viewModel);
         }
 
@@ -320,7 +320,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                _settings.Save("Config", this.Config.GetPairs());
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _settings.Save("Tab", this.TabViewModel.Value.Model);
 
                 _disposable.Dispose();

@@ -32,14 +32,25 @@ namespace Amoeba.Interface
 
         public void Load()
         {
-            this.DigitalSignature = _settings.Load(nameof(DigitalSignature), () => new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256));
+            int version = _settings.Load("Version", () => 0);
+
+            this.AccountInfo = _settings.Load(nameof(AccountInfo), () =>
+            {
+                var info = new AccountInfo();
+                info.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256);
+                info.Exchange = new Exchange(ExchangeAlgorithm.Rsa4096);
+
+                return info;
+            });
             this.PublishDirectoryInfos.AddRange(_settings.Load(nameof(PublishDirectoryInfos), () => new ObservableCollection<PublishDirectoryInfo>()));
             this.DownloadItemInfos.AddRange(_settings.Load(nameof(DownloadItemInfos), () => new LockedList<DownloadItemInfo>()));
         }
 
         public void Save()
         {
-            _settings.Save(nameof(DigitalSignature), this.DigitalSignature);
+            _settings.Save("Version", 0);
+
+            _settings.Save(nameof(AccountInfo), this.AccountInfo);
             _settings.Save(nameof(PublishDirectoryInfos), this.PublishDirectoryInfos);
             _settings.Save(nameof(DownloadItemInfos), this.DownloadItemInfos);
         }

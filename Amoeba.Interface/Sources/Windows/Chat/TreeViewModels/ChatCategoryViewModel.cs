@@ -19,7 +19,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ReadOnlyReactiveCollection<ChatViewModel> Chats { get; private set; }
+        public ReadOnlyReactiveCollection<ChatThreadViewModel> Chats { get; private set; }
         public ReadOnlyReactiveCollection<ChatCategoryViewModel> Categories { get; private set; }
 
         public ChatCategoryInfo Model { get; private set; }
@@ -31,7 +31,7 @@ namespace Amoeba.Interface
 
             this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
-            this.Chats = model.ChatInfos.ToReadOnlyReactiveCollection(n => new ChatViewModel(this, n)).AddTo(_disposable);
+            this.Chats = model.ThreadInfos.ToReadOnlyReactiveCollection(n => new ChatThreadViewModel(this, n)).AddTo(_disposable);
             this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new ChatCategoryViewModel(this, n)).AddTo(_disposable);
         }
 
@@ -44,9 +44,9 @@ namespace Amoeba.Interface
                 this.Model.CategoryInfos.Add(categoryViewModel.Model);
                 return true;
             }
-            else if (value is ChatViewModel chatViewModel)
+            else if (value is ChatThreadViewModel chatViewModel)
             {
-                this.Model.ChatInfos.Add(chatViewModel.Model);
+                this.Model.ThreadInfos.Add(chatViewModel.Model);
                 return true;
             }
 
@@ -59,9 +59,9 @@ namespace Amoeba.Interface
             {
                 return this.Model.CategoryInfos.Remove(categoryViewModel.Model);
             }
-            else if (value is ChatViewModel chatViewModel)
+            else if (value is ChatThreadViewModel chatViewModel)
             {
-                return this.Model.ChatInfos.Remove(chatViewModel.Model);
+                return this.Model.ThreadInfos.Remove(chatViewModel.Model);
             }
 
             return false;

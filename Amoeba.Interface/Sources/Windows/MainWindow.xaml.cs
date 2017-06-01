@@ -64,7 +64,7 @@ namespace Amoeba.Interface
                     window.ShowDialog();
                 }).AddTo(_disposable);
 
-            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
                 .Subscribe(vm =>
                 {
                     var window = new NameEditWindow(vm);
@@ -72,7 +72,7 @@ namespace Amoeba.Interface
                     window.ShowDialog();
                 }).AddTo(_disposable);
 
-            Messenger.Instance.GetEvent<ConfirmWindowViewModelShowEvent>()
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
                 .Subscribe(vm =>
                 {
                     var result = MessageBox.Show(vm.Message, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);

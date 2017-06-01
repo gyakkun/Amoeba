@@ -41,11 +41,48 @@ namespace Amoeba.Interface
         public string MainWindow_Crowd { get { return this.Translate("MainWindow_Crowd"); } }
         public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }
-        public string OptionsWindow_Connection { get { return this.Translate("OptionsWindow_Connection"); } }
-        public string OptionsWindow_TcpConnection { get { return this.Translate("OptionsWindow_TcpConnection"); } }
-        public string OptionsWindow_I2pConnection { get { return this.Translate("OptionsWindow_I2pConnection"); } }
-        public string OptionsWindow_Acount { get { return this.Translate("OptionsWindow_Acount"); } }
+        public string OptionsWindow_Account { get { return this.Translate("OptionsWindow_Account"); } }
         public string OptionsWindow_Signature { get { return this.Translate("OptionsWindow_Signature"); } }
+        public string OptionsWindow_SignatureSettings { get { return this.Translate("OptionsWindow_SignatureSettings"); } }
+        public string OptionsWindow_YourSignature { get { return this.Translate("OptionsWindow_YourSignature"); } }
+        public string OptionsWindow_Trust { get { return this.Translate("OptionsWindow_Trust"); } }
+        public string OptionsWindow_TrustSettings { get { return this.Translate("OptionsWindow_TrustSettings"); } }
+        public string OptionsWindow_TrustSignature { get { return this.Translate("OptionsWindow_TrustSignature"); } }
+        public string OptionsWindow_Untrust { get { return this.Translate("OptionsWindow_Untrust"); } }
+        public string OptionsWindow_UntrustSettings { get { return this.Translate("OptionsWindow_UntrustSettings"); } }
+        public string OptionsWindow_UntrustSignature { get { return this.Translate("OptionsWindow_UntrustSignature"); } }
+        public string OptionsWindow_Tags { get { return this.Translate("OptionsWindow_Tags"); } }
+        public string OptionsWindow_TagsSettings { get { return this.Translate("OptionsWindow_TagsSettings"); } }
+        public string OptionsWindow_Tag { get { return this.Translate("OptionsWindow_Tag"); } }
+        public string OptionsWindow_Name { get { return this.Translate("OptionsWindow_Name"); } }
+        public string OptionsWindow_Id { get { return this.Translate("OptionsWindow_Id"); } }
+        public string OptionsWindow_Comment { get { return this.Translate("OptionsWindow_Comment"); } }
+        public string OptionsWindow_CommentSettings { get { return this.Translate("OptionsWindow_CommentSettings"); } }
+        public string OptionsWindow_Connection { get { return this.Translate("OptionsWindow_Connection"); } }
+        public string OptionsWindow_Tcp { get { return this.Translate("OptionsWindow_Tcp"); } }
+        public string OptionsWindow_TcpSettings { get { return this.Translate("OptionsWindow_TcpSettings"); } }
+        public string OptionsWindow_Ipv4IsEnabled { get { return this.Translate("OptionsWindow_Ipv4IsEnabled"); } }
+        public string OptionsWindow_Ipv4Port { get { return this.Translate("OptionsWindow_Ipv4Port"); } }
+        public string OptionsWindow_Ipv6IsEnabled { get { return this.Translate("OptionsWindow_Ipv6IsEnabled"); } }
+        public string OptionsWindow_Ipv6Port { get { return this.Translate("OptionsWindow_Ipv6Port"); } }
+        public string OptionsWindow_ProxyUri { get { return this.Translate("OptionsWindow_ProxyUri"); } }
+        public string OptionsWindow_I2p { get { return this.Translate("OptionsWindow_I2p"); } }
+        public string OptionsWindow_I2pSettings { get { return this.Translate("OptionsWindow_I2pSettings"); } }
+        public string OptionsWindow_I2pIsEnabled { get { return this.Translate("OptionsWindow_I2pIsEnabled"); } }
+        public string OptionsWindow_SamBridgeUri { get { return this.Translate("OptionsWindow_SamBridgeUri"); } }
+        public string OptionsWindow_Bandwidth { get { return this.Translate("OptionsWindow_Bandwidth"); } }
+        public string OptionsWindow_BandwidthSettings { get { return this.Translate("OptionsWindow_BandwidthSettings"); } }
+        public string OptionsWindow_BandwidthLimit { get { return this.Translate("OptionsWindow_BandwidthLimit"); } }
+        public string OptionsWindow_Data { get { return this.Translate("OptionsWindow_Data"); } }
+        public string OptionsWindow_CacheSettings { get { return this.Translate("OptionsWindow_CacheSettings"); } }
+        public string OptionsWindow_CacheSize { get { return this.Translate("OptionsWindow_CacheSize"); } }
+        public string OptionsWindow_DownloadSettings { get { return this.Translate("OptionsWindow_DownloadSettings"); } }
+        public string OptionsWindow_DownloadDirectoryPath { get { return this.Translate("OptionsWindow_DownloadDirectoryPath"); } }
+        public string OptionsWindow_CacheResize_Message { get { return this.Translate("OptionsWindow_CacheResize_Message"); } }
+        public string OptionsWindow_New { get { return this.Translate("OptionsWindow_New"); } }
+        public string OptionsWindow_Delete { get { return this.Translate("OptionsWindow_Delete"); } }
+        public string OptionsWindow_Copy { get { return this.Translate("OptionsWindow_Copy"); } }
+        public string OptionsWindow_Paste { get { return this.Translate("OptionsWindow_Paste"); } }
         public string CrowdControl_Connection { get { return this.Translate("CrowdControl_Connection"); } }
         public string CrowdControl_State { get { return this.Translate("CrowdControl_State"); } }
         public string CrowdControl_Copy { get { return this.Translate("CrowdControl_Copy"); } }

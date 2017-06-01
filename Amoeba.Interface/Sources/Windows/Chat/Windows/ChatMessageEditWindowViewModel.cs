@@ -36,7 +36,7 @@ namespace Amoeba.Interface
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
         public ReactiveProperty<string> Comment { get; private set; }
 
-        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -49,7 +49,7 @@ namespace Amoeba.Interface
             this.Init();
         }
 
-        public void Init()
+        private void Init()
         {
             {
                 this.OkCommand = new ReactiveCommand().AddTo(_disposable);
@@ -65,7 +65,7 @@ namespace Amoeba.Interface
 
                 _settings = new Settings(configPath);
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
-                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
         }
 
@@ -77,7 +77,7 @@ namespace Amoeba.Interface
         private void Ok()
         {
             var miner = new Miner(CashAlgorithm.Version1, 0, TimeSpan.Zero);
-            _serviceManager.Upload(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.DigitalSignature, miner, new CancellationToken());
+            _serviceManager.Upload(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.AccountInfo.DigitalSignature, miner, CancellationToken.None);
 
             this.OnCloseEvent();
         }
@@ -90,7 +90,7 @@ namespace Amoeba.Interface
             if (disposing)
             {
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-                _settings.Save("Config", this.Config.GetPairs());
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();
             }

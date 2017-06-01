@@ -1,5 +1,5 @@
 <Config>
-  
+
   <Import Namespace="System.Collections.ObjectModel" />
   <Import Namespace="System.Windows" />
   <Import Namespace="Amoeba.Service" />
@@ -7,35 +7,70 @@
   <Import Namespace="Omnius.Collections" />
   <Import Namespace="Omnius.Security" />
 
+  <Class Name="AccountInfo">
+    <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
+    <Property Type="string" Name="Comment" IsEditable="true" />
+    <Property Type="Exchange" Name="Exchange" IsEditable="true" />
+    <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
+    <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
+    <Property Type="ObservableCollection(Tag)" Name="Tags" />
+  </Class>
+
+  <Class Name="PublishDirectoryInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="string" Name="Path" IsEditable="true" />
+  </Class>
+
   <Class Name="CrowdStateInfo">
     <Property Type="string" Name="Location" IsEditable="true" />
   </Class>
 
   <Class Name="ServiceOptionsInfo">
-    <Property Type="ServiceTcpOptionsInfo" Name="Tcp" />
     <Property Type="ServiceAccountOptionsInfo" Name="Account" />
-  </Class>
-
-  <Class Name="ServiceTcpOptionsInfo">
-    <Property Type="string" Name="ProxyUri" IsEditable="true" />
-    <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
-    <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
-    <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
-    <Property Type="ushort" Name="Ipv6Port" IsEditable="true" />
+    <Property Type="ServiceTcpOptionsInfo" Name="Tcp" />
+    <Property Type="ServiceI2pOptionsInfo" Name="I2p" />
+    <Property Type="ServiceBandwidthOptionsInfo" Name="Bandwidth" />
+    <Property Type="ServiceDataOptionsInfo" Name="Data" />
   </Class>
 
   <Class Name="ServiceAccountOptionsInfo">
     <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
+    <Property Type="string" Name="Comment" IsEditable="true" />
+    <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
+    <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
+    <Property Type="ObservableCollection(Tag)" Name="Tags" />
+  </Class>
+
+  <Class Name="ServiceTcpOptionsInfo">
+    <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
+    <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
+    <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
+    <Property Type="ushort" Name="Ipv6Port" IsEditable="true" />
+    <Property Type="string" Name="ProxyUri" IsEditable="true" />
+  </Class>
+
+  <Class Name="ServiceI2pOptionsInfo">
+    <Property Type="bool" Name="IsEnabled" IsEditable="true" />
+    <Property Type="string" Name="SamBridgeUri" IsEditable="true" />
+  </Class>
+
+  <Class Name="ServiceBandwidthOptionsInfo">
+    <Property Type="int" Name="Limit" IsEditable="true" />
+  </Class>
+
+  <Class Name="ServiceDataOptionsInfo">
+    <Property Type="long" Name="CacheSize" IsEditable="true" />
+    <Property Type="string" Name="DownloadDirectoryPath" IsEditable="true" />
   </Class>
 
   <Class Name="ChatCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(ChatInfo)" Name="ChatInfos" />
+    <Property Type="ObservableCollection(ChatThreadInfo)" Name="ThreadInfos" />
     <Property Type="ObservableCollection(ChatCategoryInfo)" Name="CategoryInfos" />
   </Class>
 
-  <Class Name="ChatInfo">
+  <Class Name="ChatThreadInfo">
     <Property Type="Tag" Name="Tag" IsEditable="true" />
     <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
   </Class>
@@ -84,9 +119,4 @@
     <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
   </Class>
 
-  <Class Name="PublishDirectoryInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="string" Name="Path" IsEditable="true" />
-  </Class>
-  
 </Config>

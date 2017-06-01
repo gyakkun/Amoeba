@@ -22,7 +22,7 @@
                 MinWidth="120"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                SelectedIndex="{Binding Path=Config.TabListBox_SelectedIndex, FallbackValue=0}"
+                SelectedIndex="{Binding Path=DynamicOptions.TabListBox_SelectedIndex, FallbackValue=0}"
                 SelectionMode="Single">
             <ListBoxItem
                     Name="ConnectionListBoxItem"
@@ -73,35 +73,35 @@
                     </ListView.ContextMenu>
                     <ListView.View>
                         <GridView AllowsColumnReorder="False">
-                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_Type_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Type, Source={StaticResource Languages}}">
+                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_Type_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Type, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.Type, Mode=OneWay, Converter={StaticResource SessionTypeToStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_Id_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Id, Source={StaticResource Languages}}">
+                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_Id_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Id, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.Id, Mode=OneWay, Converter={StaticResource BytesToHexStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_Priority_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Priority, Source={StaticResource Languages}}">
+                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_Priority_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Priority, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.Priority, Mode=OneWay}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_ReceivedByteCount_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_ReceivedByteCount, Source={StaticResource Languages}}">
+                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_ReceivedByteCount_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_ReceivedByteCount, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.ReceivedByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="{Binding Path=Config.ConnetionListView_SentByteCount_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_SentByteCount, Source={StaticResource Languages}}">
+                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_SentByteCount_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_SentByteCount, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.SentByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
@@ -206,14 +206,14 @@
                                 </ListView.ContextMenu>
                                 <ListView.View>
                                     <GridView AllowsColumnReorder="False">
-                                        <GridViewColumn Width="{Binding Path=Config.StateListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Name, Source={StaticResource Languages}}">
+                                        <GridViewColumn Width="{Binding Path=DynamicOptions.StateListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Name, Source={StaticResource Languages}}">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Path=Key, Mode=OneWay}" />
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Width="{Binding Path=Config.StateListView_Value_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Value, Source={StaticResource Languages}}">
+                                        <GridViewColumn Width="{Binding Path=DynamicOptions.StateListView_Value_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CrowdControl_Value, Source={StaticResource Languages}}">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Path=Value.Content, Mode=OneWay}" />

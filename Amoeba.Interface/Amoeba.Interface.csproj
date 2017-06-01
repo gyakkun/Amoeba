@@ -74,6 +74,7 @@
     <Compile Include="Sources\Mvvm\Converters\DownloadStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SearchStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SessionTypeToStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\SignatureToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\TagToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\CustomAvalonEditHelperBase.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\AvalonEditChatMessagesHelper.cs" />
@@ -84,10 +85,11 @@
     <Compile Include="Sources\Mvvm\Models\Store\Search\SearchState.cs" />
     <Compile Include="Sources\Mvvm\Models\Store\State\DownloadItemInfo.cs" />
     <Compile Include="Sources\Mvvm\Models\_Generator\Models.generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>Models.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Sources\Mvvm\Utilities\ProgressDialog.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
     <Compile Include="Sources\Utilities\Inspect.cs" />
@@ -98,7 +100,7 @@
     </Compile>
     <Compile Include="Sources\Windows\Chat\ChatControlViewModel.cs" />
     <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatViewModel.cs" />
+    <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatThreadViewModel.cs" />
     <Compile Include="Sources\Windows\Chat\Windows\ChatMessageEditWindow.xaml.cs">
       <DependentUpon>ChatMessageEditWindow.xaml</DependentUpon>
     </Compile>
@@ -241,8 +243,13 @@
     </Content>
     <Content Include="Resources\Languages\English.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Resource Include="Sources\_Resources\Settings\_Generator\Definitions.xml" />
+    <Content Include="Sources\Mvvm\Models\_Generator\Models.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Models.generated.cs</LastGenOutput>
+    </Content>
     <Content Include="Sources\_Resources\Settings\_Generator\SettingsManager.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SettingsManager.generated.cs</LastGenOutput>
@@ -257,10 +264,6 @@
     <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml">
       <SubType>Designer</SubType>
     </Resource>
-    <Content Include="Sources\Mvvm\Models\_Generator\Models.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Models.generated.cs</LastGenOutput>
-    </Content>
     <Content Include="Sources\_Resources\Languages\_Generator\LanguagesManager.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>LanguagesManager.generated.cs</LastGenOutput>

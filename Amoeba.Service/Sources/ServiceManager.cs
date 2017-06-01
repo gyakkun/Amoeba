@@ -217,13 +217,13 @@ namespace Amoeba.Service
             }
         }
 
-        public void Resize(long size)
+        public Task Resize(long size)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _coreManager.Resize(size);
+                return _coreManager.Resize(size);
             }
         }
 

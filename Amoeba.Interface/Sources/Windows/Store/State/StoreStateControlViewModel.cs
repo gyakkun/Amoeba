@@ -32,14 +32,14 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ObservableDictionary<(Metadata, string), DynamicViewModel> Contents { get; } = new ObservableDictionary<(Metadata, string), DynamicViewModel>(new CustomEqualityComparer());
+        public ObservableDictionary<(Metadata, string), DynamicOptions> Contents { get; } = new ObservableDictionary<(Metadata, string), DynamicOptions>(new CustomEqualityComparer());
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
 
         public ReactiveCommand DeleteCommand { get; private set; }
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand PasteCommand { get; private set; }
 
-        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -72,7 +72,7 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
-                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
         }
 
@@ -126,11 +126,11 @@ namespace Amoeba.Interface
                     {
                         if (!map.TryGetValue((item.Seed.Metadata, item.Path), out var info)) continue;
 
-                        DynamicViewModel viewModel;
+                        DynamicOptions viewModel;
 
                         if (!this.Contents.TryGetValue((item.Seed.Metadata, item.Path), out viewModel))
                         {
-                            viewModel = new DynamicViewModel();
+                            viewModel = new DynamicOptions();
                             this.Contents[(item.Seed.Metadata, item.Path)] = viewModel;
                         }
 
@@ -164,7 +164,7 @@ namespace Amoeba.Interface
 
         private void Delete()
         {
-            var selectedItems = this.SelectedItems.OfType<KeyValuePair<(Metadata, string), DynamicViewModel>>()
+            var selectedItems = this.SelectedItems.OfType<KeyValuePair<(Metadata, string), DynamicOptions>>()
                 .Select(n => n.Value.GetValue<DownloadItemInfo>("Model")).ToList();
             if (selectedItems.Count == 0) return;
 
@@ -194,7 +194,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                _settings.Save("Config", this.Config.GetPairs());
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();
             }

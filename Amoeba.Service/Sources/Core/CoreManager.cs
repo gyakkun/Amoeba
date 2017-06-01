@@ -218,24 +218,27 @@ namespace Amoeba.Service
             }
         }
 
-        public void Resize(long size)
+        public Task Resize(long size)
         {
             this.Check();
 
-            lock (_lockObject)
+            return Task.Run(() =>
             {
-                if (this.State == ManagerState.Start)
+                lock (_lockObject)
                 {
-                    _downloadManager.Stop();
-                }
+                    if (this.State == ManagerState.Start)
+                    {
+                        _downloadManager.Stop();
+                    }
 
-                _cacheManager.Resize(size);
+                    _cacheManager.Resize(size);
 
-                if (this.State == ManagerState.Start)
-                {
-                    _downloadManager.Start();
+                    if (this.State == ManagerState.Start)
+                    {
+                        _downloadManager.Start();
+                    }
                 }
-            }
+            });
         }
 
         public Task CheckBlocks(IProgress<CheckBlocksProgressInfo> progress, CancellationToken token)

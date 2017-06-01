@@ -34,7 +34,8 @@ namespace Amoeba.Interface
         public StoreSubscribeControlViewModel StoreSubscribeControlViewModel { get; private set; }
         public StorePublishControlViewModel StorePublishControlViewModel { get; private set; }
         public StoreStateControlViewModel StoreStateControlViewModel { get; private set; }
-        public DynamicViewModel Config { get; } = new DynamicViewModel();
+
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -46,7 +47,7 @@ namespace Amoeba.Interface
             this.Init();
         }
 
-        public void Init()
+        private void Init()
         {
             {
                 this.StoreSubscribeControlViewModel = new StoreSubscribeControlViewModel(_serviceManager);
@@ -59,7 +60,7 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
-                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
         }
 
@@ -74,7 +75,7 @@ namespace Amoeba.Interface
                 this.StorePublishControlViewModel.Dispose();
                 this.StoreStateControlViewModel.Dispose();
 
-                _settings.Save("Config", this.Config.GetPairs());
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();
             }

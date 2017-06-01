@@ -350,23 +350,23 @@ namespace Amoeba.Interface
             }
         }
 
-        public static bool ContainsChatInfo()
+        public static bool ContainsChatThreadInfo()
         {
             lock (_thisLock)
             {
-                return System.Windows.Clipboard.ContainsData("Amoeba_ChatInfos");
+                return System.Windows.Clipboard.ContainsData("Amoeba_ChatThreadInfos");
             }
         }
 
-        public static IEnumerable<ChatInfo> GetChatInfos()
+        public static IEnumerable<ChatThreadInfo> GetChatThreadInfos()
         {
             lock (_thisLock)
             {
                 try
                 {
-                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_ChatInfos"))
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_ChatThreadInfos"))
                     {
-                        return Clipboard.FromStream<IEnumerable<ChatInfo>>(stream);
+                        return Clipboard.FromStream<IEnumerable<ChatThreadInfo>>(stream);
                     }
                 }
                 catch (Exception)
@@ -374,17 +374,17 @@ namespace Amoeba.Interface
 
                 }
 
-                return Enumerable.Empty<ChatInfo>();
+                return Enumerable.Empty<ChatThreadInfo>();
             }
         }
 
-        public static void SetChatInfos(IEnumerable<ChatInfo> items)
+        public static void SetChatThreadInfos(IEnumerable<ChatThreadInfo> items)
         {
             lock (_thisLock)
             {
                 var dataObject = new System.Windows.DataObject();
                 dataObject.SetText(string.Join("\r\n", items.Select(n => AmoebaConverter.ToTagString(n.Tag))));
-                dataObject.SetData("Amoeba_ChatInfos", Clipboard.ToStream(items));
+                dataObject.SetData("Amoeba_ChatThreadInfos", Clipboard.ToStream(items));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
             }

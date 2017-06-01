@@ -19,125 +19,138 @@
         TextOptions.TextRenderingMode="Auto"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
         mc:Ignorable="d">
-    <DockPanel>
-        <Menu DockPanel.Dock="Top" IsMainMenu="True">
-            <MenuItem Header="_Service">
-                <MenuItem Header="Start" InputGestureText="Ctrl+S">
-                    <MenuItem.Icon>
-                        <md:PackIcon Kind="Play" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Stop" InputGestureText="Ctrl+T">
-                    <MenuItem.Icon>
-                        <md:PackIcon Kind="Stop" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator />
-                <MenuItem Header="Exit" InputGestureText="Ctrl+E">
-                    <MenuItem.Icon>
-                        <md:PackIcon Kind="ExitToApp" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="_Tools">
-                <MenuItem
-                        Command="{Binding OptionsCommand}"
-                        Header="Options"
-                        InputGestureText="Ctrl+O">
-                    <MenuItem.Icon>
-                        <md:PackIcon Kind="Settings" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="_Languages">
-                <MenuItem
-                        Command="{Binding Path=LanguageCommand}"
-                        CommandParameter="English"
-                        Header="{Binding Path=Languages_English, Source={StaticResource Languages}}"
-                        InputGestureText="Ctrl+E"
-                        IsCheckable="True"
-                        IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=English, Mode=OneWay}" />
-                <MenuItem
-                        Command="{Binding Path=LanguageCommand}"
-                        CommandParameter="Japanese"
-                        Header="{Binding Path=Languages_Japanese, Source={StaticResource Languages}}"
-                        InputGestureText="Ctrl+J"
-                        IsCheckable="True"
-                        IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=Japanese, Mode=OneWay}" />
-            </MenuItem>
-            <MenuItem Header="_Help">
-                <MenuItem Header="Version" InputGestureText="Ctrl+V" />
-            </MenuItem>
-        </Menu>
-
+    <md:DialogHost
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsOpen="{Binding Path=IsProgressDialogOpen.Value}">
+        <md:DialogHost.DialogContent>
+            <ProgressBar
+                    Margin="16"
+                    HorizontalAlignment="Center"
+                    IsIndeterminate="True"
+                    Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                    Value="0" />
+        </md:DialogHost.DialogContent>
         <DockPanel>
-            <ListBox
-                    Name="TabListBox"
-                    MinWidth="120"
-                    DockPanel.Dock="Left"
-                    SelectedIndex="{Binding Path=Config.TabListBox_SelectedIndex, FallbackValue=0}"
-                    SelectionMode="Single">
-                <ListBoxItem Name="CloudListBoxItem">
-                    <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
-                        <md:PackIcon
-                                Width="32"
-                                Height="32"
-                                Kind="Cloud" />
-                        <TextBlock
-                                Padding="16,0,0,0"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="{Binding Path=MainWindow_Crowd, Source={StaticResource Languages}}" />
-                    </StackPanel>
-                </ListBoxItem>
-                <ListBoxItem Name="ChatListBoxItem">
-                    <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
-                        <md:PackIcon
-                                Width="32"
-                                Height="32"
-                                Kind="Comment" />
-                        <TextBlock
-                                Padding="16,0,0,0"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="{Binding Path=MainWindow_Chat, Source={StaticResource Languages}}" />
-                    </StackPanel>
-                </ListBoxItem>
-                <ListBoxItem Name="StoreListBoxItem">
-                    <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
-                        <md:PackIcon
-                                Width="32"
-                                Height="32"
-                                Kind="Basket" />
-                        <TextBlock
-                                Padding="16,0,0,0"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="{Binding Path=MainWindow_Store, Source={StaticResource Languages}}" />
-                    </StackPanel>
-                </ListBoxItem>
-            </ListBox>
+            <Menu DockPanel.Dock="Top" IsMainMenu="True">
+                <MenuItem Header="_Service">
+                    <MenuItem Header="Start" InputGestureText="Ctrl+S">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Play" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Stop" InputGestureText="Ctrl+T">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Stop" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
+                    <MenuItem Header="Exit" InputGestureText="Ctrl+E">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ExitToApp" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Tools">
+                    <MenuItem
+                            Command="{Binding OptionsCommand}"
+                            Header="Options"
+                            InputGestureText="Ctrl+O">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Settings" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="_Languages">
+                    <MenuItem
+                            Command="{Binding Path=LanguageCommand}"
+                            CommandParameter="English"
+                            Header="{Binding Path=Languages_English, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+E"
+                            IsCheckable="True"
+                            IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=English, Mode=OneWay}" />
+                    <MenuItem
+                            Command="{Binding Path=LanguageCommand}"
+                            CommandParameter="Japanese"
+                            Header="{Binding Path=Languages_Japanese, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+J"
+                            IsCheckable="True"
+                            IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=Japanese, Mode=OneWay}" />
+                </MenuItem>
+                <MenuItem Header="_Help">
+                    <MenuItem Header="Version" InputGestureText="Ctrl+V" />
+                </MenuItem>
+            </Menu>
 
-            <Grid Background="{DynamicResource MaterialDesignCardBackground}">
-                <ContentControl
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        Visibility="{Binding ElementName=CloudListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <local:CrowdControl DataContext="{Binding Path=CrowdControlViewModel}" />
-                </ContentControl>
-                <ContentControl
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        Visibility="{Binding ElementName=ChatListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <local:ChatControl DataContext="{Binding Path=ChatControlViewModel}" />
-                </ContentControl>
-                <ContentControl
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        Visibility="{Binding ElementName=StoreListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <local:StoreControl DataContext="{Binding Path=StoreControlViewModel}" />
-                </ContentControl>
-            </Grid>
+            <DockPanel>
+                <ListBox
+                        Name="TabListBox"
+                        MinWidth="120"
+                        DockPanel.Dock="Left"
+                        SelectedIndex="{Binding Path=DynamicOptions.TabListBox_SelectedIndex, FallbackValue=0}"
+                        SelectionMode="Single">
+                    <ListBoxItem Name="CloudListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Cloud" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Crowd, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="ChatListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Comment" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Chat, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="StoreListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Basket" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Store, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                </ListBox>
+
+                <Grid Background="{DynamicResource MaterialDesignCardBackground}">
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=CloudListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:CrowdControl DataContext="{Binding Path=CrowdControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=ChatListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:ChatControl DataContext="{Binding Path=ChatControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=StoreListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:StoreControl DataContext="{Binding Path=StoreControlViewModel}" />
+                    </ContentControl>
+                </Grid>
+            </DockPanel>
         </DockPanel>
-    </DockPanel>
+    </md:DialogHost>
 </omnius:RestorableWindow>

@@ -23,9 +23,11 @@ namespace Amoeba.Interface
         public ReactiveCommand<string> LanguageCommand { get; private set; }
         public ReactiveCommand OptionsCommand { get; private set; }
 
+        public ReactiveProperty<bool> IsProgressDialogOpen { get; private set; }
+
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
-        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         public CrowdControlViewModel CrowdControlViewModel { get; private set; }
         public ChatControlViewModel ChatControlViewModel { get; private set; }
@@ -39,7 +41,7 @@ namespace Amoeba.Interface
             this.Init();
         }
 
-        public void Init()
+        private void Init()
         {
             {
                 string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
@@ -63,6 +65,8 @@ namespace Amoeba.Interface
                 this.OptionsCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OptionsCommand.Subscribe(() => this.Options()).AddTo(_disposable);
 
+                this.IsProgressDialogOpen = new ReactiveProperty<bool>().AddTo(_disposable);
+
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
             }
 
@@ -76,7 +80,7 @@ namespace Amoeba.Interface
 
                 _settings = new Settings(configPath);
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
-                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -104,7 +108,7 @@ namespace Amoeba.Interface
                 this.StoreControlViewModel.Dispose();
 
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-                _settings.Save("Config", this.Config.GetPairs());
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();
 

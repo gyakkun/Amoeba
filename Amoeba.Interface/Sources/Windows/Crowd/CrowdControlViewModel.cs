@@ -25,19 +25,19 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ObservableDictionary<byte[], DynamicViewModel> ConnectionInformations { get; } = new ObservableDictionary<byte[], DynamicViewModel>(new ByteArrayEqualityComparer());
+        public ObservableDictionary<byte[], DynamicOptions> ConnectionInformations { get; } = new ObservableDictionary<byte[], DynamicOptions>(new ByteArrayEqualityComparer());
         public ObservableCollection<object> ConnectionSelectedItems { get; } = new ObservableCollection<object>();
 
         public ReactiveCommand ConnectionCopyCommand { get; private set; }
         public ReactiveCommand ConnectionPasteCommand { get; private set; }
 
         public CrowdStateInfo State { get; } = new CrowdStateInfo();
-        public ObservableDictionary<string, DynamicViewModel> Information { get; } = new ObservableDictionary<string, DynamicViewModel>();
+        public ObservableDictionary<string, DynamicOptions> Information { get; } = new ObservableDictionary<string, DynamicOptions>();
         public ObservableCollection<object> StateSelectedItems { get; } = new ObservableCollection<object>();
 
         public ReactiveCommand StateCopyCommand { get; private set; }
 
-        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -52,7 +52,7 @@ namespace Amoeba.Interface
             _watchTaskManager.Start();
         }
 
-        public void Init()
+        private void Init()
         {
             {
                 this.ConnectionCopyCommand = new ReactiveCommand().AddTo(_disposable);
@@ -70,7 +70,7 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
-                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
         }
 
@@ -109,11 +109,11 @@ namespace Amoeba.Interface
 
                         foreach (var (key, info) in dic)
                         {
-                            DynamicViewModel viewModel;
+                            DynamicOptions viewModel;
 
                             if (!this.ConnectionInformations.TryGetValue(key, out viewModel))
                             {
-                                viewModel = new DynamicViewModel();
+                                viewModel = new DynamicOptions();
                                 this.ConnectionInformations[key] = viewModel;
                             }
 
@@ -152,11 +152,11 @@ namespace Amoeba.Interface
 
                         foreach (var (i, key, value) in information.Select((item, i) => (i, item.Key, item.Value)))
                         {
-                            DynamicViewModel viewModel;
+                            DynamicOptions viewModel;
 
                             if (!this.Information.TryGetValue(key, out viewModel))
                             {
-                                viewModel = new DynamicViewModel();
+                                viewModel = new DynamicOptions();
                                 this.Information[key] = viewModel;
                             }
 
@@ -178,11 +178,11 @@ namespace Amoeba.Interface
             }
         }
 
-        public void ConnectionCopy()
+        private void ConnectionCopy()
         {
             var list = new List<Location>();
 
-            foreach (var (key, value) in this.ConnectionSelectedItems.Cast<KeyValuePair<byte[], DynamicViewModel>>())
+            foreach (var (key, value) in this.ConnectionSelectedItems.Cast<KeyValuePair<byte[], DynamicOptions>>())
             {
                 list.Add(value.GetValue<Location>("Location"));
             }
@@ -190,12 +190,12 @@ namespace Amoeba.Interface
             Clipboard.SetLocations(list);
         }
 
-        public void ConnectionPaste()
+        private void ConnectionPaste()
         {
             _serviceManager.SetCrowdLocations(Clipboard.GetLocations());
         }
 
-        public void StateCopy()
+        private void StateCopy()
         {
             var sb = new StringBuilder();
 
@@ -217,7 +217,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                _settings.Save("Config", this.Config.GetPairs());
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _disposable.Dispose();
             }
         }

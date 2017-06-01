@@ -39,6 +39,11 @@ namespace Amoeba.Interface
             }
         }
 
+        public ConfirmWindowViewModel(string message)
+        {
+            this.Message = message;
+        }
+
         public string Message { get; private set; }
 
         public void Ok()

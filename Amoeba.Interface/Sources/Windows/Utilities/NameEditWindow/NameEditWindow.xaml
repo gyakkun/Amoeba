@@ -21,7 +21,7 @@
         TextOptions.TextRenderingMode="Auto"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
         mc:Ignorable="d">
-    <Grid>
+    <Grid FocusManager.FocusedElement="{Binding ElementName=TextBox}">
         <Label
                 Height="32"
                 Margin="16,16,0,0"
@@ -32,12 +32,13 @@
                 Content="Name: " />
 
         <TextBox
+                Name="TextBox"
                 Height="32"
                 Margin="120,16,16,0"
                 VerticalAlignment="Top"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Center"
-                Text="{Binding Path=Name.Value}" />
+                Text="{Binding Path=Name.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <Button
                 Width="120"
                 Height="32"

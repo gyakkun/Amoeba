@@ -2,7 +2,7 @@
 
   <Property Name="Global_FontFamily" Value="Segoe UI, Meiryo UI, Verdana" />
   <Property Name="Global_DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
-  
+
   <Property Name="Languages_English" Value="English" />
   <Property Name="Languages_Japanese" Value="Japanese" />
 
@@ -46,11 +46,48 @@
   <Property Name="MainWindow_Chat" Value="Chat" />
   <Property Name="MainWindow_Store" Value="Store" />
 
-  <Property Name="OptionsWindow_Connection" Value="Connection" />
-  <Property Name="OptionsWindow_TcpConnection" Value="Tcp Connection" />
-  <Property Name="OptionsWindow_I2pConnection" Value="I2p Connection" />
-  <Property Name="OptionsWindow_Acount" Value="Acount" />
+  <Property Name="OptionsWindow_Account" Value="Account" />
   <Property Name="OptionsWindow_Signature" Value="Signature" />
+  <Property Name="OptionsWindow_SignatureSettings" Value="Signature settings" />
+  <Property Name="OptionsWindow_YourSignature" Value="Your signature" />
+  <Property Name="OptionsWindow_Trust" Value="Trust" />
+  <Property Name="OptionsWindow_TrustSettings" Value="Trust settings" />
+  <Property Name="OptionsWindow_TrustSignature" Value="Trust signature" />
+  <Property Name="OptionsWindow_Untrust" Value="Untrust" />
+  <Property Name="OptionsWindow_UntrustSettings" Value="Untrust settings" />
+  <Property Name="OptionsWindow_UntrustSignature" Value="Untrust signature" />
+  <Property Name="OptionsWindow_Tags" Value="Tags" />
+  <Property Name="OptionsWindow_TagsSettings" Value="Tags settings" />
+  <Property Name="OptionsWindow_Tag" Value="Tag" />
+  <Property Name="OptionsWindow_Name" Value="Name" />
+  <Property Name="OptionsWindow_Id" Value="Id" />
+  <Property Name="OptionsWindow_Comment" Value="Comment" />
+  <Property Name="OptionsWindow_CommentSettings" Value="Comment settings" />
+  <Property Name="OptionsWindow_Connection" Value="Connection" />
+  <Property Name="OptionsWindow_Tcp" Value="Tcp" />
+  <Property Name="OptionsWindow_TcpSettings" Value="Tcp settings" />
+  <Property Name="OptionsWindow_Ipv4IsEnabled" Value="Ipv4 is enabled" />
+  <Property Name="OptionsWindow_Ipv4Port" Value="Ipv4 port" />
+  <Property Name="OptionsWindow_Ipv6IsEnabled" Value="Ipv6 is enabled" />
+  <Property Name="OptionsWindow_Ipv6Port" Value="Ipv6 port" />
+  <Property Name="OptionsWindow_ProxyUri" Value="Proxy uri" />
+  <Property Name="OptionsWindow_I2p" Value="I2p" />
+  <Property Name="OptionsWindow_I2pSettings" Value="I2p settings" />
+  <Property Name="OptionsWindow_I2pIsEnabled" Value="I2p is enabled" />
+  <Property Name="OptionsWindow_SamBridgeUri" Value="Sam bridge uri" />
+  <Property Name="OptionsWindow_Bandwidth" Value="Bandwidth" />
+  <Property Name="OptionsWindow_BandwidthSettings" Value="Bandwidth settings" />
+  <Property Name="OptionsWindow_BandwidthLimit" Value="Bandwidth limit (*/s): [0 Byte: unlimited]" />
+  <Property Name="OptionsWindow_Data" Value="Data" />
+  <Property Name="OptionsWindow_CacheSettings" Value="Cache settings" />
+  <Property Name="OptionsWindow_CacheSize" Value="Cache size" />
+  <Property Name="OptionsWindow_DownloadSettings" Value="Download settings" />
+  <Property Name="OptionsWindow_DownloadDirectoryPath" Value="Directory path" />
+  <Property Name="OptionsWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
+  <Property Name="OptionsWindow_New" Value="New" />
+  <Property Name="OptionsWindow_Delete" Value="Delete" />
+  <Property Name="OptionsWindow_Copy" Value="Copy" />
+  <Property Name="OptionsWindow_Paste" Value="Paste" />
 
   <Property Name="CrowdControl_Connection" Value="Connection" />
   <Property Name="CrowdControl_State" Value="State" />

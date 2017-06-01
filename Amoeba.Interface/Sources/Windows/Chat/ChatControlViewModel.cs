@@ -49,7 +49,7 @@ namespace Amoeba.Interface
 
         public ReactiveCommand NewMessageCommand { get; private set; }
 
-        public DynamicViewModel Config { get; } = new DynamicViewModel();
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -81,7 +81,7 @@ namespace Amoeba.Interface
             }
         }
 
-        public void Init()
+        private void Init()
         {
             {
                 this.TabViewModel = new ReactiveProperty<ChatCategoryViewModel>().AddTo(_disposable);
@@ -112,7 +112,7 @@ namespace Amoeba.Interface
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
-                this.NewMessageCommand = this.TabSelectedItem.Select(n => n is ChatViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.NewMessageCommand = this.TabSelectedItem.Select(n => n is ChatThreadViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.NewMessageCommand.Subscribe(() => this.NewMessage()).AddTo(_disposable);
             }
 
@@ -121,13 +121,13 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
-                this.Config.SetPairs(_settings.Load("Config", () => new Dictionary<string, object>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
 
                 {
                     var model = _settings.Load("Tab", () =>
                     {
                         var categoryInfo = new ChatCategoryInfo() { Name = "Category", IsExpanded = true };
-                        categoryInfo.ChatInfos.Add(new ChatInfo() { Tag = new Tag("Amoeba", Sha256.ComputeHash("Amoeba")) });
+                        categoryInfo.ThreadInfos.Add(new ChatThreadInfo() { Tag = new Tag("Amoeba", Sha256.ComputeHash("Amoeba")) });
 
                         return categoryInfo;
                     });
@@ -143,7 +143,7 @@ namespace Amoeba.Interface
             {
                 this.Messages.Value = Array.Empty<ChatMessageInfo>();
             }
-            else if (viewModel is ChatViewModel chatViewModel)
+            else if (viewModel is ChatThreadViewModel chatViewModel)
             {
                 this.Messages.Value = chatViewModel.Model.Messages.ToArray();
             }
@@ -153,7 +153,7 @@ namespace Amoeba.Interface
         {
             for (;;)
             {
-                var chatInfos = new List<ChatInfo>();
+                var chatThreadInfos = new List<ChatThreadInfo>();
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
@@ -165,11 +165,11 @@ namespace Amoeba.Interface
                     for (int i = 0; i < chatCategoryInfos.Count; i++)
                     {
                         chatCategoryInfos.AddRange(chatCategoryInfos[i].CategoryInfos);
-                        chatInfos.AddRange(chatCategoryInfos[i].ChatInfos);
+                        chatThreadInfos.AddRange(chatCategoryInfos[i].ThreadInfos);
                     }
                 });
 
-                foreach (var chatInfo in chatInfos)
+                foreach (var chatInfo in chatThreadInfos)
                 {
                     if (token.IsCancellationRequested) return;
 
@@ -208,7 +208,7 @@ namespace Amoeba.Interface
                 chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = name });
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
                 .Publish(viewModel);
         }
 
@@ -223,10 +223,10 @@ namespace Amoeba.Interface
                 var random = new Random();
                 var id = random.GetBytes(32);
 
-                chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = new Tag(name, id) });
+                chatCategoryViewModel.Model.ThreadInfos.Add(new ChatThreadInfo() { Tag = new Tag(name, id) });
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
                 .Publish(viewModel);
         }
 
@@ -241,7 +241,7 @@ namespace Amoeba.Interface
                 chatCategoryViewModel.Model.Name = name;
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowViewModelShowEvent>()
+            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
                 .Publish(viewModel);
         }
 
@@ -255,13 +255,13 @@ namespace Amoeba.Interface
                     if (chatCategoryViewModel.Parent == null) return;
                     chatCategoryViewModel.Parent.TryRemove(chatCategoryViewModel);
                 }
-                else if (this.TabSelectedItem.Value is ChatViewModel chatViewModel)
+                else if (this.TabSelectedItem.Value is ChatThreadViewModel chatViewModel)
                 {
                     chatViewModel.Parent.TryRemove(chatViewModel);
                 }
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowViewModelShowEvent>()
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
                 .Publish(viewModel);
         }
 
@@ -271,9 +271,9 @@ namespace Amoeba.Interface
             {
                 Clipboard.SetChatCategoryInfos(new ChatCategoryInfo[] { chatCategoryViewModel.Model });
             }
-            else if (this.TabSelectedItem.Value is ChatViewModel chatViewModel)
+            else if (this.TabSelectedItem.Value is ChatThreadViewModel chatViewModel)
             {
-                Clipboard.SetChatInfos(new ChatInfo[] { chatViewModel.Model });
+                Clipboard.SetChatThreadInfos(new ChatThreadInfo[] { chatViewModel.Model });
             }
         }
 
@@ -282,19 +282,19 @@ namespace Amoeba.Interface
             if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
             {
                 chatCategoryViewModel.Model.CategoryInfos.AddRange(Clipboard.GetChatCategoryInfos());
-                chatCategoryViewModel.Model.ChatInfos.AddRange(Clipboard.GetChatInfos());
+                chatCategoryViewModel.Model.ThreadInfos.AddRange(Clipboard.GetChatThreadInfos());
 
                 foreach (var tag in Clipboard.GetTags())
                 {
-                    if (chatCategoryViewModel.Model.ChatInfos.Any(n => n.Tag == tag)) continue;
-                    chatCategoryViewModel.Model.ChatInfos.Add(new ChatInfo() { Tag = tag });
+                    if (chatCategoryViewModel.Model.ThreadInfos.Any(n => n.Tag == tag)) continue;
+                    chatCategoryViewModel.Model.ThreadInfos.Add(new ChatThreadInfo() { Tag = tag });
                 }
             }
         }
 
         private void NewMessage()
         {
-            var chatViewModel = this.TabSelectedItem.Value as ChatViewModel;
+            var chatViewModel = this.TabSelectedItem.Value as ChatThreadViewModel;
             if (chatViewModel == null) return;
 
             var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, _serviceManager);
@@ -313,7 +313,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                _settings.Save("Config", this.Config.GetPairs());
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _settings.Save("Tab", this.TabViewModel.Value.Model);
 
                 _disposable.Dispose();

@@ -20,9 +20,9 @@ namespace Amoeba.Interface
         }
 
         [DataMember(Name = nameof(Seed))]
-        public Seed Seed { get; set; }
+        public Seed Seed { get; private set; }
 
         [DataMember(Name = nameof(Path))]
-        public string Path { get; set; }
+        public string Path { get; private set; }
     }
 }

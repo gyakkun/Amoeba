@@ -12,14 +12,14 @@ using System.Reactive.Linq;
 
 namespace Amoeba.Interface
 {
-    class ChatViewModel : TreeViewModelBase
+    class ChatThreadViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ChatInfo Model { get; private set; }
+        public ChatThreadInfo Model { get; private set; }
 
-        public ChatViewModel(TreeViewModelBase parent, ChatInfo model)
+        public ChatThreadViewModel(TreeViewModelBase parent, ChatThreadInfo model)
             : base(parent)
         {
             this.Model = model;

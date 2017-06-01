@@ -48,7 +48,7 @@ namespace Amoeba.Interface
             this.Name.Value = _name;
         }
 
-        public void Init()
+        private void Init()
         {
             {
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
