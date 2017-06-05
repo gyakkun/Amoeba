@@ -12,6 +12,7 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Amoeba.Interface
 {
@@ -207,8 +208,6 @@ namespace Amoeba.Interface
 
                 if (uploadFlag)
                 {
-                    ProgressDialog.Instance.Increment();
-
                     _serviceManager.Upload(
                         new Profile(info.Comment,
                             info.Exchange.GetExchangePublicKey(),
@@ -216,8 +215,7 @@ namespace Amoeba.Interface
                             info.UntrustSignatures,
                             info.Tags),
                         info.DigitalSignature,
-                        CancellationToken.None)
-                        .ContinueWith((_) => ProgressDialog.Instance.Decrement());
+                        CancellationToken.None);
                 }
             }
 
@@ -251,10 +249,7 @@ namespace Amoeba.Interface
                     var viewModel = new ConfirmWindowViewModel(LanguagesManager.Instance.OptionsWindow_CacheResize_Message);
                     viewModel.Callback += () =>
                     {
-                        ProgressDialog.Instance.Increment();
-
-                        _serviceManager.Resize(this.Options.Data.CacheSize)
-                        .ContinueWith((_) => ProgressDialog.Instance.Decrement());
+                        _serviceManager.Resize(this.Options.Data.CacheSize);
                     };
 
                     Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
@@ -262,10 +257,7 @@ namespace Amoeba.Interface
                 }
                 else if (this.Options.Data.CacheSize > _serviceManager.Size)
                 {
-                    ProgressDialog.Instance.Increment();
-
-                    _serviceManager.Resize(this.Options.Data.CacheSize)
-                    .ContinueWith((_) => ProgressDialog.Instance.Decrement());
+                    _serviceManager.Resize(this.Options.Data.CacheSize);
                 }
 
                 _serviceManager.BasePath = this.Options.Data.DownloadDirectoryPath;
