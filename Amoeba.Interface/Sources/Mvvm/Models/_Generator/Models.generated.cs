@@ -592,21 +592,40 @@ namespace Amoeba.Interface
 
         public ServiceBandwidthOptionsInfo() { }
 
-        private int _limit;
+        private int _connectionCountLimit;
 
-        [DataMember(Name = nameof(Limit))]
-        public int Limit
+        [DataMember(Name = nameof(ConnectionCountLimit))]
+        public int ConnectionCountLimit
         {
             get
             {
-                return _limit;
+                return _connectionCountLimit;
             }
             set
             {
-                if (_limit != value)
+                if (_connectionCountLimit != value)
                 {
-                    _limit = value;
-                    this.OnPropertyChanged(nameof(Limit));
+                    _connectionCountLimit = value;
+                    this.OnPropertyChanged(nameof(ConnectionCountLimit));
+                }
+            }
+        }
+
+        private int _bandwidthLimit;
+
+        [DataMember(Name = nameof(BandwidthLimit))]
+        public int BandwidthLimit
+        {
+            get
+            {
+                return _bandwidthLimit;
+            }
+            set
+            {
+                if (_bandwidthLimit != value)
+                {
+                    _bandwidthLimit = value;
+                    this.OnPropertyChanged(nameof(BandwidthLimit));
                 }
             }
         }
@@ -1335,6 +1354,127 @@ namespace Amoeba.Interface
         }
 
         public SubscribeBoxInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(PublishPreviewBoxInfo))]
+    partial class PublishPreviewBoxInfo : INotifyPropertyChanged, ICloneable<PublishPreviewBoxInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public PublishPreviewBoxInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private ObservableCollection<PublishPreviewSeedInfo> _seedInfos;
+
+        [DataMember(Name = nameof(SeedInfos))]
+        public ObservableCollection<PublishPreviewSeedInfo> SeedInfos
+        {
+            get
+            {
+                if (_seedInfos == null)
+                    _seedInfos = new ObservableCollection<PublishPreviewSeedInfo>();
+
+                return _seedInfos;
+            }
+        }
+
+        private ObservableCollection<PublishPreviewBoxInfo> _boxInfos;
+
+        [DataMember(Name = nameof(BoxInfos))]
+        public ObservableCollection<PublishPreviewBoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<PublishPreviewBoxInfo>();
+
+                return _boxInfos;
+            }
+        }
+
+        public PublishPreviewBoxInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(PublishPreviewSeedInfo))]
+    partial class PublishPreviewSeedInfo : INotifyPropertyChanged, ICloneable<PublishPreviewSeedInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public PublishPreviewSeedInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private long _length;
+
+        [DataMember(Name = nameof(Length))]
+        public long Length
+        {
+            get
+            {
+                return _length;
+            }
+            set
+            {
+                if (_length != value)
+                {
+                    _length = value;
+                    this.OnPropertyChanged(nameof(Length));
+                }
+            }
+        }
+
+        public PublishPreviewSeedInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

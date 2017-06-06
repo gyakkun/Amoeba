@@ -76,6 +76,8 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
+                int version = _settings.Load("Version", () => 0);
+
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
             }
         }
@@ -118,6 +120,7 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                _settings.Save("Version", 0);
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
 
                 _disposable.Dispose();

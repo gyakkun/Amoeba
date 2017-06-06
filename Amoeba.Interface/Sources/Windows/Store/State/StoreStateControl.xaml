@@ -56,7 +56,14 @@
                     <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Name, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Value.Name, Mode=OneWay}" />
+                                <Grid>
+                                    <Image
+                                            Width="16"
+                                            Height="16"
+                                            HorizontalAlignment="Left"
+                                            Source="{Binding Path=Value.Icon, Mode=OneWay}" />
+                                    <TextBlock Margin="22,0,0,0" Text="{Binding Path=Value.Name, Mode=OneWay}" />
+                                </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -120,13 +127,13 @@
                 Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
                 ToolTipService.Placement="Left">
             <StackPanel>
-                <Button Command="{Binding Path=DeleteCommand}" ToolTip="Copy that location">
+                <Button Command="{Binding Path=DeleteCommand}" ToolTip="{Binding Path=StoreStateControl_Delete, Source={StaticResource Languages}}">
                     <md:PackIcon Kind="Delete" />
                 </Button>
-                <Button Command="{Binding Path=CopyCommand}" ToolTip="Copy that location">
+                <Button Command="{Binding Path=CopyCommand}" ToolTip="{Binding Path=StoreStateControl_Copy, Source={StaticResource Languages}}">
                     <md:PackIcon Kind="ContentCopy" />
                 </Button>
-                <Button Command="{Binding Path=PasteCommand}" ToolTip="Paste some location">
+                <Button Command="{Binding Path=PasteCommand}" ToolTip="{Binding Path=StoreStateControl_Paste, Source={StaticResource Languages}}">
                     <md:PackIcon Kind="ContentPaste" />
                 </Button>
             </StackPanel>

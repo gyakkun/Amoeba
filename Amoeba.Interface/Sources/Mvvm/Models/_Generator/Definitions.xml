@@ -55,7 +55,8 @@
   </Class>
 
   <Class Name="ServiceBandwidthOptionsInfo">
-    <Property Type="int" Name="Limit" IsEditable="true" />
+    <Property Type="int" Name="ConnectionCountLimit" IsEditable="true" />
+    <Property Type="int" Name="BandwidthLimit" IsEditable="true" />
   </Class>
 
   <Class Name="ServiceDataOptionsInfo">
@@ -117,6 +118,17 @@
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="ObservableCollection(Seed)" Name="Seeds" />
     <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
+  </Class>
+
+  <Class Name="PublishPreviewBoxInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="ObservableCollection(PublishPreviewSeedInfo)" Name="SeedInfos" />
+    <Property Type="ObservableCollection(PublishPreviewBoxInfo)" Name="BoxInfos" />
+  </Class>
+
+  <Class Name="PublishPreviewSeedInfo">
+    <Property Type="string" Name="Name" IsEditable="true" />
+    <Property Type="long" Name="Length" IsEditable="true" />
   </Class>
 
 </Config>

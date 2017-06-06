@@ -679,7 +679,7 @@
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            Content="{Binding Path=OptionsWindow_BandwidthLimit, Source={StaticResource Languages}}" />
+                                            Content="{Binding Path=OptionsWindow_ConnectionCountLimit, Source={StaticResource Languages}}" />
                                     <TextBox
                                             Width="118"
                                             Height="32"
@@ -688,8 +688,24 @@
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            Text="{Binding Path=Options.Bandwidth.Limit, Converter={StaticResource LongToSizeStringConverter}}" />
-
+                                            Text="{Binding Path=Options.Bandwidth.ConnectionCountLimit}" />
+                                    <Label
+                                            Height="32"
+                                            Margin="0,48,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Content="{Binding Path=OptionsWindow_BandwidthLimit, Source={StaticResource Languages}}" />
+                                    <TextBox
+                                            Width="118"
+                                            Height="32"
+                                            Margin="360,48,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding Path=Options.Bandwidth.BandwidthLimit, Converter={StaticResource LongToSizeStringConverter}}" />
                                 </Grid>
                             </GroupBox>
                         </StackPanel>
@@ -762,8 +778,7 @@
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Top"
                                             Command="{Binding Path=DownloadDirectoryPathEditDialogCommand}"
-                                            Style="{StaticResource MaterialDesignFloatingActionButton}"
-                                            ToolTip="MaterialDesignFloatingActionButton">
+                                            Style="{StaticResource MaterialDesignFloatingActionButton}">
                                         <md:PackIcon
                                                 Width="16"
                                                 Height="16"
@@ -775,7 +790,6 @@
                     </ScrollViewer>
                 </ContentControl>
             </Grid>
-
         </Grid>
 
         <Button
@@ -784,7 +798,16 @@
                 Margin="0,0,16,16"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
+                Command="{Binding Path=CancelCommand}"
+                Content="{Binding Path=OptionsWindow_Cancel, Source={StaticResource Languages}}" />
+        <Button
+                Width="120"
+                Height="32"
+                Margin="0,0,152,16"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
                 Command="{Binding Path=OkCommand}"
-                Content="Ok" />
+                Content="{Binding Path=OptionsWindow_Ok, Source={StaticResource Languages}}" />
+
     </Grid>
 </omnius:RestorableWindow>

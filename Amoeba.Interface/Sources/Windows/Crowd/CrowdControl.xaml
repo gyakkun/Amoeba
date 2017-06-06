@@ -122,10 +122,10 @@
                         Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
                         ToolTipService.Placement="Left">
                     <StackPanel>
-                        <Button Command="{Binding Path=ConnectionCopyCommand}" ToolTip="Copy that location">
+                        <Button Command="{Binding Path=ConnectionCopyCommand}" ToolTip="{Binding Path=CrowdControl_Copy, Source={StaticResource Languages}}">
                             <md:PackIcon Kind="ContentCopy" />
                         </Button>
-                        <Button Command="{Binding Path=ConnectionPasteCommand}" ToolTip="Paste some location">
+                        <Button Command="{Binding Path=ConnectionPasteCommand}" ToolTip="{Binding Path=CrowdControl_Paste, Source={StaticResource Languages}}">
                             <md:PackIcon Kind="ContentPaste" />
                         </Button>
                     </StackPanel>

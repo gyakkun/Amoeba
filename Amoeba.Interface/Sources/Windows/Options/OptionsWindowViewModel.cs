@@ -51,6 +51,7 @@ namespace Amoeba.Interface
         public ReactiveCommand DownloadDirectoryPathEditDialogCommand { get; private set; }
 
         public ReactiveCommand OkCommand { get; private set; }
+        public ReactiveCommand CancelCommand { get; private set; }
 
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
@@ -114,6 +115,9 @@ namespace Amoeba.Interface
                 this.OkCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
 
+                this.CancelCommand = new ReactiveCommand().AddTo(_disposable);
+                this.CancelCommand.Subscribe(() => this.Cancel()).AddTo(_disposable);
+
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
             }
 
@@ -122,6 +126,8 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
+                int version = _settings.Load("Version", () => 0);
+
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
@@ -165,7 +171,8 @@ namespace Amoeba.Interface
 
             // Bandwidth
             {
-                this.Options.Bandwidth.Limit = _serviceManager.BandwidthLimit;
+                this.Options.Bandwidth.BandwidthLimit = _serviceManager.BandwidthLimit;
+                this.Options.Bandwidth.ConnectionCountLimit = _serviceManager.ConnectionCountLimit;
             }
 
             // Data
@@ -239,7 +246,8 @@ namespace Amoeba.Interface
 
             // Bandwidth
             {
-                _serviceManager.BandwidthLimit = this.Options.Bandwidth.Limit;
+                _serviceManager.BandwidthLimit = this.Options.Bandwidth.BandwidthLimit;
+                _serviceManager.ConnectionCountLimit = this.Options.Bandwidth.ConnectionCountLimit;
             }
 
             // Data
@@ -427,6 +435,11 @@ namespace Amoeba.Interface
             this.OnCloseEvent();
         }
 
+        private void Cancel()
+        {
+            this.OnCloseEvent();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -434,6 +447,7 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                _settings.Save("Version", 0);
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _disposable.Dispose();

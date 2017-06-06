@@ -38,6 +38,7 @@ namespace Amoeba.Interface
 
             InitializeComponent();
 
+            this.Title = string.Format("Amoeba {0}", AmoebaEnvironment.Version);
             this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
 
             Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
@@ -60,6 +61,14 @@ namespace Amoeba.Interface
                 .Subscribe(vm =>
                 {
                     var window = new PublishDirectoryInfoEditWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
+            Messenger.Instance.GetEvent<PublishPreviewWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new PublishPreviewWindow(vm);
                     window.Owner = this;
                     window.ShowDialog();
                 }).AddTo(_disposable);

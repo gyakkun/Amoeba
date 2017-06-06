@@ -72,6 +72,8 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
+                int version = _settings.Load("Version", () => 0);
+
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
         }
@@ -134,6 +136,7 @@ namespace Amoeba.Interface
                             this.Contents[(item.Seed.Metadata, item.Path)] = viewModel;
                         }
 
+                        viewModel.SetValue("Icon", IconUtils.GetImage(item.Seed.Name));
                         viewModel.SetValue("Name", item.Seed.Name);
                         viewModel.SetValue("CreationTime", item.Seed.CreationTime);
                         viewModel.SetValue("Length", item.Seed.Length);
@@ -176,12 +179,20 @@ namespace Amoeba.Interface
 
         private void Copy()
         {
+            var selectedItems = this.SelectedItems.OfType<KeyValuePair<(Metadata, string), DynamicOptions>>()
+                .Select(n => n.Value.GetValue<DownloadItemInfo>("Model")).ToList();
+            if (selectedItems.Count == 0) return;
 
+            Clipboard.SetSeeds(selectedItems.Select(n => n.Seed).ToArray());
         }
 
         private void Paste()
         {
-
+            foreach (var seed in Clipboard.GetSeeds())
+            {
+                var downloadItemInfo = new DownloadItemInfo(seed, seed.Name);
+                SettingsManager.Instance.DownloadItemInfos.Add(downloadItemInfo);
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -194,6 +205,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
+                _settings.Save("Version", 0);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();

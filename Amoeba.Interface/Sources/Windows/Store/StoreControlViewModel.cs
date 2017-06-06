@@ -60,6 +60,8 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
+                int version = _settings.Load("Version", () => 0);
+
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
         }
@@ -75,6 +77,7 @@ namespace Amoeba.Interface
                 this.StorePublishControlViewModel.Dispose();
                 this.StoreStateControlViewModel.Dispose();
 
+                _settings.Save("Version", 0);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();

@@ -92,6 +92,7 @@
     <Compile Include="Sources\Mvvm\Utilities\ProgressDialog.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
+    <Compile Include="Sources\Utilities\IconUtils.cs" />
     <Compile Include="Sources\Utilities\Inspect.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />
     <Compile Include="Sources\Utilities\MessageConverter.cs" />
@@ -101,10 +102,10 @@
     <Compile Include="Sources\Windows\Chat\ChatControlViewModel.cs" />
     <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatCategoryViewModel.cs" />
     <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatThreadViewModel.cs" />
-    <Compile Include="Sources\Windows\Chat\Windows\ChatMessageEditWindow.xaml.cs">
+    <Compile Include="Sources\Windows\Chat\ChatMessageEdit\ChatMessageEditWindow.xaml.cs">
       <DependentUpon>ChatMessageEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Chat\Windows\ChatMessageEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Chat\ChatMessageEdit\ChatMessageEditWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Options\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
@@ -114,11 +115,17 @@
     </Compile>
     <Compile Include="Sources\Windows\Crowd\CrowdControlViewModel.cs" />
     <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Publish\PublishPreview\PublishPreviewWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Publish\PublishPreview\ViewModels\PublishPreviewBoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Publish\PublishPreview\ViewModels\PublishPreviewItemViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Publish\StorePublishControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Publish\Windows\PublishDirectoryInfoEditWindow.xaml.cs">
+    <Compile Include="Sources\Windows\Store\Publish\PublishPreview\PublishPreviewWindow.xaml.cs">
+      <DependentUpon>PublishPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Store\Publish\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindow.xaml.cs">
       <DependentUpon>PublishDirectoryInfoEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Store\Publish\Windows\PublishDirectoryInfoEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Publish\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Store\State\StoreStateControlViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControlViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml.cs">
@@ -135,7 +142,7 @@
     </Compile>
     <Compile Include="Sources\Windows\Store\Search\ViewModels\SearchViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\StoreSubscribeItemViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeItemViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeStoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeBoxViewModel.cs" />
     <Compile Include="Sources\Windows\Utilities\ConfirmWindow\ConfirmWindowViewModel.cs" />
@@ -153,7 +160,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Chat\Windows\ChatMessageEditWindow.xaml">
+    <Page Include="Sources\Windows\Chat\ChatMessageEdit\ChatMessageEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -165,7 +172,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Publish\Windows\PublishDirectoryInfoEditWindow.xaml">
+    <Page Include="Sources\Windows\Store\Publish\PublishPreview\PublishPreviewWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Store\Publish\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

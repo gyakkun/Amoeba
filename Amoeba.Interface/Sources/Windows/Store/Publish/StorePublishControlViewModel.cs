@@ -65,7 +65,7 @@ namespace Amoeba.Interface
             {
                 this.SelectedItem = new ReactiveProperty<PublishDirectoryInfo>().AddTo(_disposable);
 
-                this.UploadCommand = new ReactiveCommand().AddTo(_disposable);
+                this.UploadCommand = SettingsManager.Instance.PublishDirectoryInfos.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand();
                 this.UploadCommand.Subscribe(() => this.StoreUpload()).AddTo(_disposable);
 
                 this.AddCommand = new ReactiveCommand().AddTo(_disposable);
@@ -83,6 +83,8 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
+                int version = _settings.Load("Version", () => 0);
+
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
 
                 _publishStoreInfo = _settings.Load<PublishStoreInfo>("PublishStoreInfo", () => null);
@@ -140,10 +142,10 @@ namespace Amoeba.Interface
 
                     var boxes = new List<Box>();
 
-                    foreach (var (name, directoryPath, filter) in targetPublishStoreInfo.Map
-                        .SelectMany(n => n.Value.Select(m => (n.Key, m.Key, m.Value))))
+                    foreach (var (name, directoryPath) in targetPublishStoreInfo.Map
+                        .SelectMany(n => n.Value.Select(m => (n.Key, m.Key))))
                     {
-                        boxes.Add(CreateBox(name, directoryPath, filter, infoMap));
+                        boxes.Add(CreateBox(name, directoryPath, infoMap));
                     }
 
                     _serviceManager.Upload(new Store(boxes), targetPublishStoreInfo.DigitalSignature, token).Wait();
@@ -163,18 +165,17 @@ namespace Amoeba.Interface
             }
         }
 
-        private Box CreateBox(string name, string basePath, HashSet<string> filter, Dictionary<string, Information> map)
+        private Box CreateBox(string name, string basePath, Dictionary<string, Information> map)
         {
             var seeds = new List<Seed>();
             var boxes = new List<Box>();
 
             foreach (string filePath in Directory.GetFiles(basePath))
             {
-                if (!filter.Contains(filePath)) continue;
+                if (!map.TryGetValue(filePath, out var info)) continue;
 
                 try
                 {
-                    if (!map.TryGetValue(filePath, out var info)) continue;
 
                     var seed = new Seed(Path.GetFileName(filePath), info.GetValue<long>("Length"), info.GetValue<DateTime>("CreationTime"), info.GetValue<Metadata>("Metadata"));
                     seeds.Add(seed);
@@ -187,7 +188,7 @@ namespace Amoeba.Interface
 
             foreach (string directoryPath in Directory.GetDirectories(basePath))
             {
-                boxes.Add(CreateBox(Path.GetFileName(directoryPath), directoryPath, filter, map));
+                boxes.Add(CreateBox(Path.GetFileName(directoryPath), directoryPath, map));
             }
 
             return new Box(name, seeds, boxes);
@@ -201,24 +202,82 @@ namespace Amoeba.Interface
 
             ProgressDialog.Instance.Increment();
 
+            List<(string, string, string[])> map = null;
+            PublishPreviewBoxInfo boxInfo = null;
+
             await Task.Run(() =>
             {
-                var map = new List<(string, (string, string[]))>();
+                map = new List<(string, string, string[])>();
 
-                foreach (var (name, path) in infos.Select(n => (n.Name, n.Path)))
+                foreach (var (name, directoryPath) in infos.Select(n => (n.Name, n.Path)))
                 {
-                    map.Add((name, (path, Directory.GetFiles(path, "*", SearchOption.AllDirectories))));
+                    var filePaths = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
+                    map.Add((name, directoryPath, filePaths));
                 }
 
-                Thread.Sleep(3000);
-
-                lock (_lockObject)
+                // Preview
                 {
-                    _publishStoreInfo = new PublishStoreInfo(digitalSignature, map);
+                    boxInfo = new PublishPreviewBoxInfo();
+                    boxInfo.Name = digitalSignature.ToString();
+
+                    foreach (var (name, directoryPath, filePaths) in map)
+                    {
+                        boxInfo.BoxInfos.Add(CreatePreviewBoxInfo(name, directoryPath, new HashSet<string>(filePaths)));
+                    }
                 }
             });
 
             ProgressDialog.Instance.Decrement();
+
+            var viewModel = new PublishPreviewWindowViewModel(boxInfo);
+            viewModel.Callback += () =>
+            {
+                lock (_lockObject)
+                {
+                    _publishStoreInfo = new PublishStoreInfo(digitalSignature, map);
+                }
+            };
+
+            Messenger.Instance.GetEvent<PublishPreviewWindowShowEvent>()
+                .Publish(viewModel);
+        }
+
+        private PublishPreviewBoxInfo CreatePreviewBoxInfo(string name, string basePath, HashSet<string> filter)
+        {
+            var seedInfos = new List<PublishPreviewSeedInfo>();
+            var boxInfos = new List<PublishPreviewBoxInfo>();
+
+            foreach (string filePath in Directory.GetFiles(basePath))
+            {
+                if (!filter.Contains(filePath)) continue;
+
+                try
+                {
+                    var fileInfo = new FileInfo(filePath);
+
+                    var seedInfo = new PublishPreviewSeedInfo();
+                    seedInfo.Name = fileInfo.Name;
+                    seedInfo.Length = fileInfo.Length;
+
+                    seedInfos.Add(seedInfo);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            foreach (string directoryPath in Directory.GetDirectories(basePath))
+            {
+                boxInfos.Add(CreatePreviewBoxInfo(Path.GetFileName(directoryPath), directoryPath, filter));
+            }
+
+            var rootBoxInfo = new PublishPreviewBoxInfo();
+            rootBoxInfo.Name = name;
+            rootBoxInfo.BoxInfos.AddRange(boxInfos);
+            rootBoxInfo.SeedInfos.AddRange(seedInfos);
+
+            return rootBoxInfo;
         }
 
         private void DirectoryAdd()
@@ -256,6 +315,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
+                _settings.Save("Version", 0);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _settings.Save("PublishStoreInfo", _publishStoreInfo);
 
@@ -268,13 +328,13 @@ namespace Amoeba.Interface
         {
             private Dictionary<string, Dictionary<string, HashSet<string>>> _map;
 
-            public PublishStoreInfo(DigitalSignature digitalSignature, IEnumerable<(string, (string, string[]))> map)
+            public PublishStoreInfo(DigitalSignature digitalSignature, IEnumerable<(string, string, string[])> map)
             {
                 this.DigitalSignature = digitalSignature;
 
-                foreach (var (name, (directoryPath, filePaths)) in map)
+                foreach (var (name, directoryPath, filePaths) in map)
                 {
-                    this.ProtectedMap.GetOrAdd(name, (_) => new Dictionary<string, HashSet<string>>())
+                    this.Map.GetOrAdd(name, (_) => new Dictionary<string, HashSet<string>>())
                         .AddOrUpdate(directoryPath, (_) => new HashSet<string>(filePaths), (_, target) =>
                         {
                             target.UnionWith(filePaths);
@@ -286,21 +346,8 @@ namespace Amoeba.Interface
             [DataMember(Name = nameof(DigitalSignature))]
             public DigitalSignature DigitalSignature { get; private set; }
 
-            private volatile IReadOnlyDictionary<string, Dictionary<string, HashSet<string>>> _readOnlyMap;
-
-            public IReadOnlyDictionary<string, Dictionary<string, HashSet<string>>> Map
-            {
-                get
-                {
-                    if (_readOnlyMap == null)
-                        _readOnlyMap = new ReadOnlyDictionary<string, Dictionary<string, HashSet<string>>>(this.ProtectedMap);
-
-                    return _readOnlyMap;
-                }
-            }
-
             [DataMember(Name = nameof(Map))]
-            private Dictionary<string, Dictionary<string, HashSet<string>>> ProtectedMap
+            public Dictionary<string, Dictionary<string, HashSet<string>>> Map
             {
                 get
                 {

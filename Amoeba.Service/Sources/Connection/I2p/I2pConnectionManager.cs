@@ -170,7 +170,7 @@ namespace Amoeba.Service
                             if (result == null) throw new Exception();
 
                             string scheme = result.GetValue<string>("Scheme");
-                            if (scheme == "tcp") throw new Exception();
+                            if (scheme != "tcp") throw new Exception();
 
                             string address = result.GetValue<string>("Address");
                             int port = result.GetValueOrDefault<int>("Port", () => 7656);

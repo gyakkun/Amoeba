@@ -14,13 +14,37 @@
         d:DesignWidth="600"
         mc:Ignorable="d">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding Path=DynamicOptions.TabColumnWidth, Mode=TwoWay, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200}" />
             <ColumnDefinition Width="4" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <DockPanel
+                Grid.Column="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top">
+            <Button
+                    Width="48"
+                    Height="48"
+                    Margin="0,16,16,0"
+                    HorizontalAlignment="Left"
+                    Command="{Binding Path=DownloadCommand}"
+                    Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    ToolTip="{Binding Path=StoreSubscribeControl_Download, Source={StaticResource Languages}}">
+                <md:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="CloudDownload" />
+            </Button>
+        </DockPanel>
+
         <TreeView
+                Grid.RowSpan="2"
                 Grid.Column="0"
                 AllowDrop="True"
                 ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
@@ -92,7 +116,7 @@
                 <ContextMenu>
                     <MenuItem
                             Command="{Binding Path=TabNewCategoryCommand}"
-                            Header="New category"
+                            Header="{Binding Path=StoreSubscribeControl_NewCategory, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+N">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Folder" />
@@ -100,7 +124,7 @@
                     </MenuItem>
                     <MenuItem
                             Command="{Binding Path=TabNewStoreCommand}"
-                            Header="New store"
+                            Header="{Binding Path=StoreSubscribeControl_NewStore, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+W">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Basket" />
@@ -108,7 +132,7 @@
                     </MenuItem>
                     <MenuItem
                             Command="{Binding Path=TabEditCommand}"
-                            Header="Edit"
+                            Header="{Binding Path=StoreSubscribeControl_Edit, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+E">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Pencil" />
@@ -116,7 +140,7 @@
                     </MenuItem>
                     <MenuItem
                             Command="{Binding Path=TabDeleteCommand}"
-                            Header="Delete"
+                            Header="{Binding Path=StoreSubscribeControl_Delete, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+D">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Delete" />
@@ -124,8 +148,16 @@
                     </MenuItem>
                     <Separator />
                     <MenuItem
+                            Command="{Binding Path=TabCutCommand}"
+                            Header="{Binding Path=StoreSubscribeControl_Cut, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+C">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ContentCut" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
                             Command="{Binding Path=TabCopyCommand}"
-                            Header="Copy"
+                            Header="{Binding Path=StoreSubscribeControl_Copy, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+C">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="ContentCopy" />
@@ -133,7 +165,7 @@
                     </MenuItem>
                     <MenuItem
                             Command="{Binding Path=TabPasteCommand}"
-                            Header="Paste"
+                            Header="{Binding Path=StoreSubscribeControl_Paste, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+V">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="ContentPaste" />
@@ -143,9 +175,13 @@
             </TreeView.ContextMenu>
         </TreeView>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+        <GridSplitter
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch" />
 
         <ListView
+                Grid.Row="1"
                 Grid.Column="2"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
@@ -155,12 +191,39 @@
                 ItemsSource="{Binding Path=Contents}"
                 VirtualizingStackPanel.IsVirtualizing="True"
                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                            Command="{Binding Path=CopyCommand}"
+                            Header="{Binding Path=StoreSubscribeControl_Copy, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+C">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ContentCopy" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                            Command="{Binding Path=DownloadCommand}"
+                            Header="{Binding Path=StoreSubscribeControl_Download, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+V">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="CloudDownload" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreSubscribeControl_Name, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
+                                <Grid>
+                                    <Image
+                                            Width="16"
+                                            Height="16"
+                                            HorizontalAlignment="Left"
+                                            Source="{Binding Path=Icon, Mode=OneWay}" />
+                                    <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay}" />
+                                </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -189,6 +252,7 @@
             </ListView.View>
         </ListView>
         <md:PopupBox
+                Grid.Row="1"
                 Grid.Column="2"
                 Width="48"
                 Height="48"
@@ -200,11 +264,13 @@
                 Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
                 ToolTipService.Placement="Left">
             <StackPanel>
-                <Button Command="{Binding Path=DownloadCommand}" ToolTip="Copy that location">
+                <Button Command="{Binding Path=CopyCommand}" ToolTip="{Binding Path=StoreSubscribeControl_Copy, Source={StaticResource Languages}}">
+                    <md:PackIcon Kind="ContentCopy" />
+                </Button>
+                <Button Command="{Binding Path=DownloadCommand}" ToolTip="{Binding Path=StoreSubscribeControl_Download, Source={StaticResource Languages}}">
                     <md:PackIcon Kind="CloudDownload" />
                 </Button>
             </StackPanel>
         </md:PopupBox>
-
     </Grid>
 </UserControl>

@@ -77,7 +77,8 @@
   <Property Name="OptionsWindow_SamBridgeUri" Value="Sam bridge uri" />
   <Property Name="OptionsWindow_Bandwidth" Value="Bandwidth" />
   <Property Name="OptionsWindow_BandwidthSettings" Value="Bandwidth settings" />
-  <Property Name="OptionsWindow_BandwidthLimit" Value="Bandwidth limit (*/s): [0 Byte: unlimited]" />
+  <Property Name="OptionsWindow_ConnectionCountLimit" Value="Connection count limit" />
+  <Property Name="OptionsWindow_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
   <Property Name="OptionsWindow_Data" Value="Data" />
   <Property Name="OptionsWindow_CacheSettings" Value="Cache settings" />
   <Property Name="OptionsWindow_CacheSize" Value="Cache size" />
@@ -88,6 +89,8 @@
   <Property Name="OptionsWindow_Delete" Value="Delete" />
   <Property Name="OptionsWindow_Copy" Value="Copy" />
   <Property Name="OptionsWindow_Paste" Value="Paste" />
+  <Property Name="OptionsWindow_Ok" Value="Ok" />
+  <Property Name="OptionsWindow_Cancel" Value="Cancel" />
 
   <Property Name="CrowdControl_Connection" Value="Connection" />
   <Property Name="CrowdControl_State" Value="State" />
@@ -107,16 +110,34 @@
   <Property Name="StoreControl_State" Value="State" />
   <Property Name="StoreControl_Share" Value="Share" />
 
+  <Property Name="StoreSubscribeControl_Download" Value="Download" />
+  <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
+  <Property Name="StoreSubscribeControl_NewStore" Value="New store" />
+  <Property Name="StoreSubscribeControl_Edit" Value="Edit" />
+  <Property Name="StoreSubscribeControl_Delete" Value="Delete" />
+  <Property Name="StoreSubscribeControl_Cut" Value="Cut" />
+  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
+  <Property Name="StoreSubscribeControl_Paste" Value="Paste" />
   <Property Name="StoreSubscribeControl_Name" Value="Name" />
   <Property Name="StoreSubscribeControl_Length" Value="Length" />
   <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
   <Property Name="StoreSubscribeControl_State" Value="State" />
 
+  <Property Name="StorePublishControl_Upload" Value="Upload" />
   <Property Name="StorePublishControl_Name" Value="Name" />
   <Property Name="StorePublishControl_Path" Value="Path" />
   <Property Name="StorePublishControl_Add" Value="Add" />
   <Property Name="StorePublishControl_Edit" Value="Edit" />
   <Property Name="StorePublishControl_Delete" Value="Delete" />
+
+  <Property Name="PublishDirectoryInfoEditWindow_Name" Value="Name" />
+  <Property Name="PublishDirectoryInfoEditWindow_Path" Value="Path" />
+  <Property Name="PublishDirectoryInfoEditWindow_Ok" Value="Ok" />
+
+  <Property Name="PublishPreviewWindow_Name" Value="Name" />
+  <Property Name="PublishPreviewWindow_Length" Value="Length" />
+  <Property Name="PublishPreviewWindow_Ok" Value="Ok" />
+  <Property Name="PublishPreviewWindow_Cancel" Value="Cancel" />
 
   <Property Name="StoreStateControl_Name" Value="Name" />
   <Property Name="StoreStateControl_Length" Value="Length" />
@@ -124,5 +145,8 @@
   <Property Name="StoreStateControl_Rate" Value="Rate" />
   <Property Name="StoreStateControl_State" Value="State" />
   <Property Name="StoreStateControl_Path" Value="Path" />
+  <Property Name="StoreStateControl_Delete" Value="Delete" />
+  <Property Name="StoreStateControl_Copy" Value="Copy" />
+  <Property Name="StoreStateControl_Paste" Value="Paste" />
 
 </Config>

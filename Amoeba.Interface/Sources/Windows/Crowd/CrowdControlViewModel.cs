@@ -55,13 +55,13 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
-                this.ConnectionCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.ConnectionCopyCommand = this.ConnectionSelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.ConnectionCopyCommand.Subscribe(() => this.ConnectionCopy()).AddTo(_disposable);
 
                 this.ConnectionPasteCommand = new ReactiveCommand().AddTo(_disposable);
                 this.ConnectionPasteCommand.Subscribe(() => this.ConnectionPaste()).AddTo(_disposable);
 
-                this.StateCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.StateCopyCommand = this.StateSelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.StateCopyCommand.Subscribe(() => this.StateCopy()).AddTo(_disposable);
             }
 
@@ -70,6 +70,8 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
+                int version = _settings.Load("Version", () => 0);
+
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
         }
@@ -199,9 +201,9 @@ namespace Amoeba.Interface
         {
             var sb = new StringBuilder();
 
-            foreach (var (key, value) in this.StateSelectedItems.Cast<KeyValuePair<string, string>>())
+            foreach (var (key, value) in this.StateSelectedItems.Cast<KeyValuePair<string, DynamicOptions>>())
             {
-                sb.AppendLine($"{key}: {value}");
+                sb.AppendLine($"{key}: {value.GetValue<string>("Content")}");
             }
 
             Clipboard.SetText(sb.ToString());
@@ -217,6 +219,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
+                _settings.Save("Version", 0);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _disposable.Dispose();
             }

@@ -29,7 +29,7 @@
                 VerticalAlignment="Top"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Center"
-                Content="Name: " />
+                Content="{Binding Path=PublishDirectoryInfoEditWindow_Name, Source={StaticResource Languages}}" />
 
         <TextBox
                 Height="32"
@@ -45,7 +45,7 @@
                 VerticalAlignment="Top"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Center"
-                Content="Path: " />
+                Content="{Binding Path=PublishDirectoryInfoEditWindow_Path, Source={StaticResource Languages}}" />
         <TextBox
                 Height="32"
                 Margin="120,64,64,0"
@@ -60,8 +60,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Command="{Binding Path=EditDialogCommand}"
-                Style="{StaticResource MaterialDesignFloatingActionButton}"
-                ToolTip="MaterialDesignFloatingActionButton">
+                Style="{StaticResource MaterialDesignFloatingActionButton}">
             <md:PackIcon
                     Width="16"
                     Height="16"
@@ -74,7 +73,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Command="{Binding Path=OkCommand}"
-                Content="Ok"
+                Content="{Binding Path=PublishDirectoryInfoEditWindow_Ok, Source={StaticResource Languages}}"
                 IsDefault="True" />
     </Grid>
 </omnius:RestorableWindow>

@@ -16,7 +16,7 @@ namespace Amoeba.Interface
         {
             if (value is DownloadState type)
             {
-                if (type == DownloadState.Decoding)
+                if (type == DownloadState.Downloading)
                 {
                     return LanguagesManager.Instance.DownloadState_Downloading;
                 }

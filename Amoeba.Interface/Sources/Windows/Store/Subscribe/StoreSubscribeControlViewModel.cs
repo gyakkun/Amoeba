@@ -42,12 +42,14 @@ namespace Amoeba.Interface
         public ReactiveCommand TabNewStoreCommand { get; private set; }
         public ReactiveCommand TabEditCommand { get; private set; }
         public ReactiveCommand TabDeleteCommand { get; private set; }
+        public ReactiveCommand TabCutCommand { get; private set; }
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
+        public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand DownloadCommand { get; private set; }
 
-        public ObservableCollection<StoreSubscribeItemViewModel> Contents { get; } = new ObservableCollection<StoreSubscribeItemViewModel>();
+        public ObservableCollection<SubscribeItemViewModel> Contents { get; } = new ObservableCollection<SubscribeItemViewModel>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
@@ -102,16 +104,22 @@ namespace Amoeba.Interface
                 this.TabEditCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabEditCommand.Subscribe(() => this.TabEdit()).AddTo(_disposable);
 
-                this.TabDeleteCommand = this.TabSelectedItem.Select(n => n != this.TabViewModel.Value).ToReactiveCommand().AddTo(_disposable);
+                this.TabDeleteCommand = this.TabSelectedItem.Select(n => n != this.TabViewModel.Value && (n is SubscribeCategoryViewModel || n is SubscribeStoreViewModel)).ToReactiveCommand().AddTo(_disposable);
                 this.TabDeleteCommand.Subscribe(() => this.TabDelete()).AddTo(_disposable);
 
-                this.TabCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabCutCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel || n is SubscribeStoreViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabCutCommand.Subscribe(() => this.TabCut()).AddTo(_disposable);
+
+                this.TabCopyCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel || n is SubscribeStoreViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
-                this.DownloadCommand = new ReactiveCommand().AddTo(_disposable);
+                this.CopyCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
+                this.CopyCommand.Subscribe(() => this.Copy()).AddTo(_disposable);
+
+                this.DownloadCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.DownloadCommand.Subscribe(() => this.Download()).AddTo(_disposable);
             }
 
@@ -120,6 +128,8 @@ namespace Amoeba.Interface
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
+                int version = _settings.Load("Version", () => 0);
+
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
 
                 {
@@ -138,7 +148,7 @@ namespace Amoeba.Interface
 
         private void TabSelectChanged(TreeViewModelBase viewModel)
         {
-            if (viewModel is SubscribeCategoryViewModel subscribeCategoryViewModel)
+            if (viewModel is SubscribeCategoryViewModel categoryViewModel)
             {
                 this.Contents.Clear();
             }
@@ -146,12 +156,16 @@ namespace Amoeba.Interface
             {
                 storeViewModel.Model.IsUpdated = false;
 
-                var list = new List<StoreSubscribeItemViewModel>();
+                var list = new List<SubscribeItemViewModel>();
 
                 foreach (var item in storeViewModel.Model.BoxInfos)
                 {
-                    var vm = new StoreSubscribeItemViewModel();
+                    var vm = new SubscribeItemViewModel();
+                    vm.Icon = AmoebaEnvironment.Icons.BoxIcon;
                     vm.Name = item.Name;
+                    vm.Length = GetBoxLength(item);
+                    vm.CreationTime = GetBoxCreationTime(item);
+                    vm.Model = item;
 
                     list.Add(vm);
                 }
@@ -161,12 +175,15 @@ namespace Amoeba.Interface
             }
             else if (viewModel is SubscribeBoxViewModel boxViewModel)
             {
-                var list = new List<StoreSubscribeItemViewModel>();
+                var list = new List<SubscribeItemViewModel>();
 
                 foreach (var item in boxViewModel.Model.BoxInfos)
                 {
-                    var vm = new StoreSubscribeItemViewModel();
+                    var vm = new SubscribeItemViewModel();
+                    vm.Icon = AmoebaEnvironment.Icons.BoxIcon;
                     vm.Name = item.Name;
+                    vm.Length = GetBoxLength(item);
+                    vm.CreationTime = GetBoxCreationTime(item);
                     vm.Model = item;
 
                     list.Add(vm);
@@ -174,7 +191,8 @@ namespace Amoeba.Interface
 
                 foreach (var item in boxViewModel.Model.Seeds)
                 {
-                    var vm = new StoreSubscribeItemViewModel();
+                    var vm = new SubscribeItemViewModel();
+                    vm.Icon = IconUtils.GetImage(item.Name);
                     vm.Name = item.Name;
                     vm.CreationTime = item.CreationTime;
                     vm.Length = item.Length;
@@ -186,6 +204,42 @@ namespace Amoeba.Interface
                 this.Contents.Clear();
                 this.Contents.AddRange(list);
             }
+        }
+
+        private long GetBoxLength(SubscribeBoxInfo boxInfo)
+        {
+            var seeds = new List<Seed>();
+            {
+                var boxInfos = new List<SubscribeBoxInfo>();
+                boxInfos.Add(boxInfo);
+
+                for (int i = 0; i < boxInfos.Count; i++)
+                {
+                    boxInfos.AddRange(boxInfos[i].BoxInfos);
+                    seeds.AddRange(boxInfos[i].Seeds);
+                }
+            }
+
+            if (seeds.Count == 0) return 0;
+            else return seeds.Sum(n => n.Length);
+        }
+
+        private DateTime GetBoxCreationTime(SubscribeBoxInfo boxInfo)
+        {
+            var seeds = new List<Seed>();
+            {
+                var boxInfos = new List<SubscribeBoxInfo>();
+                boxInfos.Add(boxInfo);
+
+                for (int i = 0; i < boxInfos.Count; i++)
+                {
+                    boxInfos.AddRange(boxInfos[i].BoxInfos);
+                    seeds.AddRange(boxInfos[i].Seeds);
+                }
+            }
+
+            if (seeds.Count == 0) return DateTime.MinValue;
+            else return seeds.Max(n => n.CreationTime);
         }
 
         private void WatchThread(CancellationToken token)
@@ -254,17 +308,17 @@ namespace Amoeba.Interface
 
         private void TabNewCategory()
         {
-            var viewModel = new NameEditWindowViewModel("");
-            viewModel.Callback += (name) =>
+            if (this.TabSelectedItem.Value is SubscribeCategoryViewModel categoryViewModel)
             {
-                var subscribeCategoryViewModel = this.TabSelectedItem.Value as SubscribeCategoryViewModel;
-                if (subscribeCategoryViewModel == null) return;
+                var viewModel = new NameEditWindowViewModel("");
+                viewModel.Callback += (name) =>
+                {
+                    categoryViewModel.Model.CategoryInfos.Add(new SubscribeCategoryInfo() { Name = name });
+                };
 
-                subscribeCategoryViewModel.Model.CategoryInfos.Add(new SubscribeCategoryInfo() { Name = name });
-            };
-
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+                Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
+                    .Publish(viewModel);
+            }
         }
 
         private void TabNewStore()
@@ -274,39 +328,100 @@ namespace Amoeba.Interface
 
         private void TabEdit()
         {
+            if (this.TabSelectedItem.Value is SubscribeCategoryViewModel categoryViewModel)
+            {
+                var viewModel = new NameEditWindowViewModel(categoryViewModel.Name.Value);
+                viewModel.Callback += (name) =>
+                {
+                    categoryViewModel.Model.Name = name;
+                };
 
+                Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
+                    .Publish(viewModel);
+            }
         }
 
         private void TabDelete()
         {
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
+            {
+                if (this.TabSelectedItem.Value is SubscribeCategoryViewModel categoryViewModel)
+                {
+                    if (categoryViewModel.Parent == null) return;
+                    categoryViewModel.Parent.TryRemove(categoryViewModel);
+                }
+                else if (this.TabSelectedItem.Value is SubscribeStoreViewModel storeViewModel)
+                {
+                    storeViewModel.Parent.TryRemove(storeViewModel);
+                }
+            };
 
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                .Publish(viewModel);
+        }
+
+        private void TabCut()
+        {
+            if (this.TabSelectedItem.Value is SubscribeCategoryViewModel categoryViewModel)
+            {
+                if (categoryViewModel.Parent == null) return;
+                Clipboard.SetSubscribeCategoryInfos(new SubscribeCategoryInfo[] { categoryViewModel.Model });
+                categoryViewModel.Parent.TryRemove(categoryViewModel);
+            }
+            else if (this.TabSelectedItem.Value is SubscribeStoreViewModel storeViewModel)
+            {
+                Clipboard.SetSubscribeStoreInfos(new SubscribeStoreInfo[] { storeViewModel.Model });
+                storeViewModel.Parent.TryRemove(storeViewModel);
+            }
         }
 
         private void TabCopy()
         {
-
+            if (this.TabSelectedItem.Value is SubscribeCategoryViewModel categoryViewModel)
+            {
+                Clipboard.SetSubscribeCategoryInfos(new SubscribeCategoryInfo[] { categoryViewModel.Model });
+            }
+            else if (this.TabSelectedItem.Value is SubscribeStoreViewModel storeViewModel)
+            {
+                Clipboard.SetSubscribeStoreInfos(new SubscribeStoreInfo[] { storeViewModel.Model });
+            }
         }
 
         private void TabPaste()
         {
-            if (this.TabSelectedItem.Value is SubscribeCategoryViewModel subscribeCategoryViewModel)
+            if (this.TabSelectedItem.Value is SubscribeCategoryViewModel categoryViewModel)
             {
-                subscribeCategoryViewModel.Model.CategoryInfos.AddRange(Clipboard.GetSubscribeCategoryInfos());
-                subscribeCategoryViewModel.Model.StoreInfos.AddRange(Clipboard.GetSubscribeStoreInfos());
+                categoryViewModel.Model.CategoryInfos.AddRange(Clipboard.GetSubscribeCategoryInfos());
+                categoryViewModel.Model.StoreInfos.AddRange(Clipboard.GetSubscribeStoreInfos());
 
                 foreach (var signature in Clipboard.GetSignatures())
                 {
-                    if (subscribeCategoryViewModel.Model.StoreInfos.Any(n => n.AuthorSignature == signature)) continue;
-                    subscribeCategoryViewModel.Model.StoreInfos.Add(new SubscribeStoreInfo() { AuthorSignature = signature });
+                    if (categoryViewModel.Model.StoreInfos.Any(n => n.AuthorSignature == signature)) continue;
+                    categoryViewModel.Model.StoreInfos.Add(new SubscribeStoreInfo() { AuthorSignature = signature });
                 }
             }
         }
 
+        private void Copy()
+        {
+            Clipboard.SetSeeds(this.SelectedItems.OfType<SubscribeItemViewModel>()
+                .Select(n => n.Model).OfType<Seed>().ToArray());
+        }
+
         private void Download()
         {
-            foreach (var item in this.SelectedItems.OfType<StoreSubscribeItemViewModel>())
+            var relativePath = new StringBuilder();
+
+            foreach (var node in this.TabSelectedItem.Value.GetAncestors())
             {
-                SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo((Seed)item.Model, ((Seed)item.Model).Name));
+                relativePath.Append(node.Name.Value + Path.DirectorySeparatorChar);
+            }
+
+            foreach (var seed in this.SelectedItems.OfType<SubscribeItemViewModel>()
+                .Select(n => n.Model).OfType<Seed>().ToArray())
+            {
+                SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo(seed, Path.Combine(relativePath.ToString(), seed.Name)));
             }
         }
 
@@ -320,6 +435,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
+                _settings.Save("Version", 0);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _settings.Save("Tab", this.TabViewModel.Value.Model);
 
