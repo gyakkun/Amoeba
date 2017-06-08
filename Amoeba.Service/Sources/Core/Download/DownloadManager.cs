@@ -251,7 +251,7 @@ namespace Amoeba.Service
                     else hashes.AddRange(info.Index.Groups.SelectMany(n => n.Hashes));
                 }
 
-                long sumLength = hashes.Sum(n => _cacheManager.GetLength(n));
+                long sumLength = hashes.Sum(n => (long)_cacheManager.GetLength(n));
 
                 return (sumLength < (info.MaxLength * 3));
             }
