@@ -42,7 +42,7 @@ namespace Amoeba.Service
         private volatile Location _myLocation;
 
         private RouteTable<SessionInfo> _routeTable;
-        private LockedList<Location> _crowdLocations = new LockedList<Location>();
+        private LockedList<Location> _cloudLocations = new LockedList<Location>();
 
         private int _connectionCountLimit;
         private int _bandwidthLimit;
@@ -111,14 +111,14 @@ namespace Amoeba.Service
             }
         }
 
-        public IEnumerable<Location> CrowdLocations
+        public IEnumerable<Location> CloudLocations
         {
             get
             {
                 lock (_lockObject)
                 {
                     var hashSet = new HashSet<Location>();
-                    hashSet.UnionWith(_crowdLocations);
+                    hashSet.UnionWith(_cloudLocations);
                     hashSet.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
 
                     return hashSet.ToArray();
@@ -214,7 +214,7 @@ namespace Amoeba.Service
                         contexts.Add(new InformationContext(prefix + "ReceivedByteCount", (long)_receivedByteCount));
                         contexts.Add(new InformationContext(prefix + "SentByteCount", (long)_sentByteCount));
 
-                        contexts.Add(new InformationContext(prefix + "CrowdNodeCount", _routeTable.Count));
+                        contexts.Add(new InformationContext(prefix + "CloudNodeCount", _routeTable.Count));
                         contexts.Add(new InformationContext(prefix + "MessageCount", _metadataManager.Count));
                     }
 
@@ -307,7 +307,7 @@ namespace Amoeba.Service
                         switch (_random.Next(0, 2))
                         {
                             case 0:
-                                location = _crowdLocations.Randomize()
+                                location = _cloudLocations.Randomize()
                                     .Where(n => !_connectingLocations.Contains(n))
                                     .FirstOrDefault();
                                 break;
@@ -337,7 +337,7 @@ namespace Amoeba.Service
 
                     if (cap == null)
                     {
-                        if (_crowdLocations.Count > 1024) _crowdLocations.Remove(location);
+                        if (_cloudLocations.Count > 1024) _cloudLocations.Remove(location);
 
                         continue;
                     }
@@ -414,7 +414,7 @@ namespace Amoeba.Service
                         _routeTable.Remove(sessionInfo.Id);
                     }
 
-                    if (sessionInfo.Location != null) _crowdLocations.Add(sessionInfo.Location);
+                    if (sessionInfo.Location != null) _cloudLocations.Add(sessionInfo.Location);
 
                     return;
                 }
@@ -562,7 +562,7 @@ namespace Amoeba.Service
                         }
 
                         {
-                            var crowdNodes = _routeTable.ToArray();
+                            var cloudNodes = _routeTable.ToArray();
 
                             // Link
                             {
@@ -570,7 +570,7 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockLinkSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, crowdNodes, 1))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, cloudNodes, 1))
                                     {
                                         if (node.Value.SendInfo.PushBlockLinkSet.Contains(hash)) continue;
 
@@ -596,14 +596,14 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, crowdNodes, 1))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, cloudNodes, 1))
                                     {
                                         if (node.Value.SendInfo.PushBlockRequestSet.Contains(hash)) continue;
 
                                         tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
                                     }
 
-                                    foreach (var node in crowdNodes.Where(n => n.Value.ReceiveInfo.PullBlockLinkSet.Contains(hash)))
+                                    foreach (var node in cloudNodes.Where(n => n.Value.ReceiveInfo.PullBlockLinkSet.Contains(hash)))
                                     {
                                         if (node.Value.SendInfo.PushBlockRequestSet.Contains(hash)) continue;
 
@@ -724,7 +724,7 @@ namespace Amoeba.Service
                         }
 
                         {
-                            var crowdNodes = _routeTable.ToArray();
+                            var cloudNodes = _routeTable.ToArray();
 
                             // BroadcastMetadata
                             {
@@ -732,7 +732,7 @@ namespace Amoeba.Service
 
                                 foreach (var signature in pushBroadcastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _routeTable.BaseId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _routeTable.BaseId, cloudNodes, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -756,7 +756,7 @@ namespace Amoeba.Service
 
                                 foreach (var signature in pushUnicastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _routeTable.BaseId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _routeTable.BaseId, cloudNodes, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -780,7 +780,7 @@ namespace Amoeba.Service
 
                                 foreach (var tag in pushMulticastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(tag.Id, _routeTable.BaseId, crowdNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(tag.Id, _routeTable.BaseId, cloudNodes, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Tag>()).Add(tag);
                                     }
@@ -937,7 +937,7 @@ namespace Amoeba.Service
 
                 var locations = new HashSet<Location>();
                 locations.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
-                locations.UnionWith(_crowdLocations);
+                locations.UnionWith(_cloudLocations);
 
                 var packet = new LocationsPacket(locations.Randomize().Take(LocationsPacket.MaxLocationCount));
 
@@ -1497,11 +1497,11 @@ namespace Amoeba.Service
             }
         }
 
-        public void SetCrowdLocations(IEnumerable<Location> locations)
+        public void SetCloudLocations(IEnumerable<Location> locations)
         {
             lock (_lockObject)
             {
-                _crowdLocations.AddRange(locations);
+                _cloudLocations.AddRange(locations);
             }
         }
 
@@ -1644,7 +1644,7 @@ namespace Amoeba.Service
                 int version = _settings.Load("Version", () => 0);
 
                 this.SetMyLocation(_settings.Load<Location>("MyLocation", () => new Location(null)));
-                this.SetCrowdLocations(_settings.Load<IEnumerable<Location>>("CrowdLocations", () => new List<Location>()));
+                this.SetCloudLocations(_settings.Load<IEnumerable<Location>>("CloudLocations", () => new List<Location>()));
                 this.ConnectionCountLimit = _settings.Load<int>("ConnectionCountLimit", () => 256);
                 this.BandwidthLimit = _settings.Load<int>("BandwidthLimit", () => 1024 * 1024 * 32);
 
@@ -1696,7 +1696,7 @@ namespace Amoeba.Service
                 _settings.Save("Version", 0);
 
                 _settings.Save("MyLocation", this.MyLocation);
-                _settings.Save("CrowdLocations", this.CrowdLocations);
+                _settings.Save("CloudLocations", this.CloudLocations);
                 _settings.Save("ConnectionCountLimit", this.ConnectionCountLimit);
                 _settings.Save("BandwidthLimit", this.BandwidthLimit);
 

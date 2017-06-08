@@ -110,10 +110,10 @@
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Options\OptionsWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Crowd\CrowdControl.xaml.cs">
-      <DependentUpon>CrowdControl.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Cloud\CloudControl.xaml.cs">
+      <DependentUpon>CloudControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Crowd\CrowdControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Cloud\CloudControlViewModel.cs" />
     <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Publish\PublishPreview\PublishPreviewWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Publish\PublishPreview\ViewModels\PublishPreviewBoxViewModel.cs" />
@@ -168,7 +168,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\Windows\Crowd\CrowdControl.xaml">
+    <Page Include="Sources\Windows\Cloud\CloudControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -314,6 +314,10 @@
     <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj">
       <Project>{47eb59d3-5a52-4f50-92ef-5878643929b8}</Project>
       <Name>Omnius.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Correction\Omnius.Correction.csproj">
+      <Project>{cbe313c0-ab44-48e4-bd43-da36d5a7eb5e}</Project>
+      <Name>Omnius.Correction</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Io\Omnius.Io.csproj">
       <Project>{fcf17fb0-f23a-4eba-b150-ffda35627aa1}</Project>

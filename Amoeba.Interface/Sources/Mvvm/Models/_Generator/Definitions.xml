@@ -21,7 +21,7 @@
     <Property Type="string" Name="Path" IsEditable="true" />
   </Class>
 
-  <Class Name="CrowdStateInfo">
+  <Class Name="CloudStateInfo">
     <Property Type="string" Name="Location" IsEditable="true" />
   </Class>
 

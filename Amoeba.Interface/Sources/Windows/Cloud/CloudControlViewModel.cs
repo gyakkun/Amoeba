@@ -18,7 +18,7 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class CrowdControlViewModel : ManagerBase
+    class CloudControlViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
         private TaskManager _watchTaskManager;
@@ -31,7 +31,7 @@ namespace Amoeba.Interface
         public ReactiveCommand ConnectionCopyCommand { get; private set; }
         public ReactiveCommand ConnectionPasteCommand { get; private set; }
 
-        public CrowdStateInfo State { get; } = new CrowdStateInfo();
+        public CloudStateInfo State { get; } = new CloudStateInfo();
         public ObservableDictionary<string, DynamicOptions> Information { get; } = new ObservableDictionary<string, DynamicOptions>();
         public ObservableCollection<object> StateSelectedItems { get; } = new ObservableCollection<object>();
 
@@ -42,7 +42,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public CrowdControlViewModel(ServiceManager serviceManager)
+        public CloudControlViewModel(ServiceManager serviceManager)
         {
             _serviceManager = serviceManager;
 
@@ -66,7 +66,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(CrowdControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(CloudControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -194,7 +194,7 @@ namespace Amoeba.Interface
 
         private void ConnectionPaste()
         {
-            _serviceManager.SetCrowdLocations(Clipboard.GetLocations());
+            _serviceManager.SetCloudLocations(Clipboard.GetLocations());
         }
 
         private void StateCopy()

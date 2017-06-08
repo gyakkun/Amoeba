@@ -72,7 +72,7 @@ namespace Amoeba.Service
             }
         }
 
-        public IEnumerable<Location> CrowdLocations
+        public IEnumerable<Location> CloudLocations
         {
             get
             {
@@ -80,7 +80,7 @@ namespace Amoeba.Service
 
                 lock (_lockObject)
                 {
-                    return _coreManager.CrowdLocations;
+                    return _coreManager.CloudLocations;
                 }
             }
         }
@@ -197,13 +197,13 @@ namespace Amoeba.Service
             }
         }
 
-        public void SetCrowdLocations(IEnumerable<Location> locations)
+        public void SetCloudLocations(IEnumerable<Location> locations)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _coreManager.SetCrowdLocations(locations);
+                _coreManager.SetCloudLocations(locations);
             }
         }
 

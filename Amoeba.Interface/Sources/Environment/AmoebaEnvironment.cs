@@ -15,7 +15,7 @@ namespace Amoeba.Interface
 
         static AmoebaEnvironment()
         {
-            Version = new Version(5, 0, 0);
+            Version = new Version(5, 0, 1);
             Paths = new EnvironmentPaths();
             Icons = new EnvironmentIcons();
 

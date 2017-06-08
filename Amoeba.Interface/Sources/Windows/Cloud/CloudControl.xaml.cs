@@ -17,11 +17,11 @@ using System.Windows.Shapes;
 namespace Amoeba.Interface
 {
     /// <summary>
-    /// Interaction logic for CrowdControl.xaml
+    /// Interaction logic for CloudControl.xaml
     /// </summary>
-    public partial class CrowdControl : UserControl
+    public partial class CloudControl : UserControl
     {
-        public CrowdControl()
+        public CloudControl()
         {
             InitializeComponent();
         }

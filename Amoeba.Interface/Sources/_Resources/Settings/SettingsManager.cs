@@ -43,7 +43,7 @@ namespace Amoeba.Interface
                 return info;
             });
             this.PublishDirectoryInfos.AddRange(_settings.Load(nameof(PublishDirectoryInfos), () => new ObservableCollection<PublishDirectoryInfo>()));
-            this.DownloadItemInfos.AddRange(_settings.Load(nameof(DownloadItemInfos), () => new LockedList<DownloadItemInfo>()));
+            this.DownloadItemInfos.UnionWith(_settings.Load(nameof(DownloadItemInfos), () => new LockedHashSet<DownloadItemInfo>()));
         }
 
         public void Save()

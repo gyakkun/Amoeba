@@ -423,6 +423,25 @@ namespace Amoeba.Interface
             {
                 SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo(seed, Path.Combine(relativePath.ToString(), seed.Name)));
             }
+
+            foreach (var boxInfo in this.SelectedItems.OfType<SubscribeItemViewModel>()
+                .Select(n => n.Model).OfType<SubscribeBoxInfo>().ToArray())
+            {
+                this.Download(relativePath.ToString(), boxInfo);
+            }
+        }
+
+        private void Download(string basePath, SubscribeBoxInfo rootBoxinfo)
+        {
+            foreach (var seed in rootBoxinfo.Seeds)
+            {
+                SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo(seed, Path.Combine(basePath, rootBoxinfo.Name, seed.Name)));
+            }
+
+            foreach (var boxInfo in rootBoxinfo.BoxInfos)
+            {
+                this.Download(Path.Combine(basePath, rootBoxinfo.Name), boxInfo);
+            }
         }
 
         protected override void Dispose(bool disposing)

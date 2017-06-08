@@ -6,6 +6,6 @@
 
   <Property Type="AccountInfo" Name="AccountInfo" IsEditable="true" />
   <Property Type="ObservableCollection(PublishDirectoryInfo)" Name="PublishDirectoryInfos" />
-  <Property Type="LockedList(DownloadItemInfo)" Name="DownloadItemInfos" />
+  <Property Type="LockedHashSet(DownloadItemInfo)" Name="DownloadItemInfos" />
 
 </Config>

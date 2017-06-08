@@ -99,7 +99,7 @@
                                     Padding="16,0,0,0"
                                     VerticalAlignment="Center"
                                     FontSize="16"
-                                    Text="{Binding Path=MainWindow_Crowd, Source={StaticResource Languages}}" />
+                                    Text="{Binding Path=MainWindow_Cloud, Source={StaticResource Languages}}" />
                         </StackPanel>
                     </ListBoxItem>
                     <ListBoxItem Name="ChatListBoxItem">
@@ -135,7 +135,7 @@
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
                             Visibility="{Binding ElementName=CloudListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <local:CrowdControl DataContext="{Binding Path=CrowdControlViewModel}" />
+                        <local:CloudControl DataContext="{Binding Path=CloudControlViewModel}" />
                     </ContentControl>
                     <ContentControl
                             HorizontalContentAlignment="Stretch"

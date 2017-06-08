@@ -188,8 +188,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(CrowdStateInfo))]
-    partial class CrowdStateInfo : INotifyPropertyChanged, ICloneable<CrowdStateInfo>
+    [DataContract(Name = nameof(CloudStateInfo))]
+    partial class CloudStateInfo : INotifyPropertyChanged, ICloneable<CloudStateInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -198,7 +198,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public CrowdStateInfo() { }
+        public CloudStateInfo() { }
 
         private string _location;
 
@@ -219,7 +219,7 @@ namespace Amoeba.Interface
             }
         }
 
-        public CrowdStateInfo Clone()
+        public CloudStateInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

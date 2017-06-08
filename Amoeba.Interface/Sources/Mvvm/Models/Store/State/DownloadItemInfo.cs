@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Amoeba.Interface
 {
     [DataContract(Name = nameof(DownloadItemInfo))]
-    class DownloadItemInfo
+    class DownloadItemInfo : IEquatable<DownloadItemInfo>
     {
         public DownloadItemInfo(Seed seed, string path)
         {
@@ -24,5 +24,31 @@ namespace Amoeba.Interface
 
         [DataMember(Name = nameof(Path))]
         public string Path { get; private set; }
+
+        public override int GetHashCode()
+        {
+            return this.Seed?.GetHashCode() ?? 0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((object)obj == null || !(obj is DownloadItemInfo)) return false;
+
+            return this.Equals((DownloadItemInfo)obj);
+        }
+
+        public bool Equals(DownloadItemInfo other)
+        {
+            if ((object)other == null) return false;
+            if (object.ReferenceEquals(this, other)) return true;
+
+            if (this.Seed != other.Seed
+                || this.Path != other.Path)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

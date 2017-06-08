@@ -200,34 +200,45 @@ namespace Amoeba.Interface
             var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
             if (digitalSignature == null) return;
 
-            ProgressDialog.Instance.Increment();
-
             List<(string, string, string[])> map = null;
             PublishPreviewBoxInfo boxInfo = null;
 
-            await Task.Run(() =>
+            try
             {
-                map = new List<(string, string, string[])>();
+                ProgressDialog.Instance.Increment();
 
-                foreach (var (name, directoryPath) in infos.Select(n => (n.Name, n.Path)))
+                await Task.Run(() =>
                 {
-                    var filePaths = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
-                    map.Add((name, directoryPath, filePaths));
-                }
+                    map = new List<(string, string, string[])>();
 
-                // Preview
-                {
-                    boxInfo = new PublishPreviewBoxInfo();
-                    boxInfo.Name = digitalSignature.ToString();
-
-                    foreach (var (name, directoryPath, filePaths) in map)
+                    foreach (var (name, directoryPath) in infos.Select(n => (n.Name, n.Path)))
                     {
-                        boxInfo.BoxInfos.Add(CreatePreviewBoxInfo(name, directoryPath, new HashSet<string>(filePaths)));
+                        var filePaths = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
+                        map.Add((name, directoryPath, filePaths));
                     }
-                }
-            });
 
-            ProgressDialog.Instance.Decrement();
+                    // Preview
+                    {
+                        boxInfo = new PublishPreviewBoxInfo();
+                        boxInfo.Name = digitalSignature.ToString();
+
+                        foreach (var (name, directoryPath, filePaths) in map)
+                        {
+                            boxInfo.BoxInfos.Add(CreatePreviewBoxInfo(name, directoryPath, new HashSet<string>(filePaths)));
+                        }
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+
+                return;
+            }
+            finally
+            {
+                ProgressDialog.Instance.Decrement();
+            }
 
             var viewModel = new PublishPreviewWindowViewModel(boxInfo);
             viewModel.Callback += () =>

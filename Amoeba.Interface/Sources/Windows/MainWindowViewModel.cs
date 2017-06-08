@@ -29,7 +29,7 @@ namespace Amoeba.Interface
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
-        public CrowdControlViewModel CrowdControlViewModel { get; private set; }
+        public CloudControlViewModel CloudControlViewModel { get; private set; }
         public ChatControlViewModel ChatControlViewModel { get; private set; }
         public StoreControlViewModel StoreControlViewModel { get; private set; }
 
@@ -86,7 +86,7 @@ namespace Amoeba.Interface
             }
 
             {
-                this.CrowdControlViewModel = new CrowdControlViewModel(_serviceManager);
+                this.CloudControlViewModel = new CloudControlViewModel(_serviceManager);
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager);
                 this.StoreControlViewModel = new StoreControlViewModel(_serviceManager);
             }
@@ -105,7 +105,7 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
-                this.CrowdControlViewModel.Dispose();
+                this.CloudControlViewModel.Dispose();
                 this.ChatControlViewModel.Dispose();
                 this.StoreControlViewModel.Dispose();
 

@@ -105,10 +105,14 @@ namespace Amoeba.Interface
 
         private void Ok()
         {
-            _directoryInfo.Name = this.Name.Value;
-            _directoryInfo.Path = this.Path.Value;
+            if (!string.IsNullOrWhiteSpace(this.Name.Value)
+                && !string.IsNullOrWhiteSpace(this.Path.Value))
+            {
+                _directoryInfo.Name = this.Name.Value;
+                _directoryInfo.Path = this.Path.Value;
 
-            this.Callback?.Invoke(_directoryInfo);
+                this.Callback?.Invoke(_directoryInfo);
+            }
 
             this.OnCloseEvent();
         }

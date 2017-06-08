@@ -38,7 +38,7 @@ namespace Amoeba.Interface
         public string DownloadState_Error { get { return this.Translate("DownloadState_Error"); } }
         public string ConfirmWindow_DeleteMessage { get { return this.Translate("ConfirmWindow_DeleteMessage"); } }
         public string NameEditWindow_Name { get { return this.Translate("NameEditWindow_Name"); } }
-        public string MainWindow_Crowd { get { return this.Translate("MainWindow_Crowd"); } }
+        public string MainWindow_Cloud { get { return this.Translate("MainWindow_Cloud"); } }
         public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }
         public string OptionsWindow_Account { get { return this.Translate("OptionsWindow_Account"); } }
@@ -86,17 +86,17 @@ namespace Amoeba.Interface
         public string OptionsWindow_Paste { get { return this.Translate("OptionsWindow_Paste"); } }
         public string OptionsWindow_Ok { get { return this.Translate("OptionsWindow_Ok"); } }
         public string OptionsWindow_Cancel { get { return this.Translate("OptionsWindow_Cancel"); } }
-        public string CrowdControl_Connection { get { return this.Translate("CrowdControl_Connection"); } }
-        public string CrowdControl_State { get { return this.Translate("CrowdControl_State"); } }
-        public string CrowdControl_Copy { get { return this.Translate("CrowdControl_Copy"); } }
-        public string CrowdControl_Paste { get { return this.Translate("CrowdControl_Paste"); } }
-        public string CrowdControl_Type { get { return this.Translate("CrowdControl_Type"); } }
-        public string CrowdControl_Id { get { return this.Translate("CrowdControl_Id"); } }
-        public string CrowdControl_Priority { get { return this.Translate("CrowdControl_Priority"); } }
-        public string CrowdControl_ReceivedByteCount { get { return this.Translate("CrowdControl_ReceivedByteCount"); } }
-        public string CrowdControl_SentByteCount { get { return this.Translate("CrowdControl_SentByteCount"); } }
-        public string CrowdControl_Name { get { return this.Translate("CrowdControl_Name"); } }
-        public string CrowdControl_Value { get { return this.Translate("CrowdControl_Value"); } }
+        public string CloudControl_Connection { get { return this.Translate("CloudControl_Connection"); } }
+        public string CloudControl_State { get { return this.Translate("CloudControl_State"); } }
+        public string CloudControl_Copy { get { return this.Translate("CloudControl_Copy"); } }
+        public string CloudControl_Paste { get { return this.Translate("CloudControl_Paste"); } }
+        public string CloudControl_Type { get { return this.Translate("CloudControl_Type"); } }
+        public string CloudControl_Id { get { return this.Translate("CloudControl_Id"); } }
+        public string CloudControl_Priority { get { return this.Translate("CloudControl_Priority"); } }
+        public string CloudControl_ReceivedByteCount { get { return this.Translate("CloudControl_ReceivedByteCount"); } }
+        public string CloudControl_SentByteCount { get { return this.Translate("CloudControl_SentByteCount"); } }
+        public string CloudControl_Name { get { return this.Translate("CloudControl_Name"); } }
+        public string CloudControl_Value { get { return this.Translate("CloudControl_Value"); } }
         public string StoreControl_Search { get { return this.Translate("StoreControl_Search"); } }
         public string StoreControl_Subscribe { get { return this.Translate("StoreControl_Subscribe"); } }
         public string StoreControl_Publish { get { return this.Translate("StoreControl_Publish"); } }

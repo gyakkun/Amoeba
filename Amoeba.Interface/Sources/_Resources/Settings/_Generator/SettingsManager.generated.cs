@@ -46,15 +46,15 @@ namespace Amoeba.Interface
             }
         }
 
-        private LockedList<DownloadItemInfo> _downloadItemInfos;
+        private LockedHashSet<DownloadItemInfo> _downloadItemInfos;
 
         [DataMember(Name = nameof(DownloadItemInfos))]
-        public LockedList<DownloadItemInfo> DownloadItemInfos
+        public LockedHashSet<DownloadItemInfo> DownloadItemInfos
         {
             get
             {
                 if (_downloadItemInfos == null)
-                    _downloadItemInfos = new LockedList<DownloadItemInfo>();
+                    _downloadItemInfos = new LockedHashSet<DownloadItemInfo>();
 
                 return _downloadItemInfos;
             }
