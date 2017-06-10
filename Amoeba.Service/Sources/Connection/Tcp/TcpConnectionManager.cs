@@ -245,6 +245,11 @@ namespace Amoeba.Service
                     if (!TcpConnectionManager.CheckGlobalIpAddress(ipAddress)) return null;
 #endif
 
+                    if (!config.Type.HasFlag(TcpConnectionType.Ipv4)
+                        && ipAddress.AddressFamily == AddressFamily.InterNetwork) return null;
+                    if (!config.Type.HasFlag(TcpConnectionType.Ipv6)
+                        && ipAddress.AddressFamily == AddressFamily.InterNetworkV6) return null;
+
                     if (!_catharsisManager.Check(ipAddress))
                     {
                         _blockCount.Increment();
@@ -258,7 +263,7 @@ namespace Amoeba.Service
                     var result2 = UriUtils.Parse(config.ProxyUri);
                     if (result2 == null) throw new Exception();
 
-                    string proxyScheme = result.GetValue<string>("Scheme");
+                    string proxyScheme = result2.GetValue<string>("Scheme");
 
                     if (proxyScheme == "socks5")
                     {

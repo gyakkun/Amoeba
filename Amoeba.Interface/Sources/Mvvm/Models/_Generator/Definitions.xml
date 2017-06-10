@@ -21,6 +21,11 @@
     <Property Type="string" Name="Path" IsEditable="true" />
   </Class>
 
+  <Class Name="ListSortInfo">
+    <Property Type="string" Name="PropertyName" IsEditable="true" />
+    <Property Type="ListSortDirection" Name="Direction" IsEditable="true" />
+  </Class>
+
   <Class Name="CloudStateInfo">
     <Property Type="string" Name="Location" IsEditable="true" />
   </Class>

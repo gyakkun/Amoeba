@@ -88,6 +88,7 @@ namespace Amoeba.Interface
         public string OptionsWindow_Cancel { get { return this.Translate("OptionsWindow_Cancel"); } }
         public string CloudControl_Connection { get { return this.Translate("CloudControl_Connection"); } }
         public string CloudControl_State { get { return this.Translate("CloudControl_State"); } }
+        public string CloudControl_Log { get { return this.Translate("CloudControl_Log"); } }
         public string CloudControl_Copy { get { return this.Translate("CloudControl_Copy"); } }
         public string CloudControl_Paste { get { return this.Translate("CloudControl_Paste"); } }
         public string CloudControl_Type { get { return this.Translate("CloudControl_Type"); } }

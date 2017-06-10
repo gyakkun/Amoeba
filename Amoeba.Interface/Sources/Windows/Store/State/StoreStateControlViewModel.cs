@@ -32,8 +32,13 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ObservableDictionary<(Metadata, string), DynamicOptions> Contents { get; } = new ObservableDictionary<(Metadata, string), DynamicOptions>(new CustomEqualityComparer());
+        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        private ObservableDictionary<(Metadata, string), DynamicOptions> _contents;
+
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
+
+        private ListSortInfo _sortInfo;
+        public ReactiveCommand<string> SortCommand { get; private set; }
 
         public ReactiveCommand DeleteCommand { get; private set; }
         public ReactiveCommand CopyCommand { get; private set; }
@@ -57,6 +62,11 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
+                _contents = new ObservableDictionary<(Metadata, string), DynamicOptions>(new CustomEqualityComparer());
+
+                this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
+
                 this.DeleteCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.DeleteCommand.Subscribe(() => this.Delete()).AddTo(_disposable);
 
@@ -74,7 +84,12 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
+                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+            }
+
+            {
+                this.Sort(null);
             }
         }
 
@@ -116,11 +131,11 @@ namespace Amoeba.Interface
                 {
                     if (token.IsCancellationRequested) return;
 
-                    foreach (var (metadata, path) in this.Contents.Keys.ToArray())
+                    foreach (var (metadata, path) in _contents.Keys.ToArray())
                     {
                         if (!downloadItemInfos.ContainsKey((metadata, path)))
                         {
-                            this.Contents.Remove((metadata, path));
+                            _contents.Remove((metadata, path));
                         }
                     }
 
@@ -130,10 +145,10 @@ namespace Amoeba.Interface
 
                         DynamicOptions viewModel;
 
-                        if (!this.Contents.TryGetValue((item.Seed.Metadata, item.Path), out viewModel))
+                        if (!_contents.TryGetValue((item.Seed.Metadata, item.Path), out viewModel))
                         {
                             viewModel = new DynamicOptions();
-                            this.Contents[(item.Seed.Metadata, item.Path)] = viewModel;
+                            _contents[(item.Seed.Metadata, item.Path)] = viewModel;
                         }
 
                         viewModel.SetValue("Icon", IconUtils.GetImage(item.Seed.Name));
@@ -162,6 +177,70 @@ namespace Amoeba.Interface
                 });
 
                 if (token.WaitHandle.WaitOne(1000 * 3)) return;
+            }
+        }
+
+        private void Sort(string propertyName)
+        {
+            if (propertyName == null)
+            {
+                this.ContentsView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
+                {
+                    this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
+                }
+            }
+            else
+            {
+                var direction = ListSortDirection.Ascending;
+
+                if (_sortInfo.PropertyName == propertyName)
+                {
+                    if (_sortInfo.Direction == ListSortDirection.Ascending)
+                    {
+                        direction = ListSortDirection.Descending;
+                    }
+                    else
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                }
+
+                this.ContentsView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(propertyName))
+                {
+                    this.Sort(propertyName, direction);
+                }
+
+                _sortInfo.Direction = direction;
+                _sortInfo.PropertyName = propertyName;
+            }
+        }
+
+        private void Sort(string propertyName, ListSortDirection direction)
+        {
+            switch (propertyName)
+            {
+                case "Name":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Name", direction));
+                    break;
+                case "Length":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Length", direction));
+                    break;
+                case "CreationTime":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.CreationTime", direction));
+                    break;
+                case "Rate":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Rate_Value", direction));
+                    break;
+                case "State":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.State", direction));
+                    break;
+                case "Path":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Path", direction));
+                    break;
             }
         }
 
@@ -206,6 +285,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Dispose();
 
                 _settings.Save("Version", 0);
+                _settings.Save("SortInfo", _sortInfo);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();

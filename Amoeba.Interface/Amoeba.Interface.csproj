@@ -92,6 +92,7 @@
     <Compile Include="Sources\Mvvm\Utilities\ProgressDialog.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
+    <Compile Include="Sources\Utilities\CustomSortComparer.cs" />
     <Compile Include="Sources\Utilities\IconUtils.cs" />
     <Compile Include="Sources\Utilities\Inspect.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />

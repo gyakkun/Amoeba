@@ -73,15 +73,18 @@
                     Grid.Column="2"
                     HorizontalContentAlignment="Stretch"
                     VerticalContentAlignment="Stretch"
-                    omnius:GridViewSortHelper.AutoSort="True"
+                    omnius:GridViewSortHelper.Command="{Binding SortCommand}"
                     omnius:ListBoxHelper.SelectedItems="{Binding Path=SelectedItems}"
                     IsSynchronizedWithCurrentItem="True"
-                    ItemsSource="{Binding Path=Contents}"
+                    ItemsSource="{Binding Path=ContentsView}"
                     VirtualizingStackPanel.IsVirtualizing="True"
                     VirtualizingStackPanel.VirtualizationMode="Recycling">
                 <ListView.View>
                     <GridView AllowsColumnReorder="False">
-                        <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=PublishPreviewWindow_Name, Source={StaticResource Languages}}">
+                        <GridViewColumn
+                                Width="{Binding Path=DynamicOptions.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}"
+                                omnius:GridViewSortHelper.PropertyName="Name"
+                                Header="{Binding Path=PublishPreviewWindow_Name, Source={StaticResource Languages}}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -95,7 +98,10 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=PublishPreviewWindow_Length, Source={StaticResource Languages}}">
+                        <GridViewColumn
+                                Width="{Binding Path=DynamicOptions.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}"
+                                omnius:GridViewSortHelper.PropertyName="Length"
+                                Header="{Binding Path=PublishPreviewWindow_Length, Source={StaticResource Languages}}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />

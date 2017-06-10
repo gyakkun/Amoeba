@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Amoeba.Core;
 using Omnius.Base;
 using Omnius.Security;
 using Xunit;
 using Xunit.Abstractions;
+using Amoeba.Service;
 
 namespace Amoeba.Tests
 {

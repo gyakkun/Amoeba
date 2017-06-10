@@ -94,6 +94,7 @@
 
   <Property Name="CloudControl_Connection" Value="Connection" />
   <Property Name="CloudControl_State" Value="State" />
+  <Property Name="CloudControl_Log" Value="Log" />
   <Property Name="CloudControl_Copy" Value="Copy" />
   <Property Name="CloudControl_Paste" Value="Paste" />
   <Property Name="CloudControl_Type" Value="タイプ" />

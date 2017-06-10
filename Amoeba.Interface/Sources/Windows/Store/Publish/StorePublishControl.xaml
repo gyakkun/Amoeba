@@ -38,9 +38,9 @@
                 Grid.Row="1"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                omnius:GridViewSortHelper.AutoSort="True"
+                omnius:GridViewSortHelper.Command="{Binding SortCommand}"
                 IsSynchronizedWithCurrentItem="True"
-                ItemsSource="{Binding Path=PublishDirectoryInfos, Source={StaticResource Settings}}"
+                ItemsSource="{Binding Path=ContentsView}"
                 SelectedItem="{Binding Path=SelectedItem.Value}"
                 SelectionMode="Single"
                 VirtualizingStackPanel.IsVirtualizing="True"
@@ -75,14 +75,20 @@
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Width="{Binding Path=DynamicOptions.DirectoryListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StorePublishControl_Name, Source={StaticResource Languages}}">
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.DirectoryListView_Name_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="Name"
+                            Header="{Binding Path=StorePublishControl_Name, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=DynamicOptions.DirectoryListView_Path_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StorePublishControl_Path, Source={StaticResource Languages}}">
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.DirectoryListView_Path_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="Path"
+                            Header="{Binding Path=StorePublishControl_Path, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Path, Mode=OneWay}" />

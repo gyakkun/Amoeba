@@ -93,6 +93,12 @@ namespace Amoeba.Interface
         {
             base.OnClosing(e);
 
+            if (ProgressDialog.Instance.Value != 0)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             if (MessageBoxResult.No == MessageBox.Show(this, "終了しますか？", "Amoeba",
                 MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes))
             {

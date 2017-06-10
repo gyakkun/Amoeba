@@ -7,12 +7,12 @@ using Omnius.Base;
 
 namespace Amoeba.Tests
 {
-    class DisposeWrapper<T> : ManagerBase
+    class DisposableContainer<T> : ManagerBase
     {
         private T _value;
         private Action _action;
 
-        public DisposeWrapper(T value, Action action)
+        public DisposableContainer(T value, Action action)
         {
             _value = value;
             _action = action;

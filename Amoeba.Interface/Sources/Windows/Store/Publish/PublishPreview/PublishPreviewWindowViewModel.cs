@@ -39,8 +39,13 @@ namespace Amoeba.Interface
 
         public ReactiveCommand TabClickCommand { get; private set; }
 
-        public ObservableCollection<PublishPreviewItemViewModel> Contents { get; } = new ObservableCollection<PublishPreviewItemViewModel>();
+        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        public ObservableCollection<PublishPreviewItemViewModel> _contents;
+
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
+
+        private ListSortInfo _sortInfo;
+        public ReactiveCommand<string> SortCommand { get; private set; }
 
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
@@ -71,6 +76,11 @@ namespace Amoeba.Interface
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
 
+                _contents = new ObservableCollection<PublishPreviewItemViewModel>();
+
+                this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
+
                 this.OkCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
 
@@ -87,8 +97,13 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
+                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+            }
+
+            {
+                this.Sort(null);
             }
         }
 
@@ -118,18 +133,79 @@ namespace Amoeba.Interface
                     list.Add(vm);
                 }
 
-                this.Contents.Clear();
-                this.Contents.AddRange(list);
+                _contents.Clear();
+                _contents.AddRange(list);
             }
         }
 
         private long GetBoxLength(PublishPreviewBoxInfo boxInfo)
         {
-            long value = 0;
-            value += boxInfo.SeedInfos.Sum(n => n.Length);
-            value += boxInfo.BoxInfos.Sum(n => GetBoxLength(n));
+            var seedInfos = new List<PublishPreviewSeedInfo>();
+            {
+                var boxInfos = new List<PublishPreviewBoxInfo>();
+                boxInfos.Add(boxInfo);
 
-            return value;
+                for (int i = 0; i < boxInfos.Count; i++)
+                {
+                    boxInfos.AddRange(boxInfos[i].BoxInfos);
+                    seedInfos.AddRange(boxInfos[i].SeedInfos);
+                }
+            }
+
+            if (seedInfos.Count == 0) return 0;
+            else return seedInfos.Sum(n => n.Length);
+        }
+
+        private void Sort(string propertyName)
+        {
+            if (propertyName == null)
+            {
+                this.ContentsView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
+                {
+                    this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
+                }
+            }
+            else
+            {
+                var direction = ListSortDirection.Ascending;
+
+                if (_sortInfo.PropertyName == propertyName)
+                {
+                    if (_sortInfo.Direction == ListSortDirection.Ascending)
+                    {
+                        direction = ListSortDirection.Descending;
+                    }
+                    else
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                }
+
+                this.ContentsView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(propertyName))
+                {
+                    this.Sort(propertyName, direction);
+                }
+
+                _sortInfo.Direction = direction;
+                _sortInfo.PropertyName = propertyName;
+            }
+        }
+
+        private void Sort(string propertyName, ListSortDirection direction)
+        {
+            switch (propertyName)
+            {
+                case "Name":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    break;
+                case "Length":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Length", direction));
+                    break;
+            }
         }
 
         private void OnCloseEvent()
@@ -157,6 +233,7 @@ namespace Amoeba.Interface
             if (disposing)
             {
                 _settings.Save("Version", 0);
+                _settings.Save("SortInfo", _sortInfo);
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 

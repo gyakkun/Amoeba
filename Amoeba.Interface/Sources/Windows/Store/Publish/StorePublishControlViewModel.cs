@@ -33,7 +33,12 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(SettingsManager.Instance.PublishDirectoryInfos);
+
         public ReactiveProperty<PublishDirectoryInfo> SelectedItem { get; private set; }
+
+        private ListSortInfo _sortInfo;
+        public ReactiveCommand<string> SortCommand { get; private set; }
 
         public ReactiveCommand UploadCommand { get; private set; }
 
@@ -65,6 +70,9 @@ namespace Amoeba.Interface
             {
                 this.SelectedItem = new ReactiveProperty<PublishDirectoryInfo>().AddTo(_disposable);
 
+                this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
+
                 this.UploadCommand = SettingsManager.Instance.PublishDirectoryInfos.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand();
                 this.UploadCommand.Subscribe(() => this.StoreUpload()).AddTo(_disposable);
 
@@ -85,9 +93,14 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
+                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
 
                 _publishStoreInfo = _settings.Load<PublishStoreInfo>("PublishStoreInfo", () => null);
+            }
+
+            {
+                this.Sort(null);
             }
         }
 
@@ -126,7 +139,15 @@ namespace Amoeba.Interface
                         if (token.IsCancellationRequested) return;
                         if (targetPublishStoreInfo != _publishStoreInfo) goto End;
 
-                        _serviceManager.Import(path, token).Wait();
+                        try
+                        {
+                            _serviceManager.Import(path, token).Wait();
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
+                        }
+
                         if (token.IsCancellationRequested) return;
                     }
                 }
@@ -186,7 +207,7 @@ namespace Amoeba.Interface
                 }
             }
 
-            foreach (string directoryPath in Directory.GetDirectories(basePath))
+            foreach (string directoryPath in Directory.GetDirectories(basePath, "*", SearchOption.TopDirectoryOnly))
             {
                 boxes.Add(CreateBox(Path.GetFileName(directoryPath), directoryPath, map));
             }
@@ -291,6 +312,58 @@ namespace Amoeba.Interface
             return rootBoxInfo;
         }
 
+        private void Sort(string propertyName)
+        {
+            if (propertyName == null)
+            {
+                this.ContentsView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
+                {
+                    this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
+                }
+            }
+            else
+            {
+                var direction = ListSortDirection.Ascending;
+
+                if (_sortInfo.PropertyName == propertyName)
+                {
+                    if (_sortInfo.Direction == ListSortDirection.Ascending)
+                    {
+                        direction = ListSortDirection.Descending;
+                    }
+                    else
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                }
+
+                this.ContentsView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(propertyName))
+                {
+                    this.Sort(propertyName, direction);
+                }
+
+                _sortInfo.Direction = direction;
+                _sortInfo.PropertyName = propertyName;
+            }
+        }
+
+        private void Sort(string propertyName, ListSortDirection direction)
+        {
+            switch (propertyName)
+            {
+                case "Name":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    break;
+                case "Path":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Path", direction));
+                    break;
+            }
+        }
+
         private void DirectoryAdd()
         {
             var viewModel = new PublishDirectoryInfoEditWindowViewModel(new PublishDirectoryInfo());
@@ -327,6 +400,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Dispose();
 
                 _settings.Save("Version", 0);
+                _settings.Save("SortInfo", _sortInfo);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _settings.Save("PublishStoreInfo", _publishStoreInfo);
 

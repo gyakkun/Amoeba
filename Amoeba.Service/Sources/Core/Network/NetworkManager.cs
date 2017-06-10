@@ -256,6 +256,7 @@ namespace Amoeba.Service
                         contexts.Add(new InformationContext("Type", sessionInfo.Type));
                         contexts.Add(new InformationContext("Id", sessionInfo.Id));
                         contexts.Add(new InformationContext("Location", sessionInfo.Location));
+                        contexts.Add(new InformationContext("Priority", sessionInfo.PriorityManager.GetPriority()));
                         contexts.Add(new InformationContext("ReceivedByteCount", sessionInfo.Connection.ReceivedByteCount));
                         contexts.Add(new InformationContext("SentByteCount", sessionInfo.Connection.SentByteCount));
                     }

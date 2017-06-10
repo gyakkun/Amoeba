@@ -188,6 +188,62 @@ namespace Amoeba.Interface
         }
     }
 
+    [DataContract(Name = nameof(ListSortInfo))]
+    partial class ListSortInfo : INotifyPropertyChanged, ICloneable<ListSortInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ListSortInfo() { }
+
+        private string _propertyName;
+
+        [DataMember(Name = nameof(PropertyName))]
+        public string PropertyName
+        {
+            get
+            {
+                return _propertyName;
+            }
+            set
+            {
+                if (_propertyName != value)
+                {
+                    _propertyName = value;
+                    this.OnPropertyChanged(nameof(PropertyName));
+                }
+            }
+        }
+
+        private ListSortDirection _direction;
+
+        [DataMember(Name = nameof(Direction))]
+        public ListSortDirection Direction
+        {
+            get
+            {
+                return _direction;
+            }
+            set
+            {
+                if (_direction != value)
+                {
+                    _direction = value;
+                    this.OnPropertyChanged(nameof(Direction));
+                }
+            }
+        }
+
+        public ListSortInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
     [DataContract(Name = nameof(CloudStateInfo))]
     partial class CloudStateInfo : INotifyPropertyChanged, ICloneable<CloudStateInfo>
     {

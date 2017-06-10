@@ -16,11 +16,11 @@
         <ListView
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
-                omnius:GridViewSortHelper.AutoSort="True"
+                omnius:GridViewSortHelper.Command="{Binding Path=SortCommand}"
                 omnius:ListBoxHelper.SelectedItems="{Binding Path=SelectedItems}"
                 IsSynchronizedWithCurrentItem="True"
                 ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
-                ItemsSource="{Binding Path=Contents}"
+                ItemsSource="{Binding Path=ContentsView}"
                 VirtualizingStackPanel.IsVirtualizing="True"
                 VirtualizingStackPanel.VirtualizationMode="Recycling">
             <ListView.ContextMenu>
@@ -53,7 +53,10 @@
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Name, Source={StaticResource Languages}}">
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="Name"
+                            Header="{Binding Path=StoreStateControl_Name, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -67,21 +70,30 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Length, Source={StaticResource Languages}}">
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="Length"
+                            Header="{Binding Path=StoreStateControl_Length, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.Length, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_CreationTime_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_CreationTime, Source={StaticResource Languages}}">
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_CreationTime_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="CreationTime"
+                            Header="{Binding Path=StoreStateControl_CreationTime, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.CreationTime, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Rate_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Rate, Source={StaticResource Languages}}">
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_Rate_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="Rate"
+                            Header="{Binding Path=StoreStateControl_Rate, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -99,14 +111,20 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_State_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_State, Source={StaticResource Languages}}">
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_State_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="State"
+                            Header="{Binding Path=StoreStateControl_State, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.State, Mode=OneWay, Converter={StaticResource DownloadStateToStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="{Binding Path=DynamicOptions.ListView_Path_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=StoreStateControl_Path, Source={StaticResource Languages}}">
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_Path_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="Path"
+                            Header="{Binding Path=StoreStateControl_Path, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Value.Path, Mode=OneWay}" />

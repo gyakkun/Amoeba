@@ -46,11 +46,16 @@ namespace Amoeba.Interface
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
+        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        public ObservableCollection<SubscribeItemViewModel> _contents;
+
+        public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
+
+        private ListSortInfo _sortInfo;
+        public ReactiveCommand<string> SortCommand { get; private set; }
+
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand DownloadCommand { get; private set; }
-
-        public ObservableCollection<SubscribeItemViewModel> Contents { get; } = new ObservableCollection<SubscribeItemViewModel>();
-        public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
@@ -116,6 +121,11 @@ namespace Amoeba.Interface
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
+                _contents = new ObservableCollection<SubscribeItemViewModel>();
+
+                this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
+
                 this.CopyCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.CopyCommand.Subscribe(() => this.Copy()).AddTo(_disposable);
 
@@ -130,8 +140,6 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
-
                 {
                     var model = _settings.Load("Tab", () =>
                     {
@@ -143,6 +151,13 @@ namespace Amoeba.Interface
 
                     this.TabViewModel.Value = new SubscribeCategoryViewModel(null, model);
                 }
+
+                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+            }
+
+            {
+                this.Sort(null);
             }
         }
 
@@ -150,7 +165,7 @@ namespace Amoeba.Interface
         {
             if (viewModel is SubscribeCategoryViewModel categoryViewModel)
             {
-                this.Contents.Clear();
+                _contents.Clear();
             }
             else if (viewModel is SubscribeStoreViewModel storeViewModel)
             {
@@ -170,8 +185,8 @@ namespace Amoeba.Interface
                     list.Add(vm);
                 }
 
-                this.Contents.Clear();
-                this.Contents.AddRange(list);
+                _contents.Clear();
+                _contents.AddRange(list);
             }
             else if (viewModel is SubscribeBoxViewModel boxViewModel)
             {
@@ -201,8 +216,8 @@ namespace Amoeba.Interface
                     list.Add(vm);
                 }
 
-                this.Contents.Clear();
-                this.Contents.AddRange(list);
+                _contents.Clear();
+                _contents.AddRange(list);
             }
         }
 
@@ -300,7 +315,7 @@ namespace Amoeba.Interface
 
             foreach (var tempBox in targetBox.Boxes)
             {
-                info.BoxInfos.Add(CreateBoxInfo(tempBox, oldBoxInfo.BoxInfos.FirstOrDefault(n => n.Name == tempBox.Name)));
+                info.BoxInfos.Add(CreateBoxInfo(tempBox, oldBoxInfo?.BoxInfos.FirstOrDefault(n => n.Name == tempBox.Name)));
             }
 
             return info;
@@ -403,6 +418,64 @@ namespace Amoeba.Interface
             }
         }
 
+        private void Sort(string propertyName)
+        {
+            if (propertyName == null)
+            {
+                this.ContentsView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
+                {
+                    this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
+                }
+            }
+            else
+            {
+                var direction = ListSortDirection.Ascending;
+
+                if (_sortInfo.PropertyName == propertyName)
+                {
+                    if (_sortInfo.Direction == ListSortDirection.Ascending)
+                    {
+                        direction = ListSortDirection.Descending;
+                    }
+                    else
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                }
+
+                this.ContentsView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(propertyName))
+                {
+                    this.Sort(propertyName, direction);
+                }
+
+                _sortInfo.Direction = direction;
+                _sortInfo.PropertyName = propertyName;
+            }
+        }
+
+        private void Sort(string propertyName, ListSortDirection direction)
+        {
+            switch (propertyName)
+            {
+                case "Name":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    break;
+                case "Length":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("Length", direction));
+                    break;
+                case "CreationTime":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("CreationTime", direction));
+                    break;
+                case "State":
+                    this.ContentsView.SortDescriptions.Add(new SortDescription("State", direction));
+                    break;
+            }
+        }
+
         private void Copy()
         {
             Clipboard.SetSeeds(this.SelectedItems.OfType<SubscribeItemViewModel>()
@@ -455,8 +528,9 @@ namespace Amoeba.Interface
                 _watchTaskManager.Dispose();
 
                 _settings.Save("Version", 0);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _settings.Save("Tab", this.TabViewModel.Value.Model);
+                _settings.Save("SortInfo", _sortInfo);
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();
             }

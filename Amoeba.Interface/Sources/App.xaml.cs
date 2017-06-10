@@ -145,6 +145,9 @@ namespace Amoeba.Interface
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+
+                this.Shutdown();
+                return;
             }
         }
 

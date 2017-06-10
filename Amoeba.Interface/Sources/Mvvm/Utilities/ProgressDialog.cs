@@ -10,6 +10,7 @@ namespace Amoeba.Interface
     {
         private MainWindowViewModel _viewModel;
         private int _value = 0;
+        private readonly object _lockObject = new object();
 
         private ProgressDialog()
         {
@@ -22,8 +23,11 @@ namespace Amoeba.Interface
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                _value++;
-                _viewModel.IsProgressDialogOpen.Value = true;
+                lock (_lockObject)
+                {
+                    _value++;
+                    _viewModel.IsProgressDialogOpen.Value = true;
+                }
             });
         }
 
@@ -31,9 +35,23 @@ namespace Amoeba.Interface
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                _value--;
-                _viewModel.IsProgressDialogOpen.Value = (_value != 0);
+                lock (_lockObject)
+                {
+                    _value--;
+                    _viewModel.IsProgressDialogOpen.Value = (_value != 0);
+                }
             });
+        }
+
+        public int Value
+        {
+            get
+            {
+                lock (_lockObject)
+                {
+                    return _value;
+                }
+            }
         }
     }
 }

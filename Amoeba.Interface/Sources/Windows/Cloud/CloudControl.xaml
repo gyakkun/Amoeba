@@ -38,6 +38,13 @@
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Content="{Binding Path=CloudControl_State, Source={StaticResource Languages}}" />
+            <ListBoxItem
+                    Name="LogListBoxItem"
+                    Height="32"
+                    Padding="16,8"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=CloudControl_Log, Source={StaticResource Languages}}" />
         </ListBox>
 
         <ContentControl Grid.Column="1" Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -45,10 +52,10 @@
                 <ListView
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
-                        omnius:GridViewSortHelper.AutoSort="True"
+                        omnius:GridViewSortHelper.Command="{Binding Path=ConnectionSortCommand}"
                         omnius:ListBoxHelper.SelectedItems="{Binding Path=ConnectionSelectedItems}"
                         IsSynchronizedWithCurrentItem="True"
-                        ItemsSource="{Binding Path=ConnectionInformations}"
+                        ItemsSource="{Binding Path=ConnectionInfosView}"
                         VirtualizingStackPanel.IsVirtualizing="True"
                         VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <ListView.ContextMenu>
@@ -73,35 +80,50 @@
                     </ListView.ContextMenu>
                     <ListView.View>
                         <GridView AllowsColumnReorder="False">
-                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_Type_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CloudControl_Type, Source={StaticResource Languages}}">
+                            <GridViewColumn
+                                    Width="{Binding Path=DynamicOptions.ConnetionListView_Type_Width, Mode=TwoWay, FallbackValue=120}"
+                                    omnius:GridViewSortHelper.PropertyName="Type"
+                                    Header="{Binding Path=CloudControl_Type, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.Type, Mode=OneWay, Converter={StaticResource SessionTypeToStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_Id_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CloudControl_Id, Source={StaticResource Languages}}">
+                            <GridViewColumn
+                                    Width="{Binding Path=DynamicOptions.ConnetionListView_Id_Width, Mode=TwoWay, FallbackValue=120}"
+                                    omnius:GridViewSortHelper.PropertyName="Id"
+                                    Header="{Binding Path=CloudControl_Id, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.Id, Mode=OneWay, Converter={StaticResource BytesToHexStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_Priority_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CloudControl_Priority, Source={StaticResource Languages}}">
+                            <GridViewColumn
+                                    Width="{Binding Path=DynamicOptions.ConnetionListView_Priority_Width, Mode=TwoWay, FallbackValue=120}"
+                                    omnius:GridViewSortHelper.PropertyName="Priority"
+                                    Header="{Binding Path=CloudControl_Priority, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.Priority, Mode=OneWay}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_ReceivedByteCount_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CloudControl_ReceivedByteCount, Source={StaticResource Languages}}">
+                            <GridViewColumn
+                                    Width="{Binding Path=DynamicOptions.ConnetionListView_ReceivedByteCount_Width, Mode=TwoWay, FallbackValue=120}"
+                                    omnius:GridViewSortHelper.PropertyName="ReceivedByteCount"
+                                    Header="{Binding Path=CloudControl_ReceivedByteCount, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.ReceivedByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
-                            <GridViewColumn Width="{Binding Path=DynamicOptions.ConnetionListView_SentByteCount_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CloudControl_SentByteCount, Source={StaticResource Languages}}">
+                            <GridViewColumn
+                                    Width="{Binding Path=DynamicOptions.ConnetionListView_SentByteCount_Width, Mode=TwoWay, FallbackValue=120}"
+                                    omnius:GridViewSortHelper.PropertyName="SentByteCount"
+                                    Header="{Binding Path=CloudControl_SentByteCount, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Path=Value.SentByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
@@ -185,7 +207,7 @@
                             <ListView
                                     omnius:ListBoxHelper.SelectedItems="{Binding Path=StateSelectedItems}"
                                     IsSynchronizedWithCurrentItem="True"
-                                    ItemsSource="{Binding Path=Information, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Value.Index}"
+                                    ItemsSource="{Binding Path=StateInfos, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Value.Index}"
                                     VirtualizingStackPanel.IsVirtualizing="True"
                                     VirtualizingStackPanel.VirtualizationMode="Recycling">
                                 <i:Interaction.Behaviors>
@@ -227,6 +249,36 @@
                     </GroupBox>
                 </StackPanel>
             </ScrollViewer>
+        </ContentControl>
+
+        <ContentControl
+                Grid.Column="1"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Visibility="{Binding ElementName=LogListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <ListBox
+                    omnius:ListBoxHelper.SelectedItems="{Binding Path=LogSelectedItems}"
+                    IsSynchronizedWithCurrentItem="True"
+                    ItemsSource="{Binding Path=Logs}"
+                    SelectionMode="Multiple"
+                    VirtualizingStackPanel.IsVirtualizing="True"
+                    VirtualizingStackPanel.VirtualizationMode="Recycling">
+                <i:Interaction.Behaviors>
+                    <omnius:ScrollOnNewItemBehavior />
+                </i:Interaction.Behaviors>
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                                Command="{Binding Path=LogCopyCommand}"
+                                Header="{Binding Path=CloudControl_Copy, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+C">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="ContentCopy" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
         </ContentControl>
 
     </Grid>
