@@ -175,22 +175,14 @@ namespace Amoeba.Service
                             string address = result.GetValue<string>("Address");
                             int port = result.GetValueOrDefault<int>("Port", () => 7656);
 
+                            if (_samManager != null)
                             {
-                                if (_samManager != null)
-                                {
-                                    _samManager.Dispose();
-                                    _samManager = null;
-                                }
-
-                                _samManager = new SamManager(address, port, "Amoeba");
+                                _samManager.Dispose();
+                                _samManager = null;
                             }
 
-                            string base32Address = _samManager.Start();
-
-                            if (base32Address != null)
-                            {
-                                i2pUri = string.Format("i2p:{0}", base32Address);
-                            }
+                            _samManager = new SamManager(address, port, "Amoeba");
+                            _samManager.Start();
 
                             _watchSamBridgeUri = config.SamBridgeUri;
                         }
@@ -202,6 +194,11 @@ namespace Amoeba.Service
                                 _samManager = null;
                             }
                         }
+                    }
+
+                    if (_samManager.Base32Address != null)
+                    {
+                        i2pUri = string.Format("i2p:{0}", _samManager.Base32Address);
                     }
                 }
                 else

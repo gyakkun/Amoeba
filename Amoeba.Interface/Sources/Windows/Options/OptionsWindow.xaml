@@ -711,7 +711,7 @@
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
                                             VerticalContentAlignment="Center"
-                                            Text="{Binding Path=Options.Bandwidth.BandwidthLimit, Converter={StaticResource LongToSizeStringConverter}}" />
+                                            Text="{Binding Path=Options.Bandwidth.BandwidthLimit, Converter={StaticResource IntToSizeStringConverter}}" />
                                 </Grid>
                             </GroupBox>
                         </StackPanel>

@@ -47,7 +47,7 @@ namespace Amoeba.Service
             lock (_lockObject)
             {
                 int priority = _table.Sum(n => n.Value);
-                priority = Math.Min(Math.Max(priority, max), min);
+                priority = Math.Min(Math.Max(priority, min), max);
 
                 return ((double)priority) / max;
             }

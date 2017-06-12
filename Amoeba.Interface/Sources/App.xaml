@@ -25,6 +25,7 @@
             <omnius:SortedCollectionConverter x:Key="SortedCollectionConverter" />
             <omnius:BytesToHexStringConverter x:Key="BytesToHexStringConverter" />
             <omnius:BytesToBase64StringConverter x:Key="BytesToBase64StringConverter" />
+            <omnius:IntToSizeStringConverter x:Key="IntToSizeStringConverter" />
             <omnius:LongToSizeStringConverter x:Key="LongToSizeStringConverter" />
             <omnius:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
             <omnius:ConditionalValueConverter x:Key="ConditionalValueConverter" />

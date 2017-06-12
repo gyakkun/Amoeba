@@ -241,9 +241,9 @@ namespace Amoeba.Service
 
                     if (!IPAddress.TryParse(address, out ipAddress)) return null;
 
-#if !DEBUG
-                    if (!TcpConnectionManager.CheckGlobalIpAddress(ipAddress)) return null;
-#endif
+                    //#if !DEBUG
+                    //                    if (!TcpConnectionManager.CheckGlobalIpAddress(ipAddress)) return null;
+                    //#endif
 
                     if (!config.Type.HasFlag(TcpConnectionType.Ipv4)
                         && ipAddress.AddressFamily == AddressFamily.InterNetwork) return null;
@@ -506,10 +506,10 @@ namespace Amoeba.Service
                     if (ipv4Uri != null) _locationUris.Add(ipv4Uri);
                     if (ipv6Uri != null) _locationUris.Add(ipv6Uri);
 
-#if DEBUG
-                    _locationUris.Add($"tcp:{IPAddress.Loopback}:{config.Ipv4Port}");
-                    _locationUris.Add($"tcp:{IPAddress.IPv6Loopback}:{config.Ipv6Port}");
-#endif
+                    //#if DEBUG
+                    //                    _locationUris.Add($"tcp:{IPAddress.Loopback}:{config.Ipv4Port}");
+                    //                    _locationUris.Add($"tcp:{IPAddress.IPv6Loopback}:{config.Ipv6Port}");
+                    //#endif
                 }
 
                 return;
