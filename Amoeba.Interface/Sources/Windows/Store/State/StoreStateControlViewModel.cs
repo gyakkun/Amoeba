@@ -33,10 +33,8 @@ namespace Amoeba.Interface
         private Settings _settings;
 
         public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
-        private ObservableDictionary<(Metadata, string), DynamicOptions> _contents;
-
+        private ObservableDictionary<(Metadata, string), DynamicOptions> _contents = new ObservableDictionary<(Metadata, string), DynamicOptions>(new CustomEqualityComparer());
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
-
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
 
@@ -62,8 +60,6 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
-                _contents = new ObservableDictionary<(Metadata, string), DynamicOptions>(new CustomEqualityComparer());
-
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
 

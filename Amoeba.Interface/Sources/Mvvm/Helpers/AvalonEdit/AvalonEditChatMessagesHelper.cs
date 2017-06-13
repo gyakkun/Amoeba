@@ -110,7 +110,7 @@ namespace Amoeba.Interface
                         settings.Add(new CustomElementSetting("Signature", document.Length, item3.Length));
                         document.Append(item3);
 
-                        if (!Inspect.ContainTrustSignature(target.Message.AuthorSignature) && target.Message.Cost != null)
+                        if (!Inspector.ContainTrustSignature(target.Message.AuthorSignature) && target.Message.Cost != null)
                         {
                             document.Append(" +");
                             document.Append(target.Message.Cost.Value);
@@ -213,7 +213,7 @@ namespace Amoeba.Interface
                     {
                         Brush brush;
 
-                        if (Inspect.ContainTrustSignature(Signature.Parse(result.Value)))
+                        if (Inspector.ContainTrustSignature(Signature.Parse(result.Value)))
                         {
                             brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(AmoebaEnvironment.Config.Colors.Message_Trust));
                         }

@@ -47,10 +47,8 @@ namespace Amoeba.Interface
         public ReactiveCommand TabPasteCommand { get; private set; }
 
         public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
-        public ObservableCollection<SubscribeItemViewModel> _contents;
-
+        private ObservableCollection<SubscribeItemViewModel> _contents = new ObservableCollection<SubscribeItemViewModel>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
-
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
 
@@ -120,8 +118,6 @@ namespace Amoeba.Interface
 
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
-
-                _contents = new ObservableCollection<SubscribeItemViewModel>();
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);

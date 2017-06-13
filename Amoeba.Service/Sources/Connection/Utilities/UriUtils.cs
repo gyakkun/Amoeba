@@ -41,6 +41,8 @@ namespace Amoeba.Service
                     var contexts = new List<InformationContext>();
                     contexts.Add(new InformationContext("Scheme", scheme));
                     contexts.Add(new InformationContext("Address", value));
+
+                    return new Information(contexts);
                 }
             }
 

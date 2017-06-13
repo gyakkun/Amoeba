@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
-        Title="PublishPreviewWindow"
+        Title="{Binding Path=PublishPreviewWindow_Title, Source={StaticResource Languages}}"
         x:ClassModifier="internal"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
@@ -20,7 +20,7 @@
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
         mc:Ignorable="d">
     <Grid>
-        <Grid Margin="0,0,0,64" Background="{DynamicResource MaterialDesignCardBackground}">
+        <Grid Margin="0,0,0,64">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="{Binding Path=DynamicOptions.TabColumnWidth, Mode=TwoWay, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200}" />
                 <ColumnDefinition Width="4" />

@@ -30,15 +30,16 @@
     <Property Type="string" Name="Location" IsEditable="true" />
   </Class>
 
-  <Class Name="ServiceOptionsInfo">
-    <Property Type="ServiceAccountOptionsInfo" Name="Account" />
-    <Property Type="ServiceTcpOptionsInfo" Name="Tcp" />
-    <Property Type="ServiceI2pOptionsInfo" Name="I2p" />
-    <Property Type="ServiceBandwidthOptionsInfo" Name="Bandwidth" />
-    <Property Type="ServiceDataOptionsInfo" Name="Data" />
+  <Class Name="OptionsInfo">
+    <Property Type="OptionsAccountInfo" Name="Account" />
+    <Property Type="OptionsSubscribeInfo" Name="Subscribe" />
+    <Property Type="OptionsTcpInfo" Name="Tcp" />
+    <Property Type="OptionsI2pInfo" Name="I2p" />
+    <Property Type="OptionsBandwidthInfo" Name="Bandwidth" />
+    <Property Type="OptionsDataInfo" Name="Data" />
   </Class>
 
-  <Class Name="ServiceAccountOptionsInfo">
+  <Class Name="OptionsAccountInfo">
     <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
     <Property Type="string" Name="Comment" IsEditable="true" />
     <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
@@ -46,7 +47,11 @@
     <Property Type="ObservableCollection(Tag)" Name="Tags" />
   </Class>
 
-  <Class Name="ServiceTcpOptionsInfo">
+  <Class Name="OptionsSubscribeInfo">
+    <Property Type="ObservableCollection(Signature)" Name="SubscribeSignatures" />
+  </Class>
+
+  <Class Name="OptionsTcpInfo">
     <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
     <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
     <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
@@ -54,19 +59,25 @@
     <Property Type="string" Name="ProxyUri" IsEditable="true" />
   </Class>
 
-  <Class Name="ServiceI2pOptionsInfo">
+  <Class Name="OptionsI2pInfo">
     <Property Type="bool" Name="IsEnabled" IsEditable="true" />
     <Property Type="string" Name="SamBridgeUri" IsEditable="true" />
   </Class>
 
-  <Class Name="ServiceBandwidthOptionsInfo">
+  <Class Name="OptionsBandwidthInfo">
     <Property Type="int" Name="ConnectionCountLimit" IsEditable="true" />
     <Property Type="int" Name="BandwidthLimit" IsEditable="true" />
   </Class>
 
-  <Class Name="ServiceDataOptionsInfo">
+  <Class Name="OptionsDataInfo">
     <Property Type="long" Name="CacheSize" IsEditable="true" />
     <Property Type="string" Name="DownloadDirectoryPath" IsEditable="true" />
+  </Class>
+
+  <Class Name="RelationSignatureInfo">
+    <Property Type="Signature" Name="Signature" IsEditable="true" />
+    <Property Type="BroadcastMessage(Profile)" Name="Profile" IsEditable="true" />
+    <Property Type="ObservableCollection(RelationSignatureInfo)" Name="Children" />
   </Class>
 
   <Class Name="ChatCategoryInfo">

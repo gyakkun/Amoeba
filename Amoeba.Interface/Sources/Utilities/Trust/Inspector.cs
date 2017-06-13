@@ -7,7 +7,7 @@ using Omnius.Security;
 
 namespace Amoeba.Interface
 {
-    static class Inspect
+    static class Inspector
     {
         private static LockedHashSet<Signature> _trustSignatures = new LockedHashSet<Signature>();
 

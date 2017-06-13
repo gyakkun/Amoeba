@@ -36,6 +36,8 @@ namespace Amoeba.Interface
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
             Thread.GetDomain().UnhandledException += this.App_UnhandledException;
+
+            this.Setting_Log();
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -49,6 +51,134 @@ namespace Amoeba.Interface
         private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             Log.Error(e.Exception);
+        }
+
+        private void Setting_Log()
+        {
+            string logPath = null;
+            bool isHeaderWrite = true;
+
+            for (int i = 0; i < 1024; i++)
+            {
+                if (i == 0)
+                {
+                    logPath = Path.Combine(AmoebaEnvironment.Paths.LogPath, string.Format("{0}.txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo)));
+                }
+                else
+                {
+                    logPath = Path.Combine(AmoebaEnvironment.Paths.LogPath, string.Format("{0}.({1}).txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo), i));
+                }
+
+                if (!File.Exists(logPath)) break;
+            }
+
+            if (logPath == null) return;
+
+            Log.LogEvent += (object sender, LogEventArgs e) =>
+            {
+                lock (logPath)
+                {
+                    try
+                    {
+                        if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
+                        {
+                            using (var writer = new StreamWriter(logPath, true, new UTF8Encoding(false)))
+                            {
+                                if (isHeaderWrite)
+                                {
+                                    writer.WriteLine(this.GetMachineInfomation());
+                                    isHeaderWrite = false;
+                                }
+
+                                writer.WriteLine(string.Format(
+                                    "\r\n--------------------------------------------------------------------------------\r\n\r\n" +
+                                    "Time:\t\t{0}\r\n" +
+                                    "Level:\t\t{1}\r\n" +
+                                    "{2}",
+                                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
+                                writer.Flush();
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+            };
+        }
+
+        private string GetMachineInfomation()
+        {
+            OperatingSystem osInfo = Environment.OSVersion;
+            string osName = "";
+
+            if (osInfo.Platform == PlatformID.Win32NT)
+            {
+                if (osInfo.Version.Major == 4)
+                {
+                    osName = "Windows NT 4.0";
+                }
+                else if (osInfo.Version.Major == 5)
+                {
+                    switch (osInfo.Version.Minor)
+                    {
+                        case 0:
+                            osName = "Windows 2000";
+                            break;
+
+                        case 1:
+                            osName = "Windows XP";
+                            break;
+
+                        case 2:
+                            osName = "Windows Server 2003";
+                            break;
+                    }
+                }
+                else if (osInfo.Version.Major == 6)
+                {
+                    switch (osInfo.Version.Minor)
+                    {
+                        case 0:
+                            osName = "Windows Vista";
+                            break;
+
+                        case 1:
+                            osName = "Windows 7";
+                            break;
+
+                        case 2:
+                            osName = "Windows 8";
+                            break;
+
+                        case 3:
+                            osName = "Windows 8.1";
+                            break;
+                    }
+                }
+                else if (osInfo.Version.Major == 10)
+                {
+                    osName = "Windows 10";
+                }
+            }
+            else if (osInfo.Platform == PlatformID.WinCE)
+            {
+                osName = "Windows CE";
+            }
+            else if (osInfo.Platform == PlatformID.MacOSX)
+            {
+                osName = "MacOSX";
+            }
+            else if (osInfo.Platform == PlatformID.Unix)
+            {
+                osName = "Unix";
+            }
+
+            return string.Format(
+                "Amoeba:\t\t{0}\r\n" +
+                "OS:\t\t{1} ({2})\r\n" +
+                ".NET Framework:\t{3}", AmoebaEnvironment.Version.ToString(3), osName, osInfo.VersionString, Environment.Version);
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -144,7 +274,7 @@ namespace Amoeba.Interface
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Log.Error(ex);
 
                 this.Shutdown();
                 return;

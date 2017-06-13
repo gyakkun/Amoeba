@@ -9,7 +9,7 @@
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
         xmlns:prism="http://prismlibrary.com/"
-        Title="OptionsWindow"
+        Title="{Binding Path=OptionsWindow_Title, Source={StaticResource Languages}}"
         x:ClassModifier="internal"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
@@ -43,6 +43,13 @@
                         VerticalContentAlignment="Center"
                         Content="{Binding Path=OptionsWindow_Account, Source={StaticResource Languages}}" />
                 <ListBoxItem
+                        Name="SubscribeListBoxItem"
+                        Height="32"
+                        Padding="16,8"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="{Binding Path=OptionsWindow_Subscribe, Source={StaticResource Languages}}" />
+                <ListBoxItem
                         Name="ConnectionListBoxItem"
                         Height="32"
                         Padding="16,8"
@@ -65,7 +72,7 @@
                         Content="{Binding Path=OptionsWindow_Data, Source={StaticResource Languages}}" />
             </ListBox>
 
-            <Grid Grid.Column="1" Background="{DynamicResource MaterialDesignCardBackground}">
+            <Grid Grid.Column="1">
                 <ContentControl Visibility="{Binding ElementName=AccountListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -120,7 +127,7 @@
                         <Grid Grid.Column="1">
                             <ContentControl Visibility="{Binding ElementName=AccountSignatureListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <StackPanel Margin="20">
+                                    <StackPanel Margin="16">
                                         <GroupBox
                                                 VerticalAlignment="Stretch"
                                                 HorizontalContentAlignment="Stretch"
@@ -178,7 +185,7 @@
                             </ContentControl>
 
                             <ContentControl Visibility="{Binding ElementName=AccountTrustListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid Margin="20">
+                                <Grid Margin="16,16,16,0">
                                     <GroupBox
                                             VerticalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"
@@ -247,7 +254,7 @@
                                             <md:PopupBox
                                                     Width="48"
                                                     Height="48"
-                                                    Margin="0,0,20,20"
+                                                    Margin="0,0,16,16"
                                                     HorizontalAlignment="Right"
                                                     VerticalAlignment="Bottom"
                                                     PlacementMode="TopAndAlignCentres"
@@ -272,7 +279,7 @@
                             </ContentControl>
 
                             <ContentControl Visibility="{Binding ElementName=AccountUntrustListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid Margin="20">
+                                <Grid Margin="16,16,16,0">
                                     <GroupBox
                                             VerticalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"
@@ -341,7 +348,7 @@
                                             <md:PopupBox
                                                     Width="48"
                                                     Height="48"
-                                                    Margin="0,0,20,20"
+                                                    Margin="0,0,16,16"
                                                     HorizontalAlignment="Right"
                                                     VerticalAlignment="Bottom"
                                                     PlacementMode="TopAndAlignCentres"
@@ -366,7 +373,7 @@
                             </ContentControl>
 
                             <ContentControl Visibility="{Binding ElementName=AccountTagsListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid Margin="20">
+                                <Grid Margin="16,16,16,0">
                                     <GroupBox
                                             VerticalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"
@@ -453,7 +460,7 @@
                                             <md:PopupBox
                                                     Width="48"
                                                     Height="48"
-                                                    Margin="0,0,20,20"
+                                                    Margin="0,0,16,16"
                                                     HorizontalAlignment="Right"
                                                     VerticalAlignment="Bottom"
                                                     PlacementMode="TopAndAlignCentres"
@@ -481,7 +488,7 @@
                             </ContentControl>
 
                             <ContentControl Visibility="{Binding ElementName=AccountCommentListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid Margin="20">
+                                <Grid Margin="16,16,16,0">
                                     <GroupBox
                                             VerticalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"
@@ -503,6 +510,100 @@
                                 </Grid>
                             </ContentControl>
                         </Grid>
+                    </Grid>
+                </ContentControl>
+
+                <ContentControl Visibility="{Binding ElementName=SubscribeListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid Margin="16,16,16,0">
+                        <GroupBox
+                                VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                Header="{Binding Path=OptionsWindow_SubscribeSettings, Source={StaticResource Languages}}"
+                                Style="{DynamicResource MaterialDesignCardGroupBox}">
+                            <GroupBox.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="8,0" Text="{Binding}" />
+                                </DataTemplate>
+                            </GroupBox.HeaderTemplate>
+                            <Grid>
+                                <ListView
+                                        HorizontalContentAlignment="Stretch"
+                                        VerticalContentAlignment="Stretch"
+                                        omnius:GridViewSortHelper.Command="{Binding Path=SubscribeSignaturesSortCommand}"
+                                        omnius:ListBoxHelper.SelectedItems="{Binding Path=SelectedSubscribeSignatureItems}"
+                                        IsSynchronizedWithCurrentItem="True"
+                                        ItemsSource="{Binding Path=SubscribeSignaturesView}"
+                                        VirtualizingStackPanel.IsVirtualizing="True"
+                                        VirtualizingStackPanel.VirtualizationMode="Recycling">
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem
+                                                    Command="{Binding Path=SubscribeDeleteCommand}"
+                                                    Header="{Binding Path=OptionsWindow_Delete, Source={StaticResource Languages}}"
+                                                    InputGestureText="Ctrl+D">
+                                                <MenuItem.Icon>
+                                                    <md:PackIcon Kind="Delete" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem
+                                                    Command="{Binding Path=SubscribeCopyCommand}"
+                                                    Header="{Binding Path=OptionsWindow_Copy, Source={StaticResource Languages}}"
+                                                    InputGestureText="Ctrl+C">
+                                                <MenuItem.Icon>
+                                                    <md:PackIcon Kind="ContentCopy" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem
+                                                    Command="{Binding Path=SubscribePasteCommand}"
+                                                    Header="{Binding Path=OptionsWindow_Paste, Source={StaticResource Languages}}"
+                                                    InputGestureText="Ctrl+V">
+                                                <MenuItem.Icon>
+                                                    <md:PackIcon Kind="ContentPaste" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                    <ListView.View>
+                                        <GridView AllowsColumnReorder="False">
+                                            <GridViewColumn
+                                                    Width="{Binding Path=DynamicOptions.SubscribeListView_Signature_Width, Mode=TwoWay, FallbackValue=300}"
+                                                    omnius:GridViewSortHelper.PropertyName="Signature"
+                                                    Header="{Binding Path=OptionsWindow_SubscribeSignature, Source={StaticResource Languages}}">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Mode=OneWay}" />
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+
+                                <md:PopupBox
+                                        Width="48"
+                                        Height="48"
+                                        Margin="0,0,16,16"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        PlacementMode="TopAndAlignCentres"
+                                        PopupMode="Click"
+                                        Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
+                                        ToolTipService.Placement="Left">
+                                    <StackPanel>
+                                        <Button Command="{Binding Path=SubscribeDeleteCommand}" ToolTip="{Binding Path=OptionsWindow_Delete, Source={StaticResource Languages}}">
+                                            <md:PackIcon Kind="Delete" />
+                                        </Button>
+                                        <Button Command="{Binding Path=SubscribeCopyCommand}" ToolTip="{Binding Path=OptionsWindow_Copy, Source={StaticResource Languages}}">
+                                            <md:PackIcon Kind="ContentCopy" />
+                                        </Button>
+                                        <Button Command="{Binding Path=SubscribePasteCommand}" ToolTip="{Binding Path=OptionsWindow_Paste, Source={StaticResource Languages}}">
+                                            <md:PackIcon Kind="ContentPaste" />
+                                        </Button>
+                                    </StackPanel>
+                                </md:PopupBox>
+                            </Grid>
+                        </GroupBox>
                     </Grid>
                 </ContentControl>
 
@@ -539,7 +640,7 @@
                         <Grid Grid.Column="1">
                             <ContentControl Visibility="{Binding ElementName=ConnectionTcpListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <StackPanel Margin="20">
+                                    <StackPanel Margin="16">
                                         <GroupBox
                                                 VerticalAlignment="Stretch"
                                                 HorizontalContentAlignment="Stretch"
@@ -621,7 +722,7 @@
                             </ContentControl>
                             <ContentControl Visibility="{Binding ElementName=ConnectionI2pListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                    <StackPanel Margin="20">
+                                    <StackPanel Margin="16">
                                         <GroupBox
                                                 VerticalAlignment="Stretch"
                                                 HorizontalContentAlignment="Stretch"
@@ -666,7 +767,7 @@
 
                 <ContentControl Visibility="{Binding ElementName=BandwidthListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="20">
+                        <StackPanel Margin="16">
                             <GroupBox
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
@@ -720,9 +821,9 @@
 
                 <ContentControl Visibility="{Binding ElementName=DataListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel Margin="20">
+                        <StackPanel Margin="16">
                             <GroupBox
-                                    Margin="0,0,0,20"
+                                    Margin="0,0,0,16"
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"

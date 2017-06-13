@@ -161,9 +161,9 @@
                 VerticalContentAlignment="Stretch"
                 Visibility="{Binding ElementName=StateListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="20">
+                <StackPanel Margin="16">
                     <GroupBox
-                            Margin="0,0,0,20"
+                            Margin="0,0,0,16"
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"

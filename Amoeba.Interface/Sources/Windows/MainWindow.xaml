@@ -9,7 +9,7 @@
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
         xmlns:prism="http://prismlibrary.com/"
-        Title="MainWindow"
+        Title="{Binding Path=Title.Value}"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         TextElement.FontSize="13"
@@ -33,52 +33,44 @@
         </md:DialogHost.DialogContent>
         <DockPanel>
             <Menu DockPanel.Dock="Top" IsMainMenu="True">
-                <MenuItem Header="_Service">
-                    <MenuItem Header="Start" InputGestureText="Ctrl+S">
+                <MenuItem Header="{Binding Path=MainWindow_Service, Source={StaticResource Languages}}">
+                    <MenuItem
+                            Command="{Binding RelationCommand}"
+                            Header="{Binding Path=MainWindow_Relation, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+R">
                         <MenuItem.Icon>
-                            <md:PackIcon Kind="Play" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Stop" InputGestureText="Ctrl+T">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="Stop" />
+                            <md:PackIcon Kind="VectorTriangle" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Exit" InputGestureText="Ctrl+E">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="ExitToApp" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </MenuItem>
-                <MenuItem Header="_Tools">
                     <MenuItem
                             Command="{Binding OptionsCommand}"
-                            Header="Options"
+                            Header="{Binding Path=MainWindow_Options, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+O">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Settings" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
-                <MenuItem Header="_Languages">
+                <MenuItem Header="{Binding Path=MainWindow_Languages, Source={StaticResource Languages}}">
                     <MenuItem
                             Command="{Binding Path=LanguageCommand}"
                             CommandParameter="English"
                             Header="{Binding Path=Languages_English, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+E"
                             IsCheckable="True"
                             IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=English, Mode=OneWay}" />
                     <MenuItem
                             Command="{Binding Path=LanguageCommand}"
                             CommandParameter="Japanese"
                             Header="{Binding Path=Languages_Japanese, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+J"
                             IsCheckable="True"
                             IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=Japanese, Mode=OneWay}" />
                 </MenuItem>
-                <MenuItem Header="_Help">
-                    <MenuItem Header="Version" InputGestureText="Ctrl+V" />
+                <MenuItem Header="{Binding Path=MainWindow_Help, Source={StaticResource Languages}}">
+                    <MenuItem
+                            Command="{Binding VersionCommand}"
+                            Header="{Binding Path=MainWindow_Version, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+V" />
                 </MenuItem>
             </Menu>
 
@@ -130,7 +122,7 @@
                     </ListBoxItem>
                 </ListBox>
 
-                <Grid Background="{DynamicResource MaterialDesignCardBackground}">
+                <Grid>
                     <ContentControl
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"

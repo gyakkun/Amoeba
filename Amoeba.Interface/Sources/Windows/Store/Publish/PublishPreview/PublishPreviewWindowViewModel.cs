@@ -40,10 +40,8 @@ namespace Amoeba.Interface
         public ReactiveCommand TabClickCommand { get; private set; }
 
         public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
-        public ObservableCollection<PublishPreviewItemViewModel> _contents;
-
+        private ObservableCollection<PublishPreviewItemViewModel> _contents = new ObservableCollection<PublishPreviewItemViewModel>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
-
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
 
@@ -75,8 +73,6 @@ namespace Amoeba.Interface
 
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
-
-                _contents = new ObservableCollection<PublishPreviewItemViewModel>();
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);

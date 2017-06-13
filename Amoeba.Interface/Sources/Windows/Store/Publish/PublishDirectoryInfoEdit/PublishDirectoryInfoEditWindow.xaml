@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
-        Title="PublishDirectoryInfoEditWindow"
+        Title="{Binding Path=PublishDirectoryInfoEditWindow_Title, Source={StaticResource Languages}}"
         x:ClassModifier="internal"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"

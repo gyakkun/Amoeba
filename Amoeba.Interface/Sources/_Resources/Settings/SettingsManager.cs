@@ -42,6 +42,7 @@ namespace Amoeba.Interface
 
                 return info;
             });
+            this.SubscribeSignatures.UnionWith(_settings.Load(nameof(SubscribeSignatures), () => new Signature[] { Signature.Parse("Lyrise@i-2IpSdusn_TKfn6NSECLYRVO4r51cpHZ5wFgBo_0eU") }));
             this.PublishDirectoryInfos.AddRange(_settings.Load(nameof(PublishDirectoryInfos), () => new ObservableCollection<PublishDirectoryInfo>()));
             this.DownloadItemInfos.UnionWith(_settings.Load(nameof(DownloadItemInfos), () => new LockedHashSet<DownloadItemInfo>()));
         }
@@ -51,6 +52,7 @@ namespace Amoeba.Interface
             _settings.Save("Version", 0);
 
             _settings.Save(nameof(AccountInfo), this.AccountInfo);
+            _settings.Save(nameof(SubscribeSignatures), this.SubscribeSignatures);
             _settings.Save(nameof(PublishDirectoryInfos), this.PublishDirectoryInfos);
             _settings.Save(nameof(DownloadItemInfos), this.DownloadItemInfos);
         }

@@ -34,9 +34,7 @@ namespace Amoeba.Interface
         private Settings _settings;
 
         public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(SettingsManager.Instance.PublishDirectoryInfos);
-
         public ReactiveProperty<PublishDirectoryInfo> SelectedItem { get; private set; }
-
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
 

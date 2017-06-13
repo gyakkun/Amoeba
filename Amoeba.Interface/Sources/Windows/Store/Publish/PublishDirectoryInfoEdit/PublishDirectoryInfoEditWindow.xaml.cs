@@ -27,6 +27,8 @@ namespace Amoeba.Interface
             viewModel.CloseEvent += (sender, e) => this.Close();
 
             InitializeComponent();
+
+            this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
         }
 
         private void RestorableWindow_Loaded(object sender, RoutedEventArgs e)

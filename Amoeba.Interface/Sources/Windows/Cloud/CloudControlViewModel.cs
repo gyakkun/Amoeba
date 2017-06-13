@@ -28,10 +28,8 @@ namespace Amoeba.Interface
         private Settings _settings;
 
         public ICollectionView ConnectionInfosView => CollectionViewSource.GetDefaultView(_connectionInfos);
-        public ObservableDictionary<byte[], DynamicOptions> _connectionInfos;
-
+        private ObservableDictionary<byte[], DynamicOptions> _connectionInfos = new ObservableDictionary<byte[], DynamicOptions>(new ByteArrayEqualityComparer());
         public ObservableCollection<object> ConnectionSelectedItems { get; } = new ObservableCollection<object>();
-
         private ListSortInfo _connectionSortInfo;
         public ReactiveCommand<string> ConnectionSortCommand { get; private set; }
 
@@ -67,8 +65,6 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
-                _connectionInfos = new ObservableDictionary<byte[], DynamicOptions>(new ByteArrayEqualityComparer());
-
                 this.ConnectionSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.ConnectionSortCommand.Subscribe((propertyName) => this.ConnectionSort(propertyName)).AddTo(_disposable);
 
@@ -98,163 +94,36 @@ namespace Amoeba.Interface
 
             {
                 this.ConnectionSort(null);
-                this.Setting_Log();
-            }
-        }
-
-        private void Setting_Log()
-        {
-            string logPath = null;
-            bool isHeaderWrite = true;
-
-            for (int i = 0; i < 1024; i++)
-            {
-                if (i == 0)
-                {
-                    logPath = Path.Combine(AmoebaEnvironment.Paths.LogPath, string.Format("{0}.txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo)));
-                }
-                else
-                {
-                    logPath = Path.Combine(AmoebaEnvironment.Paths.LogPath, string.Format("{0}.({1}).txt", DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", System.Globalization.DateTimeFormatInfo.InvariantInfo), i));
-                }
-
-                if (!File.Exists(logPath)) break;
             }
 
-            if (logPath == null) return;
-
-            Log.LogEvent += (object sender, LogEventArgs e) =>
             {
-                lock (logPath)
+                Log.LogEvent += (object sender, LogEventArgs e) =>
                 {
                     try
                     {
-                        if (e.MessageLevel == LogMessageLevel.Error || e.MessageLevel == LogMessageLevel.Warning)
+                        App.Current.Dispatcher.InvokeAsync(() =>
                         {
-                            using (var writer = new StreamWriter(logPath, true, new UTF8Encoding(false)))
+                            try
                             {
-                                if (isHeaderWrite)
+                                if (this.Logs.Count > 100)
                                 {
-                                    writer.WriteLine(this.GetMachineInfomation());
-                                    isHeaderWrite = false;
+                                    this.Logs.RemoveAt(0);
                                 }
 
-                                writer.WriteLine(string.Format(
-                                    "\r\n--------------------------------------------------------------------------------\r\n\r\n" +
-                                    "Time:\t\t{0}\r\n" +
-                                    "Level:\t\t{1}\r\n" +
-                                    "{2}",
-                                    DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
-                                writer.Flush();
+                                this.Logs.Add(string.Format("{0} {1}:\t{2}", DateTime.Now.ToString(LanguagesManager.Instance.Global_DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo), e.MessageLevel, e.Message));
                             }
-                        }
+                            catch (Exception)
+                            {
+
+                            }
+                        });
                     }
                     catch (Exception)
                     {
 
                     }
-                }
-            };
-
-            Log.LogEvent += (object sender, LogEventArgs e) =>
-            {
-                try
-                {
-                    App.Current.Dispatcher.InvokeAsync(() =>
-                    {
-                        try
-                        {
-                            if (this.Logs.Count > 100)
-                            {
-                                this.Logs.RemoveAt(0);
-                            }
-
-                            this.Logs.Add(string.Format("{0} {1}:\t{2}", DateTime.Now.ToString(LanguagesManager.Instance.Global_DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo), e.MessageLevel, e.Message));
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                    });
-                }
-                catch (Exception)
-                {
-
-                }
-            };
-        }
-
-        private string GetMachineInfomation()
-        {
-            OperatingSystem osInfo = Environment.OSVersion;
-            string osName = "";
-
-            if (osInfo.Platform == PlatformID.Win32NT)
-            {
-                if (osInfo.Version.Major == 4)
-                {
-                    osName = "Windows NT 4.0";
-                }
-                else if (osInfo.Version.Major == 5)
-                {
-                    switch (osInfo.Version.Minor)
-                    {
-                        case 0:
-                            osName = "Windows 2000";
-                            break;
-
-                        case 1:
-                            osName = "Windows XP";
-                            break;
-
-                        case 2:
-                            osName = "Windows Server 2003";
-                            break;
-                    }
-                }
-                else if (osInfo.Version.Major == 6)
-                {
-                    switch (osInfo.Version.Minor)
-                    {
-                        case 0:
-                            osName = "Windows Vista";
-                            break;
-
-                        case 1:
-                            osName = "Windows 7";
-                            break;
-
-                        case 2:
-                            osName = "Windows 8";
-                            break;
-
-                        case 3:
-                            osName = "Windows 8.1";
-                            break;
-                    }
-                }
-                else if (osInfo.Version.Major == 10)
-                {
-                    osName = "Windows 10";
-                }
+                };
             }
-            else if (osInfo.Platform == PlatformID.WinCE)
-            {
-                osName = "Windows CE";
-            }
-            else if (osInfo.Platform == PlatformID.MacOSX)
-            {
-                osName = "MacOSX";
-            }
-            else if (osInfo.Platform == PlatformID.Unix)
-            {
-                osName = "Unix";
-            }
-
-            return string.Format(
-                "Amoeba:\t\t{0}\r\n" +
-                "OS:\t\t{1} ({2})\r\n" +
-                ".NET Framework:\t{3}", AmoebaEnvironment.Version.ToString(3), osName, osInfo.VersionString, Environment.Version);
         }
 
         private void WatchThread(CancellationToken token)

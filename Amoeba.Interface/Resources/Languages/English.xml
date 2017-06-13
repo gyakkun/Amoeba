@@ -40,12 +40,34 @@
 
   <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
 
-  <Property Name="NameEditWindow_Name" Value="Name: " />
+  <Property Name="NameEditWindow_Title" Value="Name edit" />
+  <Property Name="NameEditWindow_Name" Value="Name" />
+  <Property Name="NameEditWindow_Ok" Value="Ok" />
 
+  <Property Name="MainWindow_Service" Value="Service" />
+  <Property Name="MainWindow_Relation" Value="Relation" />
+  <Property Name="MainWindow_Options" Value="Options" />
+  <Property Name="MainWindow_Languages" Value="Languages" />
+  <Property Name="MainWindow_Help" Value="Help" />
+  <Property Name="MainWindow_Version" Value="Version" />
   <Property Name="MainWindow_Cloud" Value="Cloud" />
   <Property Name="MainWindow_Chat" Value="Chat" />
   <Property Name="MainWindow_Store" Value="Store" />
 
+  <Property Name="RelationWindow_Title" Value="Relation" />
+  <Property Name="RelationWindow_Trust" Value="Trust" />
+  <Property Name="RelationWindow_TrustSignature" Value="Trust signature" />
+  <Property Name="RelationWindow_Untrust" Value="Untrust" />
+  <Property Name="RelationWindow_UntrustSignature" Value="Untrust signature" />
+  <Property Name="RelationWindow_Tags" Value="Tags" />
+  <Property Name="RelationWindow_Tag" Value="Tag" />
+  <Property Name="RelationWindow_Name" Value="Name" />
+  <Property Name="RelationWindow_Id" Value="Id" />
+  <Property Name="RelationWindow_Comment" Value="Comment" />
+  <Property Name="RelationWindow_Copy" Value="Copy" />
+  <Property Name="RelationWindow_Close" Value="Close" />
+
+  <Property Name="OptionsWindow_Title" Value="Options" />
   <Property Name="OptionsWindow_Account" Value="Account" />
   <Property Name="OptionsWindow_Signature" Value="Signature" />
   <Property Name="OptionsWindow_SignatureSettings" Value="Signature settings" />
@@ -64,6 +86,9 @@
   <Property Name="OptionsWindow_Comment" Value="Comment" />
   <Property Name="OptionsWindow_CommentSettings" Value="Comment settings" />
   <Property Name="OptionsWindow_Connection" Value="Connection" />
+  <Property Name="OptionsWindow_Subscribe" Value="Subscribe" />
+  <Property Name="OptionsWindow_SubscribeSettings" Value="Subscribe settings" />
+  <Property Name="OptionsWindow_SubscribeSignature" Value="Subscribe signature" />
   <Property Name="OptionsWindow_Tcp" Value="Tcp" />
   <Property Name="OptionsWindow_TcpSettings" Value="Tcp settings" />
   <Property Name="OptionsWindow_Ipv4IsEnabled" Value="Ipv4 is enabled" />
@@ -131,10 +156,12 @@
   <Property Name="StorePublishControl_Edit" Value="Edit" />
   <Property Name="StorePublishControl_Delete" Value="Delete" />
 
+  <Property Name="PublishDirectoryInfoEditWindow_Title" Value="Publish directory edit" />
   <Property Name="PublishDirectoryInfoEditWindow_Name" Value="Name" />
   <Property Name="PublishDirectoryInfoEditWindow_Path" Value="Path" />
   <Property Name="PublishDirectoryInfoEditWindow_Ok" Value="Ok" />
 
+  <Property Name="PublishPreviewWindow_Title" Value="Publish preview" />
   <Property Name="PublishPreviewWindow_Name" Value="Name" />
   <Property Name="PublishPreviewWindow_Length" Value="Length" />
   <Property Name="PublishPreviewWindow_Ok" Value="Ok" />

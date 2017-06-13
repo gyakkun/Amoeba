@@ -61,7 +61,7 @@ namespace Amoeba.Service
 
                 foreach (var key in _table.Keys.ToArray())
                 {
-                    if ((now - key) > _survivalTime) continue;
+                    if ((now - key) < _survivalTime) continue;
 
                     _table.Remove(key);
                 }

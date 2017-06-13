@@ -11,6 +11,8 @@ using Omnius.Wpf;
 using Prism.Events;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using System.Text;
+using Omnius.Collections;
 
 namespace Amoeba.Interface
 {
@@ -20,8 +22,13 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ReactiveCommand<string> LanguageCommand { get; private set; }
+        private TrustManager _trustManager;
+
+        public ReactiveProperty<string> Title { get; private set; }
+
+        public ReactiveCommand RelationCommand { get; private set; }
         public ReactiveCommand OptionsCommand { get; private set; }
+        public ReactiveCommand<string> LanguageCommand { get; private set; }
 
         public ReactiveProperty<bool> IsProgressDialogOpen { get; private set; }
 
@@ -59,19 +66,33 @@ namespace Amoeba.Interface
             }
 
             {
-                this.LanguageCommand = new ReactiveCommand<string>().AddTo(_disposable);
-                this.LanguageCommand.Subscribe((n) => LanguagesManager.Instance.SetCurrentLanguage(n)).AddTo(_disposable);
+                SettingsManager.Instance.Load();
+            }
+
+            {
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "Trust");
+                if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
+
+                _trustManager = new TrustManager(configPath, _serviceManager);
+                _trustManager.Load();
+            }
+
+            {
+                this.Title = SettingsManager.Instance.AccountInfo.ObserveProperty(n => n.DigitalSignature)
+                    .Select(n => $"Amoeba {AmoebaEnvironment.Version} - {n.ToString()}").ToReactiveProperty().AddTo(_disposable);
+
+                this.RelationCommand = new ReactiveCommand().AddTo(_disposable);
+                this.RelationCommand.Subscribe(() => this.Relation()).AddTo(_disposable);
 
                 this.OptionsCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OptionsCommand.Subscribe(() => this.Options()).AddTo(_disposable);
 
+                this.LanguageCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.LanguageCommand.Subscribe((n) => LanguagesManager.Instance.SetCurrentLanguage(n)).AddTo(_disposable);
+
                 this.IsProgressDialogOpen = new ReactiveProperty<bool>().AddTo(_disposable);
 
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
-            }
-
-            {
-                SettingsManager.Instance.Load();
             }
 
             {
@@ -90,6 +111,12 @@ namespace Amoeba.Interface
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager);
                 this.StoreControlViewModel = new StoreControlViewModel(_serviceManager);
             }
+        }
+
+        private void Relation()
+        {
+            Messenger.Instance.GetEvent<RelationWindowShowEvent>()
+                .Publish(new RelationWindowViewModel(_trustManager.GetRelationSignatureInfos()));
         }
 
         private void Options()
@@ -114,6 +141,9 @@ namespace Amoeba.Interface
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();
+
+                _trustManager.Save();
+                _trustManager.Dispose();
 
                 SettingsManager.Instance.Save();
 

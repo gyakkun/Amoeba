@@ -38,13 +38,20 @@ namespace Amoeba.Interface
 
             InitializeComponent();
 
-            this.Title = string.Format("Amoeba {0}", AmoebaEnvironment.Version);
             this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
 
             Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
                 .Subscribe(vm =>
                 {
                     var window = new OptionsWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
+            Messenger.Instance.GetEvent<RelationWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new RelationWindow(vm);
                     window.Owner = this;
                     window.ShowDialog();
                 }).AddTo(_disposable);

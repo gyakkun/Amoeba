@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
-        Title="NameEditWindow"
+        Title="{Binding Path=NameEditWindow_Title, Source={StaticResource Languages}}"
         x:ClassModifier="internal"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
@@ -29,7 +29,7 @@
                 VerticalAlignment="Top"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Center"
-                Content="Name: " />
+                Content="{Binding Path=NameEditWindow_Name, Source={StaticResource Languages}}" />
 
         <TextBox
                 Name="TextBox"
@@ -46,7 +46,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Command="{Binding Path=OkCommand}"
-                Content="Ok"
+                Content="{Binding Path=NameEditWindow_Ok, Source={StaticResource Languages}}"
                 IsDefault="True" />
     </Grid>
 </omnius:RestorableWindow>

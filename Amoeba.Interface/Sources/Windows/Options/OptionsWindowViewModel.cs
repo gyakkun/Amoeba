@@ -29,7 +29,7 @@ namespace Amoeba.Interface
 
         public event EventHandler<EventArgs> CloseEvent;
 
-        public ServiceOptionsInfo Options { get; } = new ServiceOptionsInfo();
+        public OptionsInfo Options { get; } = new OptionsInfo();
 
         public ReactiveCommand AccountSignatureNewCommand { get; private set; }
         public ReactiveCommand AccountSignatureImportCommand { get; private set; }
@@ -62,6 +62,15 @@ namespace Amoeba.Interface
         public ReactiveCommand AccountTagDeleteCommand { get; private set; }
         public ReactiveCommand AccountTagCopyCommand { get; private set; }
         public ReactiveCommand AccountTagPasteCommand { get; private set; }
+
+        public ICollectionView SubscribeSignaturesView => CollectionViewSource.GetDefaultView(this.Options.Subscribe.SubscribeSignatures);
+        public ObservableCollection<object> SelectedSubscribeSignatureItems { get; } = new ObservableCollection<object>();
+        private ListSortInfo _subscribeSignaturesSortInfo;
+        public ReactiveCommand<string> SubscribeSignaturesSortCommand { get; private set; }
+
+        public ReactiveCommand SubscribeDeleteCommand { get; private set; }
+        public ReactiveCommand SubscribeCopyCommand { get; private set; }
+        public ReactiveCommand SubscribePasteCommand { get; private set; }
 
         public ReactiveCommand DownloadDirectoryPathEditDialogCommand { get; private set; }
 
@@ -133,6 +142,18 @@ namespace Amoeba.Interface
                 this.AccountTagPasteCommand = new ReactiveCommand().AddTo(_disposable);
                 this.AccountTagPasteCommand.Subscribe(() => this.AccountTagPaste()).AddTo(_disposable);
 
+                this.SubscribeSignaturesSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.SubscribeSignaturesSortCommand.Subscribe((propertyName) => this.SubscribeSignaturesSort(propertyName)).AddTo(_disposable);
+
+                this.SubscribeDeleteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.SubscribeDeleteCommand.Subscribe(() => this.SubscribeDelete()).AddTo(_disposable);
+
+                this.SubscribeCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.SubscribeCopyCommand.Subscribe(() => this.SubscribeCopy()).AddTo(_disposable);
+
+                this.SubscribePasteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.SubscribePasteCommand.Subscribe(() => this.SubscribePaste()).AddTo(_disposable);
+
                 this.DownloadDirectoryPathEditDialogCommand = new ReactiveCommand().AddTo(_disposable);
                 this.DownloadDirectoryPathEditDialogCommand.Subscribe(() => this.DownloadDirectoryPathEditDialog()).AddTo(_disposable);
 
@@ -155,6 +176,7 @@ namespace Amoeba.Interface
                 _accountTrustSignaturesSortInfo = _settings.Load("AccountTrustSignaturesSortInfo ", () => new ListSortInfo());
                 _accountUntrustSignaturesSortInfo = _settings.Load("AccountUntrustSignaturesSortInfo ", () => new ListSortInfo());
                 _accountTagsSortInfo = _settings.Load("AccountTagsSortInfo", () => new ListSortInfo());
+                _subscribeSignaturesSortInfo = _settings.Load("SubscribeSignaturesSortInfo ", () => new ListSortInfo());
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
@@ -165,6 +187,7 @@ namespace Amoeba.Interface
                 this.AccountTrustSignaturesSort(null);
                 this.AccountUntrustSignaturesSort(null);
                 this.AccountTagsSort(null);
+                this.SubscribeSignaturesSort(null);
             }
         }
 
@@ -183,6 +206,11 @@ namespace Amoeba.Interface
                 this.Options.Account.TrustSignatures.AddRange(info.TrustSignatures);
                 this.Options.Account.UntrustSignatures.AddRange(info.UntrustSignatures);
                 this.Options.Account.Tags.AddRange(info.Tags);
+            }
+
+            // Subscribe
+            {
+                this.Options.Subscribe.SubscribeSignatures.AddRange(SettingsManager.Instance.SubscribeSignatures);
             }
 
             // Tcp
@@ -259,6 +287,15 @@ namespace Amoeba.Interface
                         info.DigitalSignature,
                         CancellationToken.None)
                         .ContinueWith((_) => ProgressDialog.Instance.Decrement());
+                }
+            }
+
+            // Subscribe
+            {
+                lock (SettingsManager.Instance.SubscribeSignatures.LockObject)
+                {
+                    SettingsManager.Instance.SubscribeSignatures.Clear();
+                    SettingsManager.Instance.SubscribeSignatures.UnionWith(this.Options.Subscribe.SubscribeSignatures);
                 }
             }
 
@@ -456,18 +493,18 @@ namespace Amoeba.Interface
             {
                 this.AccountUntrustSignaturesView.SortDescriptions.Clear();
 
-                if (!string.IsNullOrEmpty(_accountTagsSortInfo.PropertyName))
+                if (!string.IsNullOrEmpty(_accountUntrustSignaturesSortInfo.PropertyName))
                 {
-                    this.AccountUntrustSignaturesSort(_accountTagsSortInfo.PropertyName, _accountTagsSortInfo.Direction);
+                    this.AccountUntrustSignaturesSort(_accountUntrustSignaturesSortInfo.PropertyName, _accountUntrustSignaturesSortInfo.Direction);
                 }
             }
             else
             {
                 var direction = ListSortDirection.Ascending;
 
-                if (_accountTagsSortInfo.PropertyName == propertyName)
+                if (_accountUntrustSignaturesSortInfo.PropertyName == propertyName)
                 {
-                    if (_accountTagsSortInfo.Direction == ListSortDirection.Ascending)
+                    if (_accountUntrustSignaturesSortInfo.Direction == ListSortDirection.Ascending)
                     {
                         direction = ListSortDirection.Descending;
                     }
@@ -484,8 +521,8 @@ namespace Amoeba.Interface
                     this.AccountUntrustSignaturesSort(propertyName, direction);
                 }
 
-                _accountTagsSortInfo.Direction = direction;
-                _accountTagsSortInfo.PropertyName = propertyName;
+                _accountUntrustSignaturesSortInfo.Direction = direction;
+                _accountUntrustSignaturesSortInfo.PropertyName = propertyName;
             }
         }
 
@@ -609,6 +646,76 @@ namespace Amoeba.Interface
             }
         }
 
+        private void SubscribeSignaturesSort(string propertyName)
+        {
+            if (propertyName == null)
+            {
+                this.SubscribeSignaturesView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(_accountTagsSortInfo.PropertyName))
+                {
+                    this.SubscribeSignaturesSort(_accountTagsSortInfo.PropertyName, _accountTagsSortInfo.Direction);
+                }
+            }
+            else
+            {
+                var direction = ListSortDirection.Ascending;
+
+                if (_accountTagsSortInfo.PropertyName == propertyName)
+                {
+                    if (_accountTagsSortInfo.Direction == ListSortDirection.Ascending)
+                    {
+                        direction = ListSortDirection.Descending;
+                    }
+                    else
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                }
+
+                this.SubscribeSignaturesView.SortDescriptions.Clear();
+
+                if (!string.IsNullOrEmpty(propertyName))
+                {
+                    this.SubscribeSignaturesSort(propertyName, direction);
+                }
+
+                _accountTagsSortInfo.Direction = direction;
+                _accountTagsSortInfo.PropertyName = propertyName;
+            }
+        }
+
+        private void SubscribeSignaturesSort(string propertyName, ListSortDirection direction)
+        {
+            switch (propertyName)
+            {
+                case "Signature":
+                    this.SubscribeSignaturesView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    break;
+            }
+        }
+
+        private void SubscribeDelete()
+        {
+            foreach (var item in this.SelectedSubscribeSignatureItems.OfType<Signature>().ToArray())
+            {
+                this.Options.Subscribe.SubscribeSignatures.Remove(item);
+            }
+        }
+
+        private void SubscribeCopy()
+        {
+            Clipboard.SetSignatures(this.SelectedSubscribeSignatureItems.OfType<Signature>().ToArray());
+        }
+
+        private void SubscribePaste()
+        {
+            foreach (var item in Clipboard.GetSignatures())
+            {
+                this.Options.Subscribe.SubscribeSignatures.Add(item);
+            }
+        }
+
         private void DownloadDirectoryPathEditDialog()
         {
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
@@ -647,6 +754,7 @@ namespace Amoeba.Interface
                 _settings.Save("AccountTrustSignaturesSortInfo", _accountTrustSignaturesSortInfo);
                 _settings.Save("AccountUntrustSignaturesSortInfo", _accountUntrustSignaturesSortInfo);
                 _settings.Save("AccountTagsSortInfo", _accountTagsSortInfo);
+                _settings.Save("SubscribeSignaturesSortInfo", _accountTrustSignaturesSortInfo);
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _disposable.Dispose();
