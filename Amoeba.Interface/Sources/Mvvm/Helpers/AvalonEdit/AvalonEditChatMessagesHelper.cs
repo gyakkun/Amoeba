@@ -12,9 +12,22 @@ using Amoeba.Service;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Rendering;
 using Omnius.Security;
+using System.Collections.ObjectModel;
 
 namespace Amoeba.Interface
 {
+    class AvalonEditChatMessagesInfo
+    {
+        public AvalonEditChatMessagesInfo(IEnumerable<ChatMessageInfo> chatMessageInfos, IEnumerable<Signature> trustSignatures)
+        {
+            if (chatMessageInfos != null) this.ChatMessageInfos = new ReadOnlyCollection<ChatMessageInfo>(chatMessageInfos.ToList());
+            if (trustSignatures != null) this.TrustSignatures = new ReadOnlyCollection<Signature>(trustSignatures.ToList());
+        }
+
+        public IEnumerable<ChatMessageInfo> ChatMessageInfos { get; }
+        public IEnumerable<Signature> TrustSignatures { get; }
+    }
+
     class AvalonEditChatMessagesHelper : CustomAvalonEditHelperBase
     {
         public static ICommand GetCommand(DependencyObject obj)
@@ -30,18 +43,18 @@ namespace Amoeba.Interface
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.RegisterAttached("Command", typeof(ICommand), typeof(AvalonEditChatMessagesHelper), new PropertyMetadata(null));
 
-        public static int GetMessages(DependencyObject obj)
+        public static int GetInfo(DependencyObject obj)
         {
-            return (int)obj.GetValue(MessagesProperty);
+            return (int)obj.GetValue(InfoProperty);
         }
 
-        public static void SetMessages(DependencyObject obj, int value)
+        public static void SetInfo(DependencyObject obj, int value)
         {
-            obj.SetValue(MessagesProperty, value);
+            obj.SetValue(InfoProperty, value);
         }
 
-        public static readonly DependencyProperty MessagesProperty =
-            DependencyProperty.RegisterAttached("Messages", typeof(ChatMessageInfo[]), typeof(AvalonEditChatMessagesHelper),
+        public static readonly DependencyProperty InfoProperty =
+            DependencyProperty.RegisterAttached("Info", typeof(AvalonEditChatMessagesInfo), typeof(AvalonEditChatMessagesHelper),
                 new UIPropertyMetadata(
                     null,
                     (o, e) =>
@@ -52,10 +65,10 @@ namespace Amoeba.Interface
                         Clear(textEditor);
                         Setup(textEditor);
 
-                        var messages = e.NewValue as ChatMessageInfo[];
-                        if (messages == null) return;
+                        var info = e.NewValue as AvalonEditChatMessagesInfo;
+                        if (info == null) return;
 
-                        Set(textEditor, messages);
+                        Set(textEditor, info);
                     }
                 )
             );
@@ -83,12 +96,14 @@ namespace Amoeba.Interface
             textEditor.Document.EndUpdate();
         }
 
-        private static void Set(TextEditor textEditor, IEnumerable<ChatMessageInfo> collection)
+        private static void Set(TextEditor textEditor, AvalonEditChatMessagesInfo info)
         {
             var document = new StringBuilder();
             var settings = new List<CustomElementSetting>();
 
-            foreach (var target in collection)
+            var trustSignatures = new HashSet<Signature>(info.TrustSignatures);
+
+            foreach (var target in info.ChatMessageInfos)
             {
                 int startOffset = document.Length;
 
@@ -110,7 +125,7 @@ namespace Amoeba.Interface
                         settings.Add(new CustomElementSetting("Signature", document.Length, item3.Length));
                         document.Append(item3);
 
-                        if (!Inspector.ContainTrustSignature(target.Message.AuthorSignature) && target.Message.Cost != null)
+                        if (!trustSignatures.Contains(target.Message.AuthorSignature) && target.Message.Cost != null)
                         {
                             document.Append(" +");
                             document.Append(target.Message.Cost.Value);
@@ -156,7 +171,7 @@ namespace Amoeba.Interface
 
             textEditor.Document.Text = document.ToString();
 
-            var elementGenerator = new CustomElementGenerator(settings);
+            var elementGenerator = new CustomElementGenerator(settings, trustSignatures);
             elementGenerator.SelectEvent += (CustomElementRange range) => textEditor.Select(range.Start, range.End - range.Start);
             elementGenerator.ClickEvent += (string text) =>
             {
@@ -180,10 +195,12 @@ namespace Amoeba.Interface
 
         class CustomElementGenerator : AbstractCustomElementGenerator
         {
-            public CustomElementGenerator(IEnumerable<CustomElementSetting> settings)
+            private HashSet<Signature> _trustSignatures = new HashSet<Signature>();
+
+            public CustomElementGenerator(IEnumerable<CustomElementSetting> settings, IEnumerable<Signature> trustSignatures)
                 : base(settings)
             {
-
+                _trustSignatures.UnionWith(trustSignatures);
             }
 
             public override VisualLineElement ConstructElement(int offset)
@@ -213,7 +230,7 @@ namespace Amoeba.Interface
                     {
                         Brush brush;
 
-                        if (Inspector.ContainTrustSignature(Signature.Parse(result.Value)))
+                        if (_trustSignatures.Contains(Signature.Parse(result.Value)))
                         {
                             brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(AmoebaEnvironment.Config.Colors.Message_Trust));
                         }

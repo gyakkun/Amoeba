@@ -184,6 +184,10 @@ namespace Amoeba.Interface
             this.GetOptions();
 
             {
+                Backup.Instance.SaveEvent += () => this.Save();
+            }
+
+            {
                 this.AccountTrustSignaturesSort(null);
                 this.AccountUntrustSignaturesSort(null);
                 this.AccountTagsSort(null);
@@ -743,12 +747,9 @@ namespace Amoeba.Interface
             this.OnCloseEvent();
         }
 
-        protected override void Dispose(bool disposing)
+        private void Save()
         {
-            if (_disposed) return;
-            _disposed = true;
-
-            if (disposing)
+            App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
                 _settings.Save("AccountTrustSignaturesSortInfo", _accountTrustSignaturesSortInfo);
@@ -757,6 +758,18 @@ namespace Amoeba.Interface
                 _settings.Save("SubscribeSignaturesSortInfo", _accountTrustSignaturesSortInfo);
                 _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+            });
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+            _disposed = true;
+
+            if (disposing)
+            {
+                this.Save();
+
                 _disposable.Dispose();
             }
         }

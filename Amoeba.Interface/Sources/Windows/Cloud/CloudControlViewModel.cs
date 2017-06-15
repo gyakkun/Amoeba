@@ -17,6 +17,8 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace Amoeba.Interface
 {
@@ -35,6 +37,13 @@ namespace Amoeba.Interface
 
         public ReactiveCommand ConnectionCopyCommand { get; private set; }
         public ReactiveCommand ConnectionPasteCommand { get; private set; }
+
+        public ReactiveProperty<ManagerState> ServiceState { get; private set; }
+        public ReactiveProperty<decimal> SendingSpeed { get; private set; }
+        public ReactiveProperty<decimal> ReceivingSpeed { get; private set; }
+
+        private TaskManager _statusBarTaskManager;
+        private TaskManager _trafficMonitorTaskManager;
 
         public CloudStateInfo State { get; } = new CloudStateInfo();
         public ObservableDictionary<string, DynamicOptions> StateInfos { get; } = new ObservableDictionary<string, DynamicOptions>();
@@ -74,6 +83,10 @@ namespace Amoeba.Interface
                 this.ConnectionPasteCommand = new ReactiveCommand().AddTo(_disposable);
                 this.ConnectionPasteCommand.Subscribe(() => this.ConnectionPaste()).AddTo(_disposable);
 
+                this.ServiceState = new ReactiveProperty<ManagerState>().AddTo(_disposable);
+                this.SendingSpeed = new ReactiveProperty<decimal>().AddTo(_disposable);
+                this.ReceivingSpeed = new ReactiveProperty<decimal>().AddTo(_disposable);
+
                 this.StateCopyCommand = this.StateSelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.StateCopyCommand.Subscribe(() => this.StateCopy()).AddTo(_disposable);
 
@@ -90,6 +103,10 @@ namespace Amoeba.Interface
 
                 _connectionSortInfo = _settings.Load("ConnectionSortInfo", () => new ListSortInfo());
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+            }
+
+            {
+                Backup.Instance.SaveEvent += () => this.Save();
             }
 
             {
@@ -308,6 +325,121 @@ namespace Amoeba.Interface
             _serviceManager.SetCloudLocations(Clipboard.GetLocations());
         }
 
+        private void Setting_StatusBar()
+        {
+            _trafficMonitorTaskManager = new TaskManager(this.TrafficMonitorThread);
+            _trafficMonitorTaskManager.Start();
+
+            _statusBarTaskManager = new TaskManager(this.StatusBarThread);
+            _statusBarTaskManager.Start();
+        }
+
+        private volatile TrafficInformation _sentInfomation = new TrafficInformation();
+        private volatile TrafficInformation _receivedInfomation = new TrafficInformation();
+
+        private class TrafficInformation : ISynchronized
+        {
+            public long PreviousTraffic { get; set; }
+            public int Round { get; set; }
+            public decimal[] AverageTraffics { get; } = new decimal[3];
+            public object LockObject { get; } = new object();
+        }
+
+        private void StatusBarThread(CancellationToken token)
+        {
+            try
+            {
+                for (;;)
+                {
+                    Thread.Sleep(1000);
+                    if (token.IsCancellationRequested) return;
+
+                    var state = _serviceManager.State;
+
+                    App.Current.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action(() =>
+                    {
+                        try
+                        {
+                            decimal sentAverageTraffic;
+
+                            lock (_sentInfomation.LockObject)
+                            {
+                                sentAverageTraffic = _sentInfomation.AverageTraffics.Sum() / _sentInfomation.AverageTraffics.Length;
+                            }
+
+                            decimal receivedAverageTraffic;
+
+                            lock (_receivedInfomation.LockObject)
+                            {
+                                receivedAverageTraffic = _receivedInfomation.AverageTraffics.Sum() / _receivedInfomation.AverageTraffics.Length;
+                            }
+
+                            this.SendingSpeed.Value = sentAverageTraffic;
+                            this.ReceivingSpeed.Value = receivedAverageTraffic;
+
+                            this.ServiceState.Value = state;
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }));
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        private void TrafficMonitorThread(CancellationToken token)
+        {
+            try
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+
+                while (!token.IsCancellationRequested)
+                {
+                    Thread.Sleep(((int)Math.Max(2, 1000 - sw.ElapsedMilliseconds)) / 2);
+                    if (sw.ElapsedMilliseconds < 1000) continue;
+
+                    long receivedByteCount = _serviceManager.Information.GetValue<long>("Network_ReceivedByteCount");
+                    long sentByteCount = _serviceManager.Information.GetValue<long>("Network_SentByteCount");
+
+                    lock (_sentInfomation.LockObject)
+                    {
+                        _sentInfomation.AverageTraffics[_sentInfomation.Round++]
+                            = ((decimal)(sentByteCount - _sentInfomation.PreviousTraffic)) * 1000 / sw.ElapsedMilliseconds;
+                        _sentInfomation.PreviousTraffic = sentByteCount;
+
+                        if (_sentInfomation.Round >= _sentInfomation.AverageTraffics.Length)
+                        {
+                            _sentInfomation.Round = 0;
+                        }
+                    }
+
+                    lock (_receivedInfomation.LockObject)
+                    {
+                        _receivedInfomation.AverageTraffics[_receivedInfomation.Round++]
+                            = ((decimal)(receivedByteCount - _receivedInfomation.PreviousTraffic)) * 1000 / sw.ElapsedMilliseconds;
+                        _receivedInfomation.PreviousTraffic = receivedByteCount;
+
+                        if (_receivedInfomation.Round >= _receivedInfomation.AverageTraffics.Length)
+                        {
+                            _receivedInfomation.Round = 0;
+                        }
+                    }
+
+                    sw.Restart();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
         private void StateCopy()
         {
             var sb = new StringBuilder();
@@ -332,6 +464,16 @@ namespace Amoeba.Interface
             Clipboard.SetText(sb.ToString());
         }
 
+        private void Save()
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                _settings.Save("Version", 0);
+                _settings.Save("ConnectionSortInfo", _connectionSortInfo);
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+            });
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -342,9 +484,14 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                _settings.Save("Version", 0);
-                _settings.Save("ConnectionSortInfo", _connectionSortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _statusBarTaskManager.Stop();
+                _statusBarTaskManager.Dispose();
+
+                _trafficMonitorTaskManager.Stop();
+                _trafficMonitorTaskManager.Dispose();
+
+                this.Save();
+
                 _disposable.Dispose();
             }
         }

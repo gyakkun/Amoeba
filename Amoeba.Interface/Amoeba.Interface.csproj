@@ -50,6 +50,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
@@ -68,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Sources\Mvvm\Converters\ManagerStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\DateTimeToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\ObjectToInfoStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SearchStateFlagToStringConverter.cs" />
@@ -91,10 +93,10 @@
     </Compile>
     <Compile Include="Sources\Mvvm\Utilities\ProgressDialog.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
+    <Compile Include="Sources\Utilities\Backup.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
     <Compile Include="Sources\Utilities\CustomSortComparer.cs" />
     <Compile Include="Sources\Utilities\IconUtils.cs" />
-    <Compile Include="Sources\Utilities\Trust\Inspector.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />
     <Compile Include="Sources\Utilities\MessageConverter.cs" />
     <Compile Include="Sources\Windows\Chat\ChatControl.xaml.cs">
@@ -132,13 +134,13 @@
       <DependentUpon>PublishDirectoryInfoEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Store\Publish\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Search\StoreSearchControl.xaml.cs">
+      <DependentUpon>StoreSearchControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Sources\Windows\Store\State\StoreStateControlViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControlViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml.cs">
       <DependentUpon>StoreSubscribeControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Search\StoreSearchControl.xaml.cs">
-      <DependentUpon>StoreSearchControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Store\Publish\StorePublishControl.xaml.cs">
       <DependentUpon>StorePublishControl.xaml</DependentUpon>
@@ -152,7 +154,7 @@
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeStoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeBoxViewModel.cs" />
     <Compile Include="Sources\Windows\Utilities\ConfirmWindow\ConfirmWindowViewModel.cs" />
-    <Compile Include="Sources\Utilities\Trust\TrustManager.cs" />
+    <Compile Include="Sources\Utilities\TrustManager.cs" />
     <Compile Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindow.xaml.cs">
       <DependentUpon>NameEditWindow.xaml</DependentUpon>
     </Compile>
@@ -191,6 +193,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Sources\Windows\Store\Search\StoreSearchControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Sources\Windows\Store\StoreControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -223,10 +229,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Sources\Windows\Store\Search\StoreSearchControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

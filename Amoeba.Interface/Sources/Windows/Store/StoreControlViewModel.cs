@@ -64,6 +64,19 @@ namespace Amoeba.Interface
 
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
+
+            {
+                Backup.Instance.SaveEvent += () => this.Save();
+            }
+        }
+
+        private void Save()
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                _settings.Save("Version", 0);
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+            });
         }
 
         protected override void Dispose(bool disposing)
@@ -73,12 +86,11 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                this.Save();
+
                 this.StoreSubscribeControlViewModel.Dispose();
                 this.StorePublishControlViewModel.Dispose();
                 this.StoreStateControlViewModel.Dispose();
-
-                _settings.Save("Version", 0);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
 
                 _disposable.Dispose();
             }

@@ -43,6 +43,7 @@ namespace Amoeba.Interface
             public string LogPath { get; private set; }
             public string WorkPath { get; private set; }
             public string LanguagesPath { get; private set; }
+            public string IconsPath { get; private set; }
 
             public EnvironmentPaths()
             {
@@ -53,6 +54,7 @@ namespace Amoeba.Interface
                 this.LogPath = "../Log";
                 this.WorkPath = "../Work";
                 this.LanguagesPath = "./Resources/Languages";
+                this.IconsPath = "./Resources/Icons";
             }
         }
 

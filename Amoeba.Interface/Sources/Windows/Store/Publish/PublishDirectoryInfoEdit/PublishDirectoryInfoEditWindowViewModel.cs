@@ -80,6 +80,10 @@ namespace Amoeba.Interface
 
                 this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
             }
+
+            {
+                Backup.Instance.SaveEvent += () => this.Save();
+            }
         }
 
         private void OnCloseEvent()
@@ -117,6 +121,15 @@ namespace Amoeba.Interface
             this.OnCloseEvent();
         }
 
+        private void Save()
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                _settings.Save("Version", 0);
+                _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
+            });
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -124,8 +137,7 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
-                _settings.Save("Version", 0);
-                _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
+                this.Save();
 
                 _disposable.Dispose();
             }

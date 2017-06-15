@@ -27,8 +27,6 @@ namespace Amoeba.Interface
 
         private TaskManager _watchTaskManager;
 
-        private volatile ManagerState _state = ManagerState.Stop;
-
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
@@ -101,7 +99,6 @@ namespace Amoeba.Interface
                 trustSignatures.UnionWith(profiles.Select(n => n.AuthorSignature).ToArray());
             }
 
-            Inspector.SetTrustSignatures(trustSignatures);
             _serviceManager.SetSearchSignatures(trustSignatures);
         }
 

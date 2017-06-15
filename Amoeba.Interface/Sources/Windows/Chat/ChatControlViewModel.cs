@@ -45,7 +45,7 @@ namespace Amoeba.Interface
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
-        public ReactiveProperty<ChatMessageInfo[]> Messages { get; private set; }
+        public ReactiveProperty<AvalonEditChatMessagesInfo> Info { get; private set; }
 
         public ReactiveCommand NewMessageCommand { get; private set; }
 
@@ -89,7 +89,7 @@ namespace Amoeba.Interface
                 this.TabSelectedItem = new ReactiveProperty<TreeViewModelBase>().AddTo(_disposable);
                 this.TabSelectedItem.Subscribe((viewModel) => this.TabSelectChanged(viewModel)).AddTo(_disposable);
 
-                this.Messages = new ReactiveProperty<ChatMessageInfo[]>().AddTo(_disposable);
+                this.Info = new ReactiveProperty<AvalonEditChatMessagesInfo>().AddTo(_disposable);
 
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
@@ -137,17 +137,21 @@ namespace Amoeba.Interface
                     this.TabViewModel.Value = new ChatCategoryViewModel(null, model);
                 }
             }
+
+            {
+                Backup.Instance.SaveEvent += () => this.Save();
+            }
         }
 
         private void TabSelectChanged(TreeViewModelBase viewModel)
         {
             if (viewModel is ChatCategoryViewModel chatCategoryViewModel)
             {
-                this.Messages.Value = Array.Empty<ChatMessageInfo>();
+                this.Info.Value = new AvalonEditChatMessagesInfo(null, null);
             }
             else if (viewModel is ChatThreadViewModel chatViewModel)
             {
-                this.Messages.Value = chatViewModel.Model.Messages.ToArray();
+                this.Info.Value = new AvalonEditChatMessagesInfo(chatViewModel.Model.Messages, _serviceManager.SearchSignatures);
             }
         }
 
@@ -305,6 +309,16 @@ namespace Amoeba.Interface
                 .Publish(viewModel);
         }
 
+        private void Save()
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                _settings.Save("Version", 0);
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save("Tab", this.TabViewModel.Value.Model);
+            });
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -315,9 +329,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                _settings.Save("Version", 0);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
-                _settings.Save("Tab", this.TabViewModel.Value.Model);
+                this.Save();
 
                 _disposable.Dispose();
             }

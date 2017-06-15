@@ -27,6 +27,8 @@ namespace Amoeba.Interface
 
         public App()
         {
+            NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionState.Continuous);
+
             CryptoConfig.AddAlgorithm(typeof(SHA256Cng),
                 "SHA256",
                 "SHA256Cng",
@@ -271,6 +273,8 @@ namespace Amoeba.Interface
                 }
 
                 this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
+
+                SettingsManager.Instance.Load();
             }
             catch (Exception ex)
             {
@@ -283,7 +287,22 @@ namespace Amoeba.Interface
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            SettingsManager.Instance.Save();
+        }
 
+        static class NativeMethods
+        {
+            [Flags]
+            public enum ExecutionState : uint
+            {
+                Null = 0,
+                SystemRequired = 1,
+                DisplayRequired = 2,
+                Continuous = 0x80000000,
+            }
+
+            [DllImport("kernel32.dll")]
+            public extern static ExecutionState SetThreadExecutionState(ExecutionState esFlags);
         }
     }
 }

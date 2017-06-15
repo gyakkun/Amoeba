@@ -15,6 +15,8 @@ namespace Amoeba.Interface
         public string ValidationRule_NotEmpty_ErrorMessage { get { return this.Translate("ValidationRule_NotEmpty_ErrorMessage"); } }
         public string SessionType_Connect { get { return this.Translate("SessionType_Connect"); } }
         public string SessionType_Accept { get { return this.Translate("SessionType_Accept"); } }
+        public string ManagerState_Start { get { return this.Translate("ManagerState_Start"); } }
+        public string ManagerState_Stop { get { return this.Translate("ManagerState_Stop"); } }
         public string Tag_Name { get { return this.Translate("Tag_Name"); } }
         public string Tag_Id { get { return this.Translate("Tag_Id"); } }
         public string Seed_Name { get { return this.Translate("Seed_Name"); } }
@@ -36,6 +38,7 @@ namespace Amoeba.Interface
         public string DownloadState_Decoding { get { return this.Translate("DownloadState_Decoding"); } }
         public string DownloadState_Completed { get { return this.Translate("DownloadState_Completed"); } }
         public string DownloadState_Error { get { return this.Translate("DownloadState_Error"); } }
+        public string ConfirmWindow_Title { get { return this.Translate("ConfirmWindow_Title"); } }
         public string ConfirmWindow_DeleteMessage { get { return this.Translate("ConfirmWindow_DeleteMessage"); } }
         public string NameEditWindow_Title { get { return this.Translate("NameEditWindow_Title"); } }
         public string NameEditWindow_Name { get { return this.Translate("NameEditWindow_Name"); } }
@@ -49,6 +52,8 @@ namespace Amoeba.Interface
         public string MainWindow_Cloud { get { return this.Translate("MainWindow_Cloud"); } }
         public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }
+        public string MainWindow_Close_Message { get { return this.Translate("MainWindow_Close_Message"); } }
+        public string MainWindow_DiskSpaceNotFound_Message { get { return this.Translate("MainWindow_DiskSpaceNotFound_Message"); } }
         public string RelationWindow_Title { get { return this.Translate("RelationWindow_Title"); } }
         public string RelationWindow_Trust { get { return this.Translate("RelationWindow_Trust"); } }
         public string RelationWindow_TrustSignature { get { return this.Translate("RelationWindow_TrustSignature"); } }

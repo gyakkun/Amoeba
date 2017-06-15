@@ -1443,7 +1443,7 @@ namespace Amoeba.Service
                     _cacheInfoManager.Add(cacheInfo);
                 }
 
-                _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 5, 0));
+                _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 1, 0));
             }
         }
 

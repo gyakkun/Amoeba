@@ -25,7 +25,7 @@ namespace Amoeba.Interface
 
         public static SettingsManager Instance { get; } = new SettingsManager(System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "Settings"));
 
-        public SettingsManager(string configPath)
+        private SettingsManager(string configPath)
         {
             _settings = new Settings(configPath);
         }

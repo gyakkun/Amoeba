@@ -20,6 +20,8 @@ using Omnius.Wpf;
 using Prism.Events;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Omnius.Utilities;
+using System.Diagnostics;
 
 namespace Amoeba.Interface
 {
@@ -28,10 +30,25 @@ namespace Amoeba.Interface
     /// </summary>
     public partial class MainWindow : RestorableWindow
     {
+        private volatile bool _isClosed = false;
+        private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
+        private WindowState _windowState;
+
+        private WatchTimer _backupTimer;
+
+        private volatile bool _isSessionEnding = false;
+
         private CompositeDisposable _disposable = new CompositeDisposable();
 
         public MainWindow()
         {
+            // NotifyIcon
+            {
+                var amoebaIcon = new System.Drawing.Icon(System.IO.Path.Combine(AmoebaEnvironment.Paths.IconsPath, "Amoeba.ico"));
+                _notifyIcon.Icon = new System.Drawing.Icon(amoebaIcon, new System.Drawing.Size(16, 16));
+                _notifyIcon.Visible = true;
+            }
+
             var viewModel = new MainWindowViewModel();
 
             this.DataContext = viewModel;
@@ -40,6 +57,35 @@ namespace Amoeba.Interface
 
             this.Icon = AmoebaEnvironment.Icons.AmoebaIcon;
 
+            // NotifyIcon
+            {
+                _notifyIcon.Visible = false;
+                _notifyIcon.Click += (sender, e) =>
+                {
+                    if (_isClosed) return;
+
+                    try
+                    {
+                        this.Show();
+                        this.Activate();
+                        this.WindowState = _windowState;
+
+                        _notifyIcon.Visible = false;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                };
+            }
+
+            this.Setting_Messenger();
+            this.Setting_BackupTimer();
+            this.Setting_SessionEnding();
+        }
+
+        private void Setting_Messenger()
+        {
             Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
                 .Subscribe(vm =>
                 {
@@ -91,14 +137,63 @@ namespace Amoeba.Interface
             Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
                 .Subscribe(vm =>
                 {
-                    var result = MessageBox.Show(vm.Message, "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
+                    var result = MessageBox.Show(vm.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
                     if (result == MessageBoxResult.OK) vm.Ok();
                 }).AddTo(_disposable);
+        }
+
+        private void Setting_BackupTimer()
+        {
+            var sw = Stopwatch.StartNew();
+
+            _backupTimer = new WatchTimer(() =>
+            {
+                if ((!Process.GetCurrentProcess().IsActivated() && sw.Elapsed.TotalMinutes > 30)
+                    || sw.Elapsed.TotalHours > 3)
+                {
+                    sw.Restart();
+
+                    Backup.Instance.Run();
+                    this.GarbageCollect();
+                }
+            });
+            _backupTimer.Start(new TimeSpan(0, 0, 30));
+        }
+
+        private void GarbageCollect()
+        {
+            System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect();
+        }
+
+        private void Setting_SessionEnding()
+        {
+            App.Current.SessionEnding += (sender, e) =>
+            {
+                _isSessionEnding = true;
+                this.Close();
+            };
+        }
+
+        private void RestorableWindow_StateChanged(object sender, EventArgs e)
+        {
+            if (this.WindowState == WindowState.Minimized)
+            {
+                this.Hide();
+
+                _notifyIcon.Visible = true;
+            }
+            else
+            {
+                _windowState = this.WindowState;
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
+
+            if (_isSessionEnding) return;
 
             if (ProgressDialog.Instance.Value != 0)
             {
@@ -106,7 +201,7 @@ namespace Amoeba.Interface
                 return;
             }
 
-            if (MessageBoxResult.No == MessageBox.Show(this, "終了しますか？", "Amoeba",
+            if (MessageBoxResult.No == MessageBox.Show(this, LanguagesManager.Instance.MainWindow_Close_Message, "Amoeba",
                 MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes))
             {
                 e.Cancel = true;
@@ -116,6 +211,11 @@ namespace Amoeba.Interface
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
+
+            _isClosed = true;
+
+            _backupTimer.Stop();
+            _backupTimer.Dispose();
 
             if (this.DataContext is IDisposable disposable)
             {

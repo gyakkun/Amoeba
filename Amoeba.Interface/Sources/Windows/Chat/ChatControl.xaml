@@ -134,7 +134,7 @@
 
         <avalon:TextEditor
                 Grid.Column="2"
-                local:AvalonEditChatMessagesHelper.Messages="{Binding Path=Messages.Value}"
+                local:AvalonEditChatMessagesHelper.Info="{Binding Path=Info.Value}"
                 HorizontalScrollBarVisibility="Disabled"
                 IsReadOnly="True"
                 Style="{StaticResource MaterialDesignAvalonTextEditor}" />

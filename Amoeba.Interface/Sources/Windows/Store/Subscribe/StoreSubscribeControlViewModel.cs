@@ -153,6 +153,10 @@ namespace Amoeba.Interface
             }
 
             {
+                Backup.Instance.SaveEvent += () => this.Save();
+            }
+
+            {
                 this.Sort(null);
             }
         }
@@ -513,6 +517,17 @@ namespace Amoeba.Interface
             }
         }
 
+        private void Save()
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                _settings.Save("Version", 0);
+                _settings.Save("Tab", this.TabViewModel.Value.Model);
+                _settings.Save("SortInfo", _sortInfo);
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+            });
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -523,10 +538,7 @@ namespace Amoeba.Interface
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 
-                _settings.Save("Version", 0);
-                _settings.Save("Tab", this.TabViewModel.Value.Model);
-                _settings.Save("SortInfo", _sortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                this.Save();
 
                 _disposable.Dispose();
             }

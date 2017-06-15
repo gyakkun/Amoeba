@@ -28,7 +28,7 @@ namespace Amoeba.Interface
 
         public static LanguagesManager Instance { get; } = new LanguagesManager();
 
-        public LanguagesManager()
+        private LanguagesManager()
         {
 #if DEBUG
             string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface\bin\Debug\Core\Resources\Languages";

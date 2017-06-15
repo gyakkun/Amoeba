@@ -27,6 +27,7 @@
             <omnius:BytesToBase64StringConverter x:Key="BytesToBase64StringConverter" />
             <omnius:IntToSizeStringConverter x:Key="IntToSizeStringConverter" />
             <omnius:LongToSizeStringConverter x:Key="LongToSizeStringConverter" />
+            <omnius:DecimalToSizeStringConverter x:Key="DecimalToSizeStringConverter" />
             <omnius:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
             <omnius:ConditionalValueConverter x:Key="ConditionalValueConverter" />
             <omnius:UshortToStringConverter x:Key="UshortToStringConverter" />
@@ -39,6 +40,7 @@
             <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
             <local:SignatureToStringConverter x:Key="SignatureToStringConverter" />
             <local:TagToStringConverter x:Key="TagToStringConverter" />
+            <local:ManagerStateToStringConverter x:Key="ManagerStateToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -13,6 +13,11 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System.Text;
 using Omnius.Collections;
+using Omnius.Utilities;
+using System.Windows.Threading;
+using System.Diagnostics;
+using System.Threading;
+using System.Linq;
 
 namespace Amoeba.Interface
 {
@@ -20,9 +25,9 @@ namespace Amoeba.Interface
     {
         private ServiceManager _serviceManager;
 
-        private Settings _settings;
-
         private TrustManager _trustManager;
+
+        private Settings _settings;
 
         public ReactiveProperty<string> Title { get; private set; }
 
@@ -39,6 +44,8 @@ namespace Amoeba.Interface
         public CloudControlViewModel CloudControlViewModel { get; private set; }
         public ChatControlViewModel ChatControlViewModel { get; private set; }
         public StoreControlViewModel StoreControlViewModel { get; private set; }
+
+        private WatchTimer _diskSpaceWatchTimer;
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -61,12 +68,6 @@ namespace Amoeba.Interface
                 {
                     _serviceManager.BasePath = AmoebaEnvironment.Paths.DownloadsPath;
                 }
-
-                _serviceManager.Start();
-            }
-
-            {
-                SettingsManager.Instance.Load();
             }
 
             {
@@ -111,6 +112,65 @@ namespace Amoeba.Interface
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager);
                 this.StoreControlViewModel = new StoreControlViewModel(_serviceManager);
             }
+
+            {
+                Backup.Instance.SaveEvent += () => this.Save();
+            }
+
+            this.Setting_StateWatch();
+        }
+
+        private void Setting_StateWatch()
+        {
+            _diskSpaceWatchTimer = new WatchTimer(() =>
+            {
+                var paths = new List<string>();
+                paths.Add(AmoebaEnvironment.Config.Cache.BlocksPath);
+
+                bool flag = false;
+
+                foreach (string path in paths)
+                {
+                    var drive = new DriveInfo(Path.GetFullPath(path));
+
+                    if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
+                    {
+                        flag |= true;
+                        break;
+                    }
+                }
+
+                if (_serviceManager.Information.GetValue<long>("Cache_FreeSpace") < NetworkConverter.FromSizeString("1024MB"))
+                {
+                    flag |= true;
+                }
+
+                if (!flag)
+                {
+                    if (_serviceManager.State == ManagerState.Stop)
+                    {
+                        _serviceManager.Start();
+                        Log.Information("Start");
+                    }
+                }
+                else
+                {
+                    if (_serviceManager.State == ManagerState.Start)
+                    {
+                        _serviceManager.Stop();
+                        Log.Information("Stop");
+
+                        App.Current.Dispatcher.InvokeAsync(() =>
+                        {
+                            var viewModel = new ConfirmWindowViewModel(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
+
+                            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                                .Publish(viewModel);
+                        });
+                    }
+                }
+            });
+            _diskSpaceWatchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));
         }
 
         private void Relation()
@@ -125,6 +185,20 @@ namespace Amoeba.Interface
                 .Publish(new OptionsWindowViewModel(_serviceManager));
         }
 
+        private void Save()
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                _settings.Save("Version", 0);
+                _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+            });
+
+            _trustManager.Save();
+
+            _serviceManager.Save();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -132,23 +206,21 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                _diskSpaceWatchTimer.Stop();
+                _diskSpaceWatchTimer.Dispose();
+
+                _serviceManager.Stop();
+
+                this.Save();
+
                 this.CloudControlViewModel.Dispose();
                 this.ChatControlViewModel.Dispose();
                 this.StoreControlViewModel.Dispose();
 
-                _settings.Save("Version", 0);
-                _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
-
                 _disposable.Dispose();
 
-                _trustManager.Save();
                 _trustManager.Dispose();
 
-                SettingsManager.Instance.Save();
-
-                _serviceManager.Stop();
-                _serviceManager.Save();
                 _serviceManager.Dispose();
             }
         }

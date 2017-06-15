@@ -11,6 +11,9 @@
   <Property Name="SessionType_Connect" Value="Connect" />
   <Property Name="SessionType_Accept" Value="Accept" />
 
+  <Property Name="ManagerState_Start" Value="Start" />
+  <Property Name="ManagerState_Stop" Value="Stop" />
+
   <Property Name="Tag_Name" Value="Name" />
   <Property Name="Tag_Id" Value="ID" />
 
@@ -38,6 +41,7 @@
   <Property Name="DownloadState_Completed" Value="Completed" />
   <Property Name="DownloadState_Error" Value="Error" />
 
+  <Property Name="ConfirmWindow_Title" Value="Confirm" />
   <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
 
   <Property Name="NameEditWindow_Title" Value="Name edit" />
@@ -53,6 +57,8 @@
   <Property Name="MainWindow_Cloud" Value="Cloud" />
   <Property Name="MainWindow_Chat" Value="Chat" />
   <Property Name="MainWindow_Store" Value="Store" />
+  <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
+  <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
 
   <Property Name="RelationWindow_Title" Value="Relation" />
   <Property Name="RelationWindow_Trust" Value="Trust" />
