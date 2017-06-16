@@ -44,17 +44,17 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Name)
                     {
                         this.Name = reader.GetString();
                     }
                     else if (id == (int)SerializeId.Length)
                     {
-                        this.Length = reader.GetLong();
+                        this.Length = (long)reader.GetUInt64();
                     }
                     else if (id == (int)SerializeId.CreationTime)
                     {
@@ -75,25 +75,25 @@ namespace Amoeba.Service
                 // Name
                 if (this.Name != null)
                 {
-                    writer.Write((int)SerializeId.Name);
+                    writer.Write((uint)SerializeId.Name);
                     writer.Write(this.Name);
                 }
                 // Length
                 if (this.Length != 0)
                 {
-                    writer.Write((int)SerializeId.Length);
-                    writer.Write(this.Length);
+                    writer.Write((uint)SerializeId.Length);
+                    writer.Write((ulong)this.Length);
                 }
                 // CreationTime
                 if (this.CreationTime != DateTime.MinValue)
                 {
-                    writer.Write((int)SerializeId.CreationTime);
+                    writer.Write((uint)SerializeId.CreationTime);
                     writer.Write(this.CreationTime);
                 }
                 // Metadata
                 if (this.Metadata != null)
                 {
-                    writer.Write((int)SerializeId.Metadata);
+                    writer.Write((uint)SerializeId.Metadata);
                     writer.Write(this.Metadata.Export(bufferManager));
                 }
 

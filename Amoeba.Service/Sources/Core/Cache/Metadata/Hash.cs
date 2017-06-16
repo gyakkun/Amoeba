@@ -37,7 +37,7 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                this.Algorithm = (HashAlgorithm)reader.GetInt();
+                this.Algorithm = (HashAlgorithm)reader.GetUInt32();
                 this.Value = reader.GetBytes();
             }
         }
@@ -46,7 +46,7 @@ namespace Amoeba.Service
         {
             using (var writer = new ItemStreamWriter(bufferManager))
             {
-                writer.Write((int)this.Algorithm);
+                writer.Write((uint)this.Algorithm);
                 writer.Write(this.Value);
 
                 return writer.GetStream();

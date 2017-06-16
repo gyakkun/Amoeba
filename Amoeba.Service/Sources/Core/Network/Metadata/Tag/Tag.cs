@@ -51,10 +51,10 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Name)
                     {
                         this.Name = reader.GetString();
@@ -74,13 +74,13 @@ namespace Amoeba.Service
                 // Name
                 if (this.Name != null)
                 {
-                    writer.Write((int)SerializeId.Name);
+                    writer.Write((uint)SerializeId.Name);
                     writer.Write(this.Name);
                 }
                 // Id
                 if (this.Id != null)
                 {
-                    writer.Write((int)SerializeId.Id);
+                    writer.Write((uint)SerializeId.Id);
                     writer.Write(this.Id);
                 }
 

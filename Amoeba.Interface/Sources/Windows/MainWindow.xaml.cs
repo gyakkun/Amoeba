@@ -80,7 +80,6 @@ namespace Amoeba.Interface
             }
 
             this.Setting_Messenger();
-            this.Setting_BackupTimer();
             this.Setting_SessionEnding();
         }
 
@@ -140,30 +139,6 @@ namespace Amoeba.Interface
                     var result = MessageBox.Show(vm.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
                     if (result == MessageBoxResult.OK) vm.Ok();
                 }).AddTo(_disposable);
-        }
-
-        private void Setting_BackupTimer()
-        {
-            var sw = Stopwatch.StartNew();
-
-            _backupTimer = new WatchTimer(() =>
-            {
-                if ((!Process.GetCurrentProcess().IsActivated() && sw.Elapsed.TotalMinutes > 30)
-                    || sw.Elapsed.TotalHours > 3)
-                {
-                    sw.Restart();
-
-                    Backup.Instance.Run();
-                    this.GarbageCollect();
-                }
-            });
-            _backupTimer.Start(new TimeSpan(0, 0, 30));
-        }
-
-        private void GarbageCollect()
-        {
-            System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
-            GC.Collect();
         }
 
         private void Setting_SessionEnding()

@@ -47,10 +47,10 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.TargetSignature)
                     {
                         this.TargetSignature = Signature.Import(reader.GetStream(), bufferManager);
@@ -78,25 +78,25 @@ namespace Amoeba.Service
                 // TargetSignature
                 if (this.TargetSignature != null)
                 {
-                    writer.Write((int)SerializeId.TargetSignature);
+                    writer.Write((uint)SerializeId.TargetSignature);
                     writer.Write(this.TargetSignature.Export(bufferManager));
                 }
                 // AuthorSignature
                 if (this.AuthorSignature != null)
                 {
-                    writer.Write((int)SerializeId.AuthorSignature);
+                    writer.Write((uint)SerializeId.AuthorSignature);
                     writer.Write(this.AuthorSignature.Export(bufferManager));
                 }
                 // CreationTime
                 if (this.CreationTime != DateTime.MinValue)
                 {
-                    writer.Write((int)SerializeId.CreationTime);
+                    writer.Write((uint)SerializeId.CreationTime);
                     writer.Write(this.CreationTime);
                 }
                 // Value
                 if (this.Value != null)
                 {
-                    writer.Write((int)SerializeId.Value);
+                    writer.Write((uint)SerializeId.Value);
                     writer.Write(this.Value.Export(bufferManager));
                 }
 

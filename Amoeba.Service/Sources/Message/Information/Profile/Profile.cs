@@ -54,10 +54,10 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Comment)
                     {
                         this.Comment = reader.GetString();
@@ -68,21 +68,21 @@ namespace Amoeba.Service
                     }
                     if (id == (int)SerializeId.TrustSignatures)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedTrustSignatures.Add(Signature.Import(reader.GetStream(), bufferManager));
                         }
                     }
                     else if (id == (int)SerializeId.DeleteSignatures)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedDeleteSignatures.Add(Signature.Import(reader.GetStream(), bufferManager));
                         }
                     }
                     else if (id == (int)SerializeId.Tags)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedTags.Add(Tag.Import(reader.GetStream(), bufferManager));
                         }
@@ -98,20 +98,20 @@ namespace Amoeba.Service
                 // Comment
                 if (this.Comment != null)
                 {
-                    writer.Write((int)SerializeId.Comment);
+                    writer.Write((uint)SerializeId.Comment);
                     writer.Write(this.Comment);
                 }
                 // ExchangePublicKey
                 if (this.ExchangePublicKey != null)
                 {
-                    writer.Write((int)SerializeId.ExchangePublicKey);
+                    writer.Write((uint)SerializeId.ExchangePublicKey);
                     writer.Write(this.ExchangePublicKey.Export(bufferManager));
                 }
                 // TrustSignatures
                 if (this.ProtectedTrustSignatures.Count > 0)
                 {
-                    writer.Write((int)SerializeId.TrustSignatures);
-                    writer.Write(this.ProtectedTrustSignatures.Count);
+                    writer.Write((uint)SerializeId.TrustSignatures);
+                    writer.Write((uint)this.ProtectedTrustSignatures.Count);
 
                     foreach (var value in this.TrustSignatures)
                     {
@@ -121,8 +121,8 @@ namespace Amoeba.Service
                 // DeleteSignatures
                 if (this.ProtectedDeleteSignatures.Count > 0)
                 {
-                    writer.Write((int)SerializeId.DeleteSignatures);
-                    writer.Write(this.ProtectedDeleteSignatures.Count);
+                    writer.Write((uint)SerializeId.DeleteSignatures);
+                    writer.Write((uint)this.ProtectedDeleteSignatures.Count);
 
                     foreach (var value in this.DeleteSignatures)
                     {
@@ -132,8 +132,8 @@ namespace Amoeba.Service
                 // Tags
                 if (this.ProtectedTags.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Tags);
-                    writer.Write(this.ProtectedTags.Count);
+                    writer.Write((uint)SerializeId.Tags);
+                    writer.Write((uint)this.ProtectedTags.Count);
 
                     foreach (var value in this.Tags)
                     {

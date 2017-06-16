@@ -56,10 +56,10 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Type)
                     {
                         this.Type = reader.GetString();
@@ -98,38 +98,38 @@ namespace Amoeba.Service
                 // Type
                 if (this.Type != null)
                 {
-                    writer.Write((int)SerializeId.Type);
+                    writer.Write((uint)SerializeId.Type);
                     writer.Write(this.Type);
                 }
                 // Tag
                 if (this.Tag != null)
                 {
-                    writer.Write((int)SerializeId.Tag);
+                    writer.Write((uint)SerializeId.Tag);
                     writer.Write(this.Tag.Export(bufferManager));
                 }
                 // CreationTime
                 if (this.CreationTime != DateTime.MinValue)
                 {
-                    writer.Write((int)SerializeId.CreationTime);
+                    writer.Write((uint)SerializeId.CreationTime);
                     writer.Write(this.CreationTime);
                 }
                 // Metadata
                 if (this.Metadata != null)
                 {
-                    writer.Write((int)SerializeId.Metadata);
+                    writer.Write((uint)SerializeId.Metadata);
                     writer.Write(this.Metadata.Export(bufferManager));
                 }
 
                 // Cash
                 if (this.Cash != null)
                 {
-                    writer.Write((int)SerializeId.Cash);
+                    writer.Write((uint)SerializeId.Cash);
                     writer.Write(this.Cash.Export(bufferManager));
                 }
                 // Certificate
                 if (this.Certificate != null)
                 {
-                    writer.Write((int)SerializeId.Certificate);
+                    writer.Write((uint)SerializeId.Certificate);
                     writer.Write(this.Certificate.Export(bufferManager));
                 }
 
@@ -186,7 +186,7 @@ namespace Amoeba.Service
 
                 using (var writer = new ItemStreamWriter(bufferManager))
                 {
-                    writer.Write((int)SerializeId.Certificate);
+                    writer.Write((uint)SerializeId.Certificate);
                     writer.Write(tag);
 
                     streams.Add(writer.GetStream());

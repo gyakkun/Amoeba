@@ -50,10 +50,10 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Tag)
                     {
                         this.Tag = Tag.Import(reader.GetStream(), bufferManager);
@@ -85,31 +85,31 @@ namespace Amoeba.Service
                 // Tag
                 if (this.Tag != null)
                 {
-                    writer.Write((int)SerializeId.Tag);
+                    writer.Write((uint)SerializeId.Tag);
                     writer.Write(this.Tag.Export(bufferManager));
                 }
                 // AuthorSignature
                 if (this.AuthorSignature != null)
                 {
-                    writer.Write((int)SerializeId.AuthorSignature);
+                    writer.Write((uint)SerializeId.AuthorSignature);
                     writer.Write(this.AuthorSignature.Export(bufferManager));
                 }
                 // CreationTime
                 if (this.CreationTime != DateTime.MinValue)
                 {
-                    writer.Write((int)SerializeId.CreationTime);
+                    writer.Write((uint)SerializeId.CreationTime);
                     writer.Write(this.CreationTime);
                 }
                 // Cost
                 if (this.Cost != null)
                 {
-                    writer.Write((int)SerializeId.Cost);
+                    writer.Write((uint)SerializeId.Cost);
                     writer.Write(this.Cost.Export(bufferManager));
                 }
                 // Value
                 if (this.Value != null)
                 {
-                    writer.Write((int)SerializeId.Value);
+                    writer.Write((uint)SerializeId.Value);
                     writer.Write(this.Value.Export(bufferManager));
                 }
 

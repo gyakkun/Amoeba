@@ -36,13 +36,13 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Hashes)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedHashes.Add(Hash.Import(reader.GetStream(), bufferManager));
                         }
@@ -58,8 +58,8 @@ namespace Amoeba.Service
                 // Hashes
                 if (this.ProtectedHashes.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Hashes);
-                    writer.Write(this.ProtectedHashes.Count);
+                    writer.Write((uint)SerializeId.Hashes);
+                    writer.Write((uint)this.ProtectedHashes.Count);
 
                     foreach (var item in this.ProtectedHashes)
                     {

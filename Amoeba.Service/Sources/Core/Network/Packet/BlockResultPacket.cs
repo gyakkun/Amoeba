@@ -37,10 +37,10 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Hash)
                     {
                         this.Hash = Hash.Import(reader.GetStream(), bufferManager);
@@ -85,13 +85,13 @@ namespace Amoeba.Service
                 // Hash
                 if (this.Hash != null)
                 {
-                    writer.Write((int)SerializeId.Hash);
+                    writer.Write((uint)SerializeId.Hash);
                     writer.Write(this.Hash.Export(bufferManager));
                 }
                 // Value
                 if (this.Value.Array != null)
                 {
-                    writer.Write((int)SerializeId.Value);
+                    writer.Write((uint)SerializeId.Value);
                     writer.Write(this.Value.Array, this.Value.Offset, this.Value.Count);
                 }
 

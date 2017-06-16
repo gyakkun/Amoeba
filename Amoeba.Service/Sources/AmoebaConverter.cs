@@ -90,8 +90,8 @@ namespace Amoeba.Service
                 }
 
                 var headerStream = new BufferStream(_bufferManager);
-                VintUtils.Write(headerStream, version);
-                VintUtils.Write(headerStream, list[0].Key);
+                VintUtils.SetUInt64(headerStream, (uint)version);
+                VintUtils.SetUInt64(headerStream, list[0].Key);
 
                 var dataStream = new UniteStream(headerStream, list[0].Value);
 
@@ -134,8 +134,8 @@ namespace Amoeba.Service
 
                 stream.Seek(0, SeekOrigin.Begin);
 
-                if (version != VintUtils.Get(stream)) throw new ArgumentException("version");
-                int type = (int)VintUtils.Get(stream);
+                if (version != (int)VintUtils.GetUInt64(stream)) throw new ArgumentException("version");
+                int type = (int)VintUtils.GetUInt64(stream);
 
                 using (var dataStream = new RangeStream(stream, stream.Position, stream.Length - stream.Position - 4, true))
                 {

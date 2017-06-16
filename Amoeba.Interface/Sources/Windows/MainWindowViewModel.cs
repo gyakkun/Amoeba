@@ -47,6 +47,8 @@ namespace Amoeba.Interface
 
         private WatchTimer _diskSpaceWatchTimer;
 
+        private WatchTimer _backupTimer;
+
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
@@ -117,10 +119,11 @@ namespace Amoeba.Interface
                 Backup.Instance.SaveEvent += () => this.Save();
             }
 
-            this.Setting_StateWatch();
+            this.Setting_DiskSpaceWatch();
+            this.Setting_BackupTimer();
         }
 
-        private void Setting_StateWatch()
+        private void Setting_DiskSpaceWatch()
         {
             _diskSpaceWatchTimer = new WatchTimer(() =>
             {
@@ -171,6 +174,30 @@ namespace Amoeba.Interface
                 }
             });
             _diskSpaceWatchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));
+        }
+
+        private void Setting_BackupTimer()
+        {
+            var sw = Stopwatch.StartNew();
+
+            _backupTimer = new WatchTimer(() =>
+            {
+                if ((!Process.GetCurrentProcess().IsActivated() && sw.Elapsed.TotalMinutes > 30)
+                    || sw.Elapsed.TotalHours > 3)
+                {
+                    sw.Restart();
+
+                    Backup.Instance.Run();
+                    this.GarbageCollect();
+                }
+            });
+            _backupTimer.Start(new TimeSpan(0, 0, 30));
+        }
+
+        private void GarbageCollect()
+        {
+            System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect();
         }
 
         private void Relation()

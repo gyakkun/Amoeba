@@ -34,10 +34,10 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Comment)
                     {
                         this.Comment = reader.GetString();
@@ -53,7 +53,7 @@ namespace Amoeba.Service
                 // Comment
                 if (this.Comment != null)
                 {
-                    writer.Write((int)SerializeId.Comment);
+                    writer.Write((uint)SerializeId.Comment);
                     writer.Write(this.Comment);
                 }
 

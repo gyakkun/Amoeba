@@ -53,24 +53,24 @@ namespace Amoeba.Service
 
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Name)
                     {
                         this.Name = reader.GetString();
                     }
                     else if (id == (int)SerializeId.Seeds)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedSeeds.Add(Seed.Import(reader.GetStream(), bufferManager));
                         }
                     }
                     else if (id == (int)SerializeId.Boxes)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedBoxes.Add(Box.Import(reader.GetStream(), bufferManager, depth + 1));
                         }
@@ -88,14 +88,14 @@ namespace Amoeba.Service
                 // Name
                 if (this.Name != null)
                 {
-                    writer.Write((int)SerializeId.Name);
+                    writer.Write((uint)SerializeId.Name);
                     writer.Write(this.Name);
                 }
                 // Seeds
                 if (this.ProtectedSeeds.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Seeds);
-                    writer.Write(this.ProtectedSeeds.Count);
+                    writer.Write((uint)SerializeId.Seeds);
+                    writer.Write((uint)this.ProtectedSeeds.Count);
 
                     foreach (var item in this.Seeds)
                     {
@@ -105,8 +105,8 @@ namespace Amoeba.Service
                 // Boxes
                 if (this.ProtectedBoxes.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Boxes);
-                    writer.Write(this.ProtectedBoxes.Count);
+                    writer.Write((uint)SerializeId.Boxes);
+                    writer.Write((uint)this.ProtectedBoxes.Count);
 
                     foreach (var item in this.Boxes)
                     {

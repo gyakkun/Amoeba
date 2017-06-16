@@ -38,13 +38,13 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Uris)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedUris.Add(reader.GetString());
                         }
@@ -60,8 +60,8 @@ namespace Amoeba.Service
                 // Uris
                 if (this.ProtectedUris.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Uris);
-                    writer.Write(this.ProtectedUris.Count);
+                    writer.Write((uint)SerializeId.Uris);
+                    writer.Write((uint)this.ProtectedUris.Count);
 
                     foreach (string uri in this.ProtectedUris)
                     {

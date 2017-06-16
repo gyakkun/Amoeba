@@ -274,7 +274,10 @@ namespace Amoeba.Interface
 
                 this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
 
-                SettingsManager.Instance.Load();
+                {
+                    SettingsManager.Instance.Load();
+                    Backup.Instance.SaveEvent += () => SettingsManager.Instance.Save();
+                }
             }
             catch (Exception ex)
             {

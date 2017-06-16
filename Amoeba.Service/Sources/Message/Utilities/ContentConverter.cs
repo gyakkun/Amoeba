@@ -39,7 +39,7 @@ namespace Amoeba.Service
             if (stream == null) throw new ArgumentNullException(nameof(stream));
 
             var versionStream = new BufferStream(_bufferManager);
-            VintUtils.Write(versionStream, version);
+            VintUtils.SetUInt64(versionStream, (uint)version);
 
             return new UniteStream(versionStream, stream);
         }
@@ -47,7 +47,7 @@ namespace Amoeba.Service
         private static Stream RemoveVersion(Stream stream, int version)
         {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
-            if (VintUtils.Get(stream) != version) throw new FormatException();
+            if (VintUtils.GetUInt64(stream) != (uint)version) throw new FormatException();
 
             return new RangeStream(stream, true);
         }
@@ -116,7 +116,7 @@ namespace Amoeba.Service
                 }
 
                 var headerStream = new BufferStream(_bufferManager);
-                VintUtils.Write(headerStream, list[0].Key);
+                VintUtils.SetUInt64(headerStream, list[0].Key);
 
                 return new UniteStream(headerStream, list[0].Value);
             }
@@ -139,7 +139,7 @@ namespace Amoeba.Service
             {
                 stream.Seek(0, SeekOrigin.Begin);
 
-                int type = (int)VintUtils.Get(stream);
+                int type = (int)VintUtils.GetUInt64(stream);
 
                 if (type == (int)ConvertCompressionAlgorithm.None)
                 {
@@ -208,14 +208,14 @@ namespace Amoeba.Service
                 try
                 {
                     outStream = new BufferStream(_bufferManager);
-                    VintUtils.Write(outStream, (int)ConvertCryptoAlgorithm.Aes256);
+                    VintUtils.SetUInt64(outStream, (uint)ConvertCryptoAlgorithm.Aes256);
 
                     var cryptoKey = new byte[32];
                     _random.GetBytes(cryptoKey);
 
                     {
                         var encryptedBuffer = Exchange.Encrypt(publicKey, cryptoKey);
-                        VintUtils.Write(outStream, (int)encryptedBuffer.Length);
+                        VintUtils.SetUInt64(outStream, (uint)encryptedBuffer.Length);
                         outStream.Write(encryptedBuffer, 0, encryptedBuffer.Length);
                     }
 
@@ -276,14 +276,14 @@ namespace Amoeba.Service
 
             try
             {
-                int type = (int)VintUtils.Get(stream);
+                int type = (int)VintUtils.GetUInt64(stream);
 
                 if (type == (int)ConvertCryptoAlgorithm.Aes256)
                 {
                     byte[] cryptoKey;
 
                     {
-                        int length = (int)VintUtils.Get(stream);
+                        int length = (int)VintUtils.GetUInt64(stream);
 
                         var encryptedBuffer = new byte[length];
                         if (stream.Read(encryptedBuffer, 0, encryptedBuffer.Length) != encryptedBuffer.Length) throw new ArgumentException();
@@ -357,7 +357,7 @@ namespace Amoeba.Service
 
             var hashStream = new BufferStream(_bufferManager);
             {
-                VintUtils.Write(hashStream, (int)ConvertHashAlgorithm.Sha256);
+                VintUtils.SetUInt64(hashStream, (uint)ConvertHashAlgorithm.Sha256);
                 var value = Sha256.ComputeHash(new WrapperStream(stream, true));
                 hashStream.Write(value, 0, value.Length);
             }
@@ -369,7 +369,7 @@ namespace Amoeba.Service
         {
             if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            int type = (int)VintUtils.Get(stream);
+            int type = (int)VintUtils.GetUInt64(stream);
 
             if (type == (int)ConvertHashAlgorithm.Sha256)
             {
@@ -395,7 +395,7 @@ namespace Amoeba.Service
             try
             {
                 var lengthStream = new BufferStream(_bufferManager);
-                VintUtils.Write(lengthStream, stream.Length);
+                VintUtils.SetUInt64(lengthStream, (ulong)stream.Length);
 
                 Stream paddingStream;
                 {
@@ -443,7 +443,7 @@ namespace Amoeba.Service
 
             try
             {
-                int length = (int)VintUtils.Get(stream);
+                int length = (int)VintUtils.GetUInt64(stream);
                 return new RangeStream(stream, stream.Position, length);
             }
             catch (Exception e)

@@ -33,28 +33,28 @@ namespace Amoeba.Service
 
         protected override void Initialize()
         {
-            
+
         }
 
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.CorrectionAlgorithm)
                     {
                         this.CorrectionAlgorithm = (CorrectionAlgorithm)reader.GetByte();
                     }
                     else if (id == (int)SerializeId.Length)
                     {
-                        this.Length = reader.GetLong();
+                        this.Length = (long)reader.GetUInt64();
                     }
                     else if (id == (int)SerializeId.Hashes)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedHashes.Add(Hash.Import(reader.GetStream(), bufferManager));
                         }
@@ -70,20 +70,20 @@ namespace Amoeba.Service
                 // CorrectionAlgorithm
                 if (this.CorrectionAlgorithm != 0)
                 {
-                    writer.Write((int)SerializeId.CorrectionAlgorithm);
+                    writer.Write((uint)SerializeId.CorrectionAlgorithm);
                     writer.Write((byte)this.CorrectionAlgorithm);
                 }
                 // Length
                 if (this.Length != 0)
                 {
-                    writer.Write((int)SerializeId.Length);
-                    writer.Write(this.Length);
+                    writer.Write((uint)SerializeId.Length);
+                    writer.Write((ulong)this.Length);
                 }
                 // Hashes
                 if (this.ProtectedHashes.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Hashes);
-                    writer.Write(this.ProtectedHashes.Count);
+                    writer.Write((uint)SerializeId.Hashes);
+                    writer.Write((uint)this.ProtectedHashes.Count);
 
                     foreach (var item in this.ProtectedHashes)
                     {

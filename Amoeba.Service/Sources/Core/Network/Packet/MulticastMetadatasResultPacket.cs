@@ -36,13 +36,13 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.MulticastMetadatas)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedMulticastMetadatas.Add(MulticastMetadata.Import(reader.GetStream(), bufferManager));
                         }
@@ -58,8 +58,8 @@ namespace Amoeba.Service
                 // MulticastMetadatass
                 if (this.ProtectedMulticastMetadatas.Count > 0)
                 {
-                    writer.Write((int)SerializeId.MulticastMetadatas);
-                    writer.Write(this.ProtectedMulticastMetadatas.Count);
+                    writer.Write((uint)SerializeId.MulticastMetadatas);
+                    writer.Write((uint)this.ProtectedMulticastMetadatas.Count);
 
                     foreach (var item in this.ProtectedMulticastMetadatas)
                     {

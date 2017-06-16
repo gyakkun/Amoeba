@@ -924,7 +924,7 @@ namespace Amoeba.Service
                 sessionInfo.SendInfo.IsInitialized = true;
 
                 Stream versionStream = new BufferStream(_bufferManager);
-                VintUtils.Write(versionStream, 0);
+                VintUtils.SetUInt64(versionStream, 0);
 
                 var dataStream = (new ProfilePacket(_routeTable.BaseId, _myLocation)).Export(_bufferManager);
 
@@ -943,7 +943,7 @@ namespace Amoeba.Service
                 var packet = new LocationsPacket(locations.Randomize().Take(LocationsPacket.MaxLocationCount));
 
                 Stream typeStream = new BufferStream(_bufferManager);
-                VintUtils.Write(typeStream, (int)SerializeId.Locations);
+                VintUtils.SetUInt64(typeStream, (uint)SerializeId.Locations);
 
                 _info.PushLocationCount.Add(packet.Locations.Count());
 
@@ -962,7 +962,7 @@ namespace Amoeba.Service
                 }
 
                 Stream typeStream = new BufferStream(_bufferManager);
-                VintUtils.Write(typeStream, (int)SerializeId.BlocksLink);
+                VintUtils.SetUInt64(typeStream, (uint)SerializeId.BlocksLink);
 
                 _info.PushBlockLinkCount.Add(packet.Hashes.Count());
 
@@ -983,7 +983,7 @@ namespace Amoeba.Service
                 }
 
                 Stream typeStream = new BufferStream(_bufferManager);
-                VintUtils.Write(typeStream, (int)SerializeId.BlocksRequest);
+                VintUtils.SetUInt64(typeStream, (uint)SerializeId.BlocksRequest);
 
                 _info.PushBlockRequestCount.Add(packet.Hashes.Count());
 
@@ -1037,7 +1037,7 @@ namespace Amoeba.Service
                     if (dataStream != null)
                     {
                         Stream typeStream = new BufferStream(_bufferManager);
-                        VintUtils.Write(typeStream, (int)SerializeId.BlockResult);
+                        VintUtils.SetUInt64(typeStream, (uint)SerializeId.BlockResult);
 
                         _info.PushBlockResultCount.Increment();
 
@@ -1061,7 +1061,7 @@ namespace Amoeba.Service
                 }
 
                 Stream typeStream = new BufferStream(_bufferManager);
-                VintUtils.Write(typeStream, (int)SerializeId.BroadcastMetadatasRequest);
+                VintUtils.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasRequest);
 
                 _info.PushMessageRequestCount.Add(packet.Signatures.Count());
 
@@ -1096,7 +1096,7 @@ namespace Amoeba.Service
                     broadcastMetadatas.Clear();
 
                     Stream typeStream = new BufferStream(_bufferManager);
-                    VintUtils.Write(typeStream, (int)SerializeId.BroadcastMetadatasResult);
+                    VintUtils.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasResult);
 
                     _info.PushMessageResultCount.Add(packet.BroadcastMetadatas.Count());
 
@@ -1116,7 +1116,7 @@ namespace Amoeba.Service
                 }
 
                 Stream typeStream = new BufferStream(_bufferManager);
-                VintUtils.Write(typeStream, (int)SerializeId.UnicastMetadatasRequest);
+                VintUtils.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasRequest);
 
                 _info.PushMessageRequestCount.Add(packet.Signatures.Count());
 
@@ -1151,7 +1151,7 @@ namespace Amoeba.Service
                     unicastMetadatas.Clear();
 
                     Stream typeStream = new BufferStream(_bufferManager);
-                    VintUtils.Write(typeStream, (int)SerializeId.UnicastMetadatasResult);
+                    VintUtils.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasResult);
 
                     _info.PushMessageResultCount.Add(packet.UnicastMetadatas.Count());
 
@@ -1171,7 +1171,7 @@ namespace Amoeba.Service
                 }
 
                 Stream typeStream = new BufferStream(_bufferManager);
-                VintUtils.Write(typeStream, (int)SerializeId.MulticastMetadatasRequest);
+                VintUtils.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasRequest);
 
                 _info.PushMessageRequestCount.Add(packet.Tags.Count());
 
@@ -1206,7 +1206,7 @@ namespace Amoeba.Service
                     multicastMetadatas.Clear();
 
                     Stream typeStream = new BufferStream(_bufferManager);
-                    VintUtils.Write(typeStream, (int)SerializeId.MulticastMetadatasResult);
+                    VintUtils.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasResult);
 
                     _info.PushMessageResultCount.Add(packet.MulticastMetadatas.Count());
 
@@ -1223,7 +1223,7 @@ namespace Amoeba.Service
             {
                 sessionInfo.ReceiveInfo.IsInitialized = true;
 
-                sessionInfo.Version = (int)VintUtils.Get(stream);
+                sessionInfo.Version = (int)VintUtils.GetUInt64(stream);
 
                 using (var dataStream = new RangeStream(stream))
                 {
@@ -1254,7 +1254,7 @@ namespace Amoeba.Service
             {
                 sessionInfo.ReceiveInfo.Stopwatch.Restart();
 
-                int id = (int)VintUtils.Get(stream);
+                int id = (int)VintUtils.GetUInt64(stream);
 
                 using (var dataStream = new RangeStream(stream))
                 {

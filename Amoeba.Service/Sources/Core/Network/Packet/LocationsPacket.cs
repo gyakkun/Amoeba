@@ -37,13 +37,13 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Locations)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedLocations.Add(Location.Import(reader.GetStream(), bufferManager));
                         }
@@ -59,8 +59,8 @@ namespace Amoeba.Service
                 // Locations
                 if (this.ProtectedLocations.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Locations);
-                    writer.Write(this.ProtectedLocations.Count);
+                    writer.Write((uint)SerializeId.Locations);
+                    writer.Write((uint)this.ProtectedLocations.Count);
 
                     foreach (var item in this.ProtectedLocations)
                     {

@@ -37,13 +37,13 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.Signatures)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedSignatures.Add(Signature.Import(reader.GetStream(), bufferManager));
                         }
@@ -59,8 +59,8 @@ namespace Amoeba.Service
                 // Signatures
                 if (this.ProtectedSignatures.Count > 0)
                 {
-                    writer.Write((int)SerializeId.Signatures);
-                    writer.Write(this.ProtectedSignatures.Count);
+                    writer.Write((uint)SerializeId.Signatures);
+                    writer.Write((uint)this.ProtectedSignatures.Count);
 
                     foreach (var item in this.ProtectedSignatures)
                     {

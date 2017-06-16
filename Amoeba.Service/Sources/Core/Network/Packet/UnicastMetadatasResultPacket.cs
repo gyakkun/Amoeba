@@ -36,13 +36,13 @@ namespace Amoeba.Service
         {
             using (var reader = new ItemStreamReader(stream, bufferManager))
             {
-                int id;
-
-                while ((id = reader.GetInt()) != -1)
+                while (reader.Available > 0)
                 {
+                    int id = (int)reader.GetUInt32();
+
                     if (id == (int)SerializeId.UnicastMetadatas)
                     {
-                        for (int i = reader.GetInt() - 1; i >= 0; i--)
+                        for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
                             this.ProtectedUnicastMetadatas.Add(UnicastMetadata.Import(reader.GetStream(), bufferManager));
                         }
@@ -58,8 +58,8 @@ namespace Amoeba.Service
                 // UnicastMetadatas
                 if (this.ProtectedUnicastMetadatas.Count > 0)
                 {
-                    writer.Write((int)SerializeId.UnicastMetadatas);
-                    writer.Write(this.ProtectedUnicastMetadatas.Count);
+                    writer.Write((uint)SerializeId.UnicastMetadatas);
+                    writer.Write((uint)this.ProtectedUnicastMetadatas.Count);
 
                     foreach (var item in this.ProtectedUnicastMetadatas)
                     {
