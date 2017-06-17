@@ -34,8 +34,13 @@ namespace Amoeba.Interface
         public ReactiveCommand RelationCommand { get; private set; }
         public ReactiveCommand OptionsCommand { get; private set; }
         public ReactiveCommand<string> LanguageCommand { get; private set; }
+        public ReactiveCommand WebsiteCommand { get; private set; }
+        public ReactiveCommand VersionCommand { get; private set; }
 
         public ReactiveProperty<bool> IsProgressDialogOpen { get; private set; }
+
+        public ReactiveProperty<decimal> SendingSpeed { get; private set; }
+        public ReactiveProperty<decimal> ReceivingSpeed { get; private set; }
 
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
@@ -44,6 +49,9 @@ namespace Amoeba.Interface
         public CloudControlViewModel CloudControlViewModel { get; private set; }
         public ChatControlViewModel ChatControlViewModel { get; private set; }
         public StoreControlViewModel StoreControlViewModel { get; private set; }
+
+        private TaskManager _trafficViewTaskManager;
+        private TaskManager _trafficMonitorTaskManager;
 
         private WatchTimer _diskSpaceWatchTimer;
 
@@ -59,6 +67,8 @@ namespace Amoeba.Interface
 
         private void Init()
         {
+            SettingsManager.Instance.Load();
+
             {
                 string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
@@ -93,7 +103,16 @@ namespace Amoeba.Interface
                 this.LanguageCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.LanguageCommand.Subscribe((n) => LanguagesManager.Instance.SetCurrentLanguage(n)).AddTo(_disposable);
 
+                this.WebsiteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.WebsiteCommand.Subscribe(() => this.Website()).AddTo(_disposable);
+
+                this.VersionCommand = new ReactiveCommand().AddTo(_disposable);
+                this.VersionCommand.Subscribe(() => this.Version()).AddTo(_disposable);
+
                 this.IsProgressDialogOpen = new ReactiveProperty<bool>().AddTo(_disposable);
+
+                this.ReceivingSpeed = new ReactiveProperty<decimal>().AddTo(_disposable);
+                this.SendingSpeed = new ReactiveProperty<decimal>().AddTo(_disposable);
 
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
             }
@@ -112,15 +131,130 @@ namespace Amoeba.Interface
             {
                 this.CloudControlViewModel = new CloudControlViewModel(_serviceManager);
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager);
-                this.StoreControlViewModel = new StoreControlViewModel(_serviceManager);
+                this.StoreControlViewModel = new StoreControlViewModel(_serviceManager, _trustManager);
             }
 
             {
                 Backup.Instance.SaveEvent += () => this.Save();
             }
 
+            this.Setting_TrafficView();
             this.Setting_DiskSpaceWatch();
             this.Setting_BackupTimer();
+        }
+
+        private void Setting_TrafficView()
+        {
+            _trafficMonitorTaskManager = new TaskManager(this.TrafficMonitorThread);
+            _trafficMonitorTaskManager.Start();
+
+            _trafficViewTaskManager = new TaskManager(this.TrafficViewThread);
+            _trafficViewTaskManager.Start();
+        }
+
+        private volatile TrafficInformation _sentInfomation = new TrafficInformation();
+        private volatile TrafficInformation _receivedInfomation = new TrafficInformation();
+
+        private class TrafficInformation : ISynchronized
+        {
+            public long PreviousTraffic { get; set; }
+            public int Round { get; set; }
+            public decimal[] AverageTraffics { get; } = new decimal[3];
+            public object LockObject { get; } = new object();
+        }
+
+        private void TrafficViewThread(CancellationToken token)
+        {
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    if (token.WaitHandle.WaitOne(500)) return;
+
+                    var state = _serviceManager.State;
+
+                    App.Current.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action(() =>
+                    {
+                        if (token.IsCancellationRequested) return;
+
+                        try
+                        {
+                            decimal sentAverageTraffic;
+
+                            lock (_sentInfomation.LockObject)
+                            {
+                                sentAverageTraffic = _sentInfomation.AverageTraffics.Sum() / _sentInfomation.AverageTraffics.Length;
+                            }
+
+                            decimal receivedAverageTraffic;
+
+                            lock (_receivedInfomation.LockObject)
+                            {
+                                receivedAverageTraffic = _receivedInfomation.AverageTraffics.Sum() / _receivedInfomation.AverageTraffics.Length;
+                            }
+
+                            this.SendingSpeed.Value = sentAverageTraffic;
+                            this.ReceivingSpeed.Value = receivedAverageTraffic;
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
+                        }
+                    }));
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+        private void TrafficMonitorThread(CancellationToken token)
+        {
+            try
+            {
+                var sw = new Stopwatch();
+                sw.Start();
+
+                while (!token.IsCancellationRequested)
+                {
+                    Thread.Sleep(((int)Math.Max(2, 1000 - sw.ElapsedMilliseconds)) / 2);
+                    if (sw.ElapsedMilliseconds < 1000) continue;
+
+                    long receivedByteCount = _serviceManager.Information.GetValue<long>("Network_ReceivedByteCount");
+                    long sentByteCount = _serviceManager.Information.GetValue<long>("Network_SentByteCount");
+
+                    lock (_sentInfomation.LockObject)
+                    {
+                        _sentInfomation.AverageTraffics[_sentInfomation.Round++]
+                            = ((decimal)(sentByteCount - _sentInfomation.PreviousTraffic)) * 1000 / sw.ElapsedMilliseconds;
+                        _sentInfomation.PreviousTraffic = sentByteCount;
+
+                        if (_sentInfomation.Round >= _sentInfomation.AverageTraffics.Length)
+                        {
+                            _sentInfomation.Round = 0;
+                        }
+                    }
+
+                    lock (_receivedInfomation.LockObject)
+                    {
+                        _receivedInfomation.AverageTraffics[_receivedInfomation.Round++]
+                            = ((decimal)(receivedByteCount - _receivedInfomation.PreviousTraffic)) * 1000 / sw.ElapsedMilliseconds;
+                        _receivedInfomation.PreviousTraffic = receivedByteCount;
+
+                        if (_receivedInfomation.Round >= _receivedInfomation.AverageTraffics.Length)
+                        {
+                            _receivedInfomation.Round = 0;
+                        }
+                    }
+
+                    sw.Restart();
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
 
         private void Setting_DiskSpaceWatch()
@@ -212,6 +346,17 @@ namespace Amoeba.Interface
                 .Publish(new OptionsWindowViewModel(_serviceManager));
         }
 
+        private void Website()
+        {
+            Process.Start("http://alliance-network.cloud/");
+        }
+
+        private void Version()
+        {
+            Messenger.Instance.GetEvent<VersionWindowShowEvent>()
+                   .Publish(new VersionWindowViewModel());
+        }
+
         private void Save()
         {
             App.Current.Dispatcher.Invoke(() =>
@@ -224,6 +369,8 @@ namespace Amoeba.Interface
             _trustManager.Save();
 
             _serviceManager.Save();
+
+            SettingsManager.Instance.Save();
         }
 
         protected override void Dispose(bool disposing)
@@ -233,8 +380,17 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                _trafficViewTaskManager.Stop();
+                _trafficViewTaskManager.Dispose();
+
+                _trafficMonitorTaskManager.Stop();
+                _trafficMonitorTaskManager.Dispose();
+
                 _diskSpaceWatchTimer.Stop();
                 _diskSpaceWatchTimer.Dispose();
+
+                _backupTimer.Stop();
+                _backupTimer.Dispose();
 
                 _serviceManager.Stop();
 

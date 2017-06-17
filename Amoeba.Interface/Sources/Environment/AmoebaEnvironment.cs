@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows.Media.Imaging;
 using Nett;
+using Omnius.Base;
 
 namespace Amoeba.Interface
 {
@@ -10,16 +11,25 @@ namespace Amoeba.Interface
         public static Version Version { get; private set; }
         public static EnvironmentPaths Paths { get; private set; }
         public static EnvironmentIcons Icons { get; private set; }
+        public static EnvironmentImages Images { get; private set; }
 
         public static EnvironmentConfig Config { get; private set; }
 
         static AmoebaEnvironment()
         {
-            Version = new Version(5, 0, 4);
-            Paths = new EnvironmentPaths();
-            Icons = new EnvironmentIcons();
+            try
+            {
+                Version = new Version(5, 0, 4);
+                Paths = new EnvironmentPaths();
+                Icons = new EnvironmentIcons();
+                Images = new EnvironmentImages();
 
-            LoadConfig();
+                LoadConfig();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
 
         private static void LoadConfig()
@@ -62,17 +72,11 @@ namespace Amoeba.Interface
         {
             public BitmapImage AmoebaIcon { get; }
             public BitmapImage BoxIcon { get; }
-            public BitmapImage GreenIcon { get; }
-            public BitmapImage RedIcon { get; }
-            public BitmapImage YelloIcon { get; }
 
             public EnvironmentIcons()
             {
                 this.AmoebaIcon = GetIcon("Amoeba.ico");
                 this.BoxIcon = GetIcon("Files/Box.ico");
-                this.GreenIcon = GetIcon("States/Green.png");
-                this.RedIcon = GetIcon("States/Red.png");
-                this.YelloIcon = GetIcon("States/Yello.png");
             }
 
             private static BitmapImage GetIcon(string path)
@@ -83,6 +87,41 @@ namespace Amoeba.Interface
 
                     icon.BeginInit();
                     icon.StreamSource = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), "Resources/Icons/", path), FileMode.Open, FileAccess.Read, FileShare.Read);
+                    icon.EndInit();
+                    if (icon.CanFreeze) icon.Freeze();
+
+                    return icon;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+        }
+
+        public class EnvironmentImages
+        {
+            public BitmapImage Amoeba { get; }
+            public BitmapImage GreenBall { get; }
+            public BitmapImage RedBall { get; }
+            public BitmapImage YelloBall { get; }
+
+            public EnvironmentImages()
+            {
+                this.Amoeba = GetImage("Amoeba.png");
+                this.GreenBall = GetImage("States/Green.png");
+                this.RedBall = GetImage("States/Red.png");
+                this.YelloBall = GetImage("States/Yello.png");
+            }
+
+            private static BitmapImage GetImage(string path)
+            {
+                try
+                {
+                    var icon = new BitmapImage();
+
+                    icon.BeginInit();
+                    icon.StreamSource = new FileStream(Path.Combine(Directory.GetCurrentDirectory(), "Resources/Images/", path), FileMode.Open, FileAccess.Read, FileShare.Read);
                     icon.EndInit();
                     if (icon.CanFreeze) icon.Freeze();
 

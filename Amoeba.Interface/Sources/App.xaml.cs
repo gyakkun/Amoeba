@@ -273,11 +273,6 @@ namespace Amoeba.Interface
                 }
 
                 this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
-
-                {
-                    SettingsManager.Instance.Load();
-                    Backup.Instance.SaveEvent += () => SettingsManager.Instance.Save();
-                }
             }
             catch (Exception ex)
             {
@@ -290,7 +285,7 @@ namespace Amoeba.Interface
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            SettingsManager.Instance.Save();
+
         }
 
         static class NativeMethods

@@ -19,49 +19,43 @@ using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Omnius.Security;
+using System.Diagnostics;
 
 namespace Amoeba.Interface
 {
-    class NameEditWindowViewModel : ManagerBase
+    class VersionWindowViewModel : ManagerBase
     {
-        private string _name;
-
         private Settings _settings;
 
         public event EventHandler<EventArgs> CloseEvent;
-        public event Action<string> Callback;
-
-        public ReactiveProperty<string> Name { get; private set; }
-
-        public ReactiveCommand OkCommand { get; private set; }
 
         public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
+
+        public ReactiveCommand LicenseCommand { get; private set; }
+        public ReactiveCommand CloseCommand { get; private set; }
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public NameEditWindowViewModel(string name)
+        public VersionWindowViewModel()
         {
-            _name = name;
-
             this.Init();
-
-            this.Name.Value = _name;
         }
 
         private void Init()
         {
             {
-                this.Name = new ReactiveProperty<string>().AddTo(_disposable);
+                this.CloseCommand = new ReactiveCommand().AddTo(_disposable);
+                this.CloseCommand.Subscribe(() => this.Close()).AddTo(_disposable);
 
-                this.OkCommand = new ReactiveCommand().AddTo(_disposable);
-                this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
+                this.LicenseCommand = new ReactiveCommand().AddTo(_disposable);
+                this.LicenseCommand.Subscribe(() => this.License()).AddTo(_disposable);
 
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
             }
 
             {
-                string configPath = System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(NameEditWindow));
+                string configPath = System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(VersionWindow));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -80,12 +74,20 @@ namespace Amoeba.Interface
             this.CloseEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        private void Ok()
+        private void License()
         {
-            _name = this.Name.Value;
+            try
+            {
+                Process.Start("https://github.com/Alliance-Network/Amoeba/blob/master/LICENSE");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
 
-            this.Callback?.Invoke(_name);
-
+        private void Close()
+        {
             this.OnCloseEvent();
         }
 

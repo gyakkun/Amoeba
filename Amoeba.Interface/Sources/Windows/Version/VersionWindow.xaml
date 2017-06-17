@@ -1,0 +1,71 @@
+﻿<omnius:RestorableWindow
+        x:Class="Amoeba.Interface.VersionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:Amoeba.Interface"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+        Title="{Binding Path=VersionWindow_Title, Source={StaticResource Languages}}"
+        x:ClassModifier="internal"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        TextElement.FontSize="13"
+        TextElement.FontWeight="Regular"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
+        mc:Ignorable="d">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Margin="16,16,0,0" Orientation="Horizontal">
+                        <Label
+                                Height="64"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                VerticalContentAlignment="Center"
+                                Content="Amoeba "
+                                FontSize="48" />
+                        <Label
+                                Height="64"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                VerticalContentAlignment="Center"
+                                Content="{Binding Source={x:Static local:AmoebaEnvironment.Version}}"
+                                FontSize="48" />
+                    </StackPanel>
+                    <Label
+                            Height="32"
+                            Margin="16,16,16,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            VerticalContentAlignment="Center"
+                            Content="Copyright © Lyrise 2009-2017" />
+                </StackPanel>
+                <Image
+                        Width="256"
+                        Height="256"
+                        Margin="16,16,16,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Source="{Binding Path=Amoeba, Source={x:Static local:AmoebaEnvironment.Images}}" />
+            </StackPanel>
+            <Button
+                    Width="120"
+                    Height="32"
+                    Margin="0,16,16,16"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Command="{Binding Path=CloseCommand}"
+                    Content="{Binding Path=VersionWindow_Close, Source={StaticResource Languages}}"
+                    IsDefault="True" />
+        </StackPanel>
+    </Grid>
+</omnius:RestorableWindow>

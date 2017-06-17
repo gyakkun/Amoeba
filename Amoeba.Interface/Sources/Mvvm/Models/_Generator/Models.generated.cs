@@ -84,29 +84,29 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<Signature> _trustSignatures;
+        private ObservableCollection<Omnius.Security.Signature> _trustSignatures;
 
         [DataMember(Name = nameof(TrustSignatures))]
-        public ObservableCollection<Signature> TrustSignatures
+        public ObservableCollection<Omnius.Security.Signature> TrustSignatures
         {
             get
             {
                 if (_trustSignatures == null)
-                    _trustSignatures = new ObservableCollection<Signature>();
+                    _trustSignatures = new ObservableCollection<Omnius.Security.Signature>();
 
                 return _trustSignatures;
             }
         }
 
-        private ObservableCollection<Signature> _untrustSignatures;
+        private ObservableCollection<Omnius.Security.Signature> _untrustSignatures;
 
         [DataMember(Name = nameof(UntrustSignatures))]
-        public ObservableCollection<Signature> UntrustSignatures
+        public ObservableCollection<Omnius.Security.Signature> UntrustSignatures
         {
             get
             {
                 if (_untrustSignatures == null)
-                    _untrustSignatures = new ObservableCollection<Signature>();
+                    _untrustSignatures = new ObservableCollection<Omnius.Security.Signature>();
 
                 return _untrustSignatures;
             }
@@ -433,29 +433,29 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<Signature> _trustSignatures;
+        private ObservableCollection<Omnius.Security.Signature> _trustSignatures;
 
         [DataMember(Name = nameof(TrustSignatures))]
-        public ObservableCollection<Signature> TrustSignatures
+        public ObservableCollection<Omnius.Security.Signature> TrustSignatures
         {
             get
             {
                 if (_trustSignatures == null)
-                    _trustSignatures = new ObservableCollection<Signature>();
+                    _trustSignatures = new ObservableCollection<Omnius.Security.Signature>();
 
                 return _trustSignatures;
             }
         }
 
-        private ObservableCollection<Signature> _untrustSignatures;
+        private ObservableCollection<Omnius.Security.Signature> _untrustSignatures;
 
         [DataMember(Name = nameof(UntrustSignatures))]
-        public ObservableCollection<Signature> UntrustSignatures
+        public ObservableCollection<Omnius.Security.Signature> UntrustSignatures
         {
             get
             {
                 if (_untrustSignatures == null)
-                    _untrustSignatures = new ObservableCollection<Signature>();
+                    _untrustSignatures = new ObservableCollection<Omnius.Security.Signature>();
 
                 return _untrustSignatures;
             }
@@ -493,15 +493,15 @@ namespace Amoeba.Interface
 
         public OptionsSubscribeInfo() { }
 
-        private ObservableCollection<Signature> _subscribeSignatures;
+        private ObservableCollection<Omnius.Security.Signature> _subscribeSignatures;
 
         [DataMember(Name = nameof(SubscribeSignatures))]
-        public ObservableCollection<Signature> SubscribeSignatures
+        public ObservableCollection<Omnius.Security.Signature> SubscribeSignatures
         {
             get
             {
                 if (_subscribeSignatures == null)
-                    _subscribeSignatures = new ObservableCollection<Signature>();
+                    _subscribeSignatures = new ObservableCollection<Omnius.Security.Signature>();
 
                 return _subscribeSignatures;
             }
@@ -806,7 +806,7 @@ namespace Amoeba.Interface
 
         public RelationSignatureInfo() { }
 
-        private Signature _signature;
+        private Omnius.Security.Signature _signature;
 
         [DataMember(Name = nameof(Signature))]
         public Signature Signature
@@ -1105,6 +1105,25 @@ namespace Amoeba.Interface
             }
         }
 
+        private bool _isUpdated;
+
+        [DataMember(Name = nameof(IsUpdated))]
+        public bool IsUpdated
+        {
+            get
+            {
+                return _isUpdated;
+            }
+            set
+            {
+                if (_isUpdated != value)
+                {
+                    _isUpdated = value;
+                    this.OnPropertyChanged(nameof(IsUpdated));
+                }
+            }
+        }
+
         private SearchCondition _condition;
 
         [DataMember(Name = nameof(Condition))]
@@ -1179,15 +1198,15 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<SearchContains<Signature>> _searchSignatures;
+        private ObservableCollection<SearchContains<Omnius.Security.Signature>> _searchSignatures;
 
         [DataMember(Name = nameof(SearchSignatures))]
-        public ObservableCollection<SearchContains<Signature>> SearchSignatures
+        public ObservableCollection<SearchContains<Omnius.Security.Signature>> SearchSignatures
         {
             get
             {
                 if (_searchSignatures == null)
-                    _searchSignatures = new ObservableCollection<SearchContains<Signature>>();
+                    _searchSignatures = new ObservableCollection<SearchContains<Omnius.Security.Signature>>();
 
                 return _searchSignatures;
             }
@@ -1351,7 +1370,7 @@ namespace Amoeba.Interface
 
         public SubscribeStoreInfo() { }
 
-        private Signature _authorSignature;
+        private Omnius.Security.Signature _authorSignature;
 
         [DataMember(Name = nameof(AuthorSignature))]
         public Signature AuthorSignature

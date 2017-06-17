@@ -30,13 +30,11 @@ namespace Amoeba.Interface
     /// </summary>
     public partial class MainWindow : RestorableWindow
     {
-        private volatile bool _isClosed = false;
         private System.Windows.Forms.NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
         private WindowState _windowState;
 
-        private WatchTimer _backupTimer;
-
         private volatile bool _isSessionEnding = false;
+        private volatile bool _isClosed = false;
 
         private CompositeDisposable _disposable = new CompositeDisposable();
 
@@ -125,6 +123,14 @@ namespace Amoeba.Interface
                     window.ShowDialog();
                 }).AddTo(_disposable);
 
+            Messenger.Instance.GetEvent<VersionWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new VersionWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
             Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
                 .Subscribe(vm =>
                 {
@@ -188,9 +194,6 @@ namespace Amoeba.Interface
             base.OnClosed(e);
 
             _isClosed = true;
-
-            _backupTimer.Stop();
-            _backupTimer.Dispose();
 
             if (this.DataContext is IDisposable disposable)
             {

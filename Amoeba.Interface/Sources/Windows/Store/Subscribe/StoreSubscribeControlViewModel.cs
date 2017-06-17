@@ -137,7 +137,7 @@ namespace Amoeba.Interface
                 int version = _settings.Load("Version", () => 0);
 
                 {
-                    var model = _settings.Load("Tab", () =>
+                    var model = _settings.Load("SubscribeCategoryInfo", () =>
                     {
                         var categoryInfo = new SubscribeCategoryInfo() { Name = "Category", IsExpanded = true };
                         categoryInfo.StoreInfos.Add(new SubscribeStoreInfo() { AuthorSignature = Signature.Parse("Lyrise@i-2IpSdusn_TKfn6NSECLYRVO4r51cpHZ5wFgBo_0eU") });
@@ -522,7 +522,7 @@ namespace Amoeba.Interface
             App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
-                _settings.Save("Tab", this.TabViewModel.Value.Model);
+                _settings.Save("SubscribeCategoryInfo", this.TabViewModel.Value.Model);
                 _settings.Save("SortInfo", _sortInfo);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });

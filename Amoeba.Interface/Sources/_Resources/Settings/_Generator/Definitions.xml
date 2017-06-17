@@ -6,7 +6,6 @@
 
   <Property Type="AccountInfo" Name="AccountInfo" IsEditable="true" />
   <Property Type="LockedHashSet(Signature)" Name="SubscribeSignatures" />
-  
   <Property Type="ObservableCollection(PublishDirectoryInfo)" Name="PublishDirectoryInfos" />
   <Property Type="LockedHashSet(DownloadItemInfo)" Name="DownloadItemInfos" />
 

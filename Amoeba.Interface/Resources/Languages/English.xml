@@ -53,7 +53,10 @@
   <Property Name="MainWindow_Options" Value="Options" />
   <Property Name="MainWindow_Languages" Value="Languages" />
   <Property Name="MainWindow_Help" Value="Help" />
+  <Property Name="MainWindow_Website" Value="Website" />
   <Property Name="MainWindow_Version" Value="Version" />
+  <Property Name="MainWindow_Traffic_Send" Value="Send:" />
+  <Property Name="MainWindow_Traffic_Receive" Value="Receive:" />
   <Property Name="MainWindow_Cloud" Value="Cloud" />
   <Property Name="MainWindow_Chat" Value="Chat" />
   <Property Name="MainWindow_Store" Value="Store" />
@@ -123,9 +126,14 @@
   <Property Name="OptionsWindow_Ok" Value="Ok" />
   <Property Name="OptionsWindow_Cancel" Value="Cancel" />
 
+  <Property Name="VersionWindow_Title" Value="Version information" />
+  <Property Name="VersionWindow_Close" Value="Close" />
+
   <Property Name="CloudControl_Connection" Value="Connection" />
   <Property Name="CloudControl_State" Value="State" />
   <Property Name="CloudControl_Log" Value="Log" />
+  <Property Name="CloudControl_Location" Value="Location" />
+  <Property Name="CloudControl_Uri" Value="Uri" />
   <Property Name="CloudControl_Copy" Value="Copy" />
   <Property Name="CloudControl_Paste" Value="Paste" />
   <Property Name="CloudControl_Type" Value="Type" />
@@ -141,6 +149,19 @@
   <Property Name="StoreControl_Publish" Value="Publish" />
   <Property Name="StoreControl_State" Value="State" />
   <Property Name="StoreControl_Share" Value="Share" />
+
+  <Property Name="StoreSearchControl_Download" Value="Download" />
+  <Property Name="StoreSearchControl_NewSearch" Value="New search" />
+  <Property Name="StoreSearchControl_Edit" Value="Edit" />
+  <Property Name="StoreSearchControl_Delete" Value="Delete" />
+  <Property Name="StoreSearchControl_Cut" Value="Cut" />
+  <Property Name="StoreSearchControl_Copy" Value="Copy" />
+  <Property Name="StoreSearchControl_Paste" Value="Paste" />
+  <Property Name="StoreSearchControl_Name" Value="Name" />
+  <Property Name="StoreSearchControl_Signature" Value="Signature" />
+  <Property Name="StoreSearchControl_Length" Value="Length" />
+  <Property Name="StoreSearchControl_CreationTime" Value="CreationTime" />
+  <Property Name="StoreSearchControl_State" Value="State" />
 
   <Property Name="StoreSubscribeControl_Download" Value="Download" />
   <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />

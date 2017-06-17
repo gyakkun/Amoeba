@@ -137,6 +137,8 @@
     <Compile Include="Sources\Windows\Store\Search\StoreSearchControl.xaml.cs">
       <DependentUpon>StoreSearchControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Sources\Windows\Store\Search\StoreSearchControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Store\Search\ViewModels\SearchItemViewModel.cs" />
     <Compile Include="Sources\Windows\Store\State\StoreStateControlViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControlViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml.cs">
@@ -159,6 +161,15 @@
       <DependentUpon>NameEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Version\VersionWindow.xaml.cs">
+      <DependentUpon>VersionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Version\VersionWindowViewModel.cs" />
+    <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
+      <DependentUpon>LanguagesManager.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Include="Sources\_Resources\Settings\SettingsManager.cs" />
     <Compile Include="Sources\_Resources\Settings\_Generator\SettingsManager.generated.cs">
       <AutoGen>True</AutoGen>
@@ -210,11 +221,6 @@
     </Compile>
     <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
-    <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LanguagesManager.tt</DependentUpon>
-    </Compile>
     <Compile Include="Sources\Environment\AmoebaEnvironment.cs" />
     <Compile Include="Sources\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -244,6 +250,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Sources\Windows\Version\VersionWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -252,13 +262,16 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Icons\States\Green.png">
+    <Content Include="Resources\Images\States\Green.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Icons\States\Red.png">
+    <Content Include="Resources\Images\States\Red.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\Icons\States\Yello.png">
+    <Content Include="Resources\Images\States\Yello.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\Amoeba.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Languages\Japanese.xml">
@@ -274,6 +287,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Models.generated.cs</LastGenOutput>
     </Content>
+    <Content Include="Sources\_Resources\Languages\_Generator\LanguagesManager.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LanguagesManager.generated.cs</LastGenOutput>
+    </Content>
     <Content Include="Sources\_Resources\Settings\_Generator\SettingsManager.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SettingsManager.generated.cs</LastGenOutput>
@@ -288,10 +305,6 @@
     <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml">
       <SubType>Designer</SubType>
     </Resource>
-    <Content Include="Sources\_Resources\Languages\_Generator\LanguagesManager.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>LanguagesManager.generated.cs</LastGenOutput>
-    </Content>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>

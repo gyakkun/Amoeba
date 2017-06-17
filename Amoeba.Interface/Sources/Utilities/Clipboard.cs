@@ -468,5 +468,44 @@ namespace Amoeba.Interface
                 System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
+
+        public static bool ContainsSearchInfo()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_SearchInfos");
+            }
+        }
+
+        public static IEnumerable<SearchInfo> GetSearchInfos()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_SearchInfos"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<SearchInfo>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return Enumerable.Empty<SearchInfo>();
+            }
+        }
+
+        public static void SetSearchInfos(IEnumerable<SearchInfo> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_SearchInfos", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
     }
 }

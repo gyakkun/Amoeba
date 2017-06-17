@@ -100,6 +100,7 @@
   <Class Name="SearchInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
     <Property Type="SearchCondition" Name="Condition" />
     <Property Type="ObservableCollection(SearchInfo)" Name="Children" />
   </Class>

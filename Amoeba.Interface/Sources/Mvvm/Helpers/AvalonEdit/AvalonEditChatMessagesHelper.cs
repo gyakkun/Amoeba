@@ -213,9 +213,9 @@ namespace Amoeba.Interface
                     if (result.Type == "State")
                     {
                         var image = new Image();
-                        if (result.Value == "#") image.Source = AmoebaEnvironment.Icons.GreenIcon;
-                        else if (result.Value == "!") image.Source = AmoebaEnvironment.Icons.RedIcon;
-                        else if (result.Value == "@") image.Source = AmoebaEnvironment.Icons.YelloIcon;
+                        if (result.Value == "#") image.Source = AmoebaEnvironment.Images.GreenBall;
+                        else if (result.Value == "!") image.Source = AmoebaEnvironment.Images.RedBall;
+                        else if (result.Value == "@") image.Source = AmoebaEnvironment.Images.YelloBall;
 
                         var element = new CustomObjectElement(result.Value, image);
 

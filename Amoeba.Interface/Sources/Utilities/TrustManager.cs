@@ -24,6 +24,7 @@ namespace Amoeba.Interface
         private Settings _settings;
 
         private LockedHashDictionary<Signature, BroadcastMessage<Profile>> _cacheProfiles = new LockedHashDictionary<Signature, BroadcastMessage<Profile>>();
+        private LockedHashDictionary<Signature, BroadcastMessage<Store>> _cacheStores = new LockedHashDictionary<Signature, BroadcastMessage<Store>>();
 
         private TaskManager _watchTaskManager;
 
@@ -96,7 +97,7 @@ namespace Amoeba.Interface
                     }
                 }
 
-                trustSignatures.UnionWith(profiles.Select(n => n.AuthorSignature).ToArray());
+                trustSignatures.UnionWith(profiles.Select(n => n.AuthorSignature));
             }
 
             _serviceManager.SetSearchSignatures(trustSignatures);
@@ -209,6 +210,25 @@ namespace Amoeba.Interface
             return infos[0];
         }
 
+        public IEnumerable<BroadcastMessage<Store>> GetStores()
+        {
+            var stores = new List<BroadcastMessage<Store>>();
+
+            foreach (var signature in _serviceManager.SearchSignatures)
+            {
+                var store = _serviceManager.GetStore(signature).Result;
+
+                if (store != null) _cacheStores[signature] = store;
+                else _cacheStores.TryGetValue(signature, out store);
+
+                if (store == null) continue;
+
+                stores.Add(store);
+            }
+
+            return stores;
+        }
+
         #region ISettings
 
         public void Load()
@@ -222,6 +242,11 @@ namespace Amoeba.Interface
                     _cacheProfiles.Add(profile.AuthorSignature, profile);
                 }
 
+                foreach (var store in _settings.Load("CacheStores", () => new List<BroadcastMessage<Store>>()))
+                {
+                    _cacheStores.Add(store.AuthorSignature, store);
+                }
+
                 _watchTaskManager.Start();
             }
         }
@@ -233,6 +258,7 @@ namespace Amoeba.Interface
                 _settings.Save("Version", 0);
 
                 _settings.Save("CacheProfiles", _cacheProfiles.Select(n => n.Value).ToList());
+                _settings.Save("CacheStores", _cacheStores.Select(n => n.Value).ToList());
             }
         }
 

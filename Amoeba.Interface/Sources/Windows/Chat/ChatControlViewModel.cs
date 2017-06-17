@@ -126,7 +126,7 @@ namespace Amoeba.Interface
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
 
                 {
-                    var model = _settings.Load("Tab", () =>
+                    var model = _settings.Load("ChatCategoryInfo", () =>
                     {
                         var categoryInfo = new ChatCategoryInfo() { Name = "Category", IsExpanded = true };
                         categoryInfo.ThreadInfos.Add(new ChatThreadInfo() { Tag = new Tag("Amoeba", Sha256.ComputeHash("Amoeba")) });
@@ -147,7 +147,7 @@ namespace Amoeba.Interface
         {
             if (viewModel is ChatCategoryViewModel chatCategoryViewModel)
             {
-                this.Info.Value = new AvalonEditChatMessagesInfo(null, null);
+                this.Info.Value = null;
             }
             else if (viewModel is ChatThreadViewModel chatViewModel)
             {
@@ -315,7 +315,7 @@ namespace Amoeba.Interface
             {
                 _settings.Save("Version", 0);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
-                _settings.Save("Tab", this.TabViewModel.Value.Model);
+                _settings.Save("ChatCategoryInfo", this.TabViewModel.Value.Model);
             });
         }
 

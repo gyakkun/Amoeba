@@ -28,9 +28,11 @@ namespace Amoeba.Interface
     class StoreControlViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
+        private TrustManager _trustManager;
 
         private Settings _settings;
 
+        public StoreSearchControlViewModel StoreSearchControlViewModel { get; private set; }
         public StoreSubscribeControlViewModel StoreSubscribeControlViewModel { get; private set; }
         public StorePublishControlViewModel StorePublishControlViewModel { get; private set; }
         public StoreStateControlViewModel StoreStateControlViewModel { get; private set; }
@@ -40,9 +42,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public StoreControlViewModel(ServiceManager serviceManager)
+        public StoreControlViewModel(ServiceManager serviceManager, TrustManager trustManager)
         {
             _serviceManager = serviceManager;
+            _trustManager = trustManager;
 
             this.Init();
         }
@@ -50,6 +53,7 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
+                this.StoreSearchControlViewModel = new StoreSearchControlViewModel(_serviceManager, _trustManager);
                 this.StoreSubscribeControlViewModel = new StoreSubscribeControlViewModel(_serviceManager);
                 this.StorePublishControlViewModel = new StorePublishControlViewModel(_serviceManager);
                 this.StoreStateControlViewModel = new StoreStateControlViewModel(_serviceManager);

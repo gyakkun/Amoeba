@@ -20,6 +20,8 @@ namespace Amoeba.Interface
         private volatile bool _disposed;
 
         public ReadOnlyReactiveCollection<SearchViewModel> Children { get; private set; }
+        public ReactiveProperty<bool> IsUpdate { get; private set; }
+        public ReactiveProperty<int> Count { get; private set; }
 
         public SearchInfo Model { get; private set; }
 
@@ -31,6 +33,8 @@ namespace Amoeba.Interface
             this.Name = model.ObserveProperty(n => n.Name).ToReactiveProperty().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.Children = model.Children.ToReadOnlyReactiveCollection(n => new SearchViewModel(this, n)).AddTo(_disposable);
+            this.IsUpdate = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);
+            this.Count = new ReactiveProperty<int>().AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Search"; } }

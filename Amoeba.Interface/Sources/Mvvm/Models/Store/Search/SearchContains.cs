@@ -13,6 +13,8 @@ namespace Amoeba.Interface
         private bool _contains;
         private T _value;
 
+        private SearchContains() { }
+
         public SearchContains(bool contains, T value)
         {
             this.Contains = contains;

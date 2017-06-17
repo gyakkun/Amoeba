@@ -48,7 +48,10 @@ namespace Amoeba.Interface
         public string MainWindow_Options { get { return this.Translate("MainWindow_Options"); } }
         public string MainWindow_Languages { get { return this.Translate("MainWindow_Languages"); } }
         public string MainWindow_Help { get { return this.Translate("MainWindow_Help"); } }
+        public string MainWindow_Website { get { return this.Translate("MainWindow_Website"); } }
         public string MainWindow_Version { get { return this.Translate("MainWindow_Version"); } }
+        public string MainWindow_Traffic_Send { get { return this.Translate("MainWindow_Traffic_Send"); } }
+        public string MainWindow_Traffic_Receive { get { return this.Translate("MainWindow_Traffic_Receive"); } }
         public string MainWindow_Cloud { get { return this.Translate("MainWindow_Cloud"); } }
         public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }
@@ -115,9 +118,13 @@ namespace Amoeba.Interface
         public string OptionsWindow_Paste { get { return this.Translate("OptionsWindow_Paste"); } }
         public string OptionsWindow_Ok { get { return this.Translate("OptionsWindow_Ok"); } }
         public string OptionsWindow_Cancel { get { return this.Translate("OptionsWindow_Cancel"); } }
+        public string VersionWindow_Title { get { return this.Translate("VersionWindow_Title"); } }
+        public string VersionWindow_Close { get { return this.Translate("VersionWindow_Close"); } }
         public string CloudControl_Connection { get { return this.Translate("CloudControl_Connection"); } }
         public string CloudControl_State { get { return this.Translate("CloudControl_State"); } }
         public string CloudControl_Log { get { return this.Translate("CloudControl_Log"); } }
+        public string CloudControl_Location { get { return this.Translate("CloudControl_Location"); } }
+        public string CloudControl_Uri { get { return this.Translate("CloudControl_Uri"); } }
         public string CloudControl_Copy { get { return this.Translate("CloudControl_Copy"); } }
         public string CloudControl_Paste { get { return this.Translate("CloudControl_Paste"); } }
         public string CloudControl_Type { get { return this.Translate("CloudControl_Type"); } }
@@ -132,6 +139,18 @@ namespace Amoeba.Interface
         public string StoreControl_Publish { get { return this.Translate("StoreControl_Publish"); } }
         public string StoreControl_State { get { return this.Translate("StoreControl_State"); } }
         public string StoreControl_Share { get { return this.Translate("StoreControl_Share"); } }
+        public string StoreSearchControl_Download { get { return this.Translate("StoreSearchControl_Download"); } }
+        public string StoreSearchControl_NewSearch { get { return this.Translate("StoreSearchControl_NewSearch"); } }
+        public string StoreSearchControl_Edit { get { return this.Translate("StoreSearchControl_Edit"); } }
+        public string StoreSearchControl_Delete { get { return this.Translate("StoreSearchControl_Delete"); } }
+        public string StoreSearchControl_Cut { get { return this.Translate("StoreSearchControl_Cut"); } }
+        public string StoreSearchControl_Copy { get { return this.Translate("StoreSearchControl_Copy"); } }
+        public string StoreSearchControl_Paste { get { return this.Translate("StoreSearchControl_Paste"); } }
+        public string StoreSearchControl_Name { get { return this.Translate("StoreSearchControl_Name"); } }
+        public string StoreSearchControl_Signature { get { return this.Translate("StoreSearchControl_Signature"); } }
+        public string StoreSearchControl_Length { get { return this.Translate("StoreSearchControl_Length"); } }
+        public string StoreSearchControl_CreationTime { get { return this.Translate("StoreSearchControl_CreationTime"); } }
+        public string StoreSearchControl_State { get { return this.Translate("StoreSearchControl_State"); } }
         public string StoreSubscribeControl_Download { get { return this.Translate("StoreSubscribeControl_Download"); } }
         public string StoreSubscribeControl_NewCategory { get { return this.Translate("StoreSubscribeControl_NewCategory"); } }
         public string StoreSubscribeControl_NewStore { get { return this.Translate("StoreSubscribeControl_NewStore"); } }

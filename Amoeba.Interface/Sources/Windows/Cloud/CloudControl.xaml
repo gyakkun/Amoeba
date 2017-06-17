@@ -167,7 +167,7 @@
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Header="Location"
+                            Header="{Binding Path=CloudControl_Location, Source={StaticResource Languages}}"
                             Style="{DynamicResource MaterialDesignCardGroupBox}">
                         <GroupBox.HeaderTemplate>
                             <DataTemplate>
@@ -181,7 +181,7 @@
                                     VerticalAlignment="Top"
                                     HorizontalContentAlignment="Stretch"
                                     VerticalContentAlignment="Center"
-                                    Content="Uri:" />
+                                    Content="{Binding Path=CloudControl_Uri, Source={StaticResource Languages}}" />
                             <TextBox
                                     Height="32"
                                     Margin="240,0,0,0"

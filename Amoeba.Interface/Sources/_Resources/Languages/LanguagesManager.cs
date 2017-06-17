@@ -112,11 +112,8 @@ namespace Amoeba.Interface
         {
             if (!_dic.ContainsKey(value)) throw new ArgumentException();
 
-            if (value != _currentLanguage)
-            {
-                _currentLanguage = value;
-                this.OnPropertyChanged(null);
-            }
+            _currentLanguage = value;
+            this.OnPropertyChanged(null);
         }
 
         public string Translate(string key)
