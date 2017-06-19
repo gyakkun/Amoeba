@@ -43,117 +43,119 @@
             </Button>
         </DockPanel>
 
-        <TextBox
-                Grid.RowSpan="2"
-                Grid.Column="0"
-                Height="32"
-                Margin="8,0,8,0"
-                VerticalAlignment="Top"
-                md:HintAssist.Hint="{Binding Path=StoreSearchControl_SearchHint, Source={StaticResource Languages}}"
-                Text="{Binding Path=SearchInput.Value, UpdateSourceTrigger=PropertyChanged}">
-            <TextBox.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}" />
-            </TextBox.InputBindings>
-        </TextBox>
-
-        <TreeView
-                Grid.RowSpan="2"
-                Grid.Column="0"
-                Margin="0,32,0,0"
-                AllowDrop="True"
-                ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                    <i:InvokeCommandAction Command="{Binding Path=TabClickCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local:SearchViewModel}">
-                    <HierarchicalDataTemplate.ItemsSource>
-                        <Binding
-                                Converter="{StaticResource SortedCollectionConverter}"
-                                ConverterParameter="Name.Value"
-                                Path="Children" />
-                    </HierarchicalDataTemplate.ItemsSource>
-                    <TextBlock Text="{Binding Path=Name.Value}">
-                        <i:Interaction.Behaviors>
-                            <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
-                        </i:Interaction.Behaviors>
-                    </TextBlock>
-                </HierarchicalDataTemplate>
-            </TreeView.Resources>
-            <i:Interaction.Behaviors>
-                <omnius:IgnoreRequestBringIntoViewBehavior />
-                <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
-                <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
-            </i:Interaction.Behaviors>
-            <TreeView.ItemContainerStyle>
-                <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value, Mode=TwoWay}" />
-                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value, Mode=TwoWay}" />
-                    <Setter Property="omnius:StyleInteraction.Behaviors">
-                        <Setter.Value>
-                            <omnius:Behaviors>
-                                <omnius:IgnoreRequestBringIntoViewBehavior />
-                            </omnius:Behaviors>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </TreeView.ItemContainerStyle>
-            <TreeView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem
-                            Command="{Binding Path=TabNewSearchCommand}"
-                            Header="{Binding Path=StoreSearchControl_NewSearch, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+N">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="Plus" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem
-                            Command="{Binding Path=TabEditCommand}"
-                            Header="{Binding Path=StoreSearchControl_Edit, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+E">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="Pencil" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem
-                            Command="{Binding Path=TabDeleteCommand}"
-                            Header="{Binding Path=StoreSearchControl_Delete, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+D">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="Delete" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator />
-                    <MenuItem
-                            Command="{Binding Path=TabCutCommand}"
-                            Header="{Binding Path=StoreSearchControl_Cut, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+X">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="ContentCut" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem
-                            Command="{Binding Path=TabCopyCommand}"
-                            Header="{Binding Path=StoreSearchControl_Copy, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+C">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="ContentCopy" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem
-                            Command="{Binding Path=TabPasteCommand}"
-                            Header="{Binding Path=StoreSearchControl_Paste, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+V">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="ContentPaste" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </TreeView.ContextMenu>
-        </TreeView>
+        <Grid Grid.RowSpan="2" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="8" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBox
+                    Height="32"
+                    Margin="16,0,16,0"
+                    VerticalAlignment="Top"
+                    md:HintAssist.Hint="{Binding Path=StoreSearchControl_SearchHint, Source={StaticResource Languages}}"
+                    Text="{Binding Path=SearchInput.Value, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}" />
+                </TextBox.InputBindings>
+            </TextBox>
+            <TreeView
+                    Grid.Row="2"
+                    AllowDrop="True"
+                    ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding Path=TabClickCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type local:SearchViewModel}">
+                        <HierarchicalDataTemplate.ItemsSource>
+                            <Binding
+                                    Converter="{StaticResource SortedCollectionConverter}"
+                                    ConverterParameter="Name.Value"
+                                    Path="Children" />
+                        </HierarchicalDataTemplate.ItemsSource>
+                        <TextBlock Text="{Binding Path=Name.Value}">
+                            <i:Interaction.Behaviors>
+                                <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
+                            </i:Interaction.Behaviors>
+                        </TextBlock>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+                <i:Interaction.Behaviors>
+                    <omnius:IgnoreRequestBringIntoViewBehavior />
+                    <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
+                    <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
+                </i:Interaction.Behaviors>
+                <TreeView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding Path=IsSelected.Value, Mode=TwoWay}" />
+                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded.Value, Mode=TwoWay}" />
+                        <Setter Property="omnius:StyleInteraction.Behaviors">
+                            <Setter.Value>
+                                <omnius:Behaviors>
+                                    <omnius:IgnoreRequestBringIntoViewBehavior />
+                                </omnius:Behaviors>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                                Command="{Binding Path=TabNewSearchCommand}"
+                                Header="{Binding Path=StoreSearchControl_NewSearch, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+N">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="Plus" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                                Command="{Binding Path=TabEditCommand}"
+                                Header="{Binding Path=StoreSearchControl_Edit, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+E">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="Pencil" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                                Command="{Binding Path=TabDeleteCommand}"
+                                Header="{Binding Path=StoreSearchControl_Delete, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+D">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="Delete" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem
+                                Command="{Binding Path=TabCutCommand}"
+                                Header="{Binding Path=StoreSearchControl_Cut, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+X">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="ContentCut" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                                Command="{Binding Path=TabCopyCommand}"
+                                Header="{Binding Path=StoreSearchControl_Copy, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+C">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="ContentCopy" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                                Command="{Binding Path=TabPasteCommand}"
+                                Header="{Binding Path=StoreSearchControl_Paste, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+V">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="ContentPaste" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </TreeView.ContextMenu>
+            </TreeView>
+        </Grid>
 
         <GridSplitter
                 Grid.RowSpan="2"

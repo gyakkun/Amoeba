@@ -11,6 +11,9 @@
   <Property Name="SessionType_Connect" Value="Connect" />
   <Property Name="SessionType_Accept" Value="Accept" />
 
+  <Property Name="ManagerState_Start" Value="Start" />
+  <Property Name="ManagerState_Stop" Value="Stop" />
+
   <Property Name="Tag_Name" Value="Name" />
   <Property Name="Tag_Id" Value="ID" />
 
@@ -38,6 +41,7 @@
   <Property Name="DownloadState_Completed" Value="Completed" />
   <Property Name="DownloadState_Error" Value="Error" />
 
+  <Property Name="ConfirmWindow_Title" Value="Confirm" />
   <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
 
   <Property Name="NameEditWindow_Title" Value="Name edit" />
@@ -49,10 +53,15 @@
   <Property Name="MainWindow_Options" Value="Options" />
   <Property Name="MainWindow_Languages" Value="Languages" />
   <Property Name="MainWindow_Help" Value="Help" />
+  <Property Name="MainWindow_Website" Value="Website" />
   <Property Name="MainWindow_Version" Value="Version" />
+  <Property Name="MainWindow_Traffic_Send" Value="Send:" />
+  <Property Name="MainWindow_Traffic_Receive" Value="Receive:" />
   <Property Name="MainWindow_Cloud" Value="クラウド" />
   <Property Name="MainWindow_Chat" Value="Chat" />
   <Property Name="MainWindow_Store" Value="ストア" />
+  <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
+  <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
 
   <Property Name="RelationWindow_Title" Value="Relation" />
   <Property Name="RelationWindow_Trust" Value="Trust" />
@@ -117,9 +126,14 @@
   <Property Name="OptionsWindow_Ok" Value="Ok" />
   <Property Name="OptionsWindow_Cancel" Value="Cancel" />
 
+  <Property Name="VersionWindow_Title" Value="Version information" />
+  <Property Name="VersionWindow_Close" Value="Close" />
+
   <Property Name="CloudControl_Connection" Value="Connection" />
   <Property Name="CloudControl_State" Value="State" />
   <Property Name="CloudControl_Log" Value="Log" />
+  <Property Name="CloudControl_Location" Value="Location" />
+  <Property Name="CloudControl_Uri" Value="Uri" />
   <Property Name="CloudControl_Copy" Value="Copy" />
   <Property Name="CloudControl_Paste" Value="Paste" />
   <Property Name="CloudControl_Type" Value="タイプ" />
@@ -135,6 +149,51 @@
   <Property Name="StoreControl_Publish" Value="Publish" />
   <Property Name="StoreControl_State" Value="State" />
   <Property Name="StoreControl_Share" Value="Share" />
+
+  <Property Name="StoreSearchControl_SearchHint" Value="Search" />
+  <Property Name="StoreSearchControl_Download" Value="Download" />
+  <Property Name="StoreSearchControl_NewSearch" Value="New search" />
+  <Property Name="StoreSearchControl_Edit" Value="Edit" />
+  <Property Name="StoreSearchControl_Delete" Value="Delete" />
+  <Property Name="StoreSearchControl_Cut" Value="Cut" />
+  <Property Name="StoreSearchControl_Copy" Value="Copy" />
+  <Property Name="StoreSearchControl_Paste" Value="Paste" />
+  <Property Name="StoreSearchControl_Name" Value="Name" />
+  <Property Name="StoreSearchControl_Signature" Value="Signature" />
+  <Property Name="StoreSearchControl_Length" Value="Length" />
+  <Property Name="StoreSearchControl_CreationTime" Value="CreationTime" />
+  <Property Name="StoreSearchControl_State" Value="State" />
+
+  <Property Name="SearchInfoEditWindow_Title" Value="Search edit" />
+  <Property Name="SearchInfoEditWindow_SearchName" Value="Search name" />
+  <Property Name="SearchInfoEditWindow_Name" Value="Name" />
+  <Property Name="SearchInfoEditWindow_NameConditions" Value="Name conditions" />
+  <Property Name="SearchInfoEditWindow_Regex" Value="Regex" />
+  <Property Name="SearchInfoEditWindow_RegexConditions" Value="Regex conditions" />
+  <Property Name="SearchInfoEditWindow_Signature" Value="Signature" />
+  <Property Name="SearchInfoEditWindow_SignatureConditions" Value="Signature conditions" />
+  <Property Name="SearchInfoEditWindow_CreationTime" Value="Creation time" />
+  <Property Name="SearchInfoEditWindow_CreationTimeConditions" Value="Creation time conditions" />
+  <Property Name="SearchInfoEditWindow_Length" Value="Length" />
+  <Property Name="SearchInfoEditWindow_LengthConditions" Value="Length conditions" />
+  <Property Name="SearchInfoEditWindow_Metadata" Value="Metadata" />
+  <Property Name="SearchInfoEditWindow_MetadataConditions" Value="Metadata conditions" />
+  <Property Name="SearchInfoEditWindow_State" Value="States" />
+  <Property Name="SearchInfoEditWindow_StateConditions" Value="States conditions" />
+  <Property Name="SearchInfoEditWindow_Ok" Value="Ok" />
+  <Property Name="SearchInfoEditWindow_Cancel" Value="Cancel" />
+
+  <Property Name="SearchConditionsControl_Add" Value="Add" />
+  <Property Name="SearchConditionsControl_Edit" Value="Edit" />
+  <Property Name="SearchConditionsControl_Delete" Value="Delete" />
+  <Property Name="SearchConditionsControl_Copy" Value="Copy" />
+  <Property Name="SearchConditionsControl_Paste" Value="Paste" />
+  <Property Name="SearchConditionsControl_NotContains" Value="NotContains" />
+  <Property Name="SearchConditionsControl_Contains" Value="Contains" />
+  <Property Name="SearchConditionsControl_IgnoreCase" Value="Ignore case" />
+  <Property Name="SearchConditionsControl_Min" Value="Min" />
+  <Property Name="SearchConditionsControl_Max" Value="Max" />
+  <Property Name="SearchConditionsControl_Value" Value="Value" />
 
   <Property Name="StoreSubscribeControl_Download" Value="Download" />
   <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
