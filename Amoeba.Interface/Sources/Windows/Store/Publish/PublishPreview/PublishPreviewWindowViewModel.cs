@@ -27,14 +27,14 @@ namespace Amoeba.Interface
 {
     class PublishPreviewWindowViewModel : ManagerBase
     {
-        private PublishPreviewBoxInfo _previewBoxInfo;
+        private PublishPreviewCategoryInfo _previewBoxInfo;
 
         private Settings _settings;
 
         public event EventHandler<EventArgs> CloseEvent;
         public event Action Callback;
 
-        public ReactiveProperty<PublishPreviewBoxViewModel> TabViewModel { get; private set; }
+        public ReactiveProperty<PublishPreviewCategoryViewModel> TabViewModel { get; private set; }
         public ReactiveProperty<TreeViewModelBase> TabSelectedItem { get; private set; }
 
         public ReactiveCommand TabClickCommand { get; private set; }
@@ -55,7 +55,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public PublishPreviewWindowViewModel(PublishPreviewBoxInfo info)
+        public PublishPreviewWindowViewModel(PublishPreviewCategoryInfo info)
         {
             _previewBoxInfo = info;
 
@@ -65,8 +65,8 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
-                this.TabViewModel = new ReactiveProperty<PublishPreviewBoxViewModel>().AddTo(_disposable);
-                this.TabViewModel.Value = new PublishPreviewBoxViewModel(null, _previewBoxInfo);
+                this.TabViewModel = new ReactiveProperty<PublishPreviewCategoryViewModel>().AddTo(_disposable);
+                this.TabViewModel.Value = new PublishPreviewCategoryViewModel(null, _previewBoxInfo);
 
                 this.TabSelectedItem = new ReactiveProperty<TreeViewModelBase>().AddTo(_disposable);
                 this.TabSelectedItem.Subscribe((viewModel) => this.TabSelectChanged(viewModel)).AddTo(_disposable);
@@ -99,7 +99,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
 
             {
@@ -109,11 +109,11 @@ namespace Amoeba.Interface
 
         private void TabSelectChanged(TreeViewModelBase viewModel)
         {
-            if (viewModel is PublishPreviewBoxViewModel boxViewModel)
+            if (viewModel is PublishPreviewCategoryViewModel boxViewModel)
             {
                 var list = new List<PublishPreviewItemViewModel>();
 
-                foreach (var item in boxViewModel.Model.BoxInfos)
+                foreach (var item in boxViewModel.Model.CategoryInfos)
                 {
                     var vm = new PublishPreviewItemViewModel();
                     vm.Icon = AmoebaEnvironment.Icons.BoxIcon;
@@ -138,16 +138,16 @@ namespace Amoeba.Interface
             }
         }
 
-        private long GetBoxLength(PublishPreviewBoxInfo boxInfo)
+        private long GetBoxLength(PublishPreviewCategoryInfo boxInfo)
         {
             var seedInfos = new List<PublishPreviewSeedInfo>();
             {
-                var boxInfos = new List<PublishPreviewBoxInfo>();
+                var boxInfos = new List<PublishPreviewCategoryInfo>();
                 boxInfos.Add(boxInfo);
 
                 for (int i = 0; i < boxInfos.Count; i++)
                 {
-                    boxInfos.AddRange(boxInfos[i].BoxInfos);
+                    boxInfos.AddRange(boxInfos[i].CategoryInfos);
                     seedInfos.AddRange(boxInfos[i].SeedInfos);
                 }
             }
@@ -243,6 +243,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 this.Save();
 
                 _disposable.Dispose();

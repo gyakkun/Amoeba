@@ -68,6 +68,8 @@ namespace Amoeba.Interface
 
                     for (int i = 0; i < 32; i++)
                     {
+                        trustSignatures.UnionWith(targetSignatures);
+
                         var tempProfiles = this.GetProfiles(targetSignatures).ToList();
                         if (tempProfiles.Count == 0) break;
 
@@ -96,8 +98,6 @@ namespace Amoeba.Interface
                         _cacheProfiles.Add(profile.AuthorSignature, profile);
                     }
                 }
-
-                trustSignatures.UnionWith(profiles.Select(n => n.AuthorSignature));
             }
 
             _serviceManager.SetSearchSignatures(trustSignatures);

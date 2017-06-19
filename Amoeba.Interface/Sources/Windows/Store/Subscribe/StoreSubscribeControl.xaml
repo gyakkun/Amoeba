@@ -31,7 +31,7 @@
             <Button
                     Width="48"
                     Height="48"
-                    Margin="0,16,16,8"
+                    Margin="0,8,16,8"
                     HorizontalAlignment="Left"
                     Command="{Binding Path=DownloadCommand}"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
@@ -152,7 +152,7 @@
                     <MenuItem
                             Command="{Binding Path=TabCutCommand}"
                             Header="{Binding Path=StoreSubscribeControl_Cut, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+C">
+                            InputGestureText="Ctrl+X">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="ContentCut" />
                         </MenuItem.Icon>

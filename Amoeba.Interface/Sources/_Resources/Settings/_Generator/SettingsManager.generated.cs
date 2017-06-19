@@ -32,15 +32,15 @@ namespace Amoeba.Interface
             }
         }
 
-        private LockedHashSet<Omnius.Security.Signature> _subscribeSignatures;
+        private LockedHashSet<Signature> _subscribeSignatures;
 
         [DataMember(Name = nameof(SubscribeSignatures))]
-        public LockedHashSet<Omnius.Security.Signature> SubscribeSignatures
+        public LockedHashSet<Signature> SubscribeSignatures
         {
             get
             {
                 if (_subscribeSignatures == null)
-                    _subscribeSignatures = new LockedHashSet<Omnius.Security.Signature>();
+                    _subscribeSignatures = new LockedHashSet<Signature>();
 
                 return _subscribeSignatures;
             }

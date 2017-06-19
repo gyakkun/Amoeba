@@ -31,11 +31,12 @@ namespace Amoeba.Interface
         public event EventHandler<EventArgs> CloseEvent;
         public event Action<PublishDirectoryInfo> Callback;
 
-        public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
         public ReactiveProperty<string> Name { get; private set; }
         public ReactiveProperty<string> Path { get; private set; }
 
         public ReactiveCommand EditDialogCommand { get; private set; }
+
+        public ReactiveProperty<WindowSettings> WindowSettings { get; private set; }
 
         public ReactiveCommand OkCommand { get; private set; }
 
@@ -60,12 +61,13 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
-                this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
                 this.Name = new ReactiveProperty<string>().AddTo(_disposable);
                 this.Path = new ReactiveProperty<string>().AddTo(_disposable);
 
                 this.EditDialogCommand = new ReactiveCommand().AddTo(_disposable);
                 this.EditDialogCommand.Subscribe(() => this.EditDialog()).AddTo(_disposable);
+
+                this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
 
                 this.OkCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
@@ -82,7 +84,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
         }
 
@@ -137,6 +139,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 this.Save();
 
                 _disposable.Dispose();

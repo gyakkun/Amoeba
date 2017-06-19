@@ -37,6 +37,9 @@ namespace Amoeba.Interface
 
         private LockedList<SearchItemViewModel> _cache_SearchItems = new LockedList<SearchItemViewModel>();
 
+        public ReactiveProperty<string> SearchInput { get; private set; }
+        public ReactiveCommand SearchCommand { get; private set; }
+
         public ReactiveProperty<SearchViewModel> TabViewModel { get; private set; }
         public ReactiveProperty<TreeViewModelBase> TabSelectedItem { get; private set; }
         public DragAcceptDescription DragAcceptDescription { get; private set; }
@@ -95,6 +98,11 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
+                this.SearchInput = new ReactiveProperty<string>().AddTo(_disposable);
+
+                this.SearchCommand = this.SearchInput.Select(n => !string.IsNullOrWhiteSpace(n)).ToReactiveCommand().AddTo(_disposable);
+                this.SearchCommand.Subscribe(() => this.Search());
+
                 this.TabViewModel = new ReactiveProperty<SearchViewModel>().AddTo(_disposable);
 
                 this.TabSelectedItem = new ReactiveProperty<TreeViewModelBase>().AddTo(_disposable);
@@ -103,22 +111,22 @@ namespace Amoeba.Interface
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
 
-                this.TabNewSearchCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabNewSearchCommand = this.TabSelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.TabNewSearchCommand.Subscribe(() => this.TabNewSearch()).AddTo(_disposable);
 
-                this.TabEditCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabEditCommand = this.TabSelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.TabEditCommand.Subscribe(() => this.TabEdit()).AddTo(_disposable);
 
                 this.TabDeleteCommand = this.TabSelectedItem.Select(n => n != this.TabViewModel.Value).ToReactiveCommand().AddTo(_disposable);
                 this.TabDeleteCommand.Subscribe(() => this.TabDelete()).AddTo(_disposable);
 
-                this.TabCutCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabCutCommand = this.TabSelectedItem.Select(n => n != this.TabViewModel.Value).ToReactiveCommand().AddTo(_disposable);
                 this.TabCutCommand.Subscribe(() => this.TabCut()).AddTo(_disposable);
 
-                this.TabCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabCopyCommand = this.TabSelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
-                this.TabPasteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabPasteCommand = this.TabSelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
@@ -144,27 +152,27 @@ namespace Amoeba.Interface
                         var searchInfo = new SearchInfo() { Name = "Search", IsExpanded = true };
                         {
                             var pictureSearchItem = new SearchInfo() { Name = "Type - \"Picture\"" };
-                            pictureSearchItem.Condition.SearchRegexes.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(jpeg|jpg|jfif|gif|png|bmp)$", true)));
+                            pictureSearchItem.Conditions.SearchRegexes.Add(new SearchCondition<SearchRegex>(true, new SearchRegex(@"\.(jpeg|jpg|jfif|gif|png|bmp)$", true)));
                             searchInfo.Children.Add(pictureSearchItem);
 
                             var movieSearchItem = new SearchInfo() { Name = "Type - \"Movie\"" };
-                            movieSearchItem.Condition.SearchRegexes.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(mpeg|mpg|avi|divx|asf|wmv|rm|ogm|mov|flv|vob)$", true)));
+                            movieSearchItem.Conditions.SearchRegexes.Add(new SearchCondition<SearchRegex>(true, new SearchRegex(@"\.(mpeg|mpg|avi|divx|asf|wmv|rm|ogm|mov|flv|vob)$", true)));
                             searchInfo.Children.Add(movieSearchItem);
 
                             var musicSearchItem = new SearchInfo() { Name = "Type - \"Music\"" };
-                            musicSearchItem.Condition.SearchRegexes.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(mp3|wma|m4a|ogg|wav|mid|mod|flac|sid)$", true)));
+                            musicSearchItem.Conditions.SearchRegexes.Add(new SearchCondition<SearchRegex>(true, new SearchRegex(@"\.(mp3|wma|m4a|ogg|wav|mid|mod|flac|sid)$", true)));
                             searchInfo.Children.Add(musicSearchItem);
 
                             var archiveSearchItem = new SearchInfo() { Name = "Type - \"Archive\"" };
-                            archiveSearchItem.Condition.SearchRegexes.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(zip|rar|7z|lzh|iso|gz|bz|xz|tar|tgz|tbz|txz)$", true)));
+                            archiveSearchItem.Conditions.SearchRegexes.Add(new SearchCondition<SearchRegex>(true, new SearchRegex(@"\.(zip|rar|7z|lzh|iso|gz|bz|xz|tar|tgz|tbz|txz)$", true)));
                             searchInfo.Children.Add(archiveSearchItem);
 
                             var documentSearchItem = new SearchInfo() { Name = "Type - \"Document\"" };
-                            documentSearchItem.Condition.SearchRegexes.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(doc|txt|pdf|odt|rtf)$", true)));
+                            documentSearchItem.Conditions.SearchRegexes.Add(new SearchCondition<SearchRegex>(true, new SearchRegex(@"\.(doc|txt|pdf|odt|rtf)$", true)));
                             searchInfo.Children.Add(documentSearchItem);
 
                             var executableSearchItem = new SearchInfo() { Name = "Type - \"Executable\"" };
-                            executableSearchItem.Condition.SearchRegexes.Add(new SearchContains<SearchRegex>(true, new SearchRegex(@"\.(exe|jar|sh|bat)$", true)));
+                            executableSearchItem.Conditions.SearchRegexes.Add(new SearchCondition<SearchRegex>(true, new SearchRegex(@"\.(exe|jar|sh|bat)$", true)));
                             searchInfo.Children.Add(executableSearchItem);
                         }
 
@@ -179,12 +187,22 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
 
             {
                 this.Sort(null);
             }
+        }
+
+        private void Search()
+        {
+            var info = new SearchInfo() { Name = $"Name - \"{this.SearchInput.Value}\"" };
+            info.Conditions.SearchNames.Add(new SearchCondition<string>(true, this.SearchInput.Value));
+
+            this.TabViewModel.Value.Model.Children.Add(info);
+
+            this.SearchInput.Value = "";
         }
 
         private async void TabSelectChanged(TreeViewModelBase viewModel)
@@ -258,6 +276,8 @@ namespace Amoeba.Interface
 
                             viewModel.State = state;
 
+                            viewModel.Model = seed;
+
                             searchItems.Add(viewModel);
                         }
                     }
@@ -325,60 +345,44 @@ namespace Amoeba.Interface
             var list = items.Where(item =>
             {
                 {
-                    foreach (var searchContains in searchInfo.Condition.SearchStates)
+                    foreach (var searchContains in searchInfo.Conditions.SearchLengthRanges)
                     {
-                        if (!searchContains.Contains)
-                        {
-                            if (item.State.HasFlag(searchContains.Value)) return false;
-                        }
-                    }
-
-                    foreach (var searchContains in searchInfo.Condition.SearchLengthRanges)
-                    {
-                        if (!searchContains.Contains)
+                        if (!searchContains.IsContains)
                         {
                             if (searchContains.Value.Verify(item.Length)) return false;
                         }
                     }
 
-                    foreach (var searchContains in searchInfo.Condition.SearchCreationTimeRanges)
+                    foreach (var searchContains in searchInfo.Conditions.SearchCreationTimeRanges)
                     {
-                        if (!searchContains.Contains)
+                        if (!searchContains.IsContains)
                         {
                             if (searchContains.Value.Verify(item.CreationTime)) return false;
                         }
                     }
 
-                    foreach (var searchContains in searchInfo.Condition.SearchSignatures)
+                    foreach (var searchContains in searchInfo.Conditions.SearchSignatures)
                     {
-                        if (!searchContains.Contains)
+                        if (!searchContains.IsContains)
                         {
                             if (searchContains.Value == item.Signature) return false;
                         }
                     }
 
-                    foreach (var searchContains in searchInfo.Condition.SearchNames)
+                    foreach (var searchContains in searchInfo.Conditions.SearchNames)
                     {
-                        if (!searchContains.Contains)
+                        if (!searchContains.IsContains)
                         {
                             if (searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
                                 .All(n => item.Name.Contains(n, StringComparison.OrdinalIgnoreCase))) return false;
                         }
                     }
 
-                    foreach (var searchContains in searchInfo.Condition.SearchRegexes)
+                    foreach (var searchContains in searchInfo.Conditions.SearchRegexes)
                     {
-                        if (!searchContains.Contains)
+                        if (!searchContains.IsContains)
                         {
                             if (searchContains.Value.IsMatch(item.Name)) return false;
-                        }
-                    }
-
-                    foreach (var searchContains in searchInfo.Condition.SearchMetadatas)
-                    {
-                        if (!searchContains.Contains)
-                        {
-                            if (comparer.Equals(item.Model.Metadata, searchContains.Value)) return false;
                         }
                     }
                 }
@@ -386,45 +390,36 @@ namespace Amoeba.Interface
                 {
                     bool flag = false;
 
-                    foreach (var searchContains in searchInfo.Condition.SearchStates)
+                    foreach (var searchContains in searchInfo.Conditions.SearchLengthRanges)
                     {
-                        if (searchContains.Contains)
-                        {
-                            if (item.State.HasFlag(searchContains.Value)) return true;
-                            flag = true;
-                        }
-                    }
-
-                    foreach (var searchContains in searchInfo.Condition.SearchLengthRanges)
-                    {
-                        if (searchContains.Contains)
+                        if (searchContains.IsContains)
                         {
                             if (searchContains.Value.Verify(item.Length)) return true;
                             flag = true;
                         }
                     }
 
-                    foreach (var searchContains in searchInfo.Condition.SearchCreationTimeRanges)
+                    foreach (var searchContains in searchInfo.Conditions.SearchCreationTimeRanges)
                     {
-                        if (searchContains.Contains)
+                        if (searchContains.IsContains)
                         {
                             if (searchContains.Value.Verify(item.CreationTime)) return true;
                             flag = true;
                         }
                     }
 
-                    foreach (var searchContains in searchInfo.Condition.SearchSignatures)
+                    foreach (var searchContains in searchInfo.Conditions.SearchSignatures)
                     {
-                        if (searchContains.Contains)
+                        if (searchContains.IsContains)
                         {
                             if (searchContains.Value == item.Signature) return true;
                             flag = true;
                         }
                     }
 
-                    foreach (var searchContains in searchInfo.Condition.SearchNames)
+                    foreach (var searchContains in searchInfo.Conditions.SearchNames)
                     {
-                        if (searchContains.Contains)
+                        if (searchContains.IsContains)
                         {
                             if (searchContains.Value.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
                                 .All(n => item.Name.Contains(n, StringComparison.OrdinalIgnoreCase))) return true;
@@ -432,20 +427,11 @@ namespace Amoeba.Interface
                         }
                     }
 
-                    foreach (var searchContains in searchInfo.Condition.SearchRegexes)
+                    foreach (var searchContains in searchInfo.Conditions.SearchRegexes)
                     {
-                        if (searchContains.Contains)
+                        if (searchContains.IsContains)
                         {
                             if (searchContains.Value.IsMatch(item.Name)) return true;
-                            flag = true;
-                        }
-                    }
-
-                    foreach (var searchContains in searchInfo.Condition.SearchMetadatas)
-                    {
-                        if (searchContains.Contains)
-                        {
-                            if (comparer.Equals(item.Model.Metadata, searchContains.Value)) return true;
                             flag = true;
                         }
                     }
@@ -461,7 +447,14 @@ namespace Amoeba.Interface
         {
             if (this.TabSelectedItem.Value is SearchViewModel searchViewModel)
             {
+                var viewModel = new SearchInfoEditWindowViewModel(new SearchInfo() { Name = "default" });
+                viewModel.Callback += (info) =>
+                {
+                    searchViewModel.Model.Children.Add(info);
+                };
 
+                Messenger.Instance.GetEvent<SearchInfoEditWindowShowEvent>()
+                    .Publish(viewModel);
             }
         }
 
@@ -469,7 +462,10 @@ namespace Amoeba.Interface
         {
             if (this.TabSelectedItem.Value is SearchViewModel searchViewModel)
             {
+                var viewModel = new SearchInfoEditWindowViewModel(searchViewModel.Model);
 
+                Messenger.Instance.GetEvent<SearchInfoEditWindowShowEvent>()
+                    .Publish(viewModel);
             }
         }
 
@@ -564,11 +560,21 @@ namespace Amoeba.Interface
                 case "Signature":
                     {
                         var view = ((ListCollectionView)this.ContentsView);
-                        view.CustomSort = new CustomSortComparer(direction, (x, y) => ((Signature)x).Name.CompareTo(((Signature)y).Name));
+                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                        {
+                            if (x is SearchItemViewModel tx && y is SearchItemViewModel ty)
+                            {
+                                int c = tx.Signature.Name.CompareTo(ty.Signature.Name);
+                                if (c != 0) return c;
+                                c = Unsafe.Compare(tx.Signature.Id, ty.Signature.Id);
+                                if (c != 0) return c;
+                            }
+
+                            return 0;
+                        });
                         view.Refresh();
                     }
                     break;
-
                 case "Length":
                     this.ContentsView.SortDescriptions.Add(new SortDescription("Length", direction));
                     break;
@@ -614,6 +620,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 

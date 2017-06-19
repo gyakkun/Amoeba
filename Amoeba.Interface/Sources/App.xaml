@@ -33,6 +33,7 @@
             <omnius:UshortToStringConverter x:Key="UshortToStringConverter" />
             <omnius:CompositeCollectionConverter x:Key="CompositeCollectionConverter" />
             <omnius:EnumerateConverter x:Key="EnumerateConverter" />
+            <omnius:BoolToStringConverter x:Key="BoolToStringConverter" />
             <local:SessionTypeToStringConverter x:Key="SessionTypeToStringConverter" />
             <local:SearchStateToStringConverter x:Key="SearchStateToStringConverter" />
             <local:SearchStateFlagToStringConverter x:Key="SearchStateFlagToStringConverter" />

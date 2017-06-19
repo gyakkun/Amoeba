@@ -139,7 +139,7 @@
                                                     <TextBlock Margin="8,0" Text="{Binding}" />
                                                 </DataTemplate>
                                             </GroupBox.HeaderTemplate>
-                                            <Grid Margin="8">
+                                            <Grid Margin="7">
                                                 <Label
                                                         Height="32"
                                                         HorizontalAlignment="Left"
@@ -197,7 +197,7 @@
                                                 <TextBlock Margin="8,0" Text="{Binding}" />
                                             </DataTemplate>
                                         </GroupBox.HeaderTemplate>
-                                        <Grid>
+                                        <Grid Margin="7">
                                             <ListView
                                                     HorizontalContentAlignment="Stretch"
                                                     VerticalContentAlignment="Stretch"
@@ -291,7 +291,7 @@
                                                 <TextBlock Margin="8,0" Text="{Binding}" />
                                             </DataTemplate>
                                         </GroupBox.HeaderTemplate>
-                                        <Grid>
+                                        <Grid Margin="7">
                                             <ListView
                                                     HorizontalContentAlignment="Stretch"
                                                     VerticalContentAlignment="Stretch"
@@ -385,7 +385,7 @@
                                                 <TextBlock Margin="8,0" Text="{Binding}" />
                                             </DataTemplate>
                                         </GroupBox.HeaderTemplate>
-                                        <Grid>
+                                        <Grid Margin="7">
                                             <ListView
                                                     HorizontalContentAlignment="Stretch"
                                                     VerticalContentAlignment="Stretch"
@@ -500,12 +500,14 @@
                                                 <TextBlock Margin="8,0" Text="{Binding}" />
                                             </DataTemplate>
                                         </GroupBox.HeaderTemplate>
-                                        <TextBox
-                                                VerticalContentAlignment="Stretch"
-                                                AcceptsReturn="True"
-                                                AcceptsTab="True"
-                                                Text="{Binding Path=Options.Account.Comment}"
-                                                TextWrapping="Wrap" />
+                                        <Grid Margin="7">
+                                            <TextBox
+                                                    VerticalContentAlignment="Stretch"
+                                                    AcceptsReturn="True"
+                                                    AcceptsTab="True"
+                                                    Text="{Binding Path=Options.Account.Comment}"
+                                                    TextWrapping="Wrap" />
+                                        </Grid>
                                     </GroupBox>
                                 </Grid>
                             </ContentControl>
@@ -526,7 +528,7 @@
                                     <TextBlock Margin="8,0" Text="{Binding}" />
                                 </DataTemplate>
                             </GroupBox.HeaderTemplate>
-                            <Grid>
+                            <Grid Margin="7">
                                 <ListView
                                         HorizontalContentAlignment="Stretch"
                                         VerticalContentAlignment="Stretch"
@@ -652,7 +654,7 @@
                                                     <TextBlock Margin="8,0" Text="{Binding}" />
                                                 </DataTemplate>
                                             </GroupBox.HeaderTemplate>
-                                            <Grid Margin="8">
+                                            <Grid Margin="7">
                                                 <CheckBox
                                                         Height="24"
                                                         HorizontalAlignment="Left"
@@ -734,7 +736,7 @@
                                                     <TextBlock Margin="8,0" Text="{Binding}" />
                                                 </DataTemplate>
                                             </GroupBox.HeaderTemplate>
-                                            <Grid Margin="8">
+                                            <Grid Margin="7">
                                                 <CheckBox
                                                         Height="24"
                                                         HorizontalAlignment="Left"
@@ -779,7 +781,7 @@
                                         <TextBlock Margin="8,0" Text="{Binding}" />
                                     </DataTemplate>
                                 </GroupBox.HeaderTemplate>
-                                <Grid Margin="8">
+                                <Grid Margin="7">
                                     <Label
                                             Height="32"
                                             HorizontalAlignment="Left"
@@ -788,7 +790,7 @@
                                             VerticalContentAlignment="Center"
                                             Content="{Binding Path=OptionsWindow_ConnectionCountLimit, Source={StaticResource Languages}}" />
                                     <TextBox
-                                            Width="118"
+                                            Width="120"
                                             Height="32"
                                             Margin="360,0,0,0"
                                             HorizontalAlignment="Left"
@@ -805,7 +807,7 @@
                                             VerticalContentAlignment="Center"
                                             Content="{Binding Path=OptionsWindow_BandwidthLimit, Source={StaticResource Languages}}" />
                                     <TextBox
-                                            Width="118"
+                                            Width="120"
                                             Height="32"
                                             Margin="360,48,0,0"
                                             HorizontalAlignment="Left"
@@ -834,9 +836,9 @@
                                         <TextBlock Margin="8,0" Text="{Binding}" />
                                     </DataTemplate>
                                 </GroupBox.HeaderTemplate>
-                                <Grid Margin="8">
+                                <Grid Margin="7">
                                     <Label
-                                            Height="24"
+                                            Height="32"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
                                             HorizontalContentAlignment="Stretch"
@@ -864,7 +866,7 @@
                                         <TextBlock Margin="8,0" Text="{Binding}" />
                                     </DataTemplate>
                                 </GroupBox.HeaderTemplate>
-                                <Grid Margin="8">
+                                <Grid Margin="7">
                                     <Label
                                             Height="32"
                                             HorizontalAlignment="Left"

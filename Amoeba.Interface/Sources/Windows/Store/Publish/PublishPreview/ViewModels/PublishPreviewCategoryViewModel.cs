@@ -15,16 +15,16 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class PublishPreviewBoxViewModel : TreeViewModelBase
+    class PublishPreviewCategoryViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ReadOnlyReactiveCollection<PublishPreviewBoxViewModel> Boxes { get; private set; }
+        public ReadOnlyReactiveCollection<PublishPreviewCategoryViewModel> Categories { get; private set; }
 
-        public PublishPreviewBoxInfo Model { get; private set; }
+        public PublishPreviewCategoryInfo Model { get; private set; }
 
-        public PublishPreviewBoxViewModel(TreeViewModelBase parent, PublishPreviewBoxInfo model)
+        public PublishPreviewCategoryViewModel(TreeViewModelBase parent, PublishPreviewCategoryInfo model)
             : base(parent)
         {
             this.Model = model;
@@ -32,7 +32,7 @@ namespace Amoeba.Interface
             this.IsExpanded = new ReactiveProperty<bool>(true).AddTo(_disposable);
 
             this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
-            this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new PublishPreviewBoxViewModel(this, n)).AddTo(_disposable);
+            this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new PublishPreviewCategoryViewModel(this, n)).AddTo(_disposable);
         }
 
         public override string DragFormat { get { return null; } }

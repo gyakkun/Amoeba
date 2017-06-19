@@ -22,6 +22,7 @@ using Omnius.Utilities;
 using Omnius.Security;
 using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
+using System.Windows.Threading;
 
 namespace Amoeba.Interface
 {
@@ -153,7 +154,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
 
             {
@@ -263,19 +264,26 @@ namespace Amoeba.Interface
             {
                 var subscribeStoreInfos = new List<SubscribeStoreInfo>();
 
-                App.Current.Dispatcher.Invoke(() =>
+                try
                 {
-                    if (token.IsCancellationRequested) return;
-
-                    var subscribeCategoryInfos = new List<SubscribeCategoryInfo>();
-                    subscribeCategoryInfos.Add(this.TabViewModel.Value.Model);
-
-                    for (int i = 0; i < subscribeCategoryInfos.Count; i++)
+                    App.Current.Dispatcher.Invoke(() =>
                     {
-                        subscribeCategoryInfos.AddRange(subscribeCategoryInfos[i].CategoryInfos);
-                        subscribeStoreInfos.AddRange(subscribeCategoryInfos[i].StoreInfos);
-                    }
-                });
+                        if (token.IsCancellationRequested) return;
+
+                        var subscribeCategoryInfos = new List<SubscribeCategoryInfo>();
+                        subscribeCategoryInfos.Add(this.TabViewModel.Value.Model);
+
+                        for (int i = 0; i < subscribeCategoryInfos.Count; i++)
+                        {
+                            subscribeCategoryInfos.AddRange(subscribeCategoryInfos[i].CategoryInfos);
+                            subscribeStoreInfos.AddRange(subscribeCategoryInfos[i].StoreInfos);
+                        }
+                    }, DispatcherPriority.Background, token);
+                }
+                catch (TaskCanceledException)
+                {
+
+                }
 
                 foreach (var storeInfo in subscribeStoreInfos)
                 {
@@ -291,15 +299,22 @@ namespace Amoeba.Interface
                         tempBoxInfos.Add(CreateBoxInfo(targetBox, storeInfo.BoxInfos.FirstOrDefault(n => n.Name == targetBox.Name)));
                     }
 
-                    App.Current.Dispatcher.Invoke(() =>
+                    try
                     {
-                        if (token.IsCancellationRequested) return;
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            if (token.IsCancellationRequested) return;
 
-                        storeInfo.CreationTime = message.CreationTime;
-                        storeInfo.IsUpdated = true;
-                        storeInfo.BoxInfos.Clear();
-                        storeInfo.BoxInfos.AddRange(tempBoxInfos);
-                    });
+                            storeInfo.CreationTime = message.CreationTime;
+                            storeInfo.IsUpdated = true;
+                            storeInfo.BoxInfos.Clear();
+                            storeInfo.BoxInfos.AddRange(tempBoxInfos);
+                        }, DispatcherPriority.Background, token);
+                    }
+                    catch (TaskCanceledException)
+                    {
+
+                    }
                 }
 
                 if (token.WaitHandle.WaitOne(1000 * 30)) return;
@@ -535,6 +550,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 

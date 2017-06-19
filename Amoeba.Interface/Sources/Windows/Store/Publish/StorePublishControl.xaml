@@ -22,7 +22,7 @@
             <Button
                     Width="48"
                     Height="48"
-                    Margin="0,16,16,8"
+                    Margin="0,8,16,8"
                     HorizontalAlignment="Left"
                     Command="{Binding Path=UploadCommand}"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"

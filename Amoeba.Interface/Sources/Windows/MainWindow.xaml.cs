@@ -83,14 +83,6 @@ namespace Amoeba.Interface
 
         private void Setting_Messenger()
         {
-            Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new OptionsWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
             Messenger.Instance.GetEvent<RelationWindowShowEvent>()
                 .Subscribe(vm =>
                 {
@@ -99,10 +91,34 @@ namespace Amoeba.Interface
                     window.ShowDialog();
                 }).AddTo(_disposable);
 
+            Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new OptionsWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
+            Messenger.Instance.GetEvent<VersionWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new VersionWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
             Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
                 .Subscribe(vm =>
                 {
                     var window = new ChatMessageEditWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
+            Messenger.Instance.GetEvent<SearchInfoEditWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new SearchInfoEditWindow(vm);
                     window.Owner = this;
                     window.ShowDialog();
                 }).AddTo(_disposable);
@@ -119,14 +135,6 @@ namespace Amoeba.Interface
                 .Subscribe(vm =>
                 {
                     var window = new PublishPreviewWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<VersionWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new VersionWindow(vm);
                     window.Owner = this;
                     window.ShowDialog();
                 }).AddTo(_disposable);

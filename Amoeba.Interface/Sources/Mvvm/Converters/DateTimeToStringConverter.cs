@@ -20,7 +20,20 @@ namespace Amoeba.Interface
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            if (value is string item)
+            {
+                try
+                {
+                    var result = DateTime.ParseExact(item, LanguagesManager.Instance.Global_DateTime_StringFormat, DateTimeFormatInfo.InvariantInfo);
+                    return result;
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return DateTime.MinValue;
         }
     }
 }

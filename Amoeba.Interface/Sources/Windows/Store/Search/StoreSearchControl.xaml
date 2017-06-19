@@ -31,7 +31,7 @@
             <Button
                     Width="48"
                     Height="48"
-                    Margin="0,16,16,8"
+                    Margin="0,8,16,8"
                     HorizontalAlignment="Left"
                     Command="{Binding Path=DownloadCommand}"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
@@ -43,9 +43,23 @@
             </Button>
         </DockPanel>
 
+        <TextBox
+                Grid.RowSpan="2"
+                Grid.Column="0"
+                Height="32"
+                Margin="8,0,8,0"
+                VerticalAlignment="Top"
+                md:HintAssist.Hint="{Binding Path=StoreSearchControl_SearchHint, Source={StaticResource Languages}}"
+                Text="{Binding Path=SearchInput.Value, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}" />
+            </TextBox.InputBindings>
+        </TextBox>
+
         <TreeView
                 Grid.RowSpan="2"
                 Grid.Column="0"
+                Margin="0,32,0,0"
                 AllowDrop="True"
                 ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
             <i:Interaction.Triggers>
@@ -91,7 +105,7 @@
                     <MenuItem
                             Command="{Binding Path=TabNewSearchCommand}"
                             Header="{Binding Path=StoreSearchControl_NewSearch, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+W">
+                            InputGestureText="Ctrl+N">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Plus" />
                         </MenuItem.Icon>
@@ -116,7 +130,7 @@
                     <MenuItem
                             Command="{Binding Path=TabCutCommand}"
                             Header="{Binding Path=StoreSearchControl_Cut, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+C">
+                            InputGestureText="Ctrl+X">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="ContentCut" />
                         </MenuItem.Icon>
@@ -197,6 +211,16 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_Signature_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="Signature"
+                            Header="{Binding Path=StoreSearchControl_Signature, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Signature, Mode=OneWay, Converter={StaticResource SignatureToStringConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn
                             Width="{Binding Path=DynamicOptions.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}"
                             omnius:GridViewSortHelper.PropertyName="Length"
                             Header="{Binding Path=StoreSearchControl_Length, Source={StaticResource Languages}}">
@@ -222,7 +246,7 @@
                             Header="{Binding Path=StoreSearchControl_State, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource SearchStateToStringConverter}}" />
+                                <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource SearchStateFlagToStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

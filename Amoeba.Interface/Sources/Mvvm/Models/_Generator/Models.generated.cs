@@ -84,29 +84,29 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<Omnius.Security.Signature> _trustSignatures;
+        private ObservableCollection<Signature> _trustSignatures;
 
         [DataMember(Name = nameof(TrustSignatures))]
-        public ObservableCollection<Omnius.Security.Signature> TrustSignatures
+        public ObservableCollection<Signature> TrustSignatures
         {
             get
             {
                 if (_trustSignatures == null)
-                    _trustSignatures = new ObservableCollection<Omnius.Security.Signature>();
+                    _trustSignatures = new ObservableCollection<Signature>();
 
                 return _trustSignatures;
             }
         }
 
-        private ObservableCollection<Omnius.Security.Signature> _untrustSignatures;
+        private ObservableCollection<Signature> _untrustSignatures;
 
         [DataMember(Name = nameof(UntrustSignatures))]
-        public ObservableCollection<Omnius.Security.Signature> UntrustSignatures
+        public ObservableCollection<Signature> UntrustSignatures
         {
             get
             {
                 if (_untrustSignatures == null)
-                    _untrustSignatures = new ObservableCollection<Omnius.Security.Signature>();
+                    _untrustSignatures = new ObservableCollection<Signature>();
 
                 return _untrustSignatures;
             }
@@ -433,29 +433,29 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<Omnius.Security.Signature> _trustSignatures;
+        private ObservableCollection<Signature> _trustSignatures;
 
         [DataMember(Name = nameof(TrustSignatures))]
-        public ObservableCollection<Omnius.Security.Signature> TrustSignatures
+        public ObservableCollection<Signature> TrustSignatures
         {
             get
             {
                 if (_trustSignatures == null)
-                    _trustSignatures = new ObservableCollection<Omnius.Security.Signature>();
+                    _trustSignatures = new ObservableCollection<Signature>();
 
                 return _trustSignatures;
             }
         }
 
-        private ObservableCollection<Omnius.Security.Signature> _untrustSignatures;
+        private ObservableCollection<Signature> _untrustSignatures;
 
         [DataMember(Name = nameof(UntrustSignatures))]
-        public ObservableCollection<Omnius.Security.Signature> UntrustSignatures
+        public ObservableCollection<Signature> UntrustSignatures
         {
             get
             {
                 if (_untrustSignatures == null)
-                    _untrustSignatures = new ObservableCollection<Omnius.Security.Signature>();
+                    _untrustSignatures = new ObservableCollection<Signature>();
 
                 return _untrustSignatures;
             }
@@ -493,15 +493,15 @@ namespace Amoeba.Interface
 
         public OptionsSubscribeInfo() { }
 
-        private ObservableCollection<Omnius.Security.Signature> _subscribeSignatures;
+        private ObservableCollection<Signature> _subscribeSignatures;
 
         [DataMember(Name = nameof(SubscribeSignatures))]
-        public ObservableCollection<Omnius.Security.Signature> SubscribeSignatures
+        public ObservableCollection<Signature> SubscribeSignatures
         {
             get
             {
                 if (_subscribeSignatures == null)
-                    _subscribeSignatures = new ObservableCollection<Omnius.Security.Signature>();
+                    _subscribeSignatures = new ObservableCollection<Signature>();
 
                 return _subscribeSignatures;
             }
@@ -806,7 +806,7 @@ namespace Amoeba.Interface
 
         public RelationSignatureInfo() { }
 
-        private Omnius.Security.Signature _signature;
+        private Signature _signature;
 
         [DataMember(Name = nameof(Signature))]
         public Signature Signature
@@ -1124,17 +1124,17 @@ namespace Amoeba.Interface
             }
         }
 
-        private SearchCondition _condition;
+        private SearchConditionsInfo _conditions;
 
-        [DataMember(Name = nameof(Condition))]
-        public SearchCondition Condition
+        [DataMember(Name = nameof(Conditions))]
+        public SearchConditionsInfo Conditions
         {
             get
             {
-                if (_condition == null)
-                    _condition = new SearchCondition();
+                if (_conditions == null)
+                    _conditions = new SearchConditionsInfo();
 
-                return _condition;
+                return _conditions;
             }
         }
 
@@ -1158,8 +1158,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(SearchCondition))]
-    partial class SearchCondition : INotifyPropertyChanged, ICloneable<SearchCondition>
+    [DataContract(Name = nameof(SearchConditionsInfo))]
+    partial class SearchConditionsInfo : INotifyPropertyChanged, ICloneable<SearchConditionsInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1168,107 +1168,79 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public SearchCondition() { }
+        public SearchConditionsInfo() { }
 
-        private ObservableCollection<SearchContains<string>> _searchNames;
+        private ObservableCollection<SearchCondition<string>> _searchNames;
 
         [DataMember(Name = nameof(SearchNames))]
-        public ObservableCollection<SearchContains<string>> SearchNames
+        public ObservableCollection<SearchCondition<string>> SearchNames
         {
             get
             {
                 if (_searchNames == null)
-                    _searchNames = new ObservableCollection<SearchContains<string>>();
+                    _searchNames = new ObservableCollection<SearchCondition<string>>();
 
                 return _searchNames;
             }
         }
 
-        private ObservableCollection<SearchContains<SearchRegex>> _searchRegexes;
+        private ObservableCollection<SearchCondition<SearchRegex>> _searchRegexes;
 
         [DataMember(Name = nameof(SearchRegexes))]
-        public ObservableCollection<SearchContains<SearchRegex>> SearchRegexes
+        public ObservableCollection<SearchCondition<SearchRegex>> SearchRegexes
         {
             get
             {
                 if (_searchRegexes == null)
-                    _searchRegexes = new ObservableCollection<SearchContains<SearchRegex>>();
+                    _searchRegexes = new ObservableCollection<SearchCondition<SearchRegex>>();
 
                 return _searchRegexes;
             }
         }
 
-        private ObservableCollection<SearchContains<Omnius.Security.Signature>> _searchSignatures;
+        private ObservableCollection<SearchCondition<Signature>> _searchSignatures;
 
         [DataMember(Name = nameof(SearchSignatures))]
-        public ObservableCollection<SearchContains<Omnius.Security.Signature>> SearchSignatures
+        public ObservableCollection<SearchCondition<Signature>> SearchSignatures
         {
             get
             {
                 if (_searchSignatures == null)
-                    _searchSignatures = new ObservableCollection<SearchContains<Omnius.Security.Signature>>();
+                    _searchSignatures = new ObservableCollection<SearchCondition<Signature>>();
 
                 return _searchSignatures;
             }
         }
 
-        private ObservableCollection<SearchContains<SearchRange<DateTime>>> _searchCreationTimeRanges;
+        private ObservableCollection<SearchCondition<SearchRange<DateTime>>> _searchCreationTimeRanges;
 
         [DataMember(Name = nameof(SearchCreationTimeRanges))]
-        public ObservableCollection<SearchContains<SearchRange<DateTime>>> SearchCreationTimeRanges
+        public ObservableCollection<SearchCondition<SearchRange<DateTime>>> SearchCreationTimeRanges
         {
             get
             {
                 if (_searchCreationTimeRanges == null)
-                    _searchCreationTimeRanges = new ObservableCollection<SearchContains<SearchRange<DateTime>>>();
+                    _searchCreationTimeRanges = new ObservableCollection<SearchCondition<SearchRange<DateTime>>>();
 
                 return _searchCreationTimeRanges;
             }
         }
 
-        private ObservableCollection<SearchContains<SearchRange<long>>> _searchLengthRanges;
+        private ObservableCollection<SearchCondition<SearchRange<long>>> _searchLengthRanges;
 
         [DataMember(Name = nameof(SearchLengthRanges))]
-        public ObservableCollection<SearchContains<SearchRange<long>>> SearchLengthRanges
+        public ObservableCollection<SearchCondition<SearchRange<long>>> SearchLengthRanges
         {
             get
             {
                 if (_searchLengthRanges == null)
-                    _searchLengthRanges = new ObservableCollection<SearchContains<SearchRange<long>>>();
+                    _searchLengthRanges = new ObservableCollection<SearchCondition<SearchRange<long>>>();
 
                 return _searchLengthRanges;
             }
         }
 
-        private ObservableCollection<SearchContains<Metadata>> _searchMetadatas;
-
-        [DataMember(Name = nameof(SearchMetadatas))]
-        public ObservableCollection<SearchContains<Metadata>> SearchMetadatas
-        {
-            get
-            {
-                if (_searchMetadatas == null)
-                    _searchMetadatas = new ObservableCollection<SearchContains<Metadata>>();
-
-                return _searchMetadatas;
-            }
-        }
-
-        private ObservableCollection<SearchContains<SearchState>> _searchStates;
-
-        [DataMember(Name = nameof(SearchStates))]
-        public ObservableCollection<SearchContains<SearchState>> SearchStates
-        {
-            get
-            {
-                if (_searchStates == null)
-                    _searchStates = new ObservableCollection<SearchContains<SearchState>>();
-
-                return _searchStates;
-            }
-        }
-
-        public SearchCondition Clone()
+        public SearchConditionsInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
@@ -1370,7 +1342,7 @@ namespace Amoeba.Interface
 
         public SubscribeStoreInfo() { }
 
-        private Omnius.Security.Signature _authorSignature;
+        private Signature _authorSignature;
 
         [DataMember(Name = nameof(AuthorSignature))]
         public Signature AuthorSignature
@@ -1550,8 +1522,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(PublishPreviewBoxInfo))]
-    partial class PublishPreviewBoxInfo : INotifyPropertyChanged, ICloneable<PublishPreviewBoxInfo>
+    [DataContract(Name = nameof(PublishPreviewCategoryInfo))]
+    partial class PublishPreviewCategoryInfo : INotifyPropertyChanged, ICloneable<PublishPreviewCategoryInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1560,7 +1532,7 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public PublishPreviewBoxInfo() { }
+        public PublishPreviewCategoryInfo() { }
 
         private string _name;
 
@@ -1595,21 +1567,21 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<PublishPreviewBoxInfo> _boxInfos;
+        private ObservableCollection<PublishPreviewCategoryInfo> _categoryInfos;
 
-        [DataMember(Name = nameof(BoxInfos))]
-        public ObservableCollection<PublishPreviewBoxInfo> BoxInfos
+        [DataMember(Name = nameof(CategoryInfos))]
+        public ObservableCollection<PublishPreviewCategoryInfo> CategoryInfos
         {
             get
             {
-                if (_boxInfos == null)
-                    _boxInfos = new ObservableCollection<PublishPreviewBoxInfo>();
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<PublishPreviewCategoryInfo>();
 
-                return _boxInfos;
+                return _categoryInfos;
             }
         }
 
-        public PublishPreviewBoxInfo Clone()
+        public PublishPreviewCategoryInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

@@ -71,16 +71,16 @@ namespace Amoeba.Interface
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
 
-                this.UploadCommand = SettingsManager.Instance.PublishDirectoryInfos.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand();
+                this.UploadCommand = SettingsManager.Instance.PublishDirectoryInfos.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.UploadCommand.Subscribe(() => this.StoreUpload()).AddTo(_disposable);
 
                 this.AddCommand = new ReactiveCommand().AddTo(_disposable);
                 this.AddCommand.Subscribe(() => this.DirectoryAdd()).AddTo(_disposable);
 
-                this.DeleteCommand = this.SelectedItem.Select(n => n != null).ToReactiveCommand();
+                this.DeleteCommand = this.SelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.DeleteCommand.Subscribe(() => this.DirectoryDelete()).AddTo(_disposable);
 
-                this.EditCommand = this.SelectedItem.Select(n => n != null).ToReactiveCommand();
+                this.EditCommand = this.SelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.EditCommand.Subscribe(() => this.DirectoryEdit()).AddTo(_disposable);
             }
 
@@ -98,7 +98,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
 
             {
@@ -168,7 +168,10 @@ namespace Amoeba.Interface
                     foreach (var (name, directoryPath) in targetPublishStoreInfo.Map
                         .SelectMany(n => n.Value.Select(m => (n.Key, m.Key))))
                     {
-                        boxes.Add(CreateBox(name, directoryPath, infoMap));
+                        var tempBox = CreateBox(name, directoryPath, infoMap);
+                        if (IsEmpty(tempBox)) continue;
+
+                        boxes.Add(tempBox);
                     }
 
                     _serviceManager.Upload(new Store(boxes), targetPublishStoreInfo.DigitalSignature, token).Wait();
@@ -211,10 +214,27 @@ namespace Amoeba.Interface
 
             foreach (string directoryPath in Directory.GetDirectories(basePath, "*", SearchOption.TopDirectoryOnly))
             {
-                boxes.Add(CreateBox(Path.GetFileName(directoryPath), directoryPath, map));
+                var tempBox = CreateBox(Path.GetFileName(directoryPath), directoryPath, map);
+                if (IsEmpty(tempBox)) continue;
+
+                boxes.Add(tempBox);
             }
 
             return new Box(name, seeds, boxes);
+        }
+
+        private static bool IsEmpty(Box box)
+        {
+            var boxes = new List<Box>();
+            boxes.Add(box);
+
+            for (int i = 0; i < boxes.Count; i++)
+            {
+                boxes.AddRange(boxes[i].Boxes);
+                if (boxes[i].Seeds.Count() != 0) return false;
+            }
+
+            return true;
         }
 
         private async void StoreUpload()
@@ -224,7 +244,7 @@ namespace Amoeba.Interface
             if (digitalSignature == null) return;
 
             List<(string, string, string[])> map = null;
-            PublishPreviewBoxInfo boxInfo = null;
+            PublishPreviewCategoryInfo boxInfo = null;
 
             try
             {
@@ -242,12 +262,15 @@ namespace Amoeba.Interface
 
                     // Preview
                     {
-                        boxInfo = new PublishPreviewBoxInfo();
+                        boxInfo = new PublishPreviewCategoryInfo();
                         boxInfo.Name = digitalSignature.ToString();
 
                         foreach (var (name, directoryPath, filePaths) in map)
                         {
-                            boxInfo.BoxInfos.Add(CreatePreviewBoxInfo(name, directoryPath, new HashSet<string>(filePaths)));
+                            var tempCategoryInfo = CreatePreviewCategoryInfo(name, directoryPath, new HashSet<string>(filePaths));
+                            if (IsEmpty(tempCategoryInfo)) continue;
+
+                            boxInfo.CategoryInfos.Add(tempCategoryInfo);
                         }
                     }
                 });
@@ -276,10 +299,10 @@ namespace Amoeba.Interface
                 .Publish(viewModel);
         }
 
-        private PublishPreviewBoxInfo CreatePreviewBoxInfo(string name, string basePath, HashSet<string> filter)
+        private PublishPreviewCategoryInfo CreatePreviewCategoryInfo(string name, string basePath, HashSet<string> filter)
         {
             var seedInfos = new List<PublishPreviewSeedInfo>();
-            var boxInfos = new List<PublishPreviewBoxInfo>();
+            var categoryInfos = new List<PublishPreviewCategoryInfo>();
 
             foreach (string filePath in Directory.GetFiles(basePath))
             {
@@ -303,15 +326,32 @@ namespace Amoeba.Interface
 
             foreach (string directoryPath in Directory.GetDirectories(basePath))
             {
-                boxInfos.Add(CreatePreviewBoxInfo(Path.GetFileName(directoryPath), directoryPath, filter));
+                var tempCategoryInfo = CreatePreviewCategoryInfo(Path.GetFileName(directoryPath), directoryPath, filter);
+                if (IsEmpty(tempCategoryInfo)) continue;
+
+                categoryInfos.Add(tempCategoryInfo);
             }
 
-            var rootBoxInfo = new PublishPreviewBoxInfo();
-            rootBoxInfo.Name = name;
-            rootBoxInfo.BoxInfos.AddRange(boxInfos);
-            rootBoxInfo.SeedInfos.AddRange(seedInfos);
+            var rootCategoryInfo = new PublishPreviewCategoryInfo();
+            rootCategoryInfo.Name = name;
+            rootCategoryInfo.CategoryInfos.AddRange(categoryInfos);
+            rootCategoryInfo.SeedInfos.AddRange(seedInfos);
 
-            return rootBoxInfo;
+            return rootCategoryInfo;
+        }
+
+        private static bool IsEmpty(PublishPreviewCategoryInfo info)
+        {
+            var infos = new List<PublishPreviewCategoryInfo>();
+            infos.Add(info);
+
+            for (int i = 0; i < infos.Count; i++)
+            {
+                infos.AddRange(infos[i].CategoryInfos);
+                if (infos[i].SeedInfos.Count != 0) return false;
+            }
+
+            return true;
         }
 
         private void Sort(string propertyName)
@@ -409,6 +449,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 

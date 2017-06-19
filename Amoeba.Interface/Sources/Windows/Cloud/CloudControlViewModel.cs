@@ -95,7 +95,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
 
             {
@@ -360,6 +360,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 

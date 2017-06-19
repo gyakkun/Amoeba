@@ -14,7 +14,7 @@ namespace Amoeba.Interface
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Signature item) item.ToString();
+            if (value is Signature item) return item.ToString();
             return null;
         }
 

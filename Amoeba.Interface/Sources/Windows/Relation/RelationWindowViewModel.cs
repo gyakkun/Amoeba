@@ -139,7 +139,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
 
             {
@@ -153,18 +153,17 @@ namespace Amoeba.Interface
         {
             if (viewModel is RelationSignatureViewModel relationSignatureViewModel)
             {
+                _trustSignatures.Clear();
+                _untrustSignatures.Clear();
+                _tags.Clear();
+                this.Comment.Value = "";
+
                 var profile = relationSignatureViewModel.Model.Profile;
                 if (profile == null) return;
 
-                _trustSignatures.Clear();
                 _trustSignatures.AddRange(profile.Value.TrustSignatures);
-
-                _untrustSignatures.Clear();
                 _untrustSignatures.AddRange(profile.Value.DeleteSignatures);
-
-                _tags.Clear();
                 _tags.AddRange(profile.Value.Tags);
-
                 this.Comment.Value = profile.Value.Comment;
             }
         }
@@ -378,6 +377,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 this.Save();
 
                 _disposable.Dispose();

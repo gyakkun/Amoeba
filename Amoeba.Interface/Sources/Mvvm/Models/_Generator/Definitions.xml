@@ -101,18 +101,16 @@
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-    <Property Type="SearchCondition" Name="Condition" />
+    <Property Type="SearchConditionsInfo" Name="Conditions" />
     <Property Type="ObservableCollection(SearchInfo)" Name="Children" />
   </Class>
 
-  <Class Name="SearchCondition">
-    <Property Type="ObservableCollection(SearchContains(string))" Name="SearchNames" />
-    <Property Type="ObservableCollection(SearchContains(SearchRegex))" Name="SearchRegexes" />
-    <Property Type="ObservableCollection(SearchContains(Signature))" Name="SearchSignatures" />
-    <Property Type="ObservableCollection(SearchContains(SearchRange(DateTime)))" Name="SearchCreationTimeRanges" />
-    <Property Type="ObservableCollection(SearchContains(SearchRange(long)))" Name="SearchLengthRanges" />
-    <Property Type="ObservableCollection(SearchContains(Metadata))" Name="SearchMetadatas" />
-    <Property Type="ObservableCollection(SearchContains(SearchState))" Name="SearchStates" />
+  <Class Name="SearchConditionsInfo">
+    <Property Type="ObservableCollection(SearchCondition(string))" Name="SearchNames" />
+    <Property Type="ObservableCollection(SearchCondition(SearchRegex))" Name="SearchRegexes" />
+    <Property Type="ObservableCollection(SearchCondition(Signature))" Name="SearchSignatures" />
+    <Property Type="ObservableCollection(SearchCondition(SearchRange(DateTime)))" Name="SearchCreationTimeRanges" />
+    <Property Type="ObservableCollection(SearchCondition(SearchRange(long)))" Name="SearchLengthRanges" />
   </Class>
 
   <Class Name="SubscribeCategoryInfo">
@@ -137,10 +135,10 @@
     <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
   </Class>
 
-  <Class Name="PublishPreviewBoxInfo">
+  <Class Name="PublishPreviewCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="ObservableCollection(PublishPreviewSeedInfo)" Name="SeedInfos" />
-    <Property Type="ObservableCollection(PublishPreviewBoxInfo)" Name="BoxInfos" />
+    <Property Type="ObservableCollection(PublishPreviewCategoryInfo)" Name="CategoryInfos" />
   </Class>
 
   <Class Name="PublishPreviewSeedInfo">

@@ -22,6 +22,7 @@ using Omnius.Utilities;
 using Omnius.Security;
 using Prism.Events;
 using Prism.Interactivity.InteractionRequest;
+using System.Windows.Threading;
 
 namespace Amoeba.Interface
 {
@@ -139,7 +140,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
         }
 
@@ -161,19 +162,26 @@ namespace Amoeba.Interface
             {
                 var chatThreadInfos = new List<ChatThreadInfo>();
 
-                App.Current.Dispatcher.Invoke(() =>
+                try
                 {
-                    if (token.IsCancellationRequested) return;
-
-                    var chatCategoryInfos = new List<ChatCategoryInfo>();
-                    chatCategoryInfos.Add(this.TabViewModel.Value.Model);
-
-                    for (int i = 0; i < chatCategoryInfos.Count; i++)
+                    App.Current.Dispatcher.Invoke(() =>
                     {
-                        chatCategoryInfos.AddRange(chatCategoryInfos[i].CategoryInfos);
-                        chatThreadInfos.AddRange(chatCategoryInfos[i].ThreadInfos);
-                    }
-                });
+                        if (token.IsCancellationRequested) return;
+
+                        var chatCategoryInfos = new List<ChatCategoryInfo>();
+                        chatCategoryInfos.Add(this.TabViewModel.Value.Model);
+
+                        for (int i = 0; i < chatCategoryInfos.Count; i++)
+                        {
+                            chatCategoryInfos.AddRange(chatCategoryInfos[i].CategoryInfos);
+                            chatThreadInfos.AddRange(chatCategoryInfos[i].ThreadInfos);
+                        }
+                    }, DispatcherPriority.Background, token);
+                }
+                catch (TaskCanceledException)
+                {
+
+                }
 
                 foreach (var chatInfo in chatThreadInfos)
                 {
@@ -326,6 +334,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
 

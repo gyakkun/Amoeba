@@ -184,7 +184,7 @@ namespace Amoeba.Interface
             this.GetOptions();
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
 
             {
@@ -768,6 +768,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 this.Save();
 
                 _disposable.Dispose();

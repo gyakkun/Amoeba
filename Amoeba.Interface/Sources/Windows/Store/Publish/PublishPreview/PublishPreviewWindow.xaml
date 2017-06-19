@@ -37,12 +37,12 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type local:PublishPreviewBoxViewModel}">
+                    <HierarchicalDataTemplate DataType="{x:Type local:PublishPreviewCategoryViewModel}">
                         <HierarchicalDataTemplate.ItemsSource>
                             <Binding
                                     Converter="{StaticResource SortedCollectionConverter}"
                                     ConverterParameter="Name.Value"
-                                    Path="Boxes" />
+                                    Path="Categories" />
                         </HierarchicalDataTemplate.ItemsSource>
                         <TextBlock Text="{Binding Path=Name.Value}" />
                     </HierarchicalDataTemplate>

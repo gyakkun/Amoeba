@@ -18,11 +18,11 @@ namespace Amoeba.Interface
 
             if (value is SearchState type)
             {
-                if (type == SearchState.Cache)
+                if (type.HasFlag(SearchState.Cache))
                 {
                     list.Add(LanguagesManager.Instance.SearchState_Flag_Cache);
                 }
-                if (type == SearchState.Download)
+                if (type.HasFlag(SearchState.Download))
                 {
                     list.Add(LanguagesManager.Instance.SearchState_Flag_Download);
                 }

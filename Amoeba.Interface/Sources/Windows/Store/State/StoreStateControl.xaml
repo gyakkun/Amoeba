@@ -105,7 +105,6 @@
                                     <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Foreground="{DynamicResource TextBrush}"
                                             Text="{Binding Path=Value.Rate_Text, Mode=OneWay}" />
                                 </Grid>
                             </DataTemplate>

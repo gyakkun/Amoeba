@@ -135,7 +135,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += () => this.Save();
+                Backup.Instance.SaveEvent += this.Save;
             }
 
             this.Setting_TrafficView();
@@ -380,6 +380,8 @@ namespace Amoeba.Interface
 
             if (disposing)
             {
+                Backup.Instance.SaveEvent -= this.Save;
+
                 _trafficViewTaskManager.Stop();
                 _trafficViewTaskManager.Dispose();
 

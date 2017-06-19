@@ -174,7 +174,7 @@
                                 <TextBlock Margin="8,0" Text="{Binding}" />
                             </DataTemplate>
                         </GroupBox.HeaderTemplate>
-                        <Grid Margin="8">
+                        <Grid Margin="7">
                             <Label
                                     Height="32"
                                     HorizontalAlignment="Left"
@@ -203,7 +203,7 @@
                                 <TextBlock Margin="8,0" Text="{Binding}" />
                             </DataTemplate>
                         </GroupBox.HeaderTemplate>
-                        <Grid Margin="8">
+                        <Grid Margin="7">
                             <ListView
                                     omnius:ListBoxHelper.SelectedItems="{Binding Path=StateSelectedItems}"
                                     IsSynchronizedWithCurrentItem="True"
