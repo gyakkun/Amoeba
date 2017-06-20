@@ -20,7 +20,7 @@ Amoeba = (Freenet like network) + DHT + (Tcp, I2p, etc) + (WoT + PoW)
 ## Links
  
  * [Specs](https://github.com/Alliance-Network/Specs/tree/master/Amoeba)
- * [Documents](http://alliance-network.github.io/docs/Amoeba/index.en)
+ * [Documents](http://alliance-network.cloud/wordpress/amoeba/)
 
 ## License
 
