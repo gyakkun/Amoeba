@@ -827,12 +827,13 @@ namespace Amoeba.Service
                     // Send
                     {
                         int remain = _bandwidthLimit;
+                        if (remain == 0) remain = 1024 * 1024 * 256;
 
                         foreach (var connection in _connections.Keys.Randomize())
                         {
                             try
                             {
-                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 2));
+                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 4));
                                 _sentByteCount.Add(count);
 
                                 remain -= count;
@@ -873,12 +874,13 @@ namespace Amoeba.Service
                     // Receive
                     {
                         int remain = _bandwidthLimit;
+                        if (remain == 0) remain = 1024 * 1024 * 256;
 
                         foreach (var connection in _connections.Keys.Randomize())
                         {
                             try
                             {
-                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 2));
+                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 4));
                                 _receivedByteCount.Add(count);
 
                                 remain -= count;

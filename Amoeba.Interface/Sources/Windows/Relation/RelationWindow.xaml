@@ -65,6 +65,18 @@
                         </Setter>
                     </Style>
                 </TreeView.ItemContainerStyle>
+                <TreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem
+                                Command="{Binding Path=TabCopyCommand}"
+                                Header="{Binding Path=RelationWindow_Copy, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+C">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="ContentCopy" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </TreeView.ContextMenu>
             </TreeView>
 
             <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />

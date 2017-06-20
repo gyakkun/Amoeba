@@ -111,6 +111,8 @@ namespace Amoeba.Service
                     broadcastMetadata.CreationTime,
                     ContentConverter.FromStream<Profile>(0, stream));
 
+                if (result.Value == null) return null;
+
                 _cache_Profiles[broadcastMetadata] = result;
 
                 return result;
@@ -141,6 +143,8 @@ namespace Amoeba.Service
                     broadcastMetadata.Certificate.GetSignature(),
                     broadcastMetadata.CreationTime,
                     ContentConverter.FromStream<Store>(0, stream));
+
+                if (result.Value == null) return null;
 
                 _cache_Stores[broadcastMetadata] = result;
 
@@ -192,6 +196,8 @@ namespace Amoeba.Service
                             unicastMetadata.Certificate.GetSignature(),
                             unicastMetadata.CreationTime,
                             ContentConverter.FromStream<MailMessage>(0, stream));
+
+                        if (result.Value == null) continue;
 
                         dic[unicastMetadata] = result;
 
@@ -264,6 +270,8 @@ namespace Amoeba.Service
                             multicastMetadata.CreationTime,
                             multicastMetadata.Cost,
                             ContentConverter.FromStream<ChatMessage>(0, stream));
+
+                        if (result.Value == null) continue;
 
                         dic[multicastMetadata] = result;
 
