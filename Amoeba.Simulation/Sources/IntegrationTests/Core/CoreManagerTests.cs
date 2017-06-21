@@ -60,7 +60,7 @@ namespace Amoeba.Simulation
 
             // ConnectionSetting
             {
-                coreManager.AcceptCapEvent += (_) => this.AcceptCap(listener);
+                coreManager.AcceptCapEvent += (object _, out string uri) => this.AcceptCap(listener, out uri);
                 coreManager.ConnectCapEvent += (_, uri) => this.ConnectCap(uri);
             }
 
@@ -76,12 +76,20 @@ namespace Amoeba.Simulation
             });
         }
 
-        private Cap AcceptCap(TcpListener listener)
+        private Cap AcceptCap(TcpListener listener, out string uri)
         {
+            uri = null;
+
             try
             {
                 if (!listener.Pending()) return null;
-                return new SocketCap(listener.AcceptSocketAsync().Result);
+
+                var socket = listener.AcceptSocketAsync().Result;
+
+                var ipEndPoint = (IPEndPoint)socket.RemoteEndPoint;
+                uri = $"tcp;{ipEndPoint.Address}:{ipEndPoint.Port}";
+
+                return new SocketCap(socket);
             }
             catch (Exception)
             {

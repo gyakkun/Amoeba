@@ -121,8 +121,10 @@ namespace Amoeba.Service
             return null;
         }
 
-        public Cap AcceptCap()
+        public Cap AcceptCap(out string uri)
         {
+            uri = null;
+
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
             if (!this.Config.IsEnabled) return null;
@@ -133,6 +135,7 @@ namespace Amoeba.Service
             {
                 if (_samManager == null) return null;
                 socket = _samManager.Accept(out string base32Address);
+                uri = $"i2p:{base32Address}";
             }
             catch (Exception)
             {

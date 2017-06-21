@@ -137,7 +137,6 @@
   <Property Name="CloudControl_Copy" Value="Copy" />
   <Property Name="CloudControl_Paste" Value="Paste" />
   <Property Name="CloudControl_Type" Value="Type" />
-  <Property Name="CloudControl_Id" Value="ID" />
   <Property Name="CloudControl_Priority" Value="Priority" />
   <Property Name="CloudControl_ReceivedByteCount" Value="Received byte count" />
   <Property Name="CloudControl_SentByteCount" Value="Sent byte count" />

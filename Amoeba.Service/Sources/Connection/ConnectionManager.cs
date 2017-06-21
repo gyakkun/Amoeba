@@ -42,7 +42,7 @@ namespace Amoeba.Service
             _i2pConnectionManager = new I2pConnectionManager(Path.Combine(configPath, "I2pConnection"), _bufferManager);
 
             _coreManager.ConnectCapEvent = (_, uri) => this.ConnectCap(uri);
-            _coreManager.AcceptCapEvent = (_) => this.AcceptCap();
+            _coreManager.AcceptCapEvent = (object _, out string uri) => this.AcceptCap(out uri);
 
             _watchTimer = new WatchTimer(this.WatchThread);
         }
@@ -112,14 +112,16 @@ namespace Amoeba.Service
             return null;
         }
 
-        public Cap AcceptCap()
+        public Cap AcceptCap(out string uri)
         {
+            uri = null;
+
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
 
             Cap cap;
-            if ((cap = _tcpConnectionManager.AcceptCap()) != null) return cap;
-            if ((cap = _i2pConnectionManager.AcceptCap()) != null) return cap;
+            if ((cap = _tcpConnectionManager.AcceptCap(out uri)) != null) return cap;
+            if ((cap = _i2pConnectionManager.AcceptCap(out uri)) != null) return cap;
 
             return null;
         }

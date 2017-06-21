@@ -36,7 +36,7 @@ namespace Amoeba.Service
             _downloadManager = new DownloadManager(Path.Combine(configPath, "Download"), _networkManager, _cacheManager, _bufferManager);
 
             _networkManager.ConnectCapEvent = (_, uri) => this.OnConnectCap(uri);
-            _networkManager.AcceptCapEvent = (_) => this.OnAcceptCap();
+            _networkManager.AcceptCapEvent = (object _, out string uri) => this.OnAcceptCap(out uri);
             _networkManager.GetLockSignaturesEvent = (_) => this.OnGetLockSignatures();
         }
 
@@ -56,9 +56,10 @@ namespace Amoeba.Service
             return this.ConnectCapEvent?.Invoke(this, uri);
         }
 
-        private Cap OnAcceptCap()
+        private Cap OnAcceptCap(out string uri)
         {
-            return this.AcceptCapEvent?.Invoke(this);
+            uri = null;
+            return this.AcceptCapEvent?.Invoke(this, out uri);
         }
 
         private IEnumerable<Signature> OnGetLockSignatures()

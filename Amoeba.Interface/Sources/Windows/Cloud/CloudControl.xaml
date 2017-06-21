@@ -91,12 +91,12 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn
-                                    Width="{Binding Path=DynamicOptions.ConnetionListView_Id_Width, Mode=TwoWay, FallbackValue=120}"
-                                    omnius:GridViewSortHelper.PropertyName="Id"
-                                    Header="{Binding Path=CloudControl_Id, Source={StaticResource Languages}}">
+                                    Width="{Binding Path=DynamicOptions.ConnetionListView_Uri_Width, Mode=TwoWay, FallbackValue=120}"
+                                    omnius:GridViewSortHelper.PropertyName="Uri"
+                                    Header="{Binding Path=CloudControl_Uri, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Value.Id, Mode=OneWay, Converter={StaticResource BytesToHexStringConverter}}" />
+                                        <TextBlock Text="{Binding Path=Value.Uri, Mode=OneWay}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

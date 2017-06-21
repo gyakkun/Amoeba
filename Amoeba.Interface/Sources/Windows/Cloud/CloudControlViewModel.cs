@@ -257,8 +257,8 @@ namespace Amoeba.Interface
                 case "Type":
                     this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.Type", direction));
                     break;
-                case "Id":
-                    this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.Id", direction));
+                case "Uri":
+                    this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.Uri", direction));
                     break;
                 case "Priority":
                     this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.Priority", direction));

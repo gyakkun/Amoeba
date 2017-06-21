@@ -320,8 +320,10 @@ namespace Amoeba.Service
             return null;
         }
 
-        public Cap AcceptCap()
+        public Cap AcceptCap(out string uri)
         {
+            uri = null;
+
             if (_disposed) return null;
             if (this.State == ManagerState.Stop) return null;
 
@@ -341,8 +343,10 @@ namespace Amoeba.Service
 
                         // Check
                         {
-                            var ipAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
-                            if (!_catharsisManager.Check(ipAddress)) return null;
+                            var ipEndPoint = ((IPEndPoint)socket.RemoteEndPoint);
+                            if (!_catharsisManager.Check(ipEndPoint.Address)) return null;
+
+                            uri = $"tcp:{ipEndPoint.Address}:{ipEndPoint.Port}";
                         }
 
                         return new SocketCap(socket);
@@ -355,8 +359,10 @@ namespace Amoeba.Service
 
                         // Check
                         {
-                            var ipAddress = ((IPEndPoint)socket.RemoteEndPoint).Address;
-                            if (!_catharsisManager.Check(ipAddress)) return null;
+                            var ipEndPoint = ((IPEndPoint)socket.RemoteEndPoint);
+                            if (!_catharsisManager.Check(ipEndPoint.Address)) return null;
+
+                            uri = $"tcp:[{ipEndPoint.Address}]:{ipEndPoint.Port}";
                         }
 
                         return new SocketCap(socket);

@@ -22,7 +22,7 @@ namespace Amoeba.Service
     public delegate IEnumerable<Signature> GetSignaturesEventHandler(object sender);
 
     public delegate Cap ConnectCapEventHandler(object sender, string uri);
-    public delegate Cap AcceptCapEventHandler(object sender);
+    public delegate Cap AcceptCapEventHandler(object sender, out string uri);
 
     public enum SessionType
     {
@@ -231,9 +231,10 @@ namespace Amoeba.Service
             return this.ConnectCapEvent?.Invoke(this, uri);
         }
 
-        private Cap OnAcceptCap()
+        private Cap OnAcceptCap(out string uri)
         {
-            return this.AcceptCapEvent?.Invoke(this);
+            uri = null;
+            return this.AcceptCapEvent?.Invoke(this, out uri);
         }
 
         public GetSignaturesEventHandler GetLockSignaturesEvent { get; set; }
@@ -253,10 +254,11 @@ namespace Amoeba.Service
                 {
                     var contexts = new List<InformationContext>();
                     {
-                        contexts.Add(new InformationContext("Type", sessionInfo.Type));
                         contexts.Add(new InformationContext("Id", sessionInfo.Id));
+                        contexts.Add(new InformationContext("Type", sessionInfo.Type));
+                        contexts.Add(new InformationContext("Uri", sessionInfo.Uri));
                         contexts.Add(new InformationContext("Location", sessionInfo.Location));
-                        contexts.Add(new InformationContext("Priority", sessionInfo.PriorityManager.GetPriority() * 100));
+                        contexts.Add(new InformationContext("Priority", Math.Round(sessionInfo.PriorityManager.GetPriority() * 100, 2)));
                         contexts.Add(new InformationContext("ReceivedByteCount", sessionInfo.Connection.ReceivedByteCount));
                         contexts.Add(new InformationContext("SentByteCount", sessionInfo.Connection.SentByteCount));
                     }
@@ -329,11 +331,15 @@ namespace Amoeba.Service
                     }
 
                     Cap cap = null;
+                    string uri = null;
 
-                    foreach (string uri in new HashSet<string>(location.Uris))
+                    foreach (string tempUri in new HashSet<string>(location.Uris))
                     {
-                        cap = this.OnConnectCap(uri);
-                        if (cap != null) break;
+                        var tempCap = this.OnConnectCap(tempUri);
+                        if (tempCap == null) continue;
+
+                        cap = tempCap;
+                        uri = tempUri;
                     }
 
                     if (cap == null)
@@ -345,7 +351,7 @@ namespace Amoeba.Service
 
                     _info.ConnectCount.Increment();
 
-                    this.CreateConnection(cap, SessionType.Connect);
+                    this.CreateConnection(cap, SessionType.Connect, uri);
                 }
             }
             catch (Exception e)
@@ -368,12 +374,12 @@ namespace Amoeba.Service
                         if (connectionCount >= (this.ConnectionCountLimit / 2)) continue;
                     }
 
-                    var cap = this.OnAcceptCap();
+                    var cap = this.OnAcceptCap(out string uri);
                     if (cap == null) continue;
 
                     _info.AcceptCount.Increment();
 
-                    this.CreateConnection(cap, SessionType.Accept);
+                    this.CreateConnection(cap, SessionType.Accept, uri);
                 }
             }
             catch (Exception e)
@@ -382,7 +388,7 @@ namespace Amoeba.Service
             }
         }
 
-        private void CreateConnection(Cap cap, SessionType type)
+        private void CreateConnection(Cap cap, SessionType type, string uri)
         {
             lock (_lockObject)
             {
@@ -392,6 +398,7 @@ namespace Amoeba.Service
                 var sessionInfo = new SessionInfo();
                 sessionInfo.Connection = connection;
                 sessionInfo.Type = type;
+                sessionInfo.Uri = uri;
 
                 connection.SendEvent = (_) => this.Send(sessionInfo);
                 connection.ReceiveEvent = (_, stream) => this.Receive(sessionInfo, stream);
@@ -1407,6 +1414,7 @@ namespace Amoeba.Service
         {
             public Connection Connection { get; set; }
             public SessionType Type { get; set; }
+            public string Uri { get; set; }
 
             public int Version { get; set; }
             public byte[] Id { get; set; }

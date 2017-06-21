@@ -128,7 +128,6 @@ namespace Amoeba.Interface
         public string CloudControl_Copy { get { return this.Translate("CloudControl_Copy"); } }
         public string CloudControl_Paste { get { return this.Translate("CloudControl_Paste"); } }
         public string CloudControl_Type { get { return this.Translate("CloudControl_Type"); } }
-        public string CloudControl_Id { get { return this.Translate("CloudControl_Id"); } }
         public string CloudControl_Priority { get { return this.Translate("CloudControl_Priority"); } }
         public string CloudControl_ReceivedByteCount { get { return this.Translate("CloudControl_ReceivedByteCount"); } }
         public string CloudControl_SentByteCount { get { return this.Translate("CloudControl_SentByteCount"); } }
