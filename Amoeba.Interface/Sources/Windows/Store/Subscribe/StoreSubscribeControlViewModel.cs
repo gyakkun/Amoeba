@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -9,20 +10,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using Omnius.Utilities;
-using Omnius.Security;
-using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
-using System.Windows.Threading;
 
 namespace Amoeba.Interface
 {
@@ -177,7 +173,7 @@ namespace Amoeba.Interface
                 foreach (var item in storeViewModel.Model.BoxInfos)
                 {
                     var vm = new SubscribeItemViewModel();
-                    vm.Icon = AmoebaEnvironment.Icons.BoxIcon;
+                    vm.Icon = AmoebaEnvironment.Icons.Box;
                     vm.Name = item.Name;
                     vm.Length = GetBoxLength(item);
                     vm.CreationTime = GetBoxCreationTime(item);
@@ -196,7 +192,7 @@ namespace Amoeba.Interface
                 foreach (var item in boxViewModel.Model.BoxInfos)
                 {
                     var vm = new SubscribeItemViewModel();
-                    vm.Icon = AmoebaEnvironment.Icons.BoxIcon;
+                    vm.Icon = AmoebaEnvironment.Icons.Box;
                     vm.Name = item.Name;
                     vm.Length = GetBoxLength(item);
                     vm.CreationTime = GetBoxCreationTime(item);
@@ -282,7 +278,7 @@ namespace Amoeba.Interface
                 }
                 catch (TaskCanceledException)
                 {
-
+                    return;
                 }
 
                 foreach (var storeInfo in subscribeStoreInfos)
@@ -313,7 +309,7 @@ namespace Amoeba.Interface
                     }
                     catch (TaskCanceledException)
                     {
-
+                        return;
                     }
                 }
 

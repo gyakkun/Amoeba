@@ -19,7 +19,7 @@ namespace Amoeba.Interface
         {
             try
             {
-                Version = new Version(5, 0, 8);
+                Version = new Version(5, 0, 9);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();
@@ -70,13 +70,13 @@ namespace Amoeba.Interface
 
         public class EnvironmentIcons
         {
-            public BitmapImage AmoebaIcon { get; }
-            public BitmapImage BoxIcon { get; }
+            public BitmapImage Amoeba { get; }
+            public BitmapImage Box { get; }
 
             public EnvironmentIcons()
             {
-                this.AmoebaIcon = GetIcon("Amoeba.ico");
-                this.BoxIcon = GetIcon("Files/Box.ico");
+                this.Amoeba = GetIcon("Amoeba.ico");
+                this.Box = GetIcon("Files/Box.ico");
             }
 
             private static BitmapImage GetIcon(string path)
@@ -102,16 +102,10 @@ namespace Amoeba.Interface
         public class EnvironmentImages
         {
             public BitmapImage Amoeba { get; }
-            public BitmapImage GreenBall { get; }
-            public BitmapImage RedBall { get; }
-            public BitmapImage YelloBall { get; }
 
             public EnvironmentImages()
             {
                 this.Amoeba = GetImage("Amoeba.png");
-                this.GreenBall = GetImage("States/Green.png");
-                this.RedBall = GetImage("States/Red.png");
-                this.YelloBall = GetImage("States/Yello.png");
             }
 
             private static BitmapImage GetImage(string path)
@@ -160,15 +154,15 @@ namespace Amoeba.Interface
                 public ColorsConfig()
                 {
                     this.Tree_Hit = System.Windows.Media.Colors.LightPink.ToString();
-                    this.Link = System.Windows.Media.Colors.SkyBlue.ToString();
                     this.Link_New = System.Windows.Media.Colors.LightPink.ToString();
+                    this.Link_Visited = System.Windows.Media.Colors.SkyBlue.ToString();
                     this.Message_Trust = System.Windows.Media.Colors.SkyBlue.ToString();
                     this.Message_Untrust = System.Windows.Media.Colors.LightPink.ToString();
                 }
 
                 public string Tree_Hit { get; set; }
-                public string Link { get; set; }
                 public string Link_New { get; set; }
+                public string Link_Visited { get; set; }
                 public string Message_Trust { get; set; }
                 public string Message_Untrust { get; set; }
             }

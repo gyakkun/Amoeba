@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Amoeba.Interface
+﻿namespace Amoeba.Interface
 {
     partial class LanguagesManager
     {
@@ -133,6 +127,16 @@ namespace Amoeba.Interface
         public string CloudControl_SentByteCount { get { return this.Translate("CloudControl_SentByteCount"); } }
         public string CloudControl_Name { get { return this.Translate("CloudControl_Name"); } }
         public string CloudControl_Value { get { return this.Translate("CloudControl_Value"); } }
+        public string ChatControl_NewCategory { get { return this.Translate("ChatControl_NewCategory"); } }
+        public string ChatControl_NewChat { get { return this.Translate("ChatControl_NewChat"); } }
+        public string ChatControl_Edit { get { return this.Translate("ChatControl_Edit"); } }
+        public string ChatControl_Delete { get { return this.Translate("ChatControl_Delete"); } }
+        public string ChatControl_Cut { get { return this.Translate("ChatControl_Cut"); } }
+        public string ChatControl_Copy { get { return this.Translate("ChatControl_Copy"); } }
+        public string ChatControl_Paste { get { return this.Translate("ChatControl_Paste"); } }
+        public string ChatControl_Response { get { return this.Translate("ChatControl_Response"); } }
+        public string ChatMessageEditWindow_Title { get { return this.Translate("ChatMessageEditWindow_Title"); } }
+        public string ChatMessageEditWindow_Ok { get { return this.Translate("ChatMessageEditWindow_Ok"); } }
         public string StoreControl_Search { get { return this.Translate("StoreControl_Search"); } }
         public string StoreControl_Subscribe { get { return this.Translate("StoreControl_Subscribe"); } }
         public string StoreControl_Publish { get { return this.Translate("StoreControl_Publish"); } }
@@ -198,6 +202,7 @@ namespace Amoeba.Interface
         public string StorePublishControl_Add { get { return this.Translate("StorePublishControl_Add"); } }
         public string StorePublishControl_Edit { get { return this.Translate("StorePublishControl_Edit"); } }
         public string StorePublishControl_Delete { get { return this.Translate("StorePublishControl_Delete"); } }
+        public string StorePublishControl_Completed { get { return this.Translate("StorePublishControl_Completed"); } }
         public string PublishDirectoryInfoEditWindow_Title { get { return this.Translate("PublishDirectoryInfoEditWindow_Title"); } }
         public string PublishDirectoryInfoEditWindow_Name { get { return this.Translate("PublishDirectoryInfoEditWindow_Name"); } }
         public string PublishDirectoryInfoEditWindow_Path { get { return this.Translate("PublishDirectoryInfoEditWindow_Path"); } }

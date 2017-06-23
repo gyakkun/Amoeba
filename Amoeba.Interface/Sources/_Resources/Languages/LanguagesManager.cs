@@ -1,16 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Windows.Data;
-using System.Xml;
-using System.Windows;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace Amoeba.Interface
 {

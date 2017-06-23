@@ -76,11 +76,23 @@
                                     ConverterParameter="Name.Value"
                                     Path="Children" />
                         </HierarchicalDataTemplate.ItemsSource>
-                        <TextBlock Text="{Binding Path=Name.Value}">
-                            <i:Interaction.Behaviors>
-                                <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
-                            </i:Interaction.Behaviors>
-                        </TextBlock>
+                        <ContentControl Name="ContentControl">
+                            <StackPanel Orientation="Horizontal">
+                                <i:Interaction.Behaviors>
+                                    <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
+                                </i:Interaction.Behaviors>
+                                <TextBlock Text="{Binding Path=Name.Value}" />
+                                <TextBlock Text="{Binding Path=Count.Value, StringFormat={} ({0})}" />
+                            </StackPanel>
+                        </ContentControl>
+                        <HierarchicalDataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsUpdate.Value}" Value="False">
+                                <Setter TargetName="ContentControl" Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=Foreground}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsUpdate.Value}" Value="True">
+                                <Setter TargetName="ContentControl" Property="Foreground" Value="{Binding Path=Colors.Tree_Hit, Source={x:Static local:AmoebaEnvironment.Config}}" />
+                            </DataTrigger>
+                        </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
                 <i:Interaction.Behaviors>

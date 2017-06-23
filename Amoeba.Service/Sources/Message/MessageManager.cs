@@ -329,7 +329,15 @@ namespace Amoeba.Service
             return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, chatMessage), new TimeSpan(30, 0, 0), token)
                 .ContinueWith(task =>
                 {
-                    _coreManager.UploadMetadata(new MulticastMetadata("ChatMessage", tag, DateTime.UtcNow, task.Result, digitalSignature, miner, token));
+                    try
+                    {
+                        var multicastMetadata = new MulticastMetadata("ChatMessage", tag, DateTime.UtcNow, task.Result, digitalSignature, miner, token);
+                        _coreManager.UploadMetadata(multicastMetadata);
+                    }
+                    catch (MinerException)
+                    {
+
+                    }
                 });
         }
 

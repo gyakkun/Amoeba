@@ -1,23 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Windows.Threading;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
-using Omnius.Security;
+using Omnius.Utilities;
 using Omnius.Wpf;
-using Prism.Events;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Text;
-using Omnius.Collections;
-using Omnius.Utilities;
-using System.Windows.Threading;
-using System.Diagnostics;
-using System.Threading;
-using System.Linq;
 
 namespace Amoeba.Interface
 {
@@ -68,6 +64,7 @@ namespace Amoeba.Interface
         private void Init()
         {
             SettingsManager.Instance.Load();
+            LanguagesManager.Instance.SetCurrentLanguage(SettingsManager.Instance.UseLanguage);
 
             {
                 string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
@@ -370,6 +367,7 @@ namespace Amoeba.Interface
 
             _serviceManager.Save();
 
+            SettingsManager.Instance.UseLanguage = LanguagesManager.Instance.CurrentLanguage;
             SettingsManager.Instance.Save();
         }
 

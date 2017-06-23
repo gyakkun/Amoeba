@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Security;
-using System.Collections.ObjectModel;
-using Omnius.Collections;
 
 namespace Amoeba.Interface
 {
@@ -34,6 +28,7 @@ namespace Amoeba.Interface
         {
             int version = _settings.Load("Version", () => 0);
 
+            this.UseLanguage = _settings.Load(nameof(UseLanguage), () => "English");
             this.AccountInfo = _settings.Load(nameof(AccountInfo), () =>
             {
                 var info = new AccountInfo();
@@ -51,6 +46,7 @@ namespace Amoeba.Interface
         {
             _settings.Save("Version", 0);
 
+            _settings.Save(nameof(UseLanguage), this.UseLanguage);
             _settings.Save(nameof(AccountInfo), this.AccountInfo);
             _settings.Save(nameof(SubscribeSignatures), this.SubscribeSignatures);
             _settings.Save(nameof(PublishDirectoryInfos), this.PublishDirectoryInfos);

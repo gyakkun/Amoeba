@@ -18,21 +18,48 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <DockPanel HorizontalAlignment="Right" VerticalAlignment="Top">
-            <Button
-                    Width="48"
-                    Height="48"
-                    Margin="0,8,16,8"
-                    HorizontalAlignment="Left"
-                    Command="{Binding Path=UploadCommand}"
-                    Style="{StaticResource MaterialDesignFloatingActionButton}"
-                    ToolTip="{Binding Path=StorePublishControl_Upload, Source={StaticResource Languages}}">
-                <md:PackIcon
-                        Width="24"
-                        Height="24"
-                        Kind="CloudUpload" />
-            </Button>
-        </DockPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid
+                    Margin="20,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Visibility="{Binding Path=IsProgressVisible.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ProgressBar
+                        Height="16"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        md:TransitionAssist.DisableTransitions="True"
+                        Value="{Binding Path=Rate.Value, Mode=OneWay}" />
+                <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Text="{Binding Path=Rate.Text, Mode=OneWay}" />
+            </Grid>
+
+            <DockPanel
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top">
+                <Button
+                        Width="48"
+                        Height="48"
+                        Margin="0,8,16,8"
+                        HorizontalAlignment="Left"
+                        Command="{Binding Path=UploadCommand}"
+                        Style="{StaticResource MaterialDesignFloatingActionButton}"
+                        ToolTip="{Binding Path=StorePublishControl_Upload, Source={StaticResource Languages}}">
+                    <md:PackIcon
+                            Width="24"
+                            Height="24"
+                            Kind="CloudUpload" />
+                </Button>
+            </DockPanel>
+        </Grid>
 
         <ListView
                 Grid.Row="1"

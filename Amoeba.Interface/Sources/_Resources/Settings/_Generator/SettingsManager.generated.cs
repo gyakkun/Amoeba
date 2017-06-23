@@ -1,18 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
-using Omnius.Configuration;
-using System.Collections.ObjectModel;
-using Omnius.Security;
 using Omnius.Collections;
+using Omnius.Security;
 
 namespace Amoeba.Interface
 {
     partial class SettingsManager
     {
+        private string _useLanguage;
+
+        [DataMember(Name = nameof(UseLanguage))]
+        public string UseLanguage
+        {
+            get
+            {
+                return _useLanguage;
+            }
+            set
+            {
+                if (_useLanguage != value)
+                {
+                    _useLanguage = value;
+                    this.OnPropertyChanged(nameof(UseLanguage));
+                }
+            }
+        }
+
         private AccountInfo _accountInfo;
 
         [DataMember(Name = nameof(AccountInfo))]

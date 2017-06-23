@@ -1,28 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using Omnius.Utilities;
-using Omnius.Security;
-using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
-using System.Runtime.Serialization;
 
 namespace Amoeba.Interface
 {
@@ -32,6 +27,9 @@ namespace Amoeba.Interface
         private TaskManager _watchTaskManager;
 
         private Settings _settings;
+
+        public ReactiveProperty<bool> IsProgressVisible { get; private set; }
+        public RateInfo Rate { get; } = new RateInfo();
 
         public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(SettingsManager.Instance.PublishDirectoryInfos);
         public ReactiveProperty<PublishDirectoryInfo> SelectedItem { get; private set; }
@@ -66,12 +64,14 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
+                this.IsProgressVisible = new ReactiveProperty<bool>(false).AddTo(_disposable);
+
                 this.SelectedItem = new ReactiveProperty<PublishDirectoryInfo>().AddTo(_disposable);
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
 
-                this.UploadCommand = SettingsManager.Instance.PublishDirectoryInfos.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
+                this.UploadCommand = new ReactiveCommand().AddTo(_disposable);
                 this.UploadCommand.Subscribe(() => this.StoreUpload()).AddTo(_disposable);
 
                 this.AddCommand = new ReactiveCommand().AddTo(_disposable);
@@ -113,7 +113,23 @@ namespace Amoeba.Interface
                 if (token.WaitHandle.WaitOne(1000 * 3)) return;
 
                 var targetPublishStoreInfo = _publishStoreInfo;
-                if (targetPublishStoreInfo == null) continue;
+
+                if (targetPublishStoreInfo == null)
+                {
+                    try
+                    {
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            this.IsProgressVisible.Value = false;
+                        }, DispatcherPriority.Background, token);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
+                    }
+
+                    continue;
+                }
 
                 // Remove
                 {
@@ -136,10 +152,26 @@ namespace Amoeba.Interface
                     hashMap.UnionWith(targetPublishStoreInfo.Map.SelectMany(n => n.Value.SelectMany(m => m.Value)));
                     hashMap.ExceptWith(_serviceManager.GetContentInformations().Select(n => n.GetValue<string>("Path")));
 
-                    foreach (string path in hashMap)
+                    foreach (var (path, i) in hashMap.Select((n, i) => (n, i + 1)))
                     {
                         if (token.IsCancellationRequested) return;
                         if (targetPublishStoreInfo != _publishStoreInfo) goto End;
+
+                        try
+                        {
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                this.IsProgressVisible.Value = true;
+
+                                double value = Math.Round(((double)i / hashMap.Count) * 100, 2);
+                                this.Rate.Text = $"{value}% {i}/{hashMap.Count}";
+                                this.Rate.Value = value;
+                            }, DispatcherPriority.Background, token);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            return;
+                        }
 
                         try
                         {
@@ -408,11 +440,34 @@ namespace Amoeba.Interface
 
         private void DirectoryAdd()
         {
-            var viewModel = new PublishDirectoryInfoEditWindowViewModel(new PublishDirectoryInfo());
-            viewModel.Callback += (info) => SettingsManager.Instance.PublishDirectoryInfos.Add(info);
+            var info = this.EditDialog();
+            if (info == null) return;
+
+            var viewModel = new PublishDirectoryInfoEditWindowViewModel(info);
+            viewModel.Callback += (_) => SettingsManager.Instance.PublishDirectoryInfos.Add(info);
 
             Messenger.Instance.GetEvent<PublishDirectoryInfoEditWindowShowEvent>()
                 .Publish(viewModel);
+        }
+
+        private PublishDirectoryInfo EditDialog()
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
+                dialog.ShowNewFolderButton = true;
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    return new PublishDirectoryInfo()
+                    {
+                        Name = System.IO.Path.GetFileName(dialog.SelectedPath),
+                        Path = dialog.SelectedPath
+                    };
+                }
+            }
+
+            return null;
         }
 
         private void DirectoryDelete()

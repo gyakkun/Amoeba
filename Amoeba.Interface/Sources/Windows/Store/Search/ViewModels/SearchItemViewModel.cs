@@ -1,11 +1,7 @@
-﻿using Amoeba.Service;
-using Omnius.Security;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows.Media.Imaging;
+using Amoeba.Service;
+using Omnius.Security;
 
 namespace Amoeba.Interface
 {

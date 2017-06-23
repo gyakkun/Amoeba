@@ -4,6 +4,7 @@
   <Import Namespace="Omnius.Security" />
   <Import Namespace="Omnius.Collections" />
 
+  <Property Type="string" Name="UseLanguage" IsEditable="true" />
   <Property Type="AccountInfo" Name="AccountInfo" IsEditable="true" />
   <Property Type="LockedHashSet(Signature)" Name="SubscribeSignatures" />
   <Property Type="ObservableCollection(PublishDirectoryInfo)" Name="PublishDirectoryInfos" />

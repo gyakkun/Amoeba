@@ -1,29 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using Omnius.Utilities;
-using Omnius.Security;
-using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
-using System.Runtime.Serialization;
-using System.Globalization;
 
 namespace Amoeba.Interface
 {
@@ -190,9 +179,10 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetSignatures())
             {
+                if (_contents.Any(n => n.Value == item)) continue;
+
                 var value = new SearchCondition<Signature>(true, item);
 
-                if (_contents.Contains(value)) continue;
                 _contents.Add(value);
             }
         }

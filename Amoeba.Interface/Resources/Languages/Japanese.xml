@@ -137,12 +137,23 @@
   <Property Name="CloudControl_Copy" Value="Copy" />
   <Property Name="CloudControl_Paste" Value="Paste" />
   <Property Name="CloudControl_Type" Value="タイプ" />
-  <Property Name="CloudControl_Id" Value="ID" />
   <Property Name="CloudControl_Priority" Value="Priority" />
   <Property Name="CloudControl_ReceivedByteCount" Value="Received byte count" />
   <Property Name="CloudControl_SentByteCount" Value="Sent byte count" />
   <Property Name="CloudControl_Name" Value="Name" />
   <Property Name="CloudControl_Value" Value="Value" />
+
+  <Property Name="ChatControl_NewCategory" Value="New category" />
+  <Property Name="ChatControl_NewChat" Value="New chat" />
+  <Property Name="ChatControl_Edit" Value="Edit" />
+  <Property Name="ChatControl_Delete" Value="Delete" />
+  <Property Name="ChatControl_Cut" Value="Cut" />
+  <Property Name="ChatControl_Copy" Value="Copy" />
+  <Property Name="ChatControl_Paste" Value="Paste" />
+  <Property Name="ChatControl_Response" Value="Response" />
+
+  <Property Name="ChatMessageEditWindow_Title" Value="Chat message edit" />
+  <Property Name="ChatMessageEditWindow_Ok" Value="Ok" />
 
   <Property Name="StoreControl_Search" Value="Search" />
   <Property Name="StoreControl_Subscribe" Value="Subscribe" />
@@ -214,6 +225,7 @@
   <Property Name="StorePublishControl_Add" Value="Add" />
   <Property Name="StorePublishControl_Edit" Value="Edit" />
   <Property Name="StorePublishControl_Delete" Value="Delete" />
+  <Property Name="StorePublishControl_Completed" Value="Completed" />
 
   <Property Name="PublishDirectoryInfoEditWindow_Title" Value="Publish directory edit" />
   <Property Name="PublishDirectoryInfoEditWindow_Name" Value="Name" />

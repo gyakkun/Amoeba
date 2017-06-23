@@ -1,24 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Omnius.Security;
 
 namespace Amoeba.Interface
 {
@@ -28,6 +19,8 @@ namespace Amoeba.Interface
         private ServiceManager _serviceManager;
 
         private Settings _settings;
+
+        private CancellationToken _token;
 
         public event EventHandler<EventArgs> CloseEvent;
 
@@ -41,15 +34,16 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ChatMessageEditWindowViewModel(Tag tag, ServiceManager serviceManager)
+        public ChatMessageEditWindowViewModel(Tag tag, string comment, ServiceManager serviceManager, CancellationToken token)
         {
             _tag = tag;
             _serviceManager = serviceManager;
+            _token = token;
 
-            this.Init();
+            this.Init(comment);
         }
 
-        private void Init()
+        private void Init(string comment)
         {
             {
                 this.OkCommand = new ReactiveCommand().AddTo(_disposable);
@@ -57,6 +51,7 @@ namespace Amoeba.Interface
 
                 this.WindowSettings = new ReactiveProperty<WindowSettings>().AddTo(_disposable);
                 this.Comment = new ReactiveProperty<string>().AddTo(_disposable);
+                this.Comment.Value = comment;
             }
 
             {
@@ -82,8 +77,20 @@ namespace Amoeba.Interface
 
         private void Ok()
         {
-            var miner = new Miner(CashAlgorithm.Version1, 0, TimeSpan.Zero);
-            _serviceManager.Upload(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.AccountInfo.DigitalSignature, miner, CancellationToken.None);
+            var trustSignatures = new HashSet<Signature>(_serviceManager.SearchSignatures);
+
+            Miner miner = null;
+
+            if (trustSignatures.Contains(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature()))
+            {
+                miner = new Miner(CashAlgorithm.Version1, 0, TimeSpan.Zero);
+            }
+            else
+            {
+                miner = new Miner(CashAlgorithm.Version1, -1, TimeSpan.FromMinutes(3));
+            }
+
+            _serviceManager.Upload(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.AccountInfo.DigitalSignature, miner, _token);
 
             this.OnCloseEvent();
         }

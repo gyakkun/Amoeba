@@ -1,28 +1,23 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Threading;
 using Amoeba.Service;
 using Omnius.Base;
+using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using Omnius.Utilities;
-using Omnius.Security;
-using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
-using Omnius.Collections;
 
 namespace Amoeba.Interface
 {
@@ -289,18 +284,20 @@ namespace Amoeba.Interface
                     _cache_SearchItems.AddRange(searchItems);
                 }
 
-                this.SetCount(this.TabViewModel.Value, searchItems);
+                this.SetCount(this.TabViewModel.Value, searchItems, token);
 
                 if (token.WaitHandle.WaitOne(1000 * 20)) return;
             }
         }
 
-        private void SetCount(SearchViewModel viewModel, IEnumerable<SearchItemViewModel> items)
+        private void SetCount(SearchViewModel viewModel, IEnumerable<SearchItemViewModel> items, CancellationToken token)
         {
             var tempList = Filter(items, viewModel.Model).ToList();
 
             App.Current.Dispatcher.InvokeAsync(() =>
             {
+                if (token.IsCancellationRequested) return;
+
                 try
                 {
                     if (viewModel.Count.Value != 0 && viewModel.Count.Value < tempList.Count)
@@ -319,21 +316,22 @@ namespace Amoeba.Interface
             {
                 var searchViewModels = new List<SearchViewModel>();
 
-                App.Current.Dispatcher.InvokeAsync(() =>
+                try
                 {
-                    try
+                    App.Current.Dispatcher.Invoke(() =>
                     {
+                        if (token.IsCancellationRequested) return;
                         searchViewModels.AddRange(viewModel.Children);
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                });
+                    }, DispatcherPriority.Background, token);
+                }
+                catch (TaskCanceledException)
+                {
+                    return;
+                }
 
                 foreach (var searchViewModel in searchViewModels)
                 {
-                    this.SetCount(searchViewModel, tempList);
+                    this.SetCount(searchViewModel, tempList, token);
                 }
             }
         }

@@ -5,16 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Io;
-using Omnius.Security;
-using Amoeba.Service;
 using Omnius.Net;
+using Omnius.Security;
 
 namespace Amoeba.Simulation
 {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
@@ -9,20 +9,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Threading;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using Omnius.Utilities;
-using Omnius.Security;
-using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
-using System.Windows.Threading;
 
 namespace Amoeba.Interface
 {
@@ -30,6 +24,7 @@ namespace Amoeba.Interface
     {
         private ServiceManager _serviceManager;
         private TaskManager _watchTaskManager;
+        private CancellationTokenSource _tokenSource = new CancellationTokenSource();
 
         private Settings _settings;
 
@@ -43,11 +38,15 @@ namespace Amoeba.Interface
         public ReactiveCommand TabNewChatCommand { get; private set; }
         public ReactiveCommand TabEditCommand { get; private set; }
         public ReactiveCommand TabDeleteCommand { get; private set; }
+        public ReactiveCommand TabCutCommand { get; private set; }
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
         public ReactiveProperty<AvalonEditChatMessagesInfo> Info { get; private set; }
+        public ReactiveProperty<string> SelectedText { get; private set; }
 
+        public ReactiveCommand CopyCommand { get; private set; }
+        public ReactiveCommand ResponseCommand { get; private set; }
         public ReactiveCommand NewMessageCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
@@ -91,6 +90,7 @@ namespace Amoeba.Interface
                 this.TabSelectedItem.Subscribe((viewModel) => this.TabSelectChanged(viewModel)).AddTo(_disposable);
 
                 this.Info = new ReactiveProperty<AvalonEditChatMessagesInfo>().AddTo(_disposable);
+                this.SelectedText = new ReactiveProperty<string>().AddTo(_disposable);
 
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
@@ -107,11 +107,20 @@ namespace Amoeba.Interface
                 this.TabDeleteCommand = this.TabSelectedItem.Select(n => n != this.TabViewModel.Value).ToReactiveCommand().AddTo(_disposable);
                 this.TabDeleteCommand.Subscribe(() => this.TabDelete()).AddTo(_disposable);
 
+                this.TabCutCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TabCutCommand.Subscribe(() => this.TabCut()).AddTo(_disposable);
+
                 this.TabCopyCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
+
+                this.CopyCommand = this.SelectedText.Select(n => !string.IsNullOrEmpty(n)).ToReactiveCommand().AddTo(_disposable);
+                this.CopyCommand.Subscribe(() => this.Copy()).AddTo(_disposable);
+
+                this.ResponseCommand = this.SelectedText.Select(n => !string.IsNullOrEmpty(n)).ToReactiveCommand().AddTo(_disposable);
+                this.ResponseCommand.Subscribe(() => this.Response()).AddTo(_disposable);
 
                 this.NewMessageCommand = this.TabSelectedItem.Select(n => n is ChatThreadViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.NewMessageCommand.Subscribe(() => this.NewMessage()).AddTo(_disposable);
@@ -180,7 +189,7 @@ namespace Amoeba.Interface
                 }
                 catch (TaskCanceledException)
                 {
-
+                    return;
                 }
 
                 foreach (var chatInfo in chatThreadInfos)
@@ -279,6 +288,21 @@ namespace Amoeba.Interface
                 .Publish(viewModel);
         }
 
+        private void TabCut()
+        {
+            if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
+            {
+                if (chatCategoryViewModel.Parent == null) return;
+                chatCategoryViewModel.Parent.TryRemove(chatCategoryViewModel);
+                Clipboard.SetChatCategoryInfos(new ChatCategoryInfo[] { chatCategoryViewModel.Model });
+            }
+            else if (this.TabSelectedItem.Value is ChatThreadViewModel chatViewModel)
+            {
+                chatViewModel.Parent.TryRemove(chatViewModel);
+                Clipboard.SetChatThreadInfos(new ChatThreadInfo[] { chatViewModel.Model });
+            }
+        }
+
         private void TabCopy()
         {
             if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
@@ -306,12 +330,35 @@ namespace Amoeba.Interface
             }
         }
 
+        private void Copy()
+        {
+            Clipboard.SetText(this.SelectedText.Value);
+        }
+
+        private void Response()
+        {
+            var chatViewModel = this.TabSelectedItem.Value as ChatThreadViewModel;
+            if (chatViewModel == null) return;
+
+            var sb = new StringBuilder();
+
+            foreach (string line in this.SelectedText.Value.Split(new string[] { "\r\n", "\n", "\r" }, StringSplitOptions.None))
+            {
+                sb.AppendLine(">> " + line);
+            }
+
+            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, sb.ToString(), _serviceManager, _tokenSource.Token);
+
+            Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
+                .Publish(viewModel);
+        }
+
         private void NewMessage()
         {
             var chatViewModel = this.TabSelectedItem.Value as ChatThreadViewModel;
             if (chatViewModel == null) return;
 
-            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, _serviceManager);
+            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, "", _serviceManager, _tokenSource.Token);
 
             Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
                 .Publish(viewModel);
@@ -335,6 +382,9 @@ namespace Amoeba.Interface
             if (disposing)
             {
                 Backup.Instance.SaveEvent -= this.Save;
+
+                _tokenSource.Cancel();
+                _tokenSource.Dispose();
 
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();

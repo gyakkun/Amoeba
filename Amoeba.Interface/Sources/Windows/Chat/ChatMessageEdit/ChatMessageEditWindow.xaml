@@ -36,7 +36,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 Command="{Binding Path=OkCommand}"
-                Content="Ok"
+                Content="{Binding Path=ChatMessageEditWindow_Ok, Source={StaticResource Languages}}"
                 IsDefault="True" />
     </Grid>
 </omnius:RestorableWindow>

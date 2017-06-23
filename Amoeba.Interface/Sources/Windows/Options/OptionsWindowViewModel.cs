@@ -1,8 +1,11 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Threading;
+using System.Windows.Data;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
@@ -10,12 +13,6 @@ using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Windows.Data;
-using System.Collections;
 
 namespace Amoeba.Interface
 {
@@ -487,6 +484,8 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetSignatures())
             {
+                if (this.Options.Account.TrustSignatures.Contains(item)) continue;
+
                 this.Options.Account.TrustSignatures.Add(item);
             }
         }
@@ -557,6 +556,8 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetSignatures())
             {
+                if (this.Options.Account.UntrustSignatures.Contains(item)) continue;
+
                 this.Options.Account.UntrustSignatures.Add(item);
             }
         }
@@ -646,6 +647,8 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetTags())
             {
+                if (this.Options.Account.Tags.Contains(item)) continue;
+
                 this.Options.Account.Tags.Add(item);
             }
         }
@@ -716,6 +719,8 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetSignatures())
             {
+                if (this.Options.Subscribe.SubscribeSignatures.Contains(item)) continue;
+
                 this.Options.Subscribe.SubscribeSignatures.Add(item);
             }
         }

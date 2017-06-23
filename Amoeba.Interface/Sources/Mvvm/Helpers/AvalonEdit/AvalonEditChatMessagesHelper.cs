@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,7 +13,6 @@ using Amoeba.Service;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Rendering;
 using Omnius.Security;
-using System.Collections.ObjectModel;
 
 namespace Amoeba.Interface
 {
@@ -108,22 +108,16 @@ namespace Amoeba.Interface
                 int startOffset = document.Length;
 
                 {
-                    string item1 = "@";
-
-                    var item2 = target.Message.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.Global_DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
-                    var item3 = target.Message.AuthorSignature.ToString();
+                    string creationTimeText = target.Message.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.Global_DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
+                    string SignatureText = target.Message.AuthorSignature.ToString();
 
                     {
-                        settings.Add(new CustomElementSetting("State", document.Length, item1.Length));
-                        document.Append(item1);
-                        document.Append(" ");
-
-                        settings.Add(new CustomElementSetting("CreationTime", document.Length, item2.Length));
-                        document.Append(item2);
+                        settings.Add(new CustomElementSetting("CreationTime", document.Length, creationTimeText.Length));
+                        document.Append(creationTimeText);
                         document.Append(" - ");
 
-                        settings.Add(new CustomElementSetting("Signature", document.Length, item3.Length));
-                        document.Append(item3);
+                        settings.Add(new CustomElementSetting("Signature", document.Length, SignatureText.Length));
+                        document.Append(SignatureText);
 
                         if (!trustSignatures.Contains(target.Message.AuthorSignature) && target.Message.Cost != null)
                         {
@@ -140,7 +134,7 @@ namespace Amoeba.Interface
                 }
 
                 {
-                    foreach (var line in (target.Message.Value.Comment ?? "")
+                    foreach (string line in (target.Message.Value.Comment ?? "")
                         .Trim('\r', '\n')
                         .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
                         .Take(128))
@@ -210,23 +204,7 @@ namespace Amoeba.Interface
 
                 if (result != null)
                 {
-                    if (result.Type == "State")
-                    {
-                        var image = new Image();
-                        if (result.Value == "#") image.Source = AmoebaEnvironment.Images.GreenBall;
-                        else if (result.Value == "!") image.Source = AmoebaEnvironment.Images.RedBall;
-                        else if (result.Value == "@") image.Source = AmoebaEnvironment.Images.YelloBall;
-
-                        var element = new CustomObjectElement(result.Value, image);
-
-                        element.ClickEvent += (string text) =>
-                        {
-                            this.OnSelectEvent(new CustomElementRange(offset, offset + result.Value.Length));
-                        };
-
-                        return element;
-                    }
-                    else if (result.Type == "Signature")
+                    if (result.Type == "Signature")
                     {
                         Brush brush;
 
@@ -251,7 +229,7 @@ namespace Amoeba.Interface
                     }
                     else if (result.Type == "Uri")
                     {
-                        var uri = result.Value;
+                        string uri = result.Value;
 
                         CustomObjectElement element = null;
 

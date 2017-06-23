@@ -169,7 +169,7 @@ namespace Amoeba.Service
             return true;
         }
 
-        protected override Stream GetCashStream(string tag)
+        protected override Stream GetCashStream(string signature)
         {
             var tempCertificate = this.Certificate;
             this.Certificate = null;
@@ -187,7 +187,7 @@ namespace Amoeba.Service
                 using (var writer = new ItemStreamWriter(bufferManager))
                 {
                     writer.Write((uint)SerializeId.Certificate);
-                    writer.Write(tag);
+                    writer.Write(signature);
 
                     streams.Add(writer.GetStream());
                 }

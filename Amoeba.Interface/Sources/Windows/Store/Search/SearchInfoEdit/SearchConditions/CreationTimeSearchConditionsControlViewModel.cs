@@ -1,29 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using Omnius.Utilities;
-using Omnius.Security;
-using Prism.Events;
-using Prism.Interactivity.InteractionRequest;
-using System.Runtime.Serialization;
-using System.Globalization;
 
 namespace Amoeba.Interface
 {
@@ -183,7 +171,7 @@ namespace Amoeba.Interface
             var condition = new SearchCondition<SearchRange<DateTime>>(this.Contains.Value, new SearchRange<DateTime>(this.MinInput.Value, this.MaxInput.Value));
             if (_contents.Contains(condition)) return;
 
-            var index = _contents.IndexOf(selectedItem);
+            int index = _contents.IndexOf(selectedItem);
             _contents[index] = condition;
         }
 

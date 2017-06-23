@@ -1,19 +1,12 @@
-using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using Amoeba.Service;
+using System.Threading.Tasks;
 using Omnius.Base;
 using Omnius.Configuration;
-using Omnius.Security;
 using Omnius.Wpf;
-using Prism.Events;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace Amoeba.Simulation
 {

@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reactive.Linq;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Reactive.Linq;
 
 namespace Amoeba.Interface
 {

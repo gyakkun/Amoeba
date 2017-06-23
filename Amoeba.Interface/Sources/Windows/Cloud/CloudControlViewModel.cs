@@ -1,13 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Data;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
@@ -15,10 +16,6 @@ using Omnius.Utilities;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.ComponentModel;
-using System.Windows.Data;
-using System.Windows.Threading;
-using System.Diagnostics;
 
 namespace Amoeba.Interface
 {

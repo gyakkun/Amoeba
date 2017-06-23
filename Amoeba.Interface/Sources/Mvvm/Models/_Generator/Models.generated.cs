@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Omnius.Base;
-using System.Collections.ObjectModel;
-using System.Windows;
 using Amoeba.Service;
-using Omnius;
+using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Security;
 
@@ -183,6 +177,62 @@ namespace Amoeba.Interface
         }
 
         public PublishDirectoryInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(RateInfo))]
+    partial class RateInfo : INotifyPropertyChanged, ICloneable<RateInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public RateInfo() { }
+
+        private string _text;
+
+        [DataMember(Name = nameof(Text))]
+        public string Text
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                if (_text != value)
+                {
+                    _text = value;
+                    this.OnPropertyChanged(nameof(Text));
+                }
+            }
+        }
+
+        private double _value;
+
+        [DataMember(Name = nameof(Value))]
+        public double Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                if (_value != value)
+                {
+                    _value = value;
+                    this.OnPropertyChanged(nameof(Value));
+                }
+            }
+        }
+
+        public RateInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

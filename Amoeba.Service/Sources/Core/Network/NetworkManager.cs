@@ -1656,7 +1656,7 @@ namespace Amoeba.Service
 
                 this.SetMyLocation(_settings.Load<Location>("MyLocation", () => new Location(null)));
                 this.SetCloudLocations(_settings.Load<IEnumerable<Location>>("CloudLocations", () => new List<Location>()));
-                this.ConnectionCountLimit = _settings.Load<int>("ConnectionCountLimit", () => 256);
+                this.ConnectionCountLimit = _settings.Load<int>("ConnectionCountLimit", () => 128);
                 this.BandwidthLimit = _settings.Load<int>("BandwidthLimit", () => 1024 * 1024 * 32);
 
                 // MetadataManager

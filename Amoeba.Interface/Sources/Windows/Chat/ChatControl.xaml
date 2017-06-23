@@ -79,7 +79,7 @@
                 <ContextMenu>
                     <MenuItem
                             Command="{Binding Path=TabNewCategoryCommand}"
-                            Header="New category"
+                            Header="{Binding Path=ChatControl_NewCategory, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+N">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Folder" />
@@ -87,7 +87,7 @@
                     </MenuItem>
                     <MenuItem
                             Command="{Binding Path=TabNewChatCommand}"
-                            Header="New chat"
+                            Header="{Binding Path=ChatControl_NewChat, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+W">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Comment" />
@@ -95,7 +95,7 @@
                     </MenuItem>
                     <MenuItem
                             Command="{Binding Path=TabEditCommand}"
-                            Header="Edit"
+                            Header="{Binding Path=ChatControl_Edit, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+E">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Pencil" />
@@ -103,7 +103,7 @@
                     </MenuItem>
                     <MenuItem
                             Command="{Binding Path=TabDeleteCommand}"
-                            Header="Delete"
+                            Header="{Binding Path=ChatControl_Delete, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+D">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Delete" />
@@ -111,8 +111,16 @@
                     </MenuItem>
                     <Separator />
                     <MenuItem
+                            Command="{Binding Path=TabCutCommand}"
+                            Header="{Binding Path=ChatControl_Cut, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+X">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ContentCut" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
                             Command="{Binding Path=TabCopyCommand}"
-                            Header="Copy"
+                            Header="{Binding Path=ChatControl_Copy, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+C">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="ContentCopy" />
@@ -120,7 +128,7 @@
                     </MenuItem>
                     <MenuItem
                             Command="{Binding Path=TabPasteCommand}"
-                            Header="Paste"
+                            Header="{Binding Path=ChatControl_Paste, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+V">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="ContentPaste" />
@@ -137,7 +145,31 @@
                 local:AvalonEditChatMessagesHelper.Info="{Binding Path=Info.Value}"
                 HorizontalScrollBarVisibility="Disabled"
                 IsReadOnly="True"
-                Style="{StaticResource MaterialDesignAvalonTextEditor}" />
+                Style="{StaticResource MaterialDesignAvalonTextEditor}">
+            <i:Interaction.Behaviors>
+                <local:TextEditorSelectedTextBlendBehavior SelectedText="{Binding Path=SelectedText.Value, Mode=OneWayToSource}" />
+            </i:Interaction.Behaviors>
+            <avalon:TextEditor.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                            Command="{Binding Path=CopyCommand}"
+                            Header="{Binding Path=ChatControl_Copy, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+C">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ContentCopy" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                            Command="{Binding Path=ResponseCommand}"
+                            Header="{Binding Path=ChatControl_Response, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+R">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Comment" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </avalon:TextEditor.ContextMenu>
+        </avalon:TextEditor>
         <Button
                 Grid.Column="2"
                 Width="48"

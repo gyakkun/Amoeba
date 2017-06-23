@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
@@ -42,6 +42,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Interface", "Amoeba.Interface\Amoeba.Interface.csproj", "{19E45677-BD12-4F48-8C19-87E60B7CBA36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Update", "Amoeba.Update\Amoeba.Update.csproj", "{7847434C-5101-4937-8C4E-B51D8415ABD6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A635572A-A77E-4E60-8C41-2FC4FEF368C5}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
