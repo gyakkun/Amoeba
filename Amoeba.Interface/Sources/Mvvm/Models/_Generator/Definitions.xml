@@ -16,6 +16,11 @@
     <Property Type="ObservableCollection(Tag)" Name="Tags" />
   </Class>
 
+  <Class Name="UpdateInfo">
+    <Property Type="bool" Name="IsEnabled" IsEditable="true" />
+    <Property Type="Signature" Name="Signature" IsEditable="true" />
+  </Class>
+
   <Class Name="PublishDirectoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
     <Property Type="string" Name="Path" IsEditable="true" />
@@ -42,6 +47,7 @@
     <Property Type="OptionsI2pInfo" Name="I2p" />
     <Property Type="OptionsBandwidthInfo" Name="Bandwidth" />
     <Property Type="OptionsDataInfo" Name="Data" />
+    <Property Type="OptionsUpdateInfo" Name="Update" />
   </Class>
 
   <Class Name="OptionsAccountInfo">
@@ -77,6 +83,11 @@
   <Class Name="OptionsDataInfo">
     <Property Type="long" Name="CacheSize" IsEditable="true" />
     <Property Type="string" Name="DownloadDirectoryPath" IsEditable="true" />
+  </Class>
+
+  <Class Name="OptionsUpdateInfo">
+    <Property Type="bool" Name="IsEnabled" IsEditable="true" />
+    <Property Type="Signature" Name="Signature" IsEditable="true" />
   </Class>
 
   <Class Name="RelationSignatureInfo">

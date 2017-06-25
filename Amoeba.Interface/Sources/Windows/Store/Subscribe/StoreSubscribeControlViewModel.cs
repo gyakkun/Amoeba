@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using Amoeba.Service;
 using Omnius.Base;
+using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Security;
 using Omnius.Wpf;
@@ -28,6 +29,8 @@ namespace Amoeba.Interface
         private TaskManager _watchTaskManager;
 
         private Settings _settings;
+
+        private LockedHashDictionary<Metadata, SearchState> _cacheStates = new LockedHashDictionary<Metadata, SearchState>();
 
         public ReactiveProperty<SubscribeCategoryViewModel> TabViewModel { get; private set; }
         public ReactiveProperty<TreeViewModelBase> TabSelectedItem { get; private set; }
@@ -208,6 +211,10 @@ namespace Amoeba.Interface
                     vm.Name = item.Name;
                     vm.CreationTime = item.CreationTime;
                     vm.Length = item.Length;
+
+                    _cacheStates.TryGetValue(item.Metadata, out var state);
+                    vm.State = state;
+
                     vm.Model = item;
 
                     list.Add(vm);
@@ -310,6 +317,37 @@ namespace Amoeba.Interface
                     catch (TaskCanceledException)
                     {
                         return;
+                    }
+                }
+
+                {
+                    var cacheMetadatas = new HashSet<Metadata>();
+                    cacheMetadatas.UnionWith(_serviceManager.GetContentInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+
+                    var downloadingMetadatas = new HashSet<Metadata>();
+                    downloadingMetadatas.UnionWith(_serviceManager.GetDownloadInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+
+                    var downloadedMetadatas = new HashSet<Metadata>();
+                    downloadedMetadatas.UnionWith(SettingsManager.Instance.DownloadedSeeds.Select(n => n.Metadata));
+
+                    lock (_cacheStates.LockObject)
+                    {
+                        _cacheStates.Clear();
+
+                        foreach (var metadata in cacheMetadatas)
+                        {
+                            _cacheStates.Add(metadata, SearchState.Cache);
+                        }
+
+                        foreach (var metadata in downloadingMetadatas)
+                        {
+                            _cacheStates.AddOrUpdate(metadata, SearchState.Downloading, (_, oldValue) => oldValue | SearchState.Downloading);
+                        }
+
+                        foreach (var metadata in downloadedMetadatas)
+                        {
+                            _cacheStates.AddOrUpdate(metadata, SearchState.Downloaded, (_, oldValue) => oldValue | SearchState.Downloaded);
+                        }
                     }
                 }
 

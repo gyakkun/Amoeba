@@ -258,7 +258,7 @@
                             Header="{Binding Path=StoreSubscribeControl_State, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource SearchStateToStringConverter}}" />
+                                <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource SearchStateFlagToStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

@@ -15,9 +15,13 @@ namespace Amoeba.Interface
                 {
                     return LanguagesManager.Instance.SearchState_Cache;
                 }
-                if (type == SearchState.Download)
+                if (type == SearchState.Downloading)
                 {
-                    return LanguagesManager.Instance.SearchState_Download;
+                    return LanguagesManager.Instance.SearchState_Downloading;
+                }
+                if (type == SearchState.Downloaded)
+                {
+                    return LanguagesManager.Instance.SearchState_Downloaded;
                 }
             }
 

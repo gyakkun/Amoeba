@@ -71,6 +71,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Sources\Controllers\ControlManager.cs" />
     <Compile Include="Sources\Mvvm\Behaviors\TextEditorSelectedTextBlendBehavior.cs" />
     <Compile Include="Sources\Mvvm\Converters\ManagerStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\DateTimeToStringConverter.cs" />
@@ -101,7 +102,7 @@
     <Compile Include="Sources\Utilities\CustomSortComparer.cs" />
     <Compile Include="Sources\Utilities\IconUtils.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />
-    <Compile Include="Sources\Utilities\MessageConverter.cs" />
+    <Compile Include="Sources\Utilities\MessageConvertUtils.cs" />
     <Compile Include="Sources\Windows\Chat\ChatControl.xaml.cs">
       <DependentUpon>ChatControl.xaml</DependentUpon>
     </Compile>
@@ -183,7 +184,7 @@
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeStoreViewModel.cs" />
     <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeBoxViewModel.cs" />
     <Compile Include="Sources\Windows\Utilities\ConfirmWindow\ConfirmWindowViewModel.cs" />
-    <Compile Include="Sources\Utilities\TrustManager.cs" />
+    <Compile Include="Sources\Controllers\MessageManager.cs" />
     <Compile Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindow.xaml.cs">
       <DependentUpon>NameEditWindow.xaml</DependentUpon>
     </Compile>

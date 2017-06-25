@@ -1,7 +1,14 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Runtime.Serialization;
-using Omnius.Collections;
+using Omnius.Configuration;
+using System.Collections.ObjectModel;
 using Omnius.Security;
+using Omnius.Collections;
+using Amoeba.Service;
 
 namespace Amoeba.Interface
 {
@@ -26,6 +33,20 @@ namespace Amoeba.Interface
             }
         }
 
+        private LockedHashSet<Signature> _subscribeSignatures;
+
+        [DataMember(Name = nameof(SubscribeSignatures))]
+        public LockedHashSet<Signature> SubscribeSignatures
+        {
+            get
+            {
+                if (_subscribeSignatures == null)
+                    _subscribeSignatures = new LockedHashSet<Signature>();
+
+                return _subscribeSignatures;
+            }
+        }
+
         private AccountInfo _accountInfo;
 
         [DataMember(Name = nameof(AccountInfo))]
@@ -45,31 +66,22 @@ namespace Amoeba.Interface
             }
         }
 
-        private LockedHashSet<Signature> _subscribeSignatures;
+        private UpdateInfo _updateInfo;
 
-        [DataMember(Name = nameof(SubscribeSignatures))]
-        public LockedHashSet<Signature> SubscribeSignatures
+        [DataMember(Name = nameof(UpdateInfo))]
+        public UpdateInfo UpdateInfo
         {
             get
             {
-                if (_subscribeSignatures == null)
-                    _subscribeSignatures = new LockedHashSet<Signature>();
-
-                return _subscribeSignatures;
+                return _updateInfo;
             }
-        }
-
-        private ObservableCollection<PublishDirectoryInfo> _publishDirectoryInfos;
-
-        [DataMember(Name = nameof(PublishDirectoryInfos))]
-        public ObservableCollection<PublishDirectoryInfo> PublishDirectoryInfos
-        {
-            get
+            set
             {
-                if (_publishDirectoryInfos == null)
-                    _publishDirectoryInfos = new ObservableCollection<PublishDirectoryInfo>();
-
-                return _publishDirectoryInfos;
+                if (_updateInfo != value)
+                {
+                    _updateInfo = value;
+                    this.OnPropertyChanged(nameof(UpdateInfo));
+                }
             }
         }
 
@@ -84,6 +96,20 @@ namespace Amoeba.Interface
                     _downloadItemInfos = new LockedHashSet<DownloadItemInfo>();
 
                 return _downloadItemInfos;
+            }
+        }
+
+        private LockedHashSet<Seed> _downloadedSeeds;
+
+        [DataMember(Name = nameof(DownloadedSeeds))]
+        public LockedHashSet<Seed> DownloadedSeeds
+        {
+            get
+            {
+                if (_downloadedSeeds == null)
+                    _downloadedSeeds = new LockedHashSet<Seed>();
+
+                return _downloadedSeeds;
             }
         }
 

@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Security;
-using Omnius.Net;
-using System.Threading;
-using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Amoeba.Tests")]
 
@@ -396,13 +395,13 @@ namespace Amoeba.Service
             }
         }
 
-        public Task Upload(Signature targetSignature, MailMessage mailMessage, DigitalSignature digitalSignature, CancellationToken token)
+        public Task Upload(Signature targetSignature, MailMessage mailMessage, IExchangeEncrypt exchangePublicKey, DigitalSignature digitalSignature, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.Upload(targetSignature, mailMessage, digitalSignature, token);
+                return _messageManager.Upload(targetSignature, mailMessage, exchangePublicKey, digitalSignature, token);
             }
         }
 

@@ -242,6 +242,13 @@ namespace Amoeba.Interface
                 this.Options.Data.CacheSize = _serviceManager.Size;
                 this.Options.Data.DownloadDirectoryPath = _serviceManager.BasePath;
             }
+
+            // Updaate
+            {
+                var info = SettingsManager.Instance.UpdateInfo;
+                this.Options.Update.IsEnabled = info.IsEnabled;
+                this.Options.Update.Signature = info.Signature;
+            }
         }
 
         private void SetOptions()
@@ -302,20 +309,20 @@ namespace Amoeba.Interface
 
             // Tcp
             {
-                var tcp = this.Options.Tcp;
+                var info = this.Options.Tcp;
                 var type = TcpConnectionType.None;
-                if (tcp.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
-                if (tcp.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
+                if (info.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
+                if (info.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
 
                 _serviceManager.SetTcpConnectionConfig(
-                    new TcpConnectionConfig(type, tcp.ProxyUri, tcp.Ipv4Port, tcp.Ipv6Port));
+                    new TcpConnectionConfig(type, info.ProxyUri, info.Ipv4Port, info.Ipv6Port));
             }
 
             // I2p
             {
-                var i2p = this.Options.I2p;
+                var info = this.Options.I2p;
                 _serviceManager.SetI2pConnectionConfig(
-                    new I2pConnectionConfig(i2p.IsEnabled, i2p.SamBridgeUri));
+                    new I2pConnectionConfig(info.IsEnabled, info.SamBridgeUri));
             }
 
             // Bandwidth
@@ -349,6 +356,13 @@ namespace Amoeba.Interface
                 }
 
                 _serviceManager.BasePath = this.Options.Data.DownloadDirectoryPath;
+            }
+
+            // Update
+            {
+                var info = SettingsManager.Instance.UpdateInfo;
+                info.IsEnabled = this.Options.Update.IsEnabled;
+                info.Signature = this.Options.Update.Signature;
             }
         }
 
@@ -462,7 +476,22 @@ namespace Amoeba.Interface
             switch (propertyName)
             {
                 case "Signature":
-                    this.AccountTrustSignaturesView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    {
+                        var view = ((ListCollectionView)this.AccountTrustSignaturesView);
+                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                        {
+                            if (x is Signature tx && y is Signature ty)
+                            {
+                                int c = tx.Name.CompareTo(ty.Name);
+                                if (c != 0) return c;
+                                c = Unsafe.Compare(tx.Id, ty.Id);
+                                if (c != 0) return c;
+                            }
+
+                            return 0;
+                        });
+                        view.Refresh();
+                    }
                     break;
             }
         }
@@ -534,7 +563,22 @@ namespace Amoeba.Interface
             switch (propertyName)
             {
                 case "Signature":
-                    this.AccountUntrustSignaturesView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    {
+                        var view = ((ListCollectionView)this.AccountUntrustSignaturesView);
+                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                        {
+                            if (x is Signature tx && y is Signature ty)
+                            {
+                                int c = tx.Name.CompareTo(ty.Name);
+                                if (c != 0) return c;
+                                c = Unsafe.Compare(tx.Id, ty.Id);
+                                if (c != 0) return c;
+                            }
+
+                            return 0;
+                        });
+                        view.Refresh();
+                    }
                     break;
             }
         }
@@ -697,7 +741,22 @@ namespace Amoeba.Interface
             switch (propertyName)
             {
                 case "Signature":
-                    this.SubscribeSignaturesView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    {
+                        var view = ((ListCollectionView)this.SubscribeSignaturesView);
+                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                        {
+                            if (x is Signature tx && y is Signature ty)
+                            {
+                                int c = tx.Name.CompareTo(ty.Name);
+                                if (c != 0) return c;
+                                c = Unsafe.Compare(tx.Id, ty.Id);
+                                if (c != 0) return c;
+                            }
+
+                            return 0;
+                        });
+                        view.Refresh();
+                    }
                     break;
             }
         }

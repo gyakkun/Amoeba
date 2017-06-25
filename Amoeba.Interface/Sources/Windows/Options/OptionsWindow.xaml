@@ -70,6 +70,13 @@
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
                         Content="{Binding Path=OptionsWindow_Data, Source={StaticResource Languages}}" />
+                <ListBoxItem
+                        Name="UpdateListBoxItem"
+                        Height="32"
+                        Padding="16,8"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="{Binding Path=OptionsWindow_Update, Source={StaticResource Languages}}" />
             </ListBox>
 
             <Grid Grid.Column="1">
@@ -898,6 +905,49 @@
                         </StackPanel>
                     </ScrollViewer>
                 </ContentControl>
+
+                <ContentControl Visibility="{Binding ElementName=UpdateListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="16">
+                            <GroupBox
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Header="{Binding Path=OptionsWindow_UpdateSettings, Source={StaticResource Languages}}"
+                                    Style="{DynamicResource MaterialDesignCardGroupBox}">
+                                <GroupBox.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="8,0" Text="{Binding}" />
+                                    </DataTemplate>
+                                </GroupBox.HeaderTemplate>
+                                <Grid Margin="7">
+                                    <CheckBox
+                                            Height="24"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Content="{Binding Path=OptionsWindow_UpdateIsEnabled, Source={StaticResource Languages}}"
+                                            IsChecked="{Binding Path=Options.Update.IsEnabled}" />
+                                    <Label
+                                            Height="32"
+                                            Margin="64,40,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Content="{Binding Path=OptionsWindow_Signature, Source={StaticResource Languages}}" />
+                                    <TextBox
+                                            Height="32"
+                                            Margin="240,40,0,0"
+                                            VerticalAlignment="Top"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Center"
+                                            Text="{Binding Path=Options.Update.Signature, Converter={StaticResource SignatureToStringConverter}}" />
+                                </Grid>
+                            </GroupBox>
+                        </StackPanel>
+                    </ScrollViewer>
+                </ContentControl>
+
             </Grid>
         </Grid>
 

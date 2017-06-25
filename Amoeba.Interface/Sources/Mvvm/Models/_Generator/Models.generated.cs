@@ -126,6 +126,62 @@ namespace Amoeba.Interface
         }
     }
 
+    [DataContract(Name = nameof(UpdateInfo))]
+    partial class UpdateInfo : INotifyPropertyChanged, ICloneable<UpdateInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public UpdateInfo() { }
+
+        private bool _isEnabled;
+
+        [DataMember(Name = nameof(IsEnabled))]
+        public bool IsEnabled
+        {
+            get
+            {
+                return _isEnabled;
+            }
+            set
+            {
+                if (_isEnabled != value)
+                {
+                    _isEnabled = value;
+                    this.OnPropertyChanged(nameof(IsEnabled));
+                }
+            }
+        }
+
+        private Signature _signature;
+
+        [DataMember(Name = nameof(Signature))]
+        public Signature Signature
+        {
+            get
+            {
+                return _signature;
+            }
+            set
+            {
+                if (_signature != value)
+                {
+                    _signature = value;
+                    this.OnPropertyChanged(nameof(Signature));
+                }
+            }
+        }
+
+        public UpdateInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
     [DataContract(Name = nameof(PublishDirectoryInfo))]
     partial class PublishDirectoryInfo : INotifyPropertyChanged, ICloneable<PublishDirectoryInfo>
     {
@@ -424,6 +480,20 @@ namespace Amoeba.Interface
                     _data = new OptionsDataInfo();
 
                 return _data;
+            }
+        }
+
+        private OptionsUpdateInfo _update;
+
+        [DataMember(Name = nameof(Update))]
+        public OptionsUpdateInfo Update
+        {
+            get
+            {
+                if (_update == null)
+                    _update = new OptionsUpdateInfo();
+
+                return _update;
             }
         }
 
@@ -839,6 +909,62 @@ namespace Amoeba.Interface
         }
 
         public OptionsDataInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(OptionsUpdateInfo))]
+    partial class OptionsUpdateInfo : INotifyPropertyChanged, ICloneable<OptionsUpdateInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public OptionsUpdateInfo() { }
+
+        private bool _isEnabled;
+
+        [DataMember(Name = nameof(IsEnabled))]
+        public bool IsEnabled
+        {
+            get
+            {
+                return _isEnabled;
+            }
+            set
+            {
+                if (_isEnabled != value)
+                {
+                    _isEnabled = value;
+                    this.OnPropertyChanged(nameof(IsEnabled));
+                }
+            }
+        }
+
+        private Signature _signature;
+
+        [DataMember(Name = nameof(Signature))]
+        public Signature Signature
+        {
+            get
+            {
+                return _signature;
+            }
+            set
+            {
+                if (_signature != value)
+                {
+                    _signature = value;
+                    this.OnPropertyChanged(nameof(Signature));
+                }
+            }
+        }
+
+        public OptionsUpdateInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

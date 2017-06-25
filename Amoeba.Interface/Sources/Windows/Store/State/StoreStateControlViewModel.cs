@@ -33,6 +33,7 @@ namespace Amoeba.Interface
         public ReactiveCommand DeleteCommand { get; private set; }
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand PasteCommand { get; private set; }
+        public ReactiveCommand RemoveCompletedItemCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
@@ -63,6 +64,9 @@ namespace Amoeba.Interface
 
                 this.PasteCommand = new ReactiveCommand().AddTo(_disposable);
                 this.PasteCommand.Subscribe(() => this.Paste()).AddTo(_disposable);
+
+                this.RemoveCompletedItemCommand = new ReactiveCommand().AddTo(_disposable);
+                this.RemoveCompletedItemCommand.Subscribe(() => this.RemoveCompletedItem()).AddTo(_disposable);
             }
 
             {
@@ -239,13 +243,26 @@ namespace Amoeba.Interface
         private void Delete()
         {
             var selectedItems = this.SelectedItems.OfType<KeyValuePair<(Metadata, string), DynamicOptions>>()
-                .Select(n => n.Value.GetValue<DownloadItemInfo>("Model")).ToList();
-            if (selectedItems.Count == 0) return;
+                .Select(n => n.Value).ToArray();
+            if (selectedItems.Length == 0) return;
 
-            foreach (var selectedItem in selectedItems)
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
             {
-                SettingsManager.Instance.DownloadItemInfos.Remove(selectedItem);
-            }
+                foreach (var selectedItem in selectedItems.Select(n => n.GetValue<DownloadItemInfo>("Model")))
+                {
+                    SettingsManager.Instance.DownloadItemInfos.Remove(selectedItem);
+                }
+
+                foreach (var selectedItem in selectedItems.Where(n => n.GetValue<DownloadState>("State") == DownloadState.Completed)
+                    .Select(n => n.GetValue<DownloadItemInfo>("Model").Seed))
+                {
+                    SettingsManager.Instance.DownloadedSeeds.Add(selectedItem);
+                }
+            };
+
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                .Publish(viewModel);
         }
 
         private void Copy()
@@ -264,6 +281,34 @@ namespace Amoeba.Interface
                 var downloadItemInfo = new DownloadItemInfo(seed, seed.Name);
                 SettingsManager.Instance.DownloadItemInfos.Add(downloadItemInfo);
             }
+        }
+
+        private void RemoveCompletedItem()
+        {
+            var hashSet = new HashSet<(Metadata, string)>(new CustomEqualityComparer());
+
+            foreach (var info in _serviceManager.GetDownloadInformations())
+            {
+                if (info.GetValue<DownloadState>("State") != DownloadState.Completed) continue;
+                hashSet.Add((info.GetValue<Metadata>("Metadata"), info.GetValue<string>("Path")));
+            }
+
+            if (hashSet.Count == 0) return;
+
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
+            {
+                foreach (var item in SettingsManager.Instance.DownloadItemInfos.ToArray())
+                {
+                    if (!hashSet.Contains((item.Seed.Metadata, item.Path))) continue;
+
+                    SettingsManager.Instance.DownloadItemInfos.Remove(item);
+                    SettingsManager.Instance.DownloadedSeeds.Add(item.Seed);
+                }
+            };
+
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                .Publish(viewModel);
         }
 
         private void Save()

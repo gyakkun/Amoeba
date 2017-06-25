@@ -1,15 +1,13 @@
-using Omnius.Base;
-using Omnius.Io;
-using Omnius.Security;
-using Omnius.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
+using Omnius.Base;
+using Omnius.Io;
+using Omnius.Security;
+using Omnius.Serialization;
 
 namespace Amoeba.Service
 {
@@ -457,14 +455,14 @@ namespace Amoeba.Service
             }
         }
 
-        public static Stream ToStream<T>(int version, T message)
+        public static Stream ToStream<T>(T message)
             where T : ItemBase<T>
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 
             try
             {
-                return AddVersion(Compress(message.Export(_bufferManager)), version);
+                return AddVersion(Compress(message.Export(_bufferManager)), 0);
             }
             catch (Exception)
             {
@@ -472,14 +470,14 @@ namespace Amoeba.Service
             }
         }
 
-        public static T FromStream<T>(int version, Stream stream)
+        public static T FromStream<T>(Stream stream)
             where T : ItemBase<T>
         {
             if (stream == null) throw new ArgumentException("stream", nameof(stream));
 
             try
             {
-                return ItemBase<T>.Import(Decompress(RemoveVersion(stream, version)), _bufferManager);
+                return ItemBase<T>.Import(Decompress(RemoveVersion(stream, 0)), _bufferManager);
             }
             catch (Exception)
             {
@@ -487,7 +485,7 @@ namespace Amoeba.Service
             }
         }
 
-        public static Stream ToCryptoStream<T>(int version, T message, int paddingSize, IExchangeEncrypt publicKey)
+        public static Stream ToCryptoStream<T>(T message, int paddingSize, IExchangeEncrypt publicKey)
             where T : ItemBase<T>
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
@@ -495,7 +493,7 @@ namespace Amoeba.Service
 
             try
             {
-                return AddVersion(AddHash(Encrypt(AddPadding(Compress(message.Export(_bufferManager)), paddingSize), publicKey)), version);
+                return AddVersion(AddHash(Encrypt(AddPadding(Compress(message.Export(_bufferManager)), paddingSize), publicKey)), 0);
             }
             catch (Exception)
             {
@@ -503,7 +501,7 @@ namespace Amoeba.Service
             }
         }
 
-        public static T FromCryptoStream<T>(int version, Stream stream, IExchangeDecrypt privateKey)
+        public static T FromCryptoStream<T>(Stream stream, IExchangeDecrypt privateKey)
             where T : ItemBase<T>
         {
             if (stream == null) throw new ArgumentException("stream", nameof(stream));
@@ -511,7 +509,7 @@ namespace Amoeba.Service
 
             try
             {
-                return ItemBase<T>.Import(Decompress(RemovePadding(RemoveHash(Decrypt(RemoveVersion(stream, version), privateKey)))), _bufferManager);
+                return ItemBase<T>.Import(Decompress(RemovePadding(RemoveHash(Decrypt(RemoveVersion(stream, 0), privateKey)))), _bufferManager);
             }
             catch (Exception)
             {

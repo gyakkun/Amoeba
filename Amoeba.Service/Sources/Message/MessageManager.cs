@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Omnius.Base;
@@ -11,8 +8,6 @@ using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Security;
 using Omnius.Utilities;
-using Omnius.Serialization;
-using System.Collections.Concurrent;
 
 namespace Amoeba.Service
 {
@@ -109,7 +104,7 @@ namespace Amoeba.Service
                 var result = new BroadcastMessage<Profile>(
                     broadcastMetadata.Certificate.GetSignature(),
                     broadcastMetadata.CreationTime,
-                    ContentConverter.FromStream<Profile>(0, stream));
+                    ContentConverter.FromStream<Profile>(stream));
 
                 if (result.Value == null) return null;
 
@@ -142,7 +137,7 @@ namespace Amoeba.Service
                 var result = new BroadcastMessage<Store>(
                     broadcastMetadata.Certificate.GetSignature(),
                     broadcastMetadata.CreationTime,
-                    ContentConverter.FromStream<Store>(0, stream));
+                    ContentConverter.FromStream<Store>(stream));
 
                 if (result.Value == null) return null;
 
@@ -195,7 +190,7 @@ namespace Amoeba.Service
                             unicastMetadata.Signature,
                             unicastMetadata.Certificate.GetSignature(),
                             unicastMetadata.CreationTime,
-                            ContentConverter.FromStream<MailMessage>(0, stream));
+                            ContentConverter.FromCryptoStream<MailMessage>(stream, exchangePrivateKey));
 
                         if (result.Value == null) continue;
 
@@ -269,7 +264,7 @@ namespace Amoeba.Service
                             multicastMetadata.Certificate.GetSignature(),
                             multicastMetadata.CreationTime,
                             multicastMetadata.Cost,
-                            ContentConverter.FromStream<ChatMessage>(0, stream));
+                            ContentConverter.FromStream<ChatMessage>(stream));
 
                         if (result.Value == null) continue;
 
@@ -288,7 +283,7 @@ namespace Amoeba.Service
             if (profile == null) throw new ArgumentNullException(nameof(profile));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, profile), new TimeSpan(30, 0, 0), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(profile), TimeSpan.FromDays(180), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new BroadcastMetadata("Profile", DateTime.UtcNow, task.Result, digitalSignature));
@@ -300,20 +295,20 @@ namespace Amoeba.Service
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, store), new TimeSpan(30, 0, 0), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(store), TimeSpan.FromDays(180), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new BroadcastMetadata("Store", DateTime.UtcNow, task.Result, digitalSignature));
                 });
         }
 
-        public Task Upload(Signature targetSignature, MailMessage mailMessage, DigitalSignature digitalSignature, CancellationToken token)
+        public Task Upload(Signature targetSignature, MailMessage mailMessage, IExchangeEncrypt exchangePublicKey, DigitalSignature digitalSignature, CancellationToken token)
         {
             if (targetSignature == null) throw new ArgumentNullException(nameof(targetSignature));
             if (mailMessage == null) throw new ArgumentNullException(nameof(mailMessage));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, mailMessage), new TimeSpan(30, 0, 0), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToCryptoStream(mailMessage, 1024 * 256, exchangePublicKey), TimeSpan.FromDays(180), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new UnicastMetadata("MailMessage", targetSignature, DateTime.UtcNow, task.Result, digitalSignature));
@@ -326,18 +321,21 @@ namespace Amoeba.Service
             if (chatMessage == null) throw new ArgumentNullException(nameof(chatMessage));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(0, chatMessage), new TimeSpan(30, 0, 0), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(chatMessage), TimeSpan.FromDays(180), token)
                 .ContinueWith(task =>
                 {
+                    MulticastMetadata multicastMetadata;
+
                     try
                     {
-                        var multicastMetadata = new MulticastMetadata("ChatMessage", tag, DateTime.UtcNow, task.Result, digitalSignature, miner, token);
-                        _coreManager.UploadMetadata(multicastMetadata);
+                        multicastMetadata = new MulticastMetadata("ChatMessage", tag, DateTime.UtcNow, task.Result, digitalSignature, miner, token);
                     }
                     catch (MinerException)
                     {
-
+                        return;
                     }
+
+                    _coreManager.UploadMetadata(multicastMetadata);
                 });
         }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,7 +9,6 @@ using System.Windows.Threading;
 using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
-using Omnius.Utilities;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -21,7 +19,8 @@ namespace Amoeba.Interface
     {
         private ServiceManager _serviceManager;
 
-        private TrustManager _trustManager;
+        private MessageManager _messageManager;
+        private ControlManager _controlManager;
 
         private Settings _settings;
 
@@ -48,10 +47,6 @@ namespace Amoeba.Interface
 
         private TaskManager _trafficViewTaskManager;
         private TaskManager _trafficMonitorTaskManager;
-
-        private WatchTimer _diskSpaceWatchTimer;
-
-        private WatchTimer _backupTimer;
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -80,11 +75,15 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "Trust");
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "Message");
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
-                _trustManager = new TrustManager(configPath, _serviceManager);
-                _trustManager.Load();
+                _messageManager = new MessageManager(configPath, _serviceManager);
+                _messageManager.Load();
+            }
+
+            {
+                _controlManager = new ControlManager(_serviceManager);
             }
 
             {
@@ -128,7 +127,7 @@ namespace Amoeba.Interface
             {
                 this.CloudControlViewModel = new CloudControlViewModel(_serviceManager);
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager);
-                this.StoreControlViewModel = new StoreControlViewModel(_serviceManager, _trustManager);
+                this.StoreControlViewModel = new StoreControlViewModel(_serviceManager, _messageManager);
             }
 
             {
@@ -136,8 +135,6 @@ namespace Amoeba.Interface
             }
 
             this.Setting_TrafficView();
-            this.Setting_DiskSpaceWatch();
-            this.Setting_BackupTimer();
         }
 
         private void Setting_TrafficView()
@@ -254,87 +251,10 @@ namespace Amoeba.Interface
             }
         }
 
-        private void Setting_DiskSpaceWatch()
-        {
-            _diskSpaceWatchTimer = new WatchTimer(() =>
-            {
-                var paths = new List<string>();
-                paths.Add(AmoebaEnvironment.Config.Cache.BlocksPath);
-
-                bool flag = false;
-
-                foreach (string path in paths)
-                {
-                    var drive = new DriveInfo(Path.GetFullPath(path));
-
-                    if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
-                    {
-                        flag |= true;
-                        break;
-                    }
-                }
-
-                if (_serviceManager.Information.GetValue<long>("Cache_FreeSpace") < NetworkConverter.FromSizeString("1024MB"))
-                {
-                    flag |= true;
-                }
-
-                if (!flag)
-                {
-                    if (_serviceManager.State == ManagerState.Stop)
-                    {
-                        _serviceManager.Start();
-                        Log.Information("Start");
-                    }
-                }
-                else
-                {
-                    if (_serviceManager.State == ManagerState.Start)
-                    {
-                        _serviceManager.Stop();
-                        Log.Information("Stop");
-
-                        App.Current.Dispatcher.InvokeAsync(() =>
-                        {
-                            var viewModel = new ConfirmWindowViewModel(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
-
-                            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                                .Publish(viewModel);
-                        });
-                    }
-                }
-            });
-            _diskSpaceWatchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));
-        }
-
-        private void Setting_BackupTimer()
-        {
-            var sw = Stopwatch.StartNew();
-
-            _backupTimer = new WatchTimer(() =>
-            {
-                if ((!Process.GetCurrentProcess().IsActivated() && sw.Elapsed.TotalMinutes > 30)
-                    || sw.Elapsed.TotalHours > 3)
-                {
-                    sw.Restart();
-
-                    Backup.Instance.Run();
-                    this.GarbageCollect();
-                }
-            });
-            _backupTimer.Start(new TimeSpan(0, 0, 30));
-        }
-
-        private void GarbageCollect()
-        {
-            System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
-            GC.Collect();
-        }
-
         private void Relation()
         {
             Messenger.Instance.GetEvent<RelationWindowShowEvent>()
-                .Publish(new RelationWindowViewModel(_trustManager.GetRelationSignatureInfos()));
+                .Publish(new RelationWindowViewModel(_messageManager.GetRelationSignatureInfos()));
         }
 
         private void Options()
@@ -363,7 +283,7 @@ namespace Amoeba.Interface
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
 
-            _trustManager.Save();
+            _messageManager.Save();
 
             _serviceManager.Save();
 
@@ -386,12 +306,6 @@ namespace Amoeba.Interface
                 _trafficMonitorTaskManager.Stop();
                 _trafficMonitorTaskManager.Dispose();
 
-                _diskSpaceWatchTimer.Stop();
-                _diskSpaceWatchTimer.Dispose();
-
-                _backupTimer.Stop();
-                _backupTimer.Dispose();
-
                 _serviceManager.Stop();
 
                 this.Save();
@@ -402,7 +316,9 @@ namespace Amoeba.Interface
 
                 _disposable.Dispose();
 
-                _trustManager.Dispose();
+                _controlManager.Dispose();
+
+                _messageManager.Dispose();
 
                 _serviceManager.Dispose();
             }

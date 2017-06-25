@@ -24,9 +24,11 @@
         public string Box_CreationTime { get { return this.Translate("Box_CreationTime"); } }
         public string Box_Comment { get { return this.Translate("Box_Comment"); } }
         public string SearchState_Cache { get { return this.Translate("SearchState_Cache"); } }
-        public string SearchState_Download { get { return this.Translate("SearchState_Download"); } }
+        public string SearchState_Downloading { get { return this.Translate("SearchState_Downloading"); } }
+        public string SearchState_Downloaded { get { return this.Translate("SearchState_Downloaded"); } }
         public string SearchState_Flag_Cache { get { return this.Translate("SearchState_Flag_Cache"); } }
-        public string SearchState_Flag_Download { get { return this.Translate("SearchState_Flag_Download"); } }
+        public string SearchState_Flag_Downloading { get { return this.Translate("SearchState_Flag_Downloading"); } }
+        public string SearchState_Flag_Downloaded { get { return this.Translate("SearchState_Flag_Downloaded"); } }
         public string DownloadState_Downloading { get { return this.Translate("DownloadState_Downloading"); } }
         public string DownloadState_ParityDecoding { get { return this.Translate("DownloadState_ParityDecoding"); } }
         public string DownloadState_Decoding { get { return this.Translate("DownloadState_Decoding"); } }
@@ -106,6 +108,9 @@
         public string OptionsWindow_DownloadSettings { get { return this.Translate("OptionsWindow_DownloadSettings"); } }
         public string OptionsWindow_DownloadDirectoryPath { get { return this.Translate("OptionsWindow_DownloadDirectoryPath"); } }
         public string OptionsWindow_CacheResize_Message { get { return this.Translate("OptionsWindow_CacheResize_Message"); } }
+        public string OptionsWindow_Update { get { return this.Translate("OptionsWindow_Update"); } }
+        public string OptionsWindow_UpdateSettings { get { return this.Translate("OptionsWindow_UpdateSettings"); } }
+        public string OptionsWindow_UpdateIsEnabled { get { return this.Translate("OptionsWindow_UpdateIsEnabled"); } }
         public string OptionsWindow_New { get { return this.Translate("OptionsWindow_New"); } }
         public string OptionsWindow_Delete { get { return this.Translate("OptionsWindow_Delete"); } }
         public string OptionsWindow_Copy { get { return this.Translate("OptionsWindow_Copy"); } }
@@ -150,6 +155,7 @@
         public string StoreSearchControl_Cut { get { return this.Translate("StoreSearchControl_Cut"); } }
         public string StoreSearchControl_Copy { get { return this.Translate("StoreSearchControl_Copy"); } }
         public string StoreSearchControl_Paste { get { return this.Translate("StoreSearchControl_Paste"); } }
+        public string StoreSearchControl_RemoveDownloadHistory { get { return this.Translate("StoreSearchControl_RemoveDownloadHistory"); } }
         public string StoreSearchControl_Name { get { return this.Translate("StoreSearchControl_Name"); } }
         public string StoreSearchControl_Signature { get { return this.Translate("StoreSearchControl_Signature"); } }
         public string StoreSearchControl_Length { get { return this.Translate("StoreSearchControl_Length"); } }
@@ -210,6 +216,7 @@
         public string PublishPreviewWindow_Title { get { return this.Translate("PublishPreviewWindow_Title"); } }
         public string PublishPreviewWindow_Name { get { return this.Translate("PublishPreviewWindow_Name"); } }
         public string PublishPreviewWindow_Length { get { return this.Translate("PublishPreviewWindow_Length"); } }
+        public string PublishPreviewWindow_Copy { get { return this.Translate("PublishPreviewWindow_Copy"); } }
         public string PublishPreviewWindow_Ok { get { return this.Translate("PublishPreviewWindow_Ok"); } }
         public string PublishPreviewWindow_Cancel { get { return this.Translate("PublishPreviewWindow_Cancel"); } }
         public string StoreStateControl_Name { get { return this.Translate("StoreStateControl_Name"); } }
@@ -221,5 +228,6 @@
         public string StoreStateControl_Delete { get { return this.Translate("StoreStateControl_Delete"); } }
         public string StoreStateControl_Copy { get { return this.Translate("StoreStateControl_Copy"); } }
         public string StoreStateControl_Paste { get { return this.Translate("StoreStateControl_Paste"); } }
+        public string StoreStateControl_RemoveCompletedItem { get { return this.Translate("StoreStateControl_RemoveCompletedItem"); } }
     }
 }

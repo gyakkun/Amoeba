@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using Ionic.Zip;
@@ -192,6 +194,7 @@ namespace Amoeba.Interface
                     if (!_mutex.WaitOne(0))
                     {
                         this.Shutdown();
+
                         return;
                     }
                 }
@@ -199,7 +202,6 @@ namespace Amoeba.Interface
                 // アップデート
                 {
                     // 一時的に作成された"Amoeba.Update.exe"を削除する。
-                    try
                     {
                         string tempUpdateExeFilePath = Path.Combine(AmoebaEnvironment.Paths.WorkPath, "Amoeba.Update.exe");
 
@@ -208,16 +210,35 @@ namespace Amoeba.Interface
                             File.Delete(tempUpdateExeFilePath);
                         }
                     }
-                    catch (Exception)
-                    {
-
-                    }
 
                     if (Directory.Exists(AmoebaEnvironment.Paths.UpdatePath))
                     {
-                        string zipFilePath = Directory.GetFiles(AmoebaEnvironment.Paths.UpdatePath)
-                            .Where(n => Path.GetFileName(n).StartsWith("Amoeba"))
-                            .FirstOrDefault();
+                        string zipFilePath = null;
+
+                        // 最新のバージョンのzipを検索。
+                        {
+                            var map = new Dictionary<string, Version>();
+                            var regex = new Regex(@"Amoeba ((\d*)\.(\d*)\.(\d*))\.zip", RegexOptions.Compiled);
+
+                            foreach (string path in Directory.GetFiles(AmoebaEnvironment.Paths.UpdatePath))
+                            {
+                                var match = regex.Match(Path.GetFileName(path));
+                                if (!match.Success) continue;
+
+                                var version = new Version(match.Groups[1].Value);
+                                if (version < AmoebaEnvironment.Version) continue;
+
+                                map.Add(path, version);
+                            }
+
+                            if (map.Count > 0)
+                            {
+                                var sortedList = map.ToList();
+                                sortedList.Sort((x, y) => y.Value.CompareTo(x));
+
+                                zipFilePath = sortedList.First().Key;
+                            }
+                        }
 
                         if (zipFilePath != null)
                         {
@@ -255,11 +276,13 @@ namespace Amoeba.Interface
                             Process.Start(startInfo);
 
                             this.Shutdown();
+
                             return;
                         }
                     }
                 }
 
+                // 既定のフォルダを作成する。
                 {
                     foreach (var propertyInfo in typeof(AmoebaEnvironment.EnvironmentPaths).GetProperties())
                     {
@@ -275,6 +298,7 @@ namespace Amoeba.Interface
                 Log.Error(ex);
 
                 this.Shutdown();
+
                 return;
             }
         }

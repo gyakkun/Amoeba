@@ -18,9 +18,13 @@ namespace Amoeba.Interface
                 {
                     list.Add(LanguagesManager.Instance.SearchState_Flag_Cache);
                 }
-                if (type.HasFlag(SearchState.Download))
+                if (type.HasFlag(SearchState.Downloading))
                 {
-                    list.Add(LanguagesManager.Instance.SearchState_Flag_Download);
+                    list.Add(LanguagesManager.Instance.SearchState_Flag_Downloading);
+                }
+                if (type.HasFlag(SearchState.Downloaded))
+                {
+                    list.Add(LanguagesManager.Instance.SearchState_Flag_Downloaded);
                 }
             }
 

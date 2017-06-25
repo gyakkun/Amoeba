@@ -14,7 +14,7 @@ namespace Amoeba.Interface
             viewModel.CloseEvent += (sender, e) => this.Close();
 
             InitializeComponent();
-            
+
             this.Icon = AmoebaEnvironment.Icons.Amoeba;
         }
 

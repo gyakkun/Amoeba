@@ -9,7 +9,7 @@ using Omnius.Security;
 
 namespace Amoeba.Interface
 {
-    class TrustManager : ManagerBase, ISettings
+    class MessageManager : ManagerBase, ISettings
     {
         private ServiceManager _serviceManager;
 
@@ -23,7 +23,7 @@ namespace Amoeba.Interface
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public TrustManager(string configPath, ServiceManager serviceManager)
+        public MessageManager(string configPath, ServiceManager serviceManager)
         {
             _serviceManager = serviceManager;
 

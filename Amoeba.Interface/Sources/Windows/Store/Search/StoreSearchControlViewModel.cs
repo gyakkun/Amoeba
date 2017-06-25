@@ -15,6 +15,7 @@ using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
+using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -24,7 +25,7 @@ namespace Amoeba.Interface
     class StoreSearchControlViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
-        private TrustManager _trustManager;
+        private MessageManager _messageManager;
 
         private TaskManager _watchTaskManager;
 
@@ -56,16 +57,17 @@ namespace Amoeba.Interface
 
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand DownloadCommand { get; private set; }
+        public ReactiveCommand RemoveDownloadHistoryCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public StoreSearchControlViewModel(ServiceManager serviceManager, TrustManager trustManager)
+        public StoreSearchControlViewModel(ServiceManager serviceManager, MessageManager messageManager)
         {
             _serviceManager = serviceManager;
-            _trustManager = trustManager;
+            _messageManager = messageManager;
 
             this.Init();
 
@@ -132,6 +134,9 @@ namespace Amoeba.Interface
 
                 this.DownloadCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.DownloadCommand.Subscribe(() => this.Download()).AddTo(_disposable);
+
+                this.RemoveDownloadHistoryCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
+                this.RemoveDownloadHistoryCommand.Subscribe(() => this.RemoveDownloadHistory()).AddTo(_disposable);
             }
 
             {
@@ -236,45 +241,66 @@ namespace Amoeba.Interface
                 var searchItems = new List<SearchItemViewModel>();
 
                 {
-                    var downloadMetadatas = new HashSet<Metadata>();
-                    downloadMetadatas.UnionWith(_serviceManager.GetDownloadInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+                    var tempTuples = new List<(Seed, Signature)>();
+
+                    {
+                        var storeMetadatas = new HashSet<Metadata>();
+
+                        foreach (var store in _messageManager.GetStores())
+                        {
+                            var seedList = new List<Seed>();
+                            {
+                                var boxList = new List<Box>();
+                                boxList.AddRange(store.Value.Boxes);
+
+                                for (int i = 0; i < boxList.Count; i++)
+                                {
+                                    boxList.AddRange(boxList[i].Boxes);
+                                    seedList.AddRange(boxList[i].Seeds);
+                                }
+                            }
+
+                            foreach (var seed in seedList)
+                            {
+                                tempTuples.Add((seed, store.AuthorSignature));
+                                storeMetadatas.Add(seed.Metadata);
+                            }
+                        }
+
+                        foreach (var seed in SettingsManager.Instance.DownloadedSeeds.ToArray())
+                        {
+                            if (storeMetadatas.Contains(seed.Metadata)) continue;
+                            tempTuples.Add((seed, null));
+                        }
+                    }
 
                     var cacheMetadatas = new HashSet<Metadata>();
                     cacheMetadatas.UnionWith(_serviceManager.GetContentInformations().Select(n => n.GetValue<Metadata>("Metadata")));
 
-                    foreach (var store in _trustManager.GetStores())
+                    var downloadingMetadatas = new HashSet<Metadata>();
+                    downloadingMetadatas.UnionWith(_serviceManager.GetDownloadInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+
+                    var downloadedMetadatas = new HashSet<Metadata>();
+                    downloadedMetadatas.UnionWith(SettingsManager.Instance.DownloadedSeeds.Select(n => n.Metadata));
+
+                    foreach (var (seed, signature) in tempTuples)
                     {
-                        var seedList = new List<Seed>();
-                        {
-                            var boxList = new List<Box>();
-                            boxList.AddRange(store.Value.Boxes);
+                        var viewModel = new SearchItemViewModel();
+                        viewModel.Icon = IconUtils.GetImage(seed.Name);
+                        viewModel.Name = seed.Name;
+                        viewModel.Signature = signature;
+                        viewModel.Length = seed.Length;
+                        viewModel.CreationTime = seed.CreationTime;
 
-                            for (int i = 0; i < boxList.Count; i++)
-                            {
-                                boxList.AddRange(boxList[i].Boxes);
-                                seedList.AddRange(boxList[i].Seeds);
-                            }
-                        }
+                        SearchState state = 0;
+                        if (cacheMetadatas.Contains(seed.Metadata)) state |= SearchState.Cache;
+                        if (downloadingMetadatas.Contains(seed.Metadata)) state |= SearchState.Downloading;
+                        if (downloadedMetadatas.Contains(seed.Metadata)) state |= SearchState.Downloaded;
 
-                        foreach (var seed in seedList)
-                        {
-                            var viewModel = new SearchItemViewModel();
-                            viewModel.Icon = IconUtils.GetImage(seed.Name);
-                            viewModel.Name = seed.Name;
-                            viewModel.Signature = store.AuthorSignature;
-                            viewModel.Length = seed.Length;
-                            viewModel.CreationTime = seed.CreationTime;
+                        viewModel.State = state;
+                        viewModel.Model = seed;
 
-                            SearchState state = 0;
-                            if (downloadMetadatas.Contains(seed.Metadata)) state |= SearchState.Download;
-                            if (cacheMetadatas.Contains(seed.Metadata)) state |= SearchState.Cache;
-
-                            viewModel.State = state;
-
-                            viewModel.Model = seed;
-
-                            searchItems.Add(viewModel);
-                        }
+                        searchItems.Add(viewModel);
                     }
                 }
 
@@ -292,6 +318,8 @@ namespace Amoeba.Interface
 
         private void SetCount(SearchViewModel viewModel, IEnumerable<SearchItemViewModel> items, CancellationToken token)
         {
+            if (token.IsCancellationRequested) return;
+
             var tempList = Filter(items, viewModel.Model).ToList();
 
             App.Current.Dispatcher.InvokeAsync(() =>
@@ -321,6 +349,7 @@ namespace Amoeba.Interface
                     App.Current.Dispatcher.Invoke(() =>
                     {
                         if (token.IsCancellationRequested) return;
+
                         searchViewModels.AddRange(viewModel.Children);
                     }, DispatcherPriority.Background, token);
                 }
@@ -562,6 +591,10 @@ namespace Amoeba.Interface
                         {
                             if (x is SearchItemViewModel tx && y is SearchItemViewModel ty)
                             {
+                                if (tx.Signature == null && ty.Signature == null) return 0;
+                                if (tx.Signature == null && ty.Signature != null) return -1;
+                                if (tx.Signature != null && ty.Signature == null) return 1;
+
                                 int c = tx.Signature.Name.CompareTo(ty.Signature.Name);
                                 if (c != 0) return c;
                                 c = Unsafe.Compare(tx.Signature.Id, ty.Signature.Id);
@@ -598,6 +631,27 @@ namespace Amoeba.Interface
             {
                 SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo(seed, seed.Name));
             }
+        }
+
+        private void RemoveDownloadHistory()
+        {
+            var hashSet = new HashSet<Metadata>(this.SelectedItems.OfType<SearchItemViewModel>()
+                .Where(n => n.State.HasFlag(SearchState.Downloaded))
+                .Select(n => n.Model.Metadata).ToArray());
+            if (hashSet.Count == 0) return;
+
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
+            {
+                foreach (var seed in SettingsManager.Instance.DownloadedSeeds.ToArray())
+                {
+                    if (!hashSet.Contains(seed.Metadata)) continue;
+                    SettingsManager.Instance.DownloadedSeeds.Remove(seed);
+                }
+            };
+
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                .Publish(viewModel);
         }
 
         private void Save()

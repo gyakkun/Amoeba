@@ -5,7 +5,7 @@ using Omnius.Base;
 
 namespace Amoeba.Interface
 {
-    static class MessageConverter
+    static class MessageConvertUtils
     {
         public static string ToString(Tag tag)
         {

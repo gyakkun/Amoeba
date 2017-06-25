@@ -10,7 +10,10 @@ namespace Amoeba.Interface
         [EnumMember(Value = nameof(Cache))]
         Cache = 0x1,
 
-        [EnumMember(Value = nameof(Download))]
-        Download = 0x2,
+        [EnumMember(Value = nameof(Downloading))]
+        Downloading = 0x2,
+
+        [EnumMember(Value = nameof(Downloaded))]
+        Downloaded = 0x4,
     }
 }

@@ -212,7 +212,22 @@ namespace Amoeba.Interface
             switch (propertyName)
             {
                 case "Signature":
-                    this.TrustSignaturesView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    {
+                        var view = ((ListCollectionView)this.TrustSignaturesView);
+                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                        {
+                            if (x is Signature tx && y is Signature ty)
+                            {
+                                int c = tx.Name.CompareTo(ty.Name);
+                                if (c != 0) return c;
+                                c = Unsafe.Compare(tx.Id, ty.Id);
+                                if (c != 0) return c;
+                            }
+
+                            return 0;
+                        });
+                        view.Refresh();
+                    }
                     break;
             }
         }
@@ -266,7 +281,22 @@ namespace Amoeba.Interface
             switch (propertyName)
             {
                 case "Signature":
-                    this.UntrustSignaturesView.SortDescriptions.Add(new SortDescription("Name", direction));
+                    {
+                        var view = ((ListCollectionView)this.UntrustSignaturesView);
+                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                        {
+                            if (x is Signature tx && y is Signature ty)
+                            {
+                                int c = tx.Name.CompareTo(ty.Name);
+                                if (c != 0) return c;
+                                c = Unsafe.Compare(tx.Id, ty.Id);
+                                if (c != 0) return c;
+                            }
+
+                            return 0;
+                        });
+                        view.Refresh();
+                    }
                     break;
             }
         }

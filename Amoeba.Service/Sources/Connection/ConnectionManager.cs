@@ -1,19 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;
-using Omnius.Net.I2p;
 using Omnius.Utilities;
 
 namespace Amoeba.Service

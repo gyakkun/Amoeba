@@ -203,6 +203,15 @@
                             <md:PackIcon Kind="CloudDownload" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
+                    <MenuItem
+                            Command="{Binding Path=RemoveDownloadHistoryCommand}"
+                            Header="{Binding Path=StoreSearchControl_RemoveDownloadHistory, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+H">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="CloudDownload" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

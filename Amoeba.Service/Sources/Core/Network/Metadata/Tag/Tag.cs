@@ -1,15 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using Omnius.Base;
-using Omnius.Io;
 using Omnius.Serialization;
 using Omnius.Utilities;
 

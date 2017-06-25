@@ -9,6 +9,7 @@ namespace Amoeba.Interface
         public string Name { get; set; }
         public long Length { get; set; }
         public DateTime CreationTime { get; set; }
+        public SearchState State { get; set; }
         public object Model { get; set; }
     }
 }

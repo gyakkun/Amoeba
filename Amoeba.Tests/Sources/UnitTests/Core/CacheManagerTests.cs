@@ -2,14 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Security;
 using Xunit;
 using Xunit.Abstractions;
-using Amoeba.Service;
 
 namespace Amoeba.Tests
 {

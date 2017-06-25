@@ -31,7 +31,8 @@ namespace Amoeba.Interface
         public ReactiveProperty<bool> IsProgressVisible { get; private set; }
         public RateInfo Rate { get; } = new RateInfo();
 
-        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(SettingsManager.Instance.PublishDirectoryInfos);
+        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        private ObservableCollection<PublishDirectoryInfo> _contents = new ObservableCollection<PublishDirectoryInfo>();
         public ReactiveProperty<PublishDirectoryInfo> SelectedItem { get; private set; }
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
@@ -91,6 +92,7 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
+                _contents.AddRange(_settings.Load("PublishDirectoryInfos", () => Array.Empty<PublishDirectoryInfo>()));
                 _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
 
@@ -271,7 +273,7 @@ namespace Amoeba.Interface
 
         private async void StoreUpload()
         {
-            var infos = SettingsManager.Instance.PublishDirectoryInfos.Select(n => n.Clone()).ToList();
+            var infos = _contents.Select(n => n.Clone()).ToList();
             var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
             if (digitalSignature == null) return;
 
@@ -444,7 +446,7 @@ namespace Amoeba.Interface
             if (info == null) return;
 
             var viewModel = new PublishDirectoryInfoEditWindowViewModel(info);
-            viewModel.Callback += (_) => SettingsManager.Instance.PublishDirectoryInfos.Add(info);
+            viewModel.Callback += (_) => _contents.Add(info);
 
             Messenger.Instance.GetEvent<PublishDirectoryInfoEditWindowShowEvent>()
                 .Publish(viewModel);
@@ -475,7 +477,14 @@ namespace Amoeba.Interface
             var selectedItem = this.SelectedItem.Value;
             if (selectedItem == null) return;
 
-            SettingsManager.Instance.PublishDirectoryInfos.Remove(selectedItem);
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
+            {
+                _contents.Remove(selectedItem);
+            };
+
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                .Publish(viewModel);
         }
 
         private void DirectoryEdit()
@@ -491,6 +500,7 @@ namespace Amoeba.Interface
             App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
+                _settings.Save("PublishDirectoryInfos", _contents);
                 _settings.Save("SortInfo", _sortInfo);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
                 _settings.Save("PublishStoreInfo", _publishStoreInfo);

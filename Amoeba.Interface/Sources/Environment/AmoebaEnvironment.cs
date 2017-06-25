@@ -19,7 +19,7 @@ namespace Amoeba.Interface
         {
             try
             {
-                Version = new Version(5, 0, 9);
+                Version = new Version(5, 0, 10);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();

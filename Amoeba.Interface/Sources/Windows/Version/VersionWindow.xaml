@@ -20,6 +20,7 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
+        WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
     <Grid>
         <StackPanel Orientation="Vertical">
