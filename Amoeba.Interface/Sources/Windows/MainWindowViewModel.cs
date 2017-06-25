@@ -126,7 +126,7 @@ namespace Amoeba.Interface
 
             {
                 this.CloudControlViewModel = new CloudControlViewModel(_serviceManager);
-                this.ChatControlViewModel = new ChatControlViewModel(_serviceManager);
+                this.ChatControlViewModel = new ChatControlViewModel(_serviceManager, _messageManager);
                 this.StoreControlViewModel = new StoreControlViewModel(_serviceManager, _messageManager);
             }
 

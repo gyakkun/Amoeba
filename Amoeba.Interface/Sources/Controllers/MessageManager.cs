@@ -15,6 +15,7 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private LockedHashSet<Signature> _trustSignatures = new LockedHashSet<Signature>();
         private LockedHashDictionary<Signature, BroadcastMessage<Profile>> _cacheProfiles = new LockedHashDictionary<Signature, BroadcastMessage<Profile>>();
         private LockedHashDictionary<Signature, BroadcastMessage<Store>> _cacheStores = new LockedHashDictionary<Signature, BroadcastMessage<Store>>();
 
@@ -32,6 +33,14 @@ namespace Amoeba.Interface
             _watchTaskManager = new TaskManager(this.WatchThread);
         }
 
+        public IEnumerable<Signature> TrustSignatures
+        {
+            get
+            {
+                return _trustSignatures.ToArray();
+            }
+        }
+
         private void WatchThread(CancellationToken token)
         {
             for (;;)
@@ -44,7 +53,7 @@ namespace Amoeba.Interface
 
         private void Refresh()
         {
-            var trustSignatures = new HashSet<Signature>();
+            var searchSignatures = new HashSet<Signature>();
 
             {
                 var profiles = new HashSet<BroadcastMessage<Profile>>();
@@ -60,7 +69,7 @@ namespace Amoeba.Interface
 
                     for (int i = 0; i < 32; i++)
                     {
-                        trustSignatures.UnionWith(targetSignatures);
+                        searchSignatures.UnionWith(targetSignatures);
 
                         var tempProfiles = this.GetProfiles(targetSignatures).ToList();
                         if (tempProfiles.Count == 0) break;
@@ -92,7 +101,15 @@ namespace Amoeba.Interface
                 }
             }
 
-            _serviceManager.SetSearchSignatures(trustSignatures);
+            lock (_trustSignatures.LockObject)
+            {
+                _trustSignatures.Clear();
+                _trustSignatures.UnionWith(searchSignatures);
+            }
+
+            searchSignatures.Add(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature());
+
+            _serviceManager.SetSearchSignatures(searchSignatures);
         }
 
         private IEnumerable<BroadcastMessage<Profile>> GetProfiles(IEnumerable<Signature> trustSignatures)
@@ -206,7 +223,7 @@ namespace Amoeba.Interface
         {
             var stores = new List<BroadcastMessage<Store>>();
 
-            foreach (var signature in _serviceManager.SearchSignatures)
+            foreach (var signature in _trustSignatures.ToArray())
             {
                 var store = _serviceManager.GetStore(signature).Result;
 

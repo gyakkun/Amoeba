@@ -23,6 +23,7 @@ namespace Amoeba.Interface
     class ChatControlViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
+        private MessageManager _messageManager;
         private TaskManager _watchTaskManager;
         private CancellationTokenSource _tokenSource = new CancellationTokenSource();
 
@@ -54,9 +55,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ChatControlViewModel(ServiceManager serviceManager)
+        public ChatControlViewModel(ServiceManager serviceManager, MessageManager messageManager)
         {
             _serviceManager = serviceManager;
+            _messageManager = messageManager;
 
             this.Init();
 
@@ -161,7 +163,7 @@ namespace Amoeba.Interface
             }
             else if (viewModel is ChatThreadViewModel chatViewModel)
             {
-                this.Info.Value = new AvalonEditChatMessagesInfo(chatViewModel.Model.Messages, _serviceManager.SearchSignatures);
+                this.Info.Value = new AvalonEditChatMessagesInfo(chatViewModel.Model.Messages, _messageManager.TrustSignatures);
             }
         }
 
@@ -347,7 +349,7 @@ namespace Amoeba.Interface
                 sb.AppendLine(">> " + line);
             }
 
-            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, sb.ToString(), _serviceManager, _tokenSource.Token);
+            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, sb.ToString(), _serviceManager, _messageManager, _tokenSource.Token);
 
             Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
                 .Publish(viewModel);
@@ -358,7 +360,7 @@ namespace Amoeba.Interface
             var chatViewModel = this.TabSelectedItem.Value as ChatThreadViewModel;
             if (chatViewModel == null) return;
 
-            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, "", _serviceManager, _tokenSource.Token);
+            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, "", _serviceManager, _messageManager, _tokenSource.Token);
 
             Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
                 .Publish(viewModel);

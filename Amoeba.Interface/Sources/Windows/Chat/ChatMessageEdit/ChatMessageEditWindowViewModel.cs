@@ -17,6 +17,7 @@ namespace Amoeba.Interface
     {
         private Tag _tag;
         private ServiceManager _serviceManager;
+        private MessageManager _messageManager;
 
         private Settings _settings;
 
@@ -34,10 +35,11 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ChatMessageEditWindowViewModel(Tag tag, string comment, ServiceManager serviceManager, CancellationToken token)
+        public ChatMessageEditWindowViewModel(Tag tag, string comment, ServiceManager serviceManager, MessageManager messageManager, CancellationToken token)
         {
             _tag = tag;
             _serviceManager = serviceManager;
+            _messageManager = messageManager;
             _token = token;
 
             this.Init(comment);
@@ -77,7 +79,7 @@ namespace Amoeba.Interface
 
         private void Ok()
         {
-            var trustSignatures = new HashSet<Signature>(_serviceManager.SearchSignatures);
+            var trustSignatures = new HashSet<Signature>(_messageManager.TrustSignatures);
 
             Miner miner = null;
 
