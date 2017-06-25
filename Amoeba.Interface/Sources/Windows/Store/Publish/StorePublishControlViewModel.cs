@@ -530,6 +530,8 @@ namespace Amoeba.Interface
         {
             private Dictionary<string, Dictionary<string, HashSet<string>>> _map;
 
+            private PublishStoreInfo() { }
+
             public PublishStoreInfo(DigitalSignature digitalSignature, IEnumerable<(string, string, string[])> map)
             {
                 this.DigitalSignature = digitalSignature;

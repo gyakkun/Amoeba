@@ -167,6 +167,7 @@ namespace Amoeba.Service
             }
         }
 
+        [DataMember(Name = nameof(Certificate))]
         public override Certificate Certificate
         {
             get

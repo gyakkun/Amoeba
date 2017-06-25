@@ -966,14 +966,7 @@ namespace Amoeba.Service
 
                     lock (_lockObject)
                     {
-                        if (_cacheInfoManager.ContainsMessage(metadata))
-                        {
-                            foreach (var hash in lockedHashes)
-                            {
-                                this.Unlock(hash);
-                            }
-                        }
-                        else
+                        if (!_cacheInfoManager.ContainsMessage(metadata))
                         {
                             _cacheInfoManager.Add(new CacheInfo(DateTime.UtcNow, lifeSpan, metadata, lockedHashes, null));
                         }
@@ -981,17 +974,13 @@ namespace Amoeba.Service
 
                     return metadata;
                 }
-                catch (Exception)
+                finally
                 {
                     foreach (var hash in lockedHashes)
                     {
                         this.Unlock(hash);
                     }
 
-                    throw;
-                }
-                finally
-                {
                     if (stream != null)
                     {
                         stream.Dispose();
@@ -1232,14 +1221,7 @@ namespace Amoeba.Service
 
                     lock (_lockObject)
                     {
-                        if (_cacheInfoManager.ContainsContent(path))
-                        {
-                            foreach (var hash in lockedHashes)
-                            {
-                                this.Unlock(hash);
-                            }
-                        }
-                        else
+                        if (!_cacheInfoManager.ContainsContent(path))
                         {
                             _cacheInfoManager.Add(new CacheInfo(DateTime.UtcNow, Timeout.InfiniteTimeSpan, metadata, lockedHashes, shareInfo));
                         }
@@ -1247,14 +1229,12 @@ namespace Amoeba.Service
 
                     return metadata;
                 }
-                catch (Exception)
+                finally
                 {
                     foreach (var hash in lockedHashes)
                     {
                         this.Unlock(hash);
                     }
-
-                    throw;
                 }
             }, token);
         }
@@ -1411,11 +1391,6 @@ namespace Amoeba.Service
             {
                 var cacheInfo = _cacheInfoManager.GetContentCacheInfo(path);
                 if (cacheInfo == null) return;
-
-                foreach (var hash in cacheInfo.LockedHashes)
-                {
-                    this.Unlock(hash);
-                }
 
                 _cacheInfoManager.RemoveContent(path);
 

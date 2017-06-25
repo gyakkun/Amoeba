@@ -201,6 +201,7 @@ namespace Amoeba.Service
             }
         }
 
+        [DataMember(Name = nameof(Cash))]
         protected override Cash Cash
         {
             get
@@ -228,6 +229,7 @@ namespace Amoeba.Service
             }
         }
 
+        [DataMember(Name = nameof(Certificate))]
         public override Certificate Certificate
         {
             get
