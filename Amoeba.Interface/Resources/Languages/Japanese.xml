@@ -30,10 +30,12 @@
   <Property Name="Box_Comment" Value="Comment" />
 
   <Property Name="SearchState_Cache" Value="Cache" />
-  <Property Name="SearchState_Download" Value="Download" />
+  <Property Name="SearchState_Downloading" Value="Downloading" />
+  <Property Name="SearchState_Downloaded" Value="Downloaded" />
 
   <Property Name="SearchState_Flag_Cache" Value="C" />
-  <Property Name="SearchState_Flag_Download" Value="D" />
+  <Property Name="SearchState_Flag_Downloading" Value="D" />
+  <Property Name="SearchState_Flag_Downloaded" Value="DH" />
 
   <Property Name="DownloadState_Downloading" Value="Downloading" />
   <Property Name="DownloadState_ParityDecoding" Value="ParityDecoding" />
@@ -119,6 +121,9 @@
   <Property Name="OptionsWindow_DownloadSettings" Value="Download settings" />
   <Property Name="OptionsWindow_DownloadDirectoryPath" Value="Directory path" />
   <Property Name="OptionsWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
+  <Property Name="OptionsWindow_Update" Value="Update" />
+  <Property Name="OptionsWindow_UpdateSettings" Value="Update settings" />
+  <Property Name="OptionsWindow_UpdateIsEnabled" Value="Update is enabled" />
   <Property Name="OptionsWindow_New" Value="New" />
   <Property Name="OptionsWindow_Delete" Value="Delete" />
   <Property Name="OptionsWindow_Copy" Value="Copy" />
@@ -169,6 +174,7 @@
   <Property Name="StoreSearchControl_Cut" Value="Cut" />
   <Property Name="StoreSearchControl_Copy" Value="Copy" />
   <Property Name="StoreSearchControl_Paste" Value="Paste" />
+  <Property Name="StoreSearchControl_RemoveDownloadHistory" Value="Remove download history" />
   <Property Name="StoreSearchControl_Name" Value="Name" />
   <Property Name="StoreSearchControl_Signature" Value="Signature" />
   <Property Name="StoreSearchControl_Length" Value="Length" />
@@ -235,6 +241,7 @@
   <Property Name="PublishPreviewWindow_Title" Value="Publish preview" />
   <Property Name="PublishPreviewWindow_Name" Value="Name" />
   <Property Name="PublishPreviewWindow_Length" Value="Length" />
+  <Property Name="PublishPreviewWindow_Copy" Value="Copy" />
   <Property Name="PublishPreviewWindow_Ok" Value="Ok" />
   <Property Name="PublishPreviewWindow_Cancel" Value="Cancel" />
 
@@ -247,5 +254,6 @@
   <Property Name="StoreStateControl_Delete" Value="Delete" />
   <Property Name="StoreStateControl_Copy" Value="Copy" />
   <Property Name="StoreStateControl_Paste" Value="Paste" />
+  <Property Name="StoreStateControl_RemoveCompletedItem" Value="Remove completed item" />
 
 </Config>
