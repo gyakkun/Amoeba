@@ -66,7 +66,7 @@ namespace Amoeba.Interface
                         if (map.Count > 0)
                         {
                             var sortedList = map.ToList();
-                            sortedList.Sort((x, y) => y.Value.CompareTo(x));
+                            sortedList.Sort((x, y) => y.Value.CompareTo(x.Value));
 
                             targetSeed = sortedList.First().Key;
                         }

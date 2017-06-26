@@ -77,8 +77,6 @@ namespace Amoeba.Service
                     }
                 }
             }
-
-            if (!this.VerifyCertificate()) throw new CertificateException();
         }
 
         protected override Stream Export(BufferManager bufferManager, int depth)
