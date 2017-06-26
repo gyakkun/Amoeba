@@ -83,10 +83,6 @@ namespace Amoeba.Interface
             }
 
             {
-                _controlManager = new ControlManager(_serviceManager);
-            }
-
-            {
                 this.Title = SettingsManager.Instance.AccountInfo.ObserveProperty(n => n.DigitalSignature)
                     .Select(n => $"Amoeba {AmoebaEnvironment.Version} - {n.ToString()}").ToReactiveProperty().AddTo(_disposable);
 
@@ -128,6 +124,10 @@ namespace Amoeba.Interface
                 this.CloudControlViewModel = new CloudControlViewModel(_serviceManager);
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager, _messageManager);
                 this.StoreControlViewModel = new StoreControlViewModel(_serviceManager, _messageManager);
+            }
+
+            {
+                _controlManager = new ControlManager(_serviceManager);
             }
 
             {
@@ -310,13 +310,13 @@ namespace Amoeba.Interface
 
                 this.Save();
 
+                _controlManager.Dispose();
+
                 this.CloudControlViewModel.Dispose();
                 this.ChatControlViewModel.Dispose();
                 this.StoreControlViewModel.Dispose();
 
                 _disposable.Dispose();
-
-                _controlManager.Dispose();
 
                 _messageManager.Dispose();
 

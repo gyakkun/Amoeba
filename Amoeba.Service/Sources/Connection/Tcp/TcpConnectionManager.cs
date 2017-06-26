@@ -414,7 +414,7 @@ namespace Amoeba.Service
                         {
                             using (var client = new UpnpClient())
                             {
-                                client.Connect(new TimeSpan(0, 0, 30));
+                                client.Connect(new TimeSpan(0, 0, 10));
 
                                 if (_watchIpv4Port != -1)
                                 {
@@ -450,7 +450,7 @@ namespace Amoeba.Service
                         {
                             using (var client = new UpnpClient())
                             {
-                                client.Connect(new TimeSpan(0, 0, 30));
+                                client.Connect(new TimeSpan(0, 0, 10));
 
                                 client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
                             }
@@ -530,7 +530,7 @@ namespace Amoeba.Service
             {
                 using (var client = new UpnpClient())
                 {
-                    client.Connect(new TimeSpan(0, 0, 30));
+                    client.Connect(new TimeSpan(0, 0, 10));
 
                     var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
                     if (ipAddress == null || !TcpConnectionManager.CheckGlobalIpAddress(ipAddress)) throw new Exception();
@@ -606,7 +606,7 @@ namespace Amoeba.Service
                     {
                         using (var client = new UpnpClient())
                         {
-                            client.Connect(new TimeSpan(0, 0, 30));
+                            client.Connect(new TimeSpan(0, 0, 10));
 
                             client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
                         }
