@@ -300,6 +300,8 @@ namespace Amoeba.Interface
             {
                 Backup.Instance.SaveEvent -= this.Save;
 
+                _controlManager.Dispose();
+
                 _trafficViewTaskManager.Stop();
                 _trafficViewTaskManager.Dispose();
 
@@ -309,8 +311,6 @@ namespace Amoeba.Interface
                 _serviceManager.Stop();
 
                 this.Save();
-
-                _controlManager.Dispose();
 
                 this.CloudControlViewModel.Dispose();
                 this.ChatControlViewModel.Dispose();

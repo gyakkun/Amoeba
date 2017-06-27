@@ -69,10 +69,10 @@ namespace Amoeba.Service
         private volatile bool _disposed;
 
         private const int _maxLocationCount = 256;
-        private const int _maxBlockLinkCount = 1024;
-        private const int _maxBlockRequestCount = 1024;
-        private const int _maxMetadataRequestCount = 1024;
-        private const int _maxMetadataResultCount = 1024;
+        private const int _maxBlockLinkCount = 8192;
+        private const int _maxBlockRequestCount = 8192;
+        private const int _maxMetadataRequestCount = 2048;
+        private const int _maxMetadataResultCount = 2048;
 
         public NetworkManager(string configPath, CacheManager cacheManager, BufferManager bufferManager)
         {
@@ -521,7 +521,7 @@ namespace Amoeba.Service
 
                     // ダウンロード
                     if (_routeTable.Count >= 3
-                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 10)
+                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushBlockDownloadStopwatch.Restart();
 
@@ -1276,7 +1276,7 @@ namespace Amoeba.Service
                     }
                     else if (id == (int)SerializeId.BlocksLink)
                     {
-                        if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 6) return;
+                        if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
 
                         var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
 
@@ -1286,7 +1286,7 @@ namespace Amoeba.Service
                     }
                     else if (id == (int)SerializeId.BlocksRequest)
                     {
-                        if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 6) return;
+                        if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                         var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
 
