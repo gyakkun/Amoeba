@@ -49,6 +49,7 @@
   <Property Name="NameEditWindow_Title" Value="Name edit" />
   <Property Name="NameEditWindow_Name" Value="Name: " />
   <Property Name="NameEditWindow_Ok" Value="Ok" />
+  <Property Name="NameEditWindow_Cancel" Value="Cancel" />
 
   <Property Name="MainWindow_Service" Value="Service" />
   <Property Name="MainWindow_Relation" Value="Relation" />
@@ -61,11 +62,15 @@
   <Property Name="MainWindow_Traffic_Receive" Value="Receive:" />
   <Property Name="MainWindow_Cloud" Value="クラウド" />
   <Property Name="MainWindow_Chat" Value="Chat" />
+  <Property Name="MainWindow_Search" Value="Search" />
   <Property Name="MainWindow_Store" Value="ストア" />
+  <Property Name="MainWindow_Upload" Value="Upload" />
+  <Property Name="MainWindow_Download" Value="Download" />
   <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
   <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
 
   <Property Name="RelationWindow_Title" Value="Relation" />
+  <Property Name="RelationWindow_Profile" Value="Profile" />
   <Property Name="RelationWindow_Trust" Value="Trust" />
   <Property Name="RelationWindow_TrustSignature" Value="Trust signature" />
   <Property Name="RelationWindow_Untrust" Value="Untrust" />
@@ -77,6 +82,18 @@
   <Property Name="RelationWindow_Comment" Value="Comment" />
   <Property Name="RelationWindow_Copy" Value="Copy" />
   <Property Name="RelationWindow_Close" Value="Close" />
+
+  <Property Name="StoreSubscribeControl_Download" Value="Download" />
+  <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
+  <Property Name="StoreSubscribeControl_Edit" Value="Edit" />
+  <Property Name="StoreSubscribeControl_Delete" Value="Delete" />
+  <Property Name="StoreSubscribeControl_Cut" Value="Cut" />
+  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
+  <Property Name="StoreSubscribeControl_Paste" Value="Paste" />
+  <Property Name="StoreSubscribeControl_Name" Value="Name" />
+  <Property Name="StoreSubscribeControl_Length" Value="Length" />
+  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
+  <Property Name="StoreSubscribeControl_State" Value="State" />
 
   <Property Name="OptionsWindow_Title" Value="Options" />
   <Property Name="OptionsWindow_Account" Value="Account" />
@@ -159,12 +176,7 @@
 
   <Property Name="ChatMessageEditWindow_Title" Value="Chat message edit" />
   <Property Name="ChatMessageEditWindow_Ok" Value="Ok" />
-
-  <Property Name="StoreControl_Search" Value="Search" />
-  <Property Name="StoreControl_Subscribe" Value="Subscribe" />
-  <Property Name="StoreControl_Publish" Value="Publish" />
-  <Property Name="StoreControl_State" Value="State" />
-  <Property Name="StoreControl_Share" Value="Share" />
+  <Property Name="ChatMessageEditWindow_Cancel" Value="Cancel" />
 
   <Property Name="SearchControl_SearchHint" Value="Search" />
   <Property Name="SearchControl_Download" Value="Download" />
@@ -212,18 +224,16 @@
   <Property Name="SearchConditionsControl_Max" Value="Max" />
   <Property Name="SearchConditionsControl_Value" Value="Value" />
 
-  <Property Name="StoreSubscribeControl_Download" Value="Download" />
-  <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
-  <Property Name="StoreSubscribeControl_NewStore" Value="New store" />
-  <Property Name="StoreSubscribeControl_Edit" Value="Edit" />
-  <Property Name="StoreSubscribeControl_Delete" Value="Delete" />
-  <Property Name="StoreSubscribeControl_Cut" Value="Cut" />
-  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
-  <Property Name="StoreSubscribeControl_Paste" Value="Paste" />
-  <Property Name="StoreSubscribeControl_Name" Value="Name" />
-  <Property Name="StoreSubscribeControl_Length" Value="Length" />
-  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
-  <Property Name="StoreSubscribeControl_State" Value="State" />
+  <Property Name="DownloadControl_Name" Value="Name" />
+  <Property Name="DownloadControl_Length" Value="Length" />
+  <Property Name="DownloadControl_CreationTime" Value="CreationTime" />
+  <Property Name="DownloadControl_Rate" Value="Rate" />
+  <Property Name="DownloadControl_State" Value="State" />
+  <Property Name="DownloadControl_Path" Value="Path" />
+  <Property Name="DownloadControl_Delete" Value="Delete" />
+  <Property Name="DownloadControl_Copy" Value="Copy" />
+  <Property Name="DownloadControl_Paste" Value="Paste" />
+  <Property Name="DownloadControl_RemoveCompletedItem" Value="Remove completed item" />
 
   <Property Name="UploadControl_Upload" Value="Upload" />
   <Property Name="UploadControl_Name" Value="Name" />
@@ -237,6 +247,7 @@
   <Property Name="PublishDirectoryInfoEditWindow_Name" Value="Name" />
   <Property Name="PublishDirectoryInfoEditWindow_Path" Value="Path" />
   <Property Name="PublishDirectoryInfoEditWindow_Ok" Value="Ok" />
+  <Property Name="PublishDirectoryInfoEditWindow_Cancel" Value="Cancel" />
 
   <Property Name="PublishPreviewWindow_Title" Value="Publish preview" />
   <Property Name="PublishPreviewWindow_Name" Value="Name" />
@@ -244,16 +255,5 @@
   <Property Name="PublishPreviewWindow_Copy" Value="Copy" />
   <Property Name="PublishPreviewWindow_Ok" Value="Ok" />
   <Property Name="PublishPreviewWindow_Cancel" Value="Cancel" />
-
-  <Property Name="DownloadControl_Name" Value="Name" />
-  <Property Name="DownloadControl_Length" Value="Length" />
-  <Property Name="DownloadControl_CreationTime" Value="CreationTime" />
-  <Property Name="DownloadControl_Rate" Value="Rate" />
-  <Property Name="DownloadControl_State" Value="State" />
-  <Property Name="DownloadControl_Path" Value="Path" />
-  <Property Name="DownloadControl_Delete" Value="Delete" />
-  <Property Name="DownloadControl_Copy" Value="Copy" />
-  <Property Name="DownloadControl_Paste" Value="Paste" />
-  <Property Name="DownloadControl_RemoveCompletedItem" Value="Remove completed item" />
 
 </Config>

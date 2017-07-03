@@ -134,14 +134,6 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem
-                            Command="{Binding Path=TabNewStoreCommand}"
-                            Header="{Binding Path=StoreSubscribeControl_NewStore, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+W">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="Basket" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem
                             Command="{Binding Path=TabEditCommand}"
                             Header="{Binding Path=StoreSubscribeControl_Edit, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+E">

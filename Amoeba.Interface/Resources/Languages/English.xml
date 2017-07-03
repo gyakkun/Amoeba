@@ -83,9 +83,13 @@
   <Property Name="RelationWindow_Copy" Value="Copy" />
   <Property Name="RelationWindow_Close" Value="Close" />
 
-  <Property Name="StoreSubscribeControl_Store" Value="Store" />
-  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
   <Property Name="StoreSubscribeControl_Download" Value="Download" />
+  <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
+  <Property Name="StoreSubscribeControl_Edit" Value="Edit" />
+  <Property Name="StoreSubscribeControl_Delete" Value="Delete" />
+  <Property Name="StoreSubscribeControl_Cut" Value="Cut" />
+  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
+  <Property Name="StoreSubscribeControl_Paste" Value="Paste" />
   <Property Name="StoreSubscribeControl_Name" Value="Name" />
   <Property Name="StoreSubscribeControl_Length" Value="Length" />
   <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />

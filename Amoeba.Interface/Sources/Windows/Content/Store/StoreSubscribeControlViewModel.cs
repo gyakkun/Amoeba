@@ -39,7 +39,6 @@ namespace Amoeba.Interface
         public ReactiveCommand TabClickCommand { get; private set; }
 
         public ReactiveCommand TabNewCategoryCommand { get; private set; }
-        public ReactiveCommand TabNewStoreCommand { get; private set; }
         public ReactiveCommand TabEditCommand { get; private set; }
         public ReactiveCommand TabDeleteCommand { get; private set; }
         public ReactiveCommand TabCutCommand { get; private set; }
@@ -100,9 +99,6 @@ namespace Amoeba.Interface
 
                 this.TabNewCategoryCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabNewCategoryCommand.Subscribe(() => this.TabNewCategory()).AddTo(_disposable);
-
-                this.TabNewStoreCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
-                this.TabNewStoreCommand.Subscribe(() => this.TabNewStore()).AddTo(_disposable);
 
                 this.TabEditCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabEditCommand.Subscribe(() => this.TabEdit()).AddTo(_disposable);
@@ -383,11 +379,6 @@ namespace Amoeba.Interface
                 Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
                     .Publish(viewModel);
             }
-        }
-
-        private void TabNewStore()
-        {
-
         }
 
         private void TabEdit()

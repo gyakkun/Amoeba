@@ -76,9 +76,13 @@ namespace Amoeba.Interface
         public string RelationWindow_Comment { get { return this.Translate("RelationWindow_Comment"); } }
         public string RelationWindow_Copy { get { return this.Translate("RelationWindow_Copy"); } }
         public string RelationWindow_Close { get { return this.Translate("RelationWindow_Close"); } }
-        public string StoreSubscribeControl_Store { get { return this.Translate("StoreSubscribeControl_Store"); } }
-        public string StoreSubscribeControl_Copy { get { return this.Translate("StoreSubscribeControl_Copy"); } }
         public string StoreSubscribeControl_Download { get { return this.Translate("StoreSubscribeControl_Download"); } }
+        public string StoreSubscribeControl_NewCategory { get { return this.Translate("StoreSubscribeControl_NewCategory"); } }
+        public string StoreSubscribeControl_Edit { get { return this.Translate("StoreSubscribeControl_Edit"); } }
+        public string StoreSubscribeControl_Delete { get { return this.Translate("StoreSubscribeControl_Delete"); } }
+        public string StoreSubscribeControl_Cut { get { return this.Translate("StoreSubscribeControl_Cut"); } }
+        public string StoreSubscribeControl_Copy { get { return this.Translate("StoreSubscribeControl_Copy"); } }
+        public string StoreSubscribeControl_Paste { get { return this.Translate("StoreSubscribeControl_Paste"); } }
         public string StoreSubscribeControl_Name { get { return this.Translate("StoreSubscribeControl_Name"); } }
         public string StoreSubscribeControl_Length { get { return this.Translate("StoreSubscribeControl_Length"); } }
         public string StoreSubscribeControl_CreationTime { get { return this.Translate("StoreSubscribeControl_CreationTime"); } }
