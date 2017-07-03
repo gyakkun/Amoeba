@@ -10,7 +10,7 @@ namespace Amoeba.Interface
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Tag item) return MessageConvertUtils.ToString(item);
+            if (value is Tag item) return MessageUtils.ToString(item);
             return null;
         }
 

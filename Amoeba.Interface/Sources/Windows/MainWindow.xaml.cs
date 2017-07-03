@@ -35,8 +35,6 @@ namespace Amoeba.Interface
 
             InitializeComponent();
 
-            this.Icon = AmoebaEnvironment.Icons.Amoeba;
-
             // NotifyIcon
             {
                 _notifyIcon.Visible = false;

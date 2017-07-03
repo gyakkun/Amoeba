@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Amoeba.Service;
 using Omnius.Security;
 
@@ -307,7 +308,16 @@ namespace Amoeba.Interface
         {
             lock (_thisLock)
             {
-                Clipboard.SetText(string.Join("\r\n", seeds.Select(n => AmoebaConverter.ToSeedString(n))));
+                var sb = new StringBuilder();
+
+                foreach (var seed in seeds)
+                {
+                    sb.AppendLine(AmoebaConverter.ToSeedString(seed));
+                    sb.AppendLine(MessageUtils.ToInfoMessage(seed));
+                    sb.AppendLine();
+                }
+
+                Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
             }
         }
 

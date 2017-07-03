@@ -12,11 +12,11 @@ namespace Amoeba.Interface
         {
             if (value is Seed seed)
             {
-                return MessageConvertUtils.ToInfoMessage(seed);
+                return MessageUtils.ToInfoMessage(seed);
             }
             else if (value is Box box)
             {
-                return MessageConvertUtils.ToInfoMessage(box);
+                return MessageUtils.ToInfoMessage(box);
             }
 
             return null;

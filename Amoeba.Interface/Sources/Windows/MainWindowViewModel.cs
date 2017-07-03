@@ -18,9 +18,8 @@ namespace Amoeba.Interface
     class MainWindowViewModel : ManagerBase
     {
         private ServiceManager _serviceManager;
-
         private MessageManager _messageManager;
-        private ControlManager _controlManager;
+        private WatchManager _watchManager;
 
         private Settings _settings;
 
@@ -43,7 +42,10 @@ namespace Amoeba.Interface
 
         public CloudControlViewModel CloudControlViewModel { get; private set; }
         public ChatControlViewModel ChatControlViewModel { get; private set; }
-        public StoreControlViewModel StoreControlViewModel { get; private set; }
+        public SearchControlViewModel SearchControlViewModel { get; private set; }
+        public StoreSubscribeControlViewModel StoreSubscribeControlViewModel { get; private set; }
+        public DownloadControlViewModel DownloadControlViewModel { get; private set; }
+        public UploadControlViewModel UploadControlViewModel { get; private set; }
 
         private TaskManager _trafficViewTaskManager;
         private TaskManager _trafficMonitorTaskManager;
@@ -75,7 +77,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "Message");
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Control", "Message");
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _messageManager = new MessageManager(configPath, _serviceManager);
@@ -123,11 +125,14 @@ namespace Amoeba.Interface
             {
                 this.CloudControlViewModel = new CloudControlViewModel(_serviceManager);
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager, _messageManager);
-                this.StoreControlViewModel = new StoreControlViewModel(_serviceManager, _messageManager);
+                this.SearchControlViewModel = new SearchControlViewModel(_serviceManager, _messageManager);
+                this.StoreSubscribeControlViewModel = new StoreSubscribeControlViewModel(_serviceManager);
+                this.DownloadControlViewModel = new DownloadControlViewModel(_serviceManager);
+                this.UploadControlViewModel = new UploadControlViewModel(_serviceManager);
             }
 
             {
-                _controlManager = new ControlManager(_serviceManager);
+                _watchManager = new WatchManager(_serviceManager);
             }
 
             {
@@ -300,7 +305,7 @@ namespace Amoeba.Interface
             {
                 Backup.Instance.SaveEvent -= this.Save;
 
-                _controlManager.Dispose();
+                _watchManager.Dispose();
 
                 _trafficViewTaskManager.Stop();
                 _trafficViewTaskManager.Dispose();
@@ -314,7 +319,10 @@ namespace Amoeba.Interface
 
                 this.CloudControlViewModel.Dispose();
                 this.ChatControlViewModel.Dispose();
-                this.StoreControlViewModel.Dispose();
+                this.SearchControlViewModel.Dispose();
+                this.StoreSubscribeControlViewModel.Dispose();
+                this.DownloadControlViewModel.Dispose();
+                this.UploadControlViewModel.Dispose();
 
                 _disposable.Dispose();
 

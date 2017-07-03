@@ -116,7 +116,7 @@ namespace Amoeba.Service
                 {
                     var hashSet = new HashSet<Location>();
                     hashSet.UnionWith(_cloudLocations);
-                    hashSet.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
+                    hashSet.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location));
 
                     return hashSet.ToArray();
                 }
@@ -943,7 +943,7 @@ namespace Amoeba.Service
                 sessionInfo.SendInfo.LocationResultStopwatch.Restart();
 
                 var locations = new HashSet<Location>();
-                locations.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location).Where(n => n != null));
+                locations.UnionWith(_routeTable.ToArray().Select(n => n.Value.Location));
                 locations.UnionWith(_cloudLocations);
 
                 var packet = new LocationsPacket(locations.Randomize().Take(LocationsPacket.MaxLocationCount));
@@ -1236,6 +1236,7 @@ namespace Amoeba.Service
                     if (sessionInfo.Version == 0)
                     {
                         var profile = ProfilePacket.Import(dataStream, _bufferManager);
+                        if (profile.Id == null || profile.Location == null) throw new ArgumentException("Broken Profile");
 
                         lock (_lockObject)
                         {
@@ -1243,10 +1244,10 @@ namespace Amoeba.Service
 
                             if (_connections.ContainsKey(sessionInfo.Connection))
                             {
-                                if (!_routeTable.Add(profile.Id, sessionInfo)) throw new ArgumentException("RouteTable Overflow");
-
                                 sessionInfo.Id = profile.Id;
                                 sessionInfo.Location = profile.Location;
+
+                                if (!_routeTable.Add(profile.Id, sessionInfo)) throw new ArgumentException("RouteTable Overflow");
                             }
                         }
                     }

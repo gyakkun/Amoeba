@@ -1,4 +1,10 @@
-﻿namespace Amoeba.Interface
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Amoeba.Interface
 {
     partial class LanguagesManager
     {
@@ -39,6 +45,7 @@
         public string NameEditWindow_Title { get { return this.Translate("NameEditWindow_Title"); } }
         public string NameEditWindow_Name { get { return this.Translate("NameEditWindow_Name"); } }
         public string NameEditWindow_Ok { get { return this.Translate("NameEditWindow_Ok"); } }
+        public string NameEditWindow_Cancel { get { return this.Translate("NameEditWindow_Cancel"); } }
         public string MainWindow_Service { get { return this.Translate("MainWindow_Service"); } }
         public string MainWindow_Relation { get { return this.Translate("MainWindow_Relation"); } }
         public string MainWindow_Options { get { return this.Translate("MainWindow_Options"); } }
@@ -50,10 +57,14 @@
         public string MainWindow_Traffic_Receive { get { return this.Translate("MainWindow_Traffic_Receive"); } }
         public string MainWindow_Cloud { get { return this.Translate("MainWindow_Cloud"); } }
         public string MainWindow_Chat { get { return this.Translate("MainWindow_Chat"); } }
+        public string MainWindow_Search { get { return this.Translate("MainWindow_Search"); } }
         public string MainWindow_Store { get { return this.Translate("MainWindow_Store"); } }
+        public string MainWindow_Upload { get { return this.Translate("MainWindow_Upload"); } }
+        public string MainWindow_Download { get { return this.Translate("MainWindow_Download"); } }
         public string MainWindow_Close_Message { get { return this.Translate("MainWindow_Close_Message"); } }
         public string MainWindow_DiskSpaceNotFound_Message { get { return this.Translate("MainWindow_DiskSpaceNotFound_Message"); } }
         public string RelationWindow_Title { get { return this.Translate("RelationWindow_Title"); } }
+        public string RelationWindow_Profile { get { return this.Translate("RelationWindow_Profile"); } }
         public string RelationWindow_Trust { get { return this.Translate("RelationWindow_Trust"); } }
         public string RelationWindow_TrustSignature { get { return this.Translate("RelationWindow_TrustSignature"); } }
         public string RelationWindow_Untrust { get { return this.Translate("RelationWindow_Untrust"); } }
@@ -65,6 +76,13 @@
         public string RelationWindow_Comment { get { return this.Translate("RelationWindow_Comment"); } }
         public string RelationWindow_Copy { get { return this.Translate("RelationWindow_Copy"); } }
         public string RelationWindow_Close { get { return this.Translate("RelationWindow_Close"); } }
+        public string StoreSubscribeControl_Store { get { return this.Translate("StoreSubscribeControl_Store"); } }
+        public string StoreSubscribeControl_Copy { get { return this.Translate("StoreSubscribeControl_Copy"); } }
+        public string StoreSubscribeControl_Download { get { return this.Translate("StoreSubscribeControl_Download"); } }
+        public string StoreSubscribeControl_Name { get { return this.Translate("StoreSubscribeControl_Name"); } }
+        public string StoreSubscribeControl_Length { get { return this.Translate("StoreSubscribeControl_Length"); } }
+        public string StoreSubscribeControl_CreationTime { get { return this.Translate("StoreSubscribeControl_CreationTime"); } }
+        public string StoreSubscribeControl_State { get { return this.Translate("StoreSubscribeControl_State"); } }
         public string OptionsWindow_Title { get { return this.Translate("OptionsWindow_Title"); } }
         public string OptionsWindow_Account { get { return this.Translate("OptionsWindow_Account"); } }
         public string OptionsWindow_Signature { get { return this.Translate("OptionsWindow_Signature"); } }
@@ -142,25 +160,21 @@
         public string ChatControl_Response { get { return this.Translate("ChatControl_Response"); } }
         public string ChatMessageEditWindow_Title { get { return this.Translate("ChatMessageEditWindow_Title"); } }
         public string ChatMessageEditWindow_Ok { get { return this.Translate("ChatMessageEditWindow_Ok"); } }
-        public string StoreControl_Search { get { return this.Translate("StoreControl_Search"); } }
-        public string StoreControl_Subscribe { get { return this.Translate("StoreControl_Subscribe"); } }
-        public string StoreControl_Publish { get { return this.Translate("StoreControl_Publish"); } }
-        public string StoreControl_State { get { return this.Translate("StoreControl_State"); } }
-        public string StoreControl_Share { get { return this.Translate("StoreControl_Share"); } }
-        public string StoreSearchControl_SearchHint { get { return this.Translate("StoreSearchControl_SearchHint"); } }
-        public string StoreSearchControl_Download { get { return this.Translate("StoreSearchControl_Download"); } }
-        public string StoreSearchControl_NewSearch { get { return this.Translate("StoreSearchControl_NewSearch"); } }
-        public string StoreSearchControl_Edit { get { return this.Translate("StoreSearchControl_Edit"); } }
-        public string StoreSearchControl_Delete { get { return this.Translate("StoreSearchControl_Delete"); } }
-        public string StoreSearchControl_Cut { get { return this.Translate("StoreSearchControl_Cut"); } }
-        public string StoreSearchControl_Copy { get { return this.Translate("StoreSearchControl_Copy"); } }
-        public string StoreSearchControl_Paste { get { return this.Translate("StoreSearchControl_Paste"); } }
-        public string StoreSearchControl_RemoveDownloadHistory { get { return this.Translate("StoreSearchControl_RemoveDownloadHistory"); } }
-        public string StoreSearchControl_Name { get { return this.Translate("StoreSearchControl_Name"); } }
-        public string StoreSearchControl_Signature { get { return this.Translate("StoreSearchControl_Signature"); } }
-        public string StoreSearchControl_Length { get { return this.Translate("StoreSearchControl_Length"); } }
-        public string StoreSearchControl_CreationTime { get { return this.Translate("StoreSearchControl_CreationTime"); } }
-        public string StoreSearchControl_State { get { return this.Translate("StoreSearchControl_State"); } }
+        public string ChatMessageEditWindow_Cancel { get { return this.Translate("ChatMessageEditWindow_Cancel"); } }
+        public string SearchControl_SearchHint { get { return this.Translate("SearchControl_SearchHint"); } }
+        public string SearchControl_Download { get { return this.Translate("SearchControl_Download"); } }
+        public string SearchControl_NewSearch { get { return this.Translate("SearchControl_NewSearch"); } }
+        public string SearchControl_Edit { get { return this.Translate("SearchControl_Edit"); } }
+        public string SearchControl_Delete { get { return this.Translate("SearchControl_Delete"); } }
+        public string SearchControl_Cut { get { return this.Translate("SearchControl_Cut"); } }
+        public string SearchControl_Copy { get { return this.Translate("SearchControl_Copy"); } }
+        public string SearchControl_Paste { get { return this.Translate("SearchControl_Paste"); } }
+        public string SearchControl_RemoveDownloadHistory { get { return this.Translate("SearchControl_RemoveDownloadHistory"); } }
+        public string SearchControl_Name { get { return this.Translate("SearchControl_Name"); } }
+        public string SearchControl_Signature { get { return this.Translate("SearchControl_Signature"); } }
+        public string SearchControl_Length { get { return this.Translate("SearchControl_Length"); } }
+        public string SearchControl_CreationTime { get { return this.Translate("SearchControl_CreationTime"); } }
+        public string SearchControl_State { get { return this.Translate("SearchControl_State"); } }
         public string SearchInfoEditWindow_Title { get { return this.Translate("SearchInfoEditWindow_Title"); } }
         public string SearchInfoEditWindow_SearchName { get { return this.Translate("SearchInfoEditWindow_SearchName"); } }
         public string SearchInfoEditWindow_Name { get { return this.Translate("SearchInfoEditWindow_Name"); } }
@@ -190,44 +204,33 @@
         public string SearchConditionsControl_Min { get { return this.Translate("SearchConditionsControl_Min"); } }
         public string SearchConditionsControl_Max { get { return this.Translate("SearchConditionsControl_Max"); } }
         public string SearchConditionsControl_Value { get { return this.Translate("SearchConditionsControl_Value"); } }
-        public string StoreSubscribeControl_Download { get { return this.Translate("StoreSubscribeControl_Download"); } }
-        public string StoreSubscribeControl_NewCategory { get { return this.Translate("StoreSubscribeControl_NewCategory"); } }
-        public string StoreSubscribeControl_NewStore { get { return this.Translate("StoreSubscribeControl_NewStore"); } }
-        public string StoreSubscribeControl_Edit { get { return this.Translate("StoreSubscribeControl_Edit"); } }
-        public string StoreSubscribeControl_Delete { get { return this.Translate("StoreSubscribeControl_Delete"); } }
-        public string StoreSubscribeControl_Cut { get { return this.Translate("StoreSubscribeControl_Cut"); } }
-        public string StoreSubscribeControl_Copy { get { return this.Translate("StoreSubscribeControl_Copy"); } }
-        public string StoreSubscribeControl_Paste { get { return this.Translate("StoreSubscribeControl_Paste"); } }
-        public string StoreSubscribeControl_Name { get { return this.Translate("StoreSubscribeControl_Name"); } }
-        public string StoreSubscribeControl_Length { get { return this.Translate("StoreSubscribeControl_Length"); } }
-        public string StoreSubscribeControl_CreationTime { get { return this.Translate("StoreSubscribeControl_CreationTime"); } }
-        public string StoreSubscribeControl_State { get { return this.Translate("StoreSubscribeControl_State"); } }
-        public string StorePublishControl_Upload { get { return this.Translate("StorePublishControl_Upload"); } }
-        public string StorePublishControl_Name { get { return this.Translate("StorePublishControl_Name"); } }
-        public string StorePublishControl_Path { get { return this.Translate("StorePublishControl_Path"); } }
-        public string StorePublishControl_Add { get { return this.Translate("StorePublishControl_Add"); } }
-        public string StorePublishControl_Edit { get { return this.Translate("StorePublishControl_Edit"); } }
-        public string StorePublishControl_Delete { get { return this.Translate("StorePublishControl_Delete"); } }
-        public string StorePublishControl_Completed { get { return this.Translate("StorePublishControl_Completed"); } }
+        public string DownloadControl_Name { get { return this.Translate("DownloadControl_Name"); } }
+        public string DownloadControl_Length { get { return this.Translate("DownloadControl_Length"); } }
+        public string DownloadControl_CreationTime { get { return this.Translate("DownloadControl_CreationTime"); } }
+        public string DownloadControl_Rate { get { return this.Translate("DownloadControl_Rate"); } }
+        public string DownloadControl_State { get { return this.Translate("DownloadControl_State"); } }
+        public string DownloadControl_Path { get { return this.Translate("DownloadControl_Path"); } }
+        public string DownloadControl_Delete { get { return this.Translate("DownloadControl_Delete"); } }
+        public string DownloadControl_Copy { get { return this.Translate("DownloadControl_Copy"); } }
+        public string DownloadControl_Paste { get { return this.Translate("DownloadControl_Paste"); } }
+        public string DownloadControl_RemoveCompletedItem { get { return this.Translate("DownloadControl_RemoveCompletedItem"); } }
+        public string UploadControl_Upload { get { return this.Translate("UploadControl_Upload"); } }
+        public string UploadControl_Name { get { return this.Translate("UploadControl_Name"); } }
+        public string UploadControl_Path { get { return this.Translate("UploadControl_Path"); } }
+        public string UploadControl_Add { get { return this.Translate("UploadControl_Add"); } }
+        public string UploadControl_Edit { get { return this.Translate("UploadControl_Edit"); } }
+        public string UploadControl_Delete { get { return this.Translate("UploadControl_Delete"); } }
+        public string UploadControl_Completed { get { return this.Translate("UploadControl_Completed"); } }
         public string PublishDirectoryInfoEditWindow_Title { get { return this.Translate("PublishDirectoryInfoEditWindow_Title"); } }
         public string PublishDirectoryInfoEditWindow_Name { get { return this.Translate("PublishDirectoryInfoEditWindow_Name"); } }
         public string PublishDirectoryInfoEditWindow_Path { get { return this.Translate("PublishDirectoryInfoEditWindow_Path"); } }
         public string PublishDirectoryInfoEditWindow_Ok { get { return this.Translate("PublishDirectoryInfoEditWindow_Ok"); } }
+        public string PublishDirectoryInfoEditWindow_Cancel { get { return this.Translate("PublishDirectoryInfoEditWindow_Cancel"); } }
         public string PublishPreviewWindow_Title { get { return this.Translate("PublishPreviewWindow_Title"); } }
         public string PublishPreviewWindow_Name { get { return this.Translate("PublishPreviewWindow_Name"); } }
         public string PublishPreviewWindow_Length { get { return this.Translate("PublishPreviewWindow_Length"); } }
         public string PublishPreviewWindow_Copy { get { return this.Translate("PublishPreviewWindow_Copy"); } }
         public string PublishPreviewWindow_Ok { get { return this.Translate("PublishPreviewWindow_Ok"); } }
         public string PublishPreviewWindow_Cancel { get { return this.Translate("PublishPreviewWindow_Cancel"); } }
-        public string StoreStateControl_Name { get { return this.Translate("StoreStateControl_Name"); } }
-        public string StoreStateControl_Length { get { return this.Translate("StoreStateControl_Length"); } }
-        public string StoreStateControl_CreationTime { get { return this.Translate("StoreStateControl_CreationTime"); } }
-        public string StoreStateControl_Rate { get { return this.Translate("StoreStateControl_Rate"); } }
-        public string StoreStateControl_State { get { return this.Translate("StoreStateControl_State"); } }
-        public string StoreStateControl_Path { get { return this.Translate("StoreStateControl_Path"); } }
-        public string StoreStateControl_Delete { get { return this.Translate("StoreStateControl_Delete"); } }
-        public string StoreStateControl_Copy { get { return this.Translate("StoreStateControl_Copy"); } }
-        public string StoreStateControl_Paste { get { return this.Translate("StoreStateControl_Paste"); } }
-        public string StoreStateControl_RemoveCompletedItem { get { return this.Translate("StoreStateControl_RemoveCompletedItem"); } }
     }
 }

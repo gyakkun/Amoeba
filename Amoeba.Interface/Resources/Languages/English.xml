@@ -49,6 +49,7 @@
   <Property Name="NameEditWindow_Title" Value="Name edit" />
   <Property Name="NameEditWindow_Name" Value="Name" />
   <Property Name="NameEditWindow_Ok" Value="Ok" />
+  <Property Name="NameEditWindow_Cancel" Value="Cancel" />
 
   <Property Name="MainWindow_Service" Value="Service" />
   <Property Name="MainWindow_Relation" Value="Relation" />
@@ -61,11 +62,15 @@
   <Property Name="MainWindow_Traffic_Receive" Value="Receive:" />
   <Property Name="MainWindow_Cloud" Value="Cloud" />
   <Property Name="MainWindow_Chat" Value="Chat" />
+  <Property Name="MainWindow_Search" Value="Search" />
   <Property Name="MainWindow_Store" Value="Store" />
+  <Property Name="MainWindow_Upload" Value="Upload" />
+  <Property Name="MainWindow_Download" Value="Download" />
   <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
   <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
 
   <Property Name="RelationWindow_Title" Value="Relation" />
+  <Property Name="RelationWindow_Profile" Value="Profile" />
   <Property Name="RelationWindow_Trust" Value="Trust" />
   <Property Name="RelationWindow_TrustSignature" Value="Trust signature" />
   <Property Name="RelationWindow_Untrust" Value="Untrust" />
@@ -77,6 +82,14 @@
   <Property Name="RelationWindow_Comment" Value="Comment" />
   <Property Name="RelationWindow_Copy" Value="Copy" />
   <Property Name="RelationWindow_Close" Value="Close" />
+
+  <Property Name="StoreSubscribeControl_Store" Value="Store" />
+  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
+  <Property Name="StoreSubscribeControl_Download" Value="Download" />
+  <Property Name="StoreSubscribeControl_Name" Value="Name" />
+  <Property Name="StoreSubscribeControl_Length" Value="Length" />
+  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
+  <Property Name="StoreSubscribeControl_State" Value="State" />
 
   <Property Name="OptionsWindow_Title" Value="Options" />
   <Property Name="OptionsWindow_Account" Value="Account" />
@@ -159,27 +172,22 @@
 
   <Property Name="ChatMessageEditWindow_Title" Value="Chat message edit" />
   <Property Name="ChatMessageEditWindow_Ok" Value="Ok" />
+  <Property Name="ChatMessageEditWindow_Cancel" Value="Cancel" />
 
-  <Property Name="StoreControl_Search" Value="Search" />
-  <Property Name="StoreControl_Subscribe" Value="Subscribe" />
-  <Property Name="StoreControl_Publish" Value="Publish" />
-  <Property Name="StoreControl_State" Value="State" />
-  <Property Name="StoreControl_Share" Value="Share" />
-
-  <Property Name="StoreSearchControl_SearchHint" Value="Name" />
-  <Property Name="StoreSearchControl_Download" Value="Download" />
-  <Property Name="StoreSearchControl_NewSearch" Value="New search" />
-  <Property Name="StoreSearchControl_Edit" Value="Edit" />
-  <Property Name="StoreSearchControl_Delete" Value="Delete" />
-  <Property Name="StoreSearchControl_Cut" Value="Cut" />
-  <Property Name="StoreSearchControl_Copy" Value="Copy" />
-  <Property Name="StoreSearchControl_Paste" Value="Paste" />
-  <Property Name="StoreSearchControl_RemoveDownloadHistory" Value="Remove download history" />
-  <Property Name="StoreSearchControl_Name" Value="Name" />
-  <Property Name="StoreSearchControl_Signature" Value="Signature" />
-  <Property Name="StoreSearchControl_Length" Value="Length" />
-  <Property Name="StoreSearchControl_CreationTime" Value="CreationTime" />
-  <Property Name="StoreSearchControl_State" Value="State" />
+  <Property Name="SearchControl_SearchHint" Value="Search" />
+  <Property Name="SearchControl_Download" Value="Download" />
+  <Property Name="SearchControl_NewSearch" Value="New search" />
+  <Property Name="SearchControl_Edit" Value="Edit" />
+  <Property Name="SearchControl_Delete" Value="Delete" />
+  <Property Name="SearchControl_Cut" Value="Cut" />
+  <Property Name="SearchControl_Copy" Value="Copy" />
+  <Property Name="SearchControl_Paste" Value="Paste" />
+  <Property Name="SearchControl_RemoveDownloadHistory" Value="Remove download history" />
+  <Property Name="SearchControl_Name" Value="Name" />
+  <Property Name="SearchControl_Signature" Value="Signature" />
+  <Property Name="SearchControl_Length" Value="Length" />
+  <Property Name="SearchControl_CreationTime" Value="CreationTime" />
+  <Property Name="SearchControl_State" Value="State" />
 
   <Property Name="SearchInfoEditWindow_Title" Value="Search edit" />
   <Property Name="SearchInfoEditWindow_SearchName" Value="Search name" />
@@ -212,31 +220,30 @@
   <Property Name="SearchConditionsControl_Max" Value="Max" />
   <Property Name="SearchConditionsControl_Value" Value="Value" />
 
-  <Property Name="StoreSubscribeControl_Download" Value="Download" />
-  <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
-  <Property Name="StoreSubscribeControl_NewStore" Value="New store" />
-  <Property Name="StoreSubscribeControl_Edit" Value="Edit" />
-  <Property Name="StoreSubscribeControl_Delete" Value="Delete" />
-  <Property Name="StoreSubscribeControl_Cut" Value="Cut" />
-  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
-  <Property Name="StoreSubscribeControl_Paste" Value="Paste" />
-  <Property Name="StoreSubscribeControl_Name" Value="Name" />
-  <Property Name="StoreSubscribeControl_Length" Value="Length" />
-  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
-  <Property Name="StoreSubscribeControl_State" Value="State" />
+  <Property Name="DownloadControl_Name" Value="Name" />
+  <Property Name="DownloadControl_Length" Value="Length" />
+  <Property Name="DownloadControl_CreationTime" Value="CreationTime" />
+  <Property Name="DownloadControl_Rate" Value="Rate" />
+  <Property Name="DownloadControl_State" Value="State" />
+  <Property Name="DownloadControl_Path" Value="Path" />
+  <Property Name="DownloadControl_Delete" Value="Delete" />
+  <Property Name="DownloadControl_Copy" Value="Copy" />
+  <Property Name="DownloadControl_Paste" Value="Paste" />
+  <Property Name="DownloadControl_RemoveCompletedItem" Value="Remove completed item" />
 
-  <Property Name="StorePublishControl_Upload" Value="Upload" />
-  <Property Name="StorePublishControl_Name" Value="Name" />
-  <Property Name="StorePublishControl_Path" Value="Path" />
-  <Property Name="StorePublishControl_Add" Value="Add" />
-  <Property Name="StorePublishControl_Edit" Value="Edit" />
-  <Property Name="StorePublishControl_Delete" Value="Delete" />
-  <Property Name="StorePublishControl_Completed" Value="Completed" />
+  <Property Name="UploadControl_Upload" Value="Upload" />
+  <Property Name="UploadControl_Name" Value="Name" />
+  <Property Name="UploadControl_Path" Value="Path" />
+  <Property Name="UploadControl_Add" Value="Add" />
+  <Property Name="UploadControl_Edit" Value="Edit" />
+  <Property Name="UploadControl_Delete" Value="Delete" />
+  <Property Name="UploadControl_Completed" Value="Completed" />
 
   <Property Name="PublishDirectoryInfoEditWindow_Title" Value="Publish directory edit" />
   <Property Name="PublishDirectoryInfoEditWindow_Name" Value="Name" />
   <Property Name="PublishDirectoryInfoEditWindow_Path" Value="Path" />
   <Property Name="PublishDirectoryInfoEditWindow_Ok" Value="Ok" />
+  <Property Name="PublishDirectoryInfoEditWindow_Cancel" Value="Cancel" />
 
   <Property Name="PublishPreviewWindow_Title" Value="Publish preview" />
   <Property Name="PublishPreviewWindow_Name" Value="Name" />
@@ -244,16 +251,5 @@
   <Property Name="PublishPreviewWindow_Copy" Value="Copy" />
   <Property Name="PublishPreviewWindow_Ok" Value="Ok" />
   <Property Name="PublishPreviewWindow_Cancel" Value="Cancel" />
-
-  <Property Name="StoreStateControl_Name" Value="Name" />
-  <Property Name="StoreStateControl_Length" Value="Length" />
-  <Property Name="StoreStateControl_CreationTime" Value="CreationTime" />
-  <Property Name="StoreStateControl_Rate" Value="Rate" />
-  <Property Name="StoreStateControl_State" Value="State" />
-  <Property Name="StoreStateControl_Path" Value="Path" />
-  <Property Name="StoreStateControl_Delete" Value="Delete" />
-  <Property Name="StoreStateControl_Copy" Value="Copy" />
-  <Property Name="StoreStateControl_Paste" Value="Paste" />
-  <Property Name="StoreStateControl_RemoveCompletedItem" Value="Remove completed item" />
 
 </Config>

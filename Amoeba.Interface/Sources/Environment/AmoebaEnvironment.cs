@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Nett;
 using Omnius.Base;
@@ -9,6 +10,7 @@ namespace Amoeba.Interface
     class AmoebaEnvironment
     {
         public static Version Version { get; private set; }
+        public static EnvironmentVariables Variables { get; private set; }
         public static EnvironmentPaths Paths { get; private set; }
         public static EnvironmentIcons Icons { get; private set; }
         public static EnvironmentImages Images { get; private set; }
@@ -19,7 +21,8 @@ namespace Amoeba.Interface
         {
             try
             {
-                Version = new Version(5, 0, 16);
+                Variables = new EnvironmentVariables();
+                Version = new Version(5, 0, 17);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();
@@ -42,6 +45,12 @@ namespace Amoeba.Interface
             }
 
             Config = Toml.ReadFile<EnvironmentConfig>(configPath);
+        }
+
+        public class EnvironmentVariables
+        {
+            public double CaptionHeight { get; } = 8;
+            public Thickness ResizeBorderThickness { get; } = SystemParameters.WindowResizeBorderThickness;
         }
 
         public class EnvironmentPaths

@@ -45,13 +45,14 @@ namespace Amoeba.Interface
         {
             for (;;)
             {
-                this.Refresh();
+                this.UpdateProfiles();
+                this.UpdateStores();
 
                 if (token.WaitHandle.WaitOne(1000 * 60)) return;
             }
         }
 
-        private void Refresh()
+        private void UpdateProfiles()
         {
             var searchSignatures = new HashSet<Signature>();
 
@@ -145,6 +146,47 @@ namespace Amoeba.Interface
             return profiles;
         }
 
+        private void UpdateStores()
+        {
+            var stores = new List<BroadcastMessage<Store>>();
+
+            foreach (var trustSignature in _trustSignatures)
+            {
+                var store = _serviceManager.GetStore(trustSignature).Result;
+
+                if (store == null)
+                {
+                    if (_cacheStores.TryGetValue(trustSignature, out var cachedStore))
+                    {
+                        stores.Add(cachedStore);
+                    }
+                }
+                else
+                {
+                    if (!_cacheStores.TryGetValue(trustSignature, out var cachedStore)
+                        || store.CreationTime > cachedStore.CreationTime)
+                    {
+                        _cacheStores[trustSignature] = store;
+                        stores.Add(store);
+                    }
+                    else
+                    {
+                        stores.Add(cachedStore);
+                    }
+                }
+            }
+
+            lock (_cacheStores.LockObject)
+            {
+                _cacheStores.Clear();
+
+                foreach (var store in stores)
+                {
+                    _cacheStores.Add(store.AuthorSignature, store);
+                }
+            }
+        }
+
         public IEnumerable<RelationSignatureInfo> GetRelationSignatureInfos()
         {
             var infos = new List<RelationSignatureInfo>();
@@ -223,19 +265,21 @@ namespace Amoeba.Interface
         {
             var stores = new List<BroadcastMessage<Store>>();
 
-            foreach (var signature in _trustSignatures.ToArray())
+            foreach (var trustSignature in _trustSignatures)
             {
-                var store = _serviceManager.GetStore(signature).Result;
-
-                if (store != null) _cacheStores[signature] = store;
-                else _cacheStores.TryGetValue(signature, out store);
-
+                var store = this.GetStore(trustSignature);
                 if (store == null) continue;
 
                 stores.Add(store);
             }
 
             return stores;
+        }
+
+        public BroadcastMessage<Store> GetStore(Signature trustSignature)
+        {
+            _cacheStores.TryGetValue(trustSignature, out var cachedStore);
+            return cachedStore;
         }
 
         #region ISettings

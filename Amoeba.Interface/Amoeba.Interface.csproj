@@ -41,6 +41,9 @@
   <PropertyGroup>
     <ApplicationManifest>App.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\Icons\Amoeba.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -71,7 +74,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Sources\Controllers\ControlManager.cs" />
+    <Compile Include="Sources\Controllers\WatchManager.cs" />
     <Compile Include="Sources\Mvvm\Behaviors\TextEditorSelectedTextBlendBehavior.cs" />
     <Compile Include="Sources\Mvvm\Converters\ManagerStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\DateTimeToStringConverter.cs" />
@@ -102,97 +105,97 @@
     <Compile Include="Sources\Utilities\CustomSortComparer.cs" />
     <Compile Include="Sources\Utilities\IconUtils.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />
-    <Compile Include="Sources\Utilities\MessageConvertUtils.cs" />
-    <Compile Include="Sources\Windows\Chat\ChatControl.xaml.cs">
+    <Compile Include="Sources\Utilities\MessageUtils.cs" />
+    <Compile Include="Sources\Windows\Content\Chat\ChatControl.xaml.cs">
       <DependentUpon>ChatControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Chat\ChatControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Chat\TreeViewModels\ChatThreadViewModel.cs" />
-    <Compile Include="Sources\Windows\Chat\ChatMessageEdit\ChatMessageEditWindow.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Chat\ChatControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Chat\ViewModels\ChatCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Chat\ViewModels\ChatThreadViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Chat\ChatMessageEdit\ChatMessageEditWindow.xaml.cs">
       <DependentUpon>ChatMessageEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Chat\ChatMessageEdit\ChatMessageEditWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Options\OptionsWindow.xaml.cs">
-      <DependentUpon>OptionsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Options\OptionsWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Cloud\CloudControl.xaml.cs">
-      <DependentUpon>CloudControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Cloud\CloudControlViewModel.cs" />
-    <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Relation\RelationWindow.xaml.cs">
-      <DependentUpon>RelationWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Relation\RelationWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Relation\ViewModels\RelationSignatureViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Publish\PublishPreview\PublishPreviewWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Publish\PublishPreview\ViewModels\PublishPreviewCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Publish\PublishPreview\ViewModels\PublishPreviewItemViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Publish\StorePublishControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Publish\PublishPreview\PublishPreviewWindow.xaml.cs">
-      <DependentUpon>PublishPreviewWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Publish\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindow.xaml.cs">
-      <DependentUpon>PublishDirectoryInfoEditWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Publish\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControl.xaml.cs">
-      <DependentUpon>LengthSearchConditionsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControl.xaml.cs">
-      <DependentUpon>CreationTimeSearchConditionsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControl.xaml.cs">
-      <DependentUpon>SignatureSearchConditionsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControl.xaml.cs">
-      <DependentUpon>RegexSearchConditionsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchInfoEditWindow.xaml.cs">
-      <DependentUpon>SearchInfoEditWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchInfoEditWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControl.xaml.cs">
-      <DependentUpon>NameSearchConditionsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Search\StoreSearchControl.xaml.cs">
-      <DependentUpon>StoreSearchControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\Search\StoreSearchControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Search\ViewModels\SearchItemViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\State\StoreStateControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Chat\ChatMessageEdit\ChatMessageEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\StoreSubscribeControl.xaml.cs">
       <DependentUpon>StoreSubscribeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Store\Publish\StorePublishControl.xaml.cs">
-      <DependentUpon>StorePublishControl.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Content\Store\StoreSubscribeControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\ViewModels\SubscribeBoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\ViewModels\SubscribeCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\ViewModels\SubscribeItemViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\ViewModels\SubscribeStoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Options\OptionsWindow.xaml.cs">
+      <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Store\State\StoreStateControl.xaml.cs">
-      <DependentUpon>StoreStateControl.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Menu\Options\OptionsWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Cloud\CloudControl.xaml.cs">
+      <DependentUpon>CloudControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Store\Search\ViewModels\SearchViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeItemViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeStoreViewModel.cs" />
-    <Compile Include="Sources\Windows\Store\Subscribe\ViewModels\SubscribeBoxViewModel.cs" />
-    <Compile Include="Sources\Windows\Utilities\ConfirmWindow\ConfirmWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Cloud\CloudControlViewModel.cs" />
+    <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Relation\RelationWindow.xaml.cs">
+      <DependentUpon>RelationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Menu\Relation\RelationWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Relation\ViewModels\RelationSignatureViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\PublishPreview\PublishPreviewWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\PublishPreview\ViewModels\PublishPreviewCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\PublishPreview\ViewModels\PublishPreviewItemViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\UploadControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\PublishPreview\PublishPreviewWindow.xaml.cs">
+      <DependentUpon>PublishPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Upload\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindow.xaml.cs">
+      <DependentUpon>PublishDirectoryInfoEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Upload\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControl.xaml.cs">
+      <DependentUpon>LengthSearchConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControl.xaml.cs">
+      <DependentUpon>CreationTimeSearchConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControl.xaml.cs">
+      <DependentUpon>SignatureSearchConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControl.xaml.cs">
+      <DependentUpon>RegexSearchConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchInfoEditWindow.xaml.cs">
+      <DependentUpon>SearchInfoEditWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchInfoEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControl.xaml.cs">
+      <DependentUpon>NameSearchConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\SearchControl.xaml.cs">
+      <DependentUpon>SearchControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\SearchControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\ViewModels\SearchItemViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Download\DownloadControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\UploadControl.xaml.cs">
+      <DependentUpon>UploadControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Download\DownloadControl.xaml.cs">
+      <DependentUpon>DownloadControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\ViewModels\SearchViewModel.cs" />
+    <Compile Include="Sources\Windows\Utilities\Confirm\ConfirmWindowViewModel.cs" />
     <Compile Include="Sources\Controllers\MessageManager.cs" />
-    <Compile Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindow.xaml.cs">
+    <Compile Include="Sources\Windows\Utilities\NameEdit\NameEditWindow.xaml.cs">
       <DependentUpon>NameEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Version\VersionWindow.xaml.cs">
+    <Compile Include="Sources\Windows\Utilities\NameEdit\NameEditWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Version\VersionWindow.xaml.cs">
       <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Version\VersionWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Version\VersionWindowViewModel.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <DependentUpon>LanguagesManager.tt</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -204,74 +207,70 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SettingsManager.tt</DependentUpon>
     </Compile>
-    <Page Include="Sources\Windows\Chat\ChatControl.xaml">
+    <Page Include="Sources\Windows\Content\Chat\ChatControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Chat\ChatMessageEdit\ChatMessageEditWindow.xaml">
+    <Page Include="Sources\Windows\Content\Chat\ChatMessageEdit\ChatMessageEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Options\OptionsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Sources\Windows\Cloud\CloudControl.xaml">
+    <Page Include="Sources\Windows\Content\Store\StoreSubscribeControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Relation\RelationWindow.xaml">
+    <Page Include="Sources\Windows\Menu\Options\OptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Sources\Windows\Content\Cloud\CloudControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Publish\PublishPreview\PublishPreviewWindow.xaml">
+    <Page Include="Sources\Windows\Menu\Relation\RelationWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Publish\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindow.xaml">
+    <Page Include="Sources\Windows\Content\Upload\PublishPreview\PublishPreviewWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Upload\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchInfoEditWindow.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchInfoEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\Search\StoreSearchControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Store\StoreControl.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Sources\Windows\Content\Search\SearchControl.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Sources\Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Sources\Windows\Store\StoreControl.xaml.cs">
-      <DependentUpon>StoreControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Store\StoreControlViewModel.cs" />
     <Compile Include="Sources\_Resources\Languages\LanguagesManager.cs" />
     <Compile Include="Sources\Environment\AmoebaEnvironment.cs" />
     <Compile Include="Sources\App.xaml.cs">
@@ -286,23 +285,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\Windows\Store\Subscribe\StoreSubscribeControl.xaml">
+    <Page Include="Sources\Windows\Content\Upload\UploadControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\Windows\Store\Publish\StorePublishControl.xaml">
+    <Page Include="Sources\Windows\Content\Download\DownloadControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Sources\Windows\Store\State\StoreStateControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Sources\Windows\Utilities\NameEditWindow\NameEditWindow.xaml">
+    <Page Include="Sources\Windows\Utilities\NameEdit\NameEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Version\VersionWindow.xaml">
+    <Page Include="Sources\Windows\Menu\Version\VersionWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

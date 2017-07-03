@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -33,6 +34,8 @@ namespace Amoeba.Service
         private VolatileDownloadItemInfoManager _volatileDownloadItemInfoManager;
         private DownloadItemInfoManager _downloadItemInfoManager;
 
+        private ProtectCacheInfoManager _protectCacheInfoManager;
+
         private WatchTimer _watchTimer;
 
         private volatile ManagerState _state = ManagerState.Stop;
@@ -58,12 +61,14 @@ namespace Amoeba.Service
             }
 
             _volatileDownloadItemInfoManager = new VolatileDownloadItemInfoManager();
-            _volatileDownloadItemInfoManager.AddEvents += (info) => this.Event_AddInfo(info);
-            _volatileDownloadItemInfoManager.RemoveEvents += (info) => this.Event_RemoveInfo(info);
+            _volatileDownloadItemInfoManager.AddEvent += (info) => this.Event_AddInfo(info);
+            _volatileDownloadItemInfoManager.RemoveEvent += (info) => this.Event_RemoveInfo(info);
 
             _downloadItemInfoManager = new DownloadItemInfoManager();
             _downloadItemInfoManager.AddEvents += (info) => this.Event_AddInfo(info);
             _downloadItemInfoManager.RemoveEvents += (info) => this.Event_RemoveInfo(info);
+
+            _protectCacheInfoManager = new ProtectCacheInfoManager(_cacheManager);
 
             _watchTimer = new WatchTimer(this.WatchThread);
             _watchTimer.Start(new TimeSpan(0, 1, 0));
@@ -104,32 +109,6 @@ namespace Amoeba.Service
             }
         }
 
-        private void WatchThread()
-        {
-            lock (_lockObject)
-            {
-                _volatileDownloadItemInfoManager.Update();
-            }
-        }
-
-        private void Update_DownloadBlockStates(bool state, IEnumerable<Hash> hashes)
-        {
-            try
-            {
-                lock (_lockObject)
-                {
-                    foreach (var hash in hashes)
-                    {
-                        _existManager.Set(hash, state);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
         private void CheckState(Index index)
         {
             lock (_lockObject)
@@ -167,6 +146,32 @@ namespace Amoeba.Service
 
                     _existManager.Remove(group);
                 }
+            }
+        }
+
+        private void WatchThread()
+        {
+            lock (_lockObject)
+            {
+                _volatileDownloadItemInfoManager.Update();
+            }
+        }
+
+        private void Update_DownloadBlockStates(bool state, IEnumerable<Hash> hashes)
+        {
+            try
+            {
+                lock (_lockObject)
+                {
+                    foreach (var hash in hashes)
+                    {
+                        _existManager.Set(hash, state);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
 
@@ -333,6 +338,9 @@ namespace Amoeba.Service
 
                             lock (_lockObject)
                             {
+                                // Protect
+                                _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, hashes));
+
                                 this.UncheckState(item.Index);
 
                                 item.Index = index;
@@ -387,6 +395,9 @@ namespace Amoeba.Service
 
                             lock (_lockObject)
                             {
+                                // Protect
+                                _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, hashes));
+
                                 item.ResultHashes.AddRange(hashes);
 
                                 item.State = DownloadState.Completed;
@@ -648,6 +659,11 @@ namespace Amoeba.Service
                 {
                     _downloadItemInfoManager.Add(info);
                 }
+
+                foreach (var info in _settings.Load<ProtectCacheInfo[]>("ProtectCacheInfos", () => Array.Empty<ProtectCacheInfo>()))
+                {
+                    _protectCacheInfoManager.Add(info);
+                }
             }
         }
 
@@ -658,8 +674,8 @@ namespace Amoeba.Service
                 _settings.Save("Version", 0);
 
                 _settings.Save("BasePath", this.BasePath);
-
                 _settings.Save("DownloadItemInfos", _downloadItemInfoManager.ToArray());
+                _settings.Save("ProtectCacheInfos", _protectCacheInfoManager.ToArray());
             }
         }
 
@@ -674,17 +690,17 @@ namespace Amoeba.Service
                 _downloadItemInfos = new Dictionary<Metadata, Container<DownloadItemInfo>>();
             }
 
-            public event Action<DownloadItemInfo> AddEvents;
-            public event Action<DownloadItemInfo> RemoveEvents;
+            public event Action<DownloadItemInfo> AddEvent;
+            public event Action<DownloadItemInfo> RemoveEvent;
 
             private void OnAdd(DownloadItemInfo info)
             {
-                this.AddEvents?.Invoke(info);
+                this.AddEvent?.Invoke(info);
             }
 
             private void OnRemove(DownloadItemInfo info)
             {
-                this.RemoveEvents?.Invoke(info);
+                this.RemoveEvent?.Invoke(info);
             }
 
             public void Add(DownloadItemInfo info)
@@ -972,6 +988,164 @@ namespace Amoeba.Service
             }
         }
 
+        private class ProtectCacheInfoManager : ManagerBase, IEnumerable<ProtectCacheInfo>
+        {
+            private CacheManager _cacheManager;
+            private LockedList<ProtectCacheInfo> _infos;
+            private WatchTimer _watchTimer;
+
+            private volatile bool _disposed;
+
+            public ProtectCacheInfoManager(CacheManager cacheManager)
+            {
+                _cacheManager = cacheManager;
+                _infos = new LockedList<ProtectCacheInfo>();
+                _watchTimer = new WatchTimer(() => this.WatchThread());
+                _watchTimer.Start(new TimeSpan(0, 1, 0));
+            }
+
+            private void WatchThread()
+            {
+                for (;;)
+                {
+                    long lockSize = 0;
+
+                    foreach (var hash in new HashSet<Hash>(_infos.ToArray().Select(n => n.Hashes).Extract()))
+                    {
+                        lockSize += _cacheManager.GetLength(hash);
+                    }
+
+                    if (_cacheManager.Size / 3 > lockSize) break;
+
+                    var sortedList = _infos.ToList();
+                    sortedList.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));
+
+                    var info = sortedList.FirstOrDefault();
+                    if (info == null) break;
+
+                    foreach (var hash in info.Hashes)
+                    {
+                        _cacheManager.Unlock(hash);
+                    }
+
+                    _infos.Remove(info);
+                }
+            }
+
+            public void Add(ProtectCacheInfo info)
+            {
+                foreach (var hash in info.Hashes)
+                {
+                    _cacheManager.Lock(hash);
+                }
+
+                _infos.Add(info);
+            }
+
+            public ProtectCacheInfo[] ToArray()
+            {
+                return _infos.ToArray();
+            }
+
+            #region IEnumerable<ProtectedCacheInfo>
+
+            public IEnumerator<ProtectCacheInfo> GetEnumerator()
+            {
+                foreach (var info in _infos.ToArray())
+                {
+                    yield return info;
+                }
+            }
+
+            #endregion
+
+            #region IEnumerable
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return this.GetEnumerator();
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (_disposed) return;
+                _disposed = true;
+
+                if (disposing)
+                {
+                    if (_watchTimer != null)
+                    {
+                        try
+                        {
+                            _watchTimer.Stop();
+                            _watchTimer.Dispose();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        _watchTimer = null;
+                    }
+                }
+            }
+
+            #endregion
+        }
+
+        [DataContract(Name = nameof(ProtectCacheInfo))]
+        private class ProtectCacheInfo
+        {
+            private DateTime _creationTime;
+            private HashCollection _hashes;
+
+            private ProtectCacheInfo() { }
+
+            public ProtectCacheInfo(DateTime creationTime, IEnumerable<Hash> hashes)
+            {
+                this.CreationTime = creationTime;
+                if (hashes != null) this.ProtectedHashs.AddRange(hashes);
+            }
+
+            [DataMember(Name = nameof(CreationTime))]
+            public DateTime CreationTime
+            {
+                get
+                {
+                    return _creationTime;
+                }
+                private set
+                {
+                    _creationTime = value;
+                }
+            }
+
+            private volatile ReadOnlyCollection<Hash> _readOnlyHashs;
+
+            public IEnumerable<Hash> Hashes
+            {
+                get
+                {
+                    if (_readOnlyHashs == null)
+                        _readOnlyHashs = new ReadOnlyCollection<Hash>(this.ProtectedHashs);
+
+                    return _readOnlyHashs;
+                }
+            }
+
+            [DataMember(Name = nameof(Hashes))]
+            private HashCollection ProtectedHashs
+            {
+                get
+                {
+                    if (_hashes == null)
+                        _hashes = new HashCollection();
+
+                    return _hashes;
+                }
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -983,6 +1157,7 @@ namespace Amoeba.Service
                 {
                     try
                     {
+                        _watchTimer.Stop();
                         _watchTimer.Dispose();
                     }
                     catch (Exception)
@@ -994,13 +1169,14 @@ namespace Amoeba.Service
                 }
 
                 _downloadTaskManager.Stop();
-                _downloadItemInfoManager = null;
 
                 foreach (var taskManager in _decodeTaskManagers)
                 {
                     taskManager.Stop();
                 }
                 _decodeTaskManagers.Clear();
+
+                _protectCacheInfoManager.Dispose();
             }
         }
     }

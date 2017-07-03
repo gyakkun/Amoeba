@@ -1,9 +1,15 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Amoeba.Service;
 using Omnius.Base;
+using System.Collections.ObjectModel;
+using System.Windows;
+using Amoeba.Service;
+using Omnius;
 using Omnius.Collections;
 using Omnius.Security;
 
@@ -1040,6 +1046,339 @@ namespace Amoeba.Interface
         }
     }
 
+    [DataContract(Name = nameof(SubscribeCategoryInfo))]
+    partial class SubscribeCategoryInfo : INotifyPropertyChanged, ICloneable<SubscribeCategoryInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public SubscribeCategoryInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private bool _isSelected;
+
+        [DataMember(Name = nameof(IsSelected))]
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    this.OnPropertyChanged(nameof(IsSelected));
+                }
+            }
+        }
+
+        private bool _isExpanded;
+
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
+            }
+        }
+
+        private ObservableCollection<SubscribeStoreInfo> _storeInfos;
+
+        [DataMember(Name = nameof(StoreInfos))]
+        public ObservableCollection<SubscribeStoreInfo> StoreInfos
+        {
+            get
+            {
+                if (_storeInfos == null)
+                    _storeInfos = new ObservableCollection<SubscribeStoreInfo>();
+
+                return _storeInfos;
+            }
+        }
+
+        private ObservableCollection<SubscribeCategoryInfo> _categoryInfos;
+
+        [DataMember(Name = nameof(CategoryInfos))]
+        public ObservableCollection<SubscribeCategoryInfo> CategoryInfos
+        {
+            get
+            {
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<SubscribeCategoryInfo>();
+
+                return _categoryInfos;
+            }
+        }
+
+        public SubscribeCategoryInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(SubscribeStoreInfo))]
+    partial class SubscribeStoreInfo : INotifyPropertyChanged, ICloneable<SubscribeStoreInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public SubscribeStoreInfo() { }
+
+        private Signature _authorSignature;
+
+        [DataMember(Name = nameof(AuthorSignature))]
+        public Signature AuthorSignature
+        {
+            get
+            {
+                return _authorSignature;
+            }
+            set
+            {
+                if (_authorSignature != value)
+                {
+                    _authorSignature = value;
+                    this.OnPropertyChanged(nameof(AuthorSignature));
+                }
+            }
+        }
+
+        private DateTime _creationTime;
+
+        [DataMember(Name = nameof(CreationTime))]
+        public DateTime CreationTime
+        {
+            get
+            {
+                return _creationTime;
+            }
+            set
+            {
+                if (_creationTime != value)
+                {
+                    _creationTime = value;
+                    this.OnPropertyChanged(nameof(CreationTime));
+                }
+            }
+        }
+
+        private bool _isSelected;
+
+        [DataMember(Name = nameof(IsSelected))]
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    this.OnPropertyChanged(nameof(IsSelected));
+                }
+            }
+        }
+
+        private bool _isExpanded;
+
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
+            }
+        }
+
+        private bool _isUpdated;
+
+        [DataMember(Name = nameof(IsUpdated))]
+        public bool IsUpdated
+        {
+            get
+            {
+                return _isUpdated;
+            }
+            set
+            {
+                if (_isUpdated != value)
+                {
+                    _isUpdated = value;
+                    this.OnPropertyChanged(nameof(IsUpdated));
+                }
+            }
+        }
+
+        private ObservableCollection<SubscribeBoxInfo> _boxInfos;
+
+        [DataMember(Name = nameof(BoxInfos))]
+        public ObservableCollection<SubscribeBoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<SubscribeBoxInfo>();
+
+                return _boxInfos;
+            }
+        }
+
+        public SubscribeStoreInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(SubscribeBoxInfo))]
+    partial class SubscribeBoxInfo : INotifyPropertyChanged, ICloneable<SubscribeBoxInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public SubscribeBoxInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private bool _isSelected;
+
+        [DataMember(Name = nameof(IsSelected))]
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    this.OnPropertyChanged(nameof(IsSelected));
+                }
+            }
+        }
+
+        private bool _isExpanded;
+
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
+            }
+        }
+
+        private ObservableCollection<Seed> _seeds;
+
+        [DataMember(Name = nameof(Seeds))]
+        public ObservableCollection<Seed> Seeds
+        {
+            get
+            {
+                if (_seeds == null)
+                    _seeds = new ObservableCollection<Seed>();
+
+                return _seeds;
+            }
+        }
+
+        private ObservableCollection<SubscribeBoxInfo> _boxInfos;
+
+        [DataMember(Name = nameof(BoxInfos))]
+        public ObservableCollection<SubscribeBoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<SubscribeBoxInfo>();
+
+                return _boxInfos;
+            }
+        }
+
+        public SubscribeBoxInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
     [DataContract(Name = nameof(ChatCategoryInfo))]
     partial class ChatCategoryInfo : INotifyPropertyChanged, ICloneable<ChatCategoryInfo>
     {
@@ -1067,6 +1406,25 @@ namespace Amoeba.Interface
                 {
                     _name = value;
                     this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private bool _isSelected;
+
+        [DataMember(Name = nameof(IsSelected))]
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    this.OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }
@@ -1151,6 +1509,25 @@ namespace Amoeba.Interface
                 {
                     _tag = value;
                     this.OnPropertyChanged(nameof(Tag));
+                }
+            }
+        }
+
+        private bool _isSelected;
+
+        [DataMember(Name = nameof(IsSelected))]
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    this.OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }
@@ -1258,6 +1635,25 @@ namespace Amoeba.Interface
                 {
                     _name = value;
                     this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private bool _isSelected;
+
+        [DataMember(Name = nameof(IsSelected))]
+        public bool IsSelected
+        {
+            get
+            {
+                return _isSelected;
+            }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    this.OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }
@@ -1417,282 +1813,6 @@ namespace Amoeba.Interface
         }
 
         public SearchConditionsInfo Clone()
-        {
-            return JsonUtils.Clone(this);
-        }
-    }
-
-    [DataContract(Name = nameof(SubscribeCategoryInfo))]
-    partial class SubscribeCategoryInfo : INotifyPropertyChanged, ICloneable<SubscribeCategoryInfo>
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public SubscribeCategoryInfo() { }
-
-        private string _name;
-
-        [DataMember(Name = nameof(Name))]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        private bool _isExpanded;
-
-        [DataMember(Name = nameof(IsExpanded))]
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
-            }
-        }
-
-        private ObservableCollection<SubscribeStoreInfo> _storeInfos;
-
-        [DataMember(Name = nameof(StoreInfos))]
-        public ObservableCollection<SubscribeStoreInfo> StoreInfos
-        {
-            get
-            {
-                if (_storeInfos == null)
-                    _storeInfos = new ObservableCollection<SubscribeStoreInfo>();
-
-                return _storeInfos;
-            }
-        }
-
-        private ObservableCollection<SubscribeCategoryInfo> _categoryInfos;
-
-        [DataMember(Name = nameof(CategoryInfos))]
-        public ObservableCollection<SubscribeCategoryInfo> CategoryInfos
-        {
-            get
-            {
-                if (_categoryInfos == null)
-                    _categoryInfos = new ObservableCollection<SubscribeCategoryInfo>();
-
-                return _categoryInfos;
-            }
-        }
-
-        public SubscribeCategoryInfo Clone()
-        {
-            return JsonUtils.Clone(this);
-        }
-    }
-
-    [DataContract(Name = nameof(SubscribeStoreInfo))]
-    partial class SubscribeStoreInfo : INotifyPropertyChanged, ICloneable<SubscribeStoreInfo>
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public SubscribeStoreInfo() { }
-
-        private Signature _authorSignature;
-
-        [DataMember(Name = nameof(AuthorSignature))]
-        public Signature AuthorSignature
-        {
-            get
-            {
-                return _authorSignature;
-            }
-            set
-            {
-                if (_authorSignature != value)
-                {
-                    _authorSignature = value;
-                    this.OnPropertyChanged(nameof(AuthorSignature));
-                }
-            }
-        }
-
-        private DateTime _creationTime;
-
-        [DataMember(Name = nameof(CreationTime))]
-        public DateTime CreationTime
-        {
-            get
-            {
-                return _creationTime;
-            }
-            set
-            {
-                if (_creationTime != value)
-                {
-                    _creationTime = value;
-                    this.OnPropertyChanged(nameof(CreationTime));
-                }
-            }
-        }
-
-        private bool _isExpanded;
-
-        [DataMember(Name = nameof(IsExpanded))]
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
-            }
-        }
-
-        private bool _isUpdated;
-
-        [DataMember(Name = nameof(IsUpdated))]
-        public bool IsUpdated
-        {
-            get
-            {
-                return _isUpdated;
-            }
-            set
-            {
-                if (_isUpdated != value)
-                {
-                    _isUpdated = value;
-                    this.OnPropertyChanged(nameof(IsUpdated));
-                }
-            }
-        }
-
-        private ObservableCollection<SubscribeBoxInfo> _boxInfos;
-
-        [DataMember(Name = nameof(BoxInfos))]
-        public ObservableCollection<SubscribeBoxInfo> BoxInfos
-        {
-            get
-            {
-                if (_boxInfos == null)
-                    _boxInfos = new ObservableCollection<SubscribeBoxInfo>();
-
-                return _boxInfos;
-            }
-        }
-
-        public SubscribeStoreInfo Clone()
-        {
-            return JsonUtils.Clone(this);
-        }
-    }
-
-    [DataContract(Name = nameof(SubscribeBoxInfo))]
-    partial class SubscribeBoxInfo : INotifyPropertyChanged, ICloneable<SubscribeBoxInfo>
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public SubscribeBoxInfo() { }
-
-        private string _name;
-
-        [DataMember(Name = nameof(Name))]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        private bool _isExpanded;
-
-        [DataMember(Name = nameof(IsExpanded))]
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
-            }
-        }
-
-        private ObservableCollection<Seed> _seeds;
-
-        [DataMember(Name = nameof(Seeds))]
-        public ObservableCollection<Seed> Seeds
-        {
-            get
-            {
-                if (_seeds == null)
-                    _seeds = new ObservableCollection<Seed>();
-
-                return _seeds;
-            }
-        }
-
-        private ObservableCollection<SubscribeBoxInfo> _boxInfos;
-
-        [DataMember(Name = nameof(BoxInfos))]
-        public ObservableCollection<SubscribeBoxInfo> BoxInfos
-        {
-            get
-            {
-                if (_boxInfos == null)
-                    _boxInfos = new ObservableCollection<SubscribeBoxInfo>();
-
-                return _boxInfos;
-            }
-        }
-
-        public SubscribeBoxInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

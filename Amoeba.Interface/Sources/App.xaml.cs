@@ -218,7 +218,7 @@ namespace Amoeba.Interface
                         // 最新のバージョンのzipを検索。
                         {
                             var map = new Dictionary<string, Version>();
-                            var regex = new Regex(@"Amoeba.+?((\d*)\.(\d*)\.(\d*))\.zip", RegexOptions.Compiled);
+                            var regex = new Regex(@"Amoeba.+?((\d*)\.(\d*)\.(\d*)).*?\.zip", RegexOptions.Compiled);
 
                             foreach (string path in Directory.GetFiles(AmoebaEnvironment.Paths.UpdatePath))
                             {

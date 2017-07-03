@@ -10,8 +10,10 @@
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
         xmlns:prism="http://prismlibrary.com/"
         Title="{Binding Path=Title.Value}"
-        Background="{DynamicResource MaterialDesignPaper}"
+        Background="{DynamicResource MaterialDesignWindowBackground}"
         FontFamily="{DynamicResource MaterialDesignFont}"
+        Icon="{Binding Path=Amoeba, Source={x:Static local:AmoebaEnvironment.Icons}}"
+        SnapsToDevicePixels="True"
         StateChanged="RestorableWindow_StateChanged"
         TextElement.FontSize="13"
         TextElement.FontWeight="Regular"
@@ -38,7 +40,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Menu Grid.ColumnSpan="1" IsMainMenu="True">
+                <Menu
+                        Grid.ColumnSpan="1"
+                        IsMainMenu="True"
+                        Style="{StaticResource CustomMaterialDesignMenu}">
                     <MenuItem Header="{Binding Path=MainWindow_Service, Source={StaticResource Languages}}">
                         <MenuItem
                                 Command="{Binding RelationCommand}"
@@ -138,6 +143,19 @@
                                     Text="{Binding Path=MainWindow_Chat, Source={StaticResource Languages}}" />
                         </StackPanel>
                     </ListBoxItem>
+                    <ListBoxItem Name="SearchListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Magnify" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Search, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
                     <ListBoxItem Name="StoreListBoxItem">
                         <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
                             <md:PackIcon
@@ -149,6 +167,32 @@
                                     VerticalAlignment="Center"
                                     FontSize="16"
                                     Text="{Binding Path=MainWindow_Store, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="DownloadListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Download" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Download, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="UploadListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Upload" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Upload, Source={StaticResource Languages}}" />
                         </StackPanel>
                     </ListBoxItem>
                 </ListBox>
@@ -169,8 +213,26 @@
                     <ContentControl
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=SearchListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:SearchControl DataContext="{Binding Path=SearchControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
                             Visibility="{Binding ElementName=StoreListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <local:StoreControl DataContext="{Binding Path=StoreControlViewModel}" />
+                        <local:StoreSubscribeControl DataContext="{Binding Path=StoreSubscribeControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=DownloadListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:DownloadControl DataContext="{Binding Path=DownloadControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=UploadListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:UploadControl DataContext="{Binding Path=UploadControlViewModel}" />
                     </ContentControl>
                 </Grid>
             </DockPanel>
