@@ -228,7 +228,10 @@
                                             Height="16"
                                             HorizontalAlignment="Left"
                                             Source="{Binding Path=Icon, Mode=OneWay}" />
-                                    <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay}" />
+                                    <TextBlock
+                                            Margin="22,0,0,0"
+                                            Text="{Binding Path=Name, Mode=OneWay}"
+                                            ToolTip="{Binding Path=Model, Mode=OneWay, Converter={StaticResource ObjectToInfoStringConverter}}" />
                                 </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

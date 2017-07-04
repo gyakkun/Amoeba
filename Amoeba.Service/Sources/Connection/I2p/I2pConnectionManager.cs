@@ -87,22 +87,8 @@ namespace Amoeba.Service
 
                 string address = result.GetValue<string>("Address");
 
-                Socket socket = null;
-
-                try
-                {
-                    socket = _samManager.Connect(address);
-                }
-                catch (Exception)
-                {
-                    if (socket != null)
-                    {
-                        socket.Dispose();
-                        socket = null;
-                    }
-
-                    throw;
-                }
+                var socket = _samManager.Connect(address);
+                if (socket == null) return null;
 
                 return new SocketCap(socket);
             }
@@ -122,22 +108,21 @@ namespace Amoeba.Service
             if (this.State == ManagerState.Stop) return null;
             if (!this.Config.IsEnabled) return null;
 
-            Socket socket = null;
-
             try
             {
-                if (_samManager == null) return null;
-                socket = _samManager.Accept(out string base32Address);
+                var socket = _samManager.Accept(out string base32Address);
+                if (socket == null) return null;
+
                 uri = $"i2p:{base32Address}";
+
+                return new SocketCap(socket);
             }
             catch (Exception)
             {
-                if (socket != null) socket.Dispose();
 
-                return null;
             }
 
-            return new SocketCap(socket);
+            return null;
         }
 
         private volatile string _watchSamBridgeUri = null;

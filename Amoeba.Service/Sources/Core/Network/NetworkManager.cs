@@ -473,7 +473,7 @@ namespace Amoeba.Service
                         {
                             foreach (var sessionInfo in _routeTable.ToArray().Select(n => n.Value))
                             {
-                                if (sessionInfo.ReceiveInfo.Stopwatch.Elapsed.TotalMinutes > 2)
+                                if (sessionInfo.ReceiveInfo.Stopwatch.Elapsed.TotalMinutes > 10)
                                 {
                                     this.RemoveConnection(sessionInfo.Connection);
                                 }
@@ -488,6 +488,7 @@ namespace Amoeba.Service
                         // 優先度の低い通信を切断する。
                         {
                             var list = _routeTable.ToArray().Select(n => n.Value).ToList();
+                            _random.Shuffle(list);
                             list.Sort((x, y) => x.PriorityManager.GetPriority().CompareTo(y.PriorityManager.GetPriority()));
 
                             foreach (var sessionInfo in list.Take(1))
@@ -1225,6 +1226,8 @@ namespace Amoeba.Service
 
         private void Receive(SessionInfo sessionInfo, Stream stream)
         {
+            sessionInfo.ReceiveInfo.Stopwatch.Restart();
+
             if (!sessionInfo.ReceiveInfo.IsInitialized)
             {
                 sessionInfo.ReceiveInfo.IsInitialized = true;
@@ -1259,8 +1262,6 @@ namespace Amoeba.Service
             }
             else
             {
-                sessionInfo.ReceiveInfo.Stopwatch.Restart();
-
                 int id = (int)VintUtils.GetUInt64(stream);
 
                 using (var dataStream = new RangeStream(stream))
