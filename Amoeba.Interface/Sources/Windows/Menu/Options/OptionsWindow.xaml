@@ -102,7 +102,7 @@
                 <Grid Grid.Column="2">
                     <ContentControl Visibility="{Binding ElementName=AccountSignatureTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16">
+                            <StackPanel Margin="16,16,16,0">
                                 <GroupBox
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Stretch"
@@ -160,7 +160,7 @@
                     </ContentControl>
 
                     <ContentControl Visibility="{Binding ElementName=AccountTrustTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid Margin="16">
+                        <Grid Margin="16,16,16,0">
                             <GroupBox
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
@@ -255,7 +255,7 @@
                     </ContentControl>
 
                     <ContentControl Visibility="{Binding ElementName=AccountUntrustTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid Margin="16">
+                        <Grid Margin="16,16,16,0">
                             <GroupBox
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
@@ -350,7 +350,7 @@
                     </ContentControl>
 
                     <ContentControl Visibility="{Binding ElementName=AccountTagsTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid Margin="16">
+                        <Grid Margin="16,16,16,0">
                             <GroupBox
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
@@ -466,7 +466,7 @@
                     </ContentControl>
 
                     <ContentControl Visibility="{Binding ElementName=AccountCommentTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid Margin="16" FocusManager.FocusedElement="{Binding ElementName=TextBox}">
+                        <Grid Margin="16,16,16,0" FocusManager.FocusedElement="{Binding ElementName=TextBox}">
                             <GroupBox
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
@@ -492,7 +492,7 @@
                     </ContentControl>
 
                     <ContentControl Visibility="{Binding ElementName=SubscribeTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid Margin="16">
+                        <Grid Margin="16,16,16,0">
                             <GroupBox
                                     VerticalAlignment="Stretch"
                                     HorizontalContentAlignment="Stretch"
@@ -588,7 +588,7 @@
 
                     <ContentControl Visibility="{Binding ElementName=ConnectionTcpTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16">
+                            <StackPanel Margin="16,16,16,0">
                                 <GroupBox
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Stretch"
@@ -671,7 +671,7 @@
 
                     <ContentControl Visibility="{Binding ElementName=ConnectionI2pTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16">
+                            <StackPanel Margin="16,16,16,0">
                                 <GroupBox
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Stretch"
@@ -713,7 +713,7 @@
 
                     <ContentControl Visibility="{Binding ElementName=BandwidthTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16">
+                            <StackPanel Margin="16,16,16,0">
                                 <GroupBox
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Stretch"
@@ -767,7 +767,7 @@
 
                     <ContentControl Visibility="{Binding ElementName=DataTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16">
+                            <StackPanel Margin="16,16,16,0">
                                 <GroupBox
                                         Margin="0,0,0,16"
                                         VerticalAlignment="Stretch"
@@ -845,7 +845,7 @@
 
                     <ContentControl Visibility="{Binding ElementName=UpdateTreeViewItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16">
+                            <StackPanel Margin="16,16,16,0">
                                 <GroupBox
                                         VerticalAlignment="Stretch"
                                         HorizontalContentAlignment="Stretch"

@@ -39,7 +39,7 @@ namespace Amoeba.Service
         private volatile Location _myLocation;
 
         private RouteTable<SessionInfo> _routeTable;
-        private LockedList<Location> _cloudLocations = new LockedList<Location>();
+        private LockedHashSet<Location> _cloudLocations = new LockedHashSet<Location>();
 
         private int _connectionCountLimit;
         private int _bandwidthLimit;
@@ -322,7 +322,7 @@ namespace Amoeba.Service
                         }
 
                         if (location == null || _myLocation.Uris.Any(n => location.Uris.Contains(n))
-                            || _routeTable.Any(n => n.Value.Location.Uris.Any(m => location.Uris.Contains(m)))) continue;
+                            || _routeTable.SelectMany(n => n.Value.Location.Uris).Any(m => location.Uris.Contains(m))) continue;
 
                         _connectingLocations.Add(location);
                     }
@@ -389,7 +389,7 @@ namespace Amoeba.Service
         {
             lock (_lockObject)
             {
-                var connection = new Connection(1024 * 1024 * 8, _bufferManager);
+                var connection = new Connection(1024 * 1024 * 32, new TimeSpan(0, 1, 0), _bufferManager);
                 connection.Connect(cap);
 
                 var sessionInfo = new SessionInfo();
@@ -420,8 +420,6 @@ namespace Amoeba.Service
                     }
 
                     if (sessionInfo.Location != null) _cloudLocations.Add(sessionInfo.Location);
-
-                    return;
                 }
             }
         }
@@ -832,7 +830,7 @@ namespace Amoeba.Service
                     // Send
                     {
                         int remain = _bandwidthLimit;
-                        if (remain == 0) remain = 1024 * 1024 * 256;
+                        if (remain == 0) remain = int.MaxValue;
 
                         foreach (var connection in _connections.Keys.Randomize())
                         {
@@ -879,7 +877,7 @@ namespace Amoeba.Service
                     // Receive
                     {
                         int remain = _bandwidthLimit;
-                        if (remain == 0) remain = 1024 * 1024 * 256;
+                        if (remain == 0) remain = int.MaxValue;
 
                         foreach (var connection in _connections.Keys.Randomize())
                         {
@@ -1511,7 +1509,7 @@ namespace Amoeba.Service
         {
             lock (_lockObject)
             {
-                _cloudLocations.AddRange(locations);
+                _cloudLocations.UnionWith(locations);
             }
         }
 
