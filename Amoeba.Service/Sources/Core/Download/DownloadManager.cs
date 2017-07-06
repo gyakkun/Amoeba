@@ -24,8 +24,6 @@ namespace Amoeba.Service
 
         private string _basePath;
 
-        private int _threadCount = 2;
-
         private TaskManager _downloadTaskManager;
         private List<TaskManager> _decodeTaskManagers = new List<TaskManager>();
 
@@ -42,6 +40,8 @@ namespace Amoeba.Service
 
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
+
+        private readonly int _threadCount = 2;
 
         public DownloadManager(string configPath, NetworkManager networkManager, CacheManager cacheManager, BufferManager bufferManager)
         {

@@ -106,7 +106,7 @@ namespace Amoeba.Simulation
                 var ipAddress = IPAddress.Parse(match.Groups[1].Value);
                 int port = int.Parse(match.Groups[2].Value);
 
-                return new SocketCap(Connect(new IPEndPoint(ipAddress, port), new TimeSpan(0, 10, 0)));
+                return new SocketCap(Connect(new IPEndPoint(ipAddress, port)));
             }
             catch (Exception)
             {
@@ -114,16 +114,13 @@ namespace Amoeba.Simulation
             }
         }
 
-        private static Socket Connect(IPEndPoint remoteEndPoint, TimeSpan timeout)
+        private static Socket Connect(IPEndPoint remoteEndPoint)
         {
             Socket socket = null;
 
             try
             {
                 socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                socket.ReceiveTimeout = (int)timeout.TotalMilliseconds;
-                socket.SendTimeout = (int)timeout.TotalMilliseconds;
-
                 socket.Connect(remoteEndPoint);
 
                 return socket;

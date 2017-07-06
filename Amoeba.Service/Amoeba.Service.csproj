@@ -11,6 +11,9 @@
     <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj" />

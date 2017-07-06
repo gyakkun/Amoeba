@@ -378,8 +378,6 @@ namespace Amoeba.Service
                     || (broadcastMetadata.CreationTime - now).TotalMinutes > 30
                     || broadcastMetadata.Certificate == null) return false;
 
-                if (!broadcastMetadata.VerifyCertificate()) throw new CertificateException();
-
                 if (!_broadcastMetadatas.TryGetValue(broadcastMetadata.Type, out var dic))
                 {
                     dic = new Dictionary<Signature, BroadcastMetadata>();
@@ -391,6 +389,8 @@ namespace Amoeba.Service
                 if (!dic.TryGetValue(signature, out var tempMetadata)
                     || broadcastMetadata.CreationTime > tempMetadata.CreationTime)
                 {
+                    if (!broadcastMetadata.VerifyCertificate()) return false;
+
                     dic[signature] = broadcastMetadata;
                 }
 
@@ -411,8 +411,6 @@ namespace Amoeba.Service
                         || string.IsNullOrWhiteSpace(unicastMetadata.Signature.Name)
                     || (unicastMetadata.CreationTime - now).TotalMinutes > 30
                     || unicastMetadata.Certificate == null) return false;
-
-                if (!unicastMetadata.VerifyCertificate()) throw new CertificateException();
 
                 if (!_unicastMetadatas.TryGetValue(unicastMetadata.Type, out var dic))
                 {
@@ -436,6 +434,8 @@ namespace Amoeba.Service
 
                 if (!hashset.Contains(unicastMetadata))
                 {
+                    if (!unicastMetadata.VerifyCertificate()) return false;
+
                     hashset.Add(unicastMetadata);
                 }
 
@@ -456,8 +456,6 @@ namespace Amoeba.Service
                         || string.IsNullOrWhiteSpace(multicastMetadata.Tag.Name)
                     || (multicastMetadata.CreationTime - now).TotalMinutes > 30
                     || multicastMetadata.Certificate == null) return false;
-
-                if (!multicastMetadata.VerifyCertificate()) throw new CertificateException();
 
                 if (!_multicastMetadatas.TryGetValue(multicastMetadata.Type, out var dic))
                 {
@@ -481,6 +479,8 @@ namespace Amoeba.Service
 
                 if (!hashset.Contains(multicastMetadata))
                 {
+                    if (!multicastMetadata.VerifyCertificate()) return false;
+
                     hashset.Add(multicastMetadata);
                 }
 

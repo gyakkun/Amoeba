@@ -93,53 +93,60 @@ namespace Amoeba.Interface
             {
                 if (!watchFlag) return;
 
-                var paths = new List<string>();
-                paths.Add(AmoebaEnvironment.Config.Cache.BlocksPath);
-
-                bool flag = false;
-
-                foreach (string path in paths)
+                try
                 {
-                    var drive = new DriveInfo(Path.GetFullPath(path));
+                    var paths = new List<string>();
+                    paths.Add(AmoebaEnvironment.Config.Cache.BlocksPath);
 
-                    if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
+                    bool flag = false;
+
+                    foreach (string path in paths)
+                    {
+                        var drive = new DriveInfo(Path.GetFullPath(path));
+
+                        if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
+                        {
+                            flag |= true;
+                            break;
+                        }
+                    }
+
+                    if (_serviceManager.Information.GetValue<long>("Cache_FreeSpace") < NetworkConverter.FromSizeString("1024MB"))
                     {
                         flag |= true;
-                        break;
                     }
-                }
 
-                if (_serviceManager.Information.GetValue<long>("Cache_FreeSpace") < NetworkConverter.FromSizeString("1024MB"))
-                {
-                    flag |= true;
-                }
-
-                if (!flag)
-                {
-                    if (_serviceManager.State == ManagerState.Stop)
+                    if (!flag)
                     {
-                        _serviceManager.Start();
-                        Log.Information("Start");
-                    }
-                }
-                else
-                {
-                    if (_serviceManager.State == ManagerState.Start)
-                    {
-                        _serviceManager.Stop();
-                        Log.Information("Stop");
-
-                        watchFlag = false;
-
-                        App.Current.Dispatcher.InvokeAsync(() =>
+                        if (_serviceManager.State == ManagerState.Stop)
                         {
-                            var viewModel = new ConfirmWindowViewModel(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
-                            viewModel.Callback += () => watchFlag = true;
-
-                            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                                .Publish(viewModel);
-                        });
+                            _serviceManager.Start();
+                            Log.Information("Start");
+                        }
                     }
+                    else
+                    {
+                        if (_serviceManager.State == ManagerState.Start)
+                        {
+                            _serviceManager.Stop();
+                            Log.Information("Stop");
+
+                            watchFlag = false;
+
+                            App.Current.Dispatcher.InvokeAsync(() =>
+                            {
+                                var viewModel = new ConfirmWindowViewModel(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
+                                viewModel.Callback += () => watchFlag = true;
+
+                                Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                                    .Publish(viewModel);
+                            });
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
                 }
             });
             _checkDiskSpaceTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));

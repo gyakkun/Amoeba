@@ -186,16 +186,13 @@ namespace Amoeba.Service
             return remoteIp;
         }
 
-        private static Socket Connect(IPEndPoint remoteEndPoint, TimeSpan timeout)
+        private static Socket Connect(IPEndPoint remoteEndPoint)
         {
             Socket socket = null;
 
             try
             {
                 socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                socket.ReceiveTimeout = (int)timeout.TotalMilliseconds;
-                socket.SendTimeout = (int)timeout.TotalMilliseconds;
-
                 socket.Connect(remoteEndPoint);
 
                 return socket;
@@ -265,7 +262,7 @@ namespace Amoeba.Service
                         string proxyAddress = result2.GetValue<string>("Address");
                         int proxyPort = result2.GetValueOrDefault<int>("Port", () => 1080);
 
-                        var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
+                        var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort));
                         garbages.Add(socket);
 
                         var proxy = new Socks5ProxyClient(address, port);
@@ -281,7 +278,7 @@ namespace Amoeba.Service
                         string proxyAddress = result2.GetValue<string>("Address");
                         int proxyPort = result2.GetValueOrDefault<int>("Port", () => 80);
 
-                        var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort), new TimeSpan(0, 0, 10));
+                        var socket = TcpConnectionManager.Connect(new IPEndPoint(TcpConnectionManager.GetIpAddress(proxyAddress), proxyPort));
                         garbages.Add(socket);
 
                         var proxy = new HttpProxyClient(address, port);
@@ -295,7 +292,7 @@ namespace Amoeba.Service
                 }
                 else
                 {
-                    var socket = TcpConnectionManager.Connect(new IPEndPoint(IPAddress.Parse(address), port), new TimeSpan(0, 0, 10));
+                    var socket = TcpConnectionManager.Connect(new IPEndPoint(IPAddress.Parse(address), port));
                     garbages.Add(socket);
 
                     var cap = new SocketCap(socket);

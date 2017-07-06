@@ -51,8 +51,8 @@ namespace Amoeba.Service
         private List<TaskManager> _connectTaskManagers = new List<TaskManager>();
         private List<TaskManager> _acceptTaskManagers = new List<TaskManager>();
         private TaskManager _computeTaskManager;
-        private TaskManager _sendTaskManager;
-        private TaskManager _receiveTaskManager;
+        private List<TaskManager> _sendTaskManagers = new List<TaskManager>();
+        private List<TaskManager> _receiveTaskManagers = new List<TaskManager>();
 
         private VolatileHashSet<Hash> _pushBlocksRequestSet = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
 
@@ -74,6 +74,8 @@ namespace Amoeba.Service
         private const int _maxMetadataRequestCount = 2048;
         private const int _maxMetadataResultCount = 2048;
 
+        private readonly int _threadCount = Math.Max(2, Environment.ProcessorCount / 2);
+
         public NetworkManager(string configPath, CacheManager cacheManager, BufferManager bufferManager)
         {
             _bufferManager = bufferManager;
@@ -93,8 +95,12 @@ namespace Amoeba.Service
             }
 
             _computeTaskManager = new TaskManager(this.ComputeThread);
-            _sendTaskManager = new TaskManager(this.SendThread);
-            _receiveTaskManager = new TaskManager(this.ReceiveThread);
+
+            foreach (int i in Enumerable.Range(0, Math.Max(4, _threadCount * 2)))
+            {
+                _sendTaskManagers.Add(new TaskManager((token) => this.SendThread(i, token)));
+                _receiveTaskManagers.Add(new TaskManager((token) => this.ReceiveThread(i, token)));
+            }
         }
 
         public Location MyLocation
@@ -389,18 +395,34 @@ namespace Amoeba.Service
         {
             lock (_lockObject)
             {
-                var connection = new Connection(1024 * 1024 * 32, new TimeSpan(0, 1, 0), _bufferManager);
+                var connection = new Connection(1024 * 1024 * 4, new TimeSpan(0, 1, 0), _bufferManager);
                 connection.Connect(cap);
 
                 var sessionInfo = new SessionInfo();
                 sessionInfo.Connection = connection;
                 sessionInfo.Type = type;
                 sessionInfo.Uri = uri;
+                sessionInfo.ThreadId = GetThreadId();
 
                 connection.SendEvent = (_) => this.Send(sessionInfo);
                 connection.ReceiveEvent = (_, stream) => this.Receive(sessionInfo, stream);
 
                 _connections.Add(connection, sessionInfo);
+            }
+
+            int GetThreadId()
+            {
+                var dic = new Dictionary<int, int>();
+
+                for (int i = 0; i < _threadCount; i++)
+                {
+                    dic.Add(i, _connections.Values.Count(n => n.ThreadId == i));
+                }
+
+                var sortedList = dic.Randomize().ToList();
+                sortedList.Sort((x, y) => x.Value.CompareTo(y.Value));
+
+                return sortedList.First().Key;
             }
         }
 
@@ -811,7 +833,7 @@ namespace Amoeba.Service
             }
         }
 
-        private void SendThread(CancellationToken token)
+        private void SendThread(int threadId, CancellationToken token)
         {
             var sw = Stopwatch.StartNew();
 
@@ -829,10 +851,9 @@ namespace Amoeba.Service
 
                     // Send
                     {
-                        int remain = _bandwidthLimit;
-                        if (remain == 0) remain = int.MaxValue;
+                        int remain = (_bandwidthLimit != 0) ? _bandwidthLimit / _threadCount : int.MaxValue;
 
-                        foreach (var connection in _connections.Keys.Randomize())
+                        foreach (var connection in _connections.Where(n => n.Value.ThreadId == threadId).Select(n => n.Key).Randomize())
                         {
                             try
                             {
@@ -856,7 +877,7 @@ namespace Amoeba.Service
             }
         }
 
-        private void ReceiveThread(CancellationToken token)
+        private void ReceiveThread(int threadId, CancellationToken token)
         {
             var sw = Stopwatch.StartNew();
 
@@ -876,10 +897,9 @@ namespace Amoeba.Service
 
                     // Receive
                     {
-                        int remain = _bandwidthLimit;
-                        if (remain == 0) remain = int.MaxValue;
+                        int remain = (_bandwidthLimit != 0) ? _bandwidthLimit / _threadCount : int.MaxValue;
 
-                        foreach (var connection in _connections.Keys.Randomize())
+                        foreach (var connection in _connections.Where(n => n.Value.ThreadId == threadId).Select(n => n.Key).Randomize())
                         {
                             try
                             {
@@ -1337,14 +1357,7 @@ namespace Amoeba.Service
 
                         foreach (var metadata in packet.BroadcastMetadatas)
                         {
-                            try
-                            {
-                                _metadataManager.SetMetadata(metadata);
-                            }
-                            catch (Exception)
-                            {
-
-                            }
+                            _metadataManager.SetMetadata(metadata);
                         }
                     }
                     else if (id == (int)SerializeId.UnicastMetadatasRequest)
@@ -1365,14 +1378,7 @@ namespace Amoeba.Service
 
                         foreach (var metadata in packet.UnicastMetadatas)
                         {
-                            try
-                            {
-                                _metadataManager.SetMetadata(metadata);
-                            }
-                            catch (Exception)
-                            {
-
-                            }
+                            _metadataManager.SetMetadata(metadata);
                         }
                     }
                     else if (id == (int)SerializeId.MulticastMetadatasRequest)
@@ -1393,14 +1399,7 @@ namespace Amoeba.Service
 
                         foreach (var metadata in packet.MulticastMetadatas)
                         {
-                            try
-                            {
-                                _metadataManager.SetMetadata(metadata);
-                            }
-                            catch (Exception)
-                            {
-
-                            }
+                            _metadataManager.SetMetadata(metadata);
                         }
                     }
                 }
@@ -1412,6 +1411,7 @@ namespace Amoeba.Service
             public Connection Connection { get; set; }
             public SessionType Type { get; set; }
             public string Uri { get; set; }
+            public int ThreadId { get; set; }
 
             public int Version { get; set; }
             public byte[] Id { get; set; }
@@ -1609,8 +1609,16 @@ namespace Amoeba.Service
                     }
 
                     _computeTaskManager.Start();
-                    _sendTaskManager.Start();
-                    _receiveTaskManager.Start();
+
+                    foreach (var taskManager in _sendTaskManagers)
+                    {
+                        taskManager.Start();
+                    }
+
+                    foreach (var taskManager in _receiveTaskManagers)
+                    {
+                        taskManager.Start();
+                    }
                 }
             }
         }
@@ -1638,8 +1646,16 @@ namespace Amoeba.Service
                 }
 
                 _computeTaskManager.Stop();
-                _sendTaskManager.Stop();
-                _receiveTaskManager.Stop();
+
+                foreach (var taskManager in _sendTaskManagers)
+                {
+                    taskManager.Stop();
+                }
+
+                foreach (var taskManager in _receiveTaskManagers)
+                {
+                    taskManager.Stop();
+                }
             }
         }
 
@@ -1660,38 +1676,17 @@ namespace Amoeba.Service
                 {
                     foreach (var metadata in _settings.Load("BroadcastMetadatas", () => new BroadcastMetadata[0]))
                     {
-                        try
-                        {
-                            _metadataManager.SetMetadata(metadata);
-                        }
-                        catch (Exception)
-                        {
-
-                        }
+                        _metadataManager.SetMetadata(metadata);
                     }
 
                     foreach (var metadata in _settings.Load("UnicastMetadatas", () => new UnicastMetadata[0]))
                     {
-                        try
-                        {
-                            _metadataManager.SetMetadata(metadata);
-                        }
-                        catch (Exception)
-                        {
-
-                        }
+                        _metadataManager.SetMetadata(metadata);
                     }
 
                     foreach (var metadata in _settings.Load("MulticastMetadatas", () => new MulticastMetadata[0]))
                     {
-                        try
-                        {
-                            _metadataManager.SetMetadata(metadata);
-                        }
-                        catch (Exception)
-                        {
-
-                        }
+                        _metadataManager.SetMetadata(metadata);
                     }
                 }
             }
@@ -1741,11 +1736,17 @@ namespace Amoeba.Service
                 _computeTaskManager.Dispose();
                 _computeTaskManager = null;
 
-                _sendTaskManager.Dispose();
-                _sendTaskManager = null;
+                foreach (var taskManager in _sendTaskManagers)
+                {
+                    taskManager.Dispose();
+                }
+                _sendTaskManagers.Clear();
 
-                _receiveTaskManager.Dispose();
-                _receiveTaskManager = null;
+                foreach (var taskManager in _receiveTaskManagers)
+                {
+                    taskManager.Dispose();
+                }
+                _receiveTaskManagers.Clear();
             }
         }
     }
