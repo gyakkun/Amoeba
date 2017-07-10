@@ -193,6 +193,8 @@ namespace Amoeba.Service
             try
             {
                 socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                socket.SendTimeout = 1000 * 10;
+                socket.ReceiveTimeout = 1000 * 10;
                 socket.Connect(remoteEndPoint);
 
                 return socket;
@@ -257,7 +259,7 @@ namespace Amoeba.Service
 
                     string proxyScheme = result2.GetValue<string>("Scheme");
 
-                    if (proxyScheme == "socks5")
+                    if (proxyScheme == "socks" || proxyScheme == "socks5")
                     {
                         string proxyAddress = result2.GetValue<string>("Address");
                         int proxyPort = result2.GetValueOrDefault<int>("Port", () => 1080);

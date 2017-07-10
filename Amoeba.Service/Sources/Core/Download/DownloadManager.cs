@@ -1017,7 +1017,7 @@ namespace Amoeba.Service
 
                     if (_cacheManager.Size / 3 > lockSize) break;
 
-                    var sortedList = _infos.ToList();
+                    var sortedList = _infos.ToArray().ToList();
                     sortedList.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));
 
                     var info = sortedList.FirstOrDefault();

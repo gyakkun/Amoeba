@@ -110,7 +110,7 @@ namespace Amoeba.Interface
 
         private string GetMachineInfomation()
         {
-            OperatingSystem osInfo = Environment.OSVersion;
+            var osInfo = Environment.OSVersion;
             string osName = "";
 
             if (osInfo.Platform == PlatformID.Win32NT)
@@ -289,6 +289,30 @@ namespace Amoeba.Interface
                         string path = propertyInfo.GetValue(AmoebaEnvironment.Paths) as string;
                         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
                     }
+                }
+
+                // Tempフォルダを環境変数に登録。
+                {
+                    // Tempフォルダ内を掃除。
+                    try
+                    {
+                        foreach (string path in Directory.GetFiles(AmoebaEnvironment.Paths.TempPath, "*", SearchOption.AllDirectories))
+                        {
+                            File.Delete(path);
+                        }
+
+                        foreach (string path in Directory.GetDirectories(AmoebaEnvironment.Paths.TempPath, "*", SearchOption.AllDirectories))
+                        {
+                            Directory.Delete(path, true);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    Environment.SetEnvironmentVariable("TMP", Path.GetFullPath(AmoebaEnvironment.Paths.TempPath), EnvironmentVariableTarget.Process);
+                    Environment.SetEnvironmentVariable("TEMP", Path.GetFullPath(AmoebaEnvironment.Paths.TempPath), EnvironmentVariableTarget.Process);
                 }
 
                 this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);

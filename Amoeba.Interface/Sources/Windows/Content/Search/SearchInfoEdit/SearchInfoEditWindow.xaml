@@ -39,7 +39,6 @@
                     Height="32"
                     Margin="120,16,16,0"
                     VerticalAlignment="Top"
-                    IsReadOnly="True"
                     Text="{Binding Path=SearchName.Value}" />
 
             <Grid Margin="0,64">

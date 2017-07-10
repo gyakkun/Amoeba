@@ -121,6 +121,8 @@ namespace Amoeba.Simulation
             try
             {
                 socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                socket.SendTimeout = 1000 * 10;
+                socket.ReceiveTimeout = 1000 * 10;
                 socket.Connect(remoteEndPoint);
 
                 return socket;

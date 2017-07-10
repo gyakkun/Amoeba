@@ -22,7 +22,7 @@ namespace Amoeba.Interface
             try
             {
                 Variables = new EnvironmentVariables();
-                Version = new Version(5, 0, 21);
+                Version = new Version(5, 0, 22);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();
@@ -56,6 +56,7 @@ namespace Amoeba.Interface
         public class EnvironmentPaths
         {
             public string BasePath { get; private set; }
+            public string TempPath { get; private set; }
             public string ConfigPath { get; private set; }
             public string DownloadsPath { get; private set; }
             public string UpdatePath { get; private set; }
@@ -67,6 +68,7 @@ namespace Amoeba.Interface
             public EnvironmentPaths()
             {
                 this.BasePath = "../";
+                this.TempPath = "../Temp";
                 this.ConfigPath = "../Config";
                 this.DownloadsPath = "../Downloads";
                 this.UpdatePath = "../Update";
@@ -150,16 +152,22 @@ namespace Amoeba.Interface
 
             public class CacheConfig
             {
+                public string BlocksPath { get; private set; }
+
                 public CacheConfig()
                 {
                     this.BlocksPath = "../Config/Cache.blocks";
                 }
-
-                public string BlocksPath { get; private set; }
             }
 
             public class ColorsConfig
             {
+                public string Tree_Hit { get; set; }
+                public string Link_New { get; set; }
+                public string Link_Visited { get; set; }
+                public string Message_Trust { get; set; }
+                public string Message_Untrust { get; set; }
+
                 public ColorsConfig()
                 {
                     this.Tree_Hit = System.Windows.Media.Colors.LightPink.ToString();
@@ -168,12 +176,6 @@ namespace Amoeba.Interface
                     this.Message_Trust = System.Windows.Media.Colors.SkyBlue.ToString();
                     this.Message_Untrust = System.Windows.Media.Colors.LightPink.ToString();
                 }
-
-                public string Tree_Hit { get; set; }
-                public string Link_New { get; set; }
-                public string Link_Visited { get; set; }
-                public string Message_Trust { get; set; }
-                public string Message_Untrust { get; set; }
             }
         }
     }

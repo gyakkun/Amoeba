@@ -662,6 +662,7 @@
                                                 VerticalAlignment="Top"
                                                 HorizontalContentAlignment="Stretch"
                                                 VerticalContentAlignment="Center"
+                                                md:HintAssist.Hint="socks5:127.0.0.1:9050"
                                                 Text="{Binding Path=Options.Tcp.ProxyUri}" />
                                     </Grid>
                                 </GroupBox>

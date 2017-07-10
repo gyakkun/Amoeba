@@ -328,7 +328,7 @@ namespace Amoeba.Service
                         }
 
                         if (location == null || _myLocation.Uris.Any(n => location.Uris.Contains(n))
-                            || _routeTable.SelectMany(n => n.Value.Location.Uris).Any(m => location.Uris.Contains(m))) continue;
+                            || _routeTable.ToArray().SelectMany(n => n.Value.Location.Uris).Any(m => location.Uris.Contains(m))) continue;
 
                         _connectingLocations.Add(location);
                     }
