@@ -69,7 +69,7 @@ namespace Amoeba.Service
         public static readonly int SectorSize = 1024 * 256;
         public static readonly int SpaceSectorCount = 4 * 1024; // SectorSize * 4 * 256 = 256MB
 
-        private readonly int _threadCount = 2;
+        private readonly int _threadCount = 4;
 
         public CacheManager(string configPath, string blocksPath, BufferManager bufferManager)
         {

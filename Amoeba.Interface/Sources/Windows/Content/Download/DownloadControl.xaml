@@ -74,6 +74,15 @@
                             <md:PackIcon Kind="ContentPaste" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
+                    <MenuItem
+                            Command="{Binding Path=ResetCommand}"
+                            Header="{Binding Path=DownloadControl_Reset, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+R">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Reload" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

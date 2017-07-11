@@ -33,6 +33,8 @@ namespace Amoeba.Interface
         public ReactiveCommand DeleteCommand { get; private set; }
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand PasteCommand { get; private set; }
+        public ReactiveCommand ResetCommand { get; private set; }
+
         public ReactiveCommand RemoveCompletedItemCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
@@ -64,6 +66,9 @@ namespace Amoeba.Interface
 
                 this.PasteCommand = new ReactiveCommand().AddTo(_disposable);
                 this.PasteCommand.Subscribe(() => this.Paste()).AddTo(_disposable);
+
+                this.ResetCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
+                this.ResetCommand.Subscribe(() => this.Reset()).AddTo(_disposable);
 
                 this.RemoveCompletedItemCommand = new ReactiveCommand().AddTo(_disposable);
                 this.RemoveCompletedItemCommand.Subscribe(() => this.RemoveCompletedItem()).AddTo(_disposable);
@@ -280,6 +285,18 @@ namespace Amoeba.Interface
             {
                 var downloadItemInfo = new DownloadItemInfo(seed, seed.Name);
                 SettingsManager.Instance.DownloadItemInfos.Add(downloadItemInfo);
+            }
+        }
+
+        private void Reset()
+        {
+            var selectedItems = this.SelectedItems.OfType<KeyValuePair<(Metadata, string), DynamicOptions>>()
+                .Select(n => n.Key).ToArray();
+            if (selectedItems.Length == 0) return;
+
+            foreach (var (metadata, path) in selectedItems)
+            {
+                _serviceManager.ResetDownload(metadata, path);
             }
         }
 

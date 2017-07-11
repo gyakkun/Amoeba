@@ -41,7 +41,7 @@ namespace Amoeba.Service
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        private readonly int _threadCount = 2;
+        private readonly int _threadCount = Math.Max(2, Math.Min(System.Environment.ProcessorCount, 32) / 2);
 
         public DownloadManager(string configPath, NetworkManager networkManager, CacheManager cacheManager, BufferManager bufferManager)
         {
@@ -50,8 +50,6 @@ namespace Amoeba.Service
             _bufferManager = bufferManager;
 
             _settings = new Settings(configPath);
-
-            _threadCount = Math.Max(1, Math.Min(System.Environment.ProcessorCount, 32) / 2);
 
             _downloadTaskManager = new TaskManager(this.DownloadingThread);
 
@@ -306,10 +304,12 @@ namespace Amoeba.Service
                             {
                                 foreach (var group in item.Index.Groups)
                                 {
+                                    if (item.State == DownloadState.Error) throw new OperationCanceledException();
+
                                     hashes.AddRange(_cacheManager.ParityDecoding(group, token).Result);
                                 }
                             }
-                            catch (Exception)
+                            catch (OperationCanceledException)
                             {
                                 continue;
                             }
@@ -326,6 +326,7 @@ namespace Amoeba.Service
                                 using (var stream = _cacheManager.Decoding(hashes))
                                 using (var progressStream = new ProgressStream(stream, null, 1024 * 1024, token))
                                 {
+                                    if (item.State == DownloadState.Error) throw new OperationCanceledException();
                                     if (progressStream.Length > item.MaxLength) throw new ArgumentException();
 
                                     index = Index.Import(progressStream, _bufferManager);
@@ -338,14 +339,12 @@ namespace Amoeba.Service
 
                             lock (_lockObject)
                             {
-                                // Protect
                                 _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, hashes));
 
+                                this.CheckState(index);
                                 this.UncheckState(item.Index);
 
                                 item.Index = index;
-
-                                this.CheckState(item.Index);
 
                                 item.Depth++;
 
@@ -370,8 +369,8 @@ namespace Amoeba.Service
                                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
 
                                     using (var inStream = _cacheManager.Decoding(hashes))
-                                    using (var outStream = DownloadManager.GetUniqueFileStream(targetPath))
-                                    using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 32))
+                                    using (var outStream = DownloadManager.GetUniqueFileStream(targetPath + ".tmp"))
+                                    using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 1024))
                                     {
                                         filePath = outStream.Name;
 
@@ -379,11 +378,14 @@ namespace Amoeba.Service
 
                                         while ((readLength = inStream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
                                         {
+                                            if (item.State == DownloadState.Error) throw new OperationCanceledException();
                                             token.ThrowIfCancellationRequested();
 
                                             outStream.Write(safeBuffer.Value, 0, readLength);
                                         }
                                     }
+
+                                    File.Move(filePath, DownloadManager.GetUniqueFilePath(targetPath));
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -395,7 +397,6 @@ namespace Amoeba.Service
 
                             lock (_lockObject)
                             {
-                                // Protect
                                 _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, hashes));
 
                                 item.ResultHashes.AddRange(hashes);
@@ -458,6 +459,28 @@ namespace Amoeba.Service
                     {
                         if (index > 1024) throw;
                     }
+                }
+            }
+        }
+
+        private static string GetUniqueFilePath(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return path;
+            }
+
+            for (int index = 1; ; index++)
+            {
+                string text = string.Format(@"{0}\{1} ({2}){3}",
+                    Path.GetDirectoryName(path),
+                    Path.GetFileNameWithoutExtension(path),
+                    index,
+                    Path.GetExtension(path));
+
+                if (!File.Exists(text))
+                {
+                    return text;
                 }
             }
         }
@@ -992,6 +1015,8 @@ namespace Amoeba.Service
         {
             private CacheManager _cacheManager;
             private LockedList<ProtectCacheInfo> _infos;
+
+            private WatchTimer _checkTimer;
             private WatchTimer _watchTimer;
 
             private volatile bool _disposed;
@@ -1000,8 +1025,22 @@ namespace Amoeba.Service
             {
                 _cacheManager = cacheManager;
                 _infos = new LockedList<ProtectCacheInfo>();
+
+                _checkTimer = new WatchTimer(() => this.CheckThread());
+                _checkTimer.Start(new TimeSpan(0, 30, 0));
                 _watchTimer = new WatchTimer(() => this.WatchThread());
                 _watchTimer.Start(new TimeSpan(0, 1, 0));
+            }
+
+            private void CheckThread()
+            {
+                foreach (var info in _infos.ToArray())
+                {
+                    if (info.Hashes.Any(n => !_cacheManager.Contains(n)))
+                    {
+                        _infos.Remove(info);
+                    }
+                }
             }
 
             private void WatchThread()
@@ -1073,6 +1112,21 @@ namespace Amoeba.Service
 
                 if (disposing)
                 {
+                    if (_checkTimer != null)
+                    {
+                        try
+                        {
+                            _checkTimer.Stop();
+                            _checkTimer.Dispose();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        _checkTimer = null;
+                    }
+
                     if (_watchTimer != null)
                     {
                         try

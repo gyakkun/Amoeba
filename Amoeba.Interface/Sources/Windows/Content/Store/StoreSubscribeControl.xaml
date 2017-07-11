@@ -204,6 +204,7 @@
                             <md:PackIcon Kind="ContentCopy" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
                     <MenuItem
                             Command="{Binding Path=DownloadCommand}"
                             Header="{Binding Path=StoreSubscribeControl_Download, Source={StaticResource Languages}}"

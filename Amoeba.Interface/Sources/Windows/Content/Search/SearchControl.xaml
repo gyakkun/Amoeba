@@ -196,21 +196,21 @@
                             <md:PackIcon Kind="ContentCopy" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
                     <MenuItem
                             Command="{Binding Path=DownloadCommand}"
                             Header="{Binding Path=SearchControl_Download, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+V">
+                            InputGestureText="Ctrl+D">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="CloudDownload" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <Separator />
                     <MenuItem
                             Command="{Binding Path=RemoveDownloadHistoryCommand}"
                             Header="{Binding Path=SearchControl_RemoveDownloadHistory, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+H">
+                            InputGestureText="Ctrl+R">
                         <MenuItem.Icon>
-                            <md:PackIcon Kind="CloudDownload" />
+                            <md:PackIcon Kind="Delete" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>

@@ -38,7 +38,7 @@
   <Property Name="SearchState_Flag_Downloaded" Value="DH" />
 
   <Property Name="DownloadState_Downloading" Value="Downloading" />
-  <Property Name="DownloadState_ParityDecoding" Value="ParityDecoding" />
+  <Property Name="DownloadState_ParityDecoding" Value="Parity decoding" />
   <Property Name="DownloadState_Decoding" Value="Decoding" />
   <Property Name="DownloadState_Completed" Value="Completed" />
   <Property Name="DownloadState_Error" Value="Error" />
@@ -233,6 +233,7 @@
   <Property Name="DownloadControl_Delete" Value="Delete" />
   <Property Name="DownloadControl_Copy" Value="Copy" />
   <Property Name="DownloadControl_Paste" Value="Paste" />
+  <Property Name="DownloadControl_Reset" Value="Reset" />
   <Property Name="DownloadControl_RemoveCompletedItem" Value="Remove completed item" />
 
   <Property Name="UploadControl_Upload" Value="Upload" />

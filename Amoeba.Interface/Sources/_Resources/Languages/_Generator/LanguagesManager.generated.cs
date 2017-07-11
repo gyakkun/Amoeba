@@ -217,6 +217,7 @@ namespace Amoeba.Interface
         public string DownloadControl_Delete { get { return this.Translate("DownloadControl_Delete"); } }
         public string DownloadControl_Copy { get { return this.Translate("DownloadControl_Copy"); } }
         public string DownloadControl_Paste { get { return this.Translate("DownloadControl_Paste"); } }
+        public string DownloadControl_Reset { get { return this.Translate("DownloadControl_Reset"); } }
         public string DownloadControl_RemoveCompletedItem { get { return this.Translate("DownloadControl_RemoveCompletedItem"); } }
         public string UploadControl_Upload { get { return this.Translate("UploadControl_Upload"); } }
         public string UploadControl_Name { get { return this.Translate("UploadControl_Name"); } }
