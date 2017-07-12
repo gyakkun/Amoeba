@@ -23,7 +23,6 @@ namespace Amoeba.Interface
             this.Model = model;
 
             this.Name = model.ObserveProperty(n => n.AuthorSignature).Select(n => n.ToString()).ToReactiveProperty().AddTo(_disposable);
-            this.IsSelected = model.ToReactivePropertyAsSynchronized(n => n.IsSelected).AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.IsUpdated = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);
             this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new SubscribeBoxViewModel(this, n)).AddTo(_disposable);

@@ -32,7 +32,7 @@ namespace Amoeba.Interface
         public ReactiveCommand AccountSignatureImportCommand { get; private set; }
         public ReactiveCommand AccountSignatureExportCommand { get; private set; }
 
-        public ICollectionView AccountTrustSignaturesView => CollectionViewSource.GetDefaultView(this.Options.Account.TrustSignatures);
+        public ListCollectionView AccountTrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Account.TrustSignatures);
         public ObservableCollection<object> SelectedAccountTrustSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _accountTrustSignaturesSortInfo;
         public ReactiveCommand<string> AccountTrustSignaturesSortCommand { get; private set; }
@@ -41,7 +41,7 @@ namespace Amoeba.Interface
         public ReactiveCommand AccountTrustCopyCommand { get; private set; }
         public ReactiveCommand AccountTrustPasteCommand { get; private set; }
 
-        public ICollectionView AccountUntrustSignaturesView => CollectionViewSource.GetDefaultView(this.Options.Account.UntrustSignatures);
+        public ListCollectionView AccountUntrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Account.UntrustSignatures);
         public ObservableCollection<object> SelectedAccountUntrustSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _accountUntrustSignaturesSortInfo;
         public ReactiveCommand<string> AccountUntrustSignaturesSortCommand { get; private set; }
@@ -50,7 +50,7 @@ namespace Amoeba.Interface
         public ReactiveCommand AccountUntrustCopyCommand { get; private set; }
         public ReactiveCommand AccountUntrustPasteCommand { get; private set; }
 
-        public ICollectionView AccountTagsView => CollectionViewSource.GetDefaultView(this.Options.Account.Tags);
+        public ListCollectionView AccountTagsView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Account.Tags);
         public ObservableCollection<object> SelectedAccountTagItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _accountTagsSortInfo;
         public ReactiveCommand<string> AccountTagsSortCommand { get; private set; }
@@ -60,7 +60,7 @@ namespace Amoeba.Interface
         public ReactiveCommand AccountTagCopyCommand { get; private set; }
         public ReactiveCommand AccountTagPasteCommand { get; private set; }
 
-        public ICollectionView SubscribeSignaturesView => CollectionViewSource.GetDefaultView(this.Options.Subscribe.SubscribeSignatures);
+        public ListCollectionView SubscribeSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Subscribe.SubscribeSignatures);
         public ObservableCollection<object> SelectedSubscribeSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _subscribeSignaturesSortInfo;
         public ReactiveCommand<string> SubscribeSignaturesSortCommand { get; private set; }
@@ -468,11 +468,14 @@ namespace Amoeba.Interface
 
         private void AccountTrustSignaturesSort(string propertyName, ListSortDirection direction)
         {
+            this.AccountTrustSignaturesView.IsLiveSorting = true;
+            this.AccountTrustSignaturesView.LiveSortingProperties.Add(propertyName);
+
             switch (propertyName)
             {
                 case "Signature":
                     {
-                        var view = ((ListCollectionView)this.AccountTrustSignaturesView);
+                        var view = this.AccountTrustSignaturesView;
                         view.CustomSort = new CustomSortComparer(direction, (x, y) =>
                         {
                             if (x is Signature tx && y is Signature ty)
@@ -487,6 +490,9 @@ namespace Amoeba.Interface
                         });
                         view.Refresh();
                     }
+                    break;
+                default:
+                    this.AccountTrustSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
                     break;
             }
         }
@@ -555,11 +561,14 @@ namespace Amoeba.Interface
 
         private void AccountUntrustSignaturesSort(string propertyName, ListSortDirection direction)
         {
+            this.AccountUntrustSignaturesView.IsLiveSorting = true;
+            this.AccountUntrustSignaturesView.LiveSortingProperties.Add(propertyName);
+
             switch (propertyName)
             {
                 case "Signature":
                     {
-                        var view = ((ListCollectionView)this.AccountUntrustSignaturesView);
+                        var view = this.AccountUntrustSignaturesView;
                         view.CustomSort = new CustomSortComparer(direction, (x, y) =>
                         {
                             if (x is Signature tx && y is Signature ty)
@@ -574,6 +583,9 @@ namespace Amoeba.Interface
                         });
                         view.Refresh();
                     }
+                    break;
+                default:
+                    this.AccountUntrustSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
                     break;
             }
         }
@@ -642,17 +654,20 @@ namespace Amoeba.Interface
 
         private void AccountTagsSort(string propertyName, ListSortDirection direction)
         {
+            this.AccountTagsView.IsLiveSorting = true;
+            this.AccountTagsView.LiveSortingProperties.Add(propertyName);
+
             switch (propertyName)
             {
-                case "Name":
-                    this.AccountTagsView.SortDescriptions.Add(new SortDescription("Name", direction));
-                    break;
                 case "Id":
                     {
-                        var view = ((ListCollectionView)this.AccountTagsView);
+                        var view = this.AccountTagsView;
                         view.CustomSort = new CustomSortComparer(direction, (x, y) => Unsafe.Compare(((Tag)x).Id, ((Tag)y).Id));
                         view.Refresh();
                     }
+                    break;
+                default:
+                    this.AccountTagsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
                     break;
             }
         }
@@ -733,11 +748,14 @@ namespace Amoeba.Interface
 
         private void SubscribeSignaturesSort(string propertyName, ListSortDirection direction)
         {
+            this.SubscribeSignaturesView.IsLiveSorting = true;
+            this.SubscribeSignaturesView.LiveSortingProperties.Add(propertyName);
+
             switch (propertyName)
             {
                 case "Signature":
                     {
-                        var view = ((ListCollectionView)this.SubscribeSignaturesView);
+                        var view = this.SubscribeSignaturesView;
                         view.CustomSort = new CustomSortComparer(direction, (x, y) =>
                         {
                             if (x is Signature tx && y is Signature ty)
@@ -752,6 +770,9 @@ namespace Amoeba.Interface
                         });
                         view.Refresh();
                     }
+                    break;
+                default:
+                    this.SubscribeSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
                     break;
             }
         }

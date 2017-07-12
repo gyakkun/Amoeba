@@ -24,8 +24,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
-        private ObservableDictionary<(Metadata, string), DynamicOptions> _contents = new ObservableDictionary<(Metadata, string), DynamicOptions>(new CustomEqualityComparer());
+        public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents.Values);
+        private ObservableSimpleDictionary<(Metadata, string), DynamicOptions> _contents = new ObservableSimpleDictionary<(Metadata, string), DynamicOptions>(new CustomEqualityComparer());
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
@@ -222,34 +222,15 @@ namespace Amoeba.Interface
 
         private void Sort(string propertyName, ListSortDirection direction)
         {
-            switch (propertyName)
-            {
-                case "Name":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Name", direction));
-                    break;
-                case "Length":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Length", direction));
-                    break;
-                case "CreationTime":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.CreationTime", direction));
-                    break;
-                case "Rate":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Rate_Value", direction));
-                    break;
-                case "State":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.State", direction));
-                    break;
-                case "Path":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Path", direction));
-                    break;
-            }
+            this.ContentsView.IsLiveSorting = true;
+            this.ContentsView.LiveSortingProperties.Add(propertyName);
+            this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
         }
 
         private void Delete()
         {
-            var selectedItems = this.SelectedItems.OfType<KeyValuePair<(Metadata, string), DynamicOptions>>()
-                .Select(n => n.Value).ToArray();
-            if (selectedItems.Length == 0) return;
+            var selectedItems = this.SelectedItems.OfType<DynamicOptions>().ToList();
+            if (selectedItems.Count == 0) return;
 
             var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
             viewModel.Callback += () =>
@@ -272,8 +253,8 @@ namespace Amoeba.Interface
 
         private void Copy()
         {
-            var selectedItems = this.SelectedItems.OfType<KeyValuePair<(Metadata, string), DynamicOptions>>()
-                .Select(n => n.Value.GetValue<DownloadItemInfo>("Model")).ToList();
+            var selectedItems = this.SelectedItems.OfType<DynamicOptions>()
+                .Select(n => n.GetValue<DownloadItemInfo>("Model")).ToList();
             if (selectedItems.Count == 0) return;
 
             Clipboard.SetSeeds(selectedItems.Select(n => n.Seed).ToArray());
@@ -290,9 +271,10 @@ namespace Amoeba.Interface
 
         private void Reset()
         {
-            var selectedItems = this.SelectedItems.OfType<KeyValuePair<(Metadata, string), DynamicOptions>>()
-                .Select(n => n.Key).ToArray();
-            if (selectedItems.Length == 0) return;
+            var selectedItems = this.SelectedItems.OfType<DynamicOptions>()
+                .Select(n => n.GetValue<DownloadItemInfo>("Model"))
+                .Select(n => (n.Seed.Metadata, n.Path)).ToList();
+            if (selectedItems.Count == 0) return;
 
             foreach (var (metadata, path) in selectedItems)
             {

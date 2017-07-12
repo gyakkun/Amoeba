@@ -29,7 +29,7 @@ namespace Amoeba.Interface
 
         public ReactiveCommand TabClickCommand { get; private set; }
 
-        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
         private ObservableCollection<PublishPreviewItemViewModel> _contents = new ObservableCollection<PublishPreviewItemViewModel>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _sortInfo;
@@ -182,15 +182,9 @@ namespace Amoeba.Interface
 
         private void Sort(string propertyName, ListSortDirection direction)
         {
-            switch (propertyName)
-            {
-                case "Name":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Name", direction));
-                    break;
-                case "Length":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Length", direction));
-                    break;
-            }
+            this.ContentsView.IsLiveSorting = true;
+            this.ContentsView.LiveSortingProperties.Add(propertyName);
+            this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
         }
 
         private void OnCloseEvent()

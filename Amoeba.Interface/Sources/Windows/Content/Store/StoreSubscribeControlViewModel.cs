@@ -45,7 +45,7 @@ namespace Amoeba.Interface
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
-        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
         private ObservableCollection<SubscribeItemViewModel> _contents = new ObservableCollection<SubscribeItemViewModel>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _sortInfo;
@@ -499,21 +499,9 @@ namespace Amoeba.Interface
 
         private void Sort(string propertyName, ListSortDirection direction)
         {
-            switch (propertyName)
-            {
-                case "Name":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Name", direction));
-                    break;
-                case "Length":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Length", direction));
-                    break;
-                case "CreationTime":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("CreationTime", direction));
-                    break;
-                case "State":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("State", direction));
-                    break;
-            }
+            this.ContentsView.IsLiveSorting = true;
+            this.ContentsView.LiveSortingProperties.Add(propertyName);
+            this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
         }
 
         private void Copy()

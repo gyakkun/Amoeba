@@ -1077,25 +1077,6 @@ namespace Amoeba.Interface
             }
         }
 
-        private bool _isSelected;
-
-        [DataMember(Name = nameof(IsSelected))]
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    this.OnPropertyChanged(nameof(IsSelected));
-                }
-            }
-        }
-
         private bool _isExpanded;
 
         [DataMember(Name = nameof(IsExpanded))]
@@ -1199,25 +1180,6 @@ namespace Amoeba.Interface
             }
         }
 
-        private bool _isSelected;
-
-        [DataMember(Name = nameof(IsSelected))]
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    this.OnPropertyChanged(nameof(IsSelected));
-                }
-            }
-        }
-
         private bool _isExpanded;
 
         [DataMember(Name = nameof(IsExpanded))]
@@ -1307,25 +1269,6 @@ namespace Amoeba.Interface
             }
         }
 
-        private bool _isSelected;
-
-        [DataMember(Name = nameof(IsSelected))]
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    this.OnPropertyChanged(nameof(IsSelected));
-                }
-            }
-        }
-
         private bool _isExpanded;
 
         [DataMember(Name = nameof(IsExpanded))]
@@ -1410,25 +1353,6 @@ namespace Amoeba.Interface
             }
         }
 
-        private bool _isSelected;
-
-        [DataMember(Name = nameof(IsSelected))]
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    this.OnPropertyChanged(nameof(IsSelected));
-                }
-            }
-        }
-
         private bool _isExpanded;
 
         [DataMember(Name = nameof(IsExpanded))]
@@ -1509,25 +1433,6 @@ namespace Amoeba.Interface
                 {
                     _tag = value;
                     this.OnPropertyChanged(nameof(Tag));
-                }
-            }
-        }
-
-        private bool _isSelected;
-
-        [DataMember(Name = nameof(IsSelected))]
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    this.OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }
@@ -1635,25 +1540,6 @@ namespace Amoeba.Interface
                 {
                     _name = value;
                     this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        private bool _isSelected;
-
-        [DataMember(Name = nameof(IsSelected))]
-        public bool IsSelected
-        {
-            get
-            {
-                return _isSelected;
-            }
-            set
-            {
-                if (_isSelected != value)
-                {
-                    _isSelected = value;
-                    this.OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }

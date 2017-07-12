@@ -26,8 +26,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ICollectionView ConnectionInfosView => CollectionViewSource.GetDefaultView(_connectionInfos);
-        private ObservableDictionary<byte[], DynamicOptions> _connectionInfos = new ObservableDictionary<byte[], DynamicOptions>(new ByteArrayEqualityComparer());
+        public ListCollectionView ConnectionInfosView => (ListCollectionView)CollectionViewSource.GetDefaultView(_connectionInfos.Values);
+        private ObservableSimpleDictionary<byte[], DynamicOptions> _connectionInfos = new ObservableSimpleDictionary<byte[], DynamicOptions>(new ByteArrayEqualityComparer());
         public ObservableCollection<object> ConnectionSelectedItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _connectionSortInfo;
         public ReactiveCommand<string> ConnectionSortCommand { get; private set; }
@@ -36,7 +36,7 @@ namespace Amoeba.Interface
         public ReactiveCommand ConnectionPasteCommand { get; private set; }
 
         public CloudStateInfo State { get; } = new CloudStateInfo();
-        public ObservableDictionary<string, DynamicOptions> StateInfos { get; } = new ObservableDictionary<string, DynamicOptions>();
+        public ObservableSimpleDictionary<string, DynamicOptions> StateInfos { get; } = new ObservableSimpleDictionary<string, DynamicOptions>();
         public ObservableCollection<object> StateSelectedItems { get; } = new ObservableCollection<object>();
 
         public ReactiveCommand StateCopyCommand { get; private set; }
@@ -191,14 +191,15 @@ namespace Amoeba.Interface
                             }
 
                             viewModel.SetValue("Index", i);
+                            viewModel.SetValue("Name", key);
 
                             if (matchSizeTypeHashSet.Contains(key))
                             {
-                                viewModel.SetValue("Content", NetworkConverter.ToSizeString((long)value));
+                                viewModel.SetValue("Value", NetworkConverter.ToSizeString((long)value));
                             }
                             else
                             {
-                                viewModel.SetValue("Content", value.ToString());
+                                viewModel.SetValue("Value", value.ToString());
                             }
                         }
                     });
@@ -249,31 +250,16 @@ namespace Amoeba.Interface
 
         private void ConnectionSort(string propertyName, ListSortDirection direction)
         {
-            switch (propertyName)
-            {
-                case "Type":
-                    this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.Type", direction));
-                    break;
-                case "Uri":
-                    this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.Uri", direction));
-                    break;
-                case "Priority":
-                    this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.Priority", direction));
-                    break;
-                case "ReceivedByteCount":
-                    this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.ReceivedByteCount", direction));
-                    break;
-                case "SentByteCount":
-                    this.ConnectionInfosView.SortDescriptions.Add(new SortDescription("Value.SentByteCount", direction));
-                    break;
-            }
+            this.ConnectionInfosView.IsLiveSorting = true;
+            this.ConnectionInfosView.LiveSortingProperties.Add(propertyName);
+            this.ConnectionInfosView.SortDescriptions.Add(new SortDescription(propertyName, direction));
         }
 
         private void ConnectionCopy()
         {
             var list = new List<Location>();
 
-            foreach (var (key, value) in this.ConnectionSelectedItems.Cast<KeyValuePair<byte[], DynamicOptions>>())
+            foreach (var value in this.ConnectionSelectedItems.OfType<DynamicOptions>())
             {
                 list.Add(value.GetValue<Location>("Location"));
             }
@@ -320,9 +306,9 @@ namespace Amoeba.Interface
         {
             var sb = new StringBuilder();
 
-            foreach (var (key, value) in this.StateSelectedItems.Cast<KeyValuePair<string, DynamicOptions>>())
+            foreach (var value in this.StateSelectedItems.OfType<DynamicOptions>())
             {
-                sb.AppendLine($"{key}: {value.GetValue<string>("Content")}");
+                sb.AppendLine($"{value.GetValue<string>("Name")}: {value.GetValue<string>("Value")}");
             }
 
             Clipboard.SetText(sb.ToString());
@@ -332,7 +318,7 @@ namespace Amoeba.Interface
         {
             var sb = new StringBuilder();
 
-            foreach (string line in this.LogSelectedItems.Cast<string>())
+            foreach (string line in this.LogSelectedItems.OfType<string>())
             {
                 sb.AppendLine(line);
             }

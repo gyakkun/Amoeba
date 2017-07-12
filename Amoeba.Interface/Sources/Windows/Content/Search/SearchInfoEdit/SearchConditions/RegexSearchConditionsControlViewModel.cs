@@ -19,7 +19,7 @@ namespace Amoeba.Interface
     {
         private Settings _settings;
 
-        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
         private ObservableCollection<SearchCondition<SearchRegex>> _contents = new ObservableCollection<SearchCondition<SearchRegex>>();
         public ReactiveProperty<SearchCondition<SearchRegex>> SelectedItem { get; private set; }
         private ListSortInfo _sortInfo;
@@ -141,15 +141,9 @@ namespace Amoeba.Interface
 
         private void Sort(string propertyName, ListSortDirection direction)
         {
-            switch (propertyName)
-            {
-                case "Contains":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Contains", direction));
-                    break;
-                case "Value":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Value.Value", direction));
-                    break;
-            }
+            this.ContentsView.IsLiveSorting = true;
+            this.ContentsView.LiveSortingProperties.Add(propertyName);
+            this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
         }
 
         private void Add()

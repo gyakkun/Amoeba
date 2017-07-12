@@ -21,7 +21,6 @@ namespace Amoeba.Interface
             this.Model = model;
 
             this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
-            this.IsSelected = model.ToReactivePropertyAsSynchronized(n => n.IsSelected).AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.Stores = model.StoreInfos.ToReadOnlyReactiveCollection(n => new SubscribeStoreViewModel(this, n)).AddTo(_disposable);
             this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new SubscribeCategoryViewModel(this, n)).AddTo(_disposable);

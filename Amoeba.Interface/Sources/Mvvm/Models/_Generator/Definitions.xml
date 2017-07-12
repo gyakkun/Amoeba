@@ -98,7 +98,6 @@
 
   <Class Name="SubscribeCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsSelected" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="ObservableCollection(SubscribeStoreInfo)" Name="StoreInfos" />
     <Property Type="ObservableCollection(SubscribeCategoryInfo)" Name="CategoryInfos" />
@@ -107,7 +106,6 @@
   <Class Name="SubscribeStoreInfo">
     <Property Type="Signature" Name="AuthorSignature" IsEditable="true" />
     <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
-    <Property Type="bool" Name="IsSelected" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="bool" Name="IsUpdated" IsEditable="true" />
     <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
@@ -115,7 +113,6 @@
 
   <Class Name="SubscribeBoxInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsSelected" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="ObservableCollection(Seed)" Name="Seeds" />
     <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
@@ -123,7 +120,6 @@
 
   <Class Name="ChatCategoryInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsSelected" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="ObservableCollection(ChatThreadInfo)" Name="ThreadInfos" />
     <Property Type="ObservableCollection(ChatCategoryInfo)" Name="CategoryInfos" />
@@ -131,7 +127,6 @@
 
   <Class Name="ChatThreadInfo">
     <Property Type="Tag" Name="Tag" IsEditable="true" />
-    <Property Type="bool" Name="IsSelected" IsEditable="true" />
     <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
   </Class>
 
@@ -142,7 +137,6 @@
 
   <Class Name="SearchInfo">
     <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsSelected" IsEditable="true" />
     <Property Type="bool" Name="IsExpanded" IsEditable="true" />
     <Property Type="bool" Name="IsUpdated" IsEditable="true" />
     <Property Type="SearchConditionsInfo" Name="Conditions" />

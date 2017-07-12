@@ -87,7 +87,7 @@
                                     Header="{Binding Path=CloudControl_Type, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Value.Type, Mode=OneWay, Converter={StaticResource SessionTypeToStringConverter}}" />
+                                        <TextBlock Text="{Binding Path=Type, Mode=OneWay, Converter={StaticResource SessionTypeToStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -97,7 +97,7 @@
                                     Header="{Binding Path=CloudControl_Uri, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Value.Uri, Mode=OneWay}" />
+                                        <TextBlock Text="{Binding Path=Uri, Mode=OneWay}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -107,7 +107,7 @@
                                     Header="{Binding Path=CloudControl_Priority, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Value.Priority, Mode=OneWay}" />
+                                        <TextBlock Text="{Binding Path=Priority, Mode=OneWay}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -117,7 +117,7 @@
                                     Header="{Binding Path=CloudControl_ReceivedByteCount, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Value.ReceivedByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                                        <TextBlock Text="{Binding Path=ReceivedByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -127,7 +127,7 @@
                                     Header="{Binding Path=CloudControl_SentByteCount, Source={StaticResource Languages}}">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=Value.SentByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                                        <TextBlock Text="{Binding Path=SentByteCount, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -209,7 +209,7 @@
                                     omnius:ListBoxHelper.SelectedItems="{Binding Path=StateSelectedItems}"
                                     IsSynchronizedWithCurrentItem="True"
                                     ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
-                                    ItemsSource="{Binding Path=StateInfos, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Value.Index}"
+                                    ItemsSource="{Binding Path=StateInfos.Values, Converter={StaticResource SortedCollectionConverter}, ConverterParameter=Index}"
                                     VirtualizingStackPanel.IsVirtualizing="True"
                                     VirtualizingStackPanel.VirtualizationMode="Recycling">
                                 <i:Interaction.Behaviors>
@@ -233,14 +233,14 @@
                                         <GridViewColumn Width="{Binding Path=DynamicOptions.StateListView_Name_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CloudControl_Name, Source={StaticResource Languages}}">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Path=Key, Mode=OneWay}" />
+                                                    <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Width="{Binding Path=DynamicOptions.StateListView_Value_Width, Mode=TwoWay, FallbackValue=120}" Header="{Binding Path=CloudControl_Value, Source={StaticResource Languages}}">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
-                                                    <TextBlock Text="{Binding Path=Value.Content, Mode=OneWay}" />
+                                                    <TextBlock Text="{Binding Path=Value, Mode=OneWay}" />
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>

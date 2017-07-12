@@ -49,7 +49,7 @@ namespace Amoeba.Interface
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
-        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
         private ObservableCollection<SearchItemViewModel> _contents = new ObservableCollection<SearchItemViewModel>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _sortInfo;
@@ -74,7 +74,7 @@ namespace Amoeba.Interface
             _watchTaskManager = new TaskManager(this.WatchThread);
             _watchTaskManager.Start();
 
-            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Store" };
+            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Search" };
             this.DragAcceptDescription.DragDrop += this.DragAcceptDescription_DragDrop;
         }
 
@@ -581,12 +581,9 @@ namespace Amoeba.Interface
         {
             switch (propertyName)
             {
-                case "Name":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Name", direction));
-                    break;
                 case "Signature":
                     {
-                        var view = ((ListCollectionView)this.ContentsView);
+                        var view = this.ContentsView;
                         view.CustomSort = new CustomSortComparer(direction, (x, y) =>
                         {
                             if (x is SearchItemViewModel tx && y is SearchItemViewModel ty)
@@ -606,14 +603,8 @@ namespace Amoeba.Interface
                         view.Refresh();
                     }
                     break;
-                case "Length":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Length", direction));
-                    break;
-                case "CreationTime":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("CreationTime", direction));
-                    break;
-                case "State":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("State", direction));
+                default:
+                    this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
                     break;
             }
         }

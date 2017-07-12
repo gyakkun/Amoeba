@@ -98,8 +98,8 @@
                                             Width="16"
                                             Height="16"
                                             HorizontalAlignment="Left"
-                                            Source="{Binding Path=Value.Icon, Mode=OneWay}" />
-                                    <TextBlock Margin="22,0,0,0" Text="{Binding Path=Value.Name, Mode=OneWay}" />
+                                            Source="{Binding Path=Icon, Mode=OneWay}" />
+                                    <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay}" />
                                 </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -110,7 +110,7 @@
                             Header="{Binding Path=DownloadControl_Length, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Value.Length, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                                <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -120,7 +120,7 @@
                             Header="{Binding Path=DownloadControl_CreationTime, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Value.CreationTime, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}}" />
+                                <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -135,11 +135,11 @@
                                             HorizontalAlignment="Stretch"
                                             VerticalAlignment="Stretch"
                                             md:TransitionAssist.DisableTransitions="True"
-                                            Value="{Binding Path=Value.Rate_Value, Mode=OneWay}" />
+                                            Value="{Binding Path=Rate_Value, Mode=OneWay}" />
                                     <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Text="{Binding Path=Value.Rate_Text, Mode=OneWay}" />
+                                            Text="{Binding Path=Rate_Text, Mode=OneWay}" />
                                 </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -150,7 +150,7 @@
                             Header="{Binding Path=DownloadControl_State, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Value.State, Mode=OneWay, Converter={StaticResource DownloadStateToStringConverter}}" />
+                                <TextBlock Text="{Binding Path=State, Mode=OneWay, Converter={StaticResource DownloadStateToStringConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -160,7 +160,7 @@
                             Header="{Binding Path=DownloadControl_Path, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Value.Path, Mode=OneWay}" />
+                                <TextBlock Text="{Binding Path=Path, Mode=OneWay}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

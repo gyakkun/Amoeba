@@ -51,7 +51,7 @@
                         </GridViewColumn>
                         <GridViewColumn
                                 Width="{Binding Path=DynamicOptions.ListView_Min_Width, Mode=TwoWay, FallbackValue=120}"
-                                omnius:GridViewSortHelper.PropertyName="Min"
+                                omnius:GridViewSortHelper.PropertyName="Value.Min"
                                 Header="{Binding Path=SearchConditionsControl_Min, Source={StaticResource Languages}}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -61,7 +61,7 @@
                         </GridViewColumn>
                         <GridViewColumn
                                 Width="{Binding Path=DynamicOptions.ListView_Max_Width, Mode=TwoWay, FallbackValue=120}"
-                                omnius:GridViewSortHelper.PropertyName="Max"
+                                omnius:GridViewSortHelper.PropertyName="Value.Max"
                                 Header="{Binding Path=SearchConditionsControl_Max, Source={StaticResource Languages}}">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>

@@ -20,7 +20,6 @@ namespace Amoeba.Interface
             this.Model = model;
 
             this.Name = model.ObserveProperty(n => n.Tag).Select(n => MessageUtils.ToString(n)).ToReactiveProperty().AddTo(_disposable);
-            this.IsSelected = model.ToReactivePropertyAsSynchronized(n => n.IsSelected).AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Chat"; } }

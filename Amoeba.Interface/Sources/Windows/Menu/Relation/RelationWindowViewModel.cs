@@ -33,7 +33,7 @@ namespace Amoeba.Interface
 
         public ReactiveCommand TabCopyCommand { get; private set; }
 
-        public ICollectionView TrustSignaturesView => CollectionViewSource.GetDefaultView(_trustSignatures);
+        public ListCollectionView TrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(_trustSignatures);
         private ObservableCollection<Signature> _trustSignatures = new ObservableCollection<Signature>();
         public ObservableCollection<object> SelectedTrustSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _trustSignaturesSortInfo;
@@ -41,7 +41,7 @@ namespace Amoeba.Interface
 
         public ReactiveCommand TrustCopyCommand { get; private set; }
 
-        public ICollectionView UntrustSignaturesView => CollectionViewSource.GetDefaultView(_untrustSignatures);
+        public ListCollectionView UntrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(_untrustSignatures);
         private ObservableCollection<Signature> _untrustSignatures = new ObservableCollection<Signature>();
         public ObservableCollection<object> SelectedUntrustSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _untrustSignaturesSortInfo;
@@ -49,7 +49,7 @@ namespace Amoeba.Interface
 
         public ReactiveCommand UntrustCopyCommand { get; private set; }
 
-        public ICollectionView TagsView => CollectionViewSource.GetDefaultView(_tags);
+        public ListCollectionView TagsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_tags);
         private ObservableCollection<Tag> _tags = new ObservableCollection<Tag>();
         public ObservableCollection<object> SelectedTagItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _tagsSortInfo;
@@ -210,11 +210,14 @@ namespace Amoeba.Interface
 
         private void TrustSignaturesSort(string propertyName, ListSortDirection direction)
         {
+            this.TrustSignaturesView.IsLiveSorting = true;
+            this.TrustSignaturesView.LiveSortingProperties.Add(propertyName);
+
             switch (propertyName)
             {
                 case "Signature":
                     {
-                        var view = ((ListCollectionView)this.TrustSignaturesView);
+                        var view = this.TrustSignaturesView;
                         view.CustomSort = new CustomSortComparer(direction, (x, y) =>
                         {
                             if (x is Signature tx && y is Signature ty)
@@ -229,6 +232,9 @@ namespace Amoeba.Interface
                         });
                         view.Refresh();
                     }
+                    break;
+                default:
+                    this.TrustSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
                     break;
             }
         }
@@ -279,11 +285,14 @@ namespace Amoeba.Interface
 
         private void UntrustSignaturesSort(string propertyName, ListSortDirection direction)
         {
+            this.UntrustSignaturesView.IsLiveSorting = true;
+            this.UntrustSignaturesView.LiveSortingProperties.Add(propertyName);
+
             switch (propertyName)
             {
                 case "Signature":
                     {
-                        var view = ((ListCollectionView)this.UntrustSignaturesView);
+                        var view = this.UntrustSignaturesView;
                         view.CustomSort = new CustomSortComparer(direction, (x, y) =>
                         {
                             if (x is Signature tx && y is Signature ty)
@@ -298,6 +307,9 @@ namespace Amoeba.Interface
                         });
                         view.Refresh();
                     }
+                    break;
+                default:
+                    this.UntrustSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
                     break;
             }
         }
@@ -348,17 +360,20 @@ namespace Amoeba.Interface
 
         private void TagsSort(string propertyName, ListSortDirection direction)
         {
+            this.TagsView.IsLiveSorting = true;
+            this.TagsView.LiveSortingProperties.Add(propertyName);
+
             switch (propertyName)
             {
-                case "Name":
-                    this.TagsView.SortDescriptions.Add(new SortDescription("Name", direction));
-                    break;
                 case "Id":
                     {
-                        var view = ((ListCollectionView)this.TagsView);
+                        var view = this.TagsView;
                         view.CustomSort = new CustomSortComparer(direction, (x, y) => Unsafe.Compare(((Tag)x).Id, ((Tag)y).Id));
                         view.Refresh();
                     }
+                    break;
+                default:
+                    this.TagsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
                     break;
             }
         }

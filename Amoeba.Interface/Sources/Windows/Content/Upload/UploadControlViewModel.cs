@@ -31,7 +31,7 @@ namespace Amoeba.Interface
         public ReactiveProperty<bool> IsProgressVisible { get; private set; }
         public RateInfo Rate { get; } = new RateInfo();
 
-        public ICollectionView ContentsView => CollectionViewSource.GetDefaultView(_contents);
+        public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
         private ObservableCollection<PublishDirectoryInfo> _contents = new ObservableCollection<PublishDirectoryInfo>();
         public ReactiveProperty<PublishDirectoryInfo> SelectedItem { get; private set; }
         private ListSortInfo _sortInfo;
@@ -429,15 +429,9 @@ namespace Amoeba.Interface
 
         private void Sort(string propertyName, ListSortDirection direction)
         {
-            switch (propertyName)
-            {
-                case "Name":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Name", direction));
-                    break;
-                case "Path":
-                    this.ContentsView.SortDescriptions.Add(new SortDescription("Path", direction));
-                    break;
-            }
+            this.ContentsView.IsLiveSorting = true;
+            this.ContentsView.LiveSortingProperties.Add(propertyName);
+            this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
         }
 
         private void DirectoryAdd()
