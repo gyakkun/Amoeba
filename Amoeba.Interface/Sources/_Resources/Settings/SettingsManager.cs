@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Security;

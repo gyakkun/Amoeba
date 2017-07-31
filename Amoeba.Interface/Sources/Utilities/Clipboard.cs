@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Security;
 
 namespace Amoeba.Interface

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;

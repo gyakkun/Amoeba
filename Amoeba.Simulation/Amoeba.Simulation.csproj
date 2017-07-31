@@ -100,10 +100,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj">
-      <Project>{7d516c9f-7d8a-4166-8d12-d6af798f6da9}</Project>
-      <Name>Amoeba.Service</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
       <Project>{dbfd22ce-159b-4db0-8052-111686395656}</Project>
       <Name>Omnius.Base</Name>
@@ -127,6 +123,10 @@
     <ProjectReference Include="..\Omnius\Omnius.Messaging\Omnius.Messaging.csproj">
       <Project>{e25cac1d-d9c2-4f34-b270-7aa309e3ebec}</Project>
       <Name>Omnius.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Net.Amoeba\Omnius.Net.Amoeba.csproj">
+      <Project>{3f38d6f0-3cfb-4915-bd50-0fcf68381327}</Project>
+      <Name>Omnius.Net.Amoeba</Name>
     </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Net\Omnius.Net.csproj">
       <Project>{e01c79b7-a79f-41d8-9c0b-00228602f356}</Project>

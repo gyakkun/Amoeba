@@ -9,7 +9,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Data;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Utilities;
@@ -156,11 +156,11 @@ namespace Amoeba.Interface
                 }
 
                 {
+                    var location = _serviceManager.MyLocation;
+
                     App.Current.Dispatcher.InvokeAsync(() =>
                     {
                         if (token.IsCancellationRequested) return;
-
-                        var location = _serviceManager.MyLocation;
 
                         if (location.Uris.Count() > 0)
                         {

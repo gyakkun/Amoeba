@@ -159,6 +159,7 @@
                             <md:PackIcon Kind="ContentCopy" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
                     <MenuItem
                             Command="{Binding Path=ResponseCommand}"
                             Header="{Binding Path=ChatControl_Response, Source={StaticResource Languages}}"

@@ -8,7 +8,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Data;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Wpf;
@@ -100,9 +100,26 @@ namespace Amoeba.Interface
             {
                 var downloadItemInfos = new Dictionary<(Metadata, string), DownloadItemInfo>(new CustomEqualityComparer());
 
-                foreach (var item in SettingsManager.Instance.DownloadItemInfos.ToArray())
+                foreach (var newValue in SettingsManager.Instance.DownloadItemInfos.ToArray())
                 {
-                    downloadItemInfos.Add((item.Seed.Metadata, item.Path), item);
+                    var key = (newValue.Seed.Metadata, newValue.Path);
+
+                    if (!downloadItemInfos.TryGetValue(key, out var oldValue))
+                    {
+                        downloadItemInfos.Add(key, newValue);
+                    }
+                    else
+                    {
+                        if (oldValue.Seed.CreationTime < newValue.Seed.CreationTime)
+                        {
+                            downloadItemInfos[key] = newValue;
+                            SettingsManager.Instance.DownloadItemInfos.Remove(oldValue);
+                        }
+                        else
+                        {
+                            SettingsManager.Instance.DownloadItemInfos.Remove(newValue);
+                        }
+                    }
                 }
 
                 var map = new Dictionary<(Metadata, string), Information>(new CustomEqualityComparer());
@@ -158,6 +175,7 @@ namespace Amoeba.Interface
                         viewModel.SetValue("Length", item.Seed.Length);
                         // Rate
                         {
+                            int depth = info.GetValue<int>("Depth");
                             double value = Math.Round(((double)info.GetValue<int>("DownloadBlockCount") / (info.GetValue<int>("BlockCount") - info.GetValue<int>("ParityBlockCount"))) * 100, 2);
 
                             string text = string.Format("{0}% {1}/{2}({3}) [{4}/{5}]",
@@ -165,9 +183,10 @@ namespace Amoeba.Interface
                                 info.GetValue<int>("DownloadBlockCount"),
                                 (info.GetValue<int>("BlockCount") - info.GetValue<int>("ParityBlockCount")),
                                 info.GetValue<int>("BlockCount"),
-                                info.GetValue<int>("Depth"),
+                                depth,
                                 info.GetValue<Metadata>("Metadata").Depth);
 
+                            viewModel.SetValue("Rate_Depth", depth);
                             viewModel.SetValue("Rate_Value", value);
                             viewModel.SetValue("Rate_Text", text);
                         }
@@ -223,8 +242,20 @@ namespace Amoeba.Interface
         private void Sort(string propertyName, ListSortDirection direction)
         {
             this.ContentsView.IsLiveSorting = true;
-            this.ContentsView.LiveSortingProperties.Add(propertyName);
-            this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
+
+            if (propertyName == "Rate")
+            {
+                foreach (string name in new string[] { "Rate_Depth", "Rate_Value" })
+                {
+                    this.ContentsView.LiveSortingProperties.Add(name);
+                    this.ContentsView.SortDescriptions.Add(new SortDescription(name, direction));
+                }
+            }
+            else
+            {
+                this.ContentsView.LiveSortingProperties.Add(propertyName);
+                this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
+            }
         }
 
         private void Delete()

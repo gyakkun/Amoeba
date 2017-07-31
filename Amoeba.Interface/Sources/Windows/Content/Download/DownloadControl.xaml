@@ -58,6 +58,7 @@
                             <md:PackIcon Kind="Delete" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
                     <MenuItem
                             Command="{Binding Path=CopyCommand}"
                             Header="{Binding Path=DownloadControl_Copy, Source={StaticResource Languages}}"

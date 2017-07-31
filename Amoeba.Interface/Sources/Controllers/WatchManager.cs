@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Utilities;
 using Omnius.Wpf;

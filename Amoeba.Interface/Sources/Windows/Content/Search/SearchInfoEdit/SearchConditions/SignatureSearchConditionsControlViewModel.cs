@@ -137,31 +137,29 @@ namespace Amoeba.Interface
         private void Sort(string propertyName, ListSortDirection direction)
         {
             this.ContentsView.IsLiveSorting = true;
-            this.ContentsView.LiveSortingProperties.Add(propertyName);
 
-            switch (propertyName)
+            if (propertyName == "Value")
             {
-                case "Value":
-                    {
-                        var view = this.ContentsView;
-                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
-                        {
-                            if (x is SearchCondition<Signature> tx && y is SearchCondition<Signature> ty)
-                            {
-                                int c = tx.Value.Name.CompareTo(ty.Value.Name);
-                                if (c != 0) return c;
-                                c = Unsafe.Compare(tx.Value.Id, ty.Value.Id);
-                                if (c != 0) return c;
-                            }
+                this.ContentsView.LiveSortingProperties.Add(propertyName);
 
-                            return 0;
-                        });
-                        view.Refresh();
+                var view = this.ContentsView;
+                view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                {
+                    if (x is SearchCondition<Signature> tx && y is SearchCondition<Signature> ty)
+                    {
+                        int c = tx.Value.Name.CompareTo(ty.Value.Name);
+                        if (c != 0) return c;
+                        c = Unsafe.Compare(tx.Value.Id, ty.Value.Id);
+                        if (c != 0) return c;
                     }
-                    break;
-                default:
-                    this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
-                    break;
+
+                    return 0;
+                });
+            }
+            else
+            {
+                this.ContentsView.LiveSortingProperties.Add(propertyName);
+                this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
             }
         }
 

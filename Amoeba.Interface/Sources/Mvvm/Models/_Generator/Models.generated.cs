@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using Omnius.Base;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius;
 using Omnius.Collections;
 using Omnius.Security;

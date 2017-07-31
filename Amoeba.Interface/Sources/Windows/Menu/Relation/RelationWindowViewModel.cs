@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Security;
@@ -211,31 +211,29 @@ namespace Amoeba.Interface
         private void TrustSignaturesSort(string propertyName, ListSortDirection direction)
         {
             this.TrustSignaturesView.IsLiveSorting = true;
-            this.TrustSignaturesView.LiveSortingProperties.Add(propertyName);
 
-            switch (propertyName)
+            if (propertyName == "Signature")
             {
-                case "Signature":
-                    {
-                        var view = this.TrustSignaturesView;
-                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
-                        {
-                            if (x is Signature tx && y is Signature ty)
-                            {
-                                int c = tx.Name.CompareTo(ty.Name);
-                                if (c != 0) return c;
-                                c = Unsafe.Compare(tx.Id, ty.Id);
-                                if (c != 0) return c;
-                            }
+                this.TrustSignaturesView.LiveSortingProperties.Add(propertyName);
 
-                            return 0;
-                        });
-                        view.Refresh();
+                var view = this.TrustSignaturesView;
+                view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                {
+                    if (x is Signature tx && y is Signature ty)
+                    {
+                        int c = tx.Name.CompareTo(ty.Name);
+                        if (c != 0) return c;
+                        c = Unsafe.Compare(tx.Id, ty.Id);
+                        if (c != 0) return c;
                     }
-                    break;
-                default:
-                    this.TrustSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
-                    break;
+
+                    return 0;
+                });
+            }
+            else
+            {
+                this.TrustSignaturesView.LiveSortingProperties.Add(propertyName);
+                this.TrustSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
             }
         }
 
@@ -286,31 +284,29 @@ namespace Amoeba.Interface
         private void UntrustSignaturesSort(string propertyName, ListSortDirection direction)
         {
             this.UntrustSignaturesView.IsLiveSorting = true;
-            this.UntrustSignaturesView.LiveSortingProperties.Add(propertyName);
 
-            switch (propertyName)
+            if (propertyName == "Signature")
             {
-                case "Signature":
-                    {
-                        var view = this.UntrustSignaturesView;
-                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
-                        {
-                            if (x is Signature tx && y is Signature ty)
-                            {
-                                int c = tx.Name.CompareTo(ty.Name);
-                                if (c != 0) return c;
-                                c = Unsafe.Compare(tx.Id, ty.Id);
-                                if (c != 0) return c;
-                            }
+                this.UntrustSignaturesView.LiveSortingProperties.Add(propertyName);
 
-                            return 0;
-                        });
-                        view.Refresh();
+                var view = this.UntrustSignaturesView;
+                view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                {
+                    if (x is Signature tx && y is Signature ty)
+                    {
+                        int c = tx.Name.CompareTo(ty.Name);
+                        if (c != 0) return c;
+                        c = Unsafe.Compare(tx.Id, ty.Id);
+                        if (c != 0) return c;
                     }
-                    break;
-                default:
-                    this.UntrustSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
-                    break;
+
+                    return 0;
+                });
+            }
+            else
+            {
+                this.UntrustSignaturesView.LiveSortingProperties.Add(propertyName);
+                this.UntrustSignaturesView.SortDescriptions.Add(new SortDescription(propertyName, direction));
             }
         }
 
@@ -361,20 +357,18 @@ namespace Amoeba.Interface
         private void TagsSort(string propertyName, ListSortDirection direction)
         {
             this.TagsView.IsLiveSorting = true;
-            this.TagsView.LiveSortingProperties.Add(propertyName);
 
-            switch (propertyName)
+            if (propertyName == "Id")
             {
-                case "Id":
-                    {
-                        var view = this.TagsView;
-                        view.CustomSort = new CustomSortComparer(direction, (x, y) => Unsafe.Compare(((Tag)x).Id, ((Tag)y).Id));
-                        view.Refresh();
-                    }
-                    break;
-                default:
-                    this.TagsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
-                    break;
+                this.TagsView.LiveSortingProperties.Add(propertyName);
+
+                var view = this.TagsView;
+                view.CustomSort = new CustomSortComparer(direction, (x, y) => Unsafe.Compare(((Tag)x).Id, ((Tag)y).Id));
+            }
+            else
+            {
+                this.TagsView.LiveSortingProperties.Add(propertyName);
+                this.TagsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
             }
         }
 

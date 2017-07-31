@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Media.Imaging;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Security;
 
 namespace Amoeba.Interface

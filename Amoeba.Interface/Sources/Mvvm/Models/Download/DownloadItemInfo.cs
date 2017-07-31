@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 
 namespace Amoeba.Interface
 {

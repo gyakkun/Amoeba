@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -159,6 +159,13 @@ namespace Amoeba.Interface
 
         private void TabSelectChanged(TreeViewModelBase viewModel)
         {
+            if (viewModel == null || _sortInfo == null) return;
+
+            this.TabSelectChanged(viewModel, _sortInfo.PropertyName, _sortInfo.Direction);
+        }
+
+        private async void TabSelectChanged(TreeViewModelBase viewModel, string propertyName, ListSortDirection direction)
+        {
             if (viewModel is SubscribeCategoryViewModel categoryViewModel)
             {
                 _contents.Clear();
@@ -167,58 +174,54 @@ namespace Amoeba.Interface
             {
                 storeViewModel.Model.IsUpdated = false;
 
-                var list = new List<SubscribeItemViewModel>();
-
-                foreach (var item in storeViewModel.Model.BoxInfos)
-                {
-                    var vm = new SubscribeItemViewModel();
-                    vm.Icon = AmoebaEnvironment.Icons.Box;
-                    vm.Name = item.Name;
-                    vm.Length = GetBoxLength(item);
-                    vm.CreationTime = GetBoxCreationTime(item);
-                    vm.Model = item;
-
-                    list.Add(vm);
-                }
+                var subscribeItems = this.GetSubscribeItems(storeViewModel.Model.BoxInfos, Array.Empty<Seed>(), propertyName, direction);
 
                 _contents.Clear();
-                _contents.AddRange(list);
+                _contents.AddRange(subscribeItems);
             }
             else if (viewModel is SubscribeBoxViewModel boxViewModel)
             {
-                var list = new List<SubscribeItemViewModel>();
-
-                foreach (var item in boxViewModel.Model.BoxInfos)
-                {
-                    var vm = new SubscribeItemViewModel();
-                    vm.Icon = AmoebaEnvironment.Icons.Box;
-                    vm.Name = item.Name;
-                    vm.Length = GetBoxLength(item);
-                    vm.CreationTime = GetBoxCreationTime(item);
-                    vm.Model = item;
-
-                    list.Add(vm);
-                }
-
-                foreach (var item in boxViewModel.Model.Seeds)
-                {
-                    var vm = new SubscribeItemViewModel();
-                    vm.Icon = IconUtils.GetImage(item.Name);
-                    vm.Name = item.Name;
-                    vm.CreationTime = item.CreationTime;
-                    vm.Length = item.Length;
-
-                    _cacheStates.TryGetValue(item.Metadata, out var state);
-                    vm.State = state;
-
-                    vm.Model = item;
-
-                    list.Add(vm);
-                }
+                var subscribeItems = this.GetSubscribeItems(boxViewModel.Model.BoxInfos, boxViewModel.Model.Seeds, propertyName, direction);
 
                 _contents.Clear();
-                _contents.AddRange(list);
+                _contents.AddRange(subscribeItems);
             }
+        }
+
+        private IEnumerable<SubscribeItemViewModel> GetSubscribeItems(IEnumerable<SubscribeBoxInfo> boxInfos, IEnumerable<Seed> seeds, string propertyName, ListSortDirection direction)
+        {
+            var list = new List<SubscribeItemViewModel>();
+
+            foreach (var item in boxInfos)
+            {
+                var vm = new SubscribeItemViewModel();
+                vm.Icon = AmoebaEnvironment.Icons.Box;
+                vm.Name = item.Name;
+                vm.Length = GetBoxLength(item);
+                vm.CreationTime = GetBoxCreationTime(item);
+
+                vm.Model = item;
+
+                list.Add(vm);
+            }
+
+            foreach (var item in seeds)
+            {
+                var vm = new SubscribeItemViewModel();
+                vm.Icon = IconUtils.GetImage(item.Name);
+                vm.Name = item.Name;
+                vm.Length = item.Length;
+                vm.CreationTime = item.CreationTime;
+
+                _cacheStates.TryGetValue(item.Metadata, out var state);
+                vm.State = state;
+
+                vm.Model = item;
+
+                list.Add(vm);
+            }
+
+            return this.Sort(list, propertyName, direction, 100000);
         }
 
         private long GetBoxLength(SubscribeBoxInfo boxInfo)
@@ -255,6 +258,66 @@ namespace Amoeba.Interface
 
             if (seeds.Count == 0) return DateTime.MinValue;
             else return seeds.Max(n => n.CreationTime);
+        }
+
+        private IEnumerable<SubscribeItemViewModel> Sort(IEnumerable<SubscribeItemViewModel> collection, string propertyName, ListSortDirection direction, int maxCount)
+        {
+            var list = new List<SubscribeItemViewModel>(collection);
+
+            if (propertyName == "Name")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (propertyName == "Length")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.Length.CompareTo(y.Length);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (propertyName == "CreationTime")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.CreationTime.CompareTo(y.CreationTime);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (propertyName == "State")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.State.CompareTo(y.State);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+
+            if (direction == ListSortDirection.Descending)
+            {
+                list.Reverse();
+            }
+
+            if (list.Count <= maxCount) return list;
+            else return list.GetRange(0, maxCount);
         }
 
         private void WatchThread(CancellationToken token)
@@ -460,48 +523,27 @@ namespace Amoeba.Interface
 
         private void Sort(string propertyName)
         {
-            if (propertyName == null)
-            {
-                this.ContentsView.SortDescriptions.Clear();
+            var direction = ListSortDirection.Ascending;
 
-                if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
+            if (_sortInfo.PropertyName == propertyName)
+            {
+                if (_sortInfo.Direction == ListSortDirection.Ascending)
                 {
-                    this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
+                    direction = ListSortDirection.Descending;
+                }
+                else
+                {
+                    direction = ListSortDirection.Ascending;
                 }
             }
-            else
+
+            if (!string.IsNullOrEmpty(propertyName))
             {
-                var direction = ListSortDirection.Ascending;
-
-                if (_sortInfo.PropertyName == propertyName)
-                {
-                    if (_sortInfo.Direction == ListSortDirection.Ascending)
-                    {
-                        direction = ListSortDirection.Descending;
-                    }
-                    else
-                    {
-                        direction = ListSortDirection.Ascending;
-                    }
-                }
-
-                this.ContentsView.SortDescriptions.Clear();
-
-                if (!string.IsNullOrEmpty(propertyName))
-                {
-                    this.Sort(propertyName, direction);
-                }
-
-                _sortInfo.Direction = direction;
-                _sortInfo.PropertyName = propertyName;
+                this.TabSelectChanged(this.TabSelectedItem.Value, propertyName, direction);
             }
-        }
 
-        private void Sort(string propertyName, ListSortDirection direction)
-        {
-            this.ContentsView.IsLiveSorting = true;
-            this.ContentsView.LiveSortingProperties.Add(propertyName);
-            this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
+            _sortInfo.Direction = direction;
+            _sortInfo.PropertyName = propertyName;
         }
 
         private void Copy()

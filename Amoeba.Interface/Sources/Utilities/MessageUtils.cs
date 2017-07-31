@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 
 namespace Amoeba.Interface

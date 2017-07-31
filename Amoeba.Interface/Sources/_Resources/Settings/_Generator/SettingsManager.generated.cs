@@ -8,7 +8,7 @@ using Omnius.Configuration;
 using System.Collections.ObjectModel;
 using Omnius.Security;
 using Omnius.Collections;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 
 namespace Amoeba.Interface
 {

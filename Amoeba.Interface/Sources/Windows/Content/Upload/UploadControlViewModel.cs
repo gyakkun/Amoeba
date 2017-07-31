@@ -11,9 +11,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Threading;
-using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Net.Amoeba;
 using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
@@ -135,11 +135,15 @@ namespace Amoeba.Interface
 
                 // Remove
                 {
-                    var hashMap = new HashSet<string>();
-                    hashMap.UnionWith(_serviceManager.GetContentInformations().Select(n => n.GetValue<string>("Path")));
-                    hashMap.ExceptWith(targetPublishStoreInfo.Map.SelectMany(n => n.Value.SelectMany(m => m.Value)));
+                    var hashMap = new HashSet<(string Path, long Length)>(new CustomEqualityComparer());
+                    hashMap.UnionWith(_serviceManager.GetContentInformations().Select(n => (n.GetValue<string>("Path"), n.GetValue<long>("Length"))));
 
-                    foreach (string path in hashMap)
+                    foreach (string path in targetPublishStoreInfo.Map.SelectMany(n => n.Value.SelectMany(m => m.Value)))
+                    {
+                        hashMap.Remove((path, new FileInfo(path).Length));
+                    }
+
+                    foreach (string path in hashMap.Select(n => n.Path))
                     {
                         if (token.IsCancellationRequested) return;
                         if (targetPublishStoreInfo != _publishStoreInfo) goto End;
@@ -179,6 +183,10 @@ namespace Amoeba.Interface
                         {
                             _serviceManager.Import(path, token).Wait();
                         }
+                        catch (TaskCanceledException)
+                        {
+                            return;
+                        }
                         catch (Exception e)
                         {
                             Log.Error(e);
@@ -208,7 +216,18 @@ namespace Amoeba.Interface
                         boxes.Add(tempBox);
                     }
 
-                    _serviceManager.Upload(new Store(boxes), targetPublishStoreInfo.DigitalSignature, token).Wait();
+                    try
+                    {
+                        _serviceManager.Upload(new Store(boxes), targetPublishStoreInfo.DigitalSignature, token).Wait();
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
                 }
 
                 if (token.IsCancellationRequested) return;
@@ -554,6 +573,19 @@ namespace Amoeba.Interface
 
                     return _map;
                 }
+            }
+        }
+
+        class CustomEqualityComparer : IEqualityComparer<(string Path, long Length)>
+        {
+            public bool Equals((string Path, long Length) x, (string Path, long Length) y)
+            {
+                return (x.Path == y.Path && x.Length == y.Length);
+            }
+
+            public int GetHashCode((string Path, long Length) value)
+            {
+                return value.Path.GetHashCode();
             }
         }
     }

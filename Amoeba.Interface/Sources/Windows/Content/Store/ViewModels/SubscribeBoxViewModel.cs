@@ -1,5 +1,5 @@
 using System.Reactive.Disposables;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;

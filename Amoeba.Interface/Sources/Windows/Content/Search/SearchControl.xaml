@@ -205,13 +205,41 @@
                             <md:PackIcon Kind="CloudDownload" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
                     <MenuItem
-                            Command="{Binding Path=RemoveDownloadHistoryCommand}"
-                            Header="{Binding Path=SearchControl_RemoveDownloadHistory, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+R">
+                            Command="{Binding Path=AdvancedCommand}"
+                            Header="{Binding Path=SearchControl_Advanced, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+A">
                         <MenuItem.Icon>
-                            <md:PackIcon Kind="Delete" />
+                            <md:PackIcon Kind="Settings" />
                         </MenuItem.Icon>
+                        <MenuItem
+                                Command="{Binding Path=AdvancedCopyCommand}"
+                                CommandParameter="Name"
+                                Header="{Binding Path=SearchControl_CopyName, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+N">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="Delete" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                                Command="{Binding Path=AdvancedCopyCommand}"
+                                CommandParameter="Signature"
+                                Header="{Binding Path=SearchControl_CopySignature, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+S">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="ContentCopy" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem
+                                Command="{Binding Path=RemoveDownloadHistoryCommand}"
+                                Header="{Binding Path=SearchControl_RemoveDownloadHistory, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+R">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="ContentCopy" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
                 </ContextMenu>
             </ListView.ContextMenu>

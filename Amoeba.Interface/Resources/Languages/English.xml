@@ -186,6 +186,9 @@
   <Property Name="SearchControl_Cut" Value="Cut" />
   <Property Name="SearchControl_Copy" Value="Copy" />
   <Property Name="SearchControl_Paste" Value="Paste" />
+  <Property Name="SearchControl_Advanced" Value="Advanced" />
+  <Property Name="SearchControl_CopyName" Value="Copy name" />
+  <Property Name="SearchControl_CopySignature" Value="Copy signature" />
   <Property Name="SearchControl_RemoveDownloadHistory" Value="Remove download history" />
   <Property Name="SearchControl_Name" Value="Name" />
   <Property Name="SearchControl_Signature" Value="Signature" />

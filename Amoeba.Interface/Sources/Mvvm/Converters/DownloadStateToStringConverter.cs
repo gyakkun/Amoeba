@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 
 namespace Amoeba.Interface
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Disposables;
 using System.Threading;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Security;

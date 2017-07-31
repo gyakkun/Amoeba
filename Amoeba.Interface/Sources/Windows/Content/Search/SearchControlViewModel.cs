@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
-using Amoeba.Service;
+using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -57,6 +57,8 @@ namespace Amoeba.Interface
 
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand DownloadCommand { get; private set; }
+        public ReactiveCommand AdvancedCommand { get; private set; }
+        public ReactiveCommand<string> AdvancedCopyCommand { get; private set; }
         public ReactiveCommand RemoveDownloadHistoryCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
@@ -135,7 +137,12 @@ namespace Amoeba.Interface
                 this.DownloadCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.DownloadCommand.Subscribe(() => this.Download()).AddTo(_disposable);
 
-                this.RemoveDownloadHistoryCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
+                this.AdvancedCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
+
+                this.AdvancedCopyCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.AdvancedCopyCommand.Subscribe((type) => this.AdvancedCopy(type)).AddTo(_disposable);
+
+                this.RemoveDownloadHistoryCommand = new ReactiveCommand().AddTo(_disposable);
                 this.RemoveDownloadHistoryCommand.Subscribe(() => this.RemoveDownloadHistory()).AddTo(_disposable);
             }
 
@@ -205,7 +212,14 @@ namespace Amoeba.Interface
             this.SearchInput.Value = "";
         }
 
-        private async void TabSelectChanged(TreeViewModelBase viewModel)
+        private void TabSelectChanged(TreeViewModelBase viewModel)
+        {
+            if (viewModel == null || _sortInfo == null) return;
+
+            this.TabSelectChanged(viewModel, _sortInfo.PropertyName, _sortInfo.Direction);
+        }
+
+        private async void TabSelectChanged(TreeViewModelBase viewModel, string propertyName, ListSortDirection direction)
         {
             if (viewModel is SearchViewModel searchViewModel)
             {
@@ -222,6 +236,8 @@ namespace Amoeba.Interface
                         {
                             searchItems = Filter(searchItems, tempViewModel.Model);
                         }
+
+                        searchItems = this.Sort(searchItems, propertyName, direction, 100000);
                     });
                 }
 
@@ -231,7 +247,81 @@ namespace Amoeba.Interface
 
                 _contents.Clear();
                 _contents.AddRange(searchItems);
+
+                searchViewModel.Count.Value = _contents.Count;
             }
+        }
+
+        private IEnumerable<SearchItemViewModel> Sort(IEnumerable<SearchItemViewModel> collection, string propertyName, ListSortDirection direction, int maxCount)
+        {
+            var list = new List<SearchItemViewModel>(collection);
+
+            if (propertyName == "Name")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (propertyName == "Signature")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = (x.Signature?.ToString() ?? "").CompareTo(y.Signature?.ToString() ?? "");
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (propertyName == "Length")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.Length.CompareTo(y.Length);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (propertyName == "CreationTime")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.CreationTime.CompareTo(y.CreationTime);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+            else if (propertyName == "State")
+            {
+                list.Sort((x, y) =>
+                {
+                    int c = x.State.CompareTo(y.State);
+                    if (c != 0) return c;
+                    c = x.Name.CompareTo(y.Name);
+                    if (c != 0) return c;
+
+                    return 0;
+                });
+            }
+
+            if (direction == ListSortDirection.Descending)
+            {
+                list.Reverse();
+            }
+
+            if (list.Count <= maxCount) return list;
+            else return list.GetRange(0, maxCount);
         }
 
         private void WatchThread(CancellationToken token)
@@ -540,73 +630,27 @@ namespace Amoeba.Interface
 
         private void Sort(string propertyName)
         {
-            if (propertyName == null)
-            {
-                this.ContentsView.SortDescriptions.Clear();
+            var direction = ListSortDirection.Ascending;
 
-                if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
+            if (_sortInfo.PropertyName == propertyName)
+            {
+                if (_sortInfo.Direction == ListSortDirection.Ascending)
                 {
-                    this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
+                    direction = ListSortDirection.Descending;
+                }
+                else
+                {
+                    direction = ListSortDirection.Ascending;
                 }
             }
-            else
+
+            if (!string.IsNullOrEmpty(propertyName))
             {
-                var direction = ListSortDirection.Ascending;
-
-                if (_sortInfo.PropertyName == propertyName)
-                {
-                    if (_sortInfo.Direction == ListSortDirection.Ascending)
-                    {
-                        direction = ListSortDirection.Descending;
-                    }
-                    else
-                    {
-                        direction = ListSortDirection.Ascending;
-                    }
-                }
-
-                this.ContentsView.SortDescriptions.Clear();
-
-                if (!string.IsNullOrEmpty(propertyName))
-                {
-                    this.Sort(propertyName, direction);
-                }
-
-                _sortInfo.Direction = direction;
-                _sortInfo.PropertyName = propertyName;
+                this.TabSelectChanged(this.TabSelectedItem.Value, propertyName, direction);
             }
-        }
 
-        private void Sort(string propertyName, ListSortDirection direction)
-        {
-            switch (propertyName)
-            {
-                case "Signature":
-                    {
-                        var view = this.ContentsView;
-                        view.CustomSort = new CustomSortComparer(direction, (x, y) =>
-                        {
-                            if (x is SearchItemViewModel tx && y is SearchItemViewModel ty)
-                            {
-                                if (tx.Signature == null && ty.Signature == null) return 0;
-                                if (tx.Signature == null && ty.Signature != null) return -1;
-                                if (tx.Signature != null && ty.Signature == null) return 1;
-
-                                int c = tx.Signature.Name.CompareTo(ty.Signature.Name);
-                                if (c != 0) return c;
-                                c = Unsafe.Compare(tx.Signature.Id, ty.Signature.Id);
-                                if (c != 0) return c;
-                            }
-
-                            return 0;
-                        });
-                        view.Refresh();
-                    }
-                    break;
-                default:
-                    this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
-                    break;
-            }
+            _sortInfo.Direction = direction;
+            _sortInfo.PropertyName = propertyName;
         }
 
         private void Copy()
@@ -621,6 +665,20 @@ namespace Amoeba.Interface
                 .Select(n => n.Model).ToArray())
             {
                 SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo(seed, seed.Name));
+            }
+        }
+
+        private void AdvancedCopy(string type)
+        {
+            var selectItems = this.SelectedItems.OfType<SearchItemViewModel>().ToArray();
+
+            if (type == "Name")
+            {
+                Clipboard.SetText(string.Join(Environment.NewLine, new HashSet<string>(selectItems.Select(n => n.Name))));
+            }
+            else if (type == "Signature")
+            {
+                Clipboard.SetText(string.Join(Environment.NewLine, new HashSet<Signature>(selectItems.Select(n => n.Signature))));
             }
         }
 
