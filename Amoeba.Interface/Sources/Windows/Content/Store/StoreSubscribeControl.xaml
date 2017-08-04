@@ -213,6 +213,24 @@
                             <md:PackIcon Kind="CloudDownload" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
+                    <MenuItem
+                            Command="{Binding Path=AdvancedCommand}"
+                            Header="{Binding Path=StoreSubscribeControl_Advanced, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+A">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Settings" />
+                        </MenuItem.Icon>
+                        <MenuItem
+                                Command="{Binding Path=AdvancedCopyCommand}"
+                                CommandParameter="Name"
+                                Header="{Binding Path=StoreSubscribeControl_CopyName, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+N">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="ContentCopy" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>

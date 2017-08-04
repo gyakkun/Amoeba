@@ -1,3 +1,9 @@
+using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Net.Amoeba;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,12 +14,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Data;
-using Omnius.Net.Amoeba;
-using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -87,10 +87,6 @@ namespace Amoeba.Interface
 
             {
                 Backup.Instance.SaveEvent += this.Save;
-            }
-
-            {
-                this.Sort(null);
             }
         }
 
@@ -194,6 +190,8 @@ namespace Amoeba.Interface
                         viewModel.SetValue("Path", item.Path);
                         viewModel.SetValue("Model", item);
                     }
+
+                    this.Sort();
                 });
 
                 if (token.WaitHandle.WaitOne(1000 * 3)) return;
@@ -202,60 +200,80 @@ namespace Amoeba.Interface
 
         private void Sort(string propertyName)
         {
-            if (propertyName == null)
-            {
-                this.ContentsView.SortDescriptions.Clear();
+            var direction = ListSortDirection.Ascending;
 
-                if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
+            if (_sortInfo.PropertyName == propertyName)
+            {
+                if (_sortInfo.Direction == ListSortDirection.Ascending)
                 {
-                    this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
+                    direction = ListSortDirection.Descending;
+                }
+                else
+                {
+                    direction = ListSortDirection.Ascending;
                 }
             }
-            else
-            {
-                var direction = ListSortDirection.Ascending;
 
-                if (_sortInfo.PropertyName == propertyName)
-                {
-                    if (_sortInfo.Direction == ListSortDirection.Ascending)
-                    {
-                        direction = ListSortDirection.Descending;
-                    }
-                    else
-                    {
-                        direction = ListSortDirection.Ascending;
-                    }
-                }
+            _sortInfo.Direction = direction;
+            _sortInfo.PropertyName = propertyName;
 
-                this.ContentsView.SortDescriptions.Clear();
-
-                if (!string.IsNullOrEmpty(propertyName))
-                {
-                    this.Sort(propertyName, direction);
-                }
-
-                _sortInfo.Direction = direction;
-                _sortInfo.PropertyName = propertyName;
-            }
+            this.Sort();
         }
 
-        private void Sort(string propertyName, ListSortDirection direction)
+        private void Sort()
         {
-            this.ContentsView.IsLiveSorting = true;
+            if (this.ContentsView.SortDescriptions.Count != 0) this.ContentsView.SortDescriptions.Clear();
+            _contents.Sort((x, y) => this.Sort(x, y, _sortInfo.PropertyName, _sortInfo.Direction));
+        }
 
-            if (propertyName == "Rate")
+        private int Sort(DynamicOptions x, DynamicOptions y, string propertyName, ListSortDirection direction)
+        {
+            int a = direction == ListSortDirection.Ascending ? 1 : -1;
+
+            if (propertyName == "Name")
             {
-                foreach (string name in new string[] { "Rate_Depth", "Rate_Value" })
-                {
-                    this.ContentsView.LiveSortingProperties.Add(name);
-                    this.ContentsView.SortDescriptions.Add(new SortDescription(name, direction));
-                }
+                int c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                return c;
             }
-            else
+            else if (propertyName == "Length")
             {
-                this.ContentsView.LiveSortingProperties.Add(propertyName);
-                this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
+                int c = a * x.GetValue<long>("Length").CompareTo(y.GetValue<long>("Length"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                return c;
             }
+            else if (propertyName == "CreationTime")
+            {
+                int c = a * x.GetValue<DateTime>("CreationTime").CompareTo(y.GetValue<DateTime>("CreationTime"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                return c;
+            }
+            else if (propertyName == "Rate")
+            {
+                int c = a * x.GetValue<int>("Rate_Depth").CompareTo(y.GetValue<int>("Rate_Depth"));
+                if (c != 0) return c;
+                c = a * x.GetValue<double>("Rate_Value").CompareTo(y.GetValue<double>("Rate_Value"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                return c;
+            }
+            else if (propertyName == "State")
+            {
+                int c = a * x.GetValue<SearchState>("State").CompareTo(y.GetValue<SearchState>("State"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                return c;
+            }
+            else if (propertyName == "Path")
+            {
+                int c = a * x.GetValue<string>("Path").CompareTo(y.GetValue<string>("Path"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                return c;
+            }
+
+            return 0;
         }
 
         private void Delete()

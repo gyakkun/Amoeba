@@ -133,6 +133,13 @@ namespace Amoeba.Interface
                     var result = MessageBox.Show(vm.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
                     if (result == MessageBoxResult.OK) vm.Ok();
                 }).AddTo(_disposable);
+
+            Messenger.Instance.GetEvent<NoticeWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var result = MessageBox.Show(vm.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+                    if (result == MessageBoxResult.OK) vm.Ok();
+                }).AddTo(_disposable);
         }
 
         private void Setting_SessionEnding()

@@ -1,3 +1,10 @@
+using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Net.Amoeba;
+using Omnius.Utilities;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,13 +16,6 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Data;
-using Omnius.Net.Amoeba;
-using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Utilities;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -94,11 +94,6 @@ namespace Amoeba.Interface
             {
                 Backup.Instance.SaveEvent += this.Save;
             }
-
-            {
-                this.ConnectionSort(null);
-            }
-
             {
                 this.Setting_Log();
             }
@@ -152,6 +147,8 @@ namespace Amoeba.Interface
                                 viewModel.SetValue(name, value);
                             }
                         }
+
+                        this.ConnectionSort();
                     });
                 }
 
@@ -211,48 +208,71 @@ namespace Amoeba.Interface
 
         private void ConnectionSort(string propertyName)
         {
-            if (propertyName == null)
-            {
-                this.ConnectionInfosView.SortDescriptions.Clear();
+            var direction = ListSortDirection.Ascending;
 
-                if (!string.IsNullOrEmpty(_connectionSortInfo.PropertyName))
+            if (_connectionSortInfo.PropertyName == propertyName)
+            {
+                if (_connectionSortInfo.Direction == ListSortDirection.Ascending)
                 {
-                    this.ConnectionSort(_connectionSortInfo.PropertyName, _connectionSortInfo.Direction);
+                    direction = ListSortDirection.Descending;
+                }
+                else
+                {
+                    direction = ListSortDirection.Ascending;
                 }
             }
-            else
-            {
-                var direction = ListSortDirection.Ascending;
 
-                if (_connectionSortInfo.PropertyName == propertyName)
-                {
-                    if (_connectionSortInfo.Direction == ListSortDirection.Ascending)
-                    {
-                        direction = ListSortDirection.Descending;
-                    }
-                    else
-                    {
-                        direction = ListSortDirection.Ascending;
-                    }
-                }
+            _connectionSortInfo.Direction = direction;
+            _connectionSortInfo.PropertyName = propertyName;
 
-                this.ConnectionInfosView.SortDescriptions.Clear();
-
-                if (!string.IsNullOrEmpty(propertyName))
-                {
-                    this.ConnectionSort(propertyName, direction);
-                }
-
-                _connectionSortInfo.Direction = direction;
-                _connectionSortInfo.PropertyName = propertyName;
-            }
+            this.ConnectionSort();
         }
 
-        private void ConnectionSort(string propertyName, ListSortDirection direction)
+        private void ConnectionSort()
         {
-            this.ConnectionInfosView.IsLiveSorting = true;
-            this.ConnectionInfosView.LiveSortingProperties.Add(propertyName);
-            this.ConnectionInfosView.SortDescriptions.Add(new SortDescription(propertyName, direction));
+            if (this.ConnectionInfosView.SortDescriptions.Count != 0) this.ConnectionInfosView.SortDescriptions.Clear();
+            _connectionInfos.Sort((x, y) => this.ConnectionSort(x, y, _connectionSortInfo.PropertyName, _connectionSortInfo.Direction));
+        }
+
+        private int ConnectionSort(DynamicOptions x, DynamicOptions y, string propertyName, ListSortDirection direction)
+        {
+            int a = direction == ListSortDirection.Ascending ? 1 : -1;
+
+            if (propertyName == "Type")
+            {
+                int c = a * x.GetValue<SessionType>("Type").CompareTo(y.GetValue<SessionType>("Type"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Uri").CompareTo(y.GetValue<string>("Uri"));
+                return c;
+            }
+            else if (propertyName == "Uri")
+            {
+                int c = a * x.GetValue<string>("Uri").CompareTo(y.GetValue<string>("Uri"));
+                return c;
+            }
+            else if (propertyName == "Priority")
+            {
+                int c = a * x.GetValue<double>("Priority").CompareTo(y.GetValue<double>("Priority"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Uri").CompareTo(y.GetValue<string>("Uri"));
+                return c;
+            }
+            else if (propertyName == "ReceivedByteCount")
+            {
+                int c = a * x.GetValue<long>("ReceivedByteCount").CompareTo(y.GetValue<long>("ReceivedByteCount"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Uri").CompareTo(y.GetValue<string>("Uri"));
+                return c;
+            }
+            else if (propertyName == "SentByteCount")
+            {
+                int c = a * x.GetValue<long>("SentByteCount").CompareTo(y.GetValue<long>("SentByteCount"));
+                if (c != 0) return c;
+                c = a * x.GetValue<string>("Uri").CompareTo(y.GetValue<string>("Uri"));
+                return c;
+            }
+
+            return 0;
         }
 
         private void ConnectionCopy()

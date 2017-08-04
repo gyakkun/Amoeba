@@ -11,6 +11,7 @@ namespace Amoeba.Interface
     class PublishPreviewWindowShowEvent : PubSubEvent<PublishPreviewWindowViewModel> { }
     class NameEditWindowShowEvent : PubSubEvent<NameEditWindowViewModel> { }
     class ConfirmWindowShowEvent : PubSubEvent<ConfirmWindowViewModel> { }
+    class NoticeWindowShowEvent : PubSubEvent<NoticeWindowViewModel> { }
 
     class Messenger : EventAggregator
     {

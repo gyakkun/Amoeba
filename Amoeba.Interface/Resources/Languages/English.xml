@@ -83,18 +83,6 @@
   <Property Name="RelationWindow_Copy" Value="Copy" />
   <Property Name="RelationWindow_Close" Value="Close" />
 
-  <Property Name="StoreSubscribeControl_Download" Value="Download" />
-  <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
-  <Property Name="StoreSubscribeControl_Edit" Value="Edit" />
-  <Property Name="StoreSubscribeControl_Delete" Value="Delete" />
-  <Property Name="StoreSubscribeControl_Cut" Value="Cut" />
-  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
-  <Property Name="StoreSubscribeControl_Paste" Value="Paste" />
-  <Property Name="StoreSubscribeControl_Name" Value="Name" />
-  <Property Name="StoreSubscribeControl_Length" Value="Length" />
-  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
-  <Property Name="StoreSubscribeControl_State" Value="State" />
-
   <Property Name="OptionsWindow_Title" Value="Options" />
   <Property Name="OptionsWindow_Account" Value="Account" />
   <Property Name="OptionsWindow_Signature" Value="Signature" />
@@ -177,6 +165,20 @@
   <Property Name="ChatMessageEditWindow_Title" Value="Chat message edit" />
   <Property Name="ChatMessageEditWindow_Ok" Value="Ok" />
   <Property Name="ChatMessageEditWindow_Cancel" Value="Cancel" />
+
+  <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
+  <Property Name="StoreSubscribeControl_Edit" Value="Edit" />
+  <Property Name="StoreSubscribeControl_Delete" Value="Delete" />
+  <Property Name="StoreSubscribeControl_Cut" Value="Cut" />
+  <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
+  <Property Name="StoreSubscribeControl_Paste" Value="Paste" />
+  <Property Name="StoreSubscribeControl_Download" Value="Download" />
+  <Property Name="StoreSubscribeControl_Advanced" Value="Advanced" />
+  <Property Name="StoreSubscribeControl_CopyName" Value="Copy name" />
+  <Property Name="StoreSubscribeControl_Name" Value="Name" />
+  <Property Name="StoreSubscribeControl_Length" Value="Length" />
+  <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
+  <Property Name="StoreSubscribeControl_State" Value="State" />
 
   <Property Name="SearchControl_SearchHint" Value="Search" />
   <Property Name="SearchControl_Download" Value="Download" />

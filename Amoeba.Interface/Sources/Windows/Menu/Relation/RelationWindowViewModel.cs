@@ -1,3 +1,10 @@
+using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Net.Amoeba;
+using Omnius.Security;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,13 +14,6 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
-using Omnius.Net.Amoeba;
-using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Security;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -173,8 +173,6 @@ namespace Amoeba.Interface
         {
             if (propertyName == null)
             {
-                this.TrustSignaturesView.SortDescriptions.Clear();
-
                 if (!string.IsNullOrEmpty(_tagsSortInfo.PropertyName))
                 {
                     this.TrustSignaturesSort(_tagsSortInfo.PropertyName, _tagsSortInfo.Direction);
@@ -196,8 +194,6 @@ namespace Amoeba.Interface
                     }
                 }
 
-                this.TrustSignaturesView.SortDescriptions.Clear();
-
                 if (!string.IsNullOrEmpty(propertyName))
                 {
                     this.TrustSignaturesSort(propertyName, direction);
@@ -211,6 +207,8 @@ namespace Amoeba.Interface
         private void TrustSignaturesSort(string propertyName, ListSortDirection direction)
         {
             this.TrustSignaturesView.IsLiveSorting = true;
+            this.TrustSignaturesView.LiveSortingProperties.Clear();
+            this.TrustSignaturesView.SortDescriptions.Clear();
 
             if (propertyName == "Signature")
             {
@@ -246,8 +244,6 @@ namespace Amoeba.Interface
         {
             if (propertyName == null)
             {
-                this.UntrustSignaturesView.SortDescriptions.Clear();
-
                 if (!string.IsNullOrEmpty(_untrustSignaturesSortInfo.PropertyName))
                 {
                     this.UntrustSignaturesSort(_untrustSignaturesSortInfo.PropertyName, _untrustSignaturesSortInfo.Direction);
@@ -269,8 +265,6 @@ namespace Amoeba.Interface
                     }
                 }
 
-                this.UntrustSignaturesView.SortDescriptions.Clear();
-
                 if (!string.IsNullOrEmpty(propertyName))
                 {
                     this.UntrustSignaturesSort(propertyName, direction);
@@ -284,6 +278,8 @@ namespace Amoeba.Interface
         private void UntrustSignaturesSort(string propertyName, ListSortDirection direction)
         {
             this.UntrustSignaturesView.IsLiveSorting = true;
+            this.UntrustSignaturesView.LiveSortingProperties.Clear();
+            this.UntrustSignaturesView.SortDescriptions.Clear();
 
             if (propertyName == "Signature")
             {
@@ -319,8 +315,6 @@ namespace Amoeba.Interface
         {
             if (propertyName == null)
             {
-                this.TagsView.SortDescriptions.Clear();
-
                 if (!string.IsNullOrEmpty(_tagsSortInfo.PropertyName))
                 {
                     this.TagsSort(_tagsSortInfo.PropertyName, _tagsSortInfo.Direction);
@@ -342,8 +336,6 @@ namespace Amoeba.Interface
                     }
                 }
 
-                this.TagsView.SortDescriptions.Clear();
-
                 if (!string.IsNullOrEmpty(propertyName))
                 {
                     this.TagsSort(propertyName, direction);
@@ -357,6 +349,8 @@ namespace Amoeba.Interface
         private void TagsSort(string propertyName, ListSortDirection direction)
         {
             this.TagsView.IsLiveSorting = true;
+            this.TagsView.LiveSortingProperties.Clear();
+            this.TagsView.SortDescriptions.Clear();
 
             if (propertyName == "Id")
             {

@@ -1,7 +1,7 @@
 using System.ComponentModel;
-using Omnius.Net.Amoeba;
 using Omnius.Collections;
 using Omnius.Configuration;
+using Omnius.Net.Amoeba;
 using Omnius.Security;
 
 namespace Amoeba.Interface
@@ -33,7 +33,7 @@ namespace Amoeba.Interface
             this.AccountInfo = _settings.Load(nameof(AccountInfo), () =>
             {
                 var info = new AccountInfo();
-                info.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256);
+                info.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v2);
                 info.Exchange = new Exchange(ExchangeAlgorithm.Rsa4096);
 
                 return info;

@@ -135,10 +135,10 @@ namespace Amoeba.Interface
 
                             App.Current.Dispatcher.InvokeAsync(() =>
                             {
-                                var viewModel = new ConfirmWindowViewModel(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
+                                var viewModel = new NoticeWindowViewModel(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
                                 viewModel.Callback += () => watchFlag = true;
 
-                                Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                                Messenger.Instance.GetEvent<NoticeWindowShowEvent>()
                                     .Publish(viewModel);
                             });
                         }

@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
-using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
+using Omnius.Net.Amoeba;
 using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
@@ -53,6 +53,8 @@ namespace Amoeba.Interface
 
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand DownloadCommand { get; private set; }
+        public ReactiveCommand AdvancedCommand { get; private set; }
+        public ReactiveCommand<string> AdvancedCopyCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
@@ -123,6 +125,11 @@ namespace Amoeba.Interface
 
                 this.DownloadCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.DownloadCommand.Subscribe(() => this.Download()).AddTo(_disposable);
+
+                this.AdvancedCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
+
+                this.AdvancedCopyCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.AdvancedCopyCommand.Subscribe((type) => this.AdvancedCopy(type)).AddTo(_disposable);
             }
 
             {
@@ -174,14 +181,24 @@ namespace Amoeba.Interface
             {
                 storeViewModel.Model.IsUpdated = false;
 
-                var subscribeItems = this.GetSubscribeItems(storeViewModel.Model.BoxInfos, Array.Empty<Seed>(), propertyName, direction);
+                IEnumerable<SubscribeItemViewModel> subscribeItems = null;
+
+                await Task.Run(() =>
+                {
+                    subscribeItems = this.GetSubscribeItems(storeViewModel.Model.BoxInfos, Array.Empty<Seed>(), propertyName, direction);
+                });
 
                 _contents.Clear();
                 _contents.AddRange(subscribeItems);
             }
             else if (viewModel is SubscribeBoxViewModel boxViewModel)
             {
-                var subscribeItems = this.GetSubscribeItems(boxViewModel.Model.BoxInfos, boxViewModel.Model.Seeds, propertyName, direction);
+                IEnumerable<SubscribeItemViewModel> subscribeItems = null;
+
+                await Task.Run(() =>
+                {
+                    subscribeItems = this.GetSubscribeItems(boxViewModel.Model.BoxInfos, boxViewModel.Model.Seeds, propertyName, direction);
+                });
 
                 _contents.Clear();
                 _contents.AddRange(subscribeItems);
@@ -558,7 +575,7 @@ namespace Amoeba.Interface
 
             foreach (var node in this.TabSelectedItem.Value.GetAncestors())
             {
-                relativePath.Append(node.Name.Value + Path.DirectorySeparatorChar);
+                relativePath.Append(node.Name.Value.Trim(' ') + Path.DirectorySeparatorChar);
             }
 
             foreach (var seed in this.SelectedItems.OfType<SubscribeItemViewModel>()
@@ -583,7 +600,17 @@ namespace Amoeba.Interface
 
             foreach (var boxInfo in rootBoxinfo.BoxInfos)
             {
-                this.Download(Path.Combine(basePath, rootBoxinfo.Name), boxInfo);
+                this.Download(Path.Combine(basePath, rootBoxinfo.Name.Trim(' ')), boxInfo);
+            }
+        }
+
+        private void AdvancedCopy(string type)
+        {
+            var selectItems = this.SelectedItems.OfType<SubscribeItemViewModel>().ToArray();
+
+            if (type == "Name")
+            {
+                Clipboard.SetText(string.Join(Environment.NewLine, new HashSet<string>(selectItems.Select(n => n.Name))));
             }
         }
 

@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Security;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,12 +13,6 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
-using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Security;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -99,8 +99,6 @@ namespace Amoeba.Interface
         {
             if (propertyName == null)
             {
-                this.ContentsView.SortDescriptions.Clear();
-
                 if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
                 {
                     this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
@@ -122,8 +120,6 @@ namespace Amoeba.Interface
                     }
                 }
 
-                this.ContentsView.SortDescriptions.Clear();
-
                 if (!string.IsNullOrEmpty(propertyName))
                 {
                     this.Sort(propertyName, direction);
@@ -137,6 +133,8 @@ namespace Amoeba.Interface
         private void Sort(string propertyName, ListSortDirection direction)
         {
             this.ContentsView.IsLiveSorting = true;
+            this.ContentsView.LiveSortingProperties.Clear();
+            this.ContentsView.SortDescriptions.Clear();
 
             if (propertyName == "Value")
             {

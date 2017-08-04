@@ -219,7 +219,7 @@
                                 Header="{Binding Path=SearchControl_CopyName, Source={StaticResource Languages}}"
                                 InputGestureText="Ctrl+N">
                             <MenuItem.Icon>
-                                <md:PackIcon Kind="Delete" />
+                                <md:PackIcon Kind="ContentCopy" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem
@@ -237,7 +237,7 @@
                                 Header="{Binding Path=SearchControl_RemoveDownloadHistory, Source={StaticResource Languages}}"
                                 InputGestureText="Ctrl+R">
                             <MenuItem.Icon>
-                                <md:PackIcon Kind="ContentCopy" />
+                                <md:PackIcon Kind="Delete" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>

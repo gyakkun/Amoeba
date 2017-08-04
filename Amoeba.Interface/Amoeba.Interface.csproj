@@ -196,6 +196,7 @@
       <DependentUpon>VersionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Menu\Version\VersionWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Utilities\Notice\NoticeWindowViewModel.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <DependentUpon>LanguagesManager.tt</DependentUpon>
       <DesignTime>True</DesignTime>
