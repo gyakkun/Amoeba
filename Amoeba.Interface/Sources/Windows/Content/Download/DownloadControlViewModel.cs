@@ -279,19 +279,19 @@ namespace Amoeba.Interface
 
         private void Delete()
         {
-            var selectedItems = this.SelectedItems.OfType<DynamicOptions>().ToList();
+            var selectedItems = this.SelectedItems.OfType<DownloadListViewItemInfo>().ToList();
             if (selectedItems.Count == 0) return;
 
             var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
             viewModel.Callback += () =>
             {
-                foreach (var selectedItem in selectedItems.Select(n => n.GetValue<DownloadItemInfo>("Model")))
+                foreach (var selectedItem in selectedItems.Select(n => n.Model))
                 {
                     SettingsManager.Instance.DownloadItemInfos.Remove(selectedItem);
                 }
 
-                foreach (var selectedItem in selectedItems.Where(n => n.GetValue<DownloadState>("State") == DownloadState.Completed)
-                    .Select(n => n.GetValue<DownloadItemInfo>("Model").Seed))
+                foreach (var selectedItem in selectedItems.Where(n => n.State == DownloadState.Completed)
+                    .Select(n => n.Model.Seed))
                 {
                     SettingsManager.Instance.DownloadedSeeds.Add(selectedItem);
                 }
@@ -303,8 +303,8 @@ namespace Amoeba.Interface
 
         private void Copy()
         {
-            var selectedItems = this.SelectedItems.OfType<DynamicOptions>()
-                .Select(n => n.GetValue<DownloadItemInfo>("Model")).ToList();
+            var selectedItems = this.SelectedItems.OfType<DownloadListViewItemInfo>()
+                .Select(n => n.Model).ToList();
             if (selectedItems.Count == 0) return;
 
             Clipboard.SetSeeds(selectedItems.Select(n => n.Seed).ToArray());
@@ -321,8 +321,8 @@ namespace Amoeba.Interface
 
         private void Reset()
         {
-            var selectedItems = this.SelectedItems.OfType<DynamicOptions>()
-                .Select(n => n.GetValue<DownloadItemInfo>("Model"))
+            var selectedItems = this.SelectedItems.OfType<DownloadListViewItemInfo>()
+                .Select(n => n.Model)
                 .Select(n => (n.Seed.Metadata, n.Path)).ToList();
             if (selectedItems.Count == 0) return;
 
