@@ -354,7 +354,7 @@ namespace Amoeba.Interface
                         if (File.Exists(path)) filePaths.Add(path);
                     }
 
-                    foreach (string path in _serviceManager.GetConnectionInformations().Select(n => n.GetValue<string>("Path")).ToArray())
+                    foreach (string path in _serviceManager.GetContentInformations().Select(n => n.GetValue<string>("Path")).ToArray())
                     {
                         filePaths.Remove(path);
                     }
