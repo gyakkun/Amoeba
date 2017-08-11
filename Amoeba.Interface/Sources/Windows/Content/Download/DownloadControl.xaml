@@ -48,6 +48,9 @@
                 ItemsSource="{Binding Path=ContentsView}"
                 VirtualizingStackPanel.IsVirtualizing="True"
                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <i:Interaction.Behaviors>
+                <omnius:ListBoxUnselectBehavior />
+            </i:Interaction.Behaviors>
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem
@@ -136,11 +139,11 @@
                                             HorizontalAlignment="Stretch"
                                             VerticalAlignment="Stretch"
                                             md:TransitionAssist.DisableTransitions="True"
-                                            Value="{Binding Path=Rate_Value, Mode=OneWay}" />
+                                            Value="{Binding Path=Rate.Value, Mode=OneWay}" />
                                     <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            Text="{Binding Path=Rate_Text, Mode=OneWay}" />
+                                            Text="{Binding Path=Rate.Text, Mode=OneWay}" />
                                 </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

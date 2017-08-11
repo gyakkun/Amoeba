@@ -1,9 +1,3 @@
-using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Net.Amoeba;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +8,12 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Data;
+using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Net.Amoeba;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -25,7 +25,7 @@ namespace Amoeba.Interface
         private Settings _settings;
 
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents.Values);
-        private ObservableSimpleDictionary<(Metadata, string), DynamicOptions> _contents = new ObservableSimpleDictionary<(Metadata, string), DynamicOptions>(new CustomEqualityComparer());
+        private ObservableSimpleDictionary<(Metadata, string), DownloadListViewItemInfo> _contents = new ObservableSimpleDictionary<(Metadata, string), DownloadListViewItemInfo>(new CustomEqualityComparer());
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
@@ -81,7 +81,7 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
+                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
@@ -157,38 +157,39 @@ namespace Amoeba.Interface
                     {
                         if (!map.TryGetValue((item.Seed.Metadata, item.Path), out var info)) continue;
 
-                        DynamicOptions viewModel;
+                        DownloadListViewItemInfo viewModel;
 
                         if (!_contents.TryGetValue((item.Seed.Metadata, item.Path), out viewModel))
                         {
-                            viewModel = new DynamicOptions();
+                            viewModel = new DownloadListViewItemInfo();
                             _contents[(item.Seed.Metadata, item.Path)] = viewModel;
                         }
 
-                        viewModel.SetValue("Icon", IconUtils.GetImage(item.Seed.Name));
-                        viewModel.SetValue("Name", item.Seed.Name);
-                        viewModel.SetValue("CreationTime", item.Seed.CreationTime);
-                        viewModel.SetValue("Length", item.Seed.Length);
+                        viewModel.Icon = IconUtils.GetImage(item.Seed.Name);
+                        viewModel.Name = item.Seed.Name;
+                        viewModel.Length = item.Seed.Length;
+                        viewModel.CreationTime = item.Seed.CreationTime;
+
                         // Rate
                         {
-                            int depth = info.GetValue<int>("Depth");
-                            double value = Math.Round(((double)info.GetValue<int>("DownloadBlockCount") / (info.GetValue<int>("BlockCount") - info.GetValue<int>("ParityBlockCount"))) * 100, 2);
+                            viewModel.Rate.Depth = info.GetValue<int>("Depth");
 
+                            double value = Math.Round(((double)info.GetValue<int>("DownloadBlockCount") / (info.GetValue<int>("BlockCount") - info.GetValue<int>("ParityBlockCount"))) * 100, 2);
                             string text = string.Format("{0}% {1}/{2}({3}) [{4}/{5}]",
                                 value,
                                 info.GetValue<int>("DownloadBlockCount"),
                                 (info.GetValue<int>("BlockCount") - info.GetValue<int>("ParityBlockCount")),
                                 info.GetValue<int>("BlockCount"),
-                                depth,
+                                info.GetValue<int>("Depth"),
                                 info.GetValue<Metadata>("Metadata").Depth);
 
-                            viewModel.SetValue("Rate_Depth", depth);
-                            viewModel.SetValue("Rate_Value", value);
-                            viewModel.SetValue("Rate_Text", text);
+                            viewModel.Rate.Value = value;
+                            viewModel.Rate.Text = text;
                         }
-                        viewModel.SetValue("State", info.GetValue<DownloadState>("State"));
-                        viewModel.SetValue("Path", item.Path);
-                        viewModel.SetValue("Model", item);
+
+                        viewModel.State = info.GetValue<DownloadState>("State");
+                        viewModel.Path = item.Path;
+                        viewModel.Model = item;
                     }
 
                     this.Sort();
@@ -226,50 +227,50 @@ namespace Amoeba.Interface
             _contents.Sort((x, y) => this.Sort(x, y, _sortInfo.PropertyName, _sortInfo.Direction));
         }
 
-        private int Sort(DynamicOptions x, DynamicOptions y, string propertyName, ListSortDirection direction)
+        private int Sort(DownloadListViewItemInfo x, DownloadListViewItemInfo y, string propertyName, ListSortDirection direction)
         {
             int a = direction == ListSortDirection.Ascending ? 1 : -1;
 
             if (propertyName == "Name")
             {
-                int c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                int c = a * x.Name.CompareTo(y.Name);
                 return c;
             }
             else if (propertyName == "Length")
             {
-                int c = a * x.GetValue<long>("Length").CompareTo(y.GetValue<long>("Length"));
+                int c = a * x.Length.CompareTo(y.Length);
                 if (c != 0) return c;
-                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                c = a * x.Name.CompareTo(y.Name);
                 return c;
             }
             else if (propertyName == "CreationTime")
             {
-                int c = a * x.GetValue<DateTime>("CreationTime").CompareTo(y.GetValue<DateTime>("CreationTime"));
+                int c = a * x.CreationTime.CompareTo(y.CreationTime);
                 if (c != 0) return c;
-                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                c = a * x.Name.CompareTo(y.Name);
                 return c;
             }
             else if (propertyName == "Rate")
             {
-                int c = a * x.GetValue<int>("Rate_Depth").CompareTo(y.GetValue<int>("Rate_Depth"));
+                int c = a * x.Rate.Depth.CompareTo(y.Rate.Depth);
                 if (c != 0) return c;
-                c = a * x.GetValue<double>("Rate_Value").CompareTo(y.GetValue<double>("Rate_Value"));
+                c = a * x.Rate.Value.CompareTo(y.Rate.Value);
                 if (c != 0) return c;
-                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                c = a * x.Name.CompareTo(y.Name);
                 return c;
             }
             else if (propertyName == "State")
             {
-                int c = a * x.GetValue<SearchState>("State").CompareTo(y.GetValue<SearchState>("State"));
+                int c = a * x.State.CompareTo(y.State);
                 if (c != 0) return c;
-                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                c = a * x.Name.CompareTo(y.Name);
                 return c;
             }
             else if (propertyName == "Path")
             {
-                int c = a * x.GetValue<string>("Path").CompareTo(y.GetValue<string>("Path"));
+                int c = a * x.Path.CompareTo(y.Path);
                 if (c != 0) return c;
-                c = a * x.GetValue<string>("Name").CompareTo(y.GetValue<string>("Name"));
+                c = a * x.Name.CompareTo(y.Name);
                 return c;
             }
 

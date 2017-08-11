@@ -33,20 +33,6 @@ namespace Amoeba.Interface
             }
         }
 
-        private LockedHashSet<Signature> _subscribeSignatures;
-
-        [DataMember(Name = nameof(SubscribeSignatures))]
-        public LockedHashSet<Signature> SubscribeSignatures
-        {
-            get
-            {
-                if (_subscribeSignatures == null)
-                    _subscribeSignatures = new LockedHashSet<Signature>();
-
-                return _subscribeSignatures;
-            }
-        }
-
         private AccountInfo _accountInfo;
 
         [DataMember(Name = nameof(AccountInfo))]
@@ -63,6 +49,20 @@ namespace Amoeba.Interface
                     _accountInfo = value;
                     this.OnPropertyChanged(nameof(AccountInfo));
                 }
+            }
+        }
+
+        private LockedHashSet<Signature> _subscribeSignatures;
+
+        [DataMember(Name = nameof(SubscribeSignatures))]
+        public LockedHashSet<Signature> SubscribeSignatures
+        {
+            get
+            {
+                if (_subscribeSignatures == null)
+                    _subscribeSignatures = new LockedHashSet<Signature>();
+
+                return _subscribeSignatures;
             }
         }
 
@@ -110,6 +110,20 @@ namespace Amoeba.Interface
                     _downloadedSeeds = new LockedHashSet<Seed>();
 
                 return _downloadedSeeds;
+            }
+        }
+
+        private LockedHashSet<UploadItemInfo> _uploadItemInfos;
+
+        [DataMember(Name = nameof(UploadItemInfos))]
+        public LockedHashSet<UploadItemInfo> UploadItemInfos
+        {
+            get
+            {
+                if (_uploadItemInfos == null)
+                    _uploadItemInfos = new LockedHashSet<UploadItemInfo>();
+
+                return _uploadItemInfos;
             }
         }
 

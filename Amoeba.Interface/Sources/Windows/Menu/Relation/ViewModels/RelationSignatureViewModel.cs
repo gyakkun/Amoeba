@@ -22,6 +22,7 @@ namespace Amoeba.Interface
             this.Model = model;
 
             this.Name = model.ObserveProperty(n => n.Signature).Select(n => n.ToString()).ToReactiveProperty().AddTo(_disposable);
+            this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.IsExpanded = new ReactiveProperty<bool>(true).AddTo(_disposable);
             this.Children = model.Children.ToReadOnlyReactiveCollection(n => new RelationSignatureViewModel(this, n)).AddTo(_disposable);
         }

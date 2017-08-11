@@ -10,9 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Net.Amoeba;
 using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
@@ -65,7 +65,7 @@ namespace Amoeba.Interface
             _watchTaskManager = new TaskManager(this.WatchThread);
             _watchTaskManager.Start();
 
-            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Chat" };
+            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Amoeba_Chat" };
             this.DragAcceptDescription.DragDrop += this.DragAcceptDescription_DragDrop;
         }
 
@@ -95,7 +95,7 @@ namespace Amoeba.Interface
                 this.SelectedText = new ReactiveProperty<string>().AddTo(_disposable);
 
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
+                this.TabClickCommand.Subscribe(() => this.Refresh()).AddTo(_disposable);
 
                 this.TabNewCategoryCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabNewCategoryCommand.Subscribe(() => this.TabNewCategory()).AddTo(_disposable);
@@ -153,6 +153,11 @@ namespace Amoeba.Interface
             {
                 Backup.Instance.SaveEvent += this.Save;
             }
+        }
+
+        private void Refresh()
+        {
+            this.TabSelectChanged(this.TabSelectedItem.Value);
         }
 
         private void TabSelectChanged(TreeViewModelBase viewModel)

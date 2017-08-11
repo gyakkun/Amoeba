@@ -1,35 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+# Blend for Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Base", "Omnius\Omnius.Base\Omnius.Base.csproj", "{DBFD22CE-159B-4DB0-8052-111686395656}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Base", "Omnius\Omnius.Base\Omnius.Base.csproj", "{DBFD22CE-159B-4DB0-8052-111686395656}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Collections", "Omnius\Omnius.Collections\Omnius.Collections.csproj", "{247F38B8-90E9-4E9D-A938-8E11812E411C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Collections", "Omnius\Omnius.Collections\Omnius.Collections.csproj", "{247F38B8-90E9-4E9D-A938-8E11812E411C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Correction", "Omnius\Omnius.Correction\Omnius.Correction.csproj", "{CBE313C0-AB44-48E4-BD43-DA36D5A7EB5E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Correction", "Omnius\Omnius.Correction\Omnius.Correction.csproj", "{CBE313C0-AB44-48E4-BD43-DA36D5A7EB5E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Io", "Omnius\Omnius.Io\Omnius.Io.csproj", "{FCF17FB0-F23A-4EBA-B150-FFDA35627AA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Io", "Omnius\Omnius.Io\Omnius.Io.csproj", "{FCF17FB0-F23A-4EBA-B150-FFDA35627AA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Messaging", "Omnius\Omnius.Messaging\Omnius.Messaging.csproj", "{E25CAC1D-D9C2-4F34-B270-7AA309E3EBEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Messaging", "Omnius\Omnius.Messaging\Omnius.Messaging.csproj", "{E25CAC1D-D9C2-4F34-B270-7AA309E3EBEC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Net", "Omnius\Omnius.Net\Omnius.Net.csproj", "{E01C79B7-A79F-41D8-9C0B-00228602F356}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Net", "Omnius\Omnius.Net\Omnius.Net.csproj", "{E01C79B7-A79F-41D8-9C0B-00228602F356}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Net.I2p", "Omnius\Omnius.Net.I2p\Omnius.Net.I2p.csproj", "{172183AF-A62D-4D91-9973-F3718441FCEF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Net.I2p", "Omnius\Omnius.Net.I2p\Omnius.Net.I2p.csproj", "{172183AF-A62D-4D91-9973-F3718441FCEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Net.Upnp", "Omnius\Omnius.Net.Upnp\Omnius.Net.Upnp.csproj", "{E3EA88A5-FCF9-48E9-8572-59D85FA46C01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Net.Upnp", "Omnius\Omnius.Net.Upnp\Omnius.Net.Upnp.csproj", "{E3EA88A5-FCF9-48E9-8572-59D85FA46C01}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Security", "Omnius\Omnius.Security\Omnius.Security.csproj", "{0A55926D-70CE-41BA-A838-99937A3B219D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Security", "Omnius\Omnius.Security\Omnius.Security.csproj", "{0A55926D-70CE-41BA-A838-99937A3B219D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Serialization", "Omnius\Omnius.Serialization\Omnius.Serialization.csproj", "{CC9C486E-838D-478E-A89B-79DFC5524274}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Serialization", "Omnius\Omnius.Serialization\Omnius.Serialization.csproj", "{CC9C486E-838D-478E-A89B-79DFC5524274}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Omnius.Utilities", "Omnius\Omnius.Utilities\Omnius.Utilities.shproj", "{EA43E2B5-9B8A-4003-8B5E-E8093E3E7708}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Configuration", "Omnius\Omnius.Configuration\Omnius.Configuration.csproj", "{47EB59D3-5A52-4F50-92EF-5878643929B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Configuration", "Omnius\Omnius.Configuration\Omnius.Configuration.csproj", "{47EB59D3-5A52-4F50-92EF-5878643929B8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Net.Proxy", "Omnius\Omnius.Net.Proxy\Omnius.Net.Proxy.csproj", "{55B34959-925A-46F9-A2DC-809E58479277}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Net.Proxy", "Omnius\Omnius.Net.Proxy\Omnius.Net.Proxy.csproj", "{55B34959-925A-46F9-A2DC-809E58479277}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Simulation", "Amoeba.Simulation\Amoeba.Simulation.csproj", "{A84BC62E-A1D9-4114-9EE0-25AE0562AB02}"
 EndProject
@@ -44,12 +44,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Net.Amoeba", "Omnius\Omnius.Net.Amoeba\Omnius.Net.Amoeba.csproj", "{3F38D6F0-3CFB-4915-BD50-0FCF68381327}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omnius.Net.Amoeba", "Omnius\Omnius.Net.Amoeba\Omnius.Net.Amoeba.csproj", "{3F38D6F0-3CFB-4915-BD50-0FCF68381327}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0a55926d-70ce-41ba-a838-99937a3b219d}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{19e45677-bd12-4f48-8c19-87e60b7cba36}*SharedItemsImports = 4
+		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{3f38d6f0-3cfb-4915-bd50-0fcf68381327}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{ea43e2b5-9b8a-4003-8b5e-e8093e3e7708}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

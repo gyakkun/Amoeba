@@ -46,10 +46,12 @@ namespace Amoeba.Interface
         public ReactiveCommand TabPasteCommand { get; private set; }
 
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
-        private ObservableCollection<SubscribeItemViewModel> _contents = new ObservableCollection<SubscribeItemViewModel>();
+        private ObservableCollection<SubscribeListViewItemInfo> _contents = new ObservableCollection<SubscribeListViewItemInfo>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
+
+        public ReactiveCommand<SubscribeListViewItemInfo> ListViewDoubleClickCommand { get; private set; }
 
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand DownloadCommand { get; private set; }
@@ -70,7 +72,7 @@ namespace Amoeba.Interface
             _watchTaskManager = new TaskManager(this.WatchThread);
             _watchTaskManager.Start();
 
-            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Store" };
+            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Amoeba_Subscribe" };
             this.DragAcceptDescription.DragDrop += this.DragAcceptDescription_DragDrop;
         }
 
@@ -97,7 +99,7 @@ namespace Amoeba.Interface
                 this.TabSelectedItem.Subscribe((viewModel) => this.TabSelectChanged(viewModel)).AddTo(_disposable);
 
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
+                this.TabClickCommand.Subscribe(() => this.Refresh()).AddTo(_disposable);
 
                 this.TabNewCategoryCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabNewCategoryCommand.Subscribe(() => this.TabNewCategory()).AddTo(_disposable);
@@ -108,10 +110,10 @@ namespace Amoeba.Interface
                 this.TabDeleteCommand = this.TabSelectedItem.Select(n => n != this.TabViewModel.Value && (n is SubscribeCategoryViewModel || n is SubscribeStoreViewModel)).ToReactiveCommand().AddTo(_disposable);
                 this.TabDeleteCommand.Subscribe(() => this.TabDelete()).AddTo(_disposable);
 
-                this.TabCutCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel || n is SubscribeStoreViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabCutCommand = this.TabSelectedItem.Select(n => n != this.TabViewModel.Value && (n is SubscribeCategoryViewModel || n is SubscribeStoreViewModel)).ToReactiveCommand().AddTo(_disposable);
                 this.TabCutCommand.Subscribe(() => this.TabCut()).AddTo(_disposable);
 
-                this.TabCopyCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel || n is SubscribeStoreViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabCopyCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is SubscribeCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
@@ -119,6 +121,9 @@ namespace Amoeba.Interface
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
+
+                this.ListViewDoubleClickCommand = new ReactiveCommand<SubscribeListViewItemInfo>().AddTo(_disposable);
+                this.ListViewDoubleClickCommand.Subscribe((target) => this.ListViewDoubleClick(target));
 
                 this.CopyCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.CopyCommand.Subscribe(() => this.Copy()).AddTo(_disposable);
@@ -151,7 +156,7 @@ namespace Amoeba.Interface
                     this.TabViewModel.Value = new SubscribeCategoryViewModel(null, model);
                 }
 
-                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
+                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
@@ -164,6 +169,11 @@ namespace Amoeba.Interface
             }
         }
 
+        private void Refresh()
+        {
+            this.TabSelectChanged(this.TabSelectedItem.Value);
+        }
+
         private void TabSelectChanged(TreeViewModelBase viewModel)
         {
             if (viewModel == null || _sortInfo == null) return;
@@ -171,7 +181,7 @@ namespace Amoeba.Interface
             this.TabSelectChanged(viewModel, _sortInfo.PropertyName, _sortInfo.Direction);
         }
 
-        private async void TabSelectChanged(TreeViewModelBase viewModel, string propertyName, ListSortDirection direction)
+        private void TabSelectChanged(TreeViewModelBase viewModel, string propertyName, ListSortDirection direction)
         {
             if (viewModel is SubscribeCategoryViewModel categoryViewModel)
             {
@@ -181,37 +191,27 @@ namespace Amoeba.Interface
             {
                 storeViewModel.Model.IsUpdated = false;
 
-                IEnumerable<SubscribeItemViewModel> subscribeItems = null;
-
-                await Task.Run(() =>
-                {
-                    subscribeItems = this.GetSubscribeItems(storeViewModel.Model.BoxInfos, Array.Empty<Seed>(), propertyName, direction);
-                });
+                var subscribeItems = this.GetSubscribeItems(storeViewModel.Model.BoxInfos, Array.Empty<Seed>(), propertyName, direction);
 
                 _contents.Clear();
                 _contents.AddRange(subscribeItems);
             }
             else if (viewModel is SubscribeBoxViewModel boxViewModel)
             {
-                IEnumerable<SubscribeItemViewModel> subscribeItems = null;
-
-                await Task.Run(() =>
-                {
-                    subscribeItems = this.GetSubscribeItems(boxViewModel.Model.BoxInfos, boxViewModel.Model.Seeds, propertyName, direction);
-                });
+                var subscribeItems = this.GetSubscribeItems(boxViewModel.Model.BoxInfos, boxViewModel.Model.Seeds, propertyName, direction);
 
                 _contents.Clear();
                 _contents.AddRange(subscribeItems);
             }
         }
 
-        private IEnumerable<SubscribeItemViewModel> GetSubscribeItems(IEnumerable<SubscribeBoxInfo> boxInfos, IEnumerable<Seed> seeds, string propertyName, ListSortDirection direction)
+        private IEnumerable<SubscribeListViewItemInfo> GetSubscribeItems(IEnumerable<SubscribeBoxInfo> boxInfos, IEnumerable<Seed> seeds, string propertyName, ListSortDirection direction)
         {
-            var list = new List<SubscribeItemViewModel>();
+            var list = new List<SubscribeListViewItemInfo>();
 
             foreach (var item in boxInfos)
             {
-                var vm = new SubscribeItemViewModel();
+                var vm = new SubscribeListViewItemInfo();
                 vm.Icon = AmoebaEnvironment.Icons.Box;
                 vm.Name = item.Name;
                 vm.Length = GetBoxLength(item);
@@ -224,7 +224,7 @@ namespace Amoeba.Interface
 
             foreach (var item in seeds)
             {
-                var vm = new SubscribeItemViewModel();
+                var vm = new SubscribeListViewItemInfo();
                 vm.Icon = IconUtils.GetImage(item.Name);
                 vm.Name = item.Name;
                 vm.Length = item.Length;
@@ -277,9 +277,9 @@ namespace Amoeba.Interface
             else return seeds.Max(n => n.CreationTime);
         }
 
-        private IEnumerable<SubscribeItemViewModel> Sort(IEnumerable<SubscribeItemViewModel> collection, string propertyName, ListSortDirection direction, int maxCount)
+        private IEnumerable<SubscribeListViewItemInfo> Sort(IEnumerable<SubscribeListViewItemInfo> collection, string propertyName, ListSortDirection direction, int maxCount)
         {
-            var list = new List<SubscribeItemViewModel>(collection);
+            var list = new List<SubscribeListViewItemInfo>(collection);
 
             if (propertyName == "Name")
             {
@@ -375,7 +375,7 @@ namespace Amoeba.Interface
 
                     foreach (var targetBox in message.Value.Boxes)
                     {
-                        tempBoxInfos.Add(CreateBoxInfo(targetBox, storeInfo.BoxInfos.FirstOrDefault(n => n.Name == targetBox.Name)));
+                        tempBoxInfos.Add(CreateSubscribeBoxInfo(targetBox, storeInfo.BoxInfos.FirstOrDefault(n => n.Name == targetBox.Name)));
                     }
 
                     try
@@ -431,7 +431,7 @@ namespace Amoeba.Interface
             }
         }
 
-        private SubscribeBoxInfo CreateBoxInfo(Box targetBox, SubscribeBoxInfo oldBoxInfo)
+        private SubscribeBoxInfo CreateSubscribeBoxInfo(Box targetBox, SubscribeBoxInfo oldBoxInfo)
         {
             var info = new SubscribeBoxInfo();
             info.IsExpanded = oldBoxInfo?.IsExpanded ?? false;
@@ -440,10 +440,24 @@ namespace Amoeba.Interface
 
             foreach (var tempBox in targetBox.Boxes)
             {
-                info.BoxInfos.Add(CreateBoxInfo(tempBox, oldBoxInfo?.BoxInfos.FirstOrDefault(n => n.Name == tempBox.Name)));
+                info.BoxInfos.Add(CreateSubscribeBoxInfo(tempBox, oldBoxInfo?.BoxInfos.FirstOrDefault(n => n.Name == tempBox.Name)));
             }
 
             return info;
+        }
+
+        private Box CreateBox(SubscribeBoxInfo targetBoxInfo)
+        {
+            string name = targetBoxInfo.Name;
+            var seeds = targetBoxInfo.Seeds.ToList();
+            var boxes = new List<Box>();
+
+            foreach (var tempBoxInfo in targetBoxInfo.BoxInfos)
+            {
+                boxes.Add(CreateBox(tempBoxInfo));
+            }
+
+            return new Box(name, seeds, boxes);
         }
 
         private void TabNewCategory()
@@ -521,6 +535,10 @@ namespace Amoeba.Interface
             {
                 Clipboard.SetSubscribeStoreInfos(new SubscribeStoreInfo[] { storeViewModel.Model });
             }
+            else if (this.TabSelectedItem.Value is SubscribeBoxViewModel boxViewModel)
+            {
+                Clipboard.SetBoxs(new Box[] { CreateBox(boxViewModel.Model) });
+            }
         }
 
         private void TabPaste()
@@ -563,10 +581,33 @@ namespace Amoeba.Interface
             _sortInfo.PropertyName = propertyName;
         }
 
+        private void ListViewDoubleClick(SubscribeListViewItemInfo target)
+        {
+            if (target.Model is SubscribeBoxInfo boxInfo)
+            {
+                if (this.TabSelectedItem.Value is SubscribeStoreViewModel storeViewModel)
+                {
+                    var item = storeViewModel.Boxes.FirstOrDefault(n => n.Model == boxInfo);
+                    if (item == null) return;
+
+                    item.IsSelected.Value = true;
+                }
+                else if (this.TabSelectedItem.Value is SubscribeBoxViewModel boxViewModel)
+                {
+                    var item = boxViewModel.Boxes.FirstOrDefault(n => n.Model == boxInfo);
+                    if (item == null) return;
+
+                    item.IsSelected.Value = true;
+                }
+            }
+        }
+
         private void Copy()
         {
-            Clipboard.SetSeeds(this.SelectedItems.OfType<SubscribeItemViewModel>()
-                .Select(n => n.Model).OfType<Seed>().ToArray());
+            var seeds = this.SelectedItems.OfType<SubscribeListViewItemInfo>().Select(n => n.Model).OfType<Seed>().ToArray();
+            var boxInfos = this.SelectedItems.OfType<SubscribeListViewItemInfo>().Select(n => n.Model).OfType<SubscribeBoxInfo>().ToArray();
+
+            Clipboard.SetSeedsAndBoxes(seeds, boxInfos.Select(n => CreateBox(n)));
         }
 
         private void Download()
@@ -578,13 +619,13 @@ namespace Amoeba.Interface
                 relativePath.Append(node.Name.Value.Trim(' ') + Path.DirectorySeparatorChar);
             }
 
-            foreach (var seed in this.SelectedItems.OfType<SubscribeItemViewModel>()
+            foreach (var seed in this.SelectedItems.OfType<SubscribeListViewItemInfo>()
                 .Select(n => n.Model).OfType<Seed>().ToArray())
             {
                 SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo(seed, Path.Combine(relativePath.ToString(), seed.Name)));
             }
 
-            foreach (var boxInfo in this.SelectedItems.OfType<SubscribeItemViewModel>()
+            foreach (var boxInfo in this.SelectedItems.OfType<SubscribeListViewItemInfo>()
                 .Select(n => n.Model).OfType<SubscribeBoxInfo>().ToArray())
             {
                 this.Download(relativePath.ToString(), boxInfo);
@@ -606,7 +647,7 @@ namespace Amoeba.Interface
 
         private void AdvancedCopy(string type)
         {
-            var selectItems = this.SelectedItems.OfType<SubscribeItemViewModel>().ToArray();
+            var selectItems = this.SelectedItems.OfType<SubscribeListViewItemInfo>().ToArray();
 
             if (type == "Name")
             {

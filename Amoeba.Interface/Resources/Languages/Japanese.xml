@@ -29,10 +29,12 @@
   <Property Name="Box_CreationTime" Value="Creation time" />
   <Property Name="Box_Comment" Value="Comment" />
 
+  <Property Name="SearchState_Store" Value="Store" />
   <Property Name="SearchState_Cache" Value="Cache" />
   <Property Name="SearchState_Downloading" Value="Downloading" />
   <Property Name="SearchState_Downloaded" Value="Downloaded" />
 
+  <Property Name="SearchState_Flag_Store" Value="S" />
   <Property Name="SearchState_Flag_Cache" Value="C" />
   <Property Name="SearchState_Flag_Downloading" Value="D" />
   <Property Name="SearchState_Flag_Downloaded" Value="DH" />
@@ -46,7 +48,6 @@
   <Property Name="ConfirmWindow_Title" Value="Confirm" />
   <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
 
-  <Property Name="NameEditWindow_Title" Value="Name edit" />
   <Property Name="NameEditWindow_Name" Value="Name: " />
   <Property Name="NameEditWindow_Ok" Value="Ok" />
   <Property Name="NameEditWindow_Cancel" Value="Cancel" />
@@ -62,14 +63,15 @@
   <Property Name="MainWindow_Traffic_Receive" Value="Receive:" />
   <Property Name="MainWindow_Cloud" Value="クラウド" />
   <Property Name="MainWindow_Chat" Value="Chat" />
-  <Property Name="MainWindow_Search" Value="Search" />
   <Property Name="MainWindow_Store" Value="ストア" />
+  <Property Name="MainWindow_Subscribe" Value="Subscribe" />
+  <Property Name="MainWindow_Publish" Value="Publish" />
+  <Property Name="MainWindow_Search" Value="Search" />
   <Property Name="MainWindow_Upload" Value="Upload" />
   <Property Name="MainWindow_Download" Value="Download" />
   <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
   <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
 
-  <Property Name="RelationWindow_Title" Value="Relation" />
   <Property Name="RelationWindow_Profile" Value="Profile" />
   <Property Name="RelationWindow_Trust" Value="Trust" />
   <Property Name="RelationWindow_TrustSignature" Value="Trust signature" />
@@ -83,7 +85,6 @@
   <Property Name="RelationWindow_Copy" Value="Copy" />
   <Property Name="RelationWindow_Close" Value="Close" />
 
-  <Property Name="OptionsWindow_Title" Value="Options" />
   <Property Name="OptionsWindow_Account" Value="Account" />
   <Property Name="OptionsWindow_Signature" Value="Signature" />
   <Property Name="OptionsWindow_SignatureSettings" Value="Signature settings" />
@@ -130,13 +131,14 @@
   <Property Name="OptionsWindow_UpdateSettings" Value="Update settings" />
   <Property Name="OptionsWindow_UpdateIsEnabled" Value="Update is enabled" />
   <Property Name="OptionsWindow_New" Value="New" />
+  <Property Name="OptionsWindow_Add" Value="Add" />
+  <Property Name="OptionsWindow_Edit" Value="Edit" />
   <Property Name="OptionsWindow_Delete" Value="Delete" />
   <Property Name="OptionsWindow_Copy" Value="Copy" />
   <Property Name="OptionsWindow_Paste" Value="Paste" />
   <Property Name="OptionsWindow_Ok" Value="Ok" />
   <Property Name="OptionsWindow_Cancel" Value="Cancel" />
 
-  <Property Name="VersionWindow_Title" Value="Version information" />
   <Property Name="VersionWindow_Close" Value="Close" />
 
   <Property Name="CloudControl_Connection" Value="Connection" />
@@ -162,7 +164,6 @@
   <Property Name="ChatControl_Paste" Value="Paste" />
   <Property Name="ChatControl_Response" Value="Response" />
 
-  <Property Name="ChatMessageEditWindow_Title" Value="Chat message edit" />
   <Property Name="ChatMessageEditWindow_Ok" Value="Ok" />
   <Property Name="ChatMessageEditWindow_Cancel" Value="Cancel" />
 
@@ -179,6 +180,20 @@
   <Property Name="StoreSubscribeControl_Length" Value="Length" />
   <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
   <Property Name="StoreSubscribeControl_State" Value="State" />
+
+  <Property Name="StorePublishControl_NewBox" Value="New box" />
+  <Property Name="StorePublishControl_Edit" Value="Edit" />
+  <Property Name="StorePublishControl_Delete" Value="Delete" />
+  <Property Name="StorePublishControl_Cut" Value="Cut" />
+  <Property Name="StorePublishControl_Copy" Value="Copy" />
+  <Property Name="StorePublishControl_Paste" Value="Paste" />
+  <Property Name="StorePublishControl_Upload" Value="Upload" />
+  <Property Name="StorePublishControl_Advanced" Value="Advanced" />
+  <Property Name="StorePublishControl_CopyName" Value="Copy name" />
+  <Property Name="StorePublishControl_Name" Value="Name" />
+  <Property Name="StorePublishControl_Length" Value="Length" />
+  <Property Name="StorePublishControl_CreationTime" Value="CreationTime" />
+  <Property Name="StorePublishControl_State" Value="State" />
 
   <Property Name="SearchControl_SearchHint" Value="Search" />
   <Property Name="SearchControl_Download" Value="Download" />
@@ -198,7 +213,6 @@
   <Property Name="SearchControl_CreationTime" Value="CreationTime" />
   <Property Name="SearchControl_State" Value="State" />
 
-  <Property Name="SearchInfoEditWindow_Title" Value="Search edit" />
   <Property Name="SearchInfoEditWindow_SearchName" Value="Search name" />
   <Property Name="SearchInfoEditWindow_Name" Value="Name" />
   <Property Name="SearchInfoEditWindow_NameConditions" Value="Name conditions" />
@@ -210,8 +224,6 @@
   <Property Name="SearchInfoEditWindow_CreationTimeConditions" Value="Creation time conditions" />
   <Property Name="SearchInfoEditWindow_Length" Value="Length" />
   <Property Name="SearchInfoEditWindow_LengthConditions" Value="Length conditions" />
-  <Property Name="SearchInfoEditWindow_Metadata" Value="Metadata" />
-  <Property Name="SearchInfoEditWindow_MetadataConditions" Value="Metadata conditions" />
   <Property Name="SearchInfoEditWindow_State" Value="States" />
   <Property Name="SearchInfoEditWindow_StateConditions" Value="States conditions" />
   <Property Name="SearchInfoEditWindow_Ok" Value="Ok" />
@@ -243,23 +255,21 @@
 
   <Property Name="UploadControl_Upload" Value="Upload" />
   <Property Name="UploadControl_Name" Value="Name" />
+  <Property Name="UploadControl_Length" Value="Length" />
+  <Property Name="UploadControl_CreationTime" Value="CreationTime" />
   <Property Name="UploadControl_Path" Value="Path" />
+  <Property Name="UploadControl_Sync" Value="Sync" />
   <Property Name="UploadControl_Add" Value="Add" />
-  <Property Name="UploadControl_Edit" Value="Edit" />
   <Property Name="UploadControl_Delete" Value="Delete" />
+  <Property Name="UploadControl_Copy" Value="Copy" />
   <Property Name="UploadControl_Completed" Value="Completed" />
 
-  <Property Name="PublishDirectoryInfoEditWindow_Title" Value="Publish directory edit" />
-  <Property Name="PublishDirectoryInfoEditWindow_Name" Value="Name" />
-  <Property Name="PublishDirectoryInfoEditWindow_Path" Value="Path" />
-  <Property Name="PublishDirectoryInfoEditWindow_Ok" Value="Ok" />
-  <Property Name="PublishDirectoryInfoEditWindow_Cancel" Value="Cancel" />
-
-  <Property Name="PublishPreviewWindow_Title" Value="Publish preview" />
-  <Property Name="PublishPreviewWindow_Name" Value="Name" />
-  <Property Name="PublishPreviewWindow_Length" Value="Length" />
-  <Property Name="PublishPreviewWindow_Copy" Value="Copy" />
-  <Property Name="PublishPreviewWindow_Ok" Value="Ok" />
-  <Property Name="PublishPreviewWindow_Cancel" Value="Cancel" />
+  <Property Name="UploadPreviewWindow_Name" Value="Name" />
+  <Property Name="UploadPreviewWindow_Length" Value="Length" />
+  <Property Name="UploadPreviewWindow_Path" Value="Path" />
+  <Property Name="UploadPreviewWindow_Delete" Value="Delete" />
+  <Property Name="UploadPreviewWindow_Copy" Value="Copy" />
+  <Property Name="UploadPreviewWindow_Ok" Value="Ok" />
+  <Property Name="UploadPreviewWindow_Cancel" Value="Cancel" />
 
 </Config>

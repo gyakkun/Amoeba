@@ -103,18 +103,10 @@ namespace Amoeba.Interface
                     window.ShowDialog();
                 }).AddTo(_disposable);
 
-            Messenger.Instance.GetEvent<PublishDirectoryInfoEditWindowShowEvent>()
+            Messenger.Instance.GetEvent<UploadPreviewWindowShowEvent>()
                 .Subscribe(vm =>
                 {
-                    var window = new PublishDirectoryInfoEditWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<PublishPreviewWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new PublishPreviewWindow(vm);
+                    var window = new UploadPreviewWindow(vm);
                     window.Owner = this;
                     window.ShowDialog();
                 }).AddTo(_disposable);

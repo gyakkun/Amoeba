@@ -96,6 +96,7 @@
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
                 <i:Interaction.Behaviors>
+                    <omnius:TreeViewRightClickSelectBehavior />
                     <omnius:IgnoreRequestBringIntoViewBehavior />
                     <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
                     <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
@@ -186,6 +187,9 @@
                 ItemsSource="{Binding Path=ContentsView}"
                 VirtualizingStackPanel.IsVirtualizing="True"
                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <i:Interaction.Behaviors>
+                <omnius:ListBoxUnselectBehavior />
+            </i:Interaction.Behaviors>
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem

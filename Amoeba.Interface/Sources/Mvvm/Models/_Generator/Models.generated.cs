@@ -8,10 +8,11 @@ using System.Runtime.Serialization;
 using Omnius.Base;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Omnius.Net.Amoeba;
+using System.Windows.Media.Imaging;
 using Omnius;
 using Omnius.Collections;
 using Omnius.Security;
+using Omnius.Net.Amoeba;
 
 namespace Amoeba.Interface
 {
@@ -188,118 +189,6 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(PublishDirectoryInfo))]
-    partial class PublishDirectoryInfo : INotifyPropertyChanged, ICloneable<PublishDirectoryInfo>
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public PublishDirectoryInfo() { }
-
-        private string _name;
-
-        [DataMember(Name = nameof(Name))]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        private string _path;
-
-        [DataMember(Name = nameof(Path))]
-        public string Path
-        {
-            get
-            {
-                return _path;
-            }
-            set
-            {
-                if (_path != value)
-                {
-                    _path = value;
-                    this.OnPropertyChanged(nameof(Path));
-                }
-            }
-        }
-
-        public PublishDirectoryInfo Clone()
-        {
-            return JsonUtils.Clone(this);
-        }
-    }
-
-    [DataContract(Name = nameof(RateInfo))]
-    partial class RateInfo : INotifyPropertyChanged, ICloneable<RateInfo>
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public RateInfo() { }
-
-        private string _text;
-
-        [DataMember(Name = nameof(Text))]
-        public string Text
-        {
-            get
-            {
-                return _text;
-            }
-            set
-            {
-                if (_text != value)
-                {
-                    _text = value;
-                    this.OnPropertyChanged(nameof(Text));
-                }
-            }
-        }
-
-        private double _value;
-
-        [DataMember(Name = nameof(Value))]
-        public double Value
-        {
-            get
-            {
-                return _value;
-            }
-            set
-            {
-                if (_value != value)
-                {
-                    _value = value;
-                    this.OnPropertyChanged(nameof(Value));
-                }
-            }
-        }
-
-        public RateInfo Clone()
-        {
-            return JsonUtils.Clone(this);
-        }
-    }
-
     [DataContract(Name = nameof(ListSortInfo))]
     partial class ListSortInfo : INotifyPropertyChanged, ICloneable<ListSortInfo>
     {
@@ -356,8 +245,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(CloudStateInfo))]
-    partial class CloudStateInfo : INotifyPropertyChanged, ICloneable<CloudStateInfo>
+    [DataContract(Name = nameof(RelationSignatureInfo))]
+    partial class RelationSignatureInfo : INotifyPropertyChanged, ICloneable<RelationSignatureInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -366,28 +255,61 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public CloudStateInfo() { }
+        public RelationSignatureInfo() { }
 
-        private string _location;
+        private Signature _signature;
 
-        [DataMember(Name = nameof(Location))]
-        public string Location
+        [DataMember(Name = nameof(Signature))]
+        public Signature Signature
         {
             get
             {
-                return _location;
+                return _signature;
             }
             set
             {
-                if (_location != value)
+                if (_signature != value)
                 {
-                    _location = value;
-                    this.OnPropertyChanged(nameof(Location));
+                    _signature = value;
+                    this.OnPropertyChanged(nameof(Signature));
                 }
             }
         }
 
-        public CloudStateInfo Clone()
+        private BroadcastMessage<Profile> _profile;
+
+        [DataMember(Name = nameof(Profile))]
+        public BroadcastMessage<Profile> Profile
+        {
+            get
+            {
+                return _profile;
+            }
+            set
+            {
+                if (_profile != value)
+                {
+                    _profile = value;
+                    this.OnPropertyChanged(nameof(Profile));
+                }
+            }
+        }
+
+        private ObservableCollection<RelationSignatureInfo> _children;
+
+        [DataMember(Name = nameof(Children))]
+        public ObservableCollection<RelationSignatureInfo> Children
+        {
+            get
+            {
+                if (_children == null)
+                    _children = new ObservableCollection<RelationSignatureInfo>();
+
+                return _children;
+            }
+        }
+
+        public RelationSignatureInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
@@ -419,59 +341,17 @@ namespace Amoeba.Interface
             }
         }
 
-        private OptionsSubscribeInfo _subscribe;
+        private OptionsConnectionInfo _connection;
 
-        [DataMember(Name = nameof(Subscribe))]
-        public OptionsSubscribeInfo Subscribe
+        [DataMember(Name = nameof(Connection))]
+        public OptionsConnectionInfo Connection
         {
             get
             {
-                if (_subscribe == null)
-                    _subscribe = new OptionsSubscribeInfo();
+                if (_connection == null)
+                    _connection = new OptionsConnectionInfo();
 
-                return _subscribe;
-            }
-        }
-
-        private OptionsTcpInfo _tcp;
-
-        [DataMember(Name = nameof(Tcp))]
-        public OptionsTcpInfo Tcp
-        {
-            get
-            {
-                if (_tcp == null)
-                    _tcp = new OptionsTcpInfo();
-
-                return _tcp;
-            }
-        }
-
-        private OptionsI2pInfo _i2p;
-
-        [DataMember(Name = nameof(I2p))]
-        public OptionsI2pInfo I2p
-        {
-            get
-            {
-                if (_i2p == null)
-                    _i2p = new OptionsI2pInfo();
-
-                return _i2p;
-            }
-        }
-
-        private OptionsBandwidthInfo _bandwidth;
-
-        [DataMember(Name = nameof(Bandwidth))]
-        public OptionsBandwidthInfo Bandwidth
-        {
-            get
-            {
-                if (_bandwidth == null)
-                    _bandwidth = new OptionsBandwidthInfo();
-
-                return _bandwidth;
+                return _connection;
             }
         }
 
@@ -486,6 +366,20 @@ namespace Amoeba.Interface
                     _data = new OptionsDataInfo();
 
                 return _data;
+            }
+        }
+
+        private OptionsSubscribeInfo _subscribe;
+
+        [DataMember(Name = nameof(Subscribe))]
+        public OptionsSubscribeInfo Subscribe
+        {
+            get
+            {
+                if (_subscribe == null)
+                    _subscribe = new OptionsSubscribeInfo();
+
+                return _subscribe;
             }
         }
 
@@ -607,8 +501,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(OptionsSubscribeInfo))]
-    partial class OptionsSubscribeInfo : INotifyPropertyChanged, ICloneable<OptionsSubscribeInfo>
+    [DataContract(Name = nameof(OptionsConnectionInfo))]
+    partial class OptionsConnectionInfo : INotifyPropertyChanged, ICloneable<OptionsConnectionInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -617,23 +511,51 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public OptionsSubscribeInfo() { }
+        public OptionsConnectionInfo() { }
 
-        private ObservableCollection<Signature> _subscribeSignatures;
+        private OptionsTcpInfo _tcp;
 
-        [DataMember(Name = nameof(SubscribeSignatures))]
-        public ObservableCollection<Signature> SubscribeSignatures
+        [DataMember(Name = nameof(Tcp))]
+        public OptionsTcpInfo Tcp
         {
             get
             {
-                if (_subscribeSignatures == null)
-                    _subscribeSignatures = new ObservableCollection<Signature>();
+                if (_tcp == null)
+                    _tcp = new OptionsTcpInfo();
 
-                return _subscribeSignatures;
+                return _tcp;
             }
         }
 
-        public OptionsSubscribeInfo Clone()
+        private OptionsI2pInfo _i2p;
+
+        [DataMember(Name = nameof(I2p))]
+        public OptionsI2pInfo I2p
+        {
+            get
+            {
+                if (_i2p == null)
+                    _i2p = new OptionsI2pInfo();
+
+                return _i2p;
+            }
+        }
+
+        private OptionsBandwidthInfo _bandwidth;
+
+        [DataMember(Name = nameof(Bandwidth))]
+        public OptionsBandwidthInfo Bandwidth
+        {
+            get
+            {
+                if (_bandwidth == null)
+                    _bandwidth = new OptionsBandwidthInfo();
+
+                return _bandwidth;
+            }
+        }
+
+        public OptionsConnectionInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
@@ -920,6 +842,38 @@ namespace Amoeba.Interface
         }
     }
 
+    [DataContract(Name = nameof(OptionsSubscribeInfo))]
+    partial class OptionsSubscribeInfo : INotifyPropertyChanged, ICloneable<OptionsSubscribeInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public OptionsSubscribeInfo() { }
+
+        private ObservableCollection<Signature> _subscribeSignatures;
+
+        [DataMember(Name = nameof(SubscribeSignatures))]
+        public ObservableCollection<Signature> SubscribeSignatures
+        {
+            get
+            {
+                if (_subscribeSignatures == null)
+                    _subscribeSignatures = new ObservableCollection<Signature>();
+
+                return _subscribeSignatures;
+            }
+        }
+
+        public OptionsSubscribeInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
     [DataContract(Name = nameof(OptionsUpdateInfo))]
     partial class OptionsUpdateInfo : INotifyPropertyChanged, ICloneable<OptionsUpdateInfo>
     {
@@ -976,8 +930,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(RelationSignatureInfo))]
-    partial class RelationSignatureInfo : INotifyPropertyChanged, ICloneable<RelationSignatureInfo>
+    [DataContract(Name = nameof(CloudStateInfo))]
+    partial class CloudStateInfo : INotifyPropertyChanged, ICloneable<CloudStateInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -986,61 +940,219 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public RelationSignatureInfo() { }
+        public CloudStateInfo() { }
 
-        private Signature _signature;
+        private string _location;
 
-        [DataMember(Name = nameof(Signature))]
-        public Signature Signature
+        [DataMember(Name = nameof(Location))]
+        public string Location
         {
             get
             {
-                return _signature;
+                return _location;
             }
             set
             {
-                if (_signature != value)
+                if (_location != value)
                 {
-                    _signature = value;
-                    this.OnPropertyChanged(nameof(Signature));
+                    _location = value;
+                    this.OnPropertyChanged(nameof(Location));
                 }
             }
         }
 
-        private BroadcastMessage<Profile> _profile;
+        public CloudStateInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
 
-        [DataMember(Name = nameof(Profile))]
-        public BroadcastMessage<Profile> Profile
+    [DataContract(Name = nameof(ChatCategoryInfo))]
+    partial class ChatCategoryInfo : INotifyPropertyChanged, ICloneable<ChatCategoryInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ChatCategoryInfo() { }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
         {
             get
             {
-                return _profile;
+                return _name;
             }
             set
             {
-                if (_profile != value)
+                if (_name != value)
                 {
-                    _profile = value;
-                    this.OnPropertyChanged(nameof(Profile));
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
                 }
             }
         }
 
-        private ObservableCollection<RelationSignatureInfo> _children;
+        private bool _isExpanded;
 
-        [DataMember(Name = nameof(Children))]
-        public ObservableCollection<RelationSignatureInfo> Children
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
         {
             get
             {
-                if (_children == null)
-                    _children = new ObservableCollection<RelationSignatureInfo>();
-
-                return _children;
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
             }
         }
 
-        public RelationSignatureInfo Clone()
+        private ObservableCollection<ChatThreadInfo> _threadInfos;
+
+        [DataMember(Name = nameof(ThreadInfos))]
+        public ObservableCollection<ChatThreadInfo> ThreadInfos
+        {
+            get
+            {
+                if (_threadInfos == null)
+                    _threadInfos = new ObservableCollection<ChatThreadInfo>();
+
+                return _threadInfos;
+            }
+        }
+
+        private ObservableCollection<ChatCategoryInfo> _categoryInfos;
+
+        [DataMember(Name = nameof(CategoryInfos))]
+        public ObservableCollection<ChatCategoryInfo> CategoryInfos
+        {
+            get
+            {
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<ChatCategoryInfo>();
+
+                return _categoryInfos;
+            }
+        }
+
+        public ChatCategoryInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(ChatThreadInfo))]
+    partial class ChatThreadInfo : INotifyPropertyChanged, ICloneable<ChatThreadInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ChatThreadInfo() { }
+
+        private Tag _tag;
+
+        [DataMember(Name = nameof(Tag))]
+        public Tag Tag
+        {
+            get
+            {
+                return _tag;
+            }
+            set
+            {
+                if (_tag != value)
+                {
+                    _tag = value;
+                    this.OnPropertyChanged(nameof(Tag));
+                }
+            }
+        }
+
+        private LockedList<ChatMessageInfo> _messages;
+
+        [DataMember(Name = nameof(Messages))]
+        public LockedList<ChatMessageInfo> Messages
+        {
+            get
+            {
+                if (_messages == null)
+                    _messages = new LockedList<ChatMessageInfo>();
+
+                return _messages;
+            }
+        }
+
+        public ChatThreadInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(ChatMessageInfo))]
+    partial class ChatMessageInfo : INotifyPropertyChanged, ICloneable<ChatMessageInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ChatMessageInfo() { }
+
+        private ChatMessageState _state;
+
+        [DataMember(Name = nameof(State))]
+        public ChatMessageState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    this.OnPropertyChanged(nameof(State));
+                }
+            }
+        }
+
+        private MulticastMessage<ChatMessage> _message;
+
+        [DataMember(Name = nameof(Message))]
+        public MulticastMessage<ChatMessage> Message
+        {
+            get
+            {
+                return _message;
+            }
+            set
+            {
+                if (_message != value)
+                {
+                    _message = value;
+                    this.OnPropertyChanged(nameof(Message));
+                }
+            }
+        }
+
+        public ChatMessageInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
@@ -1322,8 +1434,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(ChatCategoryInfo))]
-    partial class ChatCategoryInfo : INotifyPropertyChanged, ICloneable<ChatCategoryInfo>
+    [DataContract(Name = nameof(SubscribeListViewItemInfo))]
+    partial class SubscribeListViewItemInfo : INotifyPropertyChanged, ICloneable<SubscribeListViewItemInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1332,7 +1444,209 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ChatCategoryInfo() { }
+        public SubscribeListViewItemInfo() { }
+
+        private BitmapSource _icon;
+
+        [DataMember(Name = nameof(Icon))]
+        public BitmapSource Icon
+        {
+            get
+            {
+                return _icon;
+            }
+            set
+            {
+                if (_icon != value)
+                {
+                    _icon = value;
+                    this.OnPropertyChanged(nameof(Icon));
+                }
+            }
+        }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private long _length;
+
+        [DataMember(Name = nameof(Length))]
+        public long Length
+        {
+            get
+            {
+                return _length;
+            }
+            set
+            {
+                if (_length != value)
+                {
+                    _length = value;
+                    this.OnPropertyChanged(nameof(Length));
+                }
+            }
+        }
+
+        private DateTime _creationTime;
+
+        [DataMember(Name = nameof(CreationTime))]
+        public DateTime CreationTime
+        {
+            get
+            {
+                return _creationTime;
+            }
+            set
+            {
+                if (_creationTime != value)
+                {
+                    _creationTime = value;
+                    this.OnPropertyChanged(nameof(CreationTime));
+                }
+            }
+        }
+
+        private SearchState _state;
+
+        [DataMember(Name = nameof(State))]
+        public SearchState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    this.OnPropertyChanged(nameof(State));
+                }
+            }
+        }
+
+        private object _model;
+
+        [DataMember(Name = nameof(Model))]
+        public object Model
+        {
+            get
+            {
+                return _model;
+            }
+            set
+            {
+                if (_model != value)
+                {
+                    _model = value;
+                    this.OnPropertyChanged(nameof(Model));
+                }
+            }
+        }
+
+        public SubscribeListViewItemInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(PublishStoreInfo))]
+    partial class PublishStoreInfo : INotifyPropertyChanged, ICloneable<PublishStoreInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public PublishStoreInfo() { }
+
+        private bool _isExpanded;
+
+        [DataMember(Name = nameof(IsExpanded))]
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    this.OnPropertyChanged(nameof(IsExpanded));
+                }
+            }
+        }
+
+        private bool _isUpdated;
+
+        [DataMember(Name = nameof(IsUpdated))]
+        public bool IsUpdated
+        {
+            get
+            {
+                return _isUpdated;
+            }
+            set
+            {
+                if (_isUpdated != value)
+                {
+                    _isUpdated = value;
+                    this.OnPropertyChanged(nameof(IsUpdated));
+                }
+            }
+        }
+
+        private ObservableCollection<PublishBoxInfo> _boxInfos;
+
+        [DataMember(Name = nameof(BoxInfos))]
+        public ObservableCollection<PublishBoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<PublishBoxInfo>();
+
+                return _boxInfos;
+            }
+        }
+
+        public PublishStoreInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(PublishBoxInfo))]
+    partial class PublishBoxInfo : INotifyPropertyChanged, ICloneable<PublishBoxInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public PublishBoxInfo() { }
 
         private string _name;
 
@@ -1372,42 +1686,42 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<ChatThreadInfo> _threadInfos;
+        private ObservableCollection<Seed> _seeds;
 
-        [DataMember(Name = nameof(ThreadInfos))]
-        public ObservableCollection<ChatThreadInfo> ThreadInfos
+        [DataMember(Name = nameof(Seeds))]
+        public ObservableCollection<Seed> Seeds
         {
             get
             {
-                if (_threadInfos == null)
-                    _threadInfos = new ObservableCollection<ChatThreadInfo>();
+                if (_seeds == null)
+                    _seeds = new ObservableCollection<Seed>();
 
-                return _threadInfos;
+                return _seeds;
             }
         }
 
-        private ObservableCollection<ChatCategoryInfo> _categoryInfos;
+        private ObservableCollection<PublishBoxInfo> _boxInfos;
 
-        [DataMember(Name = nameof(CategoryInfos))]
-        public ObservableCollection<ChatCategoryInfo> CategoryInfos
+        [DataMember(Name = nameof(BoxInfos))]
+        public ObservableCollection<PublishBoxInfo> BoxInfos
         {
             get
             {
-                if (_categoryInfos == null)
-                    _categoryInfos = new ObservableCollection<ChatCategoryInfo>();
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<PublishBoxInfo>();
 
-                return _categoryInfos;
+                return _boxInfos;
             }
         }
 
-        public ChatCategoryInfo Clone()
+        public PublishBoxInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
     }
 
-    [DataContract(Name = nameof(ChatThreadInfo))]
-    partial class ChatThreadInfo : INotifyPropertyChanged, ICloneable<ChatThreadInfo>
+    [DataContract(Name = nameof(PublishListViewItemInfo))]
+    partial class PublishListViewItemInfo : INotifyPropertyChanged, ICloneable<PublishListViewItemInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1416,63 +1730,88 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ChatThreadInfo() { }
+        public PublishListViewItemInfo() { }
 
-        private Tag _tag;
+        private BitmapSource _icon;
 
-        [DataMember(Name = nameof(Tag))]
-        public Tag Tag
+        [DataMember(Name = nameof(Icon))]
+        public BitmapSource Icon
         {
             get
             {
-                return _tag;
+                return _icon;
             }
             set
             {
-                if (_tag != value)
+                if (_icon != value)
                 {
-                    _tag = value;
-                    this.OnPropertyChanged(nameof(Tag));
+                    _icon = value;
+                    this.OnPropertyChanged(nameof(Icon));
                 }
             }
         }
 
-        private LockedList<ChatMessageInfo> _messages;
+        private string _name;
 
-        [DataMember(Name = nameof(Messages))]
-        public LockedList<ChatMessageInfo> Messages
+        [DataMember(Name = nameof(Name))]
+        public string Name
         {
             get
             {
-                if (_messages == null)
-                    _messages = new LockedList<ChatMessageInfo>();
-
-                return _messages;
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
             }
         }
 
-        public ChatThreadInfo Clone()
+        private long _length;
+
+        [DataMember(Name = nameof(Length))]
+        public long Length
         {
-            return JsonUtils.Clone(this);
+            get
+            {
+                return _length;
+            }
+            set
+            {
+                if (_length != value)
+                {
+                    _length = value;
+                    this.OnPropertyChanged(nameof(Length));
+                }
+            }
         }
-    }
 
-    [DataContract(Name = nameof(ChatMessageInfo))]
-    partial class ChatMessageInfo : INotifyPropertyChanged, ICloneable<ChatMessageInfo>
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+        private DateTime _creationTime;
 
-        protected virtual void OnPropertyChanged(string name)
+        [DataMember(Name = nameof(CreationTime))]
+        public DateTime CreationTime
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            get
+            {
+                return _creationTime;
+            }
+            set
+            {
+                if (_creationTime != value)
+                {
+                    _creationTime = value;
+                    this.OnPropertyChanged(nameof(CreationTime));
+                }
+            }
         }
 
-        public ChatMessageInfo() { }
-
-        private ChatMessageState _state;
+        private SearchState _state;
 
         [DataMember(Name = nameof(State))]
-        public ChatMessageState State
+        public SearchState State
         {
             get
             {
@@ -1488,26 +1827,26 @@ namespace Amoeba.Interface
             }
         }
 
-        private MulticastMessage<ChatMessage> _message;
+        private object _model;
 
-        [DataMember(Name = nameof(Message))]
-        public MulticastMessage<ChatMessage> Message
+        [DataMember(Name = nameof(Model))]
+        public object Model
         {
             get
             {
-                return _message;
+                return _model;
             }
             set
             {
-                if (_message != value)
+                if (_model != value)
                 {
-                    _message = value;
-                    this.OnPropertyChanged(nameof(Message));
+                    _model = value;
+                    this.OnPropertyChanged(nameof(Model));
                 }
             }
         }
 
-        public ChatMessageInfo Clone()
+        public PublishListViewItemInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
@@ -1698,14 +2037,28 @@ namespace Amoeba.Interface
             }
         }
 
+        private ObservableCollection<SearchCondition<SearchState>> _searchStates;
+
+        [DataMember(Name = nameof(SearchStates))]
+        public ObservableCollection<SearchCondition<SearchState>> SearchStates
+        {
+            get
+            {
+                if (_searchStates == null)
+                    _searchStates = new ObservableCollection<SearchCondition<SearchState>>();
+
+                return _searchStates;
+            }
+        }
+
         public SearchConditionsInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
     }
 
-    [DataContract(Name = nameof(PublishPreviewCategoryInfo))]
-    partial class PublishPreviewCategoryInfo : INotifyPropertyChanged, ICloneable<PublishPreviewCategoryInfo>
+    [DataContract(Name = nameof(SearchListViewItemInfo))]
+    partial class SearchListViewItemInfo : INotifyPropertyChanged, ICloneable<SearchListViewItemInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1714,7 +2067,26 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public PublishPreviewCategoryInfo() { }
+        public SearchListViewItemInfo() { }
+
+        private BitmapSource _icon;
+
+        [DataMember(Name = nameof(Icon))]
+        public BitmapSource Icon
+        {
+            get
+            {
+                return _icon;
+            }
+            set
+            {
+                if (_icon != value)
+                {
+                    _icon = value;
+                    this.OnPropertyChanged(nameof(Icon));
+                }
+            }
+        }
 
         private string _name;
 
@@ -1735,42 +2107,109 @@ namespace Amoeba.Interface
             }
         }
 
-        private ObservableCollection<PublishPreviewSeedInfo> _seedInfos;
+        private Signature _signature;
 
-        [DataMember(Name = nameof(SeedInfos))]
-        public ObservableCollection<PublishPreviewSeedInfo> SeedInfos
+        [DataMember(Name = nameof(Signature))]
+        public Signature Signature
         {
             get
             {
-                if (_seedInfos == null)
-                    _seedInfos = new ObservableCollection<PublishPreviewSeedInfo>();
-
-                return _seedInfos;
+                return _signature;
+            }
+            set
+            {
+                if (_signature != value)
+                {
+                    _signature = value;
+                    this.OnPropertyChanged(nameof(Signature));
+                }
             }
         }
 
-        private ObservableCollection<PublishPreviewCategoryInfo> _categoryInfos;
+        private long _length;
 
-        [DataMember(Name = nameof(CategoryInfos))]
-        public ObservableCollection<PublishPreviewCategoryInfo> CategoryInfos
+        [DataMember(Name = nameof(Length))]
+        public long Length
         {
             get
             {
-                if (_categoryInfos == null)
-                    _categoryInfos = new ObservableCollection<PublishPreviewCategoryInfo>();
-
-                return _categoryInfos;
+                return _length;
+            }
+            set
+            {
+                if (_length != value)
+                {
+                    _length = value;
+                    this.OnPropertyChanged(nameof(Length));
+                }
             }
         }
 
-        public PublishPreviewCategoryInfo Clone()
+        private DateTime _creationTime;
+
+        [DataMember(Name = nameof(CreationTime))]
+        public DateTime CreationTime
+        {
+            get
+            {
+                return _creationTime;
+            }
+            set
+            {
+                if (_creationTime != value)
+                {
+                    _creationTime = value;
+                    this.OnPropertyChanged(nameof(CreationTime));
+                }
+            }
+        }
+
+        private SearchState _state;
+
+        [DataMember(Name = nameof(State))]
+        public SearchState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    this.OnPropertyChanged(nameof(State));
+                }
+            }
+        }
+
+        private Seed _model;
+
+        [DataMember(Name = nameof(Model))]
+        public Seed Model
+        {
+            get
+            {
+                return _model;
+            }
+            set
+            {
+                if (_model != value)
+                {
+                    _model = value;
+                    this.OnPropertyChanged(nameof(Model));
+                }
+            }
+        }
+
+        public SearchListViewItemInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
     }
 
-    [DataContract(Name = nameof(PublishPreviewSeedInfo))]
-    partial class PublishPreviewSeedInfo : INotifyPropertyChanged, ICloneable<PublishPreviewSeedInfo>
+    [DataContract(Name = nameof(DownloadListViewItemInfo))]
+    partial class DownloadListViewItemInfo : INotifyPropertyChanged, ICloneable<DownloadListViewItemInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1779,7 +2218,26 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public PublishPreviewSeedInfo() { }
+        public DownloadListViewItemInfo() { }
+
+        private BitmapSource _icon;
+
+        [DataMember(Name = nameof(Icon))]
+        public BitmapSource Icon
+        {
+            get
+            {
+                return _icon;
+            }
+            set
+            {
+                if (_icon != value)
+                {
+                    _icon = value;
+                    this.OnPropertyChanged(nameof(Icon));
+                }
+            }
+        }
 
         private string _name;
 
@@ -1819,7 +2277,398 @@ namespace Amoeba.Interface
             }
         }
 
-        public PublishPreviewSeedInfo Clone()
+        private DateTime _creationTime;
+
+        [DataMember(Name = nameof(CreationTime))]
+        public DateTime CreationTime
+        {
+            get
+            {
+                return _creationTime;
+            }
+            set
+            {
+                if (_creationTime != value)
+                {
+                    _creationTime = value;
+                    this.OnPropertyChanged(nameof(CreationTime));
+                }
+            }
+        }
+
+        private DownloadListViewItemRateInfo _rate;
+
+        [DataMember(Name = nameof(Rate))]
+        public DownloadListViewItemRateInfo Rate
+        {
+            get
+            {
+                if (_rate == null)
+                    _rate = new DownloadListViewItemRateInfo();
+
+                return _rate;
+            }
+        }
+
+        private DownloadState _state;
+
+        [DataMember(Name = nameof(State))]
+        public DownloadState State
+        {
+            get
+            {
+                return _state;
+            }
+            set
+            {
+                if (_state != value)
+                {
+                    _state = value;
+                    this.OnPropertyChanged(nameof(State));
+                }
+            }
+        }
+
+        private string _path;
+
+        [DataMember(Name = nameof(Path))]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                if (_path != value)
+                {
+                    _path = value;
+                    this.OnPropertyChanged(nameof(Path));
+                }
+            }
+        }
+
+        private DownloadItemInfo _model;
+
+        [DataMember(Name = nameof(Model))]
+        public DownloadItemInfo Model
+        {
+            get
+            {
+                return _model;
+            }
+            set
+            {
+                if (_model != value)
+                {
+                    _model = value;
+                    this.OnPropertyChanged(nameof(Model));
+                }
+            }
+        }
+
+        public DownloadListViewItemInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(DownloadListViewItemRateInfo))]
+    partial class DownloadListViewItemRateInfo : INotifyPropertyChanged, ICloneable<DownloadListViewItemRateInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public DownloadListViewItemRateInfo() { }
+
+        private string _text;
+
+        [DataMember(Name = nameof(Text))]
+        public string Text
+        {
+            get
+            {
+                return _text;
+            }
+            set
+            {
+                if (_text != value)
+                {
+                    _text = value;
+                    this.OnPropertyChanged(nameof(Text));
+                }
+            }
+        }
+
+        private int _depth;
+
+        [DataMember(Name = nameof(Depth))]
+        public int Depth
+        {
+            get
+            {
+                return _depth;
+            }
+            set
+            {
+                if (_depth != value)
+                {
+                    _depth = value;
+                    this.OnPropertyChanged(nameof(Depth));
+                }
+            }
+        }
+
+        private double _value;
+
+        [DataMember(Name = nameof(Value))]
+        public double Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                if (_value != value)
+                {
+                    _value = value;
+                    this.OnPropertyChanged(nameof(Value));
+                }
+            }
+        }
+
+        public DownloadListViewItemRateInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(UploadListViewItemInfo))]
+    partial class UploadListViewItemInfo : INotifyPropertyChanged, ICloneable<UploadListViewItemInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public UploadListViewItemInfo() { }
+
+        private BitmapSource _icon;
+
+        [DataMember(Name = nameof(Icon))]
+        public BitmapSource Icon
+        {
+            get
+            {
+                return _icon;
+            }
+            set
+            {
+                if (_icon != value)
+                {
+                    _icon = value;
+                    this.OnPropertyChanged(nameof(Icon));
+                }
+            }
+        }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private long _length;
+
+        [DataMember(Name = nameof(Length))]
+        public long Length
+        {
+            get
+            {
+                return _length;
+            }
+            set
+            {
+                if (_length != value)
+                {
+                    _length = value;
+                    this.OnPropertyChanged(nameof(Length));
+                }
+            }
+        }
+
+        private DateTime _creationTime;
+
+        [DataMember(Name = nameof(CreationTime))]
+        public DateTime CreationTime
+        {
+            get
+            {
+                return _creationTime;
+            }
+            set
+            {
+                if (_creationTime != value)
+                {
+                    _creationTime = value;
+                    this.OnPropertyChanged(nameof(CreationTime));
+                }
+            }
+        }
+
+        private string _path;
+
+        [DataMember(Name = nameof(Path))]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                if (_path != value)
+                {
+                    _path = value;
+                    this.OnPropertyChanged(nameof(Path));
+                }
+            }
+        }
+
+        private Seed _seed;
+
+        [DataMember(Name = nameof(Seed))]
+        public Seed Seed
+        {
+            get
+            {
+                return _seed;
+            }
+            set
+            {
+                if (_seed != value)
+                {
+                    _seed = value;
+                    this.OnPropertyChanged(nameof(Seed));
+                }
+            }
+        }
+
+        public UploadListViewItemInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(UploadPreviewListViewItemInfo))]
+    partial class UploadPreviewListViewItemInfo : INotifyPropertyChanged, ICloneable<UploadPreviewListViewItemInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public UploadPreviewListViewItemInfo() { }
+
+        private BitmapSource _icon;
+
+        [DataMember(Name = nameof(Icon))]
+        public BitmapSource Icon
+        {
+            get
+            {
+                return _icon;
+            }
+            set
+            {
+                if (_icon != value)
+                {
+                    _icon = value;
+                    this.OnPropertyChanged(nameof(Icon));
+                }
+            }
+        }
+
+        private string _name;
+
+        [DataMember(Name = nameof(Name))]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (_name != value)
+                {
+                    _name = value;
+                    this.OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
+
+        private long _length;
+
+        [DataMember(Name = nameof(Length))]
+        public long Length
+        {
+            get
+            {
+                return _length;
+            }
+            set
+            {
+                if (_length != value)
+                {
+                    _length = value;
+                    this.OnPropertyChanged(nameof(Length));
+                }
+            }
+        }
+
+        private string _path;
+
+        [DataMember(Name = nameof(Path))]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                if (_path != value)
+                {
+                    _path = value;
+                    this.OnPropertyChanged(nameof(Path));
+                }
+            }
+        }
+
+        public UploadPreviewListViewItemInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

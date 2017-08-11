@@ -47,7 +47,11 @@
                     Content="{Binding Path=CloudControl_Log, Source={StaticResource Languages}}" />
         </ListBox>
 
-        <ContentControl Grid.Column="1" Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <ContentControl
+                Grid.Column="1"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
                 <ListView
                         HorizontalContentAlignment="Stretch"
@@ -59,6 +63,9 @@
                         ItemsSource="{Binding Path=ConnectionInfosView}"
                         VirtualizingStackPanel.IsVirtualizing="True"
                         VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <i:Interaction.Behaviors>
+                        <omnius:ListBoxUnselectBehavior />
+                    </i:Interaction.Behaviors>
                     <ListView.ContextMenu>
                         <ContextMenu>
                             <MenuItem
@@ -213,6 +220,7 @@
                                     VirtualizingStackPanel.IsVirtualizing="True"
                                     VirtualizingStackPanel.VirtualizationMode="Recycling">
                                 <i:Interaction.Behaviors>
+                                    <omnius:ListBoxUnselectBehavior />
                                     <omnius:IgnoreMouseWheelBehavior />
                                     <omnius:IgnoreRequestBringIntoViewBehavior />
                                 </i:Interaction.Behaviors>

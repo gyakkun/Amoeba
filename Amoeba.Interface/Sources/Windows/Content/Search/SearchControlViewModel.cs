@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
-using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
+using Omnius.Net.Amoeba;
 using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
@@ -31,7 +31,7 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        private LockedList<SearchItemViewModel> _cache_SearchItems = new LockedList<SearchItemViewModel>();
+        private LockedList<SearchListViewItemInfo> _cache_SearchItems = new LockedList<SearchListViewItemInfo>();
 
         public ReactiveProperty<string> SearchInput { get; private set; }
         public ReactiveCommand SearchCommand { get; private set; }
@@ -50,7 +50,7 @@ namespace Amoeba.Interface
         public ReactiveCommand TabPasteCommand { get; private set; }
 
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
-        private ObservableCollection<SearchItemViewModel> _contents = new ObservableCollection<SearchItemViewModel>();
+        private ObservableCollection<SearchListViewItemInfo> _contents = new ObservableCollection<SearchListViewItemInfo>();
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
@@ -76,7 +76,7 @@ namespace Amoeba.Interface
             _watchTaskManager = new TaskManager(this.WatchThread);
             _watchTaskManager.Start();
 
-            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Search" };
+            this.DragAcceptDescription = new DragAcceptDescription() { Effects = DragDropEffects.Move, Format = "Amoeba_Search" };
             this.DragAcceptDescription.DragDrop += this.DragAcceptDescription_DragDrop;
         }
 
@@ -108,7 +108,7 @@ namespace Amoeba.Interface
                 this.TabSelectedItem.Subscribe((viewModel) => this.TabSelectChanged(viewModel)).AddTo(_disposable);
 
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
+                this.TabClickCommand.Subscribe(() => this.Refresh()).AddTo(_disposable);
 
                 this.TabNewSearchCommand = this.TabSelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.TabNewSearchCommand.Subscribe(() => this.TabNewSearch()).AddTo(_disposable);
@@ -189,16 +189,12 @@ namespace Amoeba.Interface
                     this.TabViewModel.Value = new SearchViewModel(null, model);
                 }
 
-                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
+                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
                 Backup.Instance.SaveEvent += this.Save;
-            }
-
-            {
-                this.Sort(null);
             }
         }
 
@@ -212,6 +208,11 @@ namespace Amoeba.Interface
             this.SearchInput.Value = "";
         }
 
+        private void Refresh()
+        {
+            this.TabSelectChanged(this.TabSelectedItem.Value);
+        }
+
         private void TabSelectChanged(TreeViewModelBase viewModel)
         {
             if (viewModel == null || _sortInfo == null) return;
@@ -223,7 +224,7 @@ namespace Amoeba.Interface
         {
             if (viewModel is SearchViewModel searchViewModel)
             {
-                IEnumerable<SearchItemViewModel> searchItems = null;
+                IEnumerable<SearchListViewItemInfo> searchItems = null;
                 {
                     var tempViewModels = new List<SearchViewModel>();
                     tempViewModels.AddRange(searchViewModel.GetAncestors().OfType<SearchViewModel>());
@@ -252,9 +253,9 @@ namespace Amoeba.Interface
             }
         }
 
-        private IEnumerable<SearchItemViewModel> Sort(IEnumerable<SearchItemViewModel> collection, string propertyName, ListSortDirection direction, int maxCount)
+        private IEnumerable<SearchListViewItemInfo> Sort(IEnumerable<SearchListViewItemInfo> collection, string propertyName, ListSortDirection direction, int maxCount)
         {
-            var list = new List<SearchItemViewModel>(collection);
+            var list = new List<SearchListViewItemInfo>(collection);
 
             if (propertyName == "Name")
             {
@@ -328,54 +329,51 @@ namespace Amoeba.Interface
         {
             for (;;)
             {
-                var searchItems = new List<SearchItemViewModel>();
+                var searchItems = new List<SearchListViewItemInfo>();
 
                 {
-                    var tempTuples = new List<(Seed, Signature)>();
+                    var seedInfos = new List<(Seed, Signature)>();
+                    var storeMetadatas = new HashSet<Metadata>();
 
+                    foreach (var store in _messageManager.GetStores())
                     {
-                        var storeMetadatas = new HashSet<Metadata>();
-
-                        foreach (var store in _messageManager.GetStores())
+                        var seedHashSet = new HashSet<Seed>();
                         {
-                            var seedList = new List<Seed>();
-                            {
-                                var boxList = new List<Box>();
-                                boxList.AddRange(store.Value.Boxes);
+                            var boxList = new List<Box>();
+                            boxList.AddRange(store.Value.Boxes);
 
-                                for (int i = 0; i < boxList.Count; i++)
-                                {
-                                    boxList.AddRange(boxList[i].Boxes);
-                                    seedList.AddRange(boxList[i].Seeds);
-                                }
-                            }
-
-                            foreach (var seed in seedList)
+                            for (int i = 0; i < boxList.Count; i++)
                             {
-                                tempTuples.Add((seed, store.AuthorSignature));
-                                storeMetadatas.Add(seed.Metadata);
+                                boxList.AddRange(boxList[i].Boxes);
+                                seedHashSet.UnionWith(boxList[i].Seeds);
                             }
                         }
 
-                        foreach (var seed in SettingsManager.Instance.DownloadedSeeds.ToArray())
+                        foreach (var seed in seedHashSet)
                         {
-                            if (storeMetadatas.Contains(seed.Metadata)) continue;
-                            tempTuples.Add((seed, null));
+                            seedInfos.Add((seed, store.AuthorSignature));
+                            storeMetadatas.Add(seed.Metadata);
                         }
                     }
 
-                    var cacheMetadatas = new HashSet<Metadata>();
-                    cacheMetadatas.UnionWith(_serviceManager.GetContentInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+                    var cacheSeeds = _serviceManager.GetContentInformations()
+                        .Select(n => new Seed(Path.GetFileName(n.GetValue<string>("Path")), n.GetValue<long>("Length"), n.GetValue<DateTime>("CreationTime"), n.GetValue<Metadata>("Metadata"))).ToArray();
+                    var cacheMetadatas = new HashSet<Metadata>(cacheSeeds.Select(n => n.Metadata));
 
-                    var downloadingMetadatas = new HashSet<Metadata>();
-                    downloadingMetadatas.UnionWith(_serviceManager.GetDownloadInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+                    var downloadedSeeds = SettingsManager.Instance.DownloadedSeeds.ToArray();
+                    var downloadedMetadatas = new HashSet<Metadata>(downloadedSeeds.Select(n => n.Metadata));
 
-                    var downloadedMetadatas = new HashSet<Metadata>();
-                    downloadedMetadatas.UnionWith(SettingsManager.Instance.DownloadedSeeds.Select(n => n.Metadata));
-
-                    foreach (var (seed, signature) in tempTuples)
+                    foreach (var seed in CollectionUtils.Unite(downloadedSeeds, cacheSeeds))
                     {
-                        var viewModel = new SearchItemViewModel();
+                        if (storeMetadatas.Contains(seed.Metadata)) continue;
+                        seedInfos.Add((seed, null));
+                    }
+
+                    var downloadingMetadatas = new HashSet<Metadata>(_serviceManager.GetDownloadInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+
+                    foreach (var (seed, signature) in seedInfos)
+                    {
+                        var viewModel = new SearchListViewItemInfo();
                         viewModel.Icon = IconUtils.GetImage(seed.Name);
                         viewModel.Name = seed.Name;
                         viewModel.Signature = signature;
@@ -383,6 +381,7 @@ namespace Amoeba.Interface
                         viewModel.CreationTime = seed.CreationTime;
 
                         SearchState state = 0;
+                        if (storeMetadatas.Contains(seed.Metadata)) state |= SearchState.Store;
                         if (cacheMetadatas.Contains(seed.Metadata)) state |= SearchState.Cache;
                         if (downloadingMetadatas.Contains(seed.Metadata)) state |= SearchState.Downloading;
                         if (downloadedMetadatas.Contains(seed.Metadata)) state |= SearchState.Downloaded;
@@ -406,7 +405,7 @@ namespace Amoeba.Interface
             }
         }
 
-        private void SetCount(SearchViewModel viewModel, IEnumerable<SearchItemViewModel> items, CancellationToken token)
+        private void SetCount(SearchViewModel viewModel, IEnumerable<SearchListViewItemInfo> items, CancellationToken token)
         {
             if (token.IsCancellationRequested) return;
 
@@ -455,13 +454,21 @@ namespace Amoeba.Interface
             }
         }
 
-        private static IEnumerable<SearchItemViewModel> Filter(IEnumerable<SearchItemViewModel> items, SearchInfo searchInfo)
+        private static IEnumerable<SearchListViewItemInfo> Filter(IEnumerable<SearchListViewItemInfo> items, SearchInfo searchInfo)
         {
             var comparer = EqualityComparer<Metadata>.Default;
 
             var list = items.Where(item =>
             {
                 {
+                    foreach (var searchContains in searchInfo.Conditions.SearchStates)
+                    {
+                        if (!searchContains.IsContains)
+                        {
+                            if (item.State.HasFlag(searchContains.Value)) return false;
+                        }
+                    }
+
                     foreach (var searchContains in searchInfo.Conditions.SearchLengthRanges)
                     {
                         if (!searchContains.IsContains)
@@ -506,6 +513,15 @@ namespace Amoeba.Interface
 
                 {
                     bool flag = false;
+
+                    foreach (var searchContains in searchInfo.Conditions.SearchStates)
+                    {
+                        if (searchContains.IsContains)
+                        {
+                            if (item.State.HasFlag(searchContains.Value)) return true;
+                            flag = true;
+                        }
+                    }
 
                     foreach (var searchContains in searchInfo.Conditions.SearchLengthRanges)
                     {
@@ -655,13 +671,13 @@ namespace Amoeba.Interface
 
         private void Copy()
         {
-            Clipboard.SetSeeds(this.SelectedItems.OfType<SearchItemViewModel>()
+            Clipboard.SetSeeds(this.SelectedItems.OfType<SearchListViewItemInfo>()
                 .Select(n => n.Model).ToArray());
         }
 
         private void Download()
         {
-            foreach (var seed in this.SelectedItems.OfType<SearchItemViewModel>()
+            foreach (var seed in this.SelectedItems.OfType<SearchListViewItemInfo>()
                 .Select(n => n.Model).ToArray())
             {
                 SettingsManager.Instance.DownloadItemInfos.Add(new DownloadItemInfo(seed, seed.Name));
@@ -670,7 +686,7 @@ namespace Amoeba.Interface
 
         private void AdvancedCopy(string type)
         {
-            var selectItems = this.SelectedItems.OfType<SearchItemViewModel>().ToArray();
+            var selectItems = this.SelectedItems.OfType<SearchListViewItemInfo>().ToArray();
 
             if (type == "Name")
             {
@@ -684,7 +700,7 @@ namespace Amoeba.Interface
 
         private void RemoveDownloadHistory()
         {
-            var hashSet = new HashSet<Metadata>(this.SelectedItems.OfType<SearchItemViewModel>()
+            var hashSet = new HashSet<Metadata>(this.SelectedItems.OfType<SearchListViewItemInfo>()
                 .Where(n => n.State.HasFlag(SearchState.Downloaded))
                 .Select(n => n.Model.Metadata).ToArray());
             if (hashSet.Count == 0) return;

@@ -55,6 +55,7 @@
                         </HierarchicalDataTemplate>
                     </TreeView.Resources>
                     <i:Interaction.Behaviors>
+                        <omnius:TreeViewRightClickSelectBehavior />
                         <omnius:IgnoreRequestBringIntoViewBehavior />
                         <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
                         <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
@@ -142,6 +143,9 @@
                                     ItemsSource="{Binding Path=TrustSignaturesView}"
                                     VirtualizingStackPanel.IsVirtualizing="True"
                                     VirtualizingStackPanel.VirtualizationMode="Recycling">
+                                <i:Interaction.Behaviors>
+                                    <omnius:ListBoxUnselectBehavior />
+                                </i:Interaction.Behaviors>
                                 <ListView.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem
@@ -181,6 +185,9 @@
                                     ItemsSource="{Binding Path=UntrustSignaturesView}"
                                     VirtualizingStackPanel.IsVirtualizing="True"
                                     VirtualizingStackPanel.VirtualizationMode="Recycling">
+                                <i:Interaction.Behaviors>
+                                    <omnius:ListBoxUnselectBehavior />
+                                </i:Interaction.Behaviors>
                                 <ListView.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem
@@ -220,6 +227,9 @@
                                     ItemsSource="{Binding Path=TagsView}"
                                     VirtualizingStackPanel.IsVirtualizing="True"
                                     VirtualizingStackPanel.VirtualizationMode="Recycling">
+                                <i:Interaction.Behaviors>
+                                    <omnius:ListBoxUnselectBehavior />
+                                </i:Interaction.Behaviors>
                                 <ListView.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem

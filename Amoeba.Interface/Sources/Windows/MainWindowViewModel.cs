@@ -42,8 +42,9 @@ namespace Amoeba.Interface
 
         public CloudControlViewModel CloudControlViewModel { get; private set; }
         public ChatControlViewModel ChatControlViewModel { get; private set; }
-        public SearchControlViewModel SearchControlViewModel { get; private set; }
         public StoreSubscribeControlViewModel StoreSubscribeControlViewModel { get; private set; }
+        public StorePublishControlViewModel StorePublishControlViewModel { get; private set; }
+        public SearchControlViewModel SearchControlViewModel { get; private set; }
         public DownloadControlViewModel DownloadControlViewModel { get; private set; }
         public UploadControlViewModel UploadControlViewModel { get; private set; }
 
@@ -125,8 +126,9 @@ namespace Amoeba.Interface
             {
                 this.CloudControlViewModel = new CloudControlViewModel(_serviceManager);
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager, _messageManager);
-                this.SearchControlViewModel = new SearchControlViewModel(_serviceManager, _messageManager);
                 this.StoreSubscribeControlViewModel = new StoreSubscribeControlViewModel(_serviceManager);
+                this.StorePublishControlViewModel = new StorePublishControlViewModel(_serviceManager);
+                this.SearchControlViewModel = new SearchControlViewModel(_serviceManager, _messageManager);
                 this.DownloadControlViewModel = new DownloadControlViewModel(_serviceManager);
                 this.UploadControlViewModel = new UploadControlViewModel(_serviceManager);
             }
@@ -319,8 +321,9 @@ namespace Amoeba.Interface
 
                 this.CloudControlViewModel.Dispose();
                 this.ChatControlViewModel.Dispose();
-                this.SearchControlViewModel.Dispose();
                 this.StoreSubscribeControlViewModel.Dispose();
+                this.StorePublishControlViewModel.Dispose();
+                this.SearchControlViewModel.Dispose();
                 this.DownloadControlViewModel.Dispose();
                 this.UploadControlViewModel.Dispose();
 

@@ -7,13 +7,16 @@ namespace Amoeba.Interface
     [DataContract(Name = nameof(SearchState))]
     enum SearchState
     {
+        [EnumMember(Value = nameof(Store))]
+        Store = 0x01,
+
         [EnumMember(Value = nameof(Cache))]
-        Cache = 0x1,
+        Cache = 0x02,
 
         [EnumMember(Value = nameof(Downloading))]
-        Downloading = 0x2,
+        Downloading = 0x04,
 
         [EnumMember(Value = nameof(Downloaded))]
-        Downloaded = 0x4,
+        Downloaded = 0x08,
     }
 }

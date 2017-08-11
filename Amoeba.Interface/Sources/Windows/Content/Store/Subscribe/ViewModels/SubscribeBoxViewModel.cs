@@ -1,28 +1,31 @@
 using System.Reactive.Disposables;
+using Omnius.Net.Amoeba;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class PublishPreviewCategoryViewModel : TreeViewModelBase
+    class SubscribeBoxViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ReadOnlyReactiveCollection<PublishPreviewCategoryViewModel> Categories { get; private set; }
+        public ReadOnlyReactiveCollection<Seed> Seeds { get; private set; }
+        public ReadOnlyReactiveCollection<SubscribeBoxViewModel> Boxes { get; private set; }
 
-        public PublishPreviewCategoryInfo Model { get; private set; }
+        public SubscribeBoxInfo Model { get; private set; }
 
-        public PublishPreviewCategoryViewModel(TreeViewModelBase parent, PublishPreviewCategoryInfo model)
+        public SubscribeBoxViewModel(TreeViewModelBase parent, SubscribeBoxInfo model)
             : base(parent)
         {
             this.Model = model;
 
-            this.IsExpanded = new ReactiveProperty<bool>(true).AddTo(_disposable);
-
             this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
-            this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new PublishPreviewCategoryViewModel(this, n)).AddTo(_disposable);
+            this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
+            this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
+            this.Seeds = model.Seeds.ToReadOnlyReactiveCollection(n => n).AddTo(_disposable);
+            this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new SubscribeBoxViewModel(this, n)).AddTo(_disposable);
         }
 
         public override string DragFormat { get { return null; } }

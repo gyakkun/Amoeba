@@ -58,6 +58,7 @@
                 </HierarchicalDataTemplate>
             </TreeView.Resources>
             <i:Interaction.Behaviors>
+                <omnius:TreeViewRightClickSelectBehavior />
                 <omnius:IgnoreRequestBringIntoViewBehavior />
                 <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
                 <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />

@@ -87,7 +87,7 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                _connectionSortInfo = _settings.Load("ConnectionSortInfo", () => new ListSortInfo());
+                _connectionSortInfo = _settings.Load("ConnectionSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Type" });
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 

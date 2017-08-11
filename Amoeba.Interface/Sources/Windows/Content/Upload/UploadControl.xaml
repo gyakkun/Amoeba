@@ -18,61 +18,38 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Grid
-                    Margin="20,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Visibility="{Binding Path=IsProgressVisible.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ProgressBar
-                        Height="16"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        md:TransitionAssist.DisableTransitions="True"
-                        Value="{Binding Path=Rate.Value, Mode=OneWay}" />
-                <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{Binding Path=Rate.Text, Mode=OneWay}" />
-            </Grid>
-
-            <DockPanel
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top">
-                <Button
-                        Width="48"
-                        Height="48"
-                        Margin="0,16,16,8"
-                        HorizontalAlignment="Left"
-                        Command="{Binding Path=UploadCommand}"
-                        Style="{StaticResource MaterialDesignFloatingActionButton}"
-                        ToolTip="{Binding Path=UploadControl_Upload, Source={StaticResource Languages}}">
-                    <md:PackIcon
-                            Width="24"
-                            Height="24"
-                            Kind="CloudUpload" />
-                </Button>
-            </DockPanel>
-        </Grid>
+        <DockPanel HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button
+                    Width="48"
+                    Height="48"
+                    Margin="0,16,16,8"
+                    HorizontalAlignment="Left"
+                    Command="{Binding Path=SyncCommand}"
+                    Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    ToolTip="{Binding Path=UploadControl_Sync, Source={StaticResource Languages}}">
+                <md:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Sync" />
+            </Button>
+        </DockPanel>
 
         <ListView
                 Grid.Row="1"
                 HorizontalContentAlignment="Stretch"
                 VerticalContentAlignment="Stretch"
                 omnius:GridViewSortHelper.Command="{Binding SortCommand}"
+                omnius:ListBoxHelper.SelectedItems="{Binding Path=SelectedItems}"
+                AllowDrop="True"
                 IsSynchronizedWithCurrentItem="True"
                 ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
                 ItemsSource="{Binding Path=ContentsView}"
-                SelectedItem="{Binding Path=SelectedItem.Value}"
-                SelectionMode="Single"
                 VirtualizingStackPanel.IsVirtualizing="True"
                 VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <i:Interaction.Behaviors>
+                <omnius:ListBoxUnselectBehavior />
+                <omnius:FileDragAcceptBehavior Description="{Binding FileDragAcceptDescription}" />
+            </i:Interaction.Behaviors>
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem
@@ -80,15 +57,7 @@
                             Header="{Binding Path=UploadControl_Add, Source={StaticResource Languages}}"
                             InputGestureText="Ctrl+A">
                         <MenuItem.Icon>
-                            <md:PackIcon Kind="Folder" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem
-                            Command="{Binding Path=EditCommand}"
-                            Header="{Binding Path=UploadControl_Edit, Source={StaticResource Languages}}"
-                            InputGestureText="Ctrl+E">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="Pencil" />
+                            <md:PackIcon Kind="File" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem
@@ -99,22 +68,58 @@
                             <md:PackIcon Kind="Delete" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
+                    <MenuItem
+                            Command="{Binding Path=CopyCommand}"
+                            Header="{Binding Path=UploadControl_Copy, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+C">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="ContentCopy" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
                     <GridViewColumn
-                            Width="{Binding Path=DynamicOptions.DirectoryListView_Name_Width, Mode=TwoWay, FallbackValue=120}"
+                            Width="{Binding Path=DynamicOptions.ListView_Name_Width, Mode=TwoWay, FallbackValue=120}"
                             omnius:GridViewSortHelper.PropertyName="Name"
                             Header="{Binding Path=UploadControl_Name, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
+                                <Grid>
+                                    <Image
+                                            Width="16"
+                                            Height="16"
+                                            HorizontalAlignment="Left"
+                                            Source="{Binding Path=Icon, Mode=OneWay}" />
+                                    <TextBlock Margin="22,0,0,0" Text="{Binding Path=Name, Mode=OneWay}" />
+                                </Grid>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn
-                            Width="{Binding Path=DynamicOptions.DirectoryListView_Path_Width, Mode=TwoWay, FallbackValue=120}"
+                            Width="{Binding Path=DynamicOptions.ListView_Length_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="Length"
+                            Header="{Binding Path=UploadControl_Length, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Length, Mode=OneWay, Converter={StaticResource LongToSizeStringConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_CreationTime_Width, Mode=TwoWay, FallbackValue=120}"
+                            omnius:GridViewSortHelper.PropertyName="CreationTime"
+                            Header="{Binding Path=UploadControl_CreationTime, Source={StaticResource Languages}}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=CreationTime, Mode=OneWay, Converter={StaticResource DateTimeToStringConverter}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn
+                            Width="{Binding Path=DynamicOptions.ListView_Path_Width, Mode=TwoWay, FallbackValue=120}"
                             omnius:GridViewSortHelper.PropertyName="Path"
                             Header="{Binding Path=UploadControl_Path, Source={StaticResource Languages}}">
                         <GridViewColumn.CellTemplate>
@@ -139,13 +144,13 @@
                 ToolTipService.Placement="Left">
             <StackPanel>
                 <Button Command="{Binding Path=AddCommand}" ToolTip="{Binding Path=UploadControl_Add, Source={StaticResource Languages}}">
-                    <md:PackIcon Kind="Folder" />
-                </Button>
-                <Button Command="{Binding Path=EditCommand}" ToolTip="{Binding Path=UploadControl_Edit, Source={StaticResource Languages}}">
-                    <md:PackIcon Kind="Pencil" />
+                    <md:PackIcon Kind="File" />
                 </Button>
                 <Button Command="{Binding Path=DeleteCommand}" ToolTip="{Binding Path=UploadControl_Delete, Source={StaticResource Languages}}">
                     <md:PackIcon Kind="Delete" />
+                </Button>
+                <Button Command="{Binding Path=CopyCommand}" ToolTip="{Binding Path=UploadControl_Copy, Source={StaticResource Languages}}">
+                    <md:PackIcon Kind="ContentCopy" />
                 </Button>
             </StackPanel>
         </md:PopupBox>

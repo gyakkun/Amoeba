@@ -14,6 +14,10 @@ namespace Amoeba.Interface
 
             if (value is SearchState type)
             {
+                if (type.HasFlag(SearchState.Store))
+                {
+                    list.Add(LanguagesManager.Instance.SearchState_Flag_Store);
+                }
                 if (type.HasFlag(SearchState.Cache))
                 {
                     list.Add(LanguagesManager.Instance.SearchState_Flag_Cache);

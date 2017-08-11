@@ -7,8 +7,8 @@ namespace Amoeba.Interface
     class VersionWindowShowEvent : PubSubEvent<VersionWindowViewModel> { }
     class ChatMessageEditWindowShowEvent : PubSubEvent<ChatMessageEditWindowViewModel> { }
     class SearchInfoEditWindowShowEvent : PubSubEvent<SearchInfoEditWindowViewModel> { }
-    class PublishDirectoryInfoEditWindowShowEvent : PubSubEvent<PublishDirectoryInfoEditWindowViewModel> { }
-    class PublishPreviewWindowShowEvent : PubSubEvent<PublishPreviewWindowViewModel> { }
+    class UploadPreviewWindowShowEvent : PubSubEvent<UploadPreviewWindowViewModel> { }
+
     class NameEditWindowShowEvent : PubSubEvent<NameEditWindowViewModel> { }
     class ConfirmWindowShowEvent : PubSubEvent<ConfirmWindowViewModel> { }
     class NoticeWindowShowEvent : PubSubEvent<NoticeWindowViewModel> { }

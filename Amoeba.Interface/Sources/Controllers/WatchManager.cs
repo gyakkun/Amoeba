@@ -163,8 +163,15 @@ namespace Amoeba.Interface
                 {
                     sw.Restart();
 
-                    Backup.Instance.Run();
-                    this.GarbageCollect();
+                    try
+                    {
+                        Backup.Instance.Run();
+                        this.GarbageCollect();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                    }
                 }
             });
             _backupTimer.Start(new TimeSpan(0, 0, 30));

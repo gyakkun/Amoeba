@@ -25,6 +25,7 @@ namespace Amoeba.Interface
         public SignatureSearchConditionsControlViewModel SignatureSearchConditionsControlViewModel { get; private set; }
         public CreationTimeSearchConditionsControlViewModel CreationTimeSearchConditionsControlViewModel { get; private set; }
         public LengthSearchConditionsControlViewModel LengthSearchConditionsControlViewModel { get; private set; }
+        public StateSearchConditionsControlViewModel StateSearchConditionsControlViewModel { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
@@ -52,6 +53,7 @@ namespace Amoeba.Interface
                 this.SignatureSearchConditionsControlViewModel = new SignatureSearchConditionsControlViewModel(_info.Conditions.SearchSignatures);
                 this.CreationTimeSearchConditionsControlViewModel = new CreationTimeSearchConditionsControlViewModel(_info.Conditions.SearchCreationTimeRanges);
                 this.LengthSearchConditionsControlViewModel = new LengthSearchConditionsControlViewModel(_info.Conditions.SearchLengthRanges);
+                this.StateSearchConditionsControlViewModel = new StateSearchConditionsControlViewModel(_info.Conditions.SearchStates);
 
                 this.OkCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
@@ -93,6 +95,8 @@ namespace Amoeba.Interface
             _info.Conditions.SearchCreationTimeRanges.AddRange(this.CreationTimeSearchConditionsControlViewModel.GetContents());
             _info.Conditions.SearchLengthRanges.Clear();
             _info.Conditions.SearchLengthRanges.AddRange(this.LengthSearchConditionsControlViewModel.GetContents());
+            _info.Conditions.SearchStates.Clear();
+            _info.Conditions.SearchStates.AddRange(this.StateSearchConditionsControlViewModel.GetContents());
 
             this.Callback?.Invoke(_info);
 
@@ -129,6 +133,7 @@ namespace Amoeba.Interface
                 this.SignatureSearchConditionsControlViewModel.Dispose();
                 this.CreationTimeSearchConditionsControlViewModel.Dispose();
                 this.LengthSearchConditionsControlViewModel.Dispose();
+                this.StateSearchConditionsControlViewModel.Dispose();
 
                 _disposable.Dispose();
             }

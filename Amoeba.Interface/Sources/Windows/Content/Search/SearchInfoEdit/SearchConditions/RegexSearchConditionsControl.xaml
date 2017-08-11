@@ -25,6 +25,9 @@
                     SelectionMode="Single"
                     VirtualizingStackPanel.IsVirtualizing="True"
                     VirtualizingStackPanel.VirtualizationMode="Recycling">
+                <i:Interaction.Behaviors>
+                    <omnius:ListBoxUnselectBehavior />
+                </i:Interaction.Behaviors>
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem
@@ -73,6 +76,7 @@
                 </ListView.View>
             </ListView>
         </Grid>
+
         <CheckBox
                 Height="24"
                 Margin="0,0,0,96"
@@ -87,7 +91,6 @@
                 VerticalAlignment="Bottom"
                 Content="{Binding Path=SearchConditionsControl_IgnoreCase, Source={StaticResource Languages}}"
                 IsChecked="{Binding Path=IgnoreCase.Value}" />
-
         <TextBox
                 Height="32"
                 Margin="0,0,0,48"

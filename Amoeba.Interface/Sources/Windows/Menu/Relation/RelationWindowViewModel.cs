@@ -82,7 +82,7 @@ namespace Amoeba.Interface
                 this.TabSelectedItem.Subscribe((viewModel) => this.TabSelectChanged(viewModel)).AddTo(_disposable);
 
                 this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TabClickCommand.Subscribe(() => this.TabSelectChanged(this.TabSelectedItem.Value)).AddTo(_disposable);
+                this.TabClickCommand.Subscribe(() => this.Refresh()).AddTo(_disposable);
 
                 this.TabCopyCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
@@ -118,9 +118,9 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                _trustSignaturesSortInfo = _settings.Load("TrustSignaturesSortInfo ", () => new ListSortInfo());
-                _untrustSignaturesSortInfo = _settings.Load("UntrustSignaturesSortInfo ", () => new ListSortInfo());
-                _tagsSortInfo = _settings.Load("TagsSortInfo", () => new ListSortInfo());
+                _trustSignaturesSortInfo = _settings.Load("TrustSignaturesSortInfo ", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
+                _untrustSignaturesSortInfo = _settings.Load("UntrustSignaturesSortInfo ", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
+                _tagsSortInfo = _settings.Load("TagsSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
@@ -133,6 +133,11 @@ namespace Amoeba.Interface
                 this.UntrustSignaturesSort(null);
                 this.TagsSort(null);
             }
+        }
+
+        private void Refresh()
+        {
+            this.TabSelectChanged(this.TabSelectedItem.Value);
         }
 
         private void TabSelectChanged(TreeViewModelBase viewModel)

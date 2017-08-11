@@ -21,12 +21,13 @@ namespace Amoeba.Interface
             this.Model = model;
 
             this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
+            this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.Chats = model.ThreadInfos.ToReadOnlyReactiveCollection(n => new ChatThreadViewModel(this, n)).AddTo(_disposable);
             this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new ChatCategoryViewModel(this, n)).AddTo(_disposable);
         }
 
-        public override string DragFormat { get { return "Chat"; } }
+        public override string DragFormat { get { return "Amoeba_Chat"; } }
 
         public override bool TryAdd(object value)
         {

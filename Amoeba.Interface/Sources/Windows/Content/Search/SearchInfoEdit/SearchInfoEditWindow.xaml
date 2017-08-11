@@ -90,6 +90,13 @@
                             HorizontalContentAlignment="Center"
                             VerticalContentAlignment="Center"
                             Content="{Binding Path=SearchInfoEditWindow_Length, Source={StaticResource Languages}}" />
+                    <ListBoxItem
+                            Name="StateListBoxItem"
+                            Height="32"
+                            Padding="16,8"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Content="{Binding Path=SearchInfoEditWindow_State, Source={StaticResource Languages}}" />
                 </ListBox>
 
                 <Grid Grid.Column="1">
@@ -185,6 +192,25 @@
                                 <ContentControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                                     <Grid Margin="7">
                                         <local:LengthSearchConditionsControl DataContext="{Binding Path=LengthSearchConditionsControlViewModel}" />
+                                    </Grid>
+                                </ContentControl>
+                            </GroupBox>
+                        </ContentControl>
+                        <ContentControl Visibility="{Binding ElementName=StateListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <GroupBox
+                                    VerticalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Header="{Binding Path=SearchInfoEditWindow_StateConditions, Source={StaticResource Languages}}"
+                                    Style="{DynamicResource MaterialDesignCardGroupBox}">
+                                <GroupBox.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Margin="8,0" Text="{Binding}" />
+                                    </DataTemplate>
+                                </GroupBox.HeaderTemplate>
+                                <ContentControl HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <Grid Margin="7">
+                                        <local:StateSearchConditionsControl DataContext="{Binding Path=StateSearchConditionsControlViewModel}" />
                                     </Grid>
                                 </ContentControl>
                             </GroupBox>

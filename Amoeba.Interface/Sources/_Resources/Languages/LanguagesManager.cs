@@ -25,7 +25,7 @@ namespace Amoeba.Interface
         private LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface\bin\Debug\Core\Resources\Languages";
+            string path = @"C:\Local\Projects\Alliance-Network\Amoeba-Wpf\Amoeba.Interface\bin\Debug\Core\Resources\Languages";
 
             if (!Directory.Exists(path)) path = AmoebaEnvironment.Paths.LanguagesPath;
 #else

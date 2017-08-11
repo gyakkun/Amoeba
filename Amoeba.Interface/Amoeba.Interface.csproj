@@ -88,11 +88,12 @@
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\CustomAvalonEditHelperBase.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\AvalonEditChatMessagesHelper.cs" />
     <Compile Include="Sources\Mvvm\Models\Chat\ChatMessageState.cs" />
+    <Compile Include="Sources\Mvvm\Models\Download\DownloadItemInfo.cs" />
     <Compile Include="Sources\Mvvm\Models\Search\SearchCondition.cs" />
     <Compile Include="Sources\Mvvm\Models\Search\SearchRange.cs" />
     <Compile Include="Sources\Mvvm\Models\Search\SearchRegex.cs" />
     <Compile Include="Sources\Mvvm\Models\Search\SearchState.cs" />
-    <Compile Include="Sources\Mvvm\Models\Download\DownloadItemInfo.cs" />
+    <Compile Include="Sources\Mvvm\Models\Upload\UploadItemInfo.cs" />
     <Compile Include="Sources\Mvvm\Models\_Generator\Models.generated.cs">
       <DependentUpon>Models.tt</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -116,14 +117,27 @@
       <DependentUpon>ChatMessageEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Chat\ChatMessageEdit\ChatMessageEditWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\StoreSubscribeControl.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\StateSearchConditionsControl.xaml.cs">
+      <DependentUpon>StateSearchConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\StateSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\Publish\StorePublishControl.xaml.cs">
+      <DependentUpon>StorePublishControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Store\Publish\StorePublishControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\Publish\ViewModels\PublishBoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\Publish\ViewModels\PublishStoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\Subscribe\StoreSubscribeControl.xaml.cs">
       <DependentUpon>StoreSubscribeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Content\Store\StoreSubscribeControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\ViewModels\SubscribeBoxViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\ViewModels\SubscribeCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\ViewModels\SubscribeItemViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\ViewModels\SubscribeStoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\Subscribe\StoreSubscribeControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\Subscribe\ViewModels\SubscribeBoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\Subscribe\ViewModels\SubscribeCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\Subscribe\ViewModels\SubscribeStoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindow.xaml.cs">
+      <DependentUpon>UploadPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Menu\Options\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
@@ -138,17 +152,7 @@
     </Compile>
     <Compile Include="Sources\Windows\Menu\Relation\RelationWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Menu\Relation\ViewModels\RelationSignatureViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Upload\PublishPreview\PublishPreviewWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Upload\PublishPreview\ViewModels\PublishPreviewCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Upload\PublishPreview\ViewModels\PublishPreviewItemViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Upload\UploadControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Upload\PublishPreview\PublishPreviewWindow.xaml.cs">
-      <DependentUpon>PublishPreviewWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Content\Upload\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindow.xaml.cs">
-      <DependentUpon>PublishDirectoryInfoEditWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Sources\Windows\Content\Upload\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControl.xaml.cs">
       <DependentUpon>LengthSearchConditionsControl.xaml</DependentUpon>
     </Compile>
@@ -177,7 +181,6 @@
       <DependentUpon>SearchControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Search\SearchControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\ViewModels\SearchItemViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Download\DownloadControlViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Upload\UploadControl.xaml.cs">
       <DependentUpon>UploadControl.xaml</DependentUpon>
@@ -216,7 +219,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Store\StoreSubscribeControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\StateSearchConditionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Content\Store\Publish\StorePublishControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Content\Store\Subscribe\StoreSubscribeControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -229,14 +244,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Sources\Windows\Menu\Relation\RelationWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Sources\Windows\Content\Upload\PublishPreview\PublishPreviewWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Sources\Windows\Content\Upload\PublishDirectoryInfoEdit\PublishDirectoryInfoEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

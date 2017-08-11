@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Data;
 using Omnius.Base;
@@ -60,6 +61,8 @@ namespace Amoeba.Interface
         public ReactiveCommand AccountTagCopyCommand { get; private set; }
         public ReactiveCommand AccountTagPasteCommand { get; private set; }
 
+        public ReactiveCommand DownloadDirectoryPathEditDialogCommand { get; private set; }
+
         public ListCollectionView SubscribeSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Subscribe.SubscribeSignatures);
         public ObservableCollection<object> SelectedSubscribeSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _subscribeSignaturesSortInfo;
@@ -68,8 +71,6 @@ namespace Amoeba.Interface
         public ReactiveCommand SubscribeDeleteCommand { get; private set; }
         public ReactiveCommand SubscribeCopyCommand { get; private set; }
         public ReactiveCommand SubscribePasteCommand { get; private set; }
-
-        public ReactiveCommand DownloadDirectoryPathEditDialogCommand { get; private set; }
 
         public ReactiveCommand OkCommand { get; private set; }
         public ReactiveCommand CancelCommand { get; private set; }
@@ -166,10 +167,10 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                _accountTrustSignaturesSortInfo = _settings.Load("AccountTrustSignaturesSortInfo ", () => new ListSortInfo());
-                _accountUntrustSignaturesSortInfo = _settings.Load("AccountUntrustSignaturesSortInfo ", () => new ListSortInfo());
-                _accountTagsSortInfo = _settings.Load("AccountTagsSortInfo", () => new ListSortInfo());
-                _subscribeSignaturesSortInfo = _settings.Load("SubscribeSignaturesSortInfo ", () => new ListSortInfo());
+                _accountTrustSignaturesSortInfo = _settings.Load("AccountTrustSignaturesSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
+                _accountUntrustSignaturesSortInfo = _settings.Load("AccountUntrustSignaturesSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
+                _accountTagsSortInfo = _settings.Load("AccountTagsSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
+                _subscribeSignaturesSortInfo = _settings.Load("SubscribeSignaturesSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
@@ -204,38 +205,38 @@ namespace Amoeba.Interface
                 this.Options.Account.Tags.AddRange(info.Tags);
             }
 
-            // Subscribe
-            {
-                this.Options.Subscribe.SubscribeSignatures.AddRange(SettingsManager.Instance.SubscribeSignatures);
-            }
-
             // Tcp
             {
                 var config = _serviceManager.TcpConnectionConfig;
-                this.Options.Tcp.ProxyUri = config.ProxyUri;
-                this.Options.Tcp.Ipv4IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv4);
-                this.Options.Tcp.Ipv4Port = config.Ipv4Port;
-                this.Options.Tcp.Ipv6IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv6);
-                this.Options.Tcp.Ipv6Port = config.Ipv6Port;
+                this.Options.Connection.Tcp.ProxyUri = config.ProxyUri;
+                this.Options.Connection.Tcp.Ipv4IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv4);
+                this.Options.Connection.Tcp.Ipv4Port = config.Ipv4Port;
+                this.Options.Connection.Tcp.Ipv6IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv6);
+                this.Options.Connection.Tcp.Ipv6Port = config.Ipv6Port;
             }
 
             // I2p
             {
                 var config = _serviceManager.I2pConnectionConfig;
-                this.Options.I2p.IsEnabled = config.IsEnabled;
-                this.Options.I2p.SamBridgeUri = config.SamBridgeUri;
+                this.Options.Connection.I2p.IsEnabled = config.IsEnabled;
+                this.Options.Connection.I2p.SamBridgeUri = config.SamBridgeUri;
             }
 
             // Bandwidth
             {
-                this.Options.Bandwidth.BandwidthLimit = _serviceManager.BandwidthLimit;
-                this.Options.Bandwidth.ConnectionCountLimit = _serviceManager.ConnectionCountLimit;
+                this.Options.Connection.Bandwidth.BandwidthLimit = _serviceManager.BandwidthLimit;
+                this.Options.Connection.Bandwidth.ConnectionCountLimit = _serviceManager.ConnectionCountLimit;
             }
 
             // Data
             {
                 this.Options.Data.CacheSize = _serviceManager.Size;
                 this.Options.Data.DownloadDirectoryPath = _serviceManager.BasePath;
+            }
+
+            // Subscribe
+            {
+                this.Options.Subscribe.SubscribeSignatures.AddRange(SettingsManager.Instance.SubscribeSignatures);
             }
 
             // Updaate
@@ -293,37 +294,28 @@ namespace Amoeba.Interface
                 }
             }
 
-            // Subscribe
-            {
-                lock (SettingsManager.Instance.SubscribeSignatures.LockObject)
-                {
-                    SettingsManager.Instance.SubscribeSignatures.Clear();
-                    SettingsManager.Instance.SubscribeSignatures.UnionWith(this.Options.Subscribe.SubscribeSignatures);
-                }
-            }
-
             // Tcp
             {
-                var info = this.Options.Tcp;
+                var info = this.Options.Connection.Tcp;
                 var type = TcpConnectionType.None;
                 if (info.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
                 if (info.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
 
                 _serviceManager.SetTcpConnectionConfig(
-                    new TcpConnectionConfig(type, info.ProxyUri, info.Ipv4Port, info.Ipv6Port));
+                    new TcpConnectionConfig(type, info.Ipv4Port, info.Ipv6Port, info.ProxyUri));
             }
 
             // I2p
             {
-                var info = this.Options.I2p;
+                var info = this.Options.Connection.I2p;
                 _serviceManager.SetI2pConnectionConfig(
                     new I2pConnectionConfig(info.IsEnabled, info.SamBridgeUri));
             }
 
             // Bandwidth
             {
-                _serviceManager.BandwidthLimit = this.Options.Bandwidth.BandwidthLimit;
-                _serviceManager.ConnectionCountLimit = this.Options.Bandwidth.ConnectionCountLimit;
+                _serviceManager.BandwidthLimit = this.Options.Connection.Bandwidth.BandwidthLimit;
+                _serviceManager.ConnectionCountLimit = this.Options.Connection.Bandwidth.ConnectionCountLimit;
             }
 
             // Data
@@ -351,6 +343,15 @@ namespace Amoeba.Interface
                 }
 
                 _serviceManager.BasePath = this.Options.Data.DownloadDirectoryPath;
+            }
+
+            // Subscribe
+            {
+                lock (SettingsManager.Instance.SubscribeSignatures.LockObject)
+                {
+                    SettingsManager.Instance.SubscribeSignatures.Clear();
+                    SettingsManager.Instance.SubscribeSignatures.UnionWith(this.Options.Subscribe.SubscribeSignatures);
+                }
             }
 
             // Update
@@ -695,6 +696,21 @@ namespace Amoeba.Interface
             }
         }
 
+        private void DownloadDirectoryPathEditDialog()
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
+                dialog.SelectedPath = this.Options.Data.DownloadDirectoryPath;
+                dialog.ShowNewFolderButton = true;
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    this.Options.Data.DownloadDirectoryPath = dialog.SelectedPath;
+                }
+            }
+        }
+
         private void SubscribeSignaturesSort(string propertyName)
         {
             if (propertyName == null)
@@ -781,21 +797,6 @@ namespace Amoeba.Interface
                 if (this.Options.Subscribe.SubscribeSignatures.Contains(item)) continue;
 
                 this.Options.Subscribe.SubscribeSignatures.Add(item);
-            }
-        }
-
-        private void DownloadDirectoryPathEditDialog()
-        {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
-            {
-                dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
-                dialog.SelectedPath = this.Options.Data.DownloadDirectoryPath;
-                dialog.ShowNewFolderButton = true;
-
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    this.Options.Data.DownloadDirectoryPath = dialog.SelectedPath;
-                }
             }
         }
 

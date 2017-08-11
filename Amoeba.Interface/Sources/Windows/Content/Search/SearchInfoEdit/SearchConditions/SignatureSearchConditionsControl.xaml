@@ -24,6 +24,9 @@
                     ItemsSource="{Binding Path=ContentsView}"
                     VirtualizingStackPanel.IsVirtualizing="True"
                     VirtualizingStackPanel.VirtualizationMode="Recycling">
+                <i:Interaction.Behaviors>
+                    <omnius:ListBoxUnselectBehavior />
+                </i:Interaction.Behaviors>
                 <ListView.ContextMenu>
                     <ContextMenu>
                         <MenuItem

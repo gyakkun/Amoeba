@@ -19,10 +19,11 @@ namespace Amoeba.Interface
         {
             this.Model = model;
 
+            this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.Name = model.ObserveProperty(n => n.Tag).Select(n => MessageUtils.ToString(n)).ToReactiveProperty().AddTo(_disposable);
         }
 
-        public override string DragFormat { get { return "Chat"; } }
+        public override string DragFormat { get { return "Amoeba_Chat"; } }
 
         public override bool TryAdd(object value)
         {

@@ -82,7 +82,7 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo());
+                _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Contains" });
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 

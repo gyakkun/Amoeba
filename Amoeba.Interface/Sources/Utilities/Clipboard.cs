@@ -170,7 +170,7 @@ namespace Amoeba.Interface
         {
             lock (_thisLock)
             {
-                Clipboard.SetText(string.Join("\r\n", signatures.Select(n => n.ToString())));
+                Clipboard.SetText(string.Join(Environment.NewLine, signatures.Select(n => n.ToString())));
             }
         }
 
@@ -195,6 +195,8 @@ namespace Amoeba.Interface
 
                 foreach (string item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
+                    if (!item.StartsWith("Location:")) continue;
+
                     try
                     {
                         var location = AmoebaConverter.FromLocationString(item);
@@ -216,7 +218,7 @@ namespace Amoeba.Interface
         {
             lock (_thisLock)
             {
-                Clipboard.SetText(string.Join("\r\n", locations.Select(n => AmoebaConverter.ToLocationString(n))));
+                Clipboard.SetText(string.Join(Environment.NewLine, locations.Select(n => AmoebaConverter.ToLocationString(n))));
             }
         }
 
@@ -241,6 +243,8 @@ namespace Amoeba.Interface
 
                 foreach (string item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
+                    if (!item.StartsWith("Tag:")) continue;
+
                     try
                     {
                         var tag = AmoebaConverter.FromTagString(item);
@@ -262,7 +266,28 @@ namespace Amoeba.Interface
         {
             lock (_thisLock)
             {
-                Clipboard.SetText(string.Join("\r\n", tags.Select(n => AmoebaConverter.ToTagString(n))));
+                Clipboard.SetText(string.Join(Environment.NewLine, tags.Select(n => AmoebaConverter.ToTagString(n))));
+            }
+        }
+
+        public static void SetSeedsAndBoxes(IEnumerable<Seed> seeds, IEnumerable<Box> boxes)
+        {
+            lock (_thisLock)
+            {
+                var sb = new StringBuilder();
+
+                foreach (var seed in seeds)
+                {
+                    sb.AppendLine(AmoebaConverter.ToSeedString(seed));
+                    sb.AppendLine(MessageUtils.ToInfoMessage(seed));
+                    sb.AppendLine();
+                }
+
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetText(sb.ToString());
+                dataObject.SetData("Amoeba_Boxs", Clipboard.ToStream(boxes));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -287,6 +312,8 @@ namespace Amoeba.Interface
 
                 foreach (string item in Clipboard.GetText().Split(new string[] { "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries))
                 {
+                    if (!item.StartsWith("Seed:")) continue;
+
                     try
                     {
                         var seed = AmoebaConverter.FromSeedString(item);
@@ -318,6 +345,46 @@ namespace Amoeba.Interface
                 }
 
                 Clipboard.SetText(sb.ToString().TrimEnd('\r', '\n'));
+            }
+        }
+
+        public static bool ContainsBox()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_Boxs");
+            }
+        }
+
+        public static IEnumerable<Box> GetBoxs()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_Boxs"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<Box>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return Enumerable.Empty<Box>();
+            }
+        }
+
+        public static void SetBoxs(IEnumerable<Box> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetText(string.Join(Environment.NewLine, items.Select(n => n.Name)));
+                dataObject.SetData("Amoeba_Boxs", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
 
@@ -393,7 +460,7 @@ namespace Amoeba.Interface
             lock (_thisLock)
             {
                 var dataObject = new System.Windows.DataObject();
-                dataObject.SetText(string.Join("\r\n", items.Select(n => AmoebaConverter.ToTagString(n.Tag))));
+                dataObject.SetText(string.Join(Environment.NewLine, items.Select(n => AmoebaConverter.ToTagString(n.Tag))));
                 dataObject.SetData("Amoeba_ChatThreadInfos", Clipboard.ToStream(items));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
@@ -472,7 +539,7 @@ namespace Amoeba.Interface
             lock (_thisLock)
             {
                 var dataObject = new System.Windows.DataObject();
-                dataObject.SetText(string.Join("\r\n", items.Select(n => n.AuthorSignature.ToString())));
+                dataObject.SetText(string.Join(Environment.NewLine, items.Select(n => n.AuthorSignature.ToString())));
                 dataObject.SetData("Amoeba_SubscribeStoreInfos", Clipboard.ToStream(items));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
