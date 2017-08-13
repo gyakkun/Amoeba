@@ -76,7 +76,7 @@ namespace Amoeba.Interface
                     else if (Directory.Exists(path)) filePaths.UnionWith(Directory.GetFiles(path, "*", SearchOption.AllDirectories));
                 }
 
-                foreach (string path in _serviceManager.GetConnectionInformations().Select(n => n.GetValue<string>("Path")).ToArray())
+                foreach (string path in _serviceManager.GetContentInformations().Select(n => n.GetValue<string>("Path")).ToArray())
                 {
                     filePaths.Remove(path);
                 }
@@ -376,23 +376,30 @@ namespace Amoeba.Interface
 
         private void Delete()
         {
-            var selectedItems = new HashSet<string>(this.SelectedItems.OfType<UploadListViewItemInfo>()
-                .Select(n => n.Path));
-
-            foreach (var item in SettingsManager.Instance.UploadItemInfos.ToArray())
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
             {
-                if (!selectedItems.Contains(item.Path)) continue;
+                var selectedItems = new HashSet<string>(this.SelectedItems.OfType<UploadListViewItemInfo>()
+                    .Select(n => n.Path));
 
-                SettingsManager.Instance.UploadItemInfos.Remove(item);
-            }
-
-            Task.Run(() =>
-            {
-                foreach (string path in selectedItems)
+                foreach (var item in SettingsManager.Instance.UploadItemInfos.ToArray())
                 {
-                    _serviceManager.RemoveContent(path);
+                    if (!selectedItems.Contains(item.Path)) continue;
+
+                    SettingsManager.Instance.UploadItemInfos.Remove(item);
                 }
-            });
+
+                Task.Run(() =>
+                {
+                    foreach (string path in selectedItems)
+                    {
+                        _serviceManager.RemoveContent(path);
+                    }
+                });
+            };
+
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                .Publish(viewModel);
         }
 
         private void Copy()

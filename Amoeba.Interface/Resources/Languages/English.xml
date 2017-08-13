@@ -206,7 +206,9 @@
   <Property Name="SearchControl_Advanced" Value="Advanced" />
   <Property Name="SearchControl_CopyName" Value="Copy name" />
   <Property Name="SearchControl_CopySignature" Value="Copy signature" />
-  <Property Name="SearchControl_RemoveDownloadHistory" Value="Remove download history" />
+  <Property Name="SearchControl_RemoveCacheItem" Value="Remove cache item" />
+  <Property Name="SearchControl_RemoveDownloadingItem" Value="Remove downloading item" />
+  <Property Name="SearchControl_RemoveDownloadedItem" Value="Remove downloaded item" />
   <Property Name="SearchControl_Name" Value="Name" />
   <Property Name="SearchControl_Signature" Value="Signature" />
   <Property Name="SearchControl_Length" Value="Length" />

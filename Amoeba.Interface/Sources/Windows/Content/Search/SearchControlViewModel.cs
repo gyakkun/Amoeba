@@ -59,7 +59,9 @@ namespace Amoeba.Interface
         public ReactiveCommand DownloadCommand { get; private set; }
         public ReactiveCommand AdvancedCommand { get; private set; }
         public ReactiveCommand<string> AdvancedCopyCommand { get; private set; }
-        public ReactiveCommand RemoveDownloadHistoryCommand { get; private set; }
+        public ReactiveCommand RemoveCacheItemCommand { get; private set; }
+        public ReactiveCommand RemoveDownloadingItemCommand { get; private set; }
+        public ReactiveCommand RemoveDownloadedItemCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
@@ -142,8 +144,14 @@ namespace Amoeba.Interface
                 this.AdvancedCopyCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.AdvancedCopyCommand.Subscribe((type) => this.AdvancedCopy(type)).AddTo(_disposable);
 
-                this.RemoveDownloadHistoryCommand = new ReactiveCommand().AddTo(_disposable);
-                this.RemoveDownloadHistoryCommand.Subscribe(() => this.RemoveDownloadHistory()).AddTo(_disposable);
+                this.RemoveCacheItemCommand = new ReactiveCommand().AddTo(_disposable);
+                this.RemoveCacheItemCommand.Subscribe(() => this.RemoveCacheItem()).AddTo(_disposable);
+
+                this.RemoveDownloadingItemCommand = new ReactiveCommand().AddTo(_disposable);
+                this.RemoveDownloadingItemCommand.Subscribe(() => this.RemoveDownloadingItem()).AddTo(_disposable);
+
+                this.RemoveDownloadedItemCommand = new ReactiveCommand().AddTo(_disposable);
+                this.RemoveDownloadedItemCommand.Subscribe(() => this.RemoveDownloadedItem()).AddTo(_disposable);
             }
 
             {
@@ -332,8 +340,12 @@ namespace Amoeba.Interface
                 var searchItems = new List<SearchListViewItemInfo>();
 
                 {
-                    var seedInfos = new List<(Seed, Signature)>();
+                    var seedInfos = new HashSet<(Seed, Signature)>();
+
                     var storeMetadatas = new HashSet<Metadata>();
+                    var cacheMetadatas = new HashSet<Metadata>();
+                    var downloadingMetadatas = new HashSet<Metadata>();
+                    var downloadedMetadatas = new HashSet<Metadata>();
 
                     foreach (var store in _messageManager.GetStores())
                     {
@@ -356,20 +368,32 @@ namespace Amoeba.Interface
                         }
                     }
 
-                    var cacheSeeds = _serviceManager.GetContentInformations()
-                        .Select(n => new Seed(Path.GetFileName(n.GetValue<string>("Path")), n.GetValue<long>("Length"), n.GetValue<DateTime>("CreationTime"), n.GetValue<Metadata>("Metadata"))).ToArray();
-                    var cacheMetadatas = new HashSet<Metadata>(cacheSeeds.Select(n => n.Metadata));
-
-                    var downloadedSeeds = SettingsManager.Instance.DownloadedSeeds.ToArray();
-                    var downloadedMetadatas = new HashSet<Metadata>(downloadedSeeds.Select(n => n.Metadata));
-
-                    foreach (var seed in CollectionUtils.Unite(downloadedSeeds, cacheSeeds))
                     {
-                        if (storeMetadatas.Contains(seed.Metadata)) continue;
-                        seedInfos.Add((seed, null));
+                        var signature = SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature();
+
+                        foreach (var seed in _serviceManager.GetContentInformations()
+                            .Select(n => new Seed(Path.GetFileName(n.GetValue<string>("Path")), n.GetValue<long>("Length"), n.GetValue<DateTime>("CreationTime"), n.GetValue<Metadata>("Metadata"))).ToArray())
+                        {
+                            seedInfos.Add((seed, signature));
+                            cacheMetadatas.Add(seed.Metadata);
+                        }
                     }
 
-                    var downloadingMetadatas = new HashSet<Metadata>(_serviceManager.GetDownloadInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+                    downloadingMetadatas.UnionWith(_serviceManager.GetDownloadInformations().Select(n => n.GetValue<Metadata>("Metadata")));
+
+                    {
+                        var downloadedSeeds = SettingsManager.Instance.DownloadedSeeds.ToArray();
+
+                        foreach (var seed in SettingsManager.Instance.DownloadedSeeds.ToArray())
+                        {
+                            if (!storeMetadatas.Contains(seed.Metadata) && !cacheMetadatas.Contains(seed.Metadata))
+                            {
+                                seedInfos.Add((seed, null));
+                            }
+
+                            downloadedMetadatas.Add(seed.Metadata);
+                        }
+                    }
 
                     foreach (var (seed, signature) in seedInfos)
                     {
@@ -698,7 +722,70 @@ namespace Amoeba.Interface
             }
         }
 
-        private void RemoveDownloadHistory()
+        private void RemoveCacheItem()
+        {
+            var hashSet = new HashSet<Metadata>(this.SelectedItems.OfType<SearchListViewItemInfo>()
+                .Where(n => n.State.HasFlag(SearchState.Cache))
+                .Select(n => n.Model.Metadata).ToArray());
+            if (hashSet.Count == 0) return;
+
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        foreach (var (metadata, path) in _serviceManager.GetContentInformations()
+                            .Select(n => (n.GetValue<Metadata>("Metadata"), n.GetValue<string>("Path"))).ToArray())
+                        {
+                            if (!hashSet.Contains(metadata)) continue;
+                            _serviceManager.RemoveContent(path);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                });
+            };
+
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                .Publish(viewModel);
+        }
+
+        private void RemoveDownloadingItem()
+        {
+            var hashSet = new HashSet<Seed>(this.SelectedItems.OfType<SearchListViewItemInfo>()
+                .Where(n => n.State.HasFlag(SearchState.Downloading))
+                .Select(n => n.Model).ToArray());
+            if (hashSet.Count == 0) return;
+
+            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
+            viewModel.Callback += () =>
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        foreach (var item in SettingsManager.Instance.DownloadItemInfos.ToArray())
+                        {
+                            if (!hashSet.Contains(item.Seed)) continue;
+                            SettingsManager.Instance.DownloadItemInfos.Remove(item);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                });
+            };
+
+            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
+                .Publish(viewModel);
+        }
+
+        private void RemoveDownloadedItem()
         {
             var hashSet = new HashSet<Metadata>(this.SelectedItems.OfType<SearchListViewItemInfo>()
                 .Where(n => n.State.HasFlag(SearchState.Downloaded))
@@ -708,11 +795,21 @@ namespace Amoeba.Interface
             var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
             viewModel.Callback += () =>
             {
-                foreach (var seed in SettingsManager.Instance.DownloadedSeeds.ToArray())
+                Task.Run(() =>
                 {
-                    if (!hashSet.Contains(seed.Metadata)) continue;
-                    SettingsManager.Instance.DownloadedSeeds.Remove(seed);
-                }
+                    try
+                    {
+                        foreach (var seed in SettingsManager.Instance.DownloadedSeeds.ToArray())
+                        {
+                            if (!hashSet.Contains(seed.Metadata)) continue;
+                            SettingsManager.Instance.DownloadedSeeds.Remove(seed);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                });
             };
 
             Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()

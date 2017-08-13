@@ -192,7 +192,9 @@ namespace Amoeba.Interface
         public string SearchControl_Advanced { get { return this.Translate("SearchControl_Advanced"); } }
         public string SearchControl_CopyName { get { return this.Translate("SearchControl_CopyName"); } }
         public string SearchControl_CopySignature { get { return this.Translate("SearchControl_CopySignature"); } }
-        public string SearchControl_RemoveDownloadHistory { get { return this.Translate("SearchControl_RemoveDownloadHistory"); } }
+        public string SearchControl_RemoveCacheItem { get { return this.Translate("SearchControl_RemoveCacheItem"); } }
+        public string SearchControl_RemoveDownloadingItem { get { return this.Translate("SearchControl_RemoveDownloadingItem"); } }
+        public string SearchControl_RemoveDownloadedItem { get { return this.Translate("SearchControl_RemoveDownloadedItem"); } }
         public string SearchControl_Name { get { return this.Translate("SearchControl_Name"); } }
         public string SearchControl_Signature { get { return this.Translate("SearchControl_Signature"); } }
         public string SearchControl_Length { get { return this.Translate("SearchControl_Length"); } }
