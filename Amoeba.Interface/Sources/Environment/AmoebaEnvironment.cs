@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Nett;
@@ -22,7 +24,7 @@ namespace Amoeba.Interface
             try
             {
                 Variables = new EnvironmentVariables();
-                Version = new Version(5, 0, 28);
+                Version = new Version(5, 0, 29);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();
@@ -39,17 +41,34 @@ namespace Amoeba.Interface
         {
             string configPath = Path.Combine(Paths.ConfigPath, "Config.toml");
 
-            if (!File.Exists(configPath))
+            var tomlSettings = TomlSettings.Create(builder => builder
+                .ConfigureType<Version>(type => type
+                    .WithConversionFor<TomlString>(convert => convert
+                        .ToToml(tt => tt.ToString())
+                        .FromToml(ft => Version.Parse(ft.Value)))));
+
+            var oldConfig = File.Exists(configPath) ? Toml.ReadFile<EnvironmentConfig>(configPath, tomlSettings) : null;
+
+            var version = oldConfig?.Version ?? new Version(0, 0, 0);
+            var cache = oldConfig?.Cache ?? CreateDefaultCacheConfig();
+            var tor = oldConfig?.Tor ?? (version <= new Version(5, 0, 28) ? CreateDefaultTorConfig() : null);
+
+            Toml.WriteFile(new EnvironmentConfig(AmoebaEnvironment.Version, cache, tor), configPath, tomlSettings);
+            Config = new EnvironmentConfig(version, cache, tor);
+
+            EnvironmentConfig.CacheConfig CreateDefaultCacheConfig()
             {
-                Toml.WriteFile(new EnvironmentConfig(), configPath);
+                return new EnvironmentConfig.CacheConfig("../Config/Cache.blocks");
             }
 
-            Config = Toml.ReadFile<EnvironmentConfig>(configPath);
+            EnvironmentConfig.TorConfig CreateDefaultTorConfig()
+            {
+                return new EnvironmentConfig.TorConfig(@"Assemblies/Tor/tor.exe", "-f tor.config DataDirectory " + @"../../../Work/Tor", @"Assemblies/Tor");
+            }
         }
 
         public class EnvironmentVariables
         {
-            public double CaptionHeight { get; } = 8;
             public Thickness ResizeBorderThickness { get; } = SystemParameters.WindowResizeBorderThickness;
         }
 
@@ -141,40 +160,44 @@ namespace Amoeba.Interface
 
         public class EnvironmentConfig
         {
+            public Version Version { get; private set; }
             public CacheConfig Cache { get; private set; }
-            public ColorsConfig Colors { get; private set; }
+            public TorConfig Tor { get; private set; }
 
-            public EnvironmentConfig()
+            public EnvironmentConfig() { }
+
+            public EnvironmentConfig(Version version, CacheConfig cache, TorConfig tor)
             {
-                this.Cache = new CacheConfig();
-                this.Colors = new ColorsConfig();
+                this.Version = version;
+                this.Cache = cache;
+                this.Tor = tor;
             }
 
             public class CacheConfig
             {
                 public string BlocksPath { get; private set; }
 
-                public CacheConfig()
+                public CacheConfig() { }
+
+                public CacheConfig(string blocksPath)
                 {
-                    this.BlocksPath = "../Config/Cache.blocks";
+                    this.BlocksPath = blocksPath;
                 }
             }
 
-            public class ColorsConfig
+            public class TorConfig
             {
-                public string Tree_Hit { get; set; }
-                public string Link_New { get; set; }
-                public string Link_Visited { get; set; }
-                public string Message_Trust { get; set; }
-                public string Message_Untrust { get; set; }
+                public string Path { get; private set; }
+                public string Arguments { get; private set; }
+                public string WorkingDirectory { get; private set; }
 
-                public ColorsConfig()
+                public TorConfig() { }
+
+                public TorConfig(string path, string arguments, string workDirectory)
                 {
-                    this.Tree_Hit = System.Windows.Media.Colors.LightPink.ToString();
-                    this.Link_New = System.Windows.Media.Colors.LightPink.ToString();
-                    this.Link_Visited = System.Windows.Media.Colors.SkyBlue.ToString();
-                    this.Message_Trust = System.Windows.Media.Colors.SkyBlue.ToString();
-                    this.Message_Untrust = System.Windows.Media.Colors.LightPink.ToString();
+                    this.Path = path;
+                    this.Arguments = arguments;
+                    this.WorkingDirectory = workDirectory;
                 }
             }
         }

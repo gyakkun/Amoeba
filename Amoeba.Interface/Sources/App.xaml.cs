@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Ionic.Zip;
 using Omnius.Base;
@@ -21,7 +22,9 @@ namespace Amoeba.Interface
     /// </summary>
     public partial class App : Application
     {
-        Mutex _mutex;
+        private Mutex _mutex;
+
+        private List<Process> _processList = new List<Process>();
 
         public App()
         {
@@ -315,6 +318,22 @@ namespace Amoeba.Interface
                     Environment.SetEnvironmentVariable("TEMP", Path.GetFullPath(AmoebaEnvironment.Paths.TempPath), EnvironmentVariableTarget.Process);
                 }
 
+                // Tor‹N“®B
+                if (AmoebaEnvironment.Config.Tor != null)
+                {
+                    var config = AmoebaEnvironment.Config.Tor;
+
+                    var process = new Process();
+                    process.StartInfo.FileName = Path.GetFullPath(config.Path);
+                    process.StartInfo.Arguments = config.Arguments;
+                    process.StartInfo.WorkingDirectory = Path.GetFullPath(config.WorkingDirectory);
+                    process.StartInfo.CreateNoWindow = true;
+                    process.StartInfo.UseShellExecute = false;
+                    process.Start();
+
+                    _processList.Add(process);
+                }
+
                 this.StartupUri = new Uri("Windows/MainWindow.xaml", UriKind.Relative);
             }
             catch (Exception ex)
@@ -329,7 +348,18 @@ namespace Amoeba.Interface
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            Parallel.ForEach(_processList, new ParallelOptions() { MaxDegreeOfParallelism = 8 }, process =>
+            {
+                try
+                {
+                    process.Kill();
+                    process.WaitForExit();
+                }
+                catch (Exception)
+                {
 
+                }
+            });
         }
 
         static class NativeMethods

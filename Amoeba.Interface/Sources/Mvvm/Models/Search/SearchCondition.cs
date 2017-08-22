@@ -9,8 +9,6 @@ namespace Amoeba.Interface
         private bool _isContains;
         private T _value;
 
-        private SearchCondition() { }
-
         public SearchCondition(bool isContains, T value)
         {
             this.IsContains = isContains;

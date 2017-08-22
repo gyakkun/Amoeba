@@ -12,8 +12,6 @@ namespace Amoeba.Interface
 
         private Regex _regex;
 
-        private SearchRegex() { }
-
         public SearchRegex(string value, bool isIgnoreCase)
         {
             this.Value = value;

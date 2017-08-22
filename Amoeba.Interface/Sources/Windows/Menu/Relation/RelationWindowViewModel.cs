@@ -1,10 +1,3 @@
-using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Net.Amoeba;
-using Omnius.Security;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +7,13 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Net.Amoeba;
+using Omnius.Security;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -219,8 +219,7 @@ namespace Amoeba.Interface
             {
                 this.TrustSignaturesView.LiveSortingProperties.Add(propertyName);
 
-                var view = this.TrustSignaturesView;
-                view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                this.TrustSignaturesView.CustomSort = new CustomSortComparer(direction, (x, y) =>
                 {
                     if (x is Signature tx && y is Signature ty)
                     {
@@ -290,8 +289,7 @@ namespace Amoeba.Interface
             {
                 this.UntrustSignaturesView.LiveSortingProperties.Add(propertyName);
 
-                var view = this.UntrustSignaturesView;
-                view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                this.UntrustSignaturesView.CustomSort = new CustomSortComparer(direction, (x, y) =>
                 {
                     if (x is Signature tx && y is Signature ty)
                     {
@@ -361,8 +359,7 @@ namespace Amoeba.Interface
             {
                 this.TagsView.LiveSortingProperties.Add(propertyName);
 
-                var view = this.TagsView;
-                view.CustomSort = new CustomSortComparer(direction, (x, y) => Unsafe.Compare(((Tag)x).Id, ((Tag)y).Id));
+                this.TagsView.CustomSort = new CustomSortComparer(direction, (x, y) => Unsafe.Compare(((Tag)x).Id, ((Tag)y).Id));
             }
             else
             {

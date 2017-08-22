@@ -150,7 +150,8 @@ namespace Amoeba.Interface
                 this.CopyCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.CopyCommand.Subscribe(() => this.Copy()).AddTo(_disposable);
 
-                this.PasteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.PasteCommand = this.SelectedItems.ObserveProperty(n => n.Count)
+                    .Select(n => n == 0 || n == 1 && this.SelectedItems.OfType<PublishListViewItemInfo>().First().Model is PublishBoxInfo).ToReactiveCommand().AddTo(_disposable);
                 this.PasteCommand.Subscribe(() => this.Paste()).AddTo(_disposable);
 
                 this.AdvancedCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
@@ -181,10 +182,6 @@ namespace Amoeba.Interface
 
             {
                 Backup.Instance.SaveEvent += this.Save;
-            }
-
-            {
-                this.Sort(null);
             }
         }
 
@@ -684,28 +681,25 @@ namespace Amoeba.Interface
 
         private void Paste()
         {
-            if (this.TabSelectedItem.Value is PublishStoreViewModel storeViewModel)
+            var boxInfo = this.SelectedItems.OfType<PublishListViewItemInfo>().Select(n => n.Model).FirstOrDefault() as PublishBoxInfo;
+            if (boxInfo == null)
             {
-                var boxes = Clipboard.GetBoxs();
-
-                foreach (var box in boxes)
-                {
-                    storeViewModel.Model.BoxInfos.Add(CreatePublishBoxInfo(box));
-                }
+                this.TabPaste();
+                return;
             }
-            else if (this.TabSelectedItem.Value is PublishBoxViewModel boxViewModel)
+
             {
                 var seeds = Clipboard.GetSeeds();
                 var boxes = Clipboard.GetBoxs();
 
                 foreach (var seed in seeds)
                 {
-                    boxViewModel.Model.Seeds.Add(seed);
+                    boxInfo.Seeds.Add(seed);
                 }
 
                 foreach (var box in boxes)
                 {
-                    boxViewModel.Model.BoxInfos.Add(CreatePublishBoxInfo(box));
+                    boxInfo.BoxInfos.Add(CreatePublishBoxInfo(box));
                 }
             }
 

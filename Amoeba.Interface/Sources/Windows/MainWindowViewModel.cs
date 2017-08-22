@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -6,9 +7,9 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Threading;
-using Omnius.Net.Amoeba;
 using Omnius.Base;
 using Omnius.Configuration;
+using Omnius.Net.Amoeba;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -70,6 +71,23 @@ namespace Amoeba.Interface
 
                 _serviceManager = new ServiceManager(configPath, AmoebaEnvironment.Config.Cache.BlocksPath, BufferManager.Instance);
                 _serviceManager.Load();
+
+                if (_serviceManager.CloudLocations.Count() == 0)
+                {
+                    var locations = new List<Location>();
+
+                    using (var reader = new StreamReader("Locations.txt"))
+                    {
+                        string line;
+
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            locations.Add(AmoebaConverter.FromLocationString(line));
+                        }
+                    }
+
+                    _serviceManager.SetCloudLocations(locations);
+                }
 
                 if (_serviceManager.BasePath == null)
                 {

@@ -12,11 +12,15 @@ namespace Amoeba.Interface
         public string Global_DateTime_StringFormat { get { return this.Translate("Global_DateTime_StringFormat"); } }
         public string Languages_English { get { return this.Translate("Languages_English"); } }
         public string Languages_Japanese { get { return this.Translate("Languages_Japanese"); } }
-        public string ValidationRule_NotEmpty_ErrorMessage { get { return this.Translate("ValidationRule_NotEmpty_ErrorMessage"); } }
+        public string ValidationRule_ErrorMessage { get { return this.Translate("ValidationRule_ErrorMessage"); } }
         public string SessionType_Connect { get { return this.Translate("SessionType_Connect"); } }
         public string SessionType_Accept { get { return this.Translate("SessionType_Accept"); } }
         public string ManagerState_Start { get { return this.Translate("ManagerState_Start"); } }
         public string ManagerState_Stop { get { return this.Translate("ManagerState_Stop"); } }
+        public string ConnectionType_None { get { return this.Translate("ConnectionType_None"); } }
+        public string ConnectionType_Tcp { get { return this.Translate("ConnectionType_Tcp"); } }
+        public string ConnectionType_Socks5Proxy { get { return this.Translate("ConnectionType_Socks5Proxy"); } }
+        public string ConnectionType_HttpProxy { get { return this.Translate("ConnectionType_HttpProxy"); } }
         public string Tag_Name { get { return this.Translate("Tag_Name"); } }
         public string Tag_Id { get { return this.Translate("Tag_Id"); } }
         public string Seed_Name { get { return this.Translate("Seed_Name"); } }
@@ -66,6 +70,7 @@ namespace Amoeba.Interface
         public string MainWindow_Download { get { return this.Translate("MainWindow_Download"); } }
         public string MainWindow_Close_Message { get { return this.Translate("MainWindow_Close_Message"); } }
         public string MainWindow_DiskSpaceNotFound_Message { get { return this.Translate("MainWindow_DiskSpaceNotFound_Message"); } }
+        public string MainWindow_DownloadLocationInformation_Message { get { return this.Translate("MainWindow_DownloadLocationInformation_Message"); } }
         public string RelationWindow_Profile { get { return this.Translate("RelationWindow_Profile"); } }
         public string RelationWindow_Trust { get { return this.Translate("RelationWindow_Trust"); } }
         public string RelationWindow_TrustSignature { get { return this.Translate("RelationWindow_TrustSignature"); } }
@@ -80,57 +85,78 @@ namespace Amoeba.Interface
         public string RelationWindow_Close { get { return this.Translate("RelationWindow_Close"); } }
         public string OptionsWindow_Account { get { return this.Translate("OptionsWindow_Account"); } }
         public string OptionsWindow_Signature { get { return this.Translate("OptionsWindow_Signature"); } }
-        public string OptionsWindow_SignatureSettings { get { return this.Translate("OptionsWindow_SignatureSettings"); } }
-        public string OptionsWindow_YourSignature { get { return this.Translate("OptionsWindow_YourSignature"); } }
-        public string OptionsWindow_Trust { get { return this.Translate("OptionsWindow_Trust"); } }
-        public string OptionsWindow_TrustSettings { get { return this.Translate("OptionsWindow_TrustSettings"); } }
-        public string OptionsWindow_TrustSignature { get { return this.Translate("OptionsWindow_TrustSignature"); } }
-        public string OptionsWindow_Untrust { get { return this.Translate("OptionsWindow_Untrust"); } }
-        public string OptionsWindow_UntrustSettings { get { return this.Translate("OptionsWindow_UntrustSettings"); } }
-        public string OptionsWindow_UntrustSignature { get { return this.Translate("OptionsWindow_UntrustSignature"); } }
+        public string OptionsWindow_TrustSignatures { get { return this.Translate("OptionsWindow_TrustSignatures"); } }
+        public string OptionsWindow_UntrustSignatures { get { return this.Translate("OptionsWindow_UntrustSignatures"); } }
         public string OptionsWindow_Tags { get { return this.Translate("OptionsWindow_Tags"); } }
-        public string OptionsWindow_TagsSettings { get { return this.Translate("OptionsWindow_TagsSettings"); } }
-        public string OptionsWindow_Tag { get { return this.Translate("OptionsWindow_Tag"); } }
-        public string OptionsWindow_Name { get { return this.Translate("OptionsWindow_Name"); } }
-        public string OptionsWindow_Id { get { return this.Translate("OptionsWindow_Id"); } }
         public string OptionsWindow_Comment { get { return this.Translate("OptionsWindow_Comment"); } }
-        public string OptionsWindow_CommentSettings { get { return this.Translate("OptionsWindow_CommentSettings"); } }
         public string OptionsWindow_Connection { get { return this.Translate("OptionsWindow_Connection"); } }
-        public string OptionsWindow_Subscribe { get { return this.Translate("OptionsWindow_Subscribe"); } }
-        public string OptionsWindow_SubscribeSettings { get { return this.Translate("OptionsWindow_SubscribeSettings"); } }
-        public string OptionsWindow_SubscribeSignature { get { return this.Translate("OptionsWindow_SubscribeSignature"); } }
         public string OptionsWindow_Tcp { get { return this.Translate("OptionsWindow_Tcp"); } }
-        public string OptionsWindow_TcpSettings { get { return this.Translate("OptionsWindow_TcpSettings"); } }
-        public string OptionsWindow_Ipv4IsEnabled { get { return this.Translate("OptionsWindow_Ipv4IsEnabled"); } }
-        public string OptionsWindow_Ipv4Port { get { return this.Translate("OptionsWindow_Ipv4Port"); } }
-        public string OptionsWindow_Ipv6IsEnabled { get { return this.Translate("OptionsWindow_Ipv6IsEnabled"); } }
-        public string OptionsWindow_Ipv6Port { get { return this.Translate("OptionsWindow_Ipv6Port"); } }
-        public string OptionsWindow_ProxyUri { get { return this.Translate("OptionsWindow_ProxyUri"); } }
         public string OptionsWindow_I2p { get { return this.Translate("OptionsWindow_I2p"); } }
-        public string OptionsWindow_I2pSettings { get { return this.Translate("OptionsWindow_I2pSettings"); } }
-        public string OptionsWindow_I2pIsEnabled { get { return this.Translate("OptionsWindow_I2pIsEnabled"); } }
-        public string OptionsWindow_SamBridgeUri { get { return this.Translate("OptionsWindow_SamBridgeUri"); } }
+        public string OptionsWindow_Custom { get { return this.Translate("OptionsWindow_Custom"); } }
+        public string OptionsWindow_LocationUris { get { return this.Translate("OptionsWindow_LocationUris"); } }
+        public string OptionsWindow_ConnectionFilters { get { return this.Translate("OptionsWindow_ConnectionFilters"); } }
+        public string OptionsWindow_ListenUris { get { return this.Translate("OptionsWindow_ListenUris"); } }
         public string OptionsWindow_Bandwidth { get { return this.Translate("OptionsWindow_Bandwidth"); } }
-        public string OptionsWindow_BandwidthSettings { get { return this.Translate("OptionsWindow_BandwidthSettings"); } }
-        public string OptionsWindow_ConnectionCountLimit { get { return this.Translate("OptionsWindow_ConnectionCountLimit"); } }
-        public string OptionsWindow_BandwidthLimit { get { return this.Translate("OptionsWindow_BandwidthLimit"); } }
         public string OptionsWindow_Data { get { return this.Translate("OptionsWindow_Data"); } }
-        public string OptionsWindow_CacheSettings { get { return this.Translate("OptionsWindow_CacheSettings"); } }
-        public string OptionsWindow_CacheSize { get { return this.Translate("OptionsWindow_CacheSize"); } }
-        public string OptionsWindow_DownloadSettings { get { return this.Translate("OptionsWindow_DownloadSettings"); } }
-        public string OptionsWindow_DownloadDirectoryPath { get { return this.Translate("OptionsWindow_DownloadDirectoryPath"); } }
-        public string OptionsWindow_CacheResize_Message { get { return this.Translate("OptionsWindow_CacheResize_Message"); } }
+        public string OptionsWindow_Cache { get { return this.Translate("OptionsWindow_Cache"); } }
+        public string OptionsWindow_Download { get { return this.Translate("OptionsWindow_Download"); } }
+        public string OptionsWindow_View { get { return this.Translate("OptionsWindow_View"); } }
+        public string OptionsWindow_Subscribe { get { return this.Translate("OptionsWindow_Subscribe"); } }
         public string OptionsWindow_Update { get { return this.Translate("OptionsWindow_Update"); } }
-        public string OptionsWindow_UpdateSettings { get { return this.Translate("OptionsWindow_UpdateSettings"); } }
-        public string OptionsWindow_UpdateIsEnabled { get { return this.Translate("OptionsWindow_UpdateIsEnabled"); } }
-        public string OptionsWindow_New { get { return this.Translate("OptionsWindow_New"); } }
-        public string OptionsWindow_Add { get { return this.Translate("OptionsWindow_Add"); } }
-        public string OptionsWindow_Edit { get { return this.Translate("OptionsWindow_Edit"); } }
-        public string OptionsWindow_Delete { get { return this.Translate("OptionsWindow_Delete"); } }
-        public string OptionsWindow_Copy { get { return this.Translate("OptionsWindow_Copy"); } }
-        public string OptionsWindow_Paste { get { return this.Translate("OptionsWindow_Paste"); } }
         public string OptionsWindow_Ok { get { return this.Translate("OptionsWindow_Ok"); } }
         public string OptionsWindow_Cancel { get { return this.Translate("OptionsWindow_Cancel"); } }
+        public string AccountOptionsControl_SignatureSettings { get { return this.Translate("AccountOptionsControl_SignatureSettings"); } }
+        public string AccountOptionsControl_YourSignature { get { return this.Translate("AccountOptionsControl_YourSignature"); } }
+        public string AccountOptionsControl_TrustSignaturesSettings { get { return this.Translate("AccountOptionsControl_TrustSignaturesSettings"); } }
+        public string AccountOptionsControl_TrustSignature { get { return this.Translate("AccountOptionsControl_TrustSignature"); } }
+        public string AccountOptionsControl_UntrustSignaturesSettings { get { return this.Translate("AccountOptionsControl_UntrustSignaturesSettings"); } }
+        public string AccountOptionsControl_UntrustSignature { get { return this.Translate("AccountOptionsControl_UntrustSignature"); } }
+        public string AccountOptionsControl_TagsSettings { get { return this.Translate("AccountOptionsControl_TagsSettings"); } }
+        public string AccountOptionsControl_Name { get { return this.Translate("AccountOptionsControl_Name"); } }
+        public string AccountOptionsControl_Id { get { return this.Translate("AccountOptionsControl_Id"); } }
+        public string AccountOptionsControl_CommentSettings { get { return this.Translate("AccountOptionsControl_CommentSettings"); } }
+        public string AccountOptionsControl_New { get { return this.Translate("AccountOptionsControl_New"); } }
+        public string AccountOptionsControl_Import { get { return this.Translate("AccountOptionsControl_Import"); } }
+        public string AccountOptionsControl_Export { get { return this.Translate("AccountOptionsControl_Export"); } }
+        public string AccountOptionsControl_Delete { get { return this.Translate("AccountOptionsControl_Delete"); } }
+        public string AccountOptionsControl_Copy { get { return this.Translate("AccountOptionsControl_Copy"); } }
+        public string AccountOptionsControl_Paste { get { return this.Translate("AccountOptionsControl_Paste"); } }
+        public string ConnectionOptionsControl_TcpSettings { get { return this.Translate("ConnectionOptionsControl_TcpSettings"); } }
+        public string ConnectionOptionsControl_Ipv4IsEnabled { get { return this.Translate("ConnectionOptionsControl_Ipv4IsEnabled"); } }
+        public string ConnectionOptionsControl_Ipv4Port { get { return this.Translate("ConnectionOptionsControl_Ipv4Port"); } }
+        public string ConnectionOptionsControl_Ipv6IsEnabled { get { return this.Translate("ConnectionOptionsControl_Ipv6IsEnabled"); } }
+        public string ConnectionOptionsControl_Ipv6Port { get { return this.Translate("ConnectionOptionsControl_Ipv6Port"); } }
+        public string ConnectionOptionsControl_ProxyUri { get { return this.Translate("ConnectionOptionsControl_ProxyUri"); } }
+        public string ConnectionOptionsControl_I2pSettings { get { return this.Translate("ConnectionOptionsControl_I2pSettings"); } }
+        public string ConnectionOptionsControl_I2pIsEnabled { get { return this.Translate("ConnectionOptionsControl_I2pIsEnabled"); } }
+        public string ConnectionOptionsControl_SamBridgeUri { get { return this.Translate("ConnectionOptionsControl_SamBridgeUri"); } }
+        public string ConnectionOptionsControl_LocationUrisSettings { get { return this.Translate("ConnectionOptionsControl_LocationUrisSettings"); } }
+        public string ConnectionOptionsControl_Uri { get { return this.Translate("ConnectionOptionsControl_Uri"); } }
+        public string ConnectionOptionsControl_ConnectionFiltersSettings { get { return this.Translate("ConnectionOptionsControl_ConnectionFiltersSettings"); } }
+        public string ConnectionOptionsControl_Scheme { get { return this.Translate("ConnectionOptionsControl_Scheme"); } }
+        public string ConnectionOptionsControl_Type { get { return this.Translate("ConnectionOptionsControl_Type"); } }
+        public string ConnectionOptionsControl_ListenUrisSettings { get { return this.Translate("ConnectionOptionsControl_ListenUrisSettings"); } }
+        public string ConnectionOptionsControl_BandwidthSettings { get { return this.Translate("ConnectionOptionsControl_BandwidthSettings"); } }
+        public string ConnectionOptionsControl_ConnectionCountLimit { get { return this.Translate("ConnectionOptionsControl_ConnectionCountLimit"); } }
+        public string ConnectionOptionsControl_BandwidthLimit { get { return this.Translate("ConnectionOptionsControl_BandwidthLimit"); } }
+        public string ConnectionOptionsControl_Up { get { return this.Translate("ConnectionOptionsControl_Up"); } }
+        public string ConnectionOptionsControl_Down { get { return this.Translate("ConnectionOptionsControl_Down"); } }
+        public string ConnectionOptionsControl_Add { get { return this.Translate("ConnectionOptionsControl_Add"); } }
+        public string ConnectionOptionsControl_Edit { get { return this.Translate("ConnectionOptionsControl_Edit"); } }
+        public string ConnectionOptionsControl_Delete { get { return this.Translate("ConnectionOptionsControl_Delete"); } }
+        public string DataOptionsControl_CacheSettings { get { return this.Translate("DataOptionsControl_CacheSettings"); } }
+        public string DataOptionsControl_CacheSize { get { return this.Translate("DataOptionsControl_CacheSize"); } }
+        public string DataOptionsControl_DownloadSettings { get { return this.Translate("DataOptionsControl_DownloadSettings"); } }
+        public string DataOptionsControl_DownloadDirectoryPath { get { return this.Translate("DataOptionsControl_DownloadDirectoryPath"); } }
+        public string DataOptionsControl_CacheResize_Message { get { return this.Translate("DataOptionsControl_CacheResize_Message"); } }
+        public string DataOptionsControl_Import { get { return this.Translate("DataOptionsControl_Import"); } }
+        public string ViewOptionsControl_SubscribeSettings { get { return this.Translate("ViewOptionsControl_SubscribeSettings"); } }
+        public string ViewOptionsControl_SubscribeSignature { get { return this.Translate("ViewOptionsControl_SubscribeSignature"); } }
+        public string ViewOptionsControl_Delete { get { return this.Translate("ViewOptionsControl_Delete"); } }
+        public string ViewOptionsControl_Copy { get { return this.Translate("ViewOptionsControl_Copy"); } }
+        public string ViewOptionsControl_Paste { get { return this.Translate("ViewOptionsControl_Paste"); } }
+        public string UpdateOptionsControl_UpdateSettings { get { return this.Translate("UpdateOptionsControl_UpdateSettings"); } }
+        public string UpdateOptionsControl_UpdateIsEnabled { get { return this.Translate("UpdateOptionsControl_UpdateIsEnabled"); } }
         public string VersionWindow_Close { get { return this.Translate("VersionWindow_Close"); } }
         public string CloudControl_Connection { get { return this.Translate("CloudControl_Connection"); } }
         public string CloudControl_State { get { return this.Translate("CloudControl_State"); } }

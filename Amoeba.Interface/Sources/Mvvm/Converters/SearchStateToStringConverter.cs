@@ -34,27 +34,7 @@ namespace Amoeba.Interface
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is string type)
-            {
-                if (type == LanguagesManager.Instance.SearchState_Store)
-                {
-                    return SearchState.Store;
-                }
-                else if (type == LanguagesManager.Instance.SearchState_Cache)
-                {
-                    return SearchState.Cache;
-                }
-                else if (type == LanguagesManager.Instance.SearchState_Downloading)
-                {
-                    return SearchState.Downloading;
-                }
-                else if (type == LanguagesManager.Instance.SearchState_Downloaded)
-                {
-                    return SearchState.Downloaded;
-                }
-            }
-
-            return (SearchState)0;
+            throw new NotImplementedException();
         }
     }
 }

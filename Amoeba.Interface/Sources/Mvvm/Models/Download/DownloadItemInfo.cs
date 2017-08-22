@@ -7,8 +7,6 @@ namespace Amoeba.Interface
     [DataContract(Name = nameof(DownloadItemInfo))]
     class DownloadItemInfo : IEquatable<DownloadItemInfo>
     {
-        private DownloadItemInfo() { }
-
         public DownloadItemInfo(Seed seed, string path)
         {
             this.Seed = seed;

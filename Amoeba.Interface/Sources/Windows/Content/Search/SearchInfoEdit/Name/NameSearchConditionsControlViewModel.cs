@@ -59,7 +59,7 @@ namespace Amoeba.Interface
                 {
                     this.Contains.Value = n.IsContains;
                     this.Input.Value = n.Value;
-                });
+                }).AddTo(_disposable);
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);

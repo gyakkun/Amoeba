@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Amoeba.Interface</RootNamespace>
     <AssemblyName>Amoeba.Interface</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -26,6 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,6 +38,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>App.manifest</ApplicationManifest>
@@ -81,10 +83,10 @@
     <Compile Include="Sources\Mvvm\Converters\ObjectToInfoStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SearchStateFlagToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\DownloadStateToStringConverter.cs" />
+    <Compile Include="Sources\Mvvm\Converters\ConnectionTypeToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SearchStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SessionTypeToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\SignatureToStringConverter.cs" />
-    <Compile Include="Sources\Mvvm\Converters\TagToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\CustomAvalonEditHelperBase.cs" />
     <Compile Include="Sources\Mvvm\Helpers\AvalonEdit\AvalonEditChatMessagesHelper.cs" />
     <Compile Include="Sources\Mvvm\Models\Chat\ChatMessageState.cs" />
@@ -100,6 +102,7 @@
       <AutoGen>True</AutoGen>
     </Compile>
     <Compile Include="Sources\Mvvm\Utilities\ProgressDialog.cs" />
+    <Compile Include="Sources\Mvvm\Utilities\ValidationRules\UriValidationRule.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="Sources\Utilities\Backup.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
@@ -117,10 +120,10 @@
       <DependentUpon>ChatMessageEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Chat\ChatMessageEdit\ChatMessageEditWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\StateSearchConditionsControl.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\State\StateSearchConditionsControl.xaml.cs">
       <DependentUpon>StateSearchConditionsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\StateSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\State\StateSearchConditionsControlViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Store\Publish\StorePublishControl.xaml.cs">
       <DependentUpon>StorePublishControl.xaml</DependentUpon>
     </Compile>
@@ -138,6 +141,26 @@
       <DependentUpon>UploadPreviewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Options\Update\UpdateOptionsControl.xaml.cs">
+      <DependentUpon>UpdateOptionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Menu\Options\Update\UpdateOptionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Options\VIew\VIewOptionsControl.xaml.cs">
+      <DependentUpon>VIewOptionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Menu\Options\VIew\ViewOptionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Options\Data\DataOptionsControl.xaml.cs">
+      <DependentUpon>DataOptionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Menu\Options\Data\DataOptionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Options\Connection\ConnectionOptionsControl.xaml.cs">
+      <DependentUpon>ConnectionOptionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Menu\Options\Account\AccountOptionsControl.xaml.cs">
+      <DependentUpon>AccountOptionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Menu\Options\Connection\ConnectionOptionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\Options\Account\AccountOptionsControlViewModel.cs" />
     <Compile Include="Sources\Windows\Menu\Options\OptionsWindow.xaml.cs">
       <DependentUpon>OptionsWindow.xaml</DependentUpon>
     </Compile>
@@ -153,28 +176,28 @@
     <Compile Include="Sources\Windows\Menu\Relation\RelationWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Menu\Relation\ViewModels\RelationSignatureViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Upload\UploadControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControl.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Length\LengthSearchConditionsControl.xaml.cs">
       <DependentUpon>LengthSearchConditionsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControl.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\CreationTime\CreationTimeSearchConditionsControl.xaml.cs">
       <DependentUpon>CreationTimeSearchConditionsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControl.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Length\LengthSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\CreationTime\CreationTimeSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Signature\SignatureSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Signature\SignatureSearchConditionsControl.xaml.cs">
       <DependentUpon>SignatureSearchConditionsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControl.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Name\NameSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Regex\RegexSearchConditionsControl.xaml.cs">
       <DependentUpon>RegexSearchConditionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchInfoEditWindow.xaml.cs">
       <DependentUpon>SearchInfoEditWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchInfoEditWindowViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControl.xaml.cs">
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Regex\RegexSearchConditionsControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Name\NameSearchConditionsControl.xaml.cs">
       <DependentUpon>NameSearchConditionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Search\SearchControl.xaml.cs">
@@ -219,7 +242,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\StateSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\State\StateSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -235,6 +258,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Sources\Windows\Menu\Options\Update\UpdateOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Menu\Options\VIew\VIewOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Menu\Options\Data\DataOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Menu\Options\Connection\ConnectionOptionsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Menu\Options\Account\AccountOptionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Sources\Windows\Menu\Options\OptionsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -247,19 +290,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\LengthSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\Length\LengthSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\CreationTimeSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\CreationTime\CreationTimeSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\SignatureSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\Signature\SignatureSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\RegexSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\Regex\RegexSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -267,7 +310,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\SearchConditions\NameSearchConditionsControl.xaml">
+    <Page Include="Sources\Windows\Content\Search\SearchInfoEdit\Name\NameSearchConditionsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -317,6 +360,39 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assemblies\Tor\libeay32.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\libevent-2-0-5.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\libevent_core-2-0-5.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\libevent_extra-2-0-5.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\libgcc_s_sjlj-1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\libssp-0.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\ssleay32.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\tor-gencert.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\tor.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assemblies\Tor\zlib1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Locations.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Images\Amoeba.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -344,6 +420,9 @@
     <None Include="App.manifest">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Assemblies\Tor\tor.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Licenses\Amoeba.Interface.Readme">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -395,6 +474,10 @@
       <Project>{3f38d6f0-3cfb-4915-bd50-0fcf68381327}</Project>
       <Name>Omnius.Net.Amoeba</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Omnius\Omnius.Net.Proxy\Omnius.Net.Proxy.csproj">
+      <Project>{55B34959-925A-46F9-A2DC-809E58479277}</Project>
+      <Name>Omnius.Net.Proxy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj">
       <Project>{0a55926d-70ce-41ba-a838-99937a3b219d}</Project>
       <Name>Omnius.Security</Name>
@@ -416,10 +499,13 @@
       <Version>1.10.1</Version>
     </PackageReference>
     <PackageReference Include="NETStandard.Library">
-      <Version>1.6.1</Version>
+      <Version>2.0.0</Version>
     </PackageReference>
     <PackageReference Include="Nett">
       <Version>0.7.0</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
     </PackageReference>
     <PackageReference Include="Prism.Wpf">
       <Version>6.3.0</Version>
@@ -431,7 +517,7 @@
       <Version>3.1.1</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.3.1</Version>
+      <Version>4.4.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

@@ -22,6 +22,18 @@
     <Property Type="Signature" Name="Signature" IsEditable="true" />
   </Class>
 
+  <Class Name="ViewInfo">
+    <Property Type="ViewColorsInfo" Name="Colors" />
+  </Class>
+
+  <Class Name="ViewColorsInfo">
+    <Property Type="string" Name="Tree_Hit" IsEditable="true" />
+    <Property Type="string" Name="Link_New" IsEditable="true" />
+    <Property Type="string" Name="Link_Visited" IsEditable="true" />
+    <Property Type="string" Name="Message_Trust" IsEditable="true" />
+    <Property Type="string" Name="Message_Untrust" IsEditable="true" />
+  </Class>
+
   <Class Name="ListSortInfo">
     <Property Type="string" Name="PropertyName" IsEditable="true" />
     <Property Type="ListSortDirection" Name="Direction" IsEditable="true" />
@@ -34,14 +46,14 @@
   </Class>
 
   <Class Name="OptionsInfo">
-    <Property Type="OptionsAccountInfo" Name="Account" />
-    <Property Type="OptionsConnectionInfo" Name="Connection" />
-    <Property Type="OptionsDataInfo" Name="Data" />
-    <Property Type="OptionsSubscribeInfo" Name="Subscribe" />
-    <Property Type="OptionsUpdateInfo" Name="Update" />
+    <Property Type="AccountOptionsInfo" Name="Account" />
+    <Property Type="ConnectionOptionsInfo" Name="Connection" />
+    <Property Type="DataOptionsInfo" Name="Data" />
+    <Property Type="ViewOptionsInfo" Name="View" />
+    <Property Type="UpdateOptionsInfo" Name="Update" />
   </Class>
 
-  <Class Name="OptionsAccountInfo">
+  <Class Name="AccountOptionsInfo">
     <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
     <Property Type="string" Name="Comment" IsEditable="true" />
     <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
@@ -49,13 +61,14 @@
     <Property Type="ObservableCollection(Tag)" Name="Tags" />
   </Class>
 
-  <Class Name="OptionsConnectionInfo">
-    <Property Type="OptionsTcpInfo" Name="Tcp" />
-    <Property Type="OptionsI2pInfo" Name="I2p" />
-    <Property Type="OptionsBandwidthInfo" Name="Bandwidth" />
+  <Class Name="ConnectionOptionsInfo">
+    <Property Type="TcpOptionsInfo" Name="Tcp" />
+    <Property Type="I2pOptionsInfo" Name="I2p" />
+    <Property Type="CustomOptionsInfo" Name="Custom" />
+    <Property Type="BandwidthOptionsInfo" Name="Bandwidth" />
   </Class>
 
-  <Class Name="OptionsTcpInfo">
+  <Class Name="TcpOptionsInfo">
     <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
     <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
     <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
@@ -63,26 +76,44 @@
     <Property Type="string" Name="ProxyUri" IsEditable="true" />
   </Class>
 
-  <Class Name="OptionsI2pInfo">
+  <Class Name="I2pOptionsInfo">
     <Property Type="bool" Name="IsEnabled" IsEditable="true" />
     <Property Type="string" Name="SamBridgeUri" IsEditable="true" />
   </Class>
 
-  <Class Name="OptionsBandwidthInfo">
+  <Class Name="CustomOptionsInfo">
+    <Property Type="ObservableCollection(string)" Name="LocationUris" />
+    <Property Type="ObservableCollection(ConnectionFilter)" Name="ConnectionFilters" />
+    <Property Type="ObservableCollection(string)" Name="ListenUris" />
+  </Class>
+
+  <Class Name="BandwidthOptionsInfo">
     <Property Type="int" Name="ConnectionCountLimit" IsEditable="true" />
     <Property Type="int" Name="BandwidthLimit" IsEditable="true" />
   </Class>
 
-  <Class Name="OptionsDataInfo">
-    <Property Type="long" Name="CacheSize" IsEditable="true" />
-    <Property Type="string" Name="DownloadDirectoryPath" IsEditable="true" />
+  <Class Name="DataOptionsInfo">
+    <Property Type="CacheOptionsInfo" Name="Cache" />
+    <Property Type="DownloadOptionsInfo" Name="Download" />
   </Class>
 
-  <Class Name="OptionsSubscribeInfo">
+  <Class Name="CacheOptionsInfo">
+    <Property Type="long" Name="Size" IsEditable="true" />
+  </Class>
+
+  <Class Name="DownloadOptionsInfo">
+    <Property Type="string" Name="DirectoryPath" IsEditable="true" />
+  </Class>
+
+  <Class Name="ViewOptionsInfo">
+    <Property Type="SubscribeOptionsInfo" Name="Subscribe" />
+  </Class>
+
+  <Class Name="SubscribeOptionsInfo">
     <Property Type="ObservableCollection(Signature)" Name="SubscribeSignatures" />
   </Class>
 
-  <Class Name="OptionsUpdateInfo">
+  <Class Name="UpdateOptionsInfo">
     <Property Type="bool" Name="IsEnabled" IsEditable="true" />
     <Property Type="Signature" Name="Signature" IsEditable="true" />
   </Class>
@@ -99,6 +130,7 @@
   </Class>
 
   <Class Name="ChatThreadInfo">
+    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
     <Property Type="Tag" Name="Tag" IsEditable="true" />
     <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
   </Class>

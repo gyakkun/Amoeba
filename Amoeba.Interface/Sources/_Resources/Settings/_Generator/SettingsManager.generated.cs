@@ -85,6 +85,25 @@ namespace Amoeba.Interface
             }
         }
 
+        private ViewInfo _viewInfo;
+
+        [DataMember(Name = nameof(ViewInfo))]
+        public ViewInfo ViewInfo
+        {
+            get
+            {
+                return _viewInfo;
+            }
+            set
+            {
+                if (_viewInfo != value)
+                {
+                    _viewInfo = value;
+                    this.OnPropertyChanged(nameof(ViewInfo));
+                }
+            }
+        }
+
         private LockedHashSet<DownloadItemInfo> _downloadItemInfos;
 
         [DataMember(Name = nameof(DownloadItemInfos))]

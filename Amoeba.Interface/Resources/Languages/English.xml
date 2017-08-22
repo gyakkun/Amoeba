@@ -6,13 +6,18 @@
   <Property Name="Languages_English" Value="English" />
   <Property Name="Languages_Japanese" Value="Japanese" />
 
-  <Property Name="ValidationRule_NotEmpty_ErrorMessage" Value="Field is required." />
+  <Property Name="ValidationRule_ErrorMessage" Value="Error." />
 
   <Property Name="SessionType_Connect" Value="Connect" />
   <Property Name="SessionType_Accept" Value="Accept" />
 
   <Property Name="ManagerState_Start" Value="Start" />
   <Property Name="ManagerState_Stop" Value="Stop" />
+
+  <Property Name="ConnectionType_None" Value="None" />
+  <Property Name="ConnectionType_Tcp" Value="Tcp" />
+  <Property Name="ConnectionType_Socks5Proxy" Value="Socks5 proxy" />
+  <Property Name="ConnectionType_HttpProxy" Value="Http proxy" />
 
   <Property Name="Tag_Name" Value="Name" />
   <Property Name="Tag_Id" Value="ID" />
@@ -71,6 +76,7 @@
   <Property Name="MainWindow_Download" Value="Download" />
   <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
   <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
+  <Property Name="MainWindow_DownloadLocationInformation_Message" Value="Download location information from Cloud via Tor. Would that be all right?" />
 
   <Property Name="RelationWindow_Profile" Value="Profile" />
   <Property Name="RelationWindow_Trust" Value="Trust" />
@@ -87,57 +93,83 @@
 
   <Property Name="OptionsWindow_Account" Value="Account" />
   <Property Name="OptionsWindow_Signature" Value="Signature" />
-  <Property Name="OptionsWindow_SignatureSettings" Value="Signature settings" />
-  <Property Name="OptionsWindow_YourSignature" Value="Your signature" />
-  <Property Name="OptionsWindow_Trust" Value="Trust" />
-  <Property Name="OptionsWindow_TrustSettings" Value="Trust settings" />
-  <Property Name="OptionsWindow_TrustSignature" Value="Trust signature" />
-  <Property Name="OptionsWindow_Untrust" Value="Untrust" />
-  <Property Name="OptionsWindow_UntrustSettings" Value="Untrust settings" />
-  <Property Name="OptionsWindow_UntrustSignature" Value="Untrust signature" />
+  <Property Name="OptionsWindow_TrustSignatures" Value="Trust signatures" />
+  <Property Name="OptionsWindow_UntrustSignatures" Value="Untrust signatures" />
   <Property Name="OptionsWindow_Tags" Value="Tags" />
-  <Property Name="OptionsWindow_TagsSettings" Value="Tags settings" />
-  <Property Name="OptionsWindow_Tag" Value="Tag" />
-  <Property Name="OptionsWindow_Name" Value="Name" />
-  <Property Name="OptionsWindow_Id" Value="Id" />
   <Property Name="OptionsWindow_Comment" Value="Comment" />
-  <Property Name="OptionsWindow_CommentSettings" Value="Comment settings" />
   <Property Name="OptionsWindow_Connection" Value="Connection" />
-  <Property Name="OptionsWindow_Subscribe" Value="Subscribe" />
-  <Property Name="OptionsWindow_SubscribeSettings" Value="Subscribe settings" />
-  <Property Name="OptionsWindow_SubscribeSignature" Value="Subscribe signature" />
   <Property Name="OptionsWindow_Tcp" Value="Tcp" />
-  <Property Name="OptionsWindow_TcpSettings" Value="Tcp settings" />
-  <Property Name="OptionsWindow_Ipv4IsEnabled" Value="Ipv4 is enabled" />
-  <Property Name="OptionsWindow_Ipv4Port" Value="Ipv4 port" />
-  <Property Name="OptionsWindow_Ipv6IsEnabled" Value="Ipv6 is enabled" />
-  <Property Name="OptionsWindow_Ipv6Port" Value="Ipv6 port" />
-  <Property Name="OptionsWindow_ProxyUri" Value="Proxy uri" />
   <Property Name="OptionsWindow_I2p" Value="I2p" />
-  <Property Name="OptionsWindow_I2pSettings" Value="I2p settings" />
-  <Property Name="OptionsWindow_I2pIsEnabled" Value="I2p is enabled" />
-  <Property Name="OptionsWindow_SamBridgeUri" Value="Sam bridge uri" />
+  <Property Name="OptionsWindow_Custom" Value="Custom" />
+  <Property Name="OptionsWindow_LocationUris" Value="Location uris" />
+  <Property Name="OptionsWindow_ConnectionFilters" Value="Connection filters" />
+  <Property Name="OptionsWindow_ListenUris" Value="Listen uris" />
   <Property Name="OptionsWindow_Bandwidth" Value="Bandwidth" />
-  <Property Name="OptionsWindow_BandwidthSettings" Value="Bandwidth settings" />
-  <Property Name="OptionsWindow_ConnectionCountLimit" Value="Connection count limit" />
-  <Property Name="OptionsWindow_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
   <Property Name="OptionsWindow_Data" Value="Data" />
-  <Property Name="OptionsWindow_CacheSettings" Value="Cache settings" />
-  <Property Name="OptionsWindow_CacheSize" Value="Cache size" />
-  <Property Name="OptionsWindow_DownloadSettings" Value="Download settings" />
-  <Property Name="OptionsWindow_DownloadDirectoryPath" Value="Directory path" />
-  <Property Name="OptionsWindow_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
+  <Property Name="OptionsWindow_Cache" Value="Cache" />
+  <Property Name="OptionsWindow_Download" Value="Download" />
+  <Property Name="OptionsWindow_View" Value="View" />
+  <Property Name="OptionsWindow_Subscribe" Value="Subscribe" />
   <Property Name="OptionsWindow_Update" Value="Update" />
-  <Property Name="OptionsWindow_UpdateSettings" Value="Update settings" />
-  <Property Name="OptionsWindow_UpdateIsEnabled" Value="Update is enabled" />
-  <Property Name="OptionsWindow_New" Value="New" />
-  <Property Name="OptionsWindow_Add" Value="Add" />
-  <Property Name="OptionsWindow_Edit" Value="Edit" />
-  <Property Name="OptionsWindow_Delete" Value="Delete" />
-  <Property Name="OptionsWindow_Copy" Value="Copy" />
-  <Property Name="OptionsWindow_Paste" Value="Paste" />
   <Property Name="OptionsWindow_Ok" Value="Ok" />
   <Property Name="OptionsWindow_Cancel" Value="Cancel" />
+
+  <Property Name="AccountOptionsControl_SignatureSettings" Value="Signature settings" />
+  <Property Name="AccountOptionsControl_YourSignature" Value="Your signature" />
+  <Property Name="AccountOptionsControl_TrustSignaturesSettings" Value="Trust signatures settings" />
+  <Property Name="AccountOptionsControl_TrustSignature" Value="Trust signature" />
+  <Property Name="AccountOptionsControl_UntrustSignaturesSettings" Value="Untrust signatures settings" />
+  <Property Name="AccountOptionsControl_UntrustSignature" Value="Untrust signature" />
+  <Property Name="AccountOptionsControl_TagsSettings" Value="Tags settings" />
+  <Property Name="AccountOptionsControl_Name" Value="Name" />
+  <Property Name="AccountOptionsControl_Id" Value="Id" />
+  <Property Name="AccountOptionsControl_CommentSettings" Value="Comment settings" />
+  <Property Name="AccountOptionsControl_New" Value="New" />
+  <Property Name="AccountOptionsControl_Import" Value="Import" />
+  <Property Name="AccountOptionsControl_Export" Value="Export" />
+  <Property Name="AccountOptionsControl_Delete" Value="Delete" />
+  <Property Name="AccountOptionsControl_Copy" Value="Copy" />
+  <Property Name="AccountOptionsControl_Paste" Value="Paste" />
+
+  <Property Name="ConnectionOptionsControl_TcpSettings" Value="Tcp settings" />
+  <Property Name="ConnectionOptionsControl_Ipv4IsEnabled" Value="Ipv4 is enabled" />
+  <Property Name="ConnectionOptionsControl_Ipv4Port" Value="Ipv4 port" />
+  <Property Name="ConnectionOptionsControl_Ipv6IsEnabled" Value="Ipv6 is enabled" />
+  <Property Name="ConnectionOptionsControl_Ipv6Port" Value="Ipv6 port" />
+  <Property Name="ConnectionOptionsControl_ProxyUri" Value="Proxy uri" />
+  <Property Name="ConnectionOptionsControl_I2pSettings" Value="I2p settings" />
+  <Property Name="ConnectionOptionsControl_I2pIsEnabled" Value="I2p is enabled" />
+  <Property Name="ConnectionOptionsControl_SamBridgeUri" Value="Sam bridge uri" />
+  <Property Name="ConnectionOptionsControl_LocationUrisSettings" Value="Location uris settings" />
+  <Property Name="ConnectionOptionsControl_Uri" Value="Uri" />
+  <Property Name="ConnectionOptionsControl_ConnectionFiltersSettings" Value="Connection filters settings" />
+  <Property Name="ConnectionOptionsControl_Scheme" Value="Scheme" />
+  <Property Name="ConnectionOptionsControl_Type" Value="Type" />
+  <Property Name="ConnectionOptionsControl_ListenUrisSettings" Value="Listen uris settings" />
+  <Property Name="ConnectionOptionsControl_BandwidthSettings" Value="Bandwidth settings" />
+  <Property Name="ConnectionOptionsControl_ConnectionCountLimit" Value="Connection count limit" />
+  <Property Name="ConnectionOptionsControl_BandwidthLimit" Value="Bandwidth limit (*/s) [0 Byte: unlimited]" />
+  <Property Name="ConnectionOptionsControl_Up" Value="Up" />
+  <Property Name="ConnectionOptionsControl_Down" Value="Down" />
+  <Property Name="ConnectionOptionsControl_Add" Value="Add" />
+  <Property Name="ConnectionOptionsControl_Edit" Value="Edit" />
+  <Property Name="ConnectionOptionsControl_Delete" Value="Delete" />
+
+  <Property Name="DataOptionsControl_CacheSettings" Value="Cache settings" />
+  <Property Name="DataOptionsControl_CacheSize" Value="Cache size" />
+  <Property Name="DataOptionsControl_DownloadSettings" Value="Download settings" />
+  <Property Name="DataOptionsControl_DownloadDirectoryPath" Value="Directory path" />
+  <Property Name="DataOptionsControl_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
+  <Property Name="DataOptionsControl_Import" Value="Import" />
+
+  <Property Name="ViewOptionsControl_SubscribeSettings" Value="Subscribe settings" />
+  <Property Name="ViewOptionsControl_SubscribeSignature" Value="Subscribe signature" />
+  <Property Name="ViewOptionsControl_Delete" Value="Delete" />
+  <Property Name="ViewOptionsControl_Copy" Value="Copy" />
+  <Property Name="ViewOptionsControl_Paste" Value="Paste" />
+
+  <Property Name="UpdateOptionsControl_UpdateSettings" Value="Update settings" />
+  <Property Name="UpdateOptionsControl_UpdateIsEnabled" Value="Update is enabled" />
 
   <Property Name="VersionWindow_Close" Value="Close" />
 

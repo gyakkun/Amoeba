@@ -168,15 +168,20 @@ namespace Amoeba.Interface
             }
             else if (viewModel is ChatThreadViewModel chatViewModel)
             {
+                foreach (var message in chatViewModel.Model.Messages)
+                {
+                    message.State &= ~ChatMessageState.New;
+                }
+
                 this.Info.Value = new AvalonEditChatMessagesInfo(chatViewModel.Model.Messages, _messageManager.TrustSignatures);
             }
         }
 
         private void WatchThread(CancellationToken token)
         {
-            for (;;)
+            for (; ; )
             {
-                var chatThreadInfos = new List<ChatThreadInfo>();
+                var chatThreadViewModels = new List<ChatThreadViewModel>();
 
                 try
                 {
@@ -184,13 +189,13 @@ namespace Amoeba.Interface
                     {
                         if (token.IsCancellationRequested) return;
 
-                        var chatCategoryInfos = new List<ChatCategoryInfo>();
-                        chatCategoryInfos.Add(this.TabViewModel.Value.Model);
+                        var chatCategoryViewModels = new List<ChatCategoryViewModel>();
+                        chatCategoryViewModels.Add(this.TabViewModel.Value);
 
-                        for (int i = 0; i < chatCategoryInfos.Count; i++)
+                        for (int i = 0; i < chatCategoryViewModels.Count; i++)
                         {
-                            chatCategoryInfos.AddRange(chatCategoryInfos[i].CategoryInfos);
-                            chatThreadInfos.AddRange(chatCategoryInfos[i].ThreadInfos);
+                            chatCategoryViewModels.AddRange(chatCategoryViewModels[i].Categories);
+                            chatThreadViewModels.AddRange(chatCategoryViewModels[i].Threads);
                         }
                     }, DispatcherPriority.Background, token);
                 }
@@ -199,27 +204,38 @@ namespace Amoeba.Interface
                     return;
                 }
 
-                foreach (var chatInfo in chatThreadInfos)
+                foreach (var chatThreadViewModel in chatThreadViewModels)
                 {
                     if (token.IsCancellationRequested) return;
 
-                    var messages = new HashSet<MulticastMessage<ChatMessage>>(_serviceManager.GetChatMessages(chatInfo.Tag).Result);
+                    var newMessages = new HashSet<MulticastMessage<ChatMessage>>(_serviceManager.GetChatMessages(chatThreadViewModel.Model.Tag).Result);
 
-                    lock (chatInfo.Messages.LockObject)
+                    lock (chatThreadViewModel.Model.Messages.LockObject)
                     {
-                        messages.ExceptWith(chatInfo.Messages.Select(n => n.Message));
+                        newMessages.ExceptWith(chatThreadViewModel.Model.Messages.Select(n => n.Message));
 
-                        foreach (var chatMessageInfo in chatInfo.Messages)
+                        var messageInfos = new List<ChatMessageInfo>();
+                        messageInfos.AddRange(chatThreadViewModel.Model.Messages);
+
+                        foreach (var message in newMessages)
                         {
-                            chatMessageInfo.State |= ~ChatMessageState.New;
+                            messageInfos.Add(new ChatMessageInfo() { Message = message, State = ChatMessageState.New });
                         }
 
-                        foreach (var message in messages)
+                        messageInfos.Sort((x, y) => x.Message.CreationTime.CompareTo(y.Message.CreationTime));
+
+                        foreach (var item in messageInfos.Take(messageInfos.Count - 1024))
                         {
-                            chatInfo.Messages.Add(new ChatMessageInfo() { Message = message, State = ChatMessageState.New });
+                            messageInfos.Remove(item);
                         }
 
-                        chatInfo.Messages.Sort((x, y) => x.Message.CreationTime.CompareTo(y.Message.CreationTime));
+                        chatThreadViewModel.Model.Messages.Clear();
+                        chatThreadViewModel.Model.Messages.AddRange(messageInfos);
+
+                        int newCount = messageInfos.Count(n => n.State.HasFlag(ChatMessageState.New));
+
+                        chatThreadViewModel.Model.IsUpdated = (newCount > 0);
+                        chatThreadViewModel.Count.Value = newCount;
                     }
                 }
 

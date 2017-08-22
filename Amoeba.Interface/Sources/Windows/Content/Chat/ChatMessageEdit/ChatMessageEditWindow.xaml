@@ -23,7 +23,7 @@
         WindowStyle="None"
         mc:Ignorable="d">
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="{Binding Path=CaptionHeight, Source={x:Static local:AmoebaEnvironment.Variables}}" ResizeBorderThickness="{Binding Path=ResizeBorderThickness, Source={x:Static local:AmoebaEnvironment.Variables}}" />
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="{Binding Path=ResizeBorderThickness, Source={x:Static local:AmoebaEnvironment.Variables}}" />
     </WindowChrome.WindowChrome>
     <Border BorderBrush="Gray" BorderThickness="1">
         <Grid FocusManager.FocusedElement="{Binding ElementName=TextBox}">

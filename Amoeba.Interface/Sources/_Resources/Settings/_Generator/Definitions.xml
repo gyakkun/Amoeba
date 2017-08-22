@@ -9,6 +9,7 @@
   <Property Type="AccountInfo" Name="AccountInfo" IsEditable="true" />
   <Property Type="LockedHashSet(Signature)" Name="SubscribeSignatures" />
   <Property Type="UpdateInfo" Name="UpdateInfo" IsEditable="true" />
+  <Property Type="ViewInfo" Name="ViewInfo" IsEditable="true" />
   <Property Type="LockedHashSet(DownloadItemInfo)" Name="DownloadItemInfos" />
   <Property Type="LockedHashSet(Seed)" Name="DownloadedSeeds" />
   <Property Type="LockedHashSet(UploadItemInfo)" Name="UploadItemInfos" />

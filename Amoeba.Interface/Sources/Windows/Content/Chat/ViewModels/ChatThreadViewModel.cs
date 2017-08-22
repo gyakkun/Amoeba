@@ -12,6 +12,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
+        public ReactiveProperty<bool> IsUpdated { get; private set; }
+        public ReactiveProperty<int> Count { get; private set; }
+
         public ChatThreadInfo Model { get; private set; }
 
         public ChatThreadViewModel(TreeViewModelBase parent, ChatThreadInfo model)
@@ -20,7 +23,9 @@ namespace Amoeba.Interface
             this.Model = model;
 
             this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
-            this.Name = model.ObserveProperty(n => n.Tag).Select(n => MessageUtils.ToString(n)).ToReactiveProperty().AddTo(_disposable);
+            this.Name = model.ObserveProperty(n => n.Tag).Select(n => n.Name).ToReactiveProperty().AddTo(_disposable);
+            this.IsUpdated = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);
+            this.Count = new ReactiveProperty<int>(0).AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Amoeba_Chat"; } }

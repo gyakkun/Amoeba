@@ -1,9 +1,4 @@
-﻿using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -12,22 +7,26 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class CreationTimeSearchConditionsControlViewModel : ManagerBase
+    class StateSearchConditionsControlViewModel : ManagerBase
     {
         private Settings _settings;
 
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
-        private ObservableCollection<SearchCondition<SearchRange<DateTime>>> _contents = new ObservableCollection<SearchCondition<SearchRange<DateTime>>>();
-        public ReactiveProperty<SearchCondition<SearchRange<DateTime>>> SelectedItem { get; private set; }
+        private ObservableCollection<SearchCondition<SearchState>> _contents = new ObservableCollection<SearchCondition<SearchState>>();
+        public ReactiveProperty<SearchCondition<SearchState>> SelectedItem { get; private set; }
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
 
         public ReactiveProperty<bool> Contains { get; private set; }
-        public ReactiveProperty<DateTime> MinInput { get; private set; }
-        public ReactiveProperty<DateTime> MaxInput { get; private set; }
+        public ReactiveProperty<SearchState> Input { get; private set; }
 
         public ReactiveCommand AddCommand { get; private set; }
         public ReactiveCommand EditCommand { get; private set; }
@@ -40,14 +39,14 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public CreationTimeSearchConditionsControlViewModel(IEnumerable<SearchCondition<SearchRange<DateTime>>> contents)
+        public StateSearchConditionsControlViewModel(IEnumerable<SearchCondition<SearchState>> contents)
         {
             _contents.AddRange(contents);
 
             this.Init();
         }
 
-        public IEnumerable<SearchCondition<SearchRange<DateTime>>> GetContents()
+        public IEnumerable<SearchCondition<SearchState>> GetContents()
         {
             return _contents.ToArray();
         }
@@ -55,20 +54,18 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
-                this.SelectedItem = new ReactiveProperty<SearchCondition<SearchRange<DateTime>>>().AddTo(_disposable);
+                this.SelectedItem = new ReactiveProperty<SearchCondition<SearchState>>().AddTo(_disposable);
                 this.SelectedItem.Where(n => n != null).Subscribe(n =>
                 {
                     this.Contains.Value = n.IsContains;
-                    this.MinInput.Value = n.Value.Min;
-                    this.MaxInput.Value = n.Value.Max;
-                });
+                    this.Input.Value = n.Value;
+                }).AddTo(_disposable); 
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
 
                 this.Contains = new ReactiveProperty<bool>(true).AddTo(_disposable);
-                this.MinInput = new ReactiveProperty<DateTime>(DateTime.MinValue).AddTo(_disposable);
-                this.MaxInput = new ReactiveProperty<DateTime>(DateTime.Now).AddTo(_disposable);
+                this.Input = new ReactiveProperty<SearchState>(SearchState.Store).AddTo(_disposable);
 
                 this.AddCommand = new ReactiveCommand().AddTo(_disposable);
                 this.AddCommand.Subscribe(() => this.Add()).AddTo(_disposable);
@@ -81,7 +78,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SearchInfoEditWindow), nameof(CreationTimeSearchConditionsControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SearchInfoEditWindow), nameof(StateSearchConditionsControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -147,7 +144,7 @@ namespace Amoeba.Interface
 
         private void Add()
         {
-            var condition = new SearchCondition<SearchRange<DateTime>>(this.Contains.Value, new SearchRange<DateTime>(this.MinInput.Value, this.MaxInput.Value));
+            var condition = new SearchCondition<SearchState>(this.Contains.Value, this.Input.Value);
             if (_contents.Contains(condition)) return;
 
             _contents.Add(condition);
@@ -158,7 +155,7 @@ namespace Amoeba.Interface
             var selectedItem = this.SelectedItem.Value;
             if (selectedItem == null) return;
 
-            var condition = new SearchCondition<SearchRange<DateTime>>(this.Contains.Value, new SearchRange<DateTime>(this.MinInput.Value, this.MaxInput.Value));
+            var condition = new SearchCondition<SearchState>(this.Contains.Value, this.Input.Value);
             if (_contents.Contains(condition)) return;
 
             int index = _contents.IndexOf(selectedItem);

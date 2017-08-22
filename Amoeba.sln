@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
@@ -146,5 +146,8 @@ Global
 		{55B34959-925A-46F9-A2DC-809E58479277} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
 		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
 		{3F38D6F0-3CFB-4915-BD50-0FCF68381327} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6DC027E1-AD9D-4BB2-B06A-499E74D23186}
 	EndGlobalSection
 EndGlobal

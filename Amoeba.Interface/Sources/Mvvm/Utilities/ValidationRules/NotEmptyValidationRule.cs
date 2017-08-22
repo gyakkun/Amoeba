@@ -7,9 +7,12 @@ namespace Amoeba.Interface
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            return string.IsNullOrWhiteSpace((string)value)
-                ? new ValidationResult(false, LanguagesManager.Instance.ValidationRule_NotEmpty_ErrorMessage)
-                : ValidationResult.ValidResult;
+            if (string.IsNullOrWhiteSpace(value as string))
+            {
+                return new ValidationResult(false, LanguagesManager.Instance.ValidationRule_ErrorMessage);
+            }
+
+            return ValidationResult.ValidResult;
         }
     }
 }

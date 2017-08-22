@@ -1,37 +1,37 @@
 <Window
-        x:Class="Amoeba.Interface.OptionsWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:amoeba="clr-namespace:Omnius.Net.Amoeba;assembly=Omnius.Net.Amoeba"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:local="clr-namespace:Amoeba.Interface"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
-        xmlns:prism="http://prismlibrary.com/"
-        Width="{Binding Path=DynamicOptions.WindowWidth, Mode=TwoWay, FallbackValue=800}"
-        Height="{Binding Path=DynamicOptions.WindowHeight, Mode=TwoWay, FallbackValue=500}"
-        x:ClassModifier="internal"
-        Background="{DynamicResource MaterialDesignWindowBackground}"
-        FontFamily="{DynamicResource MaterialDesignFont}"
-        SnapsToDevicePixels="True"
-        TextElement.FontSize="13"
-        TextElement.FontWeight="Regular"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextOptions.TextFormattingMode="Ideal"
-        TextOptions.TextRenderingMode="Auto"
-        WindowStartupLocation="CenterOwner"
-        WindowStyle="None"
-        mc:Ignorable="d">
+    x:Class="Amoeba.Interface.OptionsWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:amoeba="clr-namespace:Omnius.Net.Amoeba;assembly=Omnius.Net.Amoeba"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:local="clr-namespace:Amoeba.Interface"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+    xmlns:prism="http://prismlibrary.com/"
+    Width="{Binding Path=DynamicOptions.WindowWidth, Mode=TwoWay, FallbackValue=1000}"
+    Height="{Binding Path=DynamicOptions.WindowHeight, Mode=TwoWay, FallbackValue=600}"
+    x:ClassModifier="internal"
+    Background="{DynamicResource MaterialDesignWindowBackground}"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    SnapsToDevicePixels="True"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="None"
+    mc:Ignorable="d">
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="{Binding Path=CaptionHeight, Source={x:Static local:AmoebaEnvironment.Variables}}" ResizeBorderThickness="{Binding Path=ResizeBorderThickness, Source={x:Static local:AmoebaEnvironment.Variables}}" />
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="{Binding Path=ResizeBorderThickness, Source={x:Static local:AmoebaEnvironment.Variables}}" />
     </WindowChrome.WindowChrome>
     <Border BorderBrush="Gray" BorderThickness="1">
         <Grid>
             <Grid Margin="0,0,0,64">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding DynamicOptions.TabColumnWidth, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200, Mode=TwoWay}" />
+                    <ColumnDefinition Width="{Binding Path=DynamicOptions.TabColumnWidth, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=240, Mode=TwoWay}" />
                     <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -40,884 +40,134 @@
                     <i:Interaction.Behaviors>
                         <omnius:TreeViewRightClickSelectBehavior />
                         <omnius:IgnoreRequestBringIntoViewBehavior />
+                        <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
                     </i:Interaction.Behaviors>
                     <TreeViewItem
-                            Header="{Binding OptionsWindow_Account, Source={StaticResource Languages}}"
-                            IsExpanded="{Binding DynamicOptions.AccountTab_IsExpanded, FallbackValue=True, Mode=TwoWay}"
-                            IsSelected="{Binding DynamicOptions.AccountTab_IsSelected, Mode=TwoWay}">
+                        Header="{Binding Path=OptionsWindow_Account, Source={StaticResource Languages}}"
+                        IsExpanded="{Binding Path=DynamicOptions.AccountTab_IsExpanded, FallbackValue=True, Mode=TwoWay}"
+                        IsSelected="{Binding Path=DynamicOptions.AccountTab_IsSelected, Mode=TwoWay}">
                         <TreeViewItem
-                                x:Name="AccountSignatureTreeViewItem"
-                                Header="{Binding OptionsWindow_Signature, Source={StaticResource Languages}}"
-                                IsSelected="{Binding DynamicOptions.AccountSignatureTab_IsSelected, FallbackValue=True, Mode=TwoWay}" />
+                            Header="{Binding Path=OptionsWindow_Signature, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.AccountSignatureTab_IsSelected, FallbackValue=True, Mode=TwoWay}"
+                            Tag="Account.Signature" />
                         <TreeViewItem
-                                x:Name="AccountTrustTreeViewItem"
-                                Header="{Binding OptionsWindow_Trust, Source={StaticResource Languages}}"
-                                IsSelected="{Binding DynamicOptions.AccountTrustTab_IsSelected, Mode=TwoWay}" />
+                            Header="{Binding Path=OptionsWindow_TrustSignatures, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.AccountTrustTab_IsSelected, Mode=TwoWay}"
+                            Tag="Account.TrustSignatures" />
                         <TreeViewItem
-                                x:Name="AccountUntrustTreeViewItem"
-                                Header="{Binding OptionsWindow_Untrust, Source={StaticResource Languages}}"
-                                IsSelected="{Binding DynamicOptions.AccountUntrustTab_IsSelected, Mode=TwoWay}" />
+                            Header="{Binding Path=OptionsWindow_UntrustSignatures, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.AccountUntrustTab_IsSelected, Mode=TwoWay}"
+                            Tag="Account.UntrustSignatures" />
                         <TreeViewItem
-                                x:Name="AccountTagsTreeViewItem"
-                                Header="{Binding OptionsWindow_Tags, Source={StaticResource Languages}}"
-                                IsSelected="{Binding DynamicOptions.AccountTagsTab_IsSelected, Mode=TwoWay}" />
+                            Header="{Binding Path=OptionsWindow_Tags, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.AccountTagsTab_IsSelected, Mode=TwoWay}"
+                            Tag="Account.Tags" />
                         <TreeViewItem
-                                x:Name="AccountCommentTreeViewItem"
-                                Header="{Binding OptionsWindow_Comment, Source={StaticResource Languages}}"
-                                IsSelected="{Binding DynamicOptions.AccountCommentTab_IsSelected, Mode=TwoWay}" />
+                            Header="{Binding Path=OptionsWindow_Comment, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.AccountCommentTab_IsSelected, Mode=TwoWay}"
+                            Tag="Account.Comment" />
                     </TreeViewItem>
                     <TreeViewItem
-                            Header="{Binding OptionsWindow_Connection, Source={StaticResource Languages}}"
-                            IsExpanded="{Binding DynamicOptions.ConnectionTab_IsExpanded, FallbackValue=True, Mode=TwoWay}"
-                            IsSelected="{Binding DynamicOptions.ConnectionTab_IsSelected, Mode=TwoWay}">
+                        Header="{Binding Path=OptionsWindow_Connection, Source={StaticResource Languages}}"
+                        IsExpanded="{Binding Path=DynamicOptions.ConnectionTab_IsExpanded, FallbackValue=True, Mode=TwoWay}"
+                        IsSelected="{Binding Path=DynamicOptions.ConnectionTab_IsSelected, Mode=TwoWay}">
                         <TreeViewItem
-                                x:Name="ConnectionTcpTreeViewItem"
-                                Header="{Binding OptionsWindow_Tcp, Source={StaticResource Languages}}"
-                                IsSelected="{Binding DynamicOptions.ConnectionTcpTab_IsSelected, Mode=TwoWay}" />
+                            Header="{Binding Path=OptionsWindow_Tcp, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.ConnectionTcpTab_IsSelected, Mode=TwoWay}"
+                            Tag="Connection.Tcp" />
                         <TreeViewItem
-                                x:Name="ConnectionI2pTreeViewItem"
-                                Header="{Binding OptionsWindow_I2p, Source={StaticResource Languages}}"
-                                IsSelected="{Binding DynamicOptions.ConnectionI2pTab_IsSelected, Mode=TwoWay}" />
+                            Header="{Binding Path=OptionsWindow_I2p, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.ConnectionI2pTab_IsSelected, Mode=TwoWay}"
+                            Tag="Connection.I2p" />
                         <TreeViewItem
-                                x:Name="BandwidthTreeViewItem"
-                                Header="{Binding OptionsWindow_Bandwidth, Source={StaticResource Languages}}"
-                                IsSelected="{Binding DynamicOptions.BandwidthTab_IsSelected, Mode=TwoWay}" />
+                            Header="{Binding Path=OptionsWindow_Custom, Source={StaticResource Languages}}"
+                            IsExpanded="{Binding Path=DynamicOptions.ConnectionCustomTab_IsExpanded, FallbackValue=True, Mode=TwoWay}"
+                            IsSelected="{Binding Path=DynamicOptions.ConnectionCustomTab_IsSelected, Mode=TwoWay}">
+                            <TreeViewItem
+                                Header="{Binding Path=OptionsWindow_LocationUris, Source={StaticResource Languages}}"
+                                IsSelected="{Binding Path=DynamicOptions.CustomLocationUrisTab_IsSelected, Mode=TwoWay}"
+                                Tag="Connection.Custom.LocationUris" />
+                            <TreeViewItem
+                                Header="{Binding Path=OptionsWindow_ConnectionFilters, Source={StaticResource Languages}}"
+                                IsSelected="{Binding Path=DynamicOptions.CustomConnectionFiltersTab_IsSelected, Mode=TwoWay}"
+                                Tag="Connection.Custom.ConnectionFilters" />
+                            <TreeViewItem
+                                Header="{Binding Path=OptionsWindow_ListenUris, Source={StaticResource Languages}}"
+                                IsSelected="{Binding Path=DynamicOptions.CustomListenUrisTab_IsSelected, Mode=TwoWay}"
+                                Tag="Connection.Custom.ListenUris" />
+                        </TreeViewItem>
+                        <TreeViewItem
+                            Header="{Binding Path=OptionsWindow_Bandwidth, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.BandwidthTab_IsSelected, Mode=TwoWay}"
+                            Tag="Connection.Bandwidth" />
                     </TreeViewItem>
                     <TreeViewItem
-                            x:Name="DataTreeViewItem"
-                            Header="{Binding OptionsWindow_Data, Source={StaticResource Languages}}"
-                            IsSelected="{Binding DynamicOptions.DataTab_IsSelected, Mode=TwoWay}" />
+                        Header="{Binding Path=OptionsWindow_Data, Source={StaticResource Languages}}"
+                        IsExpanded="{Binding Path=DynamicOptions.DataTab_IsExpanded, FallbackValue=True, Mode=TwoWay}"
+                        IsSelected="{Binding Path=DynamicOptions.DataTab_IsSelected, Mode=TwoWay}">
+                        <TreeViewItem
+                            Header="{Binding Path=OptionsWindow_Cache, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.DataCacheTab_IsSelected, Mode=TwoWay}"
+                            Tag="Data.Cache" />
+                        <TreeViewItem
+                            Header="{Binding Path=OptionsWindow_Download, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.DataDownloadTab_IsSelected, Mode=TwoWay}"
+                            Tag="Data.Download" />
+                    </TreeViewItem>
                     <TreeViewItem
-                            x:Name="SubscribeTreeViewItem"
-                            Header="{Binding OptionsWindow_Subscribe, Source={StaticResource Languages}}"
-                            IsSelected="{Binding DynamicOptions.SubscribeTab_IsSelected, Mode=TwoWay}" />
+                        Header="{Binding Path=OptionsWindow_Data, Source={StaticResource Languages}}"
+                        IsExpanded="{Binding Path=DynamicOptions.ViewTab_IsExpanded, FallbackValue=True, Mode=TwoWay}"
+                        IsSelected="{Binding Path=DynamicOptions.ViewTab_IsSelected, Mode=TwoWay}">
+                        <TreeViewItem
+                            Header="{Binding Path=OptionsWindow_Subscribe, Source={StaticResource Languages}}"
+                            IsSelected="{Binding Path=DynamicOptions.ViewSubscribeTab_IsSelected, Mode=TwoWay}"
+                            Tag="View.Subscribe" />
+                    </TreeViewItem>
                     <TreeViewItem
-                            x:Name="UpdateTreeViewItem"
-                            Header="{Binding OptionsWindow_Update, Source={StaticResource Languages}}"
-                            IsSelected="{Binding DynamicOptions.UpdateTab_IsSelected, Mode=TwoWay}" />
+                        Header="{Binding Path=OptionsWindow_Update, Source={StaticResource Languages}}"
+                        IsSelected="{Binding Path=DynamicOptions.UpdateTab_IsSelected, Mode=TwoWay}"
+                        Tag="Update" />
                 </TreeView>
 
                 <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
 
                 <Grid Grid.Column="2">
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=AccountSignatureTreeViewItem}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16,16,16,0">
-                                <GroupBox
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        Header="{Binding OptionsWindow_SignatureSettings, Source={StaticResource Languages}}"
-                                        Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="8,0" Text="{Binding}" />
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
-                                    <Grid Margin="7">
-                                        <Label
-                                                Height="32"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_YourSignature, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Height="32"
-                                                Margin="240,0,0,0"
-                                                VerticalAlignment="Top"
-                                                IsReadOnly="True"
-                                                Text="{Binding Options.Account.DigitalSignature, Mode=OneWay}" />
-                                        <Button
-                                                Width="120"
-                                                Height="32"
-                                                Margin="0,48,0,0"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Top"
-                                                Command="{Binding AccountSignatureNewCommand}"
-                                                Content="New" />
-                                        <Button
-                                                Width="120"
-                                                Height="32"
-                                                Margin="0,48,272,0"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Top"
-                                                Command="{Binding AccountSignatureImportCommand}"
-                                                Content="Import" />
-                                        <Button
-                                                Width="120"
-                                                Height="32"
-                                                Margin="0,48,136,0"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Top"
-                                                Command="{Binding AccountSignatureExportCommand}"
-                                                Content="Export" />
-
-                                    </Grid>
-                                </GroupBox>
-                            </StackPanel>
-                        </ScrollViewer>
+                    <ContentControl>
+                        <local:AccountOptionsControl DataContext="{Binding Path=AccountOptionsControlViewModel}" />
                     </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=AccountTrustTreeViewItem}">
-                        <Grid Margin="16,16,16,0">
-                            <GroupBox
-                                    VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    Header="{Binding OptionsWindow_TrustSettings, Source={StaticResource Languages}}"
-                                    Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                <GroupBox.HeaderTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Margin="8,0" Text="{Binding}" />
-                                    </DataTemplate>
-                                </GroupBox.HeaderTemplate>
-                                <Grid Margin="7">
-                                    <ListView
-                                            HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="Stretch"
-                                            omnius:GridViewSortHelper.Command="{Binding AccountTrustSignaturesSortCommand}"
-                                            omnius:ListBoxHelper.SelectedItems="{Binding SelectedAccountTrustSignatureItems}"
-                                            IsSynchronizedWithCurrentItem="True"
-                                            ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
-                                            ItemsSource="{Binding AccountTrustSignaturesView}"
-                                            VirtualizingPanel.IsVirtualizing="True"
-                                            VirtualizingPanel.VirtualizationMode="Recycling">
-                                        <i:Interaction.Behaviors>
-                                            <omnius:ListBoxUnselectBehavior />
-                                        </i:Interaction.Behaviors>
-                                        <ListView.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem
-                                                        Command="{Binding AccountTrustDeleteCommand}"
-                                                        Header="{Binding OptionsWindow_Delete, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+D">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="Delete" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding AccountTrustCopyCommand}"
-                                                        Header="{Binding OptionsWindow_Copy, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+C">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="ContentCopy" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding AccountTrustPasteCommand}"
-                                                        Header="{Binding OptionsWindow_Paste, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+V">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="ContentPaste" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                            </ContextMenu>
-                                        </ListView.ContextMenu>
-                                        <ListView.View>
-                                            <GridView AllowsColumnReorder="False">
-                                                <GridViewColumn
-                                                        Width="{Binding DynamicOptions.AccountTrustListView_Signature_Width, FallbackValue=300, Mode=TwoWay}"
-                                                        omnius:GridViewSortHelper.PropertyName="Signature"
-                                                        Header="{Binding OptionsWindow_TrustSignature, Source={StaticResource Languages}}">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding Mode=OneWay}" />
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-
-                                    <md:PopupBox
-                                            Width="48"
-                                            Height="48"
-                                            Margin="0,0,16,16"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            PlacementMode="TopAndAlignCentres"
-                                            PopupMode="Click"
-                                            Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
-                                            ToolTipService.Placement="Left">
-                                        <StackPanel>
-                                            <Button Command="{Binding AccountTrustDeleteCommand}" ToolTip="{Binding OptionsWindow_Delete, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="Delete" />
-                                            </Button>
-                                            <Button Command="{Binding AccountTrustCopyCommand}" ToolTip="{Binding OptionsWindow_Copy, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="ContentCopy" />
-                                            </Button>
-                                            <Button Command="{Binding AccountTrustPasteCommand}" ToolTip="{Binding OptionsWindow_Paste, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="ContentPaste" />
-                                            </Button>
-                                        </StackPanel>
-                                    </md:PopupBox>
-                                </Grid>
-                            </GroupBox>
-                        </Grid>
+                    <ContentControl>
+                        <local:ConnectionOptionsControl DataContext="{Binding Path=ConnectionOptionsControlViewModel}" />
                     </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=AccountUntrustTreeViewItem}">
-                        <Grid Margin="16,16,16,0">
-                            <GroupBox
-                                    VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    Header="{Binding OptionsWindow_UntrustSettings, Source={StaticResource Languages}}"
-                                    Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                <GroupBox.HeaderTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Margin="8,0" Text="{Binding}" />
-                                    </DataTemplate>
-                                </GroupBox.HeaderTemplate>
-                                <Grid Margin="7">
-                                    <ListView
-                                            HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="Stretch"
-                                            omnius:GridViewSortHelper.Command="{Binding AccountUntrustSignaturesSortCommand}"
-                                            omnius:ListBoxHelper.SelectedItems="{Binding SelectedAccountUntrustSignatureItems}"
-                                            IsSynchronizedWithCurrentItem="True"
-                                            ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
-                                            ItemsSource="{Binding AccountUntrustSignaturesView}"
-                                            VirtualizingPanel.IsVirtualizing="True"
-                                            VirtualizingPanel.VirtualizationMode="Recycling">
-                                        <i:Interaction.Behaviors>
-                                            <omnius:ListBoxUnselectBehavior />
-                                        </i:Interaction.Behaviors>
-                                        <ListView.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem
-                                                        Command="{Binding AccountUntrustDeleteCommand}"
-                                                        Header="{Binding OptionsWindow_Delete, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+D">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="Delete" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding AccountUntrustCopyCommand}"
-                                                        Header="{Binding OptionsWindow_Copy, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+C">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="ContentCopy" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding AccountUntrustPasteCommand}"
-                                                        Header="{Binding OptionsWindow_Paste, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+V">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="ContentPaste" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                            </ContextMenu>
-                                        </ListView.ContextMenu>
-                                        <ListView.View>
-                                            <GridView AllowsColumnReorder="False">
-                                                <GridViewColumn
-                                                        Width="{Binding DynamicOptions.AccountUntrustListView_Signature_Width, FallbackValue=300, Mode=TwoWay}"
-                                                        omnius:GridViewSortHelper.PropertyName="Signature"
-                                                        Header="{Binding OptionsWindow_UntrustSignature, Source={StaticResource Languages}}">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding Mode=OneWay}" />
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-
-                                    <md:PopupBox
-                                            Width="48"
-                                            Height="48"
-                                            Margin="0,0,16,16"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            PlacementMode="TopAndAlignCentres"
-                                            PopupMode="Click"
-                                            Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
-                                            ToolTipService.Placement="Left">
-                                        <StackPanel>
-                                            <Button Command="{Binding AccountUntrustDeleteCommand}" ToolTip="{Binding OptionsWindow_Delete, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="Delete" />
-                                            </Button>
-                                            <Button Command="{Binding AccountUntrustCopyCommand}" ToolTip="{Binding OptionsWindow_Copy, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="ContentCopy" />
-                                            </Button>
-                                            <Button Command="{Binding AccountUntrustPasteCommand}" ToolTip="{Binding OptionsWindow_Paste, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="ContentPaste" />
-                                            </Button>
-                                        </StackPanel>
-                                    </md:PopupBox>
-                                </Grid>
-                            </GroupBox>
-                        </Grid>
+                    <ContentControl>
+                        <local:DataOptionsControl DataContext="{Binding Path=DataOptionsControlViewModel}" />
                     </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=AccountTagsTreeViewItem}">
-                        <Grid Margin="16,16,16,0">
-                            <GroupBox
-                                    VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    Header="{Binding OptionsWindow_TagsSettings, Source={StaticResource Languages}}"
-                                    Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                <GroupBox.HeaderTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Margin="8,0" Text="{Binding}" />
-                                    </DataTemplate>
-                                </GroupBox.HeaderTemplate>
-                                <Grid Margin="7">
-                                    <ListView
-                                            HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="Stretch"
-                                            omnius:GridViewSortHelper.Command="{Binding AccountTagsSortCommand}"
-                                            omnius:ListBoxHelper.SelectedItems="{Binding SelectedAccountTagItems}"
-                                            IsSynchronizedWithCurrentItem="True"
-                                            ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
-                                            ItemsSource="{Binding AccountTagsView}"
-                                            VirtualizingPanel.IsVirtualizing="True"
-                                            VirtualizingPanel.VirtualizationMode="Recycling">
-                                        <i:Interaction.Behaviors>
-                                            <omnius:ListBoxUnselectBehavior />
-                                        </i:Interaction.Behaviors>
-                                        <ListView.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem
-                                                        Command="{Binding AccountTagNewCommand}"
-                                                        Header="{Binding OptionsWindow_New, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+N">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="Plus" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding AccountTagDeleteCommand}"
-                                                        Header="{Binding OptionsWindow_Delete, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+D">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="Delete" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding AccountTagCopyCommand}"
-                                                        Header="{Binding OptionsWindow_Copy, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+C">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="ContentCopy" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding AccountTagPasteCommand}"
-                                                        Header="{Binding OptionsWindow_Paste, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+V">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="ContentPaste" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                            </ContextMenu>
-                                        </ListView.ContextMenu>
-                                        <ListView.View>
-                                            <GridView AllowsColumnReorder="False">
-                                                <GridViewColumn
-                                                        Width="{Binding DynamicOptions.AccountTagListView_Name_Width, FallbackValue=300, Mode=TwoWay}"
-                                                        omnius:GridViewSortHelper.PropertyName="Name"
-                                                        Header="{Binding OptionsWindow_Name, Source={StaticResource Languages}}">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding Name, Mode=OneWay}" />
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-                                                <GridViewColumn
-                                                        Width="{Binding DynamicOptions.AccountTagListView_Id_Width, FallbackValue=300, Mode=TwoWay}"
-                                                        omnius:GridViewSortHelper.PropertyName="Id"
-                                                        Header="{Binding OptionsWindow_Id, Source={StaticResource Languages}}">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding Id, Converter={StaticResource BytesToBase64StringConverter}, Mode=OneWay}" />
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-
-                                    <md:PopupBox
-                                            Width="48"
-                                            Height="48"
-                                            Margin="0,0,16,16"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            PlacementMode="TopAndAlignCentres"
-                                            PopupMode="Click"
-                                            Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
-                                            ToolTipService.Placement="Left">
-                                        <StackPanel>
-                                            <Button Command="{Binding AccountTagNewCommand}" ToolTip="{Binding OptionsWindow_New, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="Plus" />
-                                            </Button>
-                                            <Button Command="{Binding AccountTagDeleteCommand}" ToolTip="{Binding OptionsWindow_Delete, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="Delete" />
-                                            </Button>
-                                            <Button Command="{Binding AccountTagCopyCommand}" ToolTip="{Binding OptionsWindow_Copy, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="ContentCopy" />
-                                            </Button>
-                                            <Button Command="{Binding AccountTagPasteCommand}" ToolTip="{Binding OptionsWindow_Paste, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="ContentPaste" />
-                                            </Button>
-                                        </StackPanel>
-                                    </md:PopupBox>
-                                </Grid>
-                            </GroupBox>
-                        </Grid>
+                    <ContentControl>
+                        <local:ViewOptionsControl DataContext="{Binding Path=ViewOptionsControlViewModel}" />
                     </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=AccountCommentTreeViewItem}">
-                        <Grid Margin="16,16,16,0">
-                            <GroupBox
-                                    VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    Header="{Binding OptionsWindow_CommentSettings, Source={StaticResource Languages}}"
-                                    Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                <GroupBox.HeaderTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Margin="8,0" Text="{Binding}" />
-                                    </DataTemplate>
-                                </GroupBox.HeaderTemplate>
-                                <Grid Margin="7">
-                                    <TextBox
-                                            VerticalContentAlignment="Stretch"
-                                            AcceptsReturn="True"
-                                            AcceptsTab="True"
-                                            BorderThickness="0"
-                                            Text="{Binding Options.Account.Comment}"
-                                            TextWrapping="Wrap" />
-                                </Grid>
-                            </GroupBox>
-                        </Grid>
-                    </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=ConnectionTcpTreeViewItem}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16,16,16,0">
-                                <GroupBox
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        Header="{Binding OptionsWindow_TcpSettings, Source={StaticResource Languages}}"
-                                        Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="8,0" Text="{Binding}" />
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
-                                    <Grid Margin="7">
-                                        <CheckBox
-                                                Height="24"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Content="{Binding OptionsWindow_Ipv4IsEnabled, Source={StaticResource Languages}}"
-                                                IsChecked="{Binding Options.Connection.Tcp.Ipv4IsEnabled}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="64,40,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_Ipv4Port, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Width="120"
-                                                Height="32"
-                                                Margin="240,40,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Options.Connection.Tcp.Ipv4Port, Converter={StaticResource UshortToStringConverter}}" />
-                                        <CheckBox
-                                                Height="24"
-                                                Margin="0,88,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Content="{Binding OptionsWindow_Ipv6IsEnabled, Source={StaticResource Languages}}"
-                                                IsChecked="{Binding Options.Connection.Tcp.Ipv6IsEnabled}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="64,128,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_Ipv6Port, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Width="120"
-                                                Height="32"
-                                                Margin="240,128,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Options.Connection.Tcp.Ipv6Port, Converter={StaticResource UshortToStringConverter}}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="0,176,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_ProxyUri, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Height="32"
-                                                Margin="240,176,0,0"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                md:HintAssist.Hint="socks:127.0.0.1:9050"
-                                                Text="{Binding Options.Connection.Tcp.ProxyUri}" />
-                                    </Grid>
-                                </GroupBox>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=ConnectionI2pTreeViewItem}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16,16,16,0">
-                                <GroupBox
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        Header="{Binding OptionsWindow_I2pSettings, Source={StaticResource Languages}}"
-                                        Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="8,0" Text="{Binding}" />
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
-                                    <Grid Margin="7">
-                                        <CheckBox
-                                                Height="24"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Content="{Binding OptionsWindow_I2pIsEnabled, Source={StaticResource Languages}}"
-                                                IsChecked="{Binding Options.Connection.I2p.IsEnabled}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="64,40,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_SamBridgeUri, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Height="32"
-                                                Margin="240,40,0,0"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Options.Connection.I2p.SamBridgeUri}" />
-                                    </Grid>
-                                </GroupBox>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=BandwidthTreeViewItem}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16,16,16,0">
-                                <GroupBox
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        Header="{Binding OptionsWindow_BandwidthSettings, Source={StaticResource Languages}}"
-                                        Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="8,0" Text="{Binding}" />
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
-                                    <Grid Margin="7">
-                                        <Label
-                                                Height="32"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_ConnectionCountLimit, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Width="120"
-                                                Height="32"
-                                                Margin="360,0,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Options.Connection.Bandwidth.ConnectionCountLimit}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="0,48,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_BandwidthLimit, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Width="120"
-                                                Height="32"
-                                                Margin="360,48,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Options.Connection.Bandwidth.BandwidthLimit, Converter={StaticResource IntToSizeStringConverter}}" />
-                                    </Grid>
-                                </GroupBox>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=DataTreeViewItem}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16,16,16,0">
-                                <GroupBox
-                                        Margin="0,0,0,16"
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        Header="{Binding OptionsWindow_CacheSettings, Source={StaticResource Languages}}"
-                                        Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="8,0" Text="{Binding}" />
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
-                                    <Grid Margin="7">
-                                        <Label
-                                                Height="32"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_CacheSize, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Width="120"
-                                                Height="32"
-                                                Margin="240,0,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Options.Data.CacheSize, Converter={StaticResource LongToSizeStringConverter}}" />
-                                    </Grid>
-                                </GroupBox>
-                                <GroupBox
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        Header="{Binding OptionsWindow_DownloadSettings, Source={StaticResource Languages}}"
-                                        Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="8,0" Text="{Binding}" />
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
-                                    <Grid Margin="7">
-                                        <Label
-                                                Height="32"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_DownloadDirectoryPath, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Height="32"
-                                                Margin="240,0,48,0"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Options.Data.DownloadDirectoryPath}" />
-                                        <Button
-                                                Width="32"
-                                                Height="32"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Top"
-                                                Command="{Binding DownloadDirectoryPathEditDialogCommand}"
-                                                Style="{StaticResource MaterialDesignFloatingActionButton}">
-                                            <md:PackIcon
-                                                    Width="16"
-                                                    Height="16"
-                                                    Kind="Import" />
-                                        </Button>
-                                    </Grid>
-                                </GroupBox>
-                            </StackPanel>
-                        </ScrollViewer>
-                    </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=SubscribeTreeViewItem}">
-                        <Grid Margin="16,16,16,0">
-                            <GroupBox
-                                    VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    Header="{Binding OptionsWindow_SubscribeSettings, Source={StaticResource Languages}}"
-                                    Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                <GroupBox.HeaderTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Margin="8,0" Text="{Binding}" />
-                                    </DataTemplate>
-                                </GroupBox.HeaderTemplate>
-                                <Grid Margin="7">
-                                    <ListView
-                                            HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="Stretch"
-                                            omnius:GridViewSortHelper.Command="{Binding SubscribeSignaturesSortCommand}"
-                                            omnius:ListBoxHelper.SelectedItems="{Binding SelectedSubscribeSignatureItems}"
-                                            IsSynchronizedWithCurrentItem="True"
-                                            ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
-                                            ItemsSource="{Binding SubscribeSignaturesView}"
-                                            VirtualizingPanel.IsVirtualizing="True"
-                                            VirtualizingPanel.VirtualizationMode="Recycling">
-                                        <i:Interaction.Behaviors>
-                                            <omnius:ListBoxUnselectBehavior />
-                                        </i:Interaction.Behaviors>
-                                        <ListView.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem
-                                                        Command="{Binding SubscribeDeleteCommand}"
-                                                        Header="{Binding OptionsWindow_Delete, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+D">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="Delete" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding SubscribeCopyCommand}"
-                                                        Header="{Binding OptionsWindow_Copy, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+C">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="ContentCopy" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem
-                                                        Command="{Binding SubscribePasteCommand}"
-                                                        Header="{Binding OptionsWindow_Paste, Source={StaticResource Languages}}"
-                                                        InputGestureText="Ctrl+V">
-                                                    <MenuItem.Icon>
-                                                        <md:PackIcon Kind="ContentPaste" />
-                                                    </MenuItem.Icon>
-                                                </MenuItem>
-                                            </ContextMenu>
-                                        </ListView.ContextMenu>
-                                        <ListView.View>
-                                            <GridView AllowsColumnReorder="False">
-                                                <GridViewColumn
-                                                        Width="{Binding DynamicOptions.SubscribeListView_Signature_Width, FallbackValue=300, Mode=TwoWay}"
-                                                        omnius:GridViewSortHelper.PropertyName="Signature"
-                                                        Header="{Binding OptionsWindow_SubscribeSignature, Source={StaticResource Languages}}">
-                                                    <GridViewColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Text="{Binding Mode=OneWay}" />
-                                                        </DataTemplate>
-                                                    </GridViewColumn.CellTemplate>
-                                                </GridViewColumn>
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-
-                                    <md:PopupBox
-                                            Width="48"
-                                            Height="48"
-                                            Margin="0,0,16,16"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Bottom"
-                                            PlacementMode="TopAndAlignCentres"
-                                            PopupMode="Click"
-                                            Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
-                                            ToolTipService.Placement="Left">
-                                        <StackPanel>
-                                            <Button Command="{Binding SubscribeDeleteCommand}" ToolTip="{Binding OptionsWindow_Delete, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="Delete" />
-                                            </Button>
-                                            <Button Command="{Binding SubscribeCopyCommand}" ToolTip="{Binding OptionsWindow_Copy, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="ContentCopy" />
-                                            </Button>
-                                            <Button Command="{Binding SubscribePasteCommand}" ToolTip="{Binding OptionsWindow_Paste, Source={StaticResource Languages}}">
-                                                <md:PackIcon Kind="ContentPaste" />
-                                            </Button>
-                                        </StackPanel>
-                                    </md:PopupBox>
-                                </Grid>
-                            </GroupBox>
-                        </Grid>
-                    </ContentControl>
-
-                    <ContentControl Visibility="{Binding IsSelected, Converter={StaticResource BooleanToVisibilityConverter}, ElementName=UpdateTreeViewItem}">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="16,16,16,0">
-                                <GroupBox
-                                        VerticalAlignment="Stretch"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        Header="{Binding OptionsWindow_UpdateSettings, Source={StaticResource Languages}}"
-                                        Style="{DynamicResource MaterialDesignCardGroupBox}">
-                                    <GroupBox.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Margin="8,0" Text="{Binding}" />
-                                        </DataTemplate>
-                                    </GroupBox.HeaderTemplate>
-                                    <Grid Margin="7">
-                                        <CheckBox
-                                                Height="24"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                Content="{Binding OptionsWindow_UpdateIsEnabled, Source={StaticResource Languages}}"
-                                                IsChecked="{Binding Options.Update.IsEnabled}" />
-                                        <Label
-                                                Height="32"
-                                                Margin="64,40,0,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Content="{Binding OptionsWindow_Signature, Source={StaticResource Languages}}" />
-                                        <TextBox
-                                                Height="32"
-                                                Margin="240,40,0,0"
-                                                VerticalAlignment="Top"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Center"
-                                                Text="{Binding Options.Update.Signature, Converter={StaticResource SignatureToStringConverter}}" />
-                                    </Grid>
-                                </GroupBox>
-                            </StackPanel>
-                        </ScrollViewer>
+                    <ContentControl>
+                        <local:UpdateOptionsControl DataContext="{Binding Path=UpdateOptionsControlViewModel}" />
                     </ContentControl>
 
                 </Grid>
             </Grid>
 
             <Button
-                    Width="120"
-                    Height="32"
-                    Margin="0,0,152,16"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Command="{Binding OkCommand}"
-                    Content="{Binding OptionsWindow_Ok, Source={StaticResource Languages}}" />
+                Width="120"
+                Height="32"
+                Margin="0,0,152,16"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Command="{Binding Path=OkCommand}"
+                Content="{Binding Path=OptionsWindow_Ok, Source={StaticResource Languages}}" />
 
             <Button
-                    Width="120"
-                    Height="32"
-                    Margin="0,0,16,16"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Command="{Binding CancelCommand}"
-                    Content="{Binding OptionsWindow_Cancel, Source={StaticResource Languages}}" />
+                Width="120"
+                Height="32"
+                Margin="0,0,16,16"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Command="{Binding Path=CancelCommand}"
+                Content="{Binding Path=OptionsWindow_Cancel, Source={StaticResource Languages}}" />
         </Grid>
     </Border>
 </Window>

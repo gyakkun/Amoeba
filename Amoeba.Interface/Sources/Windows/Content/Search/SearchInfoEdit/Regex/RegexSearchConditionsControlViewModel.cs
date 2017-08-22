@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,26 +12,22 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
-using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class StateSearchConditionsControlViewModel : ManagerBase
+    class RegexSearchConditionsControlViewModel : ManagerBase
     {
         private Settings _settings;
 
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
-        private ObservableCollection<SearchCondition<SearchState>> _contents = new ObservableCollection<SearchCondition<SearchState>>();
-        public ReactiveProperty<SearchCondition<SearchState>> SelectedItem { get; private set; }
+        private ObservableCollection<SearchCondition<SearchRegex>> _contents = new ObservableCollection<SearchCondition<SearchRegex>>();
+        public ReactiveProperty<SearchCondition<SearchRegex>> SelectedItem { get; private set; }
         private ListSortInfo _sortInfo;
         public ReactiveCommand<string> SortCommand { get; private set; }
 
         public ReactiveProperty<bool> Contains { get; private set; }
-        public ReactiveProperty<SearchState> Input { get; private set; }
+        public ReactiveProperty<bool> IgnoreCase { get; private set; }
+        public ReactiveProperty<string> Input { get; private set; }
 
         public ReactiveCommand AddCommand { get; private set; }
         public ReactiveCommand EditCommand { get; private set; }
@@ -39,14 +40,14 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public StateSearchConditionsControlViewModel(IEnumerable<SearchCondition<SearchState>> contents)
+        public RegexSearchConditionsControlViewModel(IEnumerable<SearchCondition<SearchRegex>> contents)
         {
             _contents.AddRange(contents);
 
             this.Init();
         }
 
-        public IEnumerable<SearchCondition<SearchState>> GetContents()
+        public IEnumerable<SearchCondition<SearchRegex>> GetContents()
         {
             return _contents.ToArray();
         }
@@ -54,20 +55,22 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
-                this.SelectedItem = new ReactiveProperty<SearchCondition<SearchState>>().AddTo(_disposable);
+                this.SelectedItem = new ReactiveProperty<SearchCondition<SearchRegex>>().AddTo(_disposable);
                 this.SelectedItem.Where(n => n != null).Subscribe(n =>
                 {
                     this.Contains.Value = n.IsContains;
-                    this.Input.Value = n.Value;
-                });
+                    this.IgnoreCase.Value = n.Value.IsIgnoreCase;
+                    this.Input.Value = n.Value.Value;
+                }).AddTo(_disposable);
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
 
                 this.Contains = new ReactiveProperty<bool>(true).AddTo(_disposable);
-                this.Input = new ReactiveProperty<SearchState>(SearchState.Store).AddTo(_disposable);
+                this.IgnoreCase = new ReactiveProperty<bool>(true).AddTo(_disposable);
+                this.Input = new ReactiveProperty<string>().AddTo(_disposable);
 
-                this.AddCommand = new ReactiveCommand().AddTo(_disposable);
+                this.AddCommand = this.Input.Select(n => !string.IsNullOrEmpty(n)).ToReactiveCommand().AddTo(_disposable);
                 this.AddCommand.Subscribe(() => this.Add()).AddTo(_disposable);
 
                 this.EditCommand = this.SelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
@@ -78,7 +81,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SearchInfoEditWindow), nameof(StateSearchConditionsControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SearchInfoEditWindow), nameof(RegexSearchConditionsControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -144,7 +147,7 @@ namespace Amoeba.Interface
 
         private void Add()
         {
-            var condition = new SearchCondition<SearchState>(this.Contains.Value, this.Input.Value);
+            var condition = new SearchCondition<SearchRegex>(this.Contains.Value, new SearchRegex(this.Input.Value, this.IgnoreCase.Value));
             if (_contents.Contains(condition)) return;
 
             _contents.Add(condition);
@@ -155,7 +158,7 @@ namespace Amoeba.Interface
             var selectedItem = this.SelectedItem.Value;
             if (selectedItem == null) return;
 
-            var condition = new SearchCondition<SearchState>(this.Contains.Value, this.Input.Value);
+            var condition = new SearchCondition<SearchRegex>(this.Contains.Value, new SearchRegex(this.Input.Value, this.IgnoreCase.Value));
             if (_contents.Contains(condition)) return;
 
             int index = _contents.IndexOf(selectedItem);

@@ -1,26 +1,12 @@
 ﻿using System;
 using System.Text;
-using Omnius.Net.Amoeba;
 using Omnius.Base;
+using Omnius.Net.Amoeba;
 
 namespace Amoeba.Interface
 {
     static class MessageUtils
     {
-        public static string ToString(Tag tag)
-        {
-            if (tag.Name == null || tag.Id == null) return null;
-
-            try
-            {
-                return tag.Name + " - " + NetworkConverter.ToBase64UrlString(tag.Id);
-            }
-            catch (Exception e)
-            {
-                throw new ArgumentException("ArgumentException", e);
-            }
-        }
-
         public static string ToInfoMessage(Tag tag)
         {
             try

@@ -128,10 +128,6 @@ namespace Amoeba.Interface
             {
                 Backup.Instance.SaveEvent += this.Save;
             }
-
-            {
-                this.Sort(null);
-            }
         }
 
         private void WatchThread(CancellationToken token)

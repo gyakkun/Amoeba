@@ -32,7 +32,7 @@ namespace Amoeba.Interface
             this.AccountInfo = _settings.Load(nameof(AccountInfo), () =>
             {
                 var info = new AccountInfo();
-                info.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v2);
+                info.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v3);
                 info.Exchange = new Exchange(ExchangeAlgorithm.Rsa4096);
 
                 return info;
@@ -43,6 +43,17 @@ namespace Amoeba.Interface
                 var info = new UpdateInfo();
                 info.IsEnabled = true;
                 info.Signature = Signature.Parse("Lyrise@i-2IpSdusn_TKfn6NSECLYRVO4r51cpHZ5wFgBo_0eU");
+
+                return info;
+            });
+            this.ViewInfo = _settings.Load(nameof(ViewInfo), () =>
+            {
+                var info = new ViewInfo();
+                info.Colors.Tree_Hit = System.Windows.Media.Colors.LightPink.ToString();
+                info.Colors.Link_New = System.Windows.Media.Colors.LightPink.ToString();
+                info.Colors.Link_Visited = System.Windows.Media.Colors.SkyBlue.ToString();
+                info.Colors.Message_Trust = System.Windows.Media.Colors.SkyBlue.ToString();
+                info.Colors.Message_Untrust = System.Windows.Media.Colors.LightPink.ToString();
 
                 return info;
             });
@@ -59,6 +70,7 @@ namespace Amoeba.Interface
             _settings.Save(nameof(AccountInfo), this.AccountInfo);
             _settings.Save(nameof(SubscribeSignatures), this.SubscribeSignatures);
             _settings.Save(nameof(UpdateInfo), this.UpdateInfo);
+            _settings.Save(nameof(ViewInfo), this.ViewInfo);
             _settings.Save(nameof(DownloadItemInfos), this.DownloadItemInfos);
             _settings.Save(nameof(DownloadedSeeds), this.DownloadedSeeds);
             _settings.Save(nameof(UploadItemInfos), this.UploadItemInfos);

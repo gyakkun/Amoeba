@@ -1,10 +1,4 @@
-﻿using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Security;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,6 +7,12 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Security;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -140,8 +140,7 @@ namespace Amoeba.Interface
             {
                 this.ContentsView.LiveSortingProperties.Add(propertyName);
 
-                var view = this.ContentsView;
-                view.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                this.ContentsView.CustomSort = new CustomSortComparer(direction, (x, y) =>
                 {
                     if (x is SearchCondition<Signature> tx && y is SearchCondition<Signature> ty)
                     {

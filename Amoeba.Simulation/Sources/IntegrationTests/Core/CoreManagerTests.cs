@@ -153,7 +153,7 @@ namespace Amoeba.Simulation
                     wrapper.Value.SetCloudLocations(wrapperList.Select(n => n.Value.MyLocation));
                 }
 
-                for (;;)
+                for (; ; )
                 {
                     Thread.Sleep(1000);
 
@@ -193,7 +193,7 @@ namespace Amoeba.Simulation
             {
                 BroadcastMetadata broadcastMetadata;
                 {
-                    var digitalSignature = new DigitalSignature("Test", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v2);
+                    var digitalSignature = new DigitalSignature("Test", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v3);
                     var metadata = new Metadata(0, new Hash(HashAlgorithm.Sha256, _random.GetBytes(32)));
                     broadcastMetadata = new BroadcastMetadata("Test", DateTime.UtcNow, metadata, digitalSignature);
                 }
@@ -206,8 +206,8 @@ namespace Amoeba.Simulation
             {
                 UnicastMetadata unicastMetadata;
                 {
-                    var targetSignature = new DigitalSignature("Test", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v2).GetSignature();
-                    var digitalSignature = new DigitalSignature("Test", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v2);
+                    var targetSignature = new DigitalSignature("Test", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v3).GetSignature();
+                    var digitalSignature = new DigitalSignature("Test", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v3);
                     var metadata = new Metadata(0, new Hash(HashAlgorithm.Sha256, _random.GetBytes(32)));
                     unicastMetadata = new UnicastMetadata("Test", targetSignature, DateTime.UtcNow, metadata, digitalSignature);
                 }
@@ -222,7 +222,7 @@ namespace Amoeba.Simulation
                 using (var tokenSource = new CancellationTokenSource())
                 {
                     var tag = new Tag("Test", _random.GetBytes(32));
-                    var digitalSignature = new DigitalSignature("Test", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v2);
+                    var digitalSignature = new DigitalSignature("Test", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v3);
                     var metadata = new Metadata(0, new Hash(HashAlgorithm.Sha256, _random.GetBytes(32)));
                     multicastMetadata = new MulticastMetadata("Test", tag, DateTime.UtcNow, metadata, digitalSignature, null, tokenSource.Token);
                 }
@@ -236,7 +236,7 @@ namespace Amoeba.Simulation
             {
                 var targetCoreManager = coreManagerList[0];
 
-                for (;;)
+                for (; ; )
                 {
                     Thread.Sleep(1000);
 
@@ -324,7 +324,7 @@ namespace Amoeba.Simulation
 
             Parallel.ForEach(metadataList, metadata =>
             {
-                for (;;)
+                for (; ; )
                 {
                     Thread.Sleep(1000);
 

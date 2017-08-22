@@ -6,8 +6,6 @@ namespace Amoeba.Interface
     [DataContract(Name = nameof(UploadItemInfo))]
     class UploadItemInfo : IEquatable<UploadItemInfo>
     {
-        private UploadItemInfo() { }
-
         public UploadItemInfo(string path)
         {
             this.Path = path;

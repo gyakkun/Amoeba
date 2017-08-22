@@ -10,7 +10,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ReadOnlyReactiveCollection<ChatThreadViewModel> Chats { get; private set; }
+        public ReadOnlyReactiveCollection<ChatThreadViewModel> Threads { get; private set; }
         public ReadOnlyReactiveCollection<ChatCategoryViewModel> Categories { get; private set; }
 
         public ChatCategoryInfo Model { get; private set; }
@@ -23,7 +23,7 @@ namespace Amoeba.Interface
             this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
             this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
-            this.Chats = model.ThreadInfos.ToReadOnlyReactiveCollection(n => new ChatThreadViewModel(this, n)).AddTo(_disposable);
+            this.Threads = model.ThreadInfos.ToReadOnlyReactiveCollection(n => new ChatThreadViewModel(this, n)).AddTo(_disposable);
             this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new ChatCategoryViewModel(this, n)).AddTo(_disposable);
         }
 
