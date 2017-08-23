@@ -166,14 +166,22 @@ namespace Amoeba.Interface
             {
                 this.Info.Value = null;
             }
-            else if (viewModel is ChatThreadViewModel chatViewModel)
+            else if (viewModel is ChatThreadViewModel chatThreadViewModel)
             {
-                foreach (var message in chatViewModel.Model.Messages)
+                lock (chatThreadViewModel.Model.Messages.LockObject)
                 {
-                    message.State &= ~ChatMessageState.New;
+                    foreach (var message in chatThreadViewModel.Model.Messages)
+                    {
+                        message.State &= ~ChatMessageState.New;
+                    }
                 }
 
-                this.Info.Value = new AvalonEditChatMessagesInfo(chatViewModel.Model.Messages, _messageManager.TrustSignatures);
+                int newCount = chatThreadViewModel.Model.Messages.Count(n => n.State.HasFlag(ChatMessageState.New));
+
+                chatThreadViewModel.Model.IsUpdated = (newCount > 0);
+                chatThreadViewModel.Count.Value = newCount;
+
+                this.Info.Value = new AvalonEditChatMessagesInfo(chatThreadViewModel.Model.Messages, _messageManager.TrustSignatures);
             }
         }
 
@@ -231,11 +239,23 @@ namespace Amoeba.Interface
 
                         chatThreadViewModel.Model.Messages.Clear();
                         chatThreadViewModel.Model.Messages.AddRange(messageInfos);
+                    }
 
-                        int newCount = messageInfos.Count(n => n.State.HasFlag(ChatMessageState.New));
+                    try
+                    {
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            if (token.IsCancellationRequested) return;
 
-                        chatThreadViewModel.Model.IsUpdated = (newCount > 0);
-                        chatThreadViewModel.Count.Value = newCount;
+                            int newCount = chatThreadViewModel.Model.Messages.Count(n => n.State.HasFlag(ChatMessageState.New));
+
+                            chatThreadViewModel.Model.IsUpdated = (newCount > 0);
+                            chatThreadViewModel.Count.Value = newCount;
+                        }, DispatcherPriority.Background, token);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
                     }
                 }
 

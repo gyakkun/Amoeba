@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
@@ -89,7 +90,7 @@ namespace Amoeba.Interface
 
                 this.LocationUriInput = new ReactiveProperty<string>().AddTo(_disposable);
 
-                this.LocationUriAddCommand = this.LocationUriInput.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
+                this.LocationUriAddCommand = this.LocationUriInput.Select(n => !string.IsNullOrWhiteSpace(n)).ToReactiveCommand().AddTo(_disposable);
                 this.LocationUriAddCommand.Subscribe(() => this.LocationUriAdd()).AddTo(_disposable);
 
                 this.LocationUriEditCommand = this.SelectedLocationUriItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
@@ -116,7 +117,7 @@ namespace Amoeba.Interface
                 this.ConnectionFilterDownCommand = this.SelectedConnectionFilterItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.ConnectionFilterDownCommand.Subscribe(() => this.ConnectionFilterDown()).AddTo(_disposable);
 
-                this.ConnectionFilterAddCommand = new ReactiveCommand().AddTo(_disposable);
+                this.ConnectionFilterAddCommand = Observable.CombineLatest(this.ConnectionFilterSchemeInput, this.ConnectionFilterProxyUriInput).Select(n => n.All(m => !string.IsNullOrWhiteSpace(m))).ToReactiveCommand().AddTo(_disposable);
                 this.ConnectionFilterAddCommand.Subscribe(() => this.ConnectionFilterAdd()).AddTo(_disposable);
 
                 this.ConnectionFilterEditCommand = this.SelectedConnectionFilterItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
@@ -136,7 +137,7 @@ namespace Amoeba.Interface
 
                 this.ListenUriInput = new ReactiveProperty<string>().AddTo(_disposable);
 
-                this.ListenUriAddCommand = this.ListenUriInput.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
+                this.ListenUriAddCommand = this.ListenUriInput.Select(n => !string.IsNullOrWhiteSpace(n)).ToReactiveCommand().AddTo(_disposable);
                 this.ListenUriAddCommand.Subscribe(() => this.ListenUriAdd()).AddTo(_disposable);
 
                 this.ListenUriEditCommand = this.SelectedListenUriItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
