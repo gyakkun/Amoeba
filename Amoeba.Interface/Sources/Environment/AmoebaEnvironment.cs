@@ -24,7 +24,7 @@ namespace Amoeba.Interface
             try
             {
                 Variables = new EnvironmentVariables();
-                Version = new Version(5, 0, 30);
+                Version = new Version(5, 0, 31);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();

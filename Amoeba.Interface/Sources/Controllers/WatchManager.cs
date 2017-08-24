@@ -74,7 +74,10 @@ namespace Amoeba.Interface
 
                     if (targetSeed == null) return;
 
-                    var downloadItemInfo = new DownloadItemInfo(targetSeed, Path.GetFullPath(Path.Combine(AmoebaEnvironment.Paths.UpdatePath, targetSeed.Name)));
+                    string fullPath = Path.GetFullPath(Path.Combine(AmoebaEnvironment.Paths.UpdatePath, targetSeed.Name));
+                    if (File.Exists(fullPath)) return;
+
+                    var downloadItemInfo = new DownloadItemInfo(targetSeed, fullPath);
                     SettingsManager.Instance.DownloadItemInfos.Add(downloadItemInfo);
                 }
                 catch (Exception e)
