@@ -38,18 +38,18 @@ namespace Amoeba.Interface
         private ListSortInfo _trustSignaturesSortInfo;
         public ReactiveCommand<string> TrustSignaturesSortCommand { get; private set; }
 
-        public ReactiveCommand TrustSignatureDeleteCommand { get; private set; }
-        public ReactiveCommand TrustSignatureCopyCommand { get; private set; }
-        public ReactiveCommand TrustSignaturePasteCommand { get; private set; }
+        public ReactiveCommand TrustSignaturesDeleteCommand { get; private set; }
+        public ReactiveCommand TrustSignaturesCopyCommand { get; private set; }
+        public ReactiveCommand TrustSignaturesPasteCommand { get; private set; }
 
         public ListCollectionView UntrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.AccountOptions.UntrustSignatures);
         public ObservableCollection<object> SelectedUntrustSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _untrustSignaturesSortInfo;
         public ReactiveCommand<string> UntrustSignaturesSortCommand { get; private set; }
 
-        public ReactiveCommand UntrustSignatureDeleteCommand { get; private set; }
-        public ReactiveCommand UntrustSignatureCopyCommand { get; private set; }
-        public ReactiveCommand UntrustSignaturePasteCommand { get; private set; }
+        public ReactiveCommand UntrustSignaturesDeleteCommand { get; private set; }
+        public ReactiveCommand UntrustSignaturesCopyCommand { get; private set; }
+        public ReactiveCommand UntrustSignaturesPasteCommand { get; private set; }
 
         public ListCollectionView TagsView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.AccountOptions.Tags);
         public ObservableCollection<object> SelectedTagItems { get; } = new ObservableCollection<object>();
@@ -57,9 +57,9 @@ namespace Amoeba.Interface
         public ReactiveCommand<string> TagsSortCommand { get; private set; }
 
         public ReactiveCommand TagNewCommand { get; private set; }
-        public ReactiveCommand TagDeleteCommand { get; private set; }
-        public ReactiveCommand TagCopyCommand { get; private set; }
-        public ReactiveCommand TagPasteCommand { get; private set; }
+        public ReactiveCommand TagsDeleteCommand { get; private set; }
+        public ReactiveCommand TagsCopyCommand { get; private set; }
+        public ReactiveCommand TagsPasteCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
@@ -90,26 +90,26 @@ namespace Amoeba.Interface
                 this.TrustSignaturesSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.TrustSignaturesSortCommand.Subscribe((propertyName) => this.TrustSignaturesSort(propertyName)).AddTo(_disposable);
 
-                this.TrustSignatureDeleteCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TrustSignatureDeleteCommand.Subscribe(() => this.TrustDelete()).AddTo(_disposable);
+                this.TrustSignaturesDeleteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TrustSignaturesDeleteCommand.Subscribe(() => this.TrustSignaturesDelete()).AddTo(_disposable);
 
-                this.TrustSignatureCopyCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TrustSignatureCopyCommand.Subscribe(() => this.TrustCopy()).AddTo(_disposable);
+                this.TrustSignaturesCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TrustSignaturesCopyCommand.Subscribe(() => this.TrustSignaturesCopy()).AddTo(_disposable);
 
-                this.TrustSignaturePasteCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TrustSignaturePasteCommand.Subscribe(() => this.TrustPaste()).AddTo(_disposable);
+                this.TrustSignaturesPasteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TrustSignaturesPasteCommand.Subscribe(() => this.TrustSignaturesPaste()).AddTo(_disposable);
 
                 this.UntrustSignaturesSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.UntrustSignaturesSortCommand.Subscribe((propertyName) => this.UntrustSignaturesSort(propertyName)).AddTo(_disposable);
 
-                this.UntrustSignatureDeleteCommand = new ReactiveCommand().AddTo(_disposable);
-                this.UntrustSignatureDeleteCommand.Subscribe(() => this.UntrustDelete()).AddTo(_disposable);
+                this.UntrustSignaturesDeleteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.UntrustSignaturesDeleteCommand.Subscribe(() => this.UntrustSignaturesDelete()).AddTo(_disposable);
 
-                this.UntrustSignatureCopyCommand = new ReactiveCommand().AddTo(_disposable);
-                this.UntrustSignatureCopyCommand.Subscribe(() => this.UntrustCopy()).AddTo(_disposable);
+                this.UntrustSignaturesCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.UntrustSignaturesCopyCommand.Subscribe(() => this.UntrustSignaturesCopy()).AddTo(_disposable);
 
-                this.UntrustSignaturePasteCommand = new ReactiveCommand().AddTo(_disposable);
-                this.UntrustSignaturePasteCommand.Subscribe(() => this.UntrustPaste()).AddTo(_disposable);
+                this.UntrustSignaturesPasteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.UntrustSignaturesPasteCommand.Subscribe(() => this.UntrustSignaturesPaste()).AddTo(_disposable);
 
                 this.TagsSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.TagsSortCommand.Subscribe((propertyName) => this.TagsSort(propertyName)).AddTo(_disposable);
@@ -117,14 +117,14 @@ namespace Amoeba.Interface
                 this.TagNewCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TagNewCommand.Subscribe(() => this.TagNew()).AddTo(_disposable);
 
-                this.TagDeleteCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TagDeleteCommand.Subscribe(() => this.TagDelete()).AddTo(_disposable);
+                this.TagsDeleteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TagsDeleteCommand.Subscribe(() => this.TagsDelete()).AddTo(_disposable);
 
-                this.TagCopyCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TagCopyCommand.Subscribe(() => this.TagCopy()).AddTo(_disposable);
+                this.TagsCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TagsCopyCommand.Subscribe(() => this.TagsCopy()).AddTo(_disposable);
 
-                this.TagPasteCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TagPasteCommand.Subscribe(() => this.TagPaste()).AddTo(_disposable);
+                this.TagsPasteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TagsPasteCommand.Subscribe(() => this.TagsPaste()).AddTo(_disposable);
             }
 
             {
@@ -339,7 +339,7 @@ namespace Amoeba.Interface
             }
         }
 
-        private void TrustDelete()
+        private void TrustSignaturesDelete()
         {
             foreach (var item in this.SelectedTrustSignatureItems.OfType<Signature>().ToArray())
             {
@@ -347,12 +347,12 @@ namespace Amoeba.Interface
             }
         }
 
-        private void TrustCopy()
+        private void TrustSignaturesCopy()
         {
             Clipboard.SetSignatures(this.SelectedTrustSignatureItems.OfType<Signature>().ToArray());
         }
 
-        private void TrustPaste()
+        private void TrustSignaturesPaste()
         {
             foreach (var item in Clipboard.GetSignatures())
             {
@@ -427,7 +427,7 @@ namespace Amoeba.Interface
             }
         }
 
-        private void UntrustDelete()
+        private void UntrustSignaturesDelete()
         {
             foreach (var item in this.SelectedUntrustSignatureItems.OfType<Signature>().ToArray())
             {
@@ -435,12 +435,12 @@ namespace Amoeba.Interface
             }
         }
 
-        private void UntrustCopy()
+        private void UntrustSignaturesCopy()
         {
             Clipboard.SetSignatures(this.SelectedUntrustSignatureItems.OfType<Signature>().ToArray());
         }
 
-        private void UntrustPaste()
+        private void UntrustSignaturesPaste()
         {
             foreach (var item in Clipboard.GetSignatures())
             {
@@ -516,7 +516,7 @@ namespace Amoeba.Interface
                 .Publish(viewModel);
         }
 
-        private void TagDelete()
+        private void TagsDelete()
         {
             foreach (var item in this.SelectedTagItems.OfType<Tag>().ToArray())
             {
@@ -524,12 +524,12 @@ namespace Amoeba.Interface
             }
         }
 
-        private void TagCopy()
+        private void TagsCopy()
         {
             Clipboard.SetTags(this.SelectedTagItems.OfType<Tag>().ToArray());
         }
 
-        private void TagPaste()
+        private void TagsPaste()
         {
             foreach (var item in Clipboard.GetTags())
             {

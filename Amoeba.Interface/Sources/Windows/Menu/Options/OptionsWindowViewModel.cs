@@ -77,6 +77,8 @@ namespace Amoeba.Interface
 
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
+
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {

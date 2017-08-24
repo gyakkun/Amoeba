@@ -101,7 +101,7 @@
                             <ListView.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem
-                                            Command="{Binding Path=TrustDeleteCommand}"
+                                            Command="{Binding Path=TrustSignaturesDeleteCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+D">
                                         <MenuItem.Icon>
@@ -110,7 +110,7 @@
                                     </MenuItem>
                                     <Separator />
                                     <MenuItem
-                                            Command="{Binding Path=TrustCopyCommand}"
+                                            Command="{Binding Path=TrustSignaturesCopyCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+C">
                                         <MenuItem.Icon>
@@ -118,7 +118,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <MenuItem
-                                            Command="{Binding Path=TrustPasteCommand}"
+                                            Command="{Binding Path=TrustSignaturesPasteCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+V">
                                         <MenuItem.Icon>
@@ -154,13 +154,13 @@
                                 Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
                                 ToolTipService.Placement="Left">
                             <StackPanel>
-                                <Button Command="{Binding Path=TrustDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=TrustSignaturesDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="Delete" />
                                 </Button>
-                                <Button Command="{Binding Path=TrustCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=TrustSignaturesCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="ContentCopy" />
                                 </Button>
-                                <Button Command="{Binding Path=TrustPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=TrustSignaturesPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="ContentPaste" />
                                 </Button>
                             </StackPanel>
@@ -200,7 +200,7 @@
                             <ListView.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem
-                                            Command="{Binding Path=UntrustDeleteCommand}"
+                                            Command="{Binding Path=UntrustSignaturesDeleteCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+D">
                                         <MenuItem.Icon>
@@ -209,7 +209,7 @@
                                     </MenuItem>
                                     <Separator />
                                     <MenuItem
-                                            Command="{Binding Path=UntrustCopyCommand}"
+                                            Command="{Binding Path=UntrustSignaturesCopyCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+C">
                                         <MenuItem.Icon>
@@ -217,7 +217,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <MenuItem
-                                            Command="{Binding Path=UntrustPasteCommand}"
+                                            Command="{Binding Path=UntrustSignaturesPasteCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+V">
                                         <MenuItem.Icon>
@@ -253,13 +253,13 @@
                                 Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
                                 ToolTipService.Placement="Left">
                             <StackPanel>
-                                <Button Command="{Binding Path=UntrustDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=UntrustSignaturesDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="Delete" />
                                 </Button>
-                                <Button Command="{Binding Path=UntrustCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=UntrustSignaturesCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="ContentCopy" />
                                 </Button>
-                                <Button Command="{Binding Path=UntrustPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=UntrustSignaturesPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="ContentPaste" />
                                 </Button>
                             </StackPanel>
@@ -307,7 +307,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <MenuItem
-                                            Command="{Binding Path=TagDeleteCommand}"
+                                            Command="{Binding Path=TagsDeleteCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+D">
                                         <MenuItem.Icon>
@@ -316,7 +316,7 @@
                                     </MenuItem>
                                     <Separator />
                                     <MenuItem
-                                            Command="{Binding Path=TagCopyCommand}"
+                                            Command="{Binding Path=TagsCopyCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+C">
                                         <MenuItem.Icon>
@@ -324,7 +324,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <MenuItem
-                                            Command="{Binding Path=TagPasteCommand}"
+                                            Command="{Binding Path=TagsPasteCommand}"
                                             Header="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}"
                                             InputGestureText="Ctrl+V">
                                         <MenuItem.Icon>
@@ -373,13 +373,13 @@
                                 <Button Command="{Binding Path=TagNewCommand}" ToolTip="{Binding Path=AccountOptionsControl_New, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="Plus" />
                                 </Button>
-                                <Button Command="{Binding Path=TagDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=TagsDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="Delete" />
                                 </Button>
-                                <Button Command="{Binding Path=TagCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=TagsCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="ContentCopy" />
                                 </Button>
-                                <Button Command="{Binding Path=TagPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
+                                <Button Command="{Binding Path=TagsPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
                                     <md:PackIcon Kind="ContentPaste" />
                                 </Button>
                             </StackPanel>
