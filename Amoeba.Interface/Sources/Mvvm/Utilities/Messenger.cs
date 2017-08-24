@@ -6,6 +6,7 @@ namespace Amoeba.Interface
     class OptionsWindowShowEvent : PubSubEvent<OptionsWindowViewModel> { }
     class VersionWindowShowEvent : PubSubEvent<VersionWindowViewModel> { }
     class ChatMessageEditWindowShowEvent : PubSubEvent<ChatMessageEditWindowViewModel> { }
+    class ChatTagListWindowShowEvent : PubSubEvent<ChatTagListWindowViewModel> { }
     class SearchInfoEditWindowShowEvent : PubSubEvent<SearchInfoEditWindowViewModel> { }
     class UploadPreviewWindowShowEvent : PubSubEvent<UploadPreviewWindowViewModel> { }
 

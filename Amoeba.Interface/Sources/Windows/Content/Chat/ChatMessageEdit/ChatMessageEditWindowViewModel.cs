@@ -25,9 +25,9 @@ namespace Amoeba.Interface
 
         public event EventHandler<EventArgs> CloseEvent;
 
-        public ReactiveCommand OkCommand { get; private set; }
-
         public ReactiveProperty<string> Comment { get; private set; }
+
+        public ReactiveCommand OkCommand { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 

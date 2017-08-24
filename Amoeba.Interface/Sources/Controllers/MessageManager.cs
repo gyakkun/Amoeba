@@ -43,7 +43,7 @@ namespace Amoeba.Interface
 
         private void WatchThread(CancellationToken token)
         {
-            for (;;)
+            for (; ; )
             {
                 this.UpdateProfiles();
                 this.UpdateStores();
@@ -221,7 +221,7 @@ namespace Amoeba.Interface
             {
                 int index = 0;
 
-                for (;;)
+                for (; ; )
                 {
                     for (; index < infos.Count && index < 32 * 1024; index++)
                     {
@@ -259,6 +259,27 @@ namespace Amoeba.Interface
             }
 
             return infos[0];
+        }
+
+        public IEnumerable<BroadcastMessage<Profile>> GetProfiles()
+        {
+            var profiles = new List<BroadcastMessage<Profile>>();
+
+            foreach (var trustSignature in _trustSignatures)
+            {
+                var profile = this.GetProfile(trustSignature);
+                if (profile == null) continue;
+
+                profiles.Add(profile);
+            }
+
+            return profiles;
+        }
+
+        public BroadcastMessage<Profile> GetProfile(Signature trustSignature)
+        {
+            _cacheProfiles.TryGetValue(trustSignature, out var cachedProfile);
+            return cachedProfile;
         }
 
         public IEnumerable<BroadcastMessage<Store>> GetStores()

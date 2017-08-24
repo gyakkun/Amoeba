@@ -132,6 +132,8 @@
   <Class Name="ChatThreadInfo">
     <Property Type="bool" Name="IsUpdated" IsEditable="true" />
     <Property Type="Tag" Name="Tag" IsEditable="true" />
+    <Property Type="bool" Name="IsTrustMessageOnly" IsEditable="true" />
+    <Property Type="bool" Name="IsNewMessageOnly" IsEditable="true" />
     <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
   </Class>
 

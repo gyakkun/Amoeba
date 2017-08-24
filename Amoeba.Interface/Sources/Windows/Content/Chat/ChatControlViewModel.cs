@@ -42,6 +42,10 @@ namespace Amoeba.Interface
         public ReactiveCommand TabCutCommand { get; private set; }
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
+        public ReactiveCommand TabTagListCommand { get; private set; }
+
+        public ReactiveCommand TrustCommand { get; private set; }
+        public ReactiveProperty<bool> IsTrustEnable { get; private set; }
 
         public ReactiveProperty<AvalonEditChatMessagesInfo> Info { get; private set; }
         public ReactiveProperty<string> SelectedText { get; private set; }
@@ -118,14 +122,22 @@ namespace Amoeba.Interface
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
+                this.TabTagListCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabTagListCommand.Subscribe(() => this.TabTagList()).AddTo(_disposable);
+
+                this.TrustCommand = this.TabSelectedItem.Select(n => n is ChatThreadViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TrustCommand.Subscribe(() => this.Trust()).AddTo(_disposable);
+
+                this.IsTrustEnable = new ReactiveProperty<bool>().AddTo(_disposable);
+
+                this.NewMessageCommand = this.TabSelectedItem.Select(n => n is ChatThreadViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.NewMessageCommand.Subscribe(() => this.NewMessage()).AddTo(_disposable);
+
                 this.CopyCommand = this.SelectedText.Select(n => !string.IsNullOrEmpty(n)).ToReactiveCommand().AddTo(_disposable);
                 this.CopyCommand.Subscribe(() => this.Copy()).AddTo(_disposable);
 
                 this.ResponseCommand = this.SelectedText.Select(n => !string.IsNullOrEmpty(n)).ToReactiveCommand().AddTo(_disposable);
                 this.ResponseCommand.Subscribe(() => this.Response()).AddTo(_disposable);
-
-                this.NewMessageCommand = this.TabSelectedItem.Select(n => n is ChatThreadViewModel).ToReactiveCommand().AddTo(_disposable);
-                this.NewMessageCommand.Subscribe(() => this.NewMessage()).AddTo(_disposable);
             }
 
             {
@@ -164,15 +176,25 @@ namespace Amoeba.Interface
         {
             if (viewModel is ChatCategoryViewModel chatCategoryViewModel)
             {
+                this.IsTrustEnable.Value = false;
                 this.Info.Value = null;
             }
             else if (viewModel is ChatThreadViewModel chatThreadViewModel)
             {
+                this.IsTrustEnable.Value = chatThreadViewModel.Model.IsTrustMessageOnly;
+
+                var trustSignatures = new HashSet<Signature>(_messageManager.TrustSignatures);
+
                 lock (chatThreadViewModel.Model.Messages.LockObject)
                 {
-                    foreach (var message in chatThreadViewModel.Model.Messages)
+                    foreach (var info in chatThreadViewModel.Model.Messages.ToArray())
                     {
-                        message.State &= ~ChatMessageState.New;
+                        if (this.IsTrustEnable.Value && !trustSignatures.Contains(info.Message.AuthorSignature))
+                        {
+                            chatThreadViewModel.Model.Messages.Remove(info);
+                        }
+
+                        info.State &= ~ChatMessageState.New;
                     }
                 }
 
@@ -181,7 +203,7 @@ namespace Amoeba.Interface
                 chatThreadViewModel.Model.IsUpdated = (newCount > 0);
                 chatThreadViewModel.Count.Value = newCount;
 
-                this.Info.Value = new AvalonEditChatMessagesInfo(chatThreadViewModel.Model.Messages, _messageManager.TrustSignatures);
+                this.Info.Value = new AvalonEditChatMessagesInfo(chatThreadViewModel.Model.Messages, trustSignatures);
             }
         }
 
@@ -212,6 +234,8 @@ namespace Amoeba.Interface
                     return;
                 }
 
+                var trustSignatures = new HashSet<Signature>(_messageManager.TrustSignatures);
+
                 foreach (var chatThreadViewModel in chatThreadViewModels)
                 {
                     if (token.IsCancellationRequested) return;
@@ -230,15 +254,17 @@ namespace Amoeba.Interface
                             messageInfos.Add(new ChatMessageInfo() { Message = message, State = ChatMessageState.New });
                         }
 
-                        messageInfos.Sort((x, y) => x.Message.CreationTime.CompareTo(y.Message.CreationTime));
-
-                        foreach (var item in messageInfos.Take(messageInfos.Count - 1024))
-                        {
-                            messageInfos.Remove(item);
-                        }
+                        messageInfos.Sort((x, y) => y.Message.CreationTime.CompareTo(x.Message.CreationTime));
 
                         chatThreadViewModel.Model.Messages.Clear();
-                        chatThreadViewModel.Model.Messages.AddRange(messageInfos);
+
+                        foreach (var info in messageInfos.ToArray())
+                        {
+                            if (chatThreadViewModel.Model.IsTrustMessageOnly && !trustSignatures.Contains(info.Message.AuthorSignature)) continue;
+
+                            chatThreadViewModel.Model.Messages.Add(info);
+                            if (chatThreadViewModel.Model.Messages.Count >= 1024) break;
+                        }
                     }
 
                     try
@@ -370,6 +396,50 @@ namespace Amoeba.Interface
                     if (chatCategoryViewModel.Model.ThreadInfos.Any(n => n.Tag == tag)) continue;
                     chatCategoryViewModel.Model.ThreadInfos.Add(new ChatThreadInfo() { Tag = tag });
                 }
+            }
+        }
+
+        private void TabTagList()
+        {
+            var tags = new HashSet<Tag>();
+            {
+                foreach (var profile in _messageManager.GetProfiles())
+                {
+                    tags.UnionWith(profile.Value.Tags);
+                }
+
+                {
+                    var chatCategoryViewModels = new List<ChatCategoryViewModel>();
+                    chatCategoryViewModels.Add(this.TabViewModel.Value);
+
+                    for (int i = 0; i < chatCategoryViewModels.Count; i++)
+                    {
+                        chatCategoryViewModels.AddRange(chatCategoryViewModels[i].Categories);
+                        tags.ExceptWith(chatCategoryViewModels[i].Threads.Select(n => n.Model.Tag));
+                    }
+                }
+            }
+
+            if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
+            {
+                var viewModel = new ChatTagListWindowViewModel(tags);
+                viewModel.Callback += (tag) =>
+                {
+                    chatCategoryViewModel.Model.ThreadInfos.Add(new ChatThreadInfo() { Tag = tag });
+                };
+
+                Messenger.Instance.GetEvent<ChatTagListWindowShowEvent>()
+                    .Publish(viewModel);
+            }
+        }
+
+        private void Trust()
+        {
+            if (this.TabSelectedItem.Value is ChatThreadViewModel chatThreadViewModel)
+            {
+                chatThreadViewModel.Model.IsTrustMessageOnly = !chatThreadViewModel.Model.IsTrustMessageOnly;
+
+                this.Refresh();
             }
         }
 

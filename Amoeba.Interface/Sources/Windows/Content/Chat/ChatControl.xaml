@@ -14,13 +14,51 @@
         d:DesignWidth="600"
         mc:Ignorable="d">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{Binding Path=DynamicOptions.TabColumnWidth, Mode=TwoWay, Converter={StaticResource DoubleToGridLengthConverter}, FallbackValue=200}" />
             <ColumnDefinition Width="4" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <DockPanel
+                Grid.Column="2"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top">
+            <ToggleButton
+                    Width="48"
+                    Height="48"
+                    Margin="16,16,0,8"
+                    HorizontalAlignment="Left"
+                    Command="{Binding Path=TrustCommand}"
+                    IsChecked="{Binding Path=IsTrustEnable.Value, Mode=TwoWay}"
+                    Style="{StaticResource MaterialDesignFlatToggleButton}"
+                    ToolTip="{Binding Path=ChatControl_Trust, Source={StaticResource Languages}}">
+                <md:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Security" />
+            </ToggleButton>
+            <Button
+                    Width="48"
+                    Height="48"
+                    Margin="0,16,16,8"
+                    HorizontalAlignment="Right"
+                    Command="{Binding Path=NewMessageCommand}"
+                    Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    ToolTip="{Binding Path=ChatControl_NewMessage, Source={StaticResource Languages}}">
+                <md:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="Pencil" />
+            </Button>
+        </DockPanel>
+
         <TreeView
+                Grid.RowSpan="2"
                 Grid.Column="0"
                 AllowDrop="True"
                 ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
@@ -51,13 +89,18 @@
                 </HierarchicalDataTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type local:ChatThreadViewModel}">
                     <ContentControl Name="ContentControl">
-                        <StackPanel Orientation="Horizontal">
-                            <i:Interaction.Behaviors>
-                                <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
-                            </i:Interaction.Behaviors>
-                            <TextBlock Text="{Binding Path=Name.Value}" />
-                            <TextBlock Text="{Binding Path=Count.Value, StringFormat={} ({0})}" />
-                        </StackPanel>
+                        <i:Interaction.Behaviors>
+                            <omnius:DragStartBehavior AllowedEffects="Move" Value="{Binding}" />
+                        </i:Interaction.Behaviors>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} ({1}) {2}">
+                                    <Binding Path="Name.Value"/>
+                                    <Binding Path="Count.Value"/>
+                                    <Binding Path="Id.Value" Converter="{StaticResource BytesToBase64StringConverter}"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </ContentControl>
                     <HierarchicalDataTemplate.Triggers>
                         <DataTrigger Binding="{Binding Path=IsUpdated.Value}" Value="False">
@@ -147,6 +190,15 @@
                             <md:PackIcon Kind="ContentPaste" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    <Separator />
+                    <MenuItem
+                            Command="{Binding Path=TabTagListCommand}"
+                            Header="{Binding Path=ChatControl_TagList, Source={StaticResource Languages}}"
+                            InputGestureText="Ctrl+T">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="TagMultiple" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </TreeView.ContextMenu>
         </TreeView>
@@ -154,6 +206,7 @@
         <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
 
         <avalon:TextEditor
+                Grid.Row="1"
                 Grid.Column="2"
                 local:AvalonEditChatMessagesHelper.Info="{Binding Path=Info.Value}"
                 HorizontalScrollBarVisibility="Disabled"
@@ -184,18 +237,5 @@
                 </ContextMenu>
             </avalon:TextEditor.ContextMenu>
         </avalon:TextEditor>
-        <Button
-                Grid.Column="2"
-                Width="48"
-                Height="48"
-                Margin="0,0,20,20"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Command="{Binding Path=NewMessageCommand}"
-                Style="{DynamicResource MaterialDesignFloatingActionButton}"
-                ToolTip="MaterialDesignFloatingActionButton">
-            <md:PackIcon Kind="Pencil" />
-        </Button>
-
     </Grid>
 </UserControl>

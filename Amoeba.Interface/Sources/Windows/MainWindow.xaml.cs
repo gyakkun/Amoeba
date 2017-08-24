@@ -95,6 +95,14 @@ namespace Amoeba.Interface
                     window.ShowDialog();
                 }).AddTo(_disposable);
 
+            Messenger.Instance.GetEvent<ChatTagListWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new ChatTagListWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
             Messenger.Instance.GetEvent<SearchInfoEditWindowShowEvent>()
                 .Subscribe(vm =>
                 {

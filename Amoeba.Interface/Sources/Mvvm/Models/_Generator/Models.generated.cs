@@ -1416,6 +1416,44 @@ namespace Amoeba.Interface
             }
         }
 
+        private bool _isTrustMessageOnly;
+
+        [DataMember(Name = nameof(IsTrustMessageOnly))]
+        public bool IsTrustMessageOnly
+        {
+            get
+            {
+                return _isTrustMessageOnly;
+            }
+            set
+            {
+                if (_isTrustMessageOnly != value)
+                {
+                    _isTrustMessageOnly = value;
+                    this.OnPropertyChanged(nameof(IsTrustMessageOnly));
+                }
+            }
+        }
+
+        private bool _isNewMessageOnly;
+
+        [DataMember(Name = nameof(IsNewMessageOnly))]
+        public bool IsNewMessageOnly
+        {
+            get
+            {
+                return _isNewMessageOnly;
+            }
+            set
+            {
+                if (_isNewMessageOnly != value)
+                {
+                    _isNewMessageOnly = value;
+                    this.OnPropertyChanged(nameof(IsNewMessageOnly));
+                }
+            }
+        }
+
         private LockedList<ChatMessageInfo> _messages;
 
         [DataMember(Name = nameof(Messages))]

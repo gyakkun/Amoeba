@@ -114,6 +114,10 @@
       <DependentUpon>ChatControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Chat\ChatControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Chat\ChatTagList\ChatTagListWindow.xaml.cs">
+      <DependentUpon>ChatTagListWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Chat\ChatTagList\ChatTagListWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Chat\ViewModels\ChatCategoryViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Chat\ViewModels\ChatThreadViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Chat\ChatMessageEdit\ChatMessageEditWindow.xaml.cs">
@@ -239,6 +243,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Sources\Windows\Content\Chat\ChatMessageEdit\ChatMessageEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Content\Chat\ChatTagList\ChatTagListWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

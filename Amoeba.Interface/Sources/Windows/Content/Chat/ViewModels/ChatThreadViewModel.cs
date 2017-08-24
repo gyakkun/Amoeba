@@ -14,6 +14,7 @@ namespace Amoeba.Interface
 
         public ReactiveProperty<bool> IsUpdated { get; private set; }
         public ReactiveProperty<int> Count { get; private set; }
+        public ReactiveProperty<byte[]> Id { get; private set; }
 
         public ChatThreadInfo Model { get; private set; }
 
@@ -26,6 +27,7 @@ namespace Amoeba.Interface
             this.Name = model.ObserveProperty(n => n.Tag).Select(n => n.Name).ToReactiveProperty().AddTo(_disposable);
             this.IsUpdated = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);
             this.Count = new ReactiveProperty<int>(0).AddTo(_disposable);
+            this.Id = model.ObserveProperty(n => n.Tag).Select(n => n.Id).ToReactiveProperty().AddTo(_disposable);
         }
 
         public override string DragFormat { get { return "Amoeba_Chat"; } }

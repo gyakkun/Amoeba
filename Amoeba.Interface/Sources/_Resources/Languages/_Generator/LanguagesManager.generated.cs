@@ -178,9 +178,17 @@ namespace Amoeba.Interface
         public string ChatControl_Cut { get { return this.Translate("ChatControl_Cut"); } }
         public string ChatControl_Copy { get { return this.Translate("ChatControl_Copy"); } }
         public string ChatControl_Paste { get { return this.Translate("ChatControl_Paste"); } }
+        public string ChatControl_TagList { get { return this.Translate("ChatControl_TagList"); } }
         public string ChatControl_Response { get { return this.Translate("ChatControl_Response"); } }
+        public string ChatControl_Trust { get { return this.Translate("ChatControl_Trust"); } }
+        public string ChatControl_NewMessage { get { return this.Translate("ChatControl_NewMessage"); } }
         public string ChatMessageEditWindow_Ok { get { return this.Translate("ChatMessageEditWindow_Ok"); } }
         public string ChatMessageEditWindow_Cancel { get { return this.Translate("ChatMessageEditWindow_Cancel"); } }
+        public string ChatTagListWindow_Name { get { return this.Translate("ChatTagListWindow_Name"); } }
+        public string ChatTagListWindow_Id { get { return this.Translate("ChatTagListWindow_Id"); } }
+        public string ChatTagListWindow_Copy { get { return this.Translate("ChatTagListWindow_Copy"); } }
+        public string ChatTagListWindow_Join { get { return this.Translate("ChatTagListWindow_Join"); } }
+        public string ChatTagListWindow_Close { get { return this.Translate("ChatTagListWindow_Close"); } }
         public string StoreSubscribeControl_NewCategory { get { return this.Translate("StoreSubscribeControl_NewCategory"); } }
         public string StoreSubscribeControl_Edit { get { return this.Translate("StoreSubscribeControl_Edit"); } }
         public string StoreSubscribeControl_Delete { get { return this.Translate("StoreSubscribeControl_Delete"); } }

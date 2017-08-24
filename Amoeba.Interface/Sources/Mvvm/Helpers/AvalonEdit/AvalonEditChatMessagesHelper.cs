@@ -102,8 +102,10 @@ namespace Amoeba.Interface
             var settings = new List<CustomElementSetting>();
 
             var trustSignatures = new HashSet<Signature>(info.TrustSignatures);
+            var infos = info.ChatMessageInfos.ToList();
+            infos.Sort((x, y) => x.Message.CreationTime.CompareTo(y.Message.CreationTime));
 
-            foreach (var target in info.ChatMessageInfos)
+            foreach (var target in infos)
             {
                 int startOffset = document.Length;
 
