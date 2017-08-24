@@ -95,9 +95,9 @@
                         <TextBlock>
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} ({1}) {2}">
-                                    <Binding Path="Name.Value"/>
-                                    <Binding Path="Count.Value"/>
-                                    <Binding Path="Id.Value" Converter="{StaticResource BytesToBase64StringConverter}"/>
+                                    <Binding Path="Name.Value" />
+                                    <Binding Path="Count.Value" />
+                                    <Binding Converter="{StaticResource BytesToBase64StringConverter}" Path="Id.Value" />
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -203,7 +203,10 @@
             </TreeView.ContextMenu>
         </TreeView>
 
-        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+        <GridSplitter
+                Grid.RowSpan="2"
+                Grid.Column="1"
+                HorizontalAlignment="Stretch" />
 
         <avalon:TextEditor
                 Grid.Row="1"
