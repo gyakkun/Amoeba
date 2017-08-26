@@ -31,7 +31,7 @@
             <ToggleButton
                     Width="48"
                     Height="48"
-                    Margin="16,16,0,8"
+                    Margin="16,8,0,8"
                     HorizontalAlignment="Left"
                     Command="{Binding Path=TrustCommand}"
                     IsChecked="{Binding Path=IsTrustEnable.Value, Mode=TwoWay}"
@@ -45,7 +45,7 @@
             <Button
                     Width="48"
                     Height="48"
-                    Margin="0,16,16,8"
+                    Margin="0,8,16,8"
                     HorizontalAlignment="Right"
                     Command="{Binding Path=NewMessageCommand}"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"

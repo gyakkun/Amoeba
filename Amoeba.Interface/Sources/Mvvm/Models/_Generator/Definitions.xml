@@ -1,258 +1,258 @@
 <Config>
 
-  <Import Namespace="System.Collections.ObjectModel" />
-  <Import Namespace="System.Windows" />
-  <Import Namespace="System.Windows.Media.Imaging" />
-  <Import Namespace="Omnius" />
-  <Import Namespace="Omnius.Collections" />
-  <Import Namespace="Omnius.Security" />
-  <Import Namespace="Omnius.Net.Amoeba" />
+    <Import Namespace="System.Collections.ObjectModel" />
+    <Import Namespace="System.Windows" />
+    <Import Namespace="System.Windows.Media.Imaging" />
+    <Import Namespace="Omnius" />
+    <Import Namespace="Omnius.Collections" />
+    <Import Namespace="Omnius.Security" />
+    <Import Namespace="Omnius.Net.Amoeba" />
 
-  <Class Name="AccountInfo">
-    <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
-    <Property Type="string" Name="Comment" IsEditable="true" />
-    <Property Type="Exchange" Name="Exchange" IsEditable="true" />
-    <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
-    <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
-    <Property Type="ObservableCollection(Tag)" Name="Tags" />
-  </Class>
+    <Class Name="AccountInfo">
+        <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
+        <Property Type="string" Name="Comment" IsEditable="true" />
+        <Property Type="Exchange" Name="Exchange" IsEditable="true" />
+        <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
+        <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
+        <Property Type="ObservableCollection(Tag)" Name="Tags" />
+    </Class>
 
-  <Class Name="UpdateInfo">
-    <Property Type="bool" Name="IsEnabled" IsEditable="true" />
-    <Property Type="Signature" Name="Signature" IsEditable="true" />
-  </Class>
+    <Class Name="UpdateInfo">
+        <Property Type="bool" Name="IsEnabled" IsEditable="true" />
+        <Property Type="Signature" Name="Signature" IsEditable="true" />
+    </Class>
 
-  <Class Name="ViewInfo">
-    <Property Type="ViewColorsInfo" Name="Colors" />
-  </Class>
+    <Class Name="ViewInfo">
+        <Property Type="ViewColorsInfo" Name="Colors" />
+    </Class>
 
-  <Class Name="ViewColorsInfo">
-    <Property Type="string" Name="Tree_Hit" IsEditable="true" />
-    <Property Type="string" Name="Link_New" IsEditable="true" />
-    <Property Type="string" Name="Link_Visited" IsEditable="true" />
-    <Property Type="string" Name="Message_Trust" IsEditable="true" />
-    <Property Type="string" Name="Message_Untrust" IsEditable="true" />
-  </Class>
+    <Class Name="ViewColorsInfo">
+        <Property Type="string" Name="Tree_Hit" IsEditable="true" />
+        <Property Type="string" Name="Link_New" IsEditable="true" />
+        <Property Type="string" Name="Link_Visited" IsEditable="true" />
+        <Property Type="string" Name="Message_Trust" IsEditable="true" />
+        <Property Type="string" Name="Message_Untrust" IsEditable="true" />
+    </Class>
 
-  <Class Name="ListSortInfo">
-    <Property Type="string" Name="PropertyName" IsEditable="true" />
-    <Property Type="ListSortDirection" Name="Direction" IsEditable="true" />
-  </Class>
+    <Class Name="ListSortInfo">
+        <Property Type="string" Name="PropertyName" IsEditable="true" />
+        <Property Type="ListSortDirection" Name="Direction" IsEditable="true" />
+    </Class>
 
-  <Class Name="RelationSignatureInfo">
-    <Property Type="Signature" Name="Signature" IsEditable="true" />
-    <Property Type="BroadcastMessage(Profile)" Name="Profile" IsEditable="true" />
-    <Property Type="ObservableCollection(RelationSignatureInfo)" Name="Children" />
-  </Class>
+    <Class Name="RelationSignatureInfo">
+        <Property Type="Signature" Name="Signature" IsEditable="true" />
+        <Property Type="BroadcastMessage(Profile)" Name="Profile" IsEditable="true" />
+        <Property Type="ObservableCollection(RelationSignatureInfo)" Name="Children" />
+    </Class>
 
-  <Class Name="OptionsInfo">
-    <Property Type="AccountOptionsInfo" Name="Account" />
-    <Property Type="ConnectionOptionsInfo" Name="Connection" />
-    <Property Type="DataOptionsInfo" Name="Data" />
-    <Property Type="ViewOptionsInfo" Name="View" />
-    <Property Type="UpdateOptionsInfo" Name="Update" />
-  </Class>
+    <Class Name="OptionsInfo">
+        <Property Type="AccountOptionsInfo" Name="Account" />
+        <Property Type="ConnectionOptionsInfo" Name="Connection" />
+        <Property Type="DataOptionsInfo" Name="Data" />
+        <Property Type="ViewOptionsInfo" Name="View" />
+        <Property Type="UpdateOptionsInfo" Name="Update" />
+    </Class>
 
-  <Class Name="AccountOptionsInfo">
-    <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
-    <Property Type="string" Name="Comment" IsEditable="true" />
-    <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
-    <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
-    <Property Type="ObservableCollection(Tag)" Name="Tags" />
-  </Class>
+    <Class Name="AccountOptionsInfo">
+        <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
+        <Property Type="string" Name="Comment" IsEditable="true" />
+        <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
+        <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
+        <Property Type="ObservableCollection(Tag)" Name="Tags" />
+    </Class>
 
-  <Class Name="ConnectionOptionsInfo">
-    <Property Type="TcpOptionsInfo" Name="Tcp" />
-    <Property Type="I2pOptionsInfo" Name="I2p" />
-    <Property Type="CustomOptionsInfo" Name="Custom" />
-    <Property Type="BandwidthOptionsInfo" Name="Bandwidth" />
-  </Class>
+    <Class Name="ConnectionOptionsInfo">
+        <Property Type="TcpOptionsInfo" Name="Tcp" />
+        <Property Type="I2pOptionsInfo" Name="I2p" />
+        <Property Type="CustomOptionsInfo" Name="Custom" />
+        <Property Type="BandwidthOptionsInfo" Name="Bandwidth" />
+    </Class>
 
-  <Class Name="TcpOptionsInfo">
-    <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
-    <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
-    <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
-    <Property Type="ushort" Name="Ipv6Port" IsEditable="true" />
-    <Property Type="string" Name="ProxyUri" IsEditable="true" />
-  </Class>
+    <Class Name="TcpOptionsInfo">
+        <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
+        <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
+        <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
+        <Property Type="ushort" Name="Ipv6Port" IsEditable="true" />
+        <Property Type="string" Name="ProxyUri" IsEditable="true" />
+    </Class>
 
-  <Class Name="I2pOptionsInfo">
-    <Property Type="bool" Name="IsEnabled" IsEditable="true" />
-    <Property Type="string" Name="SamBridgeUri" IsEditable="true" />
-  </Class>
+    <Class Name="I2pOptionsInfo">
+        <Property Type="bool" Name="IsEnabled" IsEditable="true" />
+        <Property Type="string" Name="SamBridgeUri" IsEditable="true" />
+    </Class>
 
-  <Class Name="CustomOptionsInfo">
-    <Property Type="ObservableCollection(string)" Name="LocationUris" />
-    <Property Type="ObservableCollection(ConnectionFilter)" Name="ConnectionFilters" />
-    <Property Type="ObservableCollection(string)" Name="ListenUris" />
-  </Class>
+    <Class Name="CustomOptionsInfo">
+        <Property Type="ObservableCollection(string)" Name="LocationUris" />
+        <Property Type="ObservableCollection(ConnectionFilter)" Name="ConnectionFilters" />
+        <Property Type="ObservableCollection(string)" Name="ListenUris" />
+    </Class>
 
-  <Class Name="BandwidthOptionsInfo">
-    <Property Type="int" Name="ConnectionCountLimit" IsEditable="true" />
-    <Property Type="int" Name="BandwidthLimit" IsEditable="true" />
-  </Class>
+    <Class Name="BandwidthOptionsInfo">
+        <Property Type="int" Name="ConnectionCountLimit" IsEditable="true" />
+        <Property Type="int" Name="BandwidthLimit" IsEditable="true" />
+    </Class>
 
-  <Class Name="DataOptionsInfo">
-    <Property Type="CacheOptionsInfo" Name="Cache" />
-    <Property Type="DownloadOptionsInfo" Name="Download" />
-  </Class>
+    <Class Name="DataOptionsInfo">
+        <Property Type="CacheOptionsInfo" Name="Cache" />
+        <Property Type="DownloadOptionsInfo" Name="Download" />
+    </Class>
 
-  <Class Name="CacheOptionsInfo">
-    <Property Type="long" Name="Size" IsEditable="true" />
-  </Class>
+    <Class Name="CacheOptionsInfo">
+        <Property Type="long" Name="Size" IsEditable="true" />
+    </Class>
 
-  <Class Name="DownloadOptionsInfo">
-    <Property Type="string" Name="DirectoryPath" IsEditable="true" />
-  </Class>
+    <Class Name="DownloadOptionsInfo">
+        <Property Type="string" Name="DirectoryPath" IsEditable="true" />
+    </Class>
 
-  <Class Name="ViewOptionsInfo">
-    <Property Type="SubscribeOptionsInfo" Name="Subscribe" />
-  </Class>
+    <Class Name="ViewOptionsInfo">
+        <Property Type="SubscribeOptionsInfo" Name="Subscribe" />
+    </Class>
 
-  <Class Name="SubscribeOptionsInfo">
-    <Property Type="ObservableCollection(Signature)" Name="SubscribeSignatures" />
-  </Class>
+    <Class Name="SubscribeOptionsInfo">
+        <Property Type="ObservableCollection(Signature)" Name="SubscribeSignatures" />
+    </Class>
 
-  <Class Name="UpdateOptionsInfo">
-    <Property Type="bool" Name="IsEnabled" IsEditable="true" />
-    <Property Type="Signature" Name="Signature" IsEditable="true" />
-  </Class>
+    <Class Name="UpdateOptionsInfo">
+        <Property Type="bool" Name="IsEnabled" IsEditable="true" />
+        <Property Type="Signature" Name="Signature" IsEditable="true" />
+    </Class>
 
-  <Class Name="CloudStateInfo">
-    <Property Type="string" Name="Location" IsEditable="true" />
-  </Class>
+    <Class Name="CloudStateInfo">
+        <Property Type="string" Name="Location" IsEditable="true" />
+    </Class>
 
-  <Class Name="ChatCategoryInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(ChatThreadInfo)" Name="ThreadInfos" />
-    <Property Type="ObservableCollection(ChatCategoryInfo)" Name="CategoryInfos" />
-  </Class>
+    <Class Name="ChatCategoryInfo">
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="ObservableCollection(ChatThreadInfo)" Name="ThreadInfos" />
+        <Property Type="ObservableCollection(ChatCategoryInfo)" Name="CategoryInfos" />
+    </Class>
 
-  <Class Name="ChatThreadInfo">
-    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-    <Property Type="Tag" Name="Tag" IsEditable="true" />
-    <Property Type="bool" Name="IsTrustMessageOnly" IsEditable="true" />
-    <Property Type="bool" Name="IsNewMessageOnly" IsEditable="true" />
-    <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
-  </Class>
+    <Class Name="ChatThreadInfo">
+        <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+        <Property Type="Tag" Name="Tag" IsEditable="true" />
+        <Property Type="bool" Name="IsTrustMessageOnly" IsEditable="true" />
+        <Property Type="bool" Name="IsNewMessageOnly" IsEditable="true" />
+        <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
+    </Class>
 
-  <Class Name="ChatMessageInfo">
-    <Property Type="ChatMessageState" Name="State" IsEditable="true" />
-    <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
-  </Class>
+    <Class Name="ChatMessageInfo">
+        <Property Type="ChatMessageState" Name="State" IsEditable="true" />
+        <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
+    </Class>
 
-  <Class Name="SubscribeCategoryInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(SubscribeStoreInfo)" Name="StoreInfos" />
-    <Property Type="ObservableCollection(SubscribeCategoryInfo)" Name="CategoryInfos" />
-  </Class>
+    <Class Name="SubscribeCategoryInfo">
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="ObservableCollection(SubscribeStoreInfo)" Name="StoreInfos" />
+        <Property Type="ObservableCollection(SubscribeCategoryInfo)" Name="CategoryInfos" />
+    </Class>
 
-  <Class Name="SubscribeStoreInfo">
-    <Property Type="Signature" Name="AuthorSignature" IsEditable="true" />
-    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-    <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
-  </Class>
+    <Class Name="SubscribeStoreInfo">
+        <Property Type="Signature" Name="AuthorSignature" IsEditable="true" />
+        <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+        <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
+    </Class>
 
-  <Class Name="SubscribeBoxInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(Seed)" Name="Seeds" />
-    <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
-  </Class>
+    <Class Name="SubscribeBoxInfo">
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="ObservableCollection(Seed)" Name="Seeds" />
+        <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
+    </Class>
 
-  <Class Name="SubscribeListViewItemInfo">
-    <Property Type="BitmapSource" Name="Icon" IsEditable="true"/>
-    <Property Type="string" Name="Name" IsEditable="true"/>
-    <Property Type="long" Name="Length" IsEditable="true"/>
-    <Property Type="DateTime" Name="CreationTime" IsEditable="true"/>
-    <Property Type="SearchState" Name="State" IsEditable="true"/>
-    <Property Type="object" Name="Model" IsEditable="true"/>
-  </Class>
+    <Class Name="SubscribeListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsEditable="true"/>
+        <Property Type="string" Name="Name" IsEditable="true"/>
+        <Property Type="long" Name="Length" IsEditable="true"/>
+        <Property Type="DateTime" Name="CreationTime" IsEditable="true"/>
+        <Property Type="SearchState" Name="State" IsEditable="true"/>
+        <Property Type="object" Name="Model" IsEditable="true"/>
+    </Class>
 
-  <Class Name="PublishStoreInfo">
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-    <Property Type="ObservableCollection(PublishBoxInfo)" Name="BoxInfos" />
-  </Class>
+    <Class Name="PublishStoreInfo">
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+        <Property Type="ObservableCollection(PublishBoxInfo)" Name="BoxInfos" />
+    </Class>
 
-  <Class Name="PublishBoxInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="ObservableCollection(Seed)" Name="Seeds" />
-    <Property Type="ObservableCollection(PublishBoxInfo)" Name="BoxInfos" />
-  </Class>
+    <Class Name="PublishBoxInfo">
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="ObservableCollection(Seed)" Name="Seeds" />
+        <Property Type="ObservableCollection(PublishBoxInfo)" Name="BoxInfos" />
+    </Class>
 
-  <Class Name="PublishListViewItemInfo">
-    <Property Type="BitmapSource" Name="Icon" IsEditable="true"/>
-    <Property Type="string" Name="Name" IsEditable="true"/>
-    <Property Type="long" Name="Length" IsEditable="true"/>
-    <Property Type="DateTime" Name="CreationTime" IsEditable="true"/>
-    <Property Type="SearchState" Name="State" IsEditable="true"/>
-    <Property Type="object" Name="Model" IsEditable="true"/>
-  </Class>
+    <Class Name="PublishListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsEditable="true"/>
+        <Property Type="string" Name="Name" IsEditable="true"/>
+        <Property Type="long" Name="Length" IsEditable="true"/>
+        <Property Type="DateTime" Name="CreationTime" IsEditable="true"/>
+        <Property Type="SearchState" Name="State" IsEditable="true"/>
+        <Property Type="object" Name="Model" IsEditable="true"/>
+    </Class>
 
-  <Class Name="SearchInfo">
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-    <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-    <Property Type="SearchConditionsInfo" Name="Conditions" />
-    <Property Type="ObservableCollection(SearchInfo)" Name="Children" />
-  </Class>
+    <Class Name="SearchInfo">
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+        <Property Type="SearchConditionsInfo" Name="Conditions" />
+        <Property Type="ObservableCollection(SearchInfo)" Name="Children" />
+    </Class>
 
-  <Class Name="SearchConditionsInfo">
-    <Property Type="ObservableCollection(SearchCondition(string))" Name="SearchNames" />
-    <Property Type="ObservableCollection(SearchCondition(SearchRegex))" Name="SearchRegexes" />
-    <Property Type="ObservableCollection(SearchCondition(Signature))" Name="SearchSignatures" />
-    <Property Type="ObservableCollection(SearchCondition(SearchRange(DateTime)))" Name="SearchCreationTimeRanges" />
-    <Property Type="ObservableCollection(SearchCondition(SearchRange(long)))" Name="SearchLengthRanges" />
-    <Property Type="ObservableCollection(SearchCondition(SearchState))" Name="SearchStates" />
-  </Class>
+    <Class Name="SearchConditionsInfo">
+        <Property Type="ObservableCollection(SearchCondition(string))" Name="SearchNames" />
+        <Property Type="ObservableCollection(SearchCondition(SearchRegex))" Name="SearchRegexes" />
+        <Property Type="ObservableCollection(SearchCondition(Signature))" Name="SearchSignatures" />
+        <Property Type="ObservableCollection(SearchCondition(SearchRange(DateTime)))" Name="SearchCreationTimeRanges" />
+        <Property Type="ObservableCollection(SearchCondition(SearchRange(long)))" Name="SearchLengthRanges" />
+        <Property Type="ObservableCollection(SearchCondition(SearchState))" Name="SearchStates" />
+    </Class>
 
-  <Class Name="SearchListViewItemInfo">
-    <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="Signature" Name="Signature" IsEditable="true" />
-    <Property Type="long" Name="Length" IsEditable="true" />
-    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
-    <Property Type="SearchState" Name="State" IsEditable="true" />
-    <Property Type="Seed" Name="Model" IsEditable="true" />
-  </Class>
+    <Class Name="SearchListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="Signature" Name="Signature" IsEditable="true" />
+        <Property Type="long" Name="Length" IsEditable="true" />
+        <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+        <Property Type="SearchState" Name="State" IsEditable="true" />
+        <Property Type="Seed" Name="Model" IsEditable="true" />
+    </Class>
 
-  <Class Name="DownloadListViewItemInfo">
-    <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="long" Name="Length" IsEditable="true" />
-    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
-    <Property Type="DownloadListViewItemRateInfo" Name="Rate" />
-    <Property Type="DownloadState" Name="State" IsEditable="true" />
-    <Property Type="string" Name="Path" IsEditable="true" />
-    <Property Type="DownloadItemInfo" Name="Model" IsEditable="true" />
-  </Class>
+    <Class Name="DownloadListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="long" Name="Length" IsEditable="true" />
+        <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+        <Property Type="DownloadListViewItemRateInfo" Name="Rate" />
+        <Property Type="DownloadState" Name="State" IsEditable="true" />
+        <Property Type="string" Name="Path" IsEditable="true" />
+        <Property Type="DownloadItemInfo" Name="Model" IsEditable="true" />
+    </Class>
 
-  <Class Name="DownloadListViewItemRateInfo">
-    <Property Type="string" Name="Text" IsEditable="true" />
-    <Property Type="int" Name="Depth" IsEditable="true" />
-    <Property Type="double" Name="Value" IsEditable="true" />
-  </Class>
+    <Class Name="DownloadListViewItemRateInfo">
+        <Property Type="string" Name="Text" IsEditable="true" />
+        <Property Type="int" Name="Depth" IsEditable="true" />
+        <Property Type="double" Name="Value" IsEditable="true" />
+    </Class>
 
-  <Class Name="UploadListViewItemInfo">
-    <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="long" Name="Length" IsEditable="true" />
-    <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
-    <Property Type="string" Name="Path" IsEditable="true" />
-    <Property Type="Seed" Name="Seed" IsEditable="true" />
-  </Class>
+    <Class Name="UploadListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="long" Name="Length" IsEditable="true" />
+        <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+        <Property Type="string" Name="Path" IsEditable="true" />
+        <Property Type="Seed" Name="Seed" IsEditable="true" />
+    </Class>
 
-  <Class Name="UploadPreviewListViewItemInfo">
-    <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
-    <Property Type="string" Name="Name" IsEditable="true" />
-    <Property Type="long" Name="Length" IsEditable="true" />
-    <Property Type="string" Name="Path" IsEditable="true" />
-  </Class>
+    <Class Name="UploadPreviewListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="long" Name="Length" IsEditable="true" />
+        <Property Type="string" Name="Path" IsEditable="true" />
+    </Class>
 
 </Config>

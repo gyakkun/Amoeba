@@ -22,8 +22,6 @@ namespace Amoeba.Interface
     {
         private Settings _settings;
 
-        private CancellationToken _token;
-
         public event Action<Tag> Callback;
         public event EventHandler<EventArgs> CloseEvent;
 

@@ -1,17 +1,17 @@
 <Config>
 
-  <Import Namespace="System.Collections.ObjectModel" />
-  <Import Namespace="Omnius.Security" />
-  <Import Namespace="Omnius.Collections" />
-  <Import Namespace="Omnius.Net.Amoeba" />
+    <Import Namespace="System.Collections.ObjectModel" />
+    <Import Namespace="Omnius.Security" />
+    <Import Namespace="Omnius.Collections" />
+    <Import Namespace="Omnius.Net.Amoeba" />
 
-  <Property Type="string" Name="UseLanguage" IsEditable="true" />
-  <Property Type="AccountInfo" Name="AccountInfo" IsEditable="true" />
-  <Property Type="LockedHashSet(Signature)" Name="SubscribeSignatures" />
-  <Property Type="UpdateInfo" Name="UpdateInfo" IsEditable="true" />
-  <Property Type="ViewInfo" Name="ViewInfo" IsEditable="true" />
-  <Property Type="LockedHashSet(DownloadItemInfo)" Name="DownloadItemInfos" />
-  <Property Type="LockedHashSet(Seed)" Name="DownloadedSeeds" />
-  <Property Type="LockedHashSet(UploadItemInfo)" Name="UploadItemInfos" />
+    <Property Type="string" Name="UseLanguage" IsEditable="true" />
+    <Property Type="AccountInfo" Name="AccountInfo" IsEditable="true" />
+    <Property Type="LockedHashSet(Signature)" Name="SubscribeSignatures" />
+    <Property Type="UpdateInfo" Name="UpdateInfo" IsEditable="true" />
+    <Property Type="ViewInfo" Name="ViewInfo" IsEditable="true" />
+    <Property Type="LockedHashSet(DownloadItemInfo)" Name="DownloadItemInfos" />
+    <Property Type="LockedHashSet(Seed)" Name="DownloadedSeeds" />
+    <Property Type="LockedHashSet(UploadItemInfo)" Name="UploadItemInfos" />
 
 </Config>
