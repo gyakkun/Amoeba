@@ -115,7 +115,7 @@
                                 Tag="Data.Download" />
                     </TreeViewItem>
                     <TreeViewItem
-                            Header="{Binding Path=OptionsWindow_Data, Source={StaticResource Languages}}"
+                            Header="{Binding Path=OptionsWindow_View, Source={StaticResource Languages}}"
                             IsExpanded="{Binding Path=DynamicOptions.ViewTab_IsExpanded, FallbackValue=True, Mode=TwoWay}"
                             IsSelected="{Binding Path=DynamicOptions.ViewTab_IsSelected, Mode=TwoWay}">
                         <TreeViewItem
