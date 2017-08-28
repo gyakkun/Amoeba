@@ -54,6 +54,8 @@ namespace Amoeba.Interface
         public string MainWindow_Service { get { return this.Translate("MainWindow_Service"); } }
         public string MainWindow_Relation { get { return this.Translate("MainWindow_Relation"); } }
         public string MainWindow_Options { get { return this.Translate("MainWindow_Options"); } }
+        public string MainWindow_Tools { get { return this.Translate("MainWindow_Tools"); } }
+        public string MainWindow_CheckBlocks { get { return this.Translate("MainWindow_CheckBlocks"); } }
         public string MainWindow_Languages { get { return this.Translate("MainWindow_Languages"); } }
         public string MainWindow_Help { get { return this.Translate("MainWindow_Help"); } }
         public string MainWindow_Website { get { return this.Translate("MainWindow_Website"); } }
@@ -158,6 +160,10 @@ namespace Amoeba.Interface
         public string UpdateOptionsControl_UpdateSettings { get { return this.Translate("UpdateOptionsControl_UpdateSettings"); } }
         public string UpdateOptionsControl_UpdateIsEnabled { get { return this.Translate("UpdateOptionsControl_UpdateIsEnabled"); } }
         public string VersionWindow_Close { get { return this.Translate("VersionWindow_Close"); } }
+        public string CheckBlocksWindow_BadCount { get { return this.Translate("CheckBlocksWindow_BadCount"); } }
+        public string CheckBlocksWindow_CheckedCount { get { return this.Translate("CheckBlocksWindow_CheckedCount"); } }
+        public string CheckBlocksWindow_BlockCount { get { return this.Translate("CheckBlocksWindow_BlockCount"); } }
+        public string CheckBlocksWindow_Close { get { return this.Translate("CheckBlocksWindow_Close"); } }
         public string CloudControl_Connection { get { return this.Translate("CloudControl_Connection"); } }
         public string CloudControl_State { get { return this.Translate("CloudControl_State"); } }
         public string CloudControl_Log { get { return this.Translate("CloudControl_Log"); } }

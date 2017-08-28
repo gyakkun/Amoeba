@@ -4,6 +4,7 @@ namespace Amoeba.Interface
 {
     class RelationWindowShowEvent : PubSubEvent<RelationWindowViewModel> { }
     class OptionsWindowShowEvent : PubSubEvent<OptionsWindowViewModel> { }
+    class CheckBlocksWindowShowEvent : PubSubEvent<CheckBlocksWindowViewModel> { }
     class VersionWindowShowEvent : PubSubEvent<VersionWindowViewModel> { }
     class ChatMessageEditWindowShowEvent : PubSubEvent<ChatMessageEditWindowViewModel> { }
     class ChatTagListWindowShowEvent : PubSubEvent<ChatTagListWindowViewModel> { }

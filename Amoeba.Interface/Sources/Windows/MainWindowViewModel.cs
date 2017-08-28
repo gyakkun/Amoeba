@@ -28,6 +28,7 @@ namespace Amoeba.Interface
 
         public ReactiveCommand RelationCommand { get; private set; }
         public ReactiveCommand OptionsCommand { get; private set; }
+        public ReactiveCommand CheckBlocksCommand { get; private set; }
         public ReactiveCommand<string> LanguageCommand { get; private set; }
         public ReactiveCommand WebsiteCommand { get; private set; }
         public ReactiveCommand VersionCommand { get; private set; }
@@ -112,6 +113,9 @@ namespace Amoeba.Interface
 
                 this.OptionsCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OptionsCommand.Subscribe(() => this.Options()).AddTo(_disposable);
+
+                this.CheckBlocksCommand = new ReactiveCommand().AddTo(_disposable);
+                this.CheckBlocksCommand.Subscribe(() => this.CheckBlocks()).AddTo(_disposable);
 
                 this.LanguageCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.LanguageCommand.Subscribe((n) => LanguagesManager.Instance.SetCurrentLanguage(n)).AddTo(_disposable);
@@ -286,6 +290,12 @@ namespace Amoeba.Interface
         {
             Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
                 .Publish(new OptionsWindowViewModel(_serviceManager));
+        }
+
+        private void CheckBlocks()
+        {
+            Messenger.Instance.GetEvent<CheckBlocksWindowShowEvent>()
+                .Publish(new CheckBlocksWindowViewModel(_serviceManager));
         }
 
         private void Website()

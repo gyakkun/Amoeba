@@ -202,6 +202,8 @@ namespace Amoeba.Interface
                     }
                 }
 
+                this.KillProcesses();
+
                 // アップデート
                 {
                     // 一時的に作成された"Amoeba.Update.exe"を削除する。
@@ -360,6 +362,38 @@ namespace Amoeba.Interface
 
                 }
             });
+        }
+
+        private void KillProcesses()
+        {
+            var list = new List<string>();
+            if (AmoebaEnvironment.Config.Tor != null) list.Add(AmoebaEnvironment.Config.Tor.Path);
+
+            foreach (string path in list)
+            {
+                foreach (var process in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(path)))
+                {
+                    try
+                    {
+                        if (process.MainModule.FileName == Path.GetFullPath(path))
+                        {
+                            try
+                            {
+                                process.Kill();
+                                process.WaitForExit();
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+            }
         }
 
         static class NativeMethods

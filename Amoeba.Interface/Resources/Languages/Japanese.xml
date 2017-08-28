@@ -60,6 +60,8 @@
   <Property Name="MainWindow_Service" Value="Service" />
   <Property Name="MainWindow_Relation" Value="Relation" />
   <Property Name="MainWindow_Options" Value="Options" />
+  <Property Name="MainWindow_Tools" Value="Tools" />
+  <Property Name="MainWindow_CheckBlocks" Value="Check blocks" />
   <Property Name="MainWindow_Languages" Value="Languages" />
   <Property Name="MainWindow_Help" Value="Help" />
   <Property Name="MainWindow_Website" Value="Website" />
@@ -172,6 +174,11 @@
   <Property Name="UpdateOptionsControl_UpdateIsEnabled" Value="Update is enabled" />
 
   <Property Name="VersionWindow_Close" Value="Close" />
+
+  <Property Name="CheckBlocksWindow_BadCount" Value="Bad count:" />
+  <Property Name="CheckBlocksWindow_CheckedCount" Value="Checked count:" />
+  <Property Name="CheckBlocksWindow_BlockCount" Value="Block count:" />
+  <Property Name="CheckBlocksWindow_Close" Value="Close" />
 
   <Property Name="CloudControl_Connection" Value="Connection" />
   <Property Name="CloudControl_State" Value="State" />

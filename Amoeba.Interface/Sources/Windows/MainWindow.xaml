@@ -63,6 +63,16 @@
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
+                    <MenuItem Header="{Binding Path=MainWindow_Tools, Source={StaticResource Languages}}">
+                        <MenuItem
+                                Command="{Binding CheckBlocksCommand}"
+                                Header="{Binding Path=MainWindow_CheckBlocks, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+C">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="PlaylistCheck" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
                     <MenuItem Header="{Binding Path=MainWindow_Languages, Source={StaticResource Languages}}">
                         <MenuItem
                                 Command="{Binding Path=LanguageCommand}"

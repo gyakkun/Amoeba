@@ -79,6 +79,14 @@ namespace Amoeba.Interface
                     window.ShowDialog();
                 }).AddTo(_disposable);
 
+            Messenger.Instance.GetEvent<CheckBlocksWindowShowEvent>()
+                .Subscribe(vm =>
+                {
+                    var window = new CheckBlocksWindow(vm);
+                    window.Owner = this;
+                    window.ShowDialog();
+                }).AddTo(_disposable);
+
             Messenger.Instance.GetEvent<VersionWindowShowEvent>()
                 .Subscribe(vm =>
                 {

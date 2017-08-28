@@ -145,6 +145,10 @@
       <DependentUpon>UploadPreviewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Menu\CheckBlocks\CheckBlocksWindow.xaml.cs">
+      <DependentUpon>CheckBlocksWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Menu\CheckBlocks\CheckBlocksWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Menu\Options\Update\UpdateOptionsControl.xaml.cs">
       <DependentUpon>UpdateOptionsControl.xaml</DependentUpon>
     </Compile>
@@ -263,6 +267,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Menu\CheckBlocks\CheckBlocksWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
