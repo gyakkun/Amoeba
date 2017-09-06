@@ -8,7 +8,8 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Omnius.Net.Amoeba;
+using Amoeba.Service;
+using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Io;
@@ -157,7 +158,7 @@ namespace Amoeba.Simulation
                 {
                     Thread.Sleep(1000);
 
-                    int average = wrapperList.Select(n => n.Value.Information.GetValue<int>("Network_CloudNodeCount")).Sum() / wrapperList.Count;
+                    int average = wrapperList.Select(n => n.Value.Report.Network.CloudNodeCount).Sum() / wrapperList.Count;
                     if (average >= wrapperList.Count - 2) break;
                 }
 

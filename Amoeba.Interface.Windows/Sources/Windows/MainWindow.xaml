@@ -1,0 +1,295 @@
+<omnius:RestorableWindow
+        x:Class="Amoeba.Interface.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:local="clr-namespace:Amoeba.Interface"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+        xmlns:prism="http://prismlibrary.com/"
+        Title="{Binding Path=Title.Value}"
+        Background="{DynamicResource MaterialDesignWindowBackground}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Icon="{Binding Path=Amoeba, Source={x:Static local:AmoebaEnvironment.Icons}}"
+        SnapsToDevicePixels="True"
+        StateChanged="RestorableWindow_StateChanged"
+        TextElement.FontSize="13"
+        TextElement.FontWeight="Regular"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
+        mc:Ignorable="d">
+    <md:DialogHost
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsOpen="{Binding Path=IsProgressDialogOpen.Value}">
+        <md:DialogHost.DialogContent>
+            <ProgressBar
+                    Margin="16"
+                    HorizontalAlignment="Center"
+                    IsIndeterminate="True"
+                    Style="{DynamicResource MaterialDesignCircularProgressBar}"
+                    Value="0" />
+        </md:DialogHost.DialogContent>
+        <DockPanel>
+            <Grid DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Menu
+                        Grid.ColumnSpan="1"
+                        IsMainMenu="True"
+                        Style="{StaticResource CustomMaterialDesignMenu}">
+                    <MenuItem Header="{Binding Path=MainWindow_Service, Source={StaticResource Languages}}">
+                        <MenuItem
+                                Command="{Binding RelationCommand}"
+                                Header="{Binding Path=MainWindow_Relation, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+R">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="VectorTriangle" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem
+                                Command="{Binding OptionsCommand}"
+                                Header="{Binding Path=MainWindow_Options, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+O">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="Settings" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{Binding Path=MainWindow_Tools, Source={StaticResource Languages}}">
+                        <MenuItem
+                                Command="{Binding CheckBlocksCommand}"
+                                Header="{Binding Path=MainWindow_CheckBlocks, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+C">
+                            <MenuItem.Icon>
+                                <md:PackIcon Kind="PlaylistCheck" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="{Binding Path=MainWindow_Languages, Source={StaticResource Languages}}">
+                        <MenuItem
+                                Command="{Binding Path=LanguageCommand}"
+                                CommandParameter="English"
+                                Header="{Binding Path=Languages_English, Source={StaticResource Languages}}"
+                                IsCheckable="True"
+                                IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=English, Mode=OneWay}" />
+                        <MenuItem
+                                Command="{Binding Path=LanguageCommand}"
+                                CommandParameter="Japanese"
+                                Header="{Binding Path=Languages_Japanese, Source={StaticResource Languages}}"
+                                IsCheckable="True"
+                                IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=Japanese, Mode=OneWay}" />
+                    </MenuItem>
+                    <MenuItem Header="{Binding Path=MainWindow_Help, Source={StaticResource Languages}}">
+                        <MenuItem
+                                Command="{Binding WebsiteCommand}"
+                                Header="{Binding Path=MainWindow_Website, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+W" />
+                        <MenuItem
+                                Command="{Binding VersionCommand}"
+                                Header="{Binding Path=MainWindow_Version, Source={StaticResource Languages}}"
+                                InputGestureText="Ctrl+V" />
+                    </MenuItem>
+                </Menu>
+                <StackPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal"
+                        TextElement.FontSize="16">
+                    <StackPanel Margin="0,0,16,0" Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=MainWindow_Traffic_Send, Source={StaticResource Languages}}" />
+                        <TextBlock Text=" " />
+                        <TextBlock Text="{Binding Path=SendingSpeed.Value, Converter={StaticResource DecimalToSizeStringConverter}}" />
+                        <TextBlock Text=" /s" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,16,0" Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=MainWindow_Traffic_Receive, Source={StaticResource Languages}}" />
+                        <TextBlock Text=" " />
+                        <TextBlock Text="{Binding Path=ReceivingSpeed.Value, Converter={StaticResource DecimalToSizeStringConverter}}" />
+                        <TextBlock Text=" /s" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <DockPanel>
+                <ListBox
+                        Name="TabListBox"
+                        MinWidth="120"
+                        DockPanel.Dock="Left"
+                        SelectedIndex="{Binding Path=DynamicOptions.TabListBox_SelectedIndex, FallbackValue=0}"
+                        SelectionMode="Single">
+                    <ListBoxItem Name="CloudListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Cloud" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Cloud, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="ChatListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Comment" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Chat, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="StoreListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Basket" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Store, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="SearchListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Magnify" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Search, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="DownloadListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Download" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Download, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Name="UploadListBoxItem">
+                        <StackPanel Margin="8,0,8,0" Orientation="Horizontal">
+                            <md:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Upload" />
+                            <TextBlock
+                                    Padding="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text="{Binding Path=MainWindow_Upload, Source={StaticResource Languages}}" />
+                        </StackPanel>
+                    </ListBoxItem>
+                </ListBox>
+
+                <Grid>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=CloudListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:CloudControl DataContext="{Binding Path=CloudControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=ChatListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:ChatControl DataContext="{Binding Path=ChatControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=StoreListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <ListBox
+                                    Name="StoreTabListBox"
+                                    Grid.Column="0"
+                                    MinWidth="120"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    SelectedIndex="{Binding Path=DynamicOptions.StoreTabListBox_SelectedIndex, FallbackValue=0}"
+                                    SelectionMode="Single">
+                                <ListBoxItem
+                                        Name="StoreSubscribeListBoxItem"
+                                        Height="32"
+                                        Padding="16,8"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Content="{Binding Path=MainWindow_Subscribe, Source={StaticResource Languages}}" />
+                                <ListBoxItem
+                                        Name="StorePublishListBoxItem"
+                                        Height="32"
+                                        Padding="16,8"
+                                        HorizontalContentAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Content="{Binding Path=MainWindow_Publish, Source={StaticResource Languages}}" />
+                            </ListBox>
+
+                            <ContentControl
+                                    Grid.Column="1"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Visibility="{Binding ElementName=StoreSubscribeListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <local:StoreSubscribeControl DataContext="{Binding Path=StoreSubscribeControlViewModel}" />
+                            </ContentControl>
+                            <ContentControl
+                                    Grid.Column="1"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Visibility="{Binding ElementName=StorePublishListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <local:StorePublishControl DataContext="{Binding Path=StorePublishControlViewModel}" />
+                            </ContentControl>
+                        </Grid>
+
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=SearchListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:SearchControl DataContext="{Binding Path=SearchControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=DownloadListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:DownloadControl DataContext="{Binding Path=DownloadControlViewModel}" />
+                    </ContentControl>
+                    <ContentControl
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Visibility="{Binding ElementName=UploadListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <local:UploadControl DataContext="{Binding Path=UploadControlViewModel}" />
+                    </ContentControl>
+                </Grid>
+            </DockPanel>
+        </DockPanel>
+    </md:DialogHost>
+</omnius:RestorableWindow>

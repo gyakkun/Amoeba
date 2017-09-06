@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Amoeba.Messages\Amoeba.Messages.csproj" />
+    <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj" />
+    <ProjectReference Include="..\Amoeba.Utilities\Amoeba.Utilities.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Correction\Omnius.Correction.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Io\Omnius.Io.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Messaging\Omnius.Messaging.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Net.I2p\Omnius.Net.I2p.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Net.Proxy\Omnius.Net.Proxy.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Net.Upnp\Omnius.Net.Upnp.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Net\Omnius.Net.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj" />
+    <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
+
+</Project>
