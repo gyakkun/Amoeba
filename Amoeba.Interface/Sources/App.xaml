@@ -35,6 +35,7 @@
             <omnius:CompositeCollectionConverter x:Key="CompositeCollectionConverter" />
             <omnius:EnumerateConverter x:Key="EnumerateConverter" />
             <omnius:BoolToStringConverter x:Key="BoolToStringConverter" />
+            <omnius:TreeViewItemClickBehavior x:Key="TreeViewItemClickBehavior" />
             <local:ObjectToInfoStringConverter x:Key="ObjectToInfoStringConverter" />
             <local:SessionTypeToStringConverter x:Key="SessionTypeToStringConverter" />
             <local:SearchStateToStringConverter x:Key="SearchStateToStringConverter" />

@@ -204,6 +204,7 @@
     <Property Name="ChatControl_TagList" Value="Tag list" />
     <Property Name="ChatControl_Response" Value="Response" />
     <Property Name="ChatControl_Trust" Value="Trust" />
+    <Property Name="ChatControl_New" Value="New" />
     <Property Name="ChatControl_NewMessage" Value="New message" />
 
     <Property Name="ChatMessageEditWindow_Ok" Value="Ok" />

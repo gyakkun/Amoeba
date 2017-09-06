@@ -98,6 +98,9 @@ namespace Amoeba.Interface
 
         private static void Set(TextEditor textEditor, AvalonEditChatMessagesInfo info)
         {
+            textEditor.FontFamily = new FontFamily(SettingsManager.Instance.ViewInfo.Fonts.Chat_Message.FontFamily);
+            textEditor.FontSize = (double)new FontSizeConverter().ConvertFromString(SettingsManager.Instance.ViewInfo.Fonts.Chat_Message.FontSize + "pt");
+
             var document = new StringBuilder();
             var settings = new List<CustomElementSetting>();
 
@@ -110,16 +113,24 @@ namespace Amoeba.Interface
                 int startOffset = document.Length;
 
                 {
+                    string stateText = target.State.HasFlag(ChatMessageState.New) ? "!" : "#";
                     string creationTimeText = target.Message.CreationTime.ToLocalTime().ToString(LanguagesManager.Instance.Global_DateTime_StringFormat, System.Globalization.DateTimeFormatInfo.InvariantInfo);
                     string SignatureText = target.Message.AuthorSignature.ToString();
 
                     {
-                        settings.Add(new CustomElementSetting("CreationTime", document.Length, creationTimeText.Length));
-                        document.Append(creationTimeText);
-                        document.Append(" - ");
+                        if (stateText != null)
+                        {
+                            settings.Add(new CustomElementSetting("State", document.Length, stateText.Length));
+                            document.Append(stateText);
+                            document.Append(" ");
+                        }
 
                         settings.Add(new CustomElementSetting("Signature", document.Length, SignatureText.Length));
                         document.Append(SignatureText);
+                        document.Append(" - ");
+
+                        settings.Add(new CustomElementSetting("CreationTime", document.Length, creationTimeText.Length));
+                        document.Append(creationTimeText);
 
                         if (!trustSignatures.Contains(target.Message.AuthorSignature) && target.Message.Cost != null)
                         {
@@ -206,7 +217,24 @@ namespace Amoeba.Interface
 
                 if (result != null)
                 {
-                    if (result.Type == "Signature")
+                    if (result.Type == "State")
+                    {
+                        double size = (double)new FontSizeConverter().ConvertFromString(SettingsManager.Instance.ViewInfo.Fonts.Chat_Message.FontSize + "pt");
+
+                        var image = new Image() { Height = (size - 3), Width = (size - 3), Margin = new Thickness(1.5, 1.5, 0, 0) };
+                        if (result.Value == "!") image.Source = AmoebaEnvironment.Images.YelloBall;
+                        else if (result.Value == "#") image.Source = AmoebaEnvironment.Images.GreenBall;
+
+                        var element = new CustomObjectElement(result.Value, image);
+
+                        element.ClickEvent += (string text) =>
+                        {
+                            this.OnSelectEvent(new CustomElementRange(offset, offset + result.Value.Length));
+                        };
+
+                        return element;
+                    }
+                    else if (result.Type == "Signature")
                     {
                         Brush brush;
 

@@ -48,11 +48,6 @@
                 Grid.Column="0"
                 AllowDrop="True"
                 ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                    <i:InvokeCommandAction Command="{Binding Path=TabClickCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:PublishStoreViewModel}">
                     <HierarchicalDataTemplate.ItemsSource>
@@ -92,6 +87,7 @@
                 <omnius:IgnoreRequestBringIntoViewBehavior />
                 <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
                 <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
+                <omnius:TreeViewItemClickBehavior Command="{Binding Path=TabClickCommand}" />
             </i:Interaction.Behaviors>
             <TreeView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">

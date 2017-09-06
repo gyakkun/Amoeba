@@ -132,10 +132,16 @@ namespace Amoeba.Interface
         public class EnvironmentImages
         {
             public BitmapImage Amoeba { get; }
+            public BitmapImage BlueBall { get; }
+            public BitmapImage GreenBall { get; }
+            public BitmapImage YelloBall { get; }
 
             public EnvironmentImages()
             {
                 this.Amoeba = GetImage("Amoeba.png");
+                this.BlueBall= GetImage("States/Blue.png");
+                this.GreenBall = GetImage("States/Green.png");
+                this.YelloBall = GetImage("States/Yello.png");
             }
 
             private static BitmapImage GetImage(string path)

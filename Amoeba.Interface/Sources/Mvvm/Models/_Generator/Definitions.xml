@@ -24,6 +24,7 @@
 
     <Class Name="ViewInfo">
         <Property Type="ViewColorsInfo" Name="Colors" />
+        <Property Type="ViewFontsInfo" Name="Fonts" />
     </Class>
 
     <Class Name="ViewColorsInfo">
@@ -34,6 +35,15 @@
         <Property Type="string" Name="Message_Untrust" IsEditable="true" />
     </Class>
 
+    <Class Name="ViewFontsInfo">
+        <Property Type="FontInfo" Name="Chat_Message" IsEditable="true" />
+    </Class>
+
+    <Class Name="FontInfo">
+        <Property Type="string" Name="FontFamily" IsEditable="true" />
+        <Property Type="double" Name="FontSize" IsEditable="true" />
+    </Class>
+    
     <Class Name="ListSortInfo">
         <Property Type="string" Name="PropertyName" IsEditable="true" />
         <Property Type="ListSortDirection" Name="Direction" IsEditable="true" />

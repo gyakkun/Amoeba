@@ -33,14 +33,28 @@
                     Height="48"
                     Margin="16,8,0,8"
                     HorizontalAlignment="Left"
-                    Command="{Binding Path=TrustCommand}"
-                    IsChecked="{Binding Path=IsTrustEnable.Value, Mode=TwoWay}"
+                    Command="{Binding Path=TrustFilterCommand}"
+                    IsChecked="{Binding Path=IsTrustFilterEnable.Value, Mode=TwoWay}"
                     Style="{StaticResource MaterialDesignFlatToggleButton}"
                     ToolTip="{Binding Path=ChatControl_Trust, Source={StaticResource Languages}}">
                 <md:PackIcon
                         Width="24"
                         Height="24"
                         Kind="Security" />
+            </ToggleButton>
+            <ToggleButton
+                    Width="48"
+                    Height="48"
+                    Margin="16,8,0,8"
+                    HorizontalAlignment="Left"
+                    Command="{Binding Path=NewFilterCommand}"
+                    IsChecked="{Binding Path=IsNewFilterEnable.Value, Mode=TwoWay}"
+                    Style="{StaticResource MaterialDesignFlatToggleButton}"
+                    ToolTip="{Binding Path=ChatControl_New, Source={StaticResource Languages}}">
+                <md:PackIcon
+                        Width="24"
+                        Height="24"
+                        Kind="NewBox" />
             </ToggleButton>
             <Button
                     Width="48"
@@ -62,11 +76,6 @@
                 Grid.Column="0"
                 AllowDrop="True"
                 ItemsSource="{Binding Path=TabViewModel.Value, Converter={StaticResource EnumerateConverter}}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                    <i:InvokeCommandAction Command="{Binding Path=TabClickCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type local:ChatCategoryViewModel}">
                     <HierarchicalDataTemplate.ItemsSource>
@@ -117,6 +126,7 @@
                 <omnius:IgnoreRequestBringIntoViewBehavior />
                 <omnius:DragAcceptBehavior Description="{Binding DragAcceptDescription}" />
                 <omnius:TreeViewSelectedItemBlendBehavior SelectedItem="{Binding Path=TabSelectedItem.Value}" />
+                <omnius:TreeViewItemClickBehavior Command="{Binding Path=TabClickCommand}" />
             </i:Interaction.Behaviors>
             <TreeView.ItemContainerStyle>
                 <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">

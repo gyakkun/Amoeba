@@ -46,20 +46,20 @@ namespace Amoeba.Interface
 
                 return info;
             });
-            this.ViewInfo = _settings.Load(nameof(ViewInfo), () =>
-            {
-                var info = new ViewInfo();
-                info.Colors.Tree_Hit = System.Windows.Media.Colors.LightPink.ToString();
-                info.Colors.Link_New = System.Windows.Media.Colors.LightPink.ToString();
-                info.Colors.Link_Visited = System.Windows.Media.Colors.SkyBlue.ToString();
-                info.Colors.Message_Trust = System.Windows.Media.Colors.SkyBlue.ToString();
-                info.Colors.Message_Untrust = System.Windows.Media.Colors.LightPink.ToString();
-
-                return info;
-            });
+            this.ViewInfo = _settings.Load(nameof(ViewInfo), () => new ViewInfo());
             this.DownloadItemInfos.UnionWith(_settings.Load(nameof(DownloadItemInfos), () => new LockedHashSet<DownloadItemInfo>()));
             this.DownloadedSeeds.UnionWith(_settings.Load(nameof(DownloadedSeeds), () => new LockedHashSet<Seed>()));
             this.UploadItemInfos.UnionWith(_settings.Load(nameof(UploadItemInfos), () => new LockedHashSet<UploadItemInfo>()));
+
+            // ViewInfo
+            {
+                if (this.ViewInfo.Colors.Tree_Hit == null) this.ViewInfo.Colors.Tree_Hit = System.Windows.Media.Colors.LightPink.ToString();
+                if (this.ViewInfo.Colors.Link_New == null) this.ViewInfo.Colors.Link_New = System.Windows.Media.Colors.LightPink.ToString();
+                if (this.ViewInfo.Colors.Link_Visited == null) this.ViewInfo.Colors.Link_Visited = System.Windows.Media.Colors.SkyBlue.ToString();
+                if (this.ViewInfo.Colors.Message_Trust == null) this.ViewInfo.Colors.Message_Trust = System.Windows.Media.Colors.SkyBlue.ToString();
+                if (this.ViewInfo.Colors.Message_Untrust == null) this.ViewInfo.Colors.Message_Untrust = System.Windows.Media.Colors.LightPink.ToString();
+                if (this.ViewInfo.Fonts.Chat_Message == null) this.ViewInfo.Fonts.Chat_Message = new FontInfo() { FontFamily = "MS PGothic", FontSize = 12 };
+            }
         }
 
         public void Save()

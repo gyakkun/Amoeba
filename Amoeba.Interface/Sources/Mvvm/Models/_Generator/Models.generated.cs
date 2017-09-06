@@ -215,6 +215,20 @@ namespace Amoeba.Interface
             }
         }
 
+        private ViewFontsInfo _fonts;
+
+        [DataMember(Name = nameof(Fonts))]
+        public ViewFontsInfo Fonts
+        {
+            get
+            {
+                if (_fonts == null)
+                    _fonts = new ViewFontsInfo();
+
+                return _fonts;
+            }
+        }
+
         public ViewInfo Clone()
         {
             return JsonUtils.Clone(this);
@@ -329,6 +343,99 @@ namespace Amoeba.Interface
         }
 
         public ViewColorsInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(ViewFontsInfo))]
+    partial class ViewFontsInfo : INotifyPropertyChanged, ICloneable<ViewFontsInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public ViewFontsInfo() { }
+
+        private FontInfo _chat_Message;
+
+        [DataMember(Name = nameof(Chat_Message))]
+        public FontInfo Chat_Message
+        {
+            get
+            {
+                return _chat_Message;
+            }
+            set
+            {
+                if (_chat_Message != value)
+                {
+                    _chat_Message = value;
+                    this.OnPropertyChanged(nameof(Chat_Message));
+                }
+            }
+        }
+
+        public ViewFontsInfo Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+    [DataContract(Name = nameof(FontInfo))]
+    partial class FontInfo : INotifyPropertyChanged, ICloneable<FontInfo>
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string name)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public FontInfo() { }
+
+        private string _fontFamily;
+
+        [DataMember(Name = nameof(FontFamily))]
+        public string FontFamily
+        {
+            get
+            {
+                return _fontFamily;
+            }
+            set
+            {
+                if (_fontFamily != value)
+                {
+                    _fontFamily = value;
+                    this.OnPropertyChanged(nameof(FontFamily));
+                }
+            }
+        }
+
+        private double _fontSize;
+
+        [DataMember(Name = nameof(FontSize))]
+        public double FontSize
+        {
+            get
+            {
+                return _fontSize;
+            }
+            set
+            {
+                if (_fontSize != value)
+                {
+                    _fontSize = value;
+                    this.OnPropertyChanged(nameof(FontSize));
+                }
+            }
+        }
+
+        public FontInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
