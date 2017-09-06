@@ -8,7 +8,6 @@ namespace Amoeba.Interface
 {
     partial class LanguagesManager
     {
-        public string Global_FontFamily { get { return this.Translate("Global_FontFamily"); } }
         public string Global_DateTime_StringFormat { get { return this.Translate("Global_DateTime_StringFormat"); } }
         public string Languages_English { get { return this.Translate("Languages_English"); } }
         public string Languages_Japanese { get { return this.Translate("Languages_Japanese"); } }
@@ -26,13 +25,10 @@ namespace Amoeba.Interface
         public string Seed_Name { get { return this.Translate("Seed_Name"); } }
         public string Seed_Signature { get { return this.Translate("Seed_Signature"); } }
         public string Seed_Length { get { return this.Translate("Seed_Length"); } }
-        public string Seed_Keywords { get { return this.Translate("Seed_Keywords"); } }
         public string Seed_CreationTime { get { return this.Translate("Seed_CreationTime"); } }
-        public string Seed_Comment { get { return this.Translate("Seed_Comment"); } }
         public string Box_Name { get { return this.Translate("Box_Name"); } }
         public string Box_Signature { get { return this.Translate("Box_Signature"); } }
         public string Box_CreationTime { get { return this.Translate("Box_CreationTime"); } }
-        public string Box_Comment { get { return this.Translate("Box_Comment"); } }
         public string SearchState_Store { get { return this.Translate("SearchState_Store"); } }
         public string SearchState_Cache { get { return this.Translate("SearchState_Cache"); } }
         public string SearchState_Downloading { get { return this.Translate("SearchState_Downloading"); } }
@@ -48,6 +44,7 @@ namespace Amoeba.Interface
         public string DownloadState_Error { get { return this.Translate("DownloadState_Error"); } }
         public string ConfirmWindow_Title { get { return this.Translate("ConfirmWindow_Title"); } }
         public string ConfirmWindow_DeleteMessage { get { return this.Translate("ConfirmWindow_DeleteMessage"); } }
+        public string ConfirmWindow_CheckExistMessage { get { return this.Translate("ConfirmWindow_CheckExistMessage"); } }
         public string NameEditWindow_Name { get { return this.Translate("NameEditWindow_Name"); } }
         public string NameEditWindow_Ok { get { return this.Translate("NameEditWindow_Ok"); } }
         public string NameEditWindow_Cancel { get { return this.Translate("NameEditWindow_Cancel"); } }
@@ -72,7 +69,6 @@ namespace Amoeba.Interface
         public string MainWindow_Download { get { return this.Translate("MainWindow_Download"); } }
         public string MainWindow_Close_Message { get { return this.Translate("MainWindow_Close_Message"); } }
         public string MainWindow_DiskSpaceNotFound_Message { get { return this.Translate("MainWindow_DiskSpaceNotFound_Message"); } }
-        public string MainWindow_DownloadLocationInformation_Message { get { return this.Translate("MainWindow_DownloadLocationInformation_Message"); } }
         public string RelationWindow_Profile { get { return this.Translate("RelationWindow_Profile"); } }
         public string RelationWindow_Trust { get { return this.Translate("RelationWindow_Trust"); } }
         public string RelationWindow_TrustSignature { get { return this.Translate("RelationWindow_TrustSignature"); } }
@@ -169,6 +165,7 @@ namespace Amoeba.Interface
         public string CloudControl_Log { get { return this.Translate("CloudControl_Log"); } }
         public string CloudControl_Location { get { return this.Translate("CloudControl_Location"); } }
         public string CloudControl_Uri { get { return this.Translate("CloudControl_Uri"); } }
+        public string CloudControl_States { get { return this.Translate("CloudControl_States"); } }
         public string CloudControl_Copy { get { return this.Translate("CloudControl_Copy"); } }
         public string CloudControl_Paste { get { return this.Translate("CloudControl_Paste"); } }
         public string CloudControl_Type { get { return this.Translate("CloudControl_Type"); } }

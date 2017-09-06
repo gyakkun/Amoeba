@@ -204,7 +204,7 @@
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Header="States"
+                            Header="{Binding Path=CloudControl_States, Source={StaticResource Languages}}"
                             Style="{DynamicResource MaterialDesignCardGroupBox}">
                         <GroupBox.HeaderTemplate>
                             <DataTemplate>

@@ -1,6 +1,5 @@
 <Config>
 
-    <Property Name="Global_FontFamily" Value="Segoe UI, Meiryo UI, Verdana" />
     <Property Name="Global_DateTime_StringFormat" Value="yyyy/MM/dd HH:mm:ss" />
 
     <Property Name="Languages_English" Value="English" />
@@ -25,14 +24,11 @@
     <Property Name="Seed_Name" Value="Name" />
     <Property Name="Seed_Signature" Value="Signature" />
     <Property Name="Seed_Length" Value="Length" />
-    <Property Name="Seed_Keywords" Value="Keywords" />
     <Property Name="Seed_CreationTime" Value="Creation time" />
-    <Property Name="Seed_Comment" Value="Comment" />
 
     <Property Name="Box_Name" Value="Name" />
     <Property Name="Box_Signature" Value="Signature" />
     <Property Name="Box_CreationTime" Value="Creation time" />
-    <Property Name="Box_Comment" Value="Comment" />
 
     <Property Name="SearchState_Store" Value="Store" />
     <Property Name="SearchState_Cache" Value="Cache" />
@@ -52,6 +48,7 @@
 
     <Property Name="ConfirmWindow_Title" Value="Confirm" />
     <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
+    <Property Name="ConfirmWindow_CheckExistMessage" Value="Are you sure you want to check exist of file?" />
 
     <Property Name="NameEditWindow_Name" Value="Name" />
     <Property Name="NameEditWindow_Ok" Value="Ok" />
@@ -78,7 +75,6 @@
     <Property Name="MainWindow_Download" Value="Download" />
     <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
     <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
-    <Property Name="MainWindow_DownloadLocationInformation_Message" Value="Download location information from Cloud via Tor. Would that be all right?" />
 
     <Property Name="RelationWindow_Profile" Value="Profile" />
     <Property Name="RelationWindow_Trust" Value="Trust" />
@@ -88,7 +84,7 @@
     <Property Name="RelationWindow_Tags" Value="Tags" />
     <Property Name="RelationWindow_Tag" Value="Tag" />
     <Property Name="RelationWindow_Name" Value="Name" />
-    <Property Name="RelationWindow_Id" Value="Id" />
+    <Property Name="RelationWindow_Id" Value="ID" />
     <Property Name="RelationWindow_Comment" Value="Comment" />
     <Property Name="RelationWindow_Copy" Value="Copy" />
     <Property Name="RelationWindow_Close" Value="Close" />
@@ -124,7 +120,7 @@
     <Property Name="AccountOptionsControl_UntrustSignature" Value="Untrust signature" />
     <Property Name="AccountOptionsControl_TagsSettings" Value="Tags settings" />
     <Property Name="AccountOptionsControl_Name" Value="Name" />
-    <Property Name="AccountOptionsControl_Id" Value="Id" />
+    <Property Name="AccountOptionsControl_Id" Value="ID" />
     <Property Name="AccountOptionsControl_CommentSettings" Value="Comment settings" />
     <Property Name="AccountOptionsControl_New" Value="New" />
     <Property Name="AccountOptionsControl_Import" Value="Import" />
@@ -185,6 +181,7 @@
     <Property Name="CloudControl_Log" Value="Log" />
     <Property Name="CloudControl_Location" Value="Location" />
     <Property Name="CloudControl_Uri" Value="Uri" />
+    <Property Name="CloudControl_States" Value="States" />
     <Property Name="CloudControl_Copy" Value="Copy" />
     <Property Name="CloudControl_Paste" Value="Paste" />
     <Property Name="CloudControl_Type" Value="Type" />
@@ -211,7 +208,7 @@
     <Property Name="ChatMessageEditWindow_Cancel" Value="Cancel" />
 
     <Property Name="ChatTagListWindow_Name" Value="Name" />
-    <Property Name="ChatTagListWindow_Id" Value="Id" />
+    <Property Name="ChatTagListWindow_Id" Value="ID" />
     <Property Name="ChatTagListWindow_Copy" Value="Copy" />
     <Property Name="ChatTagListWindow_Join" Value="Join" />
     <Property Name="ChatTagListWindow_Close" Value="Close" />

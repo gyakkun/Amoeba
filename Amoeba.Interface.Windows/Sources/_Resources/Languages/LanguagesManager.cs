@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -25,7 +26,7 @@ namespace Amoeba.Interface
         private LanguagesManager()
         {
 #if DEBUG
-            string path = @"C:\Local\Projects\Alliance-Network\Amoeba-Wpf\Amoeba.Interface\bin\Debug\Core\Resources\Languages";
+            string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface.Windows\bin\Debug\Core\Resources\Languages";
 
             if (!Directory.Exists(path)) path = AmoebaEnvironment.Paths.LanguagesPath;
 #else
@@ -69,8 +70,7 @@ namespace Amoeba.Interface
                 }
             }
 
-            this.SetCurrentLanguage("English");
-        }
+            if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Any(n => n == "Japanese"))            {                this.SetCurrentLanguage("Japanese");            }            else if (_dic.Keys.Any(n => n == "English"))            {                this.SetCurrentLanguage("English");            }        }
 
         public IEnumerable<string> Languages
         {

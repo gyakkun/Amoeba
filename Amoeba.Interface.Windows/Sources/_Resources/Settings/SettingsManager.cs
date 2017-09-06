@@ -4,6 +4,7 @@ using Omnius.Configuration;
 using Amoeba.Service;
 using Omnius.Security;
 using Amoeba.Messages;
+using System.Globalization;
 
 namespace Amoeba.Interface
 {
@@ -29,7 +30,16 @@ namespace Amoeba.Interface
         {
             int version = _settings.Load("Version", () => 0);
 
-            this.UseLanguage = _settings.Load(nameof(UseLanguage), () => "English");
+            this.UseLanguage = _settings.Load(nameof(UseLanguage), () =>
+            {
+                if (CultureInfo.CurrentUICulture.Name == "ja-JP")
+                {
+                    return "Japanese";
+                }
+                else
+                {
+                    return "English";
+                }            });
             this.AccountInfo = _settings.Load(nameof(AccountInfo), () =>
             {
                 var info = new AccountInfo();
