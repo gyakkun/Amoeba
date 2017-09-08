@@ -48,10 +48,10 @@
 
     <Property Name="ConfirmWindow_Title" Value="Confirm" />
     <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
-    <Property Name="ConfirmWindow_CheckExistMessage" Value="Are you sure you want to check exist of file?" />
+    <Property Name="ConfirmWindow_CheckExistMessage" Value="Are you sure you want to check file existence?" />
 
     <Property Name="NameEditWindow_Name" Value="Name" />
-    <Property Name="NameEditWindow_Ok" Value="Ok" />
+    <Property Name="NameEditWindow_Ok" Value="OK" />
     <Property Name="NameEditWindow_Cancel" Value="Cancel" />
 
     <Property Name="MainWindow_Service" Value="Service" />
@@ -74,7 +74,7 @@
     <Property Name="MainWindow_Upload" Value="Upload" />
     <Property Name="MainWindow_Download" Value="Download" />
     <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
-    <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Space of disk not found." />
+    <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Not enough disk space." />
 
     <Property Name="RelationWindow_Profile" Value="Profile" />
     <Property Name="RelationWindow_Trust" Value="Trust" />
@@ -96,8 +96,8 @@
     <Property Name="OptionsWindow_Tags" Value="Tags" />
     <Property Name="OptionsWindow_Comment" Value="Comment" />
     <Property Name="OptionsWindow_Connection" Value="Connection" />
-    <Property Name="OptionsWindow_Tcp" Value="Tcp" />
-    <Property Name="OptionsWindow_I2p" Value="I2p" />
+    <Property Name="OptionsWindow_Tcp" Value="TCP" />
+    <Property Name="OptionsWindow_I2p" Value="I2P" />
     <Property Name="OptionsWindow_Custom" Value="Custom" />
     <Property Name="OptionsWindow_LocationUris" Value="Location uris" />
     <Property Name="OptionsWindow_ConnectionFilters" Value="Connection filters" />
@@ -109,7 +109,7 @@
     <Property Name="OptionsWindow_View" Value="View" />
     <Property Name="OptionsWindow_Subscribe" Value="Subscribe" />
     <Property Name="OptionsWindow_Update" Value="Update" />
-    <Property Name="OptionsWindow_Ok" Value="Ok" />
+    <Property Name="OptionsWindow_Ok" Value="OK" />
     <Property Name="OptionsWindow_Cancel" Value="Cancel" />
 
     <Property Name="AccountOptionsControl_SignatureSettings" Value="Signature settings" />
@@ -129,14 +129,14 @@
     <Property Name="AccountOptionsControl_Copy" Value="Copy" />
     <Property Name="AccountOptionsControl_Paste" Value="Paste" />
 
-    <Property Name="ConnectionOptionsControl_TcpSettings" Value="Tcp settings" />
-    <Property Name="ConnectionOptionsControl_Ipv4IsEnabled" Value="Ipv4 is enabled" />
-    <Property Name="ConnectionOptionsControl_Ipv4Port" Value="Ipv4 port" />
-    <Property Name="ConnectionOptionsControl_Ipv6IsEnabled" Value="Ipv6 is enabled" />
-    <Property Name="ConnectionOptionsControl_Ipv6Port" Value="Ipv6 port" />
+    <Property Name="ConnectionOptionsControl_TcpSettings" Value="TCP settings" />
+    <Property Name="ConnectionOptionsControl_Ipv4IsEnabled" Value="IPv4 is enabled" />
+    <Property Name="ConnectionOptionsControl_Ipv4Port" Value="IPv4 port" />
+    <Property Name="ConnectionOptionsControl_Ipv6IsEnabled" Value="IPv6 is enabled" />
+    <Property Name="ConnectionOptionsControl_Ipv6Port" Value="IPv6 port" />
     <Property Name="ConnectionOptionsControl_ProxyUri" Value="Proxy uri" />
-    <Property Name="ConnectionOptionsControl_I2pSettings" Value="I2p settings" />
-    <Property Name="ConnectionOptionsControl_I2pIsEnabled" Value="I2p is enabled" />
+    <Property Name="ConnectionOptionsControl_I2pSettings" Value="I2P settings" />
+    <Property Name="ConnectionOptionsControl_I2pIsEnabled" Value="I2P is enabled" />
     <Property Name="ConnectionOptionsControl_SamBridgeUri" Value="Sam bridge uri" />
     <Property Name="ConnectionOptionsControl_LocationUrisSettings" Value="Location uris settings" />
     <Property Name="ConnectionOptionsControl_Uri" Value="Uri" />
@@ -204,7 +204,7 @@
     <Property Name="ChatControl_New" Value="New" />
     <Property Name="ChatControl_NewMessage" Value="New message" />
 
-    <Property Name="ChatMessageEditWindow_Ok" Value="Ok" />
+    <Property Name="ChatMessageEditWindow_Ok" Value="OK" />
     <Property Name="ChatMessageEditWindow_Cancel" Value="Cancel" />
 
     <Property Name="ChatTagListWindow_Name" Value="Name" />
@@ -274,7 +274,7 @@
     <Property Name="SearchInfoEditWindow_LengthConditions" Value="Length conditions" />
     <Property Name="SearchInfoEditWindow_State" Value="State" />
     <Property Name="SearchInfoEditWindow_StateConditions" Value="State conditions" />
-    <Property Name="SearchInfoEditWindow_Ok" Value="Ok" />
+    <Property Name="SearchInfoEditWindow_Ok" Value="OK" />
     <Property Name="SearchInfoEditWindow_Cancel" Value="Cancel" />
 
     <Property Name="SearchConditionsControl_Add" Value="Add" />
@@ -317,7 +317,7 @@
     <Property Name="UploadPreviewWindow_Path" Value="Path" />
     <Property Name="UploadPreviewWindow_Delete" Value="Delete" />
     <Property Name="UploadPreviewWindow_Copy" Value="Copy" />
-    <Property Name="UploadPreviewWindow_Ok" Value="Ok" />
+    <Property Name="UploadPreviewWindow_Ok" Value="OK" />
     <Property Name="UploadPreviewWindow_Cancel" Value="Cancel" />
 
 </Config>

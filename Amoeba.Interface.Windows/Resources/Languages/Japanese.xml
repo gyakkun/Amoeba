@@ -7,7 +7,7 @@
 
     <Property Name="ValidationRule_ErrorMessage" Value="エラー" />
 
-    <Property Name="SessionType_Connect" Value="コネクト" />
+    <Property Name="SessionType_Connect" Value="接続中" />
     <Property Name="SessionType_Accept" Value="アクセプト" />
 
     <Property Name="ManagerState_Start" Value="開始" />
@@ -24,11 +24,11 @@
     <Property Name="Seed_Name" Value="名前" />
     <Property Name="Seed_Signature" Value="サイン" />
     <Property Name="Seed_Length" Value="サイズ" />
-    <Property Name="Seed_CreationTime" Value="作成日" />
+    <Property Name="Seed_CreationTime" Value="作成日時" />
 
     <Property Name="Box_Name" Value="名前" />
     <Property Name="Box_Signature" Value="サイン" />
-    <Property Name="Box_CreationTime" Value="作成日" />
+    <Property Name="Box_CreationTime" Value="作成日時" />
 
     <Property Name="SearchState_Store" Value="S" />
     <Property Name="SearchState_Cache" Value="C" />
@@ -51,7 +51,7 @@
     <Property Name="ConfirmWindow_CheckExistMessage" Value="ファイルの存在を確認してもよろしいでしょうか?" />
 
     <Property Name="NameEditWindow_Name" Value="名前" />
-    <Property Name="NameEditWindow_Ok" Value="Ok" />
+    <Property Name="NameEditWindow_Ok" Value="OK" />
     <Property Name="NameEditWindow_Cancel" Value="キャンセル" />
 
     <Property Name="MainWindow_Service" Value="サービス" />
@@ -96,8 +96,8 @@
     <Property Name="OptionsWindow_Tags" Value="タグ" />
     <Property Name="OptionsWindow_Comment" Value="コメント" />
     <Property Name="OptionsWindow_Connection" Value="接続" />
-    <Property Name="OptionsWindow_Tcp" Value="Tcp" />
-    <Property Name="OptionsWindow_I2p" Value="I2p" />
+    <Property Name="OptionsWindow_Tcp" Value="TCP" />
+    <Property Name="OptionsWindow_I2p" Value="I2P" />
     <Property Name="OptionsWindow_Custom" Value="カスタム" />
     <Property Name="OptionsWindow_LocationUris" Value="ロケーションUris" />
     <Property Name="OptionsWindow_ConnectionFilters" Value="接続フィルタ" />
@@ -109,7 +109,7 @@
     <Property Name="OptionsWindow_View" Value="表示" />
     <Property Name="OptionsWindow_Subscribe" Value="購読" />
     <Property Name="OptionsWindow_Update" Value="アップデート" />
-    <Property Name="OptionsWindow_Ok" Value="Ok" />
+    <Property Name="OptionsWindow_Ok" Value="OK" />
     <Property Name="OptionsWindow_Cancel" Value="キャンセル" />
 
     <Property Name="AccountOptionsControl_SignatureSettings" Value="サイン設定" />
@@ -129,14 +129,14 @@
     <Property Name="AccountOptionsControl_Copy" Value="コピー" />
     <Property Name="AccountOptionsControl_Paste" Value="貼り付け" />
 
-    <Property Name="ConnectionOptionsControl_TcpSettings" Value="Tcp設定" />
-    <Property Name="ConnectionOptionsControl_Ipv4IsEnabled" Value="Ipv4を有効にする" />
-    <Property Name="ConnectionOptionsControl_Ipv4Port" Value="Ipv4ポート" />
-    <Property Name="ConnectionOptionsControl_Ipv6IsEnabled" Value="Ipv6を有効にする" />
-    <Property Name="ConnectionOptionsControl_Ipv6Port" Value="Ipv6ポート" />
+    <Property Name="ConnectionOptionsControl_TcpSettings" Value="TCP設定" />
+    <Property Name="ConnectionOptionsControl_Ipv4IsEnabled" Value="IPv4を有効にする" />
+    <Property Name="ConnectionOptionsControl_Ipv4Port" Value="IPv4ポート" />
+    <Property Name="ConnectionOptionsControl_Ipv6IsEnabled" Value="IPv6を有効にする" />
+    <Property Name="ConnectionOptionsControl_Ipv6Port" Value="IPv6ポート" />
     <Property Name="ConnectionOptionsControl_ProxyUri" Value="プロキシUri" />
-    <Property Name="ConnectionOptionsControl_I2pSettings" Value="I2p設定" />
-    <Property Name="ConnectionOptionsControl_I2pIsEnabled" Value="I2pを有効にする" />
+    <Property Name="ConnectionOptionsControl_I2pSettings" Value="I2P設定" />
+    <Property Name="ConnectionOptionsControl_I2pIsEnabled" Value="I2Pを有効にする" />
     <Property Name="ConnectionOptionsControl_SamBridgeUri" Value="SamブリッジUri" />
     <Property Name="ConnectionOptionsControl_LocationUrisSettings" Value="ロケーションUris設定" />
     <Property Name="ConnectionOptionsControl_Uri" Value="Uri" />
@@ -204,7 +204,7 @@
     <Property Name="ChatControl_New" Value="新着" />
     <Property Name="ChatControl_NewMessage" Value="メッセージの新規作成" />
 
-    <Property Name="ChatMessageEditWindow_Ok" Value="Ok" />
+    <Property Name="ChatMessageEditWindow_Ok" Value="OK" />
     <Property Name="ChatMessageEditWindow_Cancel" Value="キャンセル" />
 
     <Property Name="ChatTagListWindow_Name" Value="名前" />
@@ -224,7 +224,7 @@
     <Property Name="StoreSubscribeControl_CopyName" Value="名前のコピー" />
     <Property Name="StoreSubscribeControl_Name" Value="名前" />
     <Property Name="StoreSubscribeControl_Length" Value="サイズ" />
-    <Property Name="StoreSubscribeControl_CreationTime" Value="作成日" />
+    <Property Name="StoreSubscribeControl_CreationTime" Value="作成日時" />
     <Property Name="StoreSubscribeControl_State" Value="状態" />
 
     <Property Name="StorePublishControl_NewBox" Value="新しいボックス" />
@@ -238,7 +238,7 @@
     <Property Name="StorePublishControl_CopyName" Value="名前のコピー" />
     <Property Name="StorePublishControl_Name" Value="名前" />
     <Property Name="StorePublishControl_Length" Value="サイズ" />
-    <Property Name="StorePublishControl_CreationTime" Value="作成日" />
+    <Property Name="StorePublishControl_CreationTime" Value="作成日時" />
     <Property Name="StorePublishControl_State" Value="状態" />
 
     <Property Name="SearchControl_SearchHint" Value="検索" />
@@ -258,7 +258,7 @@
     <Property Name="SearchControl_Name" Value="名前" />
     <Property Name="SearchControl_Signature" Value="サイン" />
     <Property Name="SearchControl_Length" Value="サイズ" />
-    <Property Name="SearchControl_CreationTime" Value="作成日" />
+    <Property Name="SearchControl_CreationTime" Value="作成日時" />
     <Property Name="SearchControl_State" Value="状態" />
 
     <Property Name="SearchInfoEditWindow_SearchName" Value="検索名" />
@@ -268,13 +268,13 @@
     <Property Name="SearchInfoEditWindow_RegexConditions" Value="正規表現の検索条件" />
     <Property Name="SearchInfoEditWindow_Signature" Value="サイン" />
     <Property Name="SearchInfoEditWindow_SignatureConditions" Value="サインの検索条件" />
-    <Property Name="SearchInfoEditWindow_CreationTime" Value="作成日" />
-    <Property Name="SearchInfoEditWindow_CreationTimeConditions" Value="作成日の検索条件" />
+    <Property Name="SearchInfoEditWindow_CreationTime" Value="作成日時" />
+    <Property Name="SearchInfoEditWindow_CreationTimeConditions" Value="作成日時の検索条件" />
     <Property Name="SearchInfoEditWindow_Length" Value="サイズ" />
     <Property Name="SearchInfoEditWindow_LengthConditions" Value="サイズの検索条件" />
     <Property Name="SearchInfoEditWindow_State" Value="状態" />
     <Property Name="SearchInfoEditWindow_StateConditions" Value="状態の検索条件" />
-    <Property Name="SearchInfoEditWindow_Ok" Value="Ok" />
+    <Property Name="SearchInfoEditWindow_Ok" Value="OK" />
     <Property Name="SearchInfoEditWindow_Cancel" Value="キャンセル" />
 
     <Property Name="SearchConditionsControl_Add" Value="追加" />
@@ -291,7 +291,7 @@
 
     <Property Name="DownloadControl_Name" Value="名前" />
     <Property Name="DownloadControl_Length" Value="サイズ" />
-    <Property Name="DownloadControl_CreationTime" Value="作成日" />
+    <Property Name="DownloadControl_CreationTime" Value="作成日時" />
     <Property Name="DownloadControl_Rate" Value="率" />
     <Property Name="DownloadControl_State" Value="状態" />
     <Property Name="DownloadControl_Path" Value="パス" />
@@ -304,7 +304,7 @@
     <Property Name="UploadControl_Upload" Value="アップロード" />
     <Property Name="UploadControl_Name" Value="名前" />
     <Property Name="UploadControl_Length" Value="サイズ" />
-    <Property Name="UploadControl_CreationTime" Value="作成日" />
+    <Property Name="UploadControl_CreationTime" Value="作成日時" />
     <Property Name="UploadControl_Path" Value="パス" />
     <Property Name="UploadControl_Sync" Value="同期" />
     <Property Name="UploadControl_Add" Value="追加" />
@@ -317,7 +317,7 @@
     <Property Name="UploadPreviewWindow_Path" Value="パス" />
     <Property Name="UploadPreviewWindow_Delete" Value="削除" />
     <Property Name="UploadPreviewWindow_Copy" Value="コピー" />
-    <Property Name="UploadPreviewWindow_Ok" Value="Ok" />
+    <Property Name="UploadPreviewWindow_Ok" Value="OK" />
     <Property Name="UploadPreviewWindow_Cancel" Value="キャンセル" />
 
 </Config>
