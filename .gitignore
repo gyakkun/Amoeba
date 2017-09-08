@@ -184,3 +184,6 @@ FakesAssemblies/
 *.pidb
 *.resources
 test-results/
+
+# VisualStudioCode
+.vscode/*
