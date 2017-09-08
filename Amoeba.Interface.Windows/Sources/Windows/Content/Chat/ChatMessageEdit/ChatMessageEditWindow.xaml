@@ -35,7 +35,7 @@
                     AcceptsReturn="True"
                     AcceptsTab="True"
                     AutoWordSelection="True"
-                    Text="{Binding Path=Comment.Value}"
+                    Text="{Binding Path=Comment.Value, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap" />
             <Button
                     Width="120"

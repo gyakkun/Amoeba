@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Threading;
 using Amoeba.Messages;
 using Amoeba.Service;
@@ -48,11 +49,11 @@ namespace Amoeba.Interface
         private void Init(string comment)
         {
             {
-                this.OkCommand = new ReactiveCommand().AddTo(_disposable);
-                this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
-
                 this.Comment = new ReactiveProperty<string>().AddTo(_disposable);
                 this.Comment.Value = comment;
+
+                this.OkCommand = this.Comment.Select(n => !string.IsNullOrWhiteSpace(n)).ToReactiveCommand().AddTo(_disposable);
+                this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
             }
 
             {
