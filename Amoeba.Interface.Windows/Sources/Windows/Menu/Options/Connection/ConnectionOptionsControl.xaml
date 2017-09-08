@@ -298,7 +298,7 @@
                                             Header="{Binding Path=ConnectionOptionsControl_Type, Source={StaticResource Languages}}">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Path=Type, Mode=OneWay}" />
+                                                <TextBlock Text="{Binding Path=Type, Mode=OneWay, Converter={StaticResource ConnectionTypeToStringConverter}}" />
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>
