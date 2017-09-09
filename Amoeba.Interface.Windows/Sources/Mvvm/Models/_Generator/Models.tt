@@ -53,29 +53,13 @@ using (var reader = new XmlTextReader(stream))
     }
 }
 #>
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-using Omnius.Base;
-<#
-foreach(var value in namespaces)
-{
-#>
+<# foreach(var value in namespaces) { #>
 using <#= value #>;
-<#
-}
-#>
+<# } #>
 
 namespace Amoeba.Interface
 {
-<#
-foreach(var c in classInfos)
-{
-#>
+<# foreach(var c in classInfos) { #>
     [DataContract(Name = nameof(<#= c.Name #>))]
     partial class <#= c.Name #> : INotifyPropertyChanged, ICloneable<<#= c.Name #>>
     {
@@ -87,14 +71,9 @@ foreach(var c in classInfos)
         }
 
         public <#= c.Name #>() { }
-<#
-    foreach(var p in c.PropertyInfos)
-    {
-        var generatedFieldName = GetFieldName(p.Name);
-
-        if(p.IsEditable)
-        {
-#>
+<# foreach(var p in c.PropertyInfos) { #>
+<# var generatedFieldName = GetFieldName(p.Name); #>
+<# if(p.IsEditable) { #>
 
         private <#= p.Type #> <#= generatedFieldName #>;
 
@@ -114,11 +93,7 @@ foreach(var c in classInfos)
                 }
             }
         }
-<#
-        }
-        else
-        {
-#>
+<# } else { #>
 
         private <#= p.Type #> <#= generatedFieldName #>;
 
@@ -133,10 +108,8 @@ foreach(var c in classInfos)
                 return <#= generatedFieldName #>;
             }
         }
-<#
-        }
-    }
-#>
+<# } #>
+<# } #>
 
         public <#= c.Name #> Clone()
         {
@@ -144,9 +117,7 @@ foreach(var c in classInfos)
         }
     }
 
-<#
-}
-#>
+<# } #>
 }
 <#+
 private static string GetNormalizedTypeName(string name)

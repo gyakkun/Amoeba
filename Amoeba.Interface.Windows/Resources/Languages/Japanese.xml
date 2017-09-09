@@ -7,8 +7,8 @@
 
     <Property Name="ValidationRule_ErrorMessage" Value="エラー" />
 
-    <Property Name="SessionType_Connect" Value="接続中" />
-    <Property Name="SessionType_Accept" Value="アクセプト" />
+    <Property Name="SessionType_Connect" Value="能動接続" />
+    <Property Name="SessionType_Accept" Value="受動接続" />
 
     <Property Name="ManagerState_Start" Value="開始" />
     <Property Name="ManagerState_Stop" Value="停止" />

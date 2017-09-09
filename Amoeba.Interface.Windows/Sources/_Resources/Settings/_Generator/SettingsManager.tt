@@ -36,34 +36,17 @@ using (var reader = new XmlTextReader(stream))
     }
 }
 #>
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
-using Omnius.Configuration;
-<#
-foreach(var value in namespaces)
-{
-#>
+<# foreach(var value in namespaces) { #>
 using <#= value #>;
-<#
-}
-#>
+<# } #>
 
 namespace Amoeba.Interface
 {
     partial class SettingsManager
     {
-<#
-    foreach(var p in propertyInfos)
-    {
-        var generatedFieldName = GetFieldName(p.Name);
-
-        if(p.IsEditable)
-        {
-#>
+<# foreach(var p in propertyInfos) { #>
+<# var generatedFieldName = GetFieldName(p.Name); #>
+<# if(p.IsEditable) { #>
         private <#= p.Type #> <#= generatedFieldName #>;
 
         [DataMember(Name = nameof(<#= p.Name #>))]
@@ -83,11 +66,7 @@ namespace Amoeba.Interface
             }
         }
 
-<#
-        }
-        else
-        {
-#>
+<# } else { #>
         private <#= p.Type #> <#= generatedFieldName #>;
 
         [DataMember(Name = nameof(<#= p.Name #>))]
@@ -102,10 +81,8 @@ namespace Amoeba.Interface
             }
         }
 
-<#
-        }
-    }
-#>
+<# } #>
+<# } #>
     }
 }
 <#+

@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using Omnius.Base;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Omnius;
+using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Security;
-using Amoeba.Service;
 using Amoeba.Messages;
 
 namespace Amoeba.Interface
