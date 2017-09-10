@@ -1,4 +1,5 @@
-﻿@{
+﻿@model SearchListViewItemInfo[]
+@{
     ViewData["Title"] = "About";
 }
 <h2>@ViewData["Title"]</h2>
@@ -10,12 +11,12 @@
 </form>
 <table class="table">
     <thead>
-        <tr><th>Name</th></tr>
+        <tr><th>Name</th><th>Length</th></tr>
     </thead>
     <tbody>
-        @foreach (var seed in Model)
+        @foreach (var info in Model)
         {
-            <tr><th>@seed.Name</th></tr>
+            <tr><td>@info.Name</td><td>@info.Length</td></tr>
         }
     </tbody>
 </table>

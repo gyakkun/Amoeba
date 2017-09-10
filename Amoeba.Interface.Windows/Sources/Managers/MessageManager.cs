@@ -111,8 +111,11 @@ namespace Amoeba.Interface
 
             searchSignatures.Add(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature());
 
-            var oldConfig = _serviceManager.Config;
-            _serviceManager.SetConfig(new ServiceConfig(oldConfig.Core, oldConfig.Connection, new MessageConfig(searchSignatures)));
+            lock (_serviceManager.LockObject)
+            {
+                var oldConfig = _serviceManager.Config;
+                _serviceManager.SetConfig(new ServiceConfig(oldConfig.Core, oldConfig.Connection, new MessageConfig(searchSignatures)));
+            }
         }
 
         private IEnumerable<BroadcastMessage<Profile>> GetProfiles(IEnumerable<Signature> trustSignatures)

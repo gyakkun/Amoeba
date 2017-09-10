@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace Amoeba.Interface
 {
     [DataContract(Name = nameof(SearchRegex))]
-    class SearchRegex : IEquatable<SearchRegex>
+    public class SearchRegex : IEquatable<SearchRegex>
     {
         private string _value;
         private bool _isIgnoreCase;

@@ -14,8 +14,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Amoeba.Messages\Amoeba.Messages.csproj" />
+    <ProjectReference Include="..\Amoeba.Rpc\Amoeba.Rpc.csproj" />
     <ProjectReference Include="..\Amoeba.Service\Amoeba.Service.csproj" />
-    <ProjectReference Include="..\Amoeba.Utilities\Amoeba.Utilities.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Collections\Omnius.Collections.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Configuration\Omnius.Configuration.csproj" />

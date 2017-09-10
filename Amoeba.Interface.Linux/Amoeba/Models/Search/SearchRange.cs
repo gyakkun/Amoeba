@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Amoeba.Interface
 {
     [DataContract(Name = nameof(SearchRange<T>))]
-    struct SearchRange<T> : IEquatable<SearchRange<T>>
+    public struct SearchRange<T> : IEquatable<SearchRange<T>>
         where T : IComparable<T>, IEquatable<T>
     {
         private T _min;

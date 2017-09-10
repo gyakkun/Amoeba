@@ -1,13 +1,13 @@
 using System;
 using System.IO;
 using System.Reactive.Disposables;
+using Amoeba.Messages;
+using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
-using Amoeba.Service;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Amoeba.Messages;
 
 namespace Amoeba.Interface
 {
@@ -93,8 +93,11 @@ namespace Amoeba.Interface
                     .ContinueWith((_) => ProgressDialog.Instance.Decrement());
             }
 
-            var oldConfig = _serviceManager.Config;
-            _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(this.DataOptions.Download.DirectoryPath)), oldConfig.Connection, oldConfig.Message));
+            lock (_serviceManager.LockObject)
+            {
+                var oldConfig = _serviceManager.Config;
+                _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(this.DataOptions.Download.DirectoryPath)), oldConfig.Connection, oldConfig.Message));
+            }
         }
 
         private void DownloadDirectoryPathEditDialog()

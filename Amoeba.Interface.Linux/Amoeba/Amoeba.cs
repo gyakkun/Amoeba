@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using Amoeba.Messages;
-using Amoeba.Service;
-using Omnius.Base;
+using Amoeba.Rpc;
 
 namespace Amoeba.Interface
 {
     static class Amoeba
     {
-        private static ServiceManager _serviceManager;
+        private static AmoebaClientManager _serviceManager;
         private static MessageManager _messageManager;
         private static WatchManager _watchManager;
 
@@ -17,7 +17,7 @@ namespace Amoeba.Interface
 
         }
 
-        public static ServiceManager Service { get => _serviceManager; }
+        public static AmoebaClientManager Service { get => _serviceManager; }
         public static MessageManager Message { get => _messageManager; }
 
         public static void Run()
@@ -25,11 +25,8 @@ namespace Amoeba.Interface
             SettingsManager.Instance.Load();
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
-                if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
-
-                _serviceManager = new ServiceManager(configPath, Path.Combine(AmoebaEnvironment.Paths.CorePath, AmoebaEnvironment.Config.Cache.BlocksPath), BufferManager.Instance);
-                _serviceManager.Load();
+                _serviceManager = new AmoebaClientManager();
+                _serviceManager.Connect(new IPEndPoint(IPAddress.Loopback, 4040));
 
                 {
                     var locations = new List<Location>();
@@ -47,12 +44,6 @@ namespace Amoeba.Interface
                     _serviceManager.SetCloudLocations(locations);
                 }
 
-                if (_serviceManager.Config.Core.Download.BasePath == null)
-                {
-                    var oldConfig = _serviceManager.Config;
-                    _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(AmoebaEnvironment.Paths.DownloadsPath)), oldConfig.Connection, oldConfig.Message));
-                }
-
                 _serviceManager.Start();
             }
 
@@ -68,7 +59,6 @@ namespace Amoeba.Interface
                 _watchManager = new WatchManager(_serviceManager);
                 _watchManager.SaveEvent += () =>
                 {
-                    _serviceManager.Save();
                     _messageManager.Save();
                 };
             }
@@ -82,7 +72,6 @@ namespace Amoeba.Interface
             _messageManager.Dispose();
 
             _serviceManager.Stop();
-            _serviceManager.Save();
             _serviceManager.Dispose();
         }
     }

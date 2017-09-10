@@ -12,15 +12,8 @@ using Amoeba.Messages;
 namespace Amoeba.Interface
 {
     [DataContract(Name = nameof(AccountInfo))]
-    partial class AccountInfo : INotifyPropertyChanged, ICloneable<AccountInfo>
+    public class AccountInfo : ICloneable<AccountInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public AccountInfo() { }
 
         private DigitalSignature _digitalSignature;
@@ -34,11 +27,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_digitalSignature != value)
-                {
-                    _digitalSignature = value;
-                    this.OnPropertyChanged(nameof(DigitalSignature));
-                }
+                _digitalSignature = value;
             }
         }
 
@@ -53,11 +42,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_comment != value)
-                {
-                    _comment = value;
-                    this.OnPropertyChanged(nameof(Comment));
-                }
+                _comment = value;
             }
         }
 
@@ -72,11 +57,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_exchange != value)
-                {
-                    _exchange = value;
-                    this.OnPropertyChanged(nameof(Exchange));
-                }
+                _exchange = value;
             }
         }
 
@@ -129,15 +110,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(UpdateInfo))]
-    partial class UpdateInfo : INotifyPropertyChanged, ICloneable<UpdateInfo>
+    public class UpdateInfo : ICloneable<UpdateInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public UpdateInfo() { }
 
         private bool _isEnabled;
@@ -151,11 +125,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isEnabled != value)
-                {
-                    _isEnabled = value;
-                    this.OnPropertyChanged(nameof(IsEnabled));
-                }
+                _isEnabled = value;
             }
         }
 
@@ -170,11 +140,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_signature != value)
-                {
-                    _signature = value;
-                    this.OnPropertyChanged(nameof(Signature));
-                }
+                _signature = value;
             }
         }
 
@@ -185,15 +151,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(RelationSignatureInfo))]
-    partial class RelationSignatureInfo : INotifyPropertyChanged, ICloneable<RelationSignatureInfo>
+    public class RelationSignatureInfo : ICloneable<RelationSignatureInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public RelationSignatureInfo() { }
 
         private Signature _signature;
@@ -207,11 +166,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_signature != value)
-                {
-                    _signature = value;
-                    this.OnPropertyChanged(nameof(Signature));
-                }
+                _signature = value;
             }
         }
 
@@ -226,11 +181,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_profile != value)
-                {
-                    _profile = value;
-                    this.OnPropertyChanged(nameof(Profile));
-                }
+                _profile = value;
             }
         }
 
@@ -255,15 +206,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(OptionsInfo))]
-    partial class OptionsInfo : INotifyPropertyChanged, ICloneable<OptionsInfo>
+    public class OptionsInfo : ICloneable<OptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public OptionsInfo() { }
 
         private AccountOptionsInfo _account;
@@ -343,15 +287,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(AccountOptionsInfo))]
-    partial class AccountOptionsInfo : INotifyPropertyChanged, ICloneable<AccountOptionsInfo>
+    public class AccountOptionsInfo : ICloneable<AccountOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public AccountOptionsInfo() { }
 
         private DigitalSignature _digitalSignature;
@@ -365,11 +302,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_digitalSignature != value)
-                {
-                    _digitalSignature = value;
-                    this.OnPropertyChanged(nameof(DigitalSignature));
-                }
+                _digitalSignature = value;
             }
         }
 
@@ -384,11 +317,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_comment != value)
-                {
-                    _comment = value;
-                    this.OnPropertyChanged(nameof(Comment));
-                }
+                _comment = value;
             }
         }
 
@@ -441,15 +370,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(ConnectionOptionsInfo))]
-    partial class ConnectionOptionsInfo : INotifyPropertyChanged, ICloneable<ConnectionOptionsInfo>
+    public class ConnectionOptionsInfo : ICloneable<ConnectionOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public ConnectionOptionsInfo() { }
 
         private TcpOptionsInfo _tcp;
@@ -515,15 +437,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(TcpOptionsInfo))]
-    partial class TcpOptionsInfo : INotifyPropertyChanged, ICloneable<TcpOptionsInfo>
+    public class TcpOptionsInfo : ICloneable<TcpOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public TcpOptionsInfo() { }
 
         private bool _ipv4IsEnabled;
@@ -537,11 +452,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_ipv4IsEnabled != value)
-                {
-                    _ipv4IsEnabled = value;
-                    this.OnPropertyChanged(nameof(Ipv4IsEnabled));
-                }
+                _ipv4IsEnabled = value;
             }
         }
 
@@ -556,11 +467,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_ipv4Port != value)
-                {
-                    _ipv4Port = value;
-                    this.OnPropertyChanged(nameof(Ipv4Port));
-                }
+                _ipv4Port = value;
             }
         }
 
@@ -575,11 +482,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_ipv6IsEnabled != value)
-                {
-                    _ipv6IsEnabled = value;
-                    this.OnPropertyChanged(nameof(Ipv6IsEnabled));
-                }
+                _ipv6IsEnabled = value;
             }
         }
 
@@ -594,11 +497,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_ipv6Port != value)
-                {
-                    _ipv6Port = value;
-                    this.OnPropertyChanged(nameof(Ipv6Port));
-                }
+                _ipv6Port = value;
             }
         }
 
@@ -613,11 +512,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_proxyUri != value)
-                {
-                    _proxyUri = value;
-                    this.OnPropertyChanged(nameof(ProxyUri));
-                }
+                _proxyUri = value;
             }
         }
 
@@ -628,15 +523,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(I2pOptionsInfo))]
-    partial class I2pOptionsInfo : INotifyPropertyChanged, ICloneable<I2pOptionsInfo>
+    public class I2pOptionsInfo : ICloneable<I2pOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public I2pOptionsInfo() { }
 
         private bool _isEnabled;
@@ -650,11 +538,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isEnabled != value)
-                {
-                    _isEnabled = value;
-                    this.OnPropertyChanged(nameof(IsEnabled));
-                }
+                _isEnabled = value;
             }
         }
 
@@ -669,11 +553,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_samBridgeUri != value)
-                {
-                    _samBridgeUri = value;
-                    this.OnPropertyChanged(nameof(SamBridgeUri));
-                }
+                _samBridgeUri = value;
             }
         }
 
@@ -684,15 +564,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(CustomOptionsInfo))]
-    partial class CustomOptionsInfo : INotifyPropertyChanged, ICloneable<CustomOptionsInfo>
+    public class CustomOptionsInfo : ICloneable<CustomOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public CustomOptionsInfo() { }
 
         private ObservableCollection<string> _locationUris;
@@ -744,15 +617,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(BandwidthOptionsInfo))]
-    partial class BandwidthOptionsInfo : INotifyPropertyChanged, ICloneable<BandwidthOptionsInfo>
+    public class BandwidthOptionsInfo : ICloneable<BandwidthOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public BandwidthOptionsInfo() { }
 
         private int _connectionCountLimit;
@@ -766,11 +632,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_connectionCountLimit != value)
-                {
-                    _connectionCountLimit = value;
-                    this.OnPropertyChanged(nameof(ConnectionCountLimit));
-                }
+                _connectionCountLimit = value;
             }
         }
 
@@ -785,11 +647,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_bandwidthLimit != value)
-                {
-                    _bandwidthLimit = value;
-                    this.OnPropertyChanged(nameof(BandwidthLimit));
-                }
+                _bandwidthLimit = value;
             }
         }
 
@@ -800,15 +658,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(DataOptionsInfo))]
-    partial class DataOptionsInfo : INotifyPropertyChanged, ICloneable<DataOptionsInfo>
+    public class DataOptionsInfo : ICloneable<DataOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public DataOptionsInfo() { }
 
         private CacheOptionsInfo _cache;
@@ -846,15 +697,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(CacheOptionsInfo))]
-    partial class CacheOptionsInfo : INotifyPropertyChanged, ICloneable<CacheOptionsInfo>
+    public class CacheOptionsInfo : ICloneable<CacheOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public CacheOptionsInfo() { }
 
         private long _size;
@@ -868,11 +712,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_size != value)
-                {
-                    _size = value;
-                    this.OnPropertyChanged(nameof(Size));
-                }
+                _size = value;
             }
         }
 
@@ -883,15 +723,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(DownloadOptionsInfo))]
-    partial class DownloadOptionsInfo : INotifyPropertyChanged, ICloneable<DownloadOptionsInfo>
+    public class DownloadOptionsInfo : ICloneable<DownloadOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public DownloadOptionsInfo() { }
 
         private string _directoryPath;
@@ -905,11 +738,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_directoryPath != value)
-                {
-                    _directoryPath = value;
-                    this.OnPropertyChanged(nameof(DirectoryPath));
-                }
+                _directoryPath = value;
             }
         }
 
@@ -920,15 +749,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(ViewOptionsInfo))]
-    partial class ViewOptionsInfo : INotifyPropertyChanged, ICloneable<ViewOptionsInfo>
+    public class ViewOptionsInfo : ICloneable<ViewOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public ViewOptionsInfo() { }
 
         private SubscribeOptionsInfo _subscribe;
@@ -952,15 +774,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(SubscribeOptionsInfo))]
-    partial class SubscribeOptionsInfo : INotifyPropertyChanged, ICloneable<SubscribeOptionsInfo>
+    public class SubscribeOptionsInfo : ICloneable<SubscribeOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public SubscribeOptionsInfo() { }
 
         private ObservableCollection<Signature> _subscribeSignatures;
@@ -984,15 +799,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(UpdateOptionsInfo))]
-    partial class UpdateOptionsInfo : INotifyPropertyChanged, ICloneable<UpdateOptionsInfo>
+    public class UpdateOptionsInfo : ICloneable<UpdateOptionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public UpdateOptionsInfo() { }
 
         private bool _isEnabled;
@@ -1006,11 +814,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isEnabled != value)
-                {
-                    _isEnabled = value;
-                    this.OnPropertyChanged(nameof(IsEnabled));
-                }
+                _isEnabled = value;
             }
         }
 
@@ -1025,11 +829,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_signature != value)
-                {
-                    _signature = value;
-                    this.OnPropertyChanged(nameof(Signature));
-                }
+                _signature = value;
             }
         }
 
@@ -1040,15 +840,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(CloudStateInfo))]
-    partial class CloudStateInfo : INotifyPropertyChanged, ICloneable<CloudStateInfo>
+    public class CloudStateInfo : ICloneable<CloudStateInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public CloudStateInfo() { }
 
         private string _location;
@@ -1062,11 +855,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_location != value)
-                {
-                    _location = value;
-                    this.OnPropertyChanged(nameof(Location));
-                }
+                _location = value;
             }
         }
 
@@ -1077,15 +866,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(ChatCategoryInfo))]
-    partial class ChatCategoryInfo : INotifyPropertyChanged, ICloneable<ChatCategoryInfo>
+    public class ChatCategoryInfo : ICloneable<ChatCategoryInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public ChatCategoryInfo() { }
 
         private string _name;
@@ -1099,11 +881,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -1118,11 +896,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
+                _isExpanded = value;
             }
         }
 
@@ -1161,15 +935,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(ChatThreadInfo))]
-    partial class ChatThreadInfo : INotifyPropertyChanged, ICloneable<ChatThreadInfo>
+    public class ChatThreadInfo : ICloneable<ChatThreadInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public ChatThreadInfo() { }
 
         private bool _isUpdated;
@@ -1183,11 +950,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isUpdated != value)
-                {
-                    _isUpdated = value;
-                    this.OnPropertyChanged(nameof(IsUpdated));
-                }
+                _isUpdated = value;
             }
         }
 
@@ -1202,11 +965,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_tag != value)
-                {
-                    _tag = value;
-                    this.OnPropertyChanged(nameof(Tag));
-                }
+                _tag = value;
             }
         }
 
@@ -1221,11 +980,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isTrustMessageOnly != value)
-                {
-                    _isTrustMessageOnly = value;
-                    this.OnPropertyChanged(nameof(IsTrustMessageOnly));
-                }
+                _isTrustMessageOnly = value;
             }
         }
 
@@ -1240,11 +995,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isNewMessageOnly != value)
-                {
-                    _isNewMessageOnly = value;
-                    this.OnPropertyChanged(nameof(IsNewMessageOnly));
-                }
+                _isNewMessageOnly = value;
             }
         }
 
@@ -1269,15 +1020,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(ChatMessageInfo))]
-    partial class ChatMessageInfo : INotifyPropertyChanged, ICloneable<ChatMessageInfo>
+    public class ChatMessageInfo : ICloneable<ChatMessageInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public ChatMessageInfo() { }
 
         private ChatMessageState _state;
@@ -1291,11 +1035,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_state != value)
-                {
-                    _state = value;
-                    this.OnPropertyChanged(nameof(State));
-                }
+                _state = value;
             }
         }
 
@@ -1310,11 +1050,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_message != value)
-                {
-                    _message = value;
-                    this.OnPropertyChanged(nameof(Message));
-                }
+                _message = value;
             }
         }
 
@@ -1325,15 +1061,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(SubscribeCategoryInfo))]
-    partial class SubscribeCategoryInfo : INotifyPropertyChanged, ICloneable<SubscribeCategoryInfo>
+    public class SubscribeCategoryInfo : ICloneable<SubscribeCategoryInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public SubscribeCategoryInfo() { }
 
         private string _name;
@@ -1347,11 +1076,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -1366,11 +1091,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
+                _isExpanded = value;
             }
         }
 
@@ -1409,15 +1130,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(SubscribeStoreInfo))]
-    partial class SubscribeStoreInfo : INotifyPropertyChanged, ICloneable<SubscribeStoreInfo>
+    public class SubscribeStoreInfo : ICloneable<SubscribeStoreInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public SubscribeStoreInfo() { }
 
         private Signature _authorSignature;
@@ -1431,11 +1145,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_authorSignature != value)
-                {
-                    _authorSignature = value;
-                    this.OnPropertyChanged(nameof(AuthorSignature));
-                }
+                _authorSignature = value;
             }
         }
 
@@ -1450,11 +1160,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_creationTime != value)
-                {
-                    _creationTime = value;
-                    this.OnPropertyChanged(nameof(CreationTime));
-                }
+                _creationTime = value;
             }
         }
 
@@ -1469,11 +1175,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
+                _isExpanded = value;
             }
         }
 
@@ -1488,11 +1190,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isUpdated != value)
-                {
-                    _isUpdated = value;
-                    this.OnPropertyChanged(nameof(IsUpdated));
-                }
+                _isUpdated = value;
             }
         }
 
@@ -1517,15 +1215,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(SubscribeBoxInfo))]
-    partial class SubscribeBoxInfo : INotifyPropertyChanged, ICloneable<SubscribeBoxInfo>
+    public class SubscribeBoxInfo : ICloneable<SubscribeBoxInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public SubscribeBoxInfo() { }
 
         private string _name;
@@ -1539,11 +1230,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -1558,11 +1245,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
+                _isExpanded = value;
             }
         }
 
@@ -1601,15 +1284,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(SubscribeListViewItemInfo))]
-    partial class SubscribeListViewItemInfo : INotifyPropertyChanged, ICloneable<SubscribeListViewItemInfo>
+    public class SubscribeListViewItemInfo : ICloneable<SubscribeListViewItemInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public SubscribeListViewItemInfo() { }
 
         private string _name;
@@ -1623,11 +1299,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -1642,11 +1314,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_length != value)
-                {
-                    _length = value;
-                    this.OnPropertyChanged(nameof(Length));
-                }
+                _length = value;
             }
         }
 
@@ -1661,11 +1329,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_creationTime != value)
-                {
-                    _creationTime = value;
-                    this.OnPropertyChanged(nameof(CreationTime));
-                }
+                _creationTime = value;
             }
         }
 
@@ -1680,11 +1344,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_state != value)
-                {
-                    _state = value;
-                    this.OnPropertyChanged(nameof(State));
-                }
+                _state = value;
             }
         }
 
@@ -1699,11 +1359,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_model != value)
-                {
-                    _model = value;
-                    this.OnPropertyChanged(nameof(Model));
-                }
+                _model = value;
             }
         }
 
@@ -1714,15 +1370,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(PublishStoreInfo))]
-    partial class PublishStoreInfo : INotifyPropertyChanged, ICloneable<PublishStoreInfo>
+    public class PublishStoreInfo : ICloneable<PublishStoreInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public PublishStoreInfo() { }
 
         private bool _isExpanded;
@@ -1736,11 +1385,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
+                _isExpanded = value;
             }
         }
 
@@ -1755,11 +1400,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isUpdated != value)
-                {
-                    _isUpdated = value;
-                    this.OnPropertyChanged(nameof(IsUpdated));
-                }
+                _isUpdated = value;
             }
         }
 
@@ -1784,15 +1425,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(PublishBoxInfo))]
-    partial class PublishBoxInfo : INotifyPropertyChanged, ICloneable<PublishBoxInfo>
+    public class PublishBoxInfo : ICloneable<PublishBoxInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public PublishBoxInfo() { }
 
         private string _name;
@@ -1806,11 +1440,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -1825,11 +1455,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
+                _isExpanded = value;
             }
         }
 
@@ -1868,15 +1494,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(PublishListViewItemInfo))]
-    partial class PublishListViewItemInfo : INotifyPropertyChanged, ICloneable<PublishListViewItemInfo>
+    public class PublishListViewItemInfo : ICloneable<PublishListViewItemInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public PublishListViewItemInfo() { }
 
         private string _name;
@@ -1890,11 +1509,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -1909,11 +1524,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_length != value)
-                {
-                    _length = value;
-                    this.OnPropertyChanged(nameof(Length));
-                }
+                _length = value;
             }
         }
 
@@ -1928,11 +1539,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_creationTime != value)
-                {
-                    _creationTime = value;
-                    this.OnPropertyChanged(nameof(CreationTime));
-                }
+                _creationTime = value;
             }
         }
 
@@ -1947,11 +1554,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_state != value)
-                {
-                    _state = value;
-                    this.OnPropertyChanged(nameof(State));
-                }
+                _state = value;
             }
         }
 
@@ -1966,11 +1569,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_model != value)
-                {
-                    _model = value;
-                    this.OnPropertyChanged(nameof(Model));
-                }
+                _model = value;
             }
         }
 
@@ -1981,15 +1580,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(SearchInfo))]
-    partial class SearchInfo : INotifyPropertyChanged, ICloneable<SearchInfo>
+    public class SearchInfo : ICloneable<SearchInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public SearchInfo() { }
 
         private string _name;
@@ -2003,11 +1595,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -2022,11 +1610,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isExpanded != value)
-                {
-                    _isExpanded = value;
-                    this.OnPropertyChanged(nameof(IsExpanded));
-                }
+                _isExpanded = value;
             }
         }
 
@@ -2041,11 +1625,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_isUpdated != value)
-                {
-                    _isUpdated = value;
-                    this.OnPropertyChanged(nameof(IsUpdated));
-                }
+                _isUpdated = value;
             }
         }
 
@@ -2084,15 +1664,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(SearchConditionsInfo))]
-    partial class SearchConditionsInfo : INotifyPropertyChanged, ICloneable<SearchConditionsInfo>
+    public class SearchConditionsInfo : ICloneable<SearchConditionsInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public SearchConditionsInfo() { }
 
         private ObservableCollection<SearchCondition<string>> _searchNames;
@@ -2186,15 +1759,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(SearchListViewItemInfo))]
-    partial class SearchListViewItemInfo : INotifyPropertyChanged, ICloneable<SearchListViewItemInfo>
+    public class SearchListViewItemInfo : ICloneable<SearchListViewItemInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public SearchListViewItemInfo() { }
 
         private string _name;
@@ -2208,11 +1774,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -2227,11 +1789,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_signature != value)
-                {
-                    _signature = value;
-                    this.OnPropertyChanged(nameof(Signature));
-                }
+                _signature = value;
             }
         }
 
@@ -2246,11 +1804,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_length != value)
-                {
-                    _length = value;
-                    this.OnPropertyChanged(nameof(Length));
-                }
+                _length = value;
             }
         }
 
@@ -2265,11 +1819,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_creationTime != value)
-                {
-                    _creationTime = value;
-                    this.OnPropertyChanged(nameof(CreationTime));
-                }
+                _creationTime = value;
             }
         }
 
@@ -2284,11 +1834,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_state != value)
-                {
-                    _state = value;
-                    this.OnPropertyChanged(nameof(State));
-                }
+                _state = value;
             }
         }
 
@@ -2303,11 +1849,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_model != value)
-                {
-                    _model = value;
-                    this.OnPropertyChanged(nameof(Model));
-                }
+                _model = value;
             }
         }
 
@@ -2318,15 +1860,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(DownloadListViewItemInfo))]
-    partial class DownloadListViewItemInfo : INotifyPropertyChanged, ICloneable<DownloadListViewItemInfo>
+    public class DownloadListViewItemInfo : ICloneable<DownloadListViewItemInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public DownloadListViewItemInfo() { }
 
         private string _name;
@@ -2340,11 +1875,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -2359,11 +1890,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_length != value)
-                {
-                    _length = value;
-                    this.OnPropertyChanged(nameof(Length));
-                }
+                _length = value;
             }
         }
 
@@ -2378,11 +1905,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_creationTime != value)
-                {
-                    _creationTime = value;
-                    this.OnPropertyChanged(nameof(CreationTime));
-                }
+                _creationTime = value;
             }
         }
 
@@ -2411,11 +1934,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_state != value)
-                {
-                    _state = value;
-                    this.OnPropertyChanged(nameof(State));
-                }
+                _state = value;
             }
         }
 
@@ -2430,11 +1949,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_path != value)
-                {
-                    _path = value;
-                    this.OnPropertyChanged(nameof(Path));
-                }
+                _path = value;
             }
         }
 
@@ -2449,11 +1964,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_model != value)
-                {
-                    _model = value;
-                    this.OnPropertyChanged(nameof(Model));
-                }
+                _model = value;
             }
         }
 
@@ -2464,15 +1975,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(DownloadListViewItemRateInfo))]
-    partial class DownloadListViewItemRateInfo : INotifyPropertyChanged, ICloneable<DownloadListViewItemRateInfo>
+    public class DownloadListViewItemRateInfo : ICloneable<DownloadListViewItemRateInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public DownloadListViewItemRateInfo() { }
 
         private string _text;
@@ -2486,11 +1990,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_text != value)
-                {
-                    _text = value;
-                    this.OnPropertyChanged(nameof(Text));
-                }
+                _text = value;
             }
         }
 
@@ -2505,11 +2005,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_depth != value)
-                {
-                    _depth = value;
-                    this.OnPropertyChanged(nameof(Depth));
-                }
+                _depth = value;
             }
         }
 
@@ -2524,11 +2020,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_value != value)
-                {
-                    _value = value;
-                    this.OnPropertyChanged(nameof(Value));
-                }
+                _value = value;
             }
         }
 
@@ -2539,15 +2031,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(UploadListViewItemInfo))]
-    partial class UploadListViewItemInfo : INotifyPropertyChanged, ICloneable<UploadListViewItemInfo>
+    public class UploadListViewItemInfo : ICloneable<UploadListViewItemInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public UploadListViewItemInfo() { }
 
         private string _name;
@@ -2561,11 +2046,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -2580,11 +2061,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_length != value)
-                {
-                    _length = value;
-                    this.OnPropertyChanged(nameof(Length));
-                }
+                _length = value;
             }
         }
 
@@ -2599,11 +2076,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_creationTime != value)
-                {
-                    _creationTime = value;
-                    this.OnPropertyChanged(nameof(CreationTime));
-                }
+                _creationTime = value;
             }
         }
 
@@ -2618,11 +2091,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_path != value)
-                {
-                    _path = value;
-                    this.OnPropertyChanged(nameof(Path));
-                }
+                _path = value;
             }
         }
 
@@ -2637,11 +2106,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_seed != value)
-                {
-                    _seed = value;
-                    this.OnPropertyChanged(nameof(Seed));
-                }
+                _seed = value;
             }
         }
 
@@ -2652,15 +2117,8 @@ namespace Amoeba.Interface
     }
 
     [DataContract(Name = nameof(UploadPreviewListViewItemInfo))]
-    partial class UploadPreviewListViewItemInfo : INotifyPropertyChanged, ICloneable<UploadPreviewListViewItemInfo>
+    public class UploadPreviewListViewItemInfo : ICloneable<UploadPreviewListViewItemInfo>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public UploadPreviewListViewItemInfo() { }
 
         private string _name;
@@ -2674,11 +2132,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.OnPropertyChanged(nameof(Name));
-                }
+                _name = value;
             }
         }
 
@@ -2693,11 +2147,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_length != value)
-                {
-                    _length = value;
-                    this.OnPropertyChanged(nameof(Length));
-                }
+                _length = value;
             }
         }
 
@@ -2712,11 +2162,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (_path != value)
-                {
-                    _path = value;
-                    this.OnPropertyChanged(nameof(Path));
-                }
+                _path = value;
             }
         }
 

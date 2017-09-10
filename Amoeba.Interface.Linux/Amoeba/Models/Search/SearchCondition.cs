@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Amoeba.Interface
 {
     [DataContract(Name = nameof(SearchCondition<T>))]
-    class SearchCondition<T> : IEquatable<SearchCondition<T>>
+    public class SearchCondition<T> : IEquatable<SearchCondition<T>>
     {
         private bool _isContains;
         private T _value;

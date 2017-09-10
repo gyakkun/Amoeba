@@ -44,6 +44,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Interface", "Amoeba.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Toml", "Omnius\Omnius.Toml\Omnius.Toml.csproj", "{ADA2B6E1-357B-4B75-A73D-FE1BF9C2A444}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Rpc", "Amoeba.Rpc\Amoeba.Rpc.csproj", "{FF951CA6-E327-4D1C-9CAC-25C65C357507}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Daemon", "Amoeba.Daemon\Amoeba.Daemon.csproj", "{4E17C103-9B28-4A7B-A1C4-D41DA51631EA}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0a55926d-70ce-41ba-a838-99937a3b219d}*SharedItemsImports = 4
@@ -118,6 +122,14 @@ Global
 		{ADA2B6E1-357B-4B75-A73D-FE1BF9C2A444}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADA2B6E1-357B-4B75-A73D-FE1BF9C2A444}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADA2B6E1-357B-4B75-A73D-FE1BF9C2A444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF951CA6-E327-4D1C-9CAC-25C65C357507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF951CA6-E327-4D1C-9CAC-25C65C357507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF951CA6-E327-4D1C-9CAC-25C65C357507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF951CA6-E327-4D1C-9CAC-25C65C357507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E17C103-9B28-4A7B-A1C4-D41DA51631EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E17C103-9B28-4A7B-A1C4-D41DA51631EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E17C103-9B28-4A7B-A1C4-D41DA51631EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E17C103-9B28-4A7B-A1C4-D41DA51631EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

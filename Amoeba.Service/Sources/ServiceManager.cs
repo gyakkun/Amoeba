@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Amoeba.Messages;
@@ -12,7 +11,7 @@ using Omnius.Security;
 
 namespace Amoeba.Service
 {
-    public sealed class ServiceManager : StateManagerBase, ISettings
+    public sealed class ServiceManager : StateManagerBase, ISettings, ISynchronized
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
@@ -406,6 +405,14 @@ namespace Amoeba.Service
                 _messageManager.Dispose();
                 _connectionManager.Dispose();
                 _coreManager.Dispose();
+            }
+        }
+
+        public object LockObject
+        {
+            get
+            {
+                return _lockObject;
             }
         }
     }

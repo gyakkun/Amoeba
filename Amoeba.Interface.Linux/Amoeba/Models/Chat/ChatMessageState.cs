@@ -5,7 +5,7 @@ namespace Amoeba.Interface
 {
     [Flags]
     [DataContract(Name = nameof(ChatMessageState))]
-    enum ChatMessageState
+    public enum ChatMessageState
     {
         [EnumMember(Value = "None")]
         None = 0,

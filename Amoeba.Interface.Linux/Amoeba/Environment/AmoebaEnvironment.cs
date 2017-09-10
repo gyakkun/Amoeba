@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using Omnius.Base;
-using Omnius.Toml;
 
 namespace Amoeba.Interface
 {
@@ -11,50 +10,16 @@ namespace Amoeba.Interface
         public static Version Version { get; private set; }
         public static EnvironmentPaths Paths { get; private set; }
 
-        public static EnvironmentConfig Config { get; private set; }
-
         static AmoebaEnvironment()
         {
             try
             {
-                Version = new Version(5, 0, 37);
+                Version = new Version(5, 0, 0);
                 Paths = new EnvironmentPaths();
-
-                LoadConfig();
             }
             catch (Exception e)
             {
                 Log.Error(e);
-            }
-        }
-
-        private static void LoadConfig()
-        {
-            string configPath = Path.Combine(Paths.ConfigPath, "Config.toml");
-
-            var tomlSettings = TomlSettings.Create(builder => builder
-                .ConfigureType<Version>(type => type
-                    .WithConversionFor<TomlString>(convert => convert
-                        .ToToml(tt => tt.ToString())
-                        .FromToml(ft => Version.Parse(ft.Value)))));
-
-            var oldConfig = File.Exists(configPath) ? Toml.ReadFile<EnvironmentConfig>(configPath, tomlSettings) : null;
-
-            var version = oldConfig?.Version ?? new Version(0, 0, 0);
-            var cache = oldConfig?.Cache ?? CreateDefaultCacheConfig();
-            var tor = oldConfig?.Tor ?? (version <= new Version(5, 0, 28) ? CreateDefaultTorConfig() : null);
-
-            Toml.WriteFile(new EnvironmentConfig(AmoebaEnvironment.Version, cache, tor), configPath, tomlSettings);
-            Config = new EnvironmentConfig(version, cache, tor);
-
-            EnvironmentConfig.CacheConfig CreateDefaultCacheConfig()
-            {
-                return new EnvironmentConfig.CacheConfig("../Config/Cache.blocks");
-            }
-
-            EnvironmentConfig.TorConfig CreateDefaultTorConfig()
-            {
-                return new EnvironmentConfig.TorConfig(@"Assemblies/Tor/tor.exe", "-f tor.config DataDirectory " + @"../../../Work/Tor", @"Assemblies/Tor");
             }
         }
 
@@ -74,57 +39,13 @@ namespace Amoeba.Interface
                 string corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
                 this.CorePath = corePath;
-                this.TempPath = Path.Combine(corePath, "../Temp");
-                this.ConfigPath = Path.Combine(corePath, "../Config");
-                this.DownloadsPath = Path.Combine(corePath, "../Downloads");
-                this.UpdatePath = Path.Combine(corePath, "../Update");
-                this.LogPath = Path.Combine(corePath, "../Log");
-                this.WorkPath = Path.Combine(corePath, "../Work");
-                this.LanguagesPath = Path.Combine(corePath, "./Resources/Languages");
-            }
-        }
-
-        public class EnvironmentConfig
-        {
-            public Version Version { get; private set; }
-            public CacheConfig Cache { get; private set; }
-            public TorConfig Tor { get; private set; }
-
-            public EnvironmentConfig() { }
-
-            public EnvironmentConfig(Version version, CacheConfig cache, TorConfig tor)
-            {
-                this.Version = version;
-                this.Cache = cache;
-                this.Tor = tor;
-            }
-
-            public class CacheConfig
-            {
-                public string BlocksPath { get; private set; }
-
-                public CacheConfig() { }
-
-                public CacheConfig(string blocksPath)
-                {
-                    this.BlocksPath = blocksPath;
-                }
-            }
-
-            public class TorConfig
-            {
-                public string Path { get; private set; }
-                public string Arguments { get; private set; }
-                public string WorkingDirectory { get; private set; }
-
-                public TorConfig() { }
-
-                public TorConfig(string path, string arguments, string workDirectory)
-                {
-                    this.Path = path;
-                    this.Arguments = arguments;
-                    this.WorkingDirectory = workDirectory;
-                }
+                this.TempPath = Path.GetFullPath(Path.Combine(corePath, "../Temp"));
+                this.ConfigPath = Path.GetFullPath(Path.Combine(corePath, "../Config"));
+                this.DownloadsPath = Path.GetFullPath(Path.Combine(corePath, "../Downloads"));
+                this.UpdatePath = Path.GetFullPath(Path.Combine(corePath, "../Update"));
+                this.LogPath = Path.GetFullPath(Path.Combine(corePath, "../Log"));
+                this.WorkPath = Path.GetFullPath(Path.Combine(corePath, "../Work"));
+                this.LanguagesPath = Path.GetFullPath(Path.Combine(corePath, "./Resources/Languages"));
             }
         }
     }

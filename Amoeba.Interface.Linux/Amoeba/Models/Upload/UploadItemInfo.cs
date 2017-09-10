@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Amoeba.Interface
 {
     [DataContract(Name = nameof(UploadItemInfo))]
-    class UploadItemInfo : IEquatable<UploadItemInfo>
+    public class UploadItemInfo : IEquatable<UploadItemInfo>
     {
         public UploadItemInfo(string path)
         {

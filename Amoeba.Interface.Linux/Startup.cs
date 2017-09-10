@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +9,7 @@ namespace Amoeba.Interface
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -42,13 +38,23 @@ namespace Amoeba.Interface
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-
-                routes.MapRoute(
                     name: "Search",
                     template: "{controller=Search}/{action=Index}/");
+
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            {
+                var applicationLifetime = app.ApplicationServices.GetRequiredService<IApplicationLifetime>();
+                applicationLifetime.ApplicationStopping.Register(this.OnShutdown);
+            }
+        }
+
+        private void OnShutdown()
+        {
+            Amoeba.Exit();
         }
     }
 }

@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -12,20 +13,21 @@ namespace Amoeba.Interface
 {
     class MessageManager : ManagerBase, ISettings
     {
-        private ServiceManager _serviceManager;
+        private AmoebaClientManager _serviceManager;
 
         private Settings _settings;
 
         private LockedHashSet<Signature> _trustSignatures = new LockedHashSet<Signature>();
         private LockedHashDictionary<Signature, BroadcastMessage<Profile>> _cacheProfiles = new LockedHashDictionary<Signature, BroadcastMessage<Profile>>();
         private LockedHashDictionary<Signature, BroadcastMessage<Store>> _cacheStores = new LockedHashDictionary<Signature, BroadcastMessage<Store>>();
+        private LockedList<SearchListViewItemInfo> _cacheSearchListViewItemInfos = new LockedList<SearchListViewItemInfo>();
 
         private TaskManager _watchTaskManager;
 
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public MessageManager(string configPath, ServiceManager serviceManager)
+        public MessageManager(string configPath, AmoebaClientManager serviceManager)
         {
             _serviceManager = serviceManager;
 
@@ -48,6 +50,7 @@ namespace Amoeba.Interface
             {
                 this.UpdateProfiles();
                 this.UpdateStores();
+                this.UpdateSearchListViewItemInfos();
 
                 if (token.WaitHandle.WaitOne(1000 * 60)) return;
             }
@@ -111,8 +114,11 @@ namespace Amoeba.Interface
 
             searchSignatures.Add(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature());
 
-            var oldConfig = _serviceManager.Config;
-            _serviceManager.SetConfig(new ServiceConfig(oldConfig.Core, oldConfig.Connection, new MessageConfig(searchSignatures)));
+            lock (_serviceManager)
+            {
+                var oldConfig = _serviceManager.GetConfig();
+                _serviceManager.SetConfig(new ServiceConfig(oldConfig.Core, oldConfig.Connection, new MessageConfig(searchSignatures)));
+            }
         }
 
         private IEnumerable<BroadcastMessage<Profile>> GetProfiles(IEnumerable<Signature> trustSignatures)
@@ -121,7 +127,7 @@ namespace Amoeba.Interface
 
             foreach (var trustSignature in trustSignatures)
             {
-                var profile = _serviceManager.GetProfile(trustSignature).Result;
+                var profile = _serviceManager.GetProfile(trustSignature);
 
                 if (profile == null)
                 {
@@ -154,7 +160,7 @@ namespace Amoeba.Interface
 
             foreach (var trustSignature in _trustSignatures)
             {
-                var store = _serviceManager.GetStore(trustSignature).Result;
+                var store = _serviceManager.GetStore(trustSignature);
 
                 if (store == null)
                 {
@@ -303,6 +309,99 @@ namespace Amoeba.Interface
         {
             _cacheStores.TryGetValue(trustSignature, out var cachedStore);
             return cachedStore;
+        }
+
+        private void UpdateSearchListViewItemInfos()
+        {
+            var searchItems = new List<SearchListViewItemInfo>();
+
+            {
+                var seedInfos = new HashSet<(Seed, Signature)>();
+
+                var storeMetadatas = new HashSet<Metadata>();
+                var cacheMetadatas = new HashSet<Metadata>();
+                var downloadingMetadatas = new HashSet<Metadata>();
+                var downloadedMetadatas = new HashSet<Metadata>();
+
+                foreach (var store in this.GetStores())
+                {
+                    var seedHashSet = new HashSet<Seed>();
+                    {
+                        var boxList = new List<Box>();
+                        boxList.AddRange(store.Value.Boxes);
+
+                        for (int i = 0; i < boxList.Count; i++)
+                        {
+                            boxList.AddRange(boxList[i].Boxes);
+                            seedHashSet.UnionWith(boxList[i].Seeds);
+                        }
+                    }
+
+                    foreach (var seed in seedHashSet)
+                    {
+                        seedInfos.Add((seed, store.AuthorSignature));
+                        storeMetadatas.Add(seed.Metadata);
+                    }
+                }
+
+                {
+                    var signature = SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature();
+
+                    foreach (var seed in _serviceManager.GetCacheContentReports()
+                        .Select(n => new Seed(Path.GetFileName(n.Path), n.Length, n.CreationTime, n.Metadata)).ToArray())
+                    {
+                        seedInfos.Add((seed, signature));
+                        cacheMetadatas.Add(seed.Metadata);
+                    }
+                }
+
+                downloadingMetadatas.UnionWith(_serviceManager.GetDownloadContentReports().Select(n => n.Metadata));
+
+                {
+                    var downloadedSeeds = SettingsManager.Instance.DownloadedSeeds.ToArray();
+
+                    foreach (var seed in SettingsManager.Instance.DownloadedSeeds.ToArray())
+                    {
+                        if (!storeMetadatas.Contains(seed.Metadata) && !cacheMetadatas.Contains(seed.Metadata))
+                        {
+                            seedInfos.Add((seed, null));
+                        }
+
+                        downloadedMetadatas.Add(seed.Metadata);
+                    }
+                }
+
+                foreach (var (seed, signature) in seedInfos)
+                {
+                    var viewModel = new SearchListViewItemInfo();
+                    viewModel.Name = seed.Name;
+                    viewModel.Signature = signature;
+                    viewModel.Length = seed.Length;
+                    viewModel.CreationTime = seed.CreationTime;
+
+                    SearchState state = 0;
+                    if (storeMetadatas.Contains(seed.Metadata)) state |= SearchState.Store;
+                    if (cacheMetadatas.Contains(seed.Metadata)) state |= SearchState.Cache;
+                    if (downloadingMetadatas.Contains(seed.Metadata)) state |= SearchState.Downloading;
+                    if (downloadedMetadatas.Contains(seed.Metadata)) state |= SearchState.Downloaded;
+
+                    viewModel.State = state;
+                    viewModel.Model = seed;
+
+                    searchItems.Add(viewModel);
+                }
+            }
+
+            lock (_cacheSearchListViewItemInfos.LockObject)
+            {
+                _cacheSearchListViewItemInfos.Clear();
+                _cacheSearchListViewItemInfos.AddRange(searchItems);
+            }
+        }
+
+        public IEnumerable<SearchListViewItemInfo> GetSearchListViewItemInfos()
+        {
+            return _cacheSearchListViewItemInfos.ToArray();
         }
 
         #region ISettings

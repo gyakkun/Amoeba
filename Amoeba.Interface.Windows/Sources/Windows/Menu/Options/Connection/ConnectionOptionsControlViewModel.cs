@@ -6,13 +6,13 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using Amoeba.Messages;
+using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
-using Amoeba.Service;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Amoeba.Messages;
 
 namespace Amoeba.Interface
 {
@@ -249,8 +249,11 @@ namespace Amoeba.Interface
                 networkConfig = new NetworkConfig(info.ConnectionCountLimit, info.BandwidthLimit);
             }
 
-            var oldConfig = _serviceManager.Config;
-            _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(networkConfig, oldConfig.Core.Download), connectionConfig, oldConfig.Message));
+            lock (_serviceManager.LockObject)
+            {
+                var oldConfig = _serviceManager.Config;
+                _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(networkConfig, oldConfig.Core.Download), connectionConfig, oldConfig.Message));
+            }
         }
 
         private void LocationUrisSort(string propertyName)

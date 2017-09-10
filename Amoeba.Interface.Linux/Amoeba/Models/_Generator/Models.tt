@@ -61,15 +61,8 @@ namespace Amoeba.Interface
 {
 <# foreach(var c in classInfos) { #>
     [DataContract(Name = nameof(<#= c.Name #>))]
-    partial class <#= c.Name #> : INotifyPropertyChanged, ICloneable<<#= c.Name #>>
+    public class <#= c.Name #> : ICloneable<<#= c.Name #>>
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
         public <#= c.Name #>() { }
 <# foreach(var p in c.PropertyInfos) { #>
 <# var generatedFieldName = GetFieldName(p.Name); #>
@@ -86,11 +79,7 @@ namespace Amoeba.Interface
             }
             set
             {
-                if (<#= generatedFieldName #> != value)
-                {
-                    <#= generatedFieldName #> = value;
-                    this.OnPropertyChanged(nameof(<#= p.Name #>));
-                }
+                <#= generatedFieldName #> = value;
             }
         }
 <# } else { #>

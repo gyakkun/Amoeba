@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Amoeba.Messages;
-using Amoeba.Service;
 
 namespace Amoeba.Interface
 {
     [DataContract(Name = nameof(DownloadItemInfo))]
-    class DownloadItemInfo : IEquatable<DownloadItemInfo>
+    public class DownloadItemInfo : IEquatable<DownloadItemInfo>
     {
         public DownloadItemInfo(Seed seed, string path)
         {

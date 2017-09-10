@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Amoeba.Messages;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Amoeba.Interface.Controllers
@@ -8,13 +7,20 @@ namespace Amoeba.Interface.Controllers
     {
         public IActionResult Index(string name)
         {
-            var seeds = new List<Seed>();
-            seeds.Add(AmoebaConverter.FromSeedString("Seed:AAAAEEFtb2ViYSA1LjAuMC56aXABgpiCHgIUMjAxNy0wNi0yNVQwODo0MToyMloDJgABASIAIFSvs1EzXh-JlEBDTpAARAfg4yoS736kmsGo8Pbc1JLmGuj6Tw"));
-            seeds.Add(AmoebaConverter.FromSeedString("Seed:AAAAEEFtb2ViYSA1LjAuMC56aXABgpiCHgIUMjAxNy0wNi0yNVQwODo0MToyMloDJgABASIAIFSvs1EzXh-JlEBDTpAARAfg4yoS736kmsGo8Pbc1JLmGuj6Tw"));
-            seeds.Add(AmoebaConverter.FromSeedString("Seed:AAAAEEFtb2ViYSA1LjAuMC56aXABgpiCHgIUMjAxNy0wNi0yNVQwODo0MToyMloDJgABASIAIFSvs1EzXh-JlEBDTpAARAfg4yoS736kmsGo8Pbc1JLmGuj6Tw"));
-            seeds.Add(AmoebaConverter.FromSeedString("Seed:AAAAEEFtb2ViYSA1LjAuMC56aXABgpiCHgIUMjAxNy0wNi0yNVQwODo0MToyMloDJgABASIAIFSvs1EzXh-JlEBDTpAARAfg4yoS736kmsGo8Pbc1JLmGuj6Tw"));
+            if (name == "Exit")
+            {
+                Program.Exit();
+            }
 
-            return View(seeds);
+            var tempList = new List<SearchListViewItemInfo>();
+
+            foreach (var info in Amoeba.Message.GetSearchListViewItemInfos())
+            {
+                if (!info.Name.Contains(name)) continue;
+                tempList.Add(info);
+            }
+
+            return View(tempList.ToArray());
         }
     }
 }

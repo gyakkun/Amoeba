@@ -5,14 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 
 namespace Amoeba.Interface
 {
     class WatchManager : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaClientManager _serviceManager;
 
         private WatchTimer _checkUpdateTimer;
         private WatchTimer _checkDiskSpaceTimer;
@@ -23,12 +23,11 @@ namespace Amoeba.Interface
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public WatchManager(ServiceManager serviceManager)
+        public WatchManager(AmoebaClientManager serviceManager)
         {
             _serviceManager = serviceManager;
 
             this.Setting_ChechUpdate();
-            this.Setting_CheckDiskSpace();
             this.Setting_Backup();
         }
 
@@ -41,7 +40,7 @@ namespace Amoeba.Interface
                     var updateInfo = SettingsManager.Instance.UpdateInfo;
                     if (!updateInfo.IsEnabled) return;
 
-                    var store = _serviceManager.GetStore(updateInfo.Signature).Result;
+                    var store = _serviceManager.GetStore(updateInfo.Signature);
                     if (store == null) return;
 
                     var updateBox = store.Value.Boxes.FirstOrDefault(n => n.Name == "Update")?.Boxes.FirstOrDefault(n => n.Name == "Windows");
@@ -87,62 +86,6 @@ namespace Amoeba.Interface
                 }
             });
             _checkUpdateTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 3, 0));
-        }
-
-        private void Setting_CheckDiskSpace()
-        {
-            bool watchFlag = true;
-
-            _checkDiskSpaceTimer = new WatchTimer(() =>
-            {
-                if (!watchFlag) return;
-
-                try
-                {
-                    var paths = new List<string>();
-                    paths.Add(AmoebaEnvironment.Config.Cache.BlocksPath);
-
-                    bool flag = false;
-
-                    foreach (string path in paths)
-                    {
-                        var drive = new DriveInfo(Path.GetFullPath(path));
-
-                        if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
-                        {
-                            flag |= true;
-                            break;
-                        }
-                    }
-
-                    if (_serviceManager.Report.Core.Cache.FreeSpace < NetworkConverter.FromSizeString("1024MB"))
-                    {
-                        flag |= true;
-                    }
-
-                    if (!flag)
-                    {
-                        if (_serviceManager.State == ManagerState.Stop)
-                        {
-                            _serviceManager.Start();
-                            Log.Information("Start");
-                        }
-                    }
-                    else
-                    {
-                        if (_serviceManager.State == ManagerState.Start)
-                        {
-                            _serviceManager.Stop();
-                            Log.Information("Stop");
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
-            });
-            _checkDiskSpaceTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));
         }
 
         private void Setting_Backup()

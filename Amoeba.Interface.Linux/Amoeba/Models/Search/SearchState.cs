@@ -5,7 +5,7 @@ namespace Amoeba.Interface
 {
     [Flags]
     [DataContract(Name = nameof(SearchState))]
-    enum SearchState
+    public enum SearchState
     {
         [EnumMember(Value = nameof(Store))]
         Store = 0x01,
