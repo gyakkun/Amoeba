@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,8 +61,15 @@ namespace Amoeba.Service
 
         public CacheManager(string configPath, string blocksPath, BufferManager bufferManager)
         {
-            const FileOptions FileFlagNoBuffering = (FileOptions)0x20000000;
-            _fileStream = new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize, FileFlagNoBuffering);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                const FileOptions FileFlagNoBuffering = (FileOptions)0x20000000;
+                _fileStream = new BufferedStream(new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize, FileFlagNoBuffering));
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                _fileStream = new BufferedStream(new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize));
+            }
 
             _bitmapManager = new BitmapManager(bufferManager);
             _bufferManager = bufferManager;
