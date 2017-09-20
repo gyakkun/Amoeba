@@ -62,7 +62,12 @@ namespace Amoeba.Rpc
 
         public void Exit()
         {
-            this.Action(AmoebaRequestType.Exit, (object)null, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.Exit, (object)null, CancellationToken.None);
+            }
         }
 
         private int CreateId()
