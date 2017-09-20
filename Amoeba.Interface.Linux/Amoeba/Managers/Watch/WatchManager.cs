@@ -7,12 +7,13 @@ using System.Text.RegularExpressions;
 using Amoeba.Messages;
 using Amoeba.Rpc;
 using Omnius.Base;
+using System.Threading;
 
 namespace Amoeba.Interface
 {
     class WatchManager : ManagerBase
     {
-        private AmoebaClientManager _serviceManager;
+        private AmoebaInterfaceManager _serviceManager;
 
         private WatchTimer _checkUpdateTimer;
         private WatchTimer _checkDiskSpaceTimer;
@@ -23,7 +24,7 @@ namespace Amoeba.Interface
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public WatchManager(AmoebaClientManager serviceManager)
+        public WatchManager(AmoebaInterfaceManager serviceManager)
         {
             _serviceManager = serviceManager;
 
@@ -40,7 +41,7 @@ namespace Amoeba.Interface
                     var updateInfo = SettingsManager.Instance.UpdateInfo;
                     if (!updateInfo.IsEnabled) return;
 
-                    var store = _serviceManager.GetStore(updateInfo.Signature);
+                    var store = _serviceManager.GetStore(updateInfo.Signature, CancellationToken.None).Result;
                     if (store == null) return;
 
                     var updateBox = store.Value.Boxes.FirstOrDefault(n => n.Name == "Update")?.Boxes.FirstOrDefault(n => n.Name == "Windows");

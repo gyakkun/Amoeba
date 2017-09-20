@@ -11,7 +11,7 @@ using Omnius.Security;
 
 namespace Amoeba.Service
 {
-    public sealed class ServiceManager : StateManagerBase, ISettings, ISynchronized
+    public sealed class ServiceManager : StateManagerBase, IService, ISettings, ISynchronized
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
@@ -130,13 +130,13 @@ namespace Amoeba.Service
             }
         }
 
-        public Task Resize(long size)
+        public void Resize(long size)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _coreManager.Resize(size);
+                _coreManager.Resize(size).Wait();
             }
         }
 
@@ -230,17 +230,17 @@ namespace Amoeba.Service
             }
         }
 
-        public Task SetChatMessage(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, Miner miner, CancellationToken token)
+        public Task SetChatMessage(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, TimeSpan miningTime, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.Upload(tag, chatMessage, digitalSignature, miner, token);
+                return _messageManager.Upload(tag, chatMessage, digitalSignature, miningTime, token);
             }
         }
 
-        public Task<BroadcastMessage<Profile>> GetProfile(Signature signature)
+        public Task<BroadcastMessage<Profile>> GetProfile(Signature signature, CancellationToken token)
         {
             this.Check();
 
@@ -250,7 +250,7 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<BroadcastMessage<Store>> GetStore(Signature signature)
+        public Task<BroadcastMessage<Store>> GetStore(Signature signature, CancellationToken token)
         {
             this.Check();
 
@@ -260,7 +260,7 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, ExchangePrivateKey exchangePrivateKey)
+        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, ExchangePrivateKey exchangePrivateKey, CancellationToken token)
         {
             this.Check();
 
@@ -270,7 +270,7 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag)
+        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, CancellationToken token)
         {
             this.Check();
 

@@ -8,7 +8,7 @@ namespace Amoeba.Interface
 {
     static class Amoeba
     {
-        private static AmoebaClientManager _serviceManager;
+        private static AmoebaInterfaceManager _serviceManager;
         private static MessageManager _messageManager;
         private static WatchManager _watchManager;
 
@@ -17,7 +17,7 @@ namespace Amoeba.Interface
 
         }
 
-        public static AmoebaClientManager Service { get => _serviceManager; }
+        public static AmoebaInterfaceManager Service { get => _serviceManager; }
         public static MessageManager Message { get => _messageManager; }
 
         public static void Run()
@@ -25,7 +25,7 @@ namespace Amoeba.Interface
             SettingsManager.Instance.Load();
 
             {
-                _serviceManager = new AmoebaClientManager();
+                _serviceManager = new AmoebaInterfaceManager();
                 _serviceManager.Connect(new IPEndPoint(IPAddress.Loopback, 4040));
 
                 {

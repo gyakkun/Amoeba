@@ -253,7 +253,7 @@ namespace Amoeba.Interface
                 {
                     if (token.IsCancellationRequested) return;
 
-                    var newMessages = new HashSet<MulticastMessage<ChatMessage>>(_serviceManager.GetChatMessages(chatThreadViewModel.Model.Tag).Result);
+                    var newMessages = new HashSet<MulticastMessage<ChatMessage>>(_serviceManager.GetChatMessages(chatThreadViewModel.Model.Tag, CancellationToken.None).Result);
 
                     lock (chatThreadViewModel.Model.Messages.LockObject)
                     {

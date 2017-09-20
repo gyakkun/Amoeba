@@ -316,7 +316,7 @@ namespace Amoeba.Service
                 });
         }
 
-        public Task Upload(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, Miner miner, CancellationToken token)
+        public Task Upload(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, TimeSpan miningTime, CancellationToken token)
         {
             if (tag == null) throw new ArgumentNullException(nameof(tag));
             if (chatMessage == null) throw new ArgumentNullException(nameof(chatMessage));
@@ -329,6 +329,7 @@ namespace Amoeba.Service
 
                     try
                     {
+                        var miner = new Miner(CashAlgorithm.Version1, -1, miningTime);
                         multicastMetadata = new MulticastMetadata("ChatMessage", tag, DateTime.UtcNow, task.Result, digitalSignature, miner, token);
                     }
                     catch (MinerException)

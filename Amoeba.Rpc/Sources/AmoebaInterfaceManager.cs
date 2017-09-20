@@ -16,7 +16,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Rpc
 {
-    public class AmoebaClientManager : ManagerBase
+    public class AmoebaInterfaceManager : StateManagerBase, IService, ISynchronized
     {
         private TcpClient _tcpClient;
         private NetworkStream _networkStream;
@@ -30,7 +30,7 @@ namespace Amoeba.Rpc
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public AmoebaClientManager()
+        public AmoebaInterfaceManager()
         {
 
         }
@@ -151,13 +151,14 @@ namespace Amoeba.Rpc
                         }
                         else if (info.Type == AmoebaResponseType.Error)
                         {
-                            throw new AmoebaClientManagerException(JsonUtils.Load<string>(info.Stream));
+                            throw new AmoebaInterfaceManagerException(JsonUtils.Load<string>(info.Stream));
                         }
 
                         throw new NotSupportedException();
                     }
                     finally
                     {
+                        queue.Dispose();
                         _queueMap.Remove(id);
 
                         if (info != null)
@@ -187,13 +188,14 @@ namespace Amoeba.Rpc
                     }
                     else if (info.Type == AmoebaResponseType.Error)
                     {
-                        throw new AmoebaClientManagerException(JsonUtils.Load<string>(info.Stream));
+                        throw new AmoebaInterfaceManagerException(JsonUtils.Load<string>(info.Stream));
                     }
 
                     throw new NotSupportedException();
                 }
                 finally
                 {
+                    queue.Dispose();
                     _queueMap.Remove(id);
 
                     if (info != null)
@@ -228,13 +230,14 @@ namespace Amoeba.Rpc
                         }
                         else if (info.Type == AmoebaResponseType.Error)
                         {
-                            throw new AmoebaClientManagerException(JsonUtils.Load<string>(info.Stream));
+                            throw new AmoebaInterfaceManagerException(JsonUtils.Load<string>(info.Stream));
                         }
 
                         throw new NotSupportedException();
                     }
                     finally
                     {
+                        queue.Dispose();
                         _queueMap.Remove(id);
 
                         if (info != null)
@@ -264,13 +267,14 @@ namespace Amoeba.Rpc
                     }
                     else if (info.Type == AmoebaResponseType.Error)
                     {
-                        throw new AmoebaClientManagerException(JsonUtils.Load<string>(info.Stream));
+                        throw new AmoebaInterfaceManagerException(JsonUtils.Load<string>(info.Stream));
                     }
 
                     throw new NotSupportedException();
                 }
                 finally
                 {
+                    queue.Dispose();
                     _queueMap.Remove(id);
 
                     if (info != null)
@@ -287,137 +291,311 @@ namespace Amoeba.Rpc
             public Stream Stream { get; set; }
         }
 
-        public ManagerState GetState()
+        private void Check()
         {
-            return this.Function<ManagerState, object>(AmoebaRequestType.GetState, null, CancellationToken.None);
+            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
         }
 
-        public void Start()
+        public ServiceReport Report
         {
-            this.Action(AmoebaRequestType.Start, (object)null, CancellationToken.None);
-        }
+            get
+            {
+                this.Check();
 
-        public void Stop()
-        {
-            this.Action(AmoebaRequestType.Stop, (object)null, CancellationToken.None);
-        }
-
-        public ServiceReport GetReport()
-        {
-            return this.Function<ServiceReport, object>(AmoebaRequestType.GetReport, null, CancellationToken.None);
+                lock (_lockObject)
+                {
+                    return this.Function<ServiceReport, object>(AmoebaRequestType.GetReport, null, CancellationToken.None);
+                }
+            }
         }
 
         public IEnumerable<NetworkConnectionReport> GetNetworkConnectionReports()
         {
-            return this.Function<NetworkConnectionReport[], object>(AmoebaRequestType.GetNetworkConnectionReports, null, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return this.Function<NetworkConnectionReport[], object>(AmoebaRequestType.GetNetworkConnectionReports, null, CancellationToken.None);
+            }
         }
 
         public IEnumerable<CacheContentReport> GetCacheContentReports()
         {
-            return this.Function<CacheContentReport[], object>(AmoebaRequestType.GetCacheContentReports, null, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return this.Function<CacheContentReport[], object>(AmoebaRequestType.GetCacheContentReports, null, CancellationToken.None);
+            }
         }
 
         public IEnumerable<DownloadContentReport> GetDownloadContentReports()
         {
-            return this.Function<DownloadContentReport[], object>(AmoebaRequestType.GetDownloadContentReports, null, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return this.Function<DownloadContentReport[], object>(AmoebaRequestType.GetDownloadContentReports, null, CancellationToken.None);
+            }
         }
 
-        public ServiceConfig GetConfig()
+        public ServiceConfig Config
         {
-            return this.Function<ServiceConfig, object>(AmoebaRequestType.GetConfig, null, CancellationToken.None);
+            get
+            {
+                this.Check();
+
+                lock (_lockObject)
+                {
+                    return this.Function<ServiceConfig, object>(AmoebaRequestType.GetConfig, null, CancellationToken.None);
+                }
+            }
         }
 
         public void SetConfig(ServiceConfig config)
         {
-            this.Action(AmoebaRequestType.SetConfig, config, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.SetConfig, config, CancellationToken.None);
+            }
         }
 
         public void SetCloudLocations(IEnumerable<Location> locations)
         {
-            this.Action(AmoebaRequestType.SetCloudLocations, locations.ToArray(), CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.SetCloudLocations, locations.ToArray(), CancellationToken.None);
+            }
         }
 
-        public long GetSize()
+        public long Size
         {
-            return this.Function<long, object>(AmoebaRequestType.GetSize, null, CancellationToken.None);
+            get
+            {
+                this.Check();
+
+                lock (_lockObject)
+                {
+                    return this.Function<long, object>(AmoebaRequestType.GetSize, null, CancellationToken.None);
+                }
+            }
         }
 
         public void Resize(long size)
         {
-            this.Action(AmoebaRequestType.Resize, size, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.Resize, size, CancellationToken.None);
+            }
         }
 
-        public void CheckBlocks(IProgress<CheckBlocksProgressReport> progress, CancellationToken token)
+        public Task CheckBlocks(IProgress<CheckBlocksProgressReport> progress, CancellationToken token)
         {
-            this.Action(AmoebaRequestType.CheckBlocks, (object)null, progress, token);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    this.Action(AmoebaRequestType.CheckBlocks, (object)null, progress, token);
+                });
+            }
         }
 
-        public Metadata AddContent(string path, CancellationToken token)
+        public Task<Metadata> AddContent(string path, CancellationToken token)
         {
-            return this.Function<Metadata, string>(AmoebaRequestType.AddContent, path, token);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    return this.Function<Metadata, string>(AmoebaRequestType.AddContent, path, token);
+                });
+            }
         }
 
         public void RemoveContent(string path)
         {
-            this.Action(AmoebaRequestType.RemoveContent, path, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.RemoveContent, path, CancellationToken.None);
+            }
         }
 
         public void AddDownload(Metadata metadata, string path, long maxLength)
         {
-            this.Action(AmoebaRequestType.AddDownload, (metadata, path, maxLength), CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.AddDownload, (metadata, path, maxLength), CancellationToken.None);
+            }
         }
 
         public void RemoveDownload(Metadata metadata, string path)
         {
-            this.Action(AmoebaRequestType.RemoveDownload, (metadata, path), CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.RemoveDownload, (metadata, path), CancellationToken.None);
+            }
         }
 
         public void ResetDownload(Metadata metadata, string path)
         {
-            this.Action(AmoebaRequestType.ResetDownload, (metadata, path), CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.ResetDownload, (metadata, path), CancellationToken.None);
+            }
         }
 
-        public void SetProfile(Profile profile, DigitalSignature digitalSignature)
+        public Task SetProfile(Profile profile, DigitalSignature digitalSignature, CancellationToken token)
         {
-            this.Action(AmoebaRequestType.SetProfile, (profile, digitalSignature), CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    this.Action(AmoebaRequestType.SetProfile, (profile, digitalSignature), token);
+                });
+            }
         }
 
-        public void SetStore(Store store, DigitalSignature digitalSignature)
+        public Task SetStore(Store store, DigitalSignature digitalSignature, CancellationToken token)
         {
-            this.Action(AmoebaRequestType.SetStore, (store, digitalSignature), CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    this.Action(AmoebaRequestType.SetStore, (store, digitalSignature), token);
+                });
+            }
         }
 
-        public void SetMailMessage(Signature targetSignature, MailMessage mailMessage, ExchangePublicKey exchangePublicKey, DigitalSignature digitalSignature)
+        public Task SetMailMessage(Signature targetSignature, MailMessage mailMessage, ExchangePublicKey exchangePublicKey, DigitalSignature digitalSignature, CancellationToken token)
         {
-            this.Action(AmoebaRequestType.SetMailMessage, (targetSignature, mailMessage, exchangePublicKey, digitalSignature), CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    this.Action(AmoebaRequestType.SetMailMessage, (targetSignature, mailMessage, exchangePublicKey, digitalSignature), token);
+                });
+            }
         }
 
         public Task SetChatMessage(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, TimeSpan miningTimeSpan, CancellationToken token)
         {
-            return Task.Run(() =>
+            this.Check();
+
+            lock (_lockObject)
             {
-                this.Action(AmoebaRequestType.SetChatMessage, (tag, chatMessage, digitalSignature, miningTimeSpan), token);
-            });
+                return Task.Run(() =>
+                {
+                    this.Action(AmoebaRequestType.SetChatMessage, (tag, chatMessage, digitalSignature, miningTimeSpan), token);
+                });
+            }
         }
 
-        public BroadcastMessage<Profile> GetProfile(Signature signature)
+        public Task<BroadcastMessage<Profile>> GetProfile(Signature signature, CancellationToken token)
         {
-            return this.Function<BroadcastMessage<Profile>, Signature>(AmoebaRequestType.GetProfile, signature, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    return this.Function<BroadcastMessage<Profile>, Signature>(AmoebaRequestType.GetProfile, signature, token);
+                });
+            }
         }
 
-        public BroadcastMessage<Store> GetStore(Signature signature)
+        public Task<BroadcastMessage<Store>> GetStore(Signature signature, CancellationToken token)
         {
-            return this.Function<BroadcastMessage<Store>, Signature>(AmoebaRequestType.GetStore, signature, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    return this.Function<BroadcastMessage<Store>, Signature>(AmoebaRequestType.GetStore, signature, token);
+                });
+            }
         }
 
-        public IEnumerable<UnicastMessage<MailMessage>> GetMailMessages(Signature signature, ExchangePrivateKey exchangePrivateKey)
+        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, ExchangePrivateKey exchangePrivateKey, CancellationToken token)
         {
-            return this.Function<UnicastMessage<MailMessage>[], (Signature, ExchangePrivateKey)>(AmoebaRequestType.GetMailMessages, (signature, exchangePrivateKey), CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    return this.Function<IEnumerable<UnicastMessage<MailMessage>>, (Signature, ExchangePrivateKey)>(AmoebaRequestType.GetMailMessages, (signature, exchangePrivateKey), token);
+                });
+            }
         }
 
-        public IEnumerable<MulticastMessage<ChatMessage>> GetChatMessages(Tag tag)
+        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, CancellationToken token)
         {
-            return this.Function<MulticastMessage<ChatMessage>[], Tag>(AmoebaRequestType.GetChatMessages, tag, CancellationToken.None);
+            this.Check();
+
+            lock (_lockObject)
+            {
+                return Task.Run(() =>
+                {
+                    return this.Function<IEnumerable<MulticastMessage<ChatMessage>>, Tag>(AmoebaRequestType.GetChatMessages, tag, token);
+                });
+            }
+        }
+
+        public override ManagerState State
+        {
+            get
+            {
+                this.Check();
+
+                lock (_lockObject)
+                {
+                    return this.Function<ManagerState, object>(AmoebaRequestType.GetState, null, CancellationToken.None);
+                }
+            }
+        }
+
+        public override void Start()
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.Start, (object)null, CancellationToken.None);
+            }
+        }
+
+        public override void Stop()
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.Stop, (object)null, CancellationToken.None);
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -433,12 +611,20 @@ namespace Amoeba.Rpc
                 _messagingManager.Dispose();
             }
         }
+
+        public object LockObject
+        {
+            get
+            {
+                return _lockObject;
+            }
+        }
     }
 
-    public class AmoebaClientManagerException : StateManagerException
+    public class AmoebaInterfaceManagerException : StateManagerException
     {
-        public AmoebaClientManagerException() : base() { }
-        public AmoebaClientManagerException(string message) : base(message) { }
-        public AmoebaClientManagerException(string message, Exception innerException) : base(message, innerException) { }
+        public AmoebaInterfaceManagerException() : base() { }
+        public AmoebaInterfaceManagerException(string message) : base(message) { }
+        public AmoebaInterfaceManagerException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

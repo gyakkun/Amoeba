@@ -13,7 +13,7 @@ namespace Amoeba.Interface
 {
     class MessageManager : ManagerBase, ISettings
     {
-        private AmoebaClientManager _serviceManager;
+        private AmoebaInterfaceManager _serviceManager;
 
         private Settings _settings;
 
@@ -27,7 +27,7 @@ namespace Amoeba.Interface
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public MessageManager(string configPath, AmoebaClientManager serviceManager)
+        public MessageManager(string configPath, AmoebaInterfaceManager serviceManager)
         {
             _serviceManager = serviceManager;
 
@@ -114,9 +114,9 @@ namespace Amoeba.Interface
 
             searchSignatures.Add(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature());
 
-            lock (_serviceManager)
+            lock (_serviceManager.LockObject)
             {
-                var oldConfig = _serviceManager.GetConfig();
+                var oldConfig = _serviceManager.Config;
                 _serviceManager.SetConfig(new ServiceConfig(oldConfig.Core, oldConfig.Connection, new MessageConfig(searchSignatures)));
             }
         }
@@ -127,7 +127,7 @@ namespace Amoeba.Interface
 
             foreach (var trustSignature in trustSignatures)
             {
-                var profile = _serviceManager.GetProfile(trustSignature);
+                var profile = _serviceManager.GetProfile(trustSignature, CancellationToken.None).Result;
 
                 if (profile == null)
                 {
@@ -160,7 +160,7 @@ namespace Amoeba.Interface
 
             foreach (var trustSignature in _trustSignatures)
             {
-                var store = _serviceManager.GetStore(trustSignature);
+                var store = _serviceManager.GetStore(trustSignature, CancellationToken.None).Result;
 
                 if (store == null)
                 {

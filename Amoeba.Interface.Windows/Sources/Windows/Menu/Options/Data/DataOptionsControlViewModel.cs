@@ -81,8 +81,9 @@ namespace Amoeba.Interface
                 {
                     ProgressDialog.Instance.Increment();
 
-                    _serviceManager.Resize(this.DataOptions.Cache.Size)
-                        .ContinueWith((_) => ProgressDialog.Instance.Decrement());
+                    _serviceManager.Resize(this.DataOptions.Cache.Size);
+
+                    ProgressDialog.Instance.Decrement();
                 };
 
                 _dialogService.Show(viewModel);
@@ -91,8 +92,9 @@ namespace Amoeba.Interface
             {
                 ProgressDialog.Instance.Increment();
 
-                _serviceManager.Resize(this.DataOptions.Cache.Size)
-                    .ContinueWith((_) => ProgressDialog.Instance.Decrement());
+                _serviceManager.Resize(this.DataOptions.Cache.Size);
+
+                ProgressDialog.Instance.Decrement();
             }
 
             lock (_serviceManager.LockObject)

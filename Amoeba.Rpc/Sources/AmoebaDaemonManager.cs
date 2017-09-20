@@ -5,7 +5,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Amoeba.Messages;
-using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Io;
@@ -15,7 +14,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Rpc
 {
-    public class AmoebaServerManager : ManagerBase
+    public class AmoebaDaemonManager : ManagerBase
     {
         private BufferManager _bufferManager = BufferManager.Instance;
 
@@ -26,12 +25,13 @@ namespace Amoeba.Rpc
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public AmoebaServerManager()
+        public AmoebaDaemonManager()
         {
 
         }
 
-        public Task Watch(ServiceManager serviceManager, IPEndPoint endpoint)
+        public Task Watch<TService>(TService serviceManager, IPEndPoint endpoint)
+            where TService : StateManagerBase, IService
         {
             return Task.Run(() =>
             {
@@ -65,7 +65,8 @@ namespace Amoeba.Rpc
             });
         }
 
-        private void MessagingManager_ReceiveEvent(ServiceManager serviceManager, Stream requestStream, Action<Stream> sendAction, Action exitAction)
+        private void MessagingManager_ReceiveEvent<TService>(TService serviceManager, Stream requestStream, Action<Stream> sendAction, Action exitAction)
+            where TService : StateManagerBase, IService
         {
             using (var reader = new ItemStreamReader(new WrapperStream(requestStream, true), _bufferManager))
             {
@@ -156,7 +157,7 @@ namespace Amoeba.Rpc
                                 case AmoebaRequestType.Resize:
                                     {
                                         long size = JsonUtils.Load<long>(requestStream);
-                                        serviceManager.Resize(size).Wait();
+                                        serviceManager.Resize(size);
                                         SendResponse(AmoebaResponseType.Result, id, (object)null);
                                         break;
                                     }
@@ -236,37 +237,35 @@ namespace Amoeba.Rpc
                                 case AmoebaRequestType.SetChatMessage:
                                     {
                                         var arguments = JsonUtils.Load<(Tag, ChatMessage, DigitalSignature, TimeSpan)>(requestStream);
-                                        var minier = new Miner(CashAlgorithm.Version1, -1, arguments.Item4);
-
-                                        serviceManager.SetChatMessage(arguments.Item1, arguments.Item2, arguments.Item3, minier, token).Wait();
+                                        serviceManager.SetChatMessage(arguments.Item1, arguments.Item2, arguments.Item3, arguments.Item4, token).Wait();
                                         SendResponse(AmoebaResponseType.Result, id, (object)null);
                                         break;
                                     }
                                 case AmoebaRequestType.GetProfile:
                                     {
                                         var signature = JsonUtils.Load<Signature>(requestStream);
-                                        var result = serviceManager.GetProfile(signature).Result;
+                                        var result = serviceManager.GetProfile(signature, token).Result;
                                         SendResponse(AmoebaResponseType.Result, id, result);
                                         break;
                                     }
                                 case AmoebaRequestType.GetStore:
                                     {
                                         var signature = JsonUtils.Load<Signature>(requestStream);
-                                        var result = serviceManager.GetStore(signature).Result;
+                                        var result = serviceManager.GetStore(signature, token).Result;
                                         SendResponse(AmoebaResponseType.Result, id, result);
                                         break;
                                     }
                                 case AmoebaRequestType.GetMailMessages:
                                     {
                                         var arguments = JsonUtils.Load<(Signature, ExchangePrivateKey)>(requestStream);
-                                        var result = serviceManager.GetMailMessages(arguments.Item1, arguments.Item2).Result;
+                                        var result = serviceManager.GetMailMessages(arguments.Item1, arguments.Item2, token).Result;
                                         SendResponse(AmoebaResponseType.Result, id, result);
                                         break;
                                     }
                                 case AmoebaRequestType.GetChatMessages:
                                     {
                                         var tag = JsonUtils.Load<Tag>(requestStream);
-                                        var result = serviceManager.GetChatMessages(tag).Result;
+                                        var result = serviceManager.GetChatMessages(tag, token).Result;
                                         SendResponse(AmoebaResponseType.Result, id, result);
                                         break;
                                     }

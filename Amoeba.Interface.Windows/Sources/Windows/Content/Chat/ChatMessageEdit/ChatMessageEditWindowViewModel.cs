@@ -80,18 +80,14 @@ namespace Amoeba.Interface
         {
             var trustSignatures = new HashSet<Signature>(_messageManager.TrustSignatures);
 
-            Miner miner = null;
+            TimeSpan miningTime = TimeSpan.Zero;
 
-            if (trustSignatures.Contains(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature()))
+            if (!trustSignatures.Contains(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature()))
             {
-                miner = new Miner(CashAlgorithm.Version1, 0, TimeSpan.Zero);
-            }
-            else
-            {
-                miner = new Miner(CashAlgorithm.Version1, -1, TimeSpan.FromMinutes(3));
+                miningTime = TimeSpan.FromMinutes(3);
             }
 
-            _serviceManager.SetChatMessage(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.AccountInfo.DigitalSignature, miner, _token);
+            _serviceManager.SetChatMessage(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.AccountInfo.DigitalSignature, miningTime, _token);
 
             this.OnCloseEvent();
         }

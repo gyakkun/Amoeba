@@ -124,7 +124,7 @@ namespace Amoeba.Interface
 
             foreach (var trustSignature in trustSignatures)
             {
-                var profile = _serviceManager.GetProfile(trustSignature).Result;
+                var profile = _serviceManager.GetProfile(trustSignature, CancellationToken.None).Result;
 
                 if (profile == null)
                 {
@@ -157,7 +157,7 @@ namespace Amoeba.Interface
 
             foreach (var trustSignature in _trustSignatures)
             {
-                var store = _serviceManager.GetStore(trustSignature).Result;
+                var store = _serviceManager.GetStore(trustSignature, CancellationToken.None).Result;
 
                 if (store == null)
                 {

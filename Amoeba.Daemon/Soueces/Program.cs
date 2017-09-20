@@ -22,7 +22,7 @@ namespace Amoeba.Daemon
 
                 try
                 {
-                    using (var server = new AmoebaServerManager())
+                    using (var server = new AmoebaDaemonManager())
                     {
                         var info = UriUtils.Parse(AmoebaEnvironment.Config.Daemon.ListenUri);
                         var endpoint = new IPEndPoint(IPAddress.Parse(info.GetValue<string>("Address")), info.GetValue<int>("Port"));

@@ -368,7 +368,7 @@ namespace Amoeba.Interface
                 {
                     if (token.IsCancellationRequested) return;
 
-                    var message = _serviceManager.GetStore(storeInfo.AuthorSignature).Result;
+                    var message = _serviceManager.GetStore(storeInfo.AuthorSignature, CancellationToken.None).Result;
                     if (message == null || storeInfo.CreationTime == message.CreationTime) continue;
 
                     var tempBoxInfos = new List<SubscribeBoxInfo>();

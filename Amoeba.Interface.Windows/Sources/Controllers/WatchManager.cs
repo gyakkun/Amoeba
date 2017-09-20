@@ -9,6 +9,7 @@ using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Utilities;
 using Omnius.Wpf;
+using System.Threading;
 
 namespace Amoeba.Interface
 {
@@ -44,7 +45,7 @@ namespace Amoeba.Interface
                     var updateInfo = SettingsManager.Instance.UpdateInfo;
                     if (!updateInfo.IsEnabled) return;
 
-                    var store = _serviceManager.GetStore(updateInfo.Signature).Result;
+                    var store = _serviceManager.GetStore(updateInfo.Signature, CancellationToken.None).Result;
                     if (store == null) return;
 
                     var updateBox = store.Value.Boxes.FirstOrDefault(n => n.Name == "Update")?.Boxes.FirstOrDefault(n => n.Name == "Windows");
