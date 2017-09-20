@@ -17,6 +17,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         private Random _random = new Random();
 
         public DataOptionsInfo DataOptions { get; } = new DataOptionsInfo();
@@ -30,9 +32,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public DataOptionsControlViewModel(ServiceManager serviceManager)
+        public DataOptionsControlViewModel(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Init();
         }
@@ -47,7 +50,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(DataOptionsControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(OptionsWindow), nameof(DataOptionsControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -82,8 +85,7 @@ namespace Amoeba.Interface
                         .ContinueWith((_) => ProgressDialog.Instance.Decrement());
                 };
 
-                Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                    .Publish(viewModel);
+                _dialogService.Show(viewModel);
             }
             else if (this.DataOptions.Cache.Size > _serviceManager.Size)
             {

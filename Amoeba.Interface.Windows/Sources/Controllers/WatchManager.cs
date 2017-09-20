@@ -16,6 +16,8 @@ namespace Amoeba.Interface
     {
         private ServiceManager _serviceManager;
 
+        private DialogService _dialogService;
+
         private WatchTimer _checkUpdateTimer;
         private WatchTimer _checkDiskSpaceTimer;
         private WatchTimer _backupTimer;
@@ -23,9 +25,10 @@ namespace Amoeba.Interface
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
 
-        public WatchManager(ServiceManager serviceManager)
+        public WatchManager(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Setting_ChechUpdate();
             this.Setting_CheckDiskSpace();
@@ -142,8 +145,7 @@ namespace Amoeba.Interface
                                 var viewModel = new NoticeWindowViewModel(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
                                 viewModel.Callback += () => watchFlag = true;
 
-                                Messenger.Instance.GetEvent<NoticeWindowShowEvent>()
-                                    .Publish(viewModel);
+                                _dialogService.Show(viewModel);
                             });
                         }
                     }

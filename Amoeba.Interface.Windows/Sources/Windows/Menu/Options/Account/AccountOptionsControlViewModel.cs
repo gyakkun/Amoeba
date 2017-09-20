@@ -24,6 +24,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         private Random _random = new Random();
 
         public AccountOptionsInfo AccountOptions { get; } = new AccountOptionsInfo();
@@ -67,9 +69,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public AccountOptionsControlViewModel(ServiceManager serviceManager)
+        public AccountOptionsControlViewModel(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Init();
         }
@@ -129,7 +132,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(AccountOptionsControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(OptionsWindow), nameof(AccountOptionsControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -218,8 +221,7 @@ namespace Amoeba.Interface
                 this.AccountOptions.DigitalSignature = digitalSignature;
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void SignatureImport()
@@ -513,8 +515,7 @@ namespace Amoeba.Interface
                 this.AccountOptions.Tags.Add(new Tag(name, _random.GetBytes(32)));
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void TagsDelete()

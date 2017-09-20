@@ -25,6 +25,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         public ReactiveProperty<string> Title { get; private set; }
 
         public ReactiveCommand RelationCommand { get; private set; }
@@ -57,8 +59,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(DialogService dialogService)
         {
+            _dialogService = dialogService;
+
             this.Init();
         }
 
@@ -150,17 +154,17 @@ namespace Amoeba.Interface
             }
 
             {
-                this.CloudControlViewModel = new CloudControlViewModel(_serviceManager);
-                this.ChatControlViewModel = new ChatControlViewModel(_serviceManager, _messageManager);
-                this.StoreSubscribeControlViewModel = new StoreSubscribeControlViewModel(_serviceManager);
-                this.StorePublishControlViewModel = new StorePublishControlViewModel(_serviceManager);
-                this.SearchControlViewModel = new SearchControlViewModel(_serviceManager, _messageManager);
-                this.DownloadControlViewModel = new DownloadControlViewModel(_serviceManager);
-                this.UploadControlViewModel = new UploadControlViewModel(_serviceManager);
+                this.CloudControlViewModel = new CloudControlViewModel(_serviceManager, _dialogService);
+                this.ChatControlViewModel = new ChatControlViewModel(_serviceManager, _messageManager, _dialogService);
+                this.StoreSubscribeControlViewModel = new StoreSubscribeControlViewModel(_serviceManager, _dialogService);
+                this.StorePublishControlViewModel = new StorePublishControlViewModel(_serviceManager, _dialogService);
+                this.SearchControlViewModel = new SearchControlViewModel(_serviceManager, _messageManager, _dialogService);
+                this.DownloadControlViewModel = new DownloadControlViewModel(_serviceManager, _dialogService);
+                this.UploadControlViewModel = new UploadControlViewModel(_serviceManager, _dialogService);
             }
 
             {
-                _watchManager = new WatchManager(_serviceManager);
+                _watchManager = new WatchManager(_serviceManager, _dialogService);
             }
 
             {
@@ -286,20 +290,17 @@ namespace Amoeba.Interface
 
         private void Relation()
         {
-            Messenger.Instance.GetEvent<RelationWindowShowEvent>()
-                .Publish(new RelationWindowViewModel(_messageManager.GetRelationSignatureInfos()));
+            _dialogService.Show(new RelationWindowViewModel(_messageManager.GetRelationSignatureInfos()));
         }
 
         private void Options()
         {
-            Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
-                .Publish(new OptionsWindowViewModel(_serviceManager));
+            _dialogService.Show(new OptionsWindowViewModel(_serviceManager, _dialogService));
         }
 
         private void CheckBlocks()
         {
-            Messenger.Instance.GetEvent<CheckBlocksWindowShowEvent>()
-                .Publish(new CheckBlocksWindowViewModel(_serviceManager));
+            _dialogService.Show(new CheckBlocksWindowViewModel(_serviceManager));
         }
 
         private void Website()
@@ -309,8 +310,7 @@ namespace Amoeba.Interface
 
         private void Version()
         {
-            Messenger.Instance.GetEvent<VersionWindowShowEvent>()
-                   .Publish(new VersionWindowViewModel());
+            _dialogService.Show(new VersionWindowViewModel());
         }
 
         private void Save()

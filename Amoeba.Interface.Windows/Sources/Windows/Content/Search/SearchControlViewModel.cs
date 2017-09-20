@@ -32,6 +32,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         private LockedList<SearchListViewItemInfo> _cache_SearchItems = new LockedList<SearchListViewItemInfo>();
 
         public ReactiveProperty<string> SearchInput { get; private set; }
@@ -69,10 +71,11 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public SearchControlViewModel(ServiceManager serviceManager, MessageManager messageManager)
+        public SearchControlViewModel(ServiceManager serviceManager, MessageManager messageManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
             _messageManager = messageManager;
+            _dialogService = dialogService;
 
             this.Init();
 
@@ -611,8 +614,7 @@ namespace Amoeba.Interface
                     searchViewModel.Model.Children.Add(info);
                 };
 
-                Messenger.Instance.GetEvent<SearchInfoEditWindowShowEvent>()
-                    .Publish(viewModel);
+                _dialogService.Show(viewModel);
             }
         }
 
@@ -622,8 +624,7 @@ namespace Amoeba.Interface
             {
                 var viewModel = new SearchInfoEditWindowViewModel(searchViewModel.Model);
 
-                Messenger.Instance.GetEvent<SearchInfoEditWindowShowEvent>()
-                    .Publish(viewModel);
+                _dialogService.Show(viewModel);
             }
         }
 
@@ -639,8 +640,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void TabCut()
@@ -751,8 +751,7 @@ namespace Amoeba.Interface
                 });
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void RemoveDownloadingItem()
@@ -782,8 +781,7 @@ namespace Amoeba.Interface
                 });
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void RemoveDownloadedItem()
@@ -813,8 +811,7 @@ namespace Amoeba.Interface
                 });
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void Save()

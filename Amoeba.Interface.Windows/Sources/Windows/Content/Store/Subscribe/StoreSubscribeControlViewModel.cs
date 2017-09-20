@@ -31,6 +31,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         private LockedHashDictionary<Metadata, SearchState> _cacheStates = new LockedHashDictionary<Metadata, SearchState>();
 
         public ReactiveProperty<SubscribeCategoryViewModel> TabViewModel { get; private set; }
@@ -64,9 +66,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public StoreSubscribeControlViewModel(ServiceManager serviceManager)
+        public StoreSubscribeControlViewModel(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Init();
 
@@ -467,8 +470,7 @@ namespace Amoeba.Interface
                     categoryViewModel.Model.CategoryInfos.Add(new SubscribeCategoryInfo() { Name = name });
                 };
 
-                Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                    .Publish(viewModel);
+                _dialogService.Show(viewModel);
             }
         }
 
@@ -482,8 +484,7 @@ namespace Amoeba.Interface
                     categoryViewModel.Model.Name = name;
                 };
 
-                Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                    .Publish(viewModel);
+                _dialogService.Show(viewModel);
             }
         }
 
@@ -503,8 +504,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void TabCut()

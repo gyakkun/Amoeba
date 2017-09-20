@@ -29,7 +29,7 @@ namespace Amoeba.Interface
                 _notifyIcon.Visible = true;
             }
 
-            var viewModel = new MainWindowViewModel();
+            var viewModel = new MainWindowViewModel(new DialogService());
 
             this.DataContext = viewModel;
 
@@ -57,97 +57,7 @@ namespace Amoeba.Interface
                 };
             }
 
-            this.Setting_Messenger();
             this.Setting_SessionEnding();
-        }
-
-        private void Setting_Messenger()
-        {
-            Messenger.Instance.GetEvent<RelationWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new RelationWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<OptionsWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new OptionsWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<CheckBlocksWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new CheckBlocksWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<VersionWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new VersionWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new ChatMessageEditWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<ChatTagListWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new ChatTagListWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<SearchInfoEditWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new SearchInfoEditWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<UploadPreviewWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new UploadPreviewWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var window = new NameEditWindow(vm);
-                    window.Owner = this;
-                    window.ShowDialog();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var result = MessageBox.Show(vm.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
-                    if (result == MessageBoxResult.OK) vm.Ok();
-                }).AddTo(_disposable);
-
-            Messenger.Instance.GetEvent<NoticeWindowShowEvent>()
-                .Subscribe(vm =>
-                {
-                    var result = MessageBox.Show(vm.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
-                    if (result == MessageBoxResult.OK) vm.Ok();
-                }).AddTo(_disposable);
         }
 
         private void Setting_SessionEnding()

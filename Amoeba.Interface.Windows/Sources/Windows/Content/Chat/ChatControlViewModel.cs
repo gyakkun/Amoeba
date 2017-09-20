@@ -30,6 +30,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         public ReactiveProperty<ChatCategoryViewModel> TabViewModel { get; private set; }
         public ReactiveProperty<TreeViewModelBase> TabSelectedItem { get; private set; }
         public DragAcceptDescription DragAcceptDescription { get; private set; }
@@ -63,10 +65,11 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ChatControlViewModel(ServiceManager serviceManager, MessageManager messageManager)
+        public ChatControlViewModel(ServiceManager serviceManager, MessageManager messageManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
             _messageManager = messageManager;
+            _dialogService = dialogService;
 
             this.Init();
 
@@ -310,8 +313,7 @@ namespace Amoeba.Interface
                 chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = name });
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void TabNewChat()
@@ -328,8 +330,7 @@ namespace Amoeba.Interface
                 chatCategoryViewModel.Model.ThreadInfos.Add(new ChatThreadInfo() { Tag = new Tag(name, id) });
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void TabEdit()
@@ -343,8 +344,7 @@ namespace Amoeba.Interface
                 chatCategoryViewModel.Model.Name = name;
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void TabDelete()
@@ -363,8 +363,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void TabCut()
@@ -438,8 +437,7 @@ namespace Amoeba.Interface
                     chatCategoryViewModel.Model.ThreadInfos.Add(new ChatThreadInfo() { Tag = tag });
                 };
 
-                Messenger.Instance.GetEvent<ChatTagListWindowShowEvent>()
-                    .Publish(viewModel);
+                _dialogService.Show(viewModel);
             }
         }
 
@@ -503,8 +501,7 @@ namespace Amoeba.Interface
 
             var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, sb.ToString(), _serviceManager, _messageManager, _tokenSource.Token);
 
-            Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void NewMessage()
@@ -514,8 +511,7 @@ namespace Amoeba.Interface
 
             var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, "", _serviceManager, _messageManager, _tokenSource.Token);
 
-            Messenger.Instance.GetEvent<ChatMessageEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void Save()

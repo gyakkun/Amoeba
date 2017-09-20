@@ -23,6 +23,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         private Random _random = new Random();
 
         public event EventHandler<EventArgs> CloseEvent;
@@ -45,9 +47,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public OptionsWindowViewModel(ServiceManager serviceManager)
+        public OptionsWindowViewModel(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Init();
         }
@@ -58,9 +61,9 @@ namespace Amoeba.Interface
                 this.TabSelectedItem = new ReactiveProperty<TreeViewItem>().AddTo(_disposable);
                 this.TabSelectedItem.Subscribe((item) => this.TabSelectChanged(item)).AddTo(_disposable);
 
-                this.AccountOptionsControlViewModel = new AccountOptionsControlViewModel(_serviceManager);
+                this.AccountOptionsControlViewModel = new AccountOptionsControlViewModel(_serviceManager, _dialogService);
                 this.ConnectionOptionsControlViewModel = new ConnectionOptionsControlViewModel(_serviceManager);
-                this.DataOptionsControlViewModel = new DataOptionsControlViewModel(_serviceManager);
+                this.DataOptionsControlViewModel = new DataOptionsControlViewModel(_serviceManager, _dialogService);
                 this.ViewOptionsControlViewModel = new ViewOptionsControlViewModel(_serviceManager);
                 this.UpdateOptionsControlViewModel = new UpdateOptionsControlViewModel(_serviceManager);
 

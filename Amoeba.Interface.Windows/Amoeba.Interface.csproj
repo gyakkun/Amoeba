@@ -76,8 +76,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Sources\Managers\MessageManager.cs" />
-    <Compile Include="Sources\Managers\WatchManager.cs" />
+    <Compile Include="Sources\Controllers\MessageManager.cs" />
+    <Compile Include="Sources\Controllers\WatchManager.cs" />
     <Compile Include="Sources\Mvvm\Behaviors\TextEditorSelectedTextBlendBehavior.cs" />
     <Compile Include="Sources\Mvvm\Converters\ManagerStateToStringConverter.cs" />
     <Compile Include="Sources\Mvvm\Converters\DateTimeToStringConverter.cs" />
@@ -102,6 +102,7 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="Sources\Mvvm\Service\DialogService.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ProgressDialog.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\UriValidationRule.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
@@ -451,7 +452,6 @@
     <None Include="Licenses\Amoeba.Interface.Readme">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Compile Include="Sources\Mvvm\Utilities\Messenger.cs" />
     <Resource Include="Sources\Mvvm\Models\_Generator\Definitions.xml">
       <SubType>Designer</SubType>
     </Resource>

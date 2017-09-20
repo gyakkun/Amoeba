@@ -28,6 +28,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         private LockedHashDictionary<Metadata, SearchState> _cacheStates = new LockedHashDictionary<Metadata, SearchState>();
 
         public ReactiveProperty<PublishStoreViewModel> TabViewModel { get; private set; }
@@ -67,9 +69,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public StorePublishControlViewModel(ServiceManager serviceManager)
+        public StorePublishControlViewModel(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Init();
 
@@ -428,8 +431,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
 
             this.TabViewModel.Value.Model.IsUpdated = true;
             this.Refresh();
@@ -445,8 +447,7 @@ namespace Amoeba.Interface
                     boxViewModel.Model.Name = name;
                 };
 
-                Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                    .Publish(viewModel);
+                _dialogService.Show(viewModel);
             }
 
             this.TabViewModel.Value.Model.IsUpdated = true;
@@ -463,8 +464,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
 
             this.TabViewModel.Value.Model.IsUpdated = true;
         }
@@ -581,8 +581,7 @@ namespace Amoeba.Interface
                 boxInfo.BoxInfos.Add(new PublishBoxInfo() { Name = name });
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
 
             this.TabViewModel.Value.Model.IsUpdated = true;
         }
@@ -598,8 +597,7 @@ namespace Amoeba.Interface
                 boxInfo.Name = name;
             };
 
-            Messenger.Instance.GetEvent<NameEditWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
 
             this.TabViewModel.Value.Model.IsUpdated = true;
             this.Refresh();
@@ -637,8 +635,7 @@ namespace Amoeba.Interface
                 this.Refresh();
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void Cut()

@@ -28,6 +28,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         public FileDragAcceptDescription FileDragAcceptDescription { get; private set; }
 
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents.Values);
@@ -49,9 +51,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public UploadControlViewModel(ServiceManager serviceManager)
+        public UploadControlViewModel(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Init();
 
@@ -92,8 +95,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            Messenger.Instance.GetEvent<UploadPreviewWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         public void Init()
@@ -366,8 +368,7 @@ namespace Amoeba.Interface
                     }
                 };
 
-                Messenger.Instance.GetEvent<UploadPreviewWindowShowEvent>()
-                    .Publish(viewModel);
+                _dialogService.Show(viewModel);
             }
         }
 
@@ -395,8 +396,7 @@ namespace Amoeba.Interface
                 });
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void Copy()

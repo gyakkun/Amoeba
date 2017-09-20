@@ -27,6 +27,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         public ListCollectionView ConnectionInfosView => (ListCollectionView)CollectionViewSource.GetDefaultView(_connectionInfos.Values);
         private ObservableSimpleDictionary<byte[], DynamicOptions> _connectionInfos = new ObservableSimpleDictionary<byte[], DynamicOptions>(new ByteArrayEqualityComparer());
         public ObservableCollection<object> ConnectionSelectedItems { get; } = new ObservableCollection<object>();
@@ -52,9 +54,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public CloudControlViewModel(ServiceManager serviceManager)
+        public CloudControlViewModel(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Init();
 

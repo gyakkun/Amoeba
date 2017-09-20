@@ -25,6 +25,8 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
+        private DialogService _dialogService;
+
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents.Values);
         private ObservableSimpleDictionary<(Metadata, string), DownloadListViewItemInfo> _contents = new ObservableSimpleDictionary<(Metadata, string), DownloadListViewItemInfo>(new CustomEqualityComparer());
         public ObservableCollection<object> SelectedItems { get; } = new ObservableCollection<object>();
@@ -43,9 +45,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public DownloadControlViewModel(ServiceManager serviceManager)
+        public DownloadControlViewModel(ServiceManager serviceManager, DialogService dialogService)
         {
             _serviceManager = serviceManager;
+            _dialogService = dialogService;
 
             this.Init();
 
@@ -298,8 +301,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            Messenger.Instance.GetEvent<ConfirmWindowShowEvent>()
-                .Publish(viewModel);
+            _dialogService.Show(viewModel);
         }
 
         private void Copy()
