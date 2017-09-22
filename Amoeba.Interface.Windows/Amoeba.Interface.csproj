@@ -102,7 +102,7 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Include="Sources\Mvvm\Service\DialogService.cs" />
+    <Compile Include="Sources\Mvvm\Services\DialogService.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ProgressDialog.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\UriValidationRule.cs" />
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
