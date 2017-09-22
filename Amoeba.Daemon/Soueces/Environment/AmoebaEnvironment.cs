@@ -65,20 +65,14 @@ namespace Amoeba.Daemon
             public string BasePath { get; private set; }
             public string TempPath { get; private set; }
             public string ConfigPath { get; private set; }
-            public string DownloadsPath { get; private set; }
-            public string UpdatePath { get; private set; }
             public string LogPath { get; private set; }
-            public string WorkPath { get; private set; }
 
             public EnvironmentPaths()
             {
                 this.BasePath = "../";
                 this.TempPath = "../Temp";
                 this.ConfigPath = "../Config";
-                this.DownloadsPath = "../Downloads";
-                this.UpdatePath = "../Update";
                 this.LogPath = "../Log";
-                this.WorkPath = "../Work";
             }
         }
 

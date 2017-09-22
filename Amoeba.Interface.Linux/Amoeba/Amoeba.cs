@@ -31,7 +31,7 @@ namespace Amoeba.Interface
                 {
                     var locations = new List<Location>();
 
-                    using (var reader = new StreamReader(Path.Combine(AmoebaEnvironment.Paths.CorePath, "Locations.txt")))
+                    using (var reader = new StreamReader(Path.Combine(AmoebaEnvironment.Paths.BasePath, "Locations.txt")))
                     {
                         string line;
 

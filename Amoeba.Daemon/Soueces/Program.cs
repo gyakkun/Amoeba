@@ -11,6 +11,8 @@ namespace Amoeba.Daemon
     {
         static void Main(string[] args)
         {
+            Init();
+
             string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
             if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
@@ -37,6 +39,42 @@ namespace Amoeba.Daemon
 
                 serviceManager.Stop();
                 serviceManager.Save();
+            }
+        }
+
+        private static void Init()
+        {
+            // 既定のフォルダを作成する。
+            {
+                foreach (var propertyInfo in typeof(AmoebaEnvironment.EnvironmentPaths).GetProperties())
+                {
+                    string path = propertyInfo.GetValue(AmoebaEnvironment.Paths) as string;
+                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                }
+            }
+
+            // Tempフォルダを環境変数に登録。
+            {
+                // Tempフォルダ内を掃除。
+                try
+                {
+                    foreach (string path in Directory.GetFiles(AmoebaEnvironment.Paths.TempPath, "*", SearchOption.AllDirectories))
+                    {
+                        File.Delete(path);
+                    }
+
+                    foreach (string path in Directory.GetDirectories(AmoebaEnvironment.Paths.TempPath, "*", SearchOption.AllDirectories))
+                    {
+                        Directory.Delete(path, true);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                Environment.SetEnvironmentVariable("TMP", Path.GetFullPath(AmoebaEnvironment.Paths.TempPath), EnvironmentVariableTarget.Process);
+                Environment.SetEnvironmentVariable("TEMP", Path.GetFullPath(AmoebaEnvironment.Paths.TempPath), EnvironmentVariableTarget.Process);
             }
         }
     }

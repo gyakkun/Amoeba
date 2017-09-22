@@ -38,7 +38,8 @@ namespace Amoeba.Interface
                 else
                 {
                     return "English";
-                }            });
+                }
+            });
             this.AccountInfo = _settings.Load(nameof(AccountInfo), () =>
             {
                 var info = new AccountInfo();

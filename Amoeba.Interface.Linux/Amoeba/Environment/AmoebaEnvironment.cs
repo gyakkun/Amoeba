@@ -25,7 +25,7 @@ namespace Amoeba.Interface
 
         public class EnvironmentPaths
         {
-            public string CorePath { get; private set; }
+            public string BasePath { get; private set; }
             public string TempPath { get; private set; }
             public string ConfigPath { get; private set; }
             public string DownloadsPath { get; private set; }
@@ -36,16 +36,16 @@ namespace Amoeba.Interface
 
             public EnvironmentPaths()
             {
-                string corePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                string basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-                this.CorePath = corePath;
-                this.TempPath = Path.GetFullPath(Path.Combine(corePath, "../Temp"));
-                this.ConfigPath = Path.GetFullPath(Path.Combine(corePath, "../Config"));
-                this.DownloadsPath = Path.GetFullPath(Path.Combine(corePath, "../Downloads"));
-                this.UpdatePath = Path.GetFullPath(Path.Combine(corePath, "../Update"));
-                this.LogPath = Path.GetFullPath(Path.Combine(corePath, "../Log"));
-                this.WorkPath = Path.GetFullPath(Path.Combine(corePath, "../Work"));
-                this.LanguagesPath = Path.GetFullPath(Path.Combine(corePath, "./Resources/Languages"));
+                this.BasePath = basePath;
+                this.TempPath = Path.GetFullPath(Path.Combine(basePath, "../Temp"));
+                this.ConfigPath = Path.GetFullPath(Path.Combine(basePath, "../Config"));
+                this.DownloadsPath = Path.GetFullPath(Path.Combine(basePath, "../Downloads"));
+                this.UpdatePath = Path.GetFullPath(Path.Combine(basePath, "../Update"));
+                this.LogPath = Path.GetFullPath(Path.Combine(basePath, "../Log"));
+                this.WorkPath = Path.GetFullPath(Path.Combine(basePath, "../Work"));
+                this.LanguagesPath = Path.GetFullPath(Path.Combine(basePath, "./Resources/Languages"));
             }
         }
     }
