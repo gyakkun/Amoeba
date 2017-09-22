@@ -24,7 +24,7 @@ namespace Amoeba.Simulation
 
         private Action<string> _callback;
 
-        private readonly string _workPath = @"E:\Test_CoreManager";
+        private readonly string _workPath = @"C:\Local\Test_CoreManager";
         private readonly Random _random = new Random();
 
         public CoreManagerTests(Action<string> callback)
@@ -142,7 +142,7 @@ namespace Amoeba.Simulation
 
             try
             {
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 30; i++)
                 {
                     var wrapper = this.CreateCoreManager(60000 + i);
                     wrapper.Value.Start();
@@ -162,7 +162,7 @@ namespace Amoeba.Simulation
                     if (average >= wrapperList.Count - 2) break;
                 }
 
-                //this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
+                this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
                 this.MessageUploadAndDownload(wrapperList.Select(n => n.Value));
             }
             finally
