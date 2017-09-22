@@ -119,7 +119,8 @@ namespace Amoeba.Interface
                         }
                     }
 
-                    if (_serviceManager.Report.Core.Cache.FreeSpace < NetworkConverter.FromSizeString("1024MB"))
+                    if (_serviceManager.Report.Core.Cache.FreeSpace < NetworkConverter.FromSizeString("32GB")
+                        && _serviceManager.Report.Core.Cache.FreeSpace < (_serviceManager.Size / 3))
                     {
                         flag |= true;
                     }

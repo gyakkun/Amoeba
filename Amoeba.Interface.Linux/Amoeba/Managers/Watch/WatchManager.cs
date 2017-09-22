@@ -29,6 +29,7 @@ namespace Amoeba.Interface
             _serviceManager = serviceManager;
 
             this.Setting_ChechUpdate();
+            this.Setting_CheckDiskSpace();
             this.Setting_Backup();
         }
 
@@ -87,6 +88,46 @@ namespace Amoeba.Interface
                 }
             });
             _checkUpdateTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 3, 0));
+        }
+
+        private void Setting_CheckDiskSpace()
+        {
+            _checkDiskSpaceTimer = new WatchTimer(() =>
+            {
+                try
+                {
+                    bool flag = false;
+
+
+                    if (_serviceManager.Report.Core.Cache.FreeSpace < NetworkConverter.FromSizeString("32GB")
+                        && _serviceManager.Report.Core.Cache.FreeSpace < (_serviceManager.Size / 3))
+                    {
+                        flag |= true;
+                    }
+
+                    if (!flag)
+                    {
+                        if (_serviceManager.State == ManagerState.Stop)
+                        {
+                            _serviceManager.Start();
+                            Log.Information("Start");
+                        }
+                    }
+                    else
+                    {
+                        if (_serviceManager.State == ManagerState.Start)
+                        {
+                            _serviceManager.Stop();
+                            Log.Information("Stop");
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+            });
+            _checkDiskSpaceTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));
         }
 
         private void Setting_Backup()
