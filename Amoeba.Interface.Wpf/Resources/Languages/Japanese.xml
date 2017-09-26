@@ -50,6 +50,7 @@
     <Property Name="ConfirmWindow_DeleteMessage" Value="本当に削除してもよろしいですか？" />
     <Property Name="ConfirmWindow_CheckExistMessage" Value="ファイルの存在を確認してもよろしいでしょうか?" />
 
+    <Property Name="NameEditWindow_Title" Value="名前の編集" />
     <Property Name="NameEditWindow_Name" Value="名前" />
     <Property Name="NameEditWindow_Ok" Value="OK" />
     <Property Name="NameEditWindow_Cancel" Value="キャンセル" />
@@ -76,6 +77,7 @@
     <Property Name="MainWindow_Close_Message" Value="終了しますか？" />
     <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
 
+    <Property Name="RelationWindow_Title" Value="リレーション" />
     <Property Name="RelationWindow_Profile" Value="プロファイル" />
     <Property Name="RelationWindow_Trust" Value="トラスト" />
     <Property Name="RelationWindow_TrustSignature" Value="トラストサイン" />
@@ -89,6 +91,7 @@
     <Property Name="RelationWindow_Copy" Value="コピー" />
     <Property Name="RelationWindow_Close" Value="閉じる" />
 
+    <Property Name="OptionsWindow_Title" Value="オプション" />
     <Property Name="OptionsWindow_Account" Value="アカウント" />
     <Property Name="OptionsWindow_Signature" Value="サイン" />
     <Property Name="OptionsWindow_TrustSignatures" Value="トラストサイン" />
@@ -169,8 +172,10 @@
     <Property Name="UpdateOptionsControl_UpdateSettings" Value="アップデート設定" />
     <Property Name="UpdateOptionsControl_UpdateIsEnabled" Value="アップデートを有効にする" />
 
+    <Property Name="VersionWindow_Title" Value="バージョン" />
     <Property Name="VersionWindow_Close" Value="閉じる" />
 
+    <Property Name="CheckBlocksWindow_Title" Value="ブロックの破損チェック" />
     <Property Name="CheckBlocksWindow_BadCount" Value="破損ブロック数" />
     <Property Name="CheckBlocksWindow_CheckedCount" Value="チェック済みブロック数" />
     <Property Name="CheckBlocksWindow_BlockCount" Value="すべてのブロック数" />
@@ -204,9 +209,11 @@
     <Property Name="ChatControl_New" Value="新着" />
     <Property Name="ChatControl_NewMessage" Value="メッセージの新規作成" />
 
+    <Property Name="ChatMessageEditWindow_Title" Value="チャットメッセージの編集" />
     <Property Name="ChatMessageEditWindow_Ok" Value="OK" />
     <Property Name="ChatMessageEditWindow_Cancel" Value="キャンセル" />
 
+    <Property Name="ChatTagListWindow_Title" Value="タグリスト" />
     <Property Name="ChatTagListWindow_Name" Value="名前" />
     <Property Name="ChatTagListWindow_Id" Value="ID" />
     <Property Name="ChatTagListWindow_Copy" Value="コピー" />
@@ -261,6 +268,7 @@
     <Property Name="SearchControl_CreationTime" Value="作成日時" />
     <Property Name="SearchControl_State" Value="状態" />
 
+    <Property Name="SearchInfoEditWindow_Title" Value="検索の編集" />
     <Property Name="SearchInfoEditWindow_SearchName" Value="検索名" />
     <Property Name="SearchInfoEditWindow_Name" Value="名前" />
     <Property Name="SearchInfoEditWindow_NameConditions" Value="名前の検索条件" />
@@ -312,6 +320,7 @@
     <Property Name="UploadControl_Copy" Value="コピー" />
     <Property Name="UploadControl_Completed" Value="完了" />
 
+    <Property Name="UploadPreviewWindow_Title" Value="アップロードのプレビュー" />
     <Property Name="UploadPreviewWindow_Name" Value="名前" />
     <Property Name="UploadPreviewWindow_Length" Value="サイズ" />
     <Property Name="UploadPreviewWindow_Path" Value="パス" />

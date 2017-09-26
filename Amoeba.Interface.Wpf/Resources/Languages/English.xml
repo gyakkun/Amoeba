@@ -50,6 +50,7 @@
     <Property Name="ConfirmWindow_DeleteMessage" Value="Are you sure you want to delete?" />
     <Property Name="ConfirmWindow_CheckExistMessage" Value="Are you sure you want to check file existence?" />
 
+    <Property Name="NameEditWindow_Title" Value="Name edit" />
     <Property Name="NameEditWindow_Name" Value="Name" />
     <Property Name="NameEditWindow_Ok" Value="OK" />
     <Property Name="NameEditWindow_Cancel" Value="Cancel" />
@@ -76,6 +77,7 @@
     <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
     <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Not enough disk space." />
 
+    <Property Name="RelationWindow_Title" Value="Relation" />
     <Property Name="RelationWindow_Profile" Value="Profile" />
     <Property Name="RelationWindow_Trust" Value="Trust" />
     <Property Name="RelationWindow_TrustSignature" Value="Trust signature" />
@@ -89,6 +91,7 @@
     <Property Name="RelationWindow_Copy" Value="Copy" />
     <Property Name="RelationWindow_Close" Value="Close" />
 
+    <Property Name="OptionsWindow_Title" Value="Options" />
     <Property Name="OptionsWindow_Account" Value="Account" />
     <Property Name="OptionsWindow_Signature" Value="Signature" />
     <Property Name="OptionsWindow_TrustSignatures" Value="Trust signatures" />
@@ -169,8 +172,10 @@
     <Property Name="UpdateOptionsControl_UpdateSettings" Value="Update settings" />
     <Property Name="UpdateOptionsControl_UpdateIsEnabled" Value="Update is enabled" />
 
+    <Property Name="VersionWindow_Title" Value="Version" />
     <Property Name="VersionWindow_Close" Value="Close" />
 
+    <Property Name="CheckBlocksWindow_Title" Value="Check blocks" />
     <Property Name="CheckBlocksWindow_BadCount" Value="Bad count" />
     <Property Name="CheckBlocksWindow_CheckedCount" Value="Checked count" />
     <Property Name="CheckBlocksWindow_BlockCount" Value="Block count" />
@@ -204,9 +209,11 @@
     <Property Name="ChatControl_New" Value="New" />
     <Property Name="ChatControl_NewMessage" Value="New message" />
 
+    <Property Name="ChatMessageEditWindow_Title" Value="Chat message edit" />
     <Property Name="ChatMessageEditWindow_Ok" Value="OK" />
     <Property Name="ChatMessageEditWindow_Cancel" Value="Cancel" />
 
+    <Property Name="ChatTagListWindow_Title" Value="Chat tag list" />
     <Property Name="ChatTagListWindow_Name" Value="Name" />
     <Property Name="ChatTagListWindow_Id" Value="ID" />
     <Property Name="ChatTagListWindow_Copy" Value="Copy" />
@@ -261,6 +268,7 @@
     <Property Name="SearchControl_CreationTime" Value="CreationTime" />
     <Property Name="SearchControl_State" Value="State" />
 
+    <Property Name="SearchInfoEditWindow_Title" Value="Search edit" />
     <Property Name="SearchInfoEditWindow_SearchName" Value="Search name" />
     <Property Name="SearchInfoEditWindow_Name" Value="Name" />
     <Property Name="SearchInfoEditWindow_NameConditions" Value="Name conditions" />
@@ -312,6 +320,7 @@
     <Property Name="UploadControl_Copy" Value="Copy" />
     <Property Name="UploadControl_Completed" Value="Completed" />
 
+    <Property Name="UploadPreviewWindow_Title" Value="Upload preview" />
     <Property Name="UploadPreviewWindow_Name" Value="Name" />
     <Property Name="UploadPreviewWindow_Length" Value="Length" />
     <Property Name="UploadPreviewWindow_Path" Value="Path" />

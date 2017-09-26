@@ -45,6 +45,7 @@ namespace Amoeba.Interface
         public string ConfirmWindow_Title { get { return this.Translate("ConfirmWindow_Title"); } }
         public string ConfirmWindow_DeleteMessage { get { return this.Translate("ConfirmWindow_DeleteMessage"); } }
         public string ConfirmWindow_CheckExistMessage { get { return this.Translate("ConfirmWindow_CheckExistMessage"); } }
+        public string NameEditWindow_Title { get { return this.Translate("NameEditWindow_Title"); } }
         public string NameEditWindow_Name { get { return this.Translate("NameEditWindow_Name"); } }
         public string NameEditWindow_Ok { get { return this.Translate("NameEditWindow_Ok"); } }
         public string NameEditWindow_Cancel { get { return this.Translate("NameEditWindow_Cancel"); } }
@@ -69,6 +70,7 @@ namespace Amoeba.Interface
         public string MainWindow_Download { get { return this.Translate("MainWindow_Download"); } }
         public string MainWindow_Close_Message { get { return this.Translate("MainWindow_Close_Message"); } }
         public string MainWindow_DiskSpaceNotFound_Message { get { return this.Translate("MainWindow_DiskSpaceNotFound_Message"); } }
+        public string RelationWindow_Title { get { return this.Translate("RelationWindow_Title"); } }
         public string RelationWindow_Profile { get { return this.Translate("RelationWindow_Profile"); } }
         public string RelationWindow_Trust { get { return this.Translate("RelationWindow_Trust"); } }
         public string RelationWindow_TrustSignature { get { return this.Translate("RelationWindow_TrustSignature"); } }
@@ -81,6 +83,7 @@ namespace Amoeba.Interface
         public string RelationWindow_Comment { get { return this.Translate("RelationWindow_Comment"); } }
         public string RelationWindow_Copy { get { return this.Translate("RelationWindow_Copy"); } }
         public string RelationWindow_Close { get { return this.Translate("RelationWindow_Close"); } }
+        public string OptionsWindow_Title { get { return this.Translate("OptionsWindow_Title"); } }
         public string OptionsWindow_Account { get { return this.Translate("OptionsWindow_Account"); } }
         public string OptionsWindow_Signature { get { return this.Translate("OptionsWindow_Signature"); } }
         public string OptionsWindow_TrustSignatures { get { return this.Translate("OptionsWindow_TrustSignatures"); } }
@@ -155,7 +158,9 @@ namespace Amoeba.Interface
         public string ViewOptionsControl_Paste { get { return this.Translate("ViewOptionsControl_Paste"); } }
         public string UpdateOptionsControl_UpdateSettings { get { return this.Translate("UpdateOptionsControl_UpdateSettings"); } }
         public string UpdateOptionsControl_UpdateIsEnabled { get { return this.Translate("UpdateOptionsControl_UpdateIsEnabled"); } }
+        public string VersionWindow_Title { get { return this.Translate("VersionWindow_Title"); } }
         public string VersionWindow_Close { get { return this.Translate("VersionWindow_Close"); } }
+        public string CheckBlocksWindow_Title { get { return this.Translate("CheckBlocksWindow_Title"); } }
         public string CheckBlocksWindow_BadCount { get { return this.Translate("CheckBlocksWindow_BadCount"); } }
         public string CheckBlocksWindow_CheckedCount { get { return this.Translate("CheckBlocksWindow_CheckedCount"); } }
         public string CheckBlocksWindow_BlockCount { get { return this.Translate("CheckBlocksWindow_BlockCount"); } }
@@ -186,8 +191,10 @@ namespace Amoeba.Interface
         public string ChatControl_Trust { get { return this.Translate("ChatControl_Trust"); } }
         public string ChatControl_New { get { return this.Translate("ChatControl_New"); } }
         public string ChatControl_NewMessage { get { return this.Translate("ChatControl_NewMessage"); } }
+        public string ChatMessageEditWindow_Title { get { return this.Translate("ChatMessageEditWindow_Title"); } }
         public string ChatMessageEditWindow_Ok { get { return this.Translate("ChatMessageEditWindow_Ok"); } }
         public string ChatMessageEditWindow_Cancel { get { return this.Translate("ChatMessageEditWindow_Cancel"); } }
+        public string ChatTagListWindow_Title { get { return this.Translate("ChatTagListWindow_Title"); } }
         public string ChatTagListWindow_Name { get { return this.Translate("ChatTagListWindow_Name"); } }
         public string ChatTagListWindow_Id { get { return this.Translate("ChatTagListWindow_Id"); } }
         public string ChatTagListWindow_Copy { get { return this.Translate("ChatTagListWindow_Copy"); } }
@@ -238,6 +245,7 @@ namespace Amoeba.Interface
         public string SearchControl_Length { get { return this.Translate("SearchControl_Length"); } }
         public string SearchControl_CreationTime { get { return this.Translate("SearchControl_CreationTime"); } }
         public string SearchControl_State { get { return this.Translate("SearchControl_State"); } }
+        public string SearchInfoEditWindow_Title { get { return this.Translate("SearchInfoEditWindow_Title"); } }
         public string SearchInfoEditWindow_SearchName { get { return this.Translate("SearchInfoEditWindow_SearchName"); } }
         public string SearchInfoEditWindow_Name { get { return this.Translate("SearchInfoEditWindow_Name"); } }
         public string SearchInfoEditWindow_NameConditions { get { return this.Translate("SearchInfoEditWindow_NameConditions"); } }
@@ -285,6 +293,7 @@ namespace Amoeba.Interface
         public string UploadControl_Delete { get { return this.Translate("UploadControl_Delete"); } }
         public string UploadControl_Copy { get { return this.Translate("UploadControl_Copy"); } }
         public string UploadControl_Completed { get { return this.Translate("UploadControl_Completed"); } }
+        public string UploadPreviewWindow_Title { get { return this.Translate("UploadPreviewWindow_Title"); } }
         public string UploadPreviewWindow_Name { get { return this.Translate("UploadPreviewWindow_Name"); } }
         public string UploadPreviewWindow_Length { get { return this.Translate("UploadPreviewWindow_Length"); } }
         public string UploadPreviewWindow_Path { get { return this.Translate("UploadPreviewWindow_Path"); } }
