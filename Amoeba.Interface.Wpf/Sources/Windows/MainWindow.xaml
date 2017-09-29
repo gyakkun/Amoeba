@@ -189,46 +189,7 @@
                     <ContentControl HorizontalContentAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"
                                     Visibility="{Binding ElementName=StoreListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <ListBox Name="StoreTabListBox"
-                                     Grid.Column="0"
-                                     MinWidth="120"
-                                     HorizontalContentAlignment="Stretch"
-                                     VerticalContentAlignment="Stretch"
-                                     SelectedIndex="{Binding Path=DynamicOptions.StoreTabListBox_SelectedIndex, FallbackValue=0}"
-                                     SelectionMode="Single">
-                                <ListBoxItem Name="StoreSubscribeListBoxItem"
-                                             Height="32"
-                                             Padding="16,8"
-                                             HorizontalContentAlignment="Center"
-                                             VerticalContentAlignment="Center"
-                                             Content="{Binding Path=MainWindow_Subscribe, Source={StaticResource Languages}}" />
-                                <ListBoxItem Name="StorePublishListBoxItem"
-                                             Height="32"
-                                             Padding="16,8"
-                                             HorizontalContentAlignment="Center"
-                                             VerticalContentAlignment="Center"
-                                             Content="{Binding Path=MainWindow_Publish, Source={StaticResource Languages}}" />
-                            </ListBox>
-
-                            <ContentControl Grid.Column="1"
-                                            HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="Stretch"
-                                            Visibility="{Binding ElementName=StoreSubscribeListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <local:StoreSubscribeControl DataContext="{Binding Path=StoreSubscribeControlViewModel}" />
-                            </ContentControl>
-                            <ContentControl Grid.Column="1"
-                                            HorizontalContentAlignment="Stretch"
-                                            VerticalContentAlignment="Stretch"
-                                            Visibility="{Binding ElementName=StorePublishListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <local:StorePublishControl DataContext="{Binding Path=StorePublishControlViewModel}" />
-                            </ContentControl>
-                        </Grid>
-
+                        <local:StoreControl DataContext="{Binding Path=StoreControlViewModel}" />
                     </ContentControl>
                     <ContentControl HorizontalContentAlignment="Stretch"
                                     VerticalContentAlignment="Stretch"

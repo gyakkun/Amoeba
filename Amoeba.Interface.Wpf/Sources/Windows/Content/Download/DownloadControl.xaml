@@ -11,6 +11,13 @@
              d:DesignHeight="300"
              d:DesignWidth="300"
              mc:Ignorable="d">
+
+    <UserControl.InputBindings>
+        <KeyBinding Command="{Binding DeleteCommand}" Gesture="Delete" />
+        <KeyBinding Command="{Binding CopyCommand}" Gesture="CTRL+C" />
+        <KeyBinding Command="{Binding PasteCommand}" Gesture="CTRL+V" />
+    </UserControl.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -27,8 +34,8 @@
                     Command="{Binding Path=RemoveCompletedItemCommand}"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="{Binding Path=DownloadControl_RemoveCompletedItem, Source={StaticResource Languages}}">
-                <md:PackIcon Width="24"
-                             Height="24"
+                <md:PackIcon Width="32"
+                             Height="32"
                              Kind="Broom" />
             </Button>
         </DockPanel>
@@ -153,27 +160,5 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <md:PopupBox Grid.Row="1"
-                     Width="48"
-                     Height="48"
-                     Margin="0,0,20,20"
-                     HorizontalAlignment="Right"
-                     VerticalAlignment="Bottom"
-                     PlacementMode="TopAndAlignCentres"
-                     PopupMode="Click"
-                     Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
-                     ToolTipService.Placement="Left">
-            <StackPanel>
-                <Button Command="{Binding Path=DeleteCommand}" ToolTip="{Binding Path=DownloadControl_Delete, Source={StaticResource Languages}}">
-                    <md:PackIcon Kind="Delete" />
-                </Button>
-                <Button Command="{Binding Path=CopyCommand}" ToolTip="{Binding Path=DownloadControl_Copy, Source={StaticResource Languages}}">
-                    <md:PackIcon Kind="ContentCopy" />
-                </Button>
-                <Button Command="{Binding Path=PasteCommand}" ToolTip="{Binding Path=DownloadControl_Paste, Source={StaticResource Languages}}">
-                    <md:PackIcon Kind="ContentPaste" />
-                </Button>
-            </StackPanel>
-        </md:PopupBox>
     </Grid>
 </UserControl>

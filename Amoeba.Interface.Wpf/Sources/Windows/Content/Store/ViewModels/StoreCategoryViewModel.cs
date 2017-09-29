@@ -5,17 +5,17 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class SubscribeCategoryViewModel : TreeViewModelBase
+    class StoreCategoryViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ReadOnlyReactiveCollection<SubscribeStoreViewModel> Stores { get; private set; }
-        public ReadOnlyReactiveCollection<SubscribeCategoryViewModel> Categories { get; private set; }
+        public ReadOnlyReactiveCollection<StoreSignatureViewModel> SignatureViewModels { get; private set; }
+        public ReadOnlyReactiveCollection<StoreCategoryViewModel> CategoryViewModels { get; private set; }
 
-        public SubscribeCategoryInfo Model { get; private set; }
+        public StoreCategoryInfo Model { get; private set; }
 
-        public SubscribeCategoryViewModel(TreeViewModelBase parent, SubscribeCategoryInfo model)
+        public StoreCategoryViewModel(TreeViewModelBase parent, StoreCategoryInfo model)
             : base(parent)
         {
             this.Model = model;
@@ -23,22 +23,22 @@ namespace Amoeba.Interface
             this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
             this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
-            this.Stores = model.StoreInfos.ToReadOnlyReactiveCollection(n => new SubscribeStoreViewModel(this, n)).AddTo(_disposable);
-            this.Categories = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new SubscribeCategoryViewModel(this, n)).AddTo(_disposable);
+            this.SignatureViewModels = model.SignatureInfos.ToReadOnlyReactiveCollection(n => new StoreSignatureViewModel(this, n)).AddTo(_disposable);
+            this.CategoryViewModels = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new StoreCategoryViewModel(this, n)).AddTo(_disposable);
         }
 
-        public override string DragFormat { get { return "Amoeba_Subscribe"; } }
+        public override string DragFormat { get { return "Amoeba_Store"; } }
 
         public override bool TryAdd(object value)
         {
-            if (value is SubscribeCategoryViewModel categoryViewModel)
+            if (value is StoreCategoryViewModel categoryViewModel)
             {
                 this.Model.CategoryInfos.Add(categoryViewModel.Model);
                 return true;
             }
-            else if (value is SubscribeStoreViewModel storeViewModel)
+            else if (value is StoreSignatureViewModel signatureViewModel)
             {
-                this.Model.StoreInfos.Add(storeViewModel.Model);
+                this.Model.SignatureInfos.Add(signatureViewModel.Model);
                 return true;
             }
 
@@ -47,13 +47,13 @@ namespace Amoeba.Interface
 
         public override bool TryRemove(object value)
         {
-            if (value is SubscribeCategoryViewModel categoryViewModel)
+            if (value is StoreCategoryViewModel categoryViewModel)
             {
                 return this.Model.CategoryInfos.Remove(categoryViewModel.Model);
             }
-            else if (value is SubscribeStoreViewModel storeViewModel)
+            else if (value is StoreSignatureViewModel signatureViewModel)
             {
-                return this.Model.StoreInfos.Remove(storeViewModel.Model);
+                return this.Model.SignatureInfos.Remove(signatureViewModel.Model);
             }
 
             return false;

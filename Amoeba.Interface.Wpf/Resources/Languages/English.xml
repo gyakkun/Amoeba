@@ -180,7 +180,7 @@
     <Property Name="CheckBlocksWindow_CheckedCount" Value="Checked count" />
     <Property Name="CheckBlocksWindow_BlockCount" Value="Block count" />
     <Property Name="CheckBlocksWindow_Close" Value="Close" />
-    
+
     <Property Name="CloudControl_Connection" Value="Connection" />
     <Property Name="CloudControl_State" Value="State" />
     <Property Name="CloudControl_Log" Value="Log" />
@@ -220,33 +220,20 @@
     <Property Name="ChatTagListWindow_Join" Value="Join" />
     <Property Name="ChatTagListWindow_Close" Value="Close" />
 
-    <Property Name="StoreSubscribeControl_NewCategory" Value="New category" />
-    <Property Name="StoreSubscribeControl_Edit" Value="Edit" />
-    <Property Name="StoreSubscribeControl_Delete" Value="Delete" />
-    <Property Name="StoreSubscribeControl_Cut" Value="Cut" />
-    <Property Name="StoreSubscribeControl_Copy" Value="Copy" />
-    <Property Name="StoreSubscribeControl_Paste" Value="Paste" />
-    <Property Name="StoreSubscribeControl_Download" Value="Download" />
-    <Property Name="StoreSubscribeControl_Advanced" Value="Advanced" />
-    <Property Name="StoreSubscribeControl_CopyName" Value="Copy name" />
-    <Property Name="StoreSubscribeControl_Name" Value="Name" />
-    <Property Name="StoreSubscribeControl_Length" Value="Length" />
-    <Property Name="StoreSubscribeControl_CreationTime" Value="CreationTime" />
-    <Property Name="StoreSubscribeControl_State" Value="State" />
-
-    <Property Name="StorePublishControl_NewBox" Value="New box" />
-    <Property Name="StorePublishControl_Edit" Value="Edit" />
-    <Property Name="StorePublishControl_Delete" Value="Delete" />
-    <Property Name="StorePublishControl_Cut" Value="Cut" />
-    <Property Name="StorePublishControl_Copy" Value="Copy" />
-    <Property Name="StorePublishControl_Paste" Value="Paste" />
-    <Property Name="StorePublishControl_Upload" Value="Upload" />
-    <Property Name="StorePublishControl_Advanced" Value="Advanced" />
-    <Property Name="StorePublishControl_CopyName" Value="Copy name" />
-    <Property Name="StorePublishControl_Name" Value="Name" />
-    <Property Name="StorePublishControl_Length" Value="Length" />
-    <Property Name="StorePublishControl_CreationTime" Value="CreationTime" />
-    <Property Name="StorePublishControl_State" Value="State" />
+    <Property Name="StoreControl_NewCategory" Value="New category" />
+    <Property Name="StoreControl_Edit" Value="Edit" />
+    <Property Name="StoreControl_Delete" Value="Delete" />
+    <Property Name="StoreControl_Cut" Value="Cut" />
+    <Property Name="StoreControl_Copy" Value="Copy" />
+    <Property Name="StoreControl_Paste" Value="Paste" />
+    <Property Name="StoreControl_Download" Value="Download" />
+    <Property Name="StoreControl_Advanced" Value="Advanced" />
+    <Property Name="StoreControl_CopyName" Value="Copy name" />
+    <Property Name="StoreControl_Name" Value="Name" />
+    <Property Name="StoreControl_Length" Value="Length" />
+    <Property Name="StoreControl_CreationTime" Value="CreationTime" />
+    <Property Name="StoreControl_State" Value="State" />
+    <Property Name="StoreControl_Up" Value="Up" />
 
     <Property Name="SearchControl_SearchHint" Value="Search" />
     <Property Name="SearchControl_Download" Value="Download" />
@@ -309,24 +296,30 @@
     <Property Name="DownloadControl_Reset" Value="Reset" />
     <Property Name="DownloadControl_RemoveCompletedItem" Value="Remove completed item" />
 
-    <Property Name="UploadControl_Upload" Value="Upload" />
+    <Property Name="UploadControl_NewCategory" Value="New category" />
+    <Property Name="UploadControl_AddDirectory" Value="Add directory" />
+    <Property Name="UploadControl_Edit" Value="Edit" />
+    <Property Name="UploadControl_Delete" Value="Delete" />
+    <Property Name="UploadControl_Cut" Value="Cut" />
+    <Property Name="UploadControl_Copy" Value="Copy" />
+    <Property Name="UploadControl_Paste" Value="Paste" />
+    <Property Name="UploadControl_Advanced" Value="Advanced" />
+    <Property Name="UploadControl_CopyName" Value="Copy name" />
     <Property Name="UploadControl_Name" Value="Name" />
     <Property Name="UploadControl_Length" Value="Length" />
     <Property Name="UploadControl_CreationTime" Value="CreationTime" />
+    <Property Name="UploadControl_State" Value="State" />
     <Property Name="UploadControl_Path" Value="Path" />
+    <Property Name="UploadControl_Up" Value="Up" />
+    <Property Name="UploadControl_Upload" Value="Upload" />
     <Property Name="UploadControl_Sync" Value="Sync" />
-    <Property Name="UploadControl_Add" Value="Add" />
-    <Property Name="UploadControl_Delete" Value="Delete" />
-    <Property Name="UploadControl_Copy" Value="Copy" />
-    <Property Name="UploadControl_Completed" Value="Completed" />
+    <Property Name="UploadControl_Importing" Value="Importing" />
+    <Property Name="UploadControl_Cancel" Value="CANCEL" />
 
-    <Property Name="UploadPreviewWindow_Title" Value="Upload preview" />
-    <Property Name="UploadPreviewWindow_Name" Value="Name" />
-    <Property Name="UploadPreviewWindow_Length" Value="Length" />
-    <Property Name="UploadPreviewWindow_Path" Value="Path" />
-    <Property Name="UploadPreviewWindow_Delete" Value="Delete" />
-    <Property Name="UploadPreviewWindow_Copy" Value="Copy" />
-    <Property Name="UploadPreviewWindow_Ok" Value="OK" />
-    <Property Name="UploadPreviewWindow_Cancel" Value="Cancel" />
+    <Property Name="UploadDirectoryInfoEditWindow_Title" Value="Upload directory edit" />
+    <Property Name="UploadDirectoryInfoEditWindow_Name" Value="Name" />
+    <Property Name="UploadDirectoryInfoEditWindow_Path" Value="Path" />
+    <Property Name="UploadDirectoryInfoEditWindow_Ok" Value="Ok" />
+    <Property Name="UploadDirectoryInfoEditWindow_Cancel" Value="Cancel" />
 
 </Config>

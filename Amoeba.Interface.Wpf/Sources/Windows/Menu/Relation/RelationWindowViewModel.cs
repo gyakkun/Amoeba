@@ -7,14 +7,13 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Configuration;
-using Amoeba.Service;
 using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Amoeba.Messages;
 
 namespace Amoeba.Interface
 {
@@ -91,19 +90,19 @@ namespace Amoeba.Interface
                 this.TrustSignaturesSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.TrustSignaturesSortCommand.Subscribe((propertyName) => this.TrustSignaturesSort(propertyName)).AddTo(_disposable);
 
-                this.TrustCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TrustCopyCommand = this.SelectedTrustSignatureItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.TrustCopyCommand.Subscribe(() => this.TrustCopy()).AddTo(_disposable);
 
                 this.UntrustSignaturesSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.UntrustSignaturesSortCommand.Subscribe((propertyName) => this.UntrustSignaturesSort(propertyName)).AddTo(_disposable);
 
-                this.UntrustCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.UntrustCopyCommand = this.SelectedUntrustSignatureItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.UntrustCopyCommand.Subscribe(() => this.UntrustCopy()).AddTo(_disposable);
 
                 this.TagsSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.TagsSortCommand.Subscribe((propertyName) => this.TagsSort(propertyName)).AddTo(_disposable);
 
-                this.TagCopyCommand = new ReactiveCommand().AddTo(_disposable);
+                this.TagCopyCommand = this.SelectedTagItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.TagCopyCommand.Subscribe(() => this.TagCopy()).AddTo(_disposable);
 
                 this.Comment = new ReactiveProperty<string>().AddTo(_disposable);

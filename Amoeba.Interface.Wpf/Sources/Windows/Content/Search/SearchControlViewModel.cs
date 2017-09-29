@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
+using Amoeba.Messages;
+using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
-using Amoeba.Service;
 using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Amoeba.Messages;
 
 namespace Amoeba.Interface
 {
@@ -103,6 +103,13 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
+                IObservable<object> clipboardObservable;
+                {
+                    var returnObservable = Observable.Return((object)null);
+                    var watchObservable = Observable.FromEventPattern<EventHandler, EventArgs>(h => Clipboard.ClipboardChanged += h, h => Clipboard.ClipboardChanged -= h).Select(n => (object)null);
+                    clipboardObservable = Observable.Merge(returnObservable, watchObservable);
+                }
+
                 this.SearchInput = new ReactiveProperty<string>().AddTo(_disposable);
 
                 this.SearchCommand = this.SearchInput.Select(n => !string.IsNullOrWhiteSpace(n)).ToReactiveCommand().AddTo(_disposable);
@@ -131,7 +138,8 @@ namespace Amoeba.Interface
                 this.TabCopyCommand = this.TabSelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
-                this.TabPasteCommand = this.TabSelectedItem.Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
+                this.TabPasteCommand = this.TabSelectedItem.Select(n => n != null)
+                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsSearchInfo()), (r1, r2) => r1 && r2).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
@@ -339,7 +347,7 @@ namespace Amoeba.Interface
 
         private void WatchThread(CancellationToken token)
         {
-            for (;;)
+            for (; ; )
             {
                 var searchItems = new List<SearchListViewItemInfo>();
 

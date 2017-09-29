@@ -1,23 +1,22 @@
 using System.Reactive.Disposables;
 using Amoeba.Messages;
-using Amoeba.Service;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class SubscribeBoxViewModel : TreeViewModelBase
+    class UploadDirectoryViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
         public ReadOnlyReactiveCollection<Seed> Seeds { get; private set; }
-        public ReadOnlyReactiveCollection<SubscribeBoxViewModel> Boxes { get; private set; }
+        public ReadOnlyReactiveCollection<UploadBoxViewModel> BoxViewModels { get; private set; }
 
-        public SubscribeBoxInfo Model { get; private set; }
+        public UploadDirectoryInfo Model { get; private set; }
 
-        public SubscribeBoxViewModel(TreeViewModelBase parent, SubscribeBoxInfo model)
+        public UploadDirectoryViewModel(TreeViewModelBase parent, UploadDirectoryInfo model)
             : base(parent)
         {
             this.Model = model;
@@ -26,10 +25,10 @@ namespace Amoeba.Interface
             this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.Seeds = model.Seeds.ToReadOnlyReactiveCollection(n => n).AddTo(_disposable);
-            this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new SubscribeBoxViewModel(this, n)).AddTo(_disposable);
+            this.BoxViewModels = model.BoxInfos.ToReadOnlyReactiveCollection(n => new UploadBoxViewModel(this, n)).AddTo(_disposable);
         }
 
-        public override string DragFormat { get { return null; } }
+        public override string DragFormat { get { return "Amoeba_Upload"; } }
 
         public override bool TryAdd(object value)
         {

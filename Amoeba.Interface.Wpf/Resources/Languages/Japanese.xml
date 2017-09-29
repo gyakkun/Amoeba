@@ -14,7 +14,7 @@
     <Property Name="ManagerState_Stop" Value="停止" />
 
     <Property Name="ConnectionType_None" Value="None" />
-    <Property Name="ConnectionType_Tcp" Value="Tcp" />
+    <Property Name="ConnectionType_Tcp" Value="TCP" />
     <Property Name="ConnectionType_Socks5Proxy" Value="Socks5 プロキシ" />
     <Property Name="ConnectionType_HttpProxy" Value="Http プロキシ" />
 
@@ -220,33 +220,20 @@
     <Property Name="ChatTagListWindow_Join" Value="参加" />
     <Property Name="ChatTagListWindow_Close" Value="閉じる" />
 
-    <Property Name="StoreSubscribeControl_NewCategory" Value="新しいカテゴリ" />
-    <Property Name="StoreSubscribeControl_Edit" Value="編集" />
-    <Property Name="StoreSubscribeControl_Delete" Value="削除" />
-    <Property Name="StoreSubscribeControl_Cut" Value="切り取り" />
-    <Property Name="StoreSubscribeControl_Copy" Value="コピー" />
-    <Property Name="StoreSubscribeControl_Paste" Value="貼り付け" />
-    <Property Name="StoreSubscribeControl_Download" Value="ダウンロード" />
-    <Property Name="StoreSubscribeControl_Advanced" Value="高度な設定" />
-    <Property Name="StoreSubscribeControl_CopyName" Value="名前のコピー" />
-    <Property Name="StoreSubscribeControl_Name" Value="名前" />
-    <Property Name="StoreSubscribeControl_Length" Value="サイズ" />
-    <Property Name="StoreSubscribeControl_CreationTime" Value="作成日時" />
-    <Property Name="StoreSubscribeControl_State" Value="状態" />
-
-    <Property Name="StorePublishControl_NewBox" Value="新しいボックス" />
-    <Property Name="StorePublishControl_Edit" Value="編集" />
-    <Property Name="StorePublishControl_Delete" Value="削除" />
-    <Property Name="StorePublishControl_Cut" Value="切り取り" />
-    <Property Name="StorePublishControl_Copy" Value="コピー" />
-    <Property Name="StorePublishControl_Paste" Value="貼り付け" />
-    <Property Name="StorePublishControl_Upload" Value="アップロード" />
-    <Property Name="StorePublishControl_Advanced" Value="高度な設定" />
-    <Property Name="StorePublishControl_CopyName" Value="名前のコピー" />
-    <Property Name="StorePublishControl_Name" Value="名前" />
-    <Property Name="StorePublishControl_Length" Value="サイズ" />
-    <Property Name="StorePublishControl_CreationTime" Value="作成日時" />
-    <Property Name="StorePublishControl_State" Value="状態" />
+    <Property Name="StoreControl_NewCategory" Value="新しいカテゴリ" />
+    <Property Name="StoreControl_Edit" Value="編集" />
+    <Property Name="StoreControl_Delete" Value="削除" />
+    <Property Name="StoreControl_Cut" Value="切り取り" />
+    <Property Name="StoreControl_Copy" Value="コピー" />
+    <Property Name="StoreControl_Paste" Value="貼り付け" />
+    <Property Name="StoreControl_Download" Value="ダウンロード" />
+    <Property Name="StoreControl_Advanced" Value="高度な設定" />
+    <Property Name="StoreControl_CopyName" Value="名前のコピー" />
+    <Property Name="StoreControl_Name" Value="名前" />
+    <Property Name="StoreControl_Length" Value="サイズ" />
+    <Property Name="StoreControl_CreationTime" Value="作成日時" />
+    <Property Name="StoreControl_State" Value="状態" />
+    <Property Name="StoreControl_Up" Value="上へ" />
 
     <Property Name="SearchControl_SearchHint" Value="検索" />
     <Property Name="SearchControl_Download" Value="ダウンロード" />
@@ -309,24 +296,30 @@
     <Property Name="DownloadControl_Reset" Value="リセット" />
     <Property Name="DownloadControl_RemoveCompletedItem" Value="完了済みアイテムを削除する" />
 
-    <Property Name="UploadControl_Upload" Value="アップロード" />
+    <Property Name="UploadControl_NewCategory" Value="新しいカテゴリ" />
+    <Property Name="UploadControl_AddDirectory" Value="フォルダの追加" />
+    <Property Name="UploadControl_Edit" Value="編集" />
+    <Property Name="UploadControl_Delete" Value="削除" />
+    <Property Name="UploadControl_Cut" Value="切り取り" />
+    <Property Name="UploadControl_Copy" Value="コピー" />
+    <Property Name="UploadControl_Paste" Value="貼り付け" />
+    <Property Name="UploadControl_Advanced" Value="高度な設定" />
+    <Property Name="UploadControl_CopyName" Value="名前のコピー" />
     <Property Name="UploadControl_Name" Value="名前" />
     <Property Name="UploadControl_Length" Value="サイズ" />
     <Property Name="UploadControl_CreationTime" Value="作成日時" />
+    <Property Name="UploadControl_State" Value="状態" />
     <Property Name="UploadControl_Path" Value="パス" />
+    <Property Name="UploadControl_Up" Value="上へ" />
+    <Property Name="UploadControl_Upload" Value="アップロード" />
     <Property Name="UploadControl_Sync" Value="同期" />
-    <Property Name="UploadControl_Add" Value="追加" />
-    <Property Name="UploadControl_Delete" Value="削除" />
-    <Property Name="UploadControl_Copy" Value="コピー" />
-    <Property Name="UploadControl_Completed" Value="完了" />
+    <Property Name="UploadControl_Importing" Value="インポート中" />
+    <Property Name="UploadControl_Cancel" Value="キャンセル" />
 
-    <Property Name="UploadPreviewWindow_Title" Value="アップロードのプレビュー" />
-    <Property Name="UploadPreviewWindow_Name" Value="名前" />
-    <Property Name="UploadPreviewWindow_Length" Value="サイズ" />
-    <Property Name="UploadPreviewWindow_Path" Value="パス" />
-    <Property Name="UploadPreviewWindow_Delete" Value="削除" />
-    <Property Name="UploadPreviewWindow_Copy" Value="コピー" />
-    <Property Name="UploadPreviewWindow_Ok" Value="OK" />
-    <Property Name="UploadPreviewWindow_Cancel" Value="キャンセル" />
+    <Property Name="UploadDirectoryInfoEditWindow_Title" Value="アップロードフォルダ編集" />
+    <Property Name="UploadDirectoryInfoEditWindow_Name" Value="名前" />
+    <Property Name="UploadDirectoryInfoEditWindow_Path" Value="パス" />
+    <Property Name="UploadDirectoryInfoEditWindow_Ok" Value="OK" />
+    <Property Name="UploadDirectoryInfoEditWindow_Cancel" Value="キャンセル" />
 
 </Config>

@@ -10,38 +10,46 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class NameEditWindowViewModel : ManagerBase
+    class UploadDirectoryInfoEditWindowViewModel : ManagerBase
     {
-        private string _name;
+        private UploadDirectoryInfo _directoryInfo;
 
         private Settings _settings;
 
         public event EventHandler<EventArgs> CloseEvent;
-        public event Action<string> Callback;
+        public event Action<UploadDirectoryInfo> Callback;
 
         public ReactiveProperty<string> Name { get; private set; }
+        public ReactiveProperty<string> Path { get; private set; }
+
+        public ReactiveCommand EditDialogCommand { get; private set; }
+
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         public ReactiveCommand OkCommand { get; private set; }
         public ReactiveCommand CancelCommand { get; private set; }
 
-        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
-
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public NameEditWindowViewModel(string name)
+        public UploadDirectoryInfoEditWindowViewModel(UploadDirectoryInfo info)
         {
-            _name = name;
+            _directoryInfo = info;
 
             this.Init();
 
-            this.Name.Value = _name;
+            this.Name.Value = _directoryInfo.Name;
+            this.Path.Value = _directoryInfo.Path;
         }
 
         private void Init()
         {
             {
                 this.Name = new ReactiveProperty<string>().AddTo(_disposable);
+                this.Path = new ReactiveProperty<string>().AddTo(_disposable);
+
+                this.EditDialogCommand = new ReactiveCommand().AddTo(_disposable);
+                this.EditDialogCommand.Subscribe(() => this.EditDialog()).AddTo(_disposable);
 
                 this.OkCommand = this.Name.Select(n => !string.IsNullOrWhiteSpace(n)).ToReactiveCommand().AddTo(_disposable);
                 this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
@@ -51,7 +59,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(NameEditWindow));
+                string configPath = System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(UploadDirectoryInfoEditWindow));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -70,11 +78,32 @@ namespace Amoeba.Interface
             this.CloseEvent?.Invoke(this, EventArgs.Empty);
         }
 
+        private void EditDialog()
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
+                dialog.SelectedPath = this.Path.Value;
+                dialog.ShowNewFolderButton = true;
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    this.Name.Value = System.IO.Path.GetFileName(dialog.SelectedPath);
+                    this.Path.Value = dialog.SelectedPath;
+                }
+            }
+        }
+
         private void Ok()
         {
-            _name = this.Name.Value;
+            if (!string.IsNullOrWhiteSpace(this.Name.Value)
+                && !string.IsNullOrWhiteSpace(this.Path.Value))
+            {
+                _directoryInfo.Name = this.Name.Value;
+                _directoryInfo.Path = this.Path.Value;
 
-            this.Callback?.Invoke(_name);
+                this.Callback?.Invoke(_directoryInfo);
+            }
 
             this.OnCloseEvent();
         }

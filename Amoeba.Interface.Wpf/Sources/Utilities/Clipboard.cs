@@ -4,14 +4,28 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Amoeba.Messages;
-using Amoeba.Service;
 using Omnius.Security;
 
 namespace Amoeba.Interface
 {
     static class Clipboard
     {
+        private static ClipboardMonitor _monitor;
         private static object _thisLock = new object();
+
+        static Clipboard()
+        {
+            App.Current.Activated += (sender, e) =>
+            {
+                _monitor = new ClipboardMonitor(App.Current.MainWindow);
+                _monitor.ClipboardChanged += (sender2, e2) =>
+                {
+                    ClipboardChanged?.Invoke(sender2, e2);
+                };
+            };
+        }
+
+        public static event EventHandler ClipboardChanged;
 
         private static Stream ToStream<T>(T item)
         {
@@ -46,6 +60,8 @@ namespace Amoeba.Interface
                 System.Windows.Clipboard.Clear();
             }
         }
+
+        #region Path
 
         public static bool ContainsPaths()
         {
@@ -89,6 +105,10 @@ namespace Amoeba.Interface
             }
         }
 
+        #endregion
+
+        #region Text
+
         public static bool ContainsText()
         {
             lock (_thisLock)
@@ -128,6 +148,10 @@ namespace Amoeba.Interface
                 }
             }
         }
+
+        #endregion
+
+        #region Signature
 
         public static bool ContainsSignatures()
         {
@@ -174,6 +198,10 @@ namespace Amoeba.Interface
                 Clipboard.SetText(string.Join(Environment.NewLine, signatures.Select(n => n.ToString())));
             }
         }
+
+        #endregion
+
+        #region Location
 
         public static bool ContainsLocations()
         {
@@ -223,6 +251,10 @@ namespace Amoeba.Interface
             }
         }
 
+        #endregion
+
+        #region Tag
+
         public static bool ContainsTags()
         {
             lock (_thisLock)
@@ -271,26 +303,9 @@ namespace Amoeba.Interface
             }
         }
 
-        public static void SetSeedsAndBoxes(IEnumerable<Seed> seeds, IEnumerable<Box> boxes)
-        {
-            lock (_thisLock)
-            {
-                var sb = new StringBuilder();
+        #endregion
 
-                foreach (var seed in seeds)
-                {
-                    sb.AppendLine(AmoebaConverter.ToSeedString(seed));
-                    sb.AppendLine(MessageUtils.ToInfoMessage(seed));
-                    sb.AppendLine();
-                }
-
-                var dataObject = new System.Windows.DataObject();
-                dataObject.SetText(sb.ToString());
-                dataObject.SetData("Amoeba_Boxs", Clipboard.ToStream(boxes));
-
-                System.Windows.Clipboard.SetDataObject(dataObject);
-            }
-        }
+        #region Seed
 
         public static bool ContainsSeeds()
         {
@@ -349,45 +364,9 @@ namespace Amoeba.Interface
             }
         }
 
-        public static bool ContainsBox()
-        {
-            lock (_thisLock)
-            {
-                return System.Windows.Clipboard.ContainsData("Amoeba_Boxs");
-            }
-        }
+        #endregion
 
-        public static IEnumerable<Box> GetBoxs()
-        {
-            lock (_thisLock)
-            {
-                try
-                {
-                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_Boxs"))
-                    {
-                        return Clipboard.FromStream<IEnumerable<Box>>(stream);
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-
-                return Enumerable.Empty<Box>();
-            }
-        }
-
-        public static void SetBoxs(IEnumerable<Box> items)
-        {
-            lock (_thisLock)
-            {
-                var dataObject = new System.Windows.DataObject();
-                dataObject.SetText(string.Join(Environment.NewLine, items.Select(n => n.Name)));
-                dataObject.SetData("Amoeba_Boxs", Clipboard.ToStream(items));
-
-                System.Windows.Clipboard.SetDataObject(dataObject);
-            }
-        }
+        #region Chat
 
         public static bool ContainsChatCategoryInfo()
         {
@@ -413,7 +392,7 @@ namespace Amoeba.Interface
 
                 }
 
-                return Enumerable.Empty<ChatCategoryInfo>();
+                return Array.Empty<ChatCategoryInfo>();
             }
         }
 
@@ -452,7 +431,7 @@ namespace Amoeba.Interface
 
                 }
 
-                return Enumerable.Empty<ChatThreadInfo>();
+                return Array.Empty<ChatThreadInfo>();
             }
         }
 
@@ -468,62 +447,39 @@ namespace Amoeba.Interface
             }
         }
 
-        public static bool ContainsSubscribeCategoryInfo()
-        {
-            lock (_thisLock)
-            {
-                return System.Windows.Clipboard.ContainsData("Amoeba_SubscribeCategoryInfos");
-            }
-        }
+        #endregion
 
-        public static IEnumerable<SubscribeCategoryInfo> GetSubscribeCategoryInfos()
-        {
-            lock (_thisLock)
-            {
-                try
-                {
-                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_SubscribeCategoryInfos"))
-                    {
-                        return Clipboard.FromStream<IEnumerable<SubscribeCategoryInfo>>(stream);
-                    }
-                }
-                catch (Exception)
-                {
+        #region Store
 
-                }
-
-                return Enumerable.Empty<SubscribeCategoryInfo>();
-            }
-        }
-
-        public static void SetSubscribeCategoryInfos(IEnumerable<SubscribeCategoryInfo> items)
+        public static void SetStoreCategoryInfosAndStoreSignatureInfos(IEnumerable<StoreCategoryInfo> categoryInfos, IEnumerable<StoreSignatureInfo> signatureInfo)
         {
             lock (_thisLock)
             {
                 var dataObject = new System.Windows.DataObject();
-                dataObject.SetData("Amoeba_SubscribeCategoryInfos", Clipboard.ToStream(items));
+                dataObject.SetData("Amoeba_StoreCategoryInfos", Clipboard.ToStream(categoryInfos));
+                dataObject.SetData("Amoeba_StoreSignatureInfos", Clipboard.ToStream(signatureInfo));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
 
-        public static bool ContainsSubscribeStoreInfo()
+        public static bool ContainsStoreCategoryInfo()
         {
             lock (_thisLock)
             {
-                return System.Windows.Clipboard.ContainsData("Amoeba_SubscribeStoreInfos");
+                return System.Windows.Clipboard.ContainsData("Amoeba_StoreCategoryInfos");
             }
         }
 
-        public static IEnumerable<SubscribeStoreInfo> GetSubscribeStoreInfos()
+        public static IEnumerable<StoreCategoryInfo> GetStoreCategoryInfos()
         {
             lock (_thisLock)
             {
                 try
                 {
-                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_SubscribeStoreInfos"))
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_StoreCategoryInfos"))
                     {
-                        return Clipboard.FromStream<IEnumerable<SubscribeStoreInfo>>(stream);
+                        return Clipboard.FromStream<IEnumerable<StoreCategoryInfo>>(stream);
                     }
                 }
                 catch (Exception)
@@ -531,21 +487,158 @@ namespace Amoeba.Interface
 
                 }
 
-                return Enumerable.Empty<SubscribeStoreInfo>();
+                return Array.Empty<StoreCategoryInfo>();
             }
         }
 
-        public static void SetSubscribeStoreInfos(IEnumerable<SubscribeStoreInfo> items)
+        public static void SetStoreCategoryInfos(IEnumerable<StoreCategoryInfo> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_StoreCategoryInfos", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        public static bool ContainsStoreSignatureInfo()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_StoreSignatureInfos");
+            }
+        }
+
+        public static IEnumerable<StoreSignatureInfo> GetStoreSignatureInfos()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_StoreSignatureInfos"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<StoreSignatureInfo>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return Array.Empty<StoreSignatureInfo>();
+            }
+        }
+
+        public static void SetStoreSignatureInfos(IEnumerable<StoreSignatureInfo> items)
         {
             lock (_thisLock)
             {
                 var dataObject = new System.Windows.DataObject();
                 dataObject.SetText(string.Join(Environment.NewLine, items.Select(n => n.AuthorSignature.ToString())));
-                dataObject.SetData("Amoeba_SubscribeStoreInfos", Clipboard.ToStream(items));
+                dataObject.SetData("Amoeba_StoreSignatureInfos", Clipboard.ToStream(items));
 
                 System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
+
+        #endregion
+
+        #region Upload
+
+        public static void SetUploadCategoryInfosAndUploadDirectoryInfos(IEnumerable<UploadCategoryInfo> categoryInfos, IEnumerable<UploadDirectoryInfo> directoryInfos)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_UploadCategoryInfos", Clipboard.ToStream(categoryInfos));
+                dataObject.SetData("Amoeba_UploadDirectoryInfos", Clipboard.ToStream(directoryInfos));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        public static bool ContainsUploadCategoryInfo()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_UploadCategoryInfos");
+            }
+        }
+
+        public static IEnumerable<UploadCategoryInfo> GetUploadCategoryInfos()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_UploadCategoryInfos"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<UploadCategoryInfo>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return Array.Empty<UploadCategoryInfo>();
+            }
+        }
+
+        public static void SetUploadCategoryInfos(IEnumerable<UploadCategoryInfo> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_UploadCategoryInfos", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        public static bool ContainsUploadDirectoryInfo()
+        {
+            lock (_thisLock)
+            {
+                return System.Windows.Clipboard.ContainsData("Amoeba_UploadDirectoryInfos");
+            }
+        }
+
+        public static IEnumerable<UploadDirectoryInfo> GetUploadDirectoryInfos()
+        {
+            lock (_thisLock)
+            {
+                try
+                {
+                    using (var stream = (Stream)System.Windows.Clipboard.GetData("Amoeba_UploadDirectoryInfos"))
+                    {
+                        return Clipboard.FromStream<IEnumerable<UploadDirectoryInfo>>(stream);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+
+                return Array.Empty<UploadDirectoryInfo>();
+            }
+        }
+
+        public static void SetUploadDirectoryInfos(IEnumerable<UploadDirectoryInfo> items)
+        {
+            lock (_thisLock)
+            {
+                var dataObject = new System.Windows.DataObject();
+                dataObject.SetData("Amoeba_UploadDirectoryInfos", Clipboard.ToStream(items));
+
+                System.Windows.Clipboard.SetDataObject(dataObject);
+            }
+        }
+
+        #endregion
+
+        #region Search
 
         public static bool ContainsSearchInfo()
         {
@@ -571,7 +664,7 @@ namespace Amoeba.Interface
 
                 }
 
-                return Enumerable.Empty<SearchInfo>();
+                return Array.Empty<SearchInfo>();
             }
         }
 
@@ -585,5 +678,7 @@ namespace Amoeba.Interface
                 System.Windows.Clipboard.SetDataObject(dataObject);
             }
         }
+
+        #endregion
     }
 }

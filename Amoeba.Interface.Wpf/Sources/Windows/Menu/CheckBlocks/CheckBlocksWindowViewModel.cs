@@ -10,6 +10,7 @@ using Amoeba.Service;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Amoeba.Messages;
+using Omnius.Wpf;
 
 namespace Amoeba.Interface
 {
@@ -27,6 +28,8 @@ namespace Amoeba.Interface
         public ReactiveProperty<CheckBlocksProgressReport> Info { get; private set; }
 
         public ReactiveCommand CloseCommand { get; private set; }
+
+        public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
@@ -53,6 +56,8 @@ namespace Amoeba.Interface
 
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
+
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -104,7 +109,8 @@ namespace Amoeba.Interface
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                _settings.Save("CheckBlocks", 0);
+                _settings.Save("Version", 0);
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

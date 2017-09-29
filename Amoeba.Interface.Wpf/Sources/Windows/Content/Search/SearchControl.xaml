@@ -12,6 +12,12 @@
              d:DesignHeight="600"
              d:DesignWidth="600"
              mc:Ignorable="d">
+
+    <UserControl.InputBindings>
+        <KeyBinding Command="{Binding TabNewSearchCommand}" Gesture="CTRL+N" />
+        <KeyBinding Command="{Binding CopyCommand}" Gesture="CTRL+C" />
+    </UserControl.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -33,8 +39,8 @@
                     Command="{Binding Path=DownloadCommand}"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="{Binding Path=SearchControl_Download, Source={StaticResource Languages}}">
-                <md:PackIcon Width="24"
-                             Height="24"
+                <md:PackIcon Width="32"
+                             Height="32"
                              Kind="CloudDownload" />
             </Button>
         </DockPanel>
@@ -294,25 +300,5 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <md:PopupBox Grid.Row="1"
-                     Grid.Column="2"
-                     Width="48"
-                     Height="48"
-                     Margin="0,0,20,20"
-                     HorizontalAlignment="Right"
-                     VerticalAlignment="Bottom"
-                     PlacementMode="TopAndAlignCentres"
-                     PopupMode="Click"
-                     Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
-                     ToolTipService.Placement="Left">
-            <StackPanel>
-                <Button Command="{Binding Path=CopyCommand}" ToolTip="{Binding Path=SearchControl_Copy, Source={StaticResource Languages}}">
-                    <md:PackIcon Kind="ContentCopy" />
-                </Button>
-                <Button Command="{Binding Path=DownloadCommand}" ToolTip="{Binding Path=SearchControl_Download, Source={StaticResource Languages}}">
-                    <md:PackIcon Kind="CloudDownload" />
-                </Button>
-            </StackPanel>
-        </md:PopupBox>
     </Grid>
 </UserControl>

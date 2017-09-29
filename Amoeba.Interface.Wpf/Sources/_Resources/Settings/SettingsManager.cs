@@ -60,7 +60,6 @@ namespace Amoeba.Interface
             this.ViewInfo = _settings.Load(nameof(ViewInfo), () => new ViewInfo());
             this.DownloadItemInfos.UnionWith(_settings.Load(nameof(DownloadItemInfos), () => new LockedHashSet<DownloadItemInfo>()));
             this.DownloadedSeeds.UnionWith(_settings.Load(nameof(DownloadedSeeds), () => new LockedHashSet<Seed>()));
-            this.UploadItemInfos.UnionWith(_settings.Load(nameof(UploadItemInfos), () => new LockedHashSet<UploadItemInfo>()));
 
             // ViewInfo
             {
@@ -84,7 +83,6 @@ namespace Amoeba.Interface
             _settings.Save(nameof(ViewInfo), this.ViewInfo);
             _settings.Save(nameof(DownloadItemInfos), this.DownloadItemInfos);
             _settings.Save(nameof(DownloadedSeeds), this.DownloadedSeeds);
-            _settings.Save(nameof(UploadItemInfos), this.UploadItemInfos);
         }
     }
 }

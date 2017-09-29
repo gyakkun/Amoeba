@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Amoeba.Interface
 {
@@ -58,9 +53,9 @@ namespace Amoeba.Interface
             window.ShowDialog();
         }
 
-        public void Show(UploadPreviewWindowViewModel viewModel)
+        public void Show(UploadDirectoryInfoEditWindowViewModel viewModel)
         {
-            var window = new UploadPreviewWindow(viewModel);
+            var window = new UploadDirectoryInfoEditWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
@@ -74,12 +69,18 @@ namespace Amoeba.Interface
 
         public void Show(ConfirmWindowViewModel viewModel)
         {
-            MessageBox.Show(viewModel.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
+            if (MessageBox.Show(viewModel.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
+            {
+                viewModel.Ok();
+            }
         }
 
         public void Show(NoticeWindowViewModel viewModel)
         {
-            MessageBox.Show(viewModel.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+            if (MessageBox.Show(viewModel.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK) == MessageBoxResult.OK)
+            {
+                viewModel.Ok();
+            }
         }
     }
 }

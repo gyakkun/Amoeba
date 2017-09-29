@@ -18,6 +18,5 @@
     <Property Type="ViewInfo" Name="ViewInfo" IsEditable="true" />
     <Property Type="LockedHashSet(DownloadItemInfo)" Name="DownloadItemInfos" />
     <Property Type="LockedHashSet(Seed)" Name="DownloadedSeeds" />
-    <Property Type="LockedHashSet(UploadItemInfo)" Name="UploadItemInfos" />
 
 </Config>

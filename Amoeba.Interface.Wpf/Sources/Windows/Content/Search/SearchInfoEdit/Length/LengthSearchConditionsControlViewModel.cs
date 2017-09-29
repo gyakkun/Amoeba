@@ -1,9 +1,4 @@
-﻿using Omnius.Base;
-using Omnius.Configuration;
-using Omnius.Wpf;
-using Reactive.Bindings;
-using Reactive.Bindings.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -12,6 +7,11 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using Omnius.Base;
+using Omnius.Configuration;
+using Omnius.Wpf;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
@@ -81,7 +81,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SearchInfoEditWindow), nameof(LengthSearchConditionsControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(LengthSearchConditionsControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);

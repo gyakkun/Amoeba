@@ -47,8 +47,8 @@ namespace Amoeba.Interface
 
         public CloudControlViewModel CloudControlViewModel { get; private set; }
         public ChatControlViewModel ChatControlViewModel { get; private set; }
-        public StoreSubscribeControlViewModel StoreSubscribeControlViewModel { get; private set; }
-        public StorePublishControlViewModel StorePublishControlViewModel { get; private set; }
+        public StoreControlViewModel StoreControlViewModel { get; private set; }
+        public UploadControlViewModel StorePublishControlViewModel { get; private set; }
         public SearchControlViewModel SearchControlViewModel { get; private set; }
         public DownloadControlViewModel DownloadControlViewModel { get; private set; }
         public UploadControlViewModel UploadControlViewModel { get; private set; }
@@ -156,8 +156,8 @@ namespace Amoeba.Interface
             {
                 this.CloudControlViewModel = new CloudControlViewModel(_serviceManager, _dialogService);
                 this.ChatControlViewModel = new ChatControlViewModel(_serviceManager, _messageManager, _dialogService);
-                this.StoreSubscribeControlViewModel = new StoreSubscribeControlViewModel(_serviceManager, _dialogService);
-                this.StorePublishControlViewModel = new StorePublishControlViewModel(_serviceManager, _dialogService);
+                this.StoreControlViewModel = new StoreControlViewModel(_serviceManager, _dialogService);
+                this.StorePublishControlViewModel = new UploadControlViewModel(_serviceManager, _dialogService);
                 this.SearchControlViewModel = new SearchControlViewModel(_serviceManager, _messageManager, _dialogService);
                 this.DownloadControlViewModel = new DownloadControlViewModel(_serviceManager, _dialogService);
                 this.UploadControlViewModel = new UploadControlViewModel(_serviceManager, _dialogService);
@@ -353,7 +353,7 @@ namespace Amoeba.Interface
 
                 this.CloudControlViewModel.Dispose();
                 this.ChatControlViewModel.Dispose();
-                this.StoreSubscribeControlViewModel.Dispose();
+                this.StoreControlViewModel.Dispose();
                 this.StorePublishControlViewModel.Dispose();
                 this.SearchControlViewModel.Dispose();
                 this.DownloadControlViewModel.Dispose();

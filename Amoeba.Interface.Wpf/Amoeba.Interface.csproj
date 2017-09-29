@@ -96,7 +96,12 @@
     <Compile Include="Sources\Mvvm\Models\Search\SearchRange.cs" />
     <Compile Include="Sources\Mvvm\Models\Search\SearchRegex.cs" />
     <Compile Include="Sources\Mvvm\Models\Search\SearchState.cs" />
-    <Compile Include="Sources\Mvvm\Models\Upload\UploadItemInfo.cs" />
+    <Compile Include="Sources\Mvvm\Models\Store\StoreBoxInfo.cs" />
+    <Compile Include="Sources\Mvvm\Models\Store\StoreCategoryInfo.cs" />
+    <Compile Include="Sources\Mvvm\Models\Store\StoreSignatureInfo.cs" />
+    <Compile Include="Sources\Mvvm\Models\Upload\UploadBoxInfo.cs" />
+    <Compile Include="Sources\Mvvm\Models\Upload\UploadCategoryInfo.cs" />
+    <Compile Include="Sources\Mvvm\Models\Upload\UploadDirectoryInfo.cs" />
     <Compile Include="Sources\Mvvm\Models\_Generator\Models.generated.cs">
       <DependentUpon>Models.tt</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -108,6 +113,7 @@
     <Compile Include="Sources\Mvvm\Utilities\ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="Sources\Utilities\Backup.cs" />
     <Compile Include="Sources\Utilities\Clipboard.cs" />
+    <Compile Include="Sources\Utilities\ClipboardMonitor.cs" />
     <Compile Include="Sources\Utilities\CustomSortComparer.cs" />
     <Compile Include="Sources\Utilities\IconUtils.cs" />
     <Compile Include="Sources\Utilities\JsonUtils.cs" />
@@ -130,23 +136,25 @@
       <DependentUpon>StateSearchConditionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\State\StateSearchConditionsControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\Publish\StorePublishControl.xaml.cs">
-      <DependentUpon>StorePublishControl.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Content\Upload\UploadControl.xaml.cs">
+      <DependentUpon>UploadControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Content\Store\Publish\StorePublishControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\Publish\ViewModels\PublishBoxViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\Publish\ViewModels\PublishStoreViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\Subscribe\StoreSubscribeControl.xaml.cs">
-      <DependentUpon>StoreSubscribeControl.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Content\Upload\UploadControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\ViewModels\UploadDirectoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\ViewModels\UploadCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\ViewModels\UploadBoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\ViewModels\UploadStoreViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\StoreControl.xaml.cs">
+      <DependentUpon>StoreControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Content\Store\Subscribe\StoreSubscribeControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\Subscribe\ViewModels\SubscribeBoxViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\Subscribe\ViewModels\SubscribeCategoryViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Store\Subscribe\ViewModels\SubscribeStoreViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindow.xaml.cs">
-      <DependentUpon>UploadPreviewWindow.xaml</DependentUpon>
+    <Compile Include="Sources\Windows\Content\Store\StoreControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\ViewModels\StoreBoxViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\ViewModels\StoreCategoryViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Store\ViewModels\StoreSignatureViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\UploadDirectoryInfoEdit\UploadDirectoryInfoEditWindow.xaml.cs">
+      <DependentUpon>UploadDirectoryInfoEditWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindowViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\UploadDirectoryInfoEdit\UploadDirectoryInfoEditWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Menu\CheckBlocks\CheckBlocksWindow.xaml.cs">
       <DependentUpon>CheckBlocksWindow.xaml</DependentUpon>
     </Compile>
@@ -185,7 +193,6 @@
     </Compile>
     <Compile Include="Sources\Windows\Menu\Relation\RelationWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Menu\Relation\ViewModels\RelationSignatureViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Upload\UploadControlViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Search\SearchInfoEdit\Length\LengthSearchConditionsControl.xaml.cs">
       <DependentUpon>LengthSearchConditionsControl.xaml</DependentUpon>
     </Compile>
@@ -215,9 +222,6 @@
     </Compile>
     <Compile Include="Sources\Windows\Content\Search\SearchControlViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Download\DownloadControlViewModel.cs" />
-    <Compile Include="Sources\Windows\Content\Upload\UploadControl.xaml.cs">
-      <DependentUpon>UploadControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Sources\Windows\Content\Download\DownloadControl.xaml.cs">
       <DependentUpon>DownloadControl.xaml</DependentUpon>
     </Compile>
@@ -259,15 +263,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Store\Publish\StorePublishControl.xaml">
+    <Page Include="Sources\Windows\Content\Upload\UploadControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Store\Subscribe\StoreSubscribeControl.xaml">
+    <Page Include="Sources\Windows\Content\Store\StoreControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Sources\Windows\Content\Upload\UploadPreview\UploadPreviewWindow.xaml">
+    <Page Include="Sources\Windows\Content\Upload\UploadDirectoryInfoEdit\UploadDirectoryInfoEditWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -350,10 +354,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resources\Themes\Amoeba.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Sources\Windows\Content\Upload\UploadControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -554,6 +554,9 @@
     </PackageReference>
     <PackageReference Include="ReactiveProperty">
       <Version>3.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>1.4.0</Version>
     </PackageReference>
     <PackageReference Include="System.Reactive">
       <Version>3.1.1</Version>

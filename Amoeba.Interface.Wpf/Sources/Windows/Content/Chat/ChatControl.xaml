@@ -12,6 +12,12 @@
              d:DesignHeight="600"
              d:DesignWidth="600"
              mc:Ignorable="d">
+
+    <UserControl.InputBindings>
+        <KeyBinding Command="{Binding TabNewCategoryCommand}" Gesture="CTRL+N" />
+        <KeyBinding Command="{Binding CopyCommand}" Gesture="CTRL+C" />
+    </UserControl.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -34,8 +40,8 @@
                           IsChecked="{Binding Path=IsTrustFilterEnable.Value, Mode=TwoWay}"
                           Style="{StaticResource MaterialDesignFlatToggleButton}"
                           ToolTip="{Binding Path=ChatControl_Trust, Source={StaticResource Languages}}">
-                <md:PackIcon Width="24"
-                             Height="24"
+                <md:PackIcon Width="32"
+                             Height="32"
                              Kind="Security" />
             </ToggleButton>
             <ToggleButton Width="48"
@@ -46,8 +52,8 @@
                           IsChecked="{Binding Path=IsNewFilterEnable.Value, Mode=TwoWay}"
                           Style="{StaticResource MaterialDesignFlatToggleButton}"
                           ToolTip="{Binding Path=ChatControl_New, Source={StaticResource Languages}}">
-                <md:PackIcon Width="24"
-                             Height="24"
+                <md:PackIcon Width="32"
+                             Height="32"
                              Kind="NewBox" />
             </ToggleButton>
             <Button Width="48"
@@ -57,8 +63,8 @@
                     Command="{Binding Path=NewMessageCommand}"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="{Binding Path=ChatControl_NewMessage, Source={StaticResource Languages}}">
-                <md:PackIcon Width="24"
-                             Height="24"
+                <md:PackIcon Width="32"
+                             Height="32"
                              Kind="Pencil" />
             </Button>
         </DockPanel>
@@ -137,13 +143,6 @@
                               InputGestureText="Ctrl+N">
                         <MenuItem.Icon>
                             <md:PackIcon Kind="Folder" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Command="{Binding Path=TabNewChatCommand}"
-                              Header="{Binding Path=ChatControl_NewChat, Source={StaticResource Languages}}"
-                              InputGestureText="Ctrl+W">
-                        <MenuItem.Icon>
-                            <md:PackIcon Kind="Comment" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Command="{Binding Path=TabEditCommand}"

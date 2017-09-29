@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Omnius.Base;
@@ -24,7 +22,7 @@ namespace Amoeba.Interface
             try
             {
                 Variables = new EnvironmentVariables();
-                Version = new Version(5, 0, 37);
+                Version = new Version(5, 0, 38);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();
@@ -139,7 +137,7 @@ namespace Amoeba.Interface
             public EnvironmentImages()
             {
                 this.Amoeba = GetImage("Amoeba.png");
-                this.BlueBall= GetImage("States/Blue.png");
+                this.BlueBall = GetImage("States/Blue.png");
                 this.GreenBall = GetImage("States/Green.png");
                 this.YelloBall = GetImage("States/Yello.png");
             }

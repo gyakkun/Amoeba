@@ -7,17 +7,18 @@ using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class PublishStoreViewModel : TreeViewModelBase
+    class UploadStoreViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
         public ReactiveProperty<bool> IsUpdated { get; private set; }
-        public ReadOnlyReactiveCollection<PublishBoxViewModel> Boxes { get; private set; }
+        public ReadOnlyReactiveCollection<UploadDirectoryViewModel> DirectoryViewModels { get; private set; }
+        public ReadOnlyReactiveCollection<UploadCategoryViewModel> CategoryViewModels { get; private set; }
 
-        public PublishStoreInfo Model { get; private set; }
+        public UploadStoreInfo Model { get; private set; }
 
-        public PublishStoreViewModel(TreeViewModelBase parent, PublishStoreInfo model)
+        public UploadStoreViewModel(TreeViewModelBase parent, UploadStoreInfo model)
             : base(parent)
         {
             this.Model = model;
@@ -26,16 +27,22 @@ namespace Amoeba.Interface
             this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.IsUpdated = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);
-            this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new PublishBoxViewModel(this, n)).AddTo(_disposable);
+            this.DirectoryViewModels = model.DirectoryInfos.ToReadOnlyReactiveCollection(n => new UploadDirectoryViewModel(this, n)).AddTo(_disposable);
+            this.CategoryViewModels = model.CategoryInfos.ToReadOnlyReactiveCollection(n => new UploadCategoryViewModel(this, n)).AddTo(_disposable);
         }
 
         public override string DragFormat { get { return null; } }
 
         public override bool TryAdd(object value)
         {
-            if (value is PublishBoxViewModel boxViewModel)
+            if (value is UploadCategoryViewModel categoryViewModel)
             {
-                this.Model.BoxInfos.Add(boxViewModel.Model);
+                this.Model.CategoryInfos.Add(categoryViewModel.Model);
+                return true;
+            }
+            else if (value is UploadDirectoryViewModel directoryViewModel)
+            {
+                this.Model.DirectoryInfos.Add(directoryViewModel.Model);
                 return true;
             }
 
@@ -44,9 +51,13 @@ namespace Amoeba.Interface
 
         public override bool TryRemove(object value)
         {
-            if (value is PublishBoxViewModel boxViewModel)
+            if (value is UploadCategoryViewModel categoryViewModel)
             {
-                return this.Model.BoxInfos.Remove(boxViewModel.Model);
+                return this.Model.CategoryInfos.Remove(categoryViewModel.Model);
+            }
+            else if (value is UploadDirectoryViewModel directoryViewModel)
+            {
+                return this.Model.DirectoryInfos.Remove(directoryViewModel.Model);
             }
 
             return false;

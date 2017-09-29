@@ -76,7 +76,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SearchInfoEditWindow), nameof(SignatureSearchConditionsControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SignatureSearchConditionsControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);

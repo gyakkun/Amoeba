@@ -3,11 +3,11 @@
 namespace Amoeba.Interface
 {
     /// <summary>
-    /// StoreSubscribeControl.xaml の相互作用ロジック
+    /// StoreControl.xaml の相互作用ロジック
     /// </summary>
-    public partial class StoreSubscribeControl : UserControl
+    public partial class StoreControl : UserControl
     {
-        public StoreSubscribeControl()
+        public StoreControl()
         {
             InitializeComponent();
         }

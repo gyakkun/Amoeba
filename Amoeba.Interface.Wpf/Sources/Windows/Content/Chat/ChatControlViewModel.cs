@@ -10,14 +10,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Amoeba.Messages;
+using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
-using Amoeba.Service;
 using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Amoeba.Messages;
 
 namespace Amoeba.Interface
 {
@@ -39,7 +39,6 @@ namespace Amoeba.Interface
         public ReactiveCommand TabClickCommand { get; private set; }
 
         public ReactiveCommand TabNewCategoryCommand { get; private set; }
-        public ReactiveCommand TabNewChatCommand { get; private set; }
         public ReactiveCommand TabEditCommand { get; private set; }
         public ReactiveCommand TabDeleteCommand { get; private set; }
         public ReactiveCommand TabCutCommand { get; private set; }
@@ -97,6 +96,13 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
+                IObservable<object> clipboardObservable;
+                {
+                    var returnObservable = Observable.Return((object)null);
+                    var watchObservable = Observable.FromEventPattern<EventHandler, EventArgs>(h => Clipboard.ClipboardChanged += h, h => Clipboard.ClipboardChanged -= h).Select(n => (object)null);
+                    clipboardObservable = Observable.Merge(returnObservable, watchObservable);
+                }
+
                 this.TabViewModel = new ReactiveProperty<ChatCategoryViewModel>().AddTo(_disposable);
 
                 this.TabSelectedItem = new ReactiveProperty<TreeViewModelBase>().AddTo(_disposable);
@@ -111,9 +117,6 @@ namespace Amoeba.Interface
                 this.TabNewCategoryCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabNewCategoryCommand.Subscribe(() => this.TabNewCategory()).AddTo(_disposable);
 
-                this.TabNewChatCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
-                this.TabNewChatCommand.Subscribe(() => this.TabNewChat()).AddTo(_disposable);
-
                 this.TabEditCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.TabEditCommand.Subscribe(() => this.TabEdit()).AddTo(_disposable);
 
@@ -126,7 +129,8 @@ namespace Amoeba.Interface
                 this.TabCopyCommand = new ReactiveCommand().AddTo(_disposable);
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
-                this.TabPasteCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
+                this.TabPasteCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel)
+                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsChatCategoryInfo() || Clipboard.ContainsChatThreadInfo()), (r1, r2) => r1 && r2).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
                 this.TabTagListCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
@@ -166,6 +170,7 @@ namespace Amoeba.Interface
                     {
                         var categoryInfo = new ChatCategoryInfo() { Name = "Category", IsExpanded = true };
                         categoryInfo.ThreadInfos.Add(new ChatThreadInfo() { Tag = new Tag("Amoeba", Sha256.ComputeHash("Amoeba")) });
+                        categoryInfo.ThreadInfos.Add(new ChatThreadInfo() { Tag = new Tag("Random", Sha256.ComputeHash("Random")) });
 
                         return categoryInfo;
                     });
@@ -311,23 +316,6 @@ namespace Amoeba.Interface
                 if (chatCategoryViewModel == null) return;
 
                 chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = name });
-            };
-
-            _dialogService.Show(viewModel);
-        }
-
-        private void TabNewChat()
-        {
-            var viewModel = new NameEditWindowViewModel("");
-            viewModel.Callback += (name) =>
-            {
-                var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;
-                if (chatCategoryViewModel == null) return;
-
-                var random = new Random();
-                var id = random.GetBytes(32);
-
-                chatCategoryViewModel.Model.ThreadInfos.Add(new ChatThreadInfo() { Tag = new Tag(name, id) });
             };
 
             _dialogService.Show(viewModel);

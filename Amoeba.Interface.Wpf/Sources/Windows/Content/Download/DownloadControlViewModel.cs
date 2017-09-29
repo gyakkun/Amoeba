@@ -8,13 +8,13 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Data;
+using Amoeba.Messages;
+using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
-using Amoeba.Service;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Amoeba.Messages;
 
 namespace Amoeba.Interface
 {
@@ -59,6 +59,13 @@ namespace Amoeba.Interface
         public void Init()
         {
             {
+                IObservable<object> clipboardObservable;
+                {
+                    var returnObservable = Observable.Return((object)null);
+                    var watchObservable = Observable.FromEventPattern<EventHandler, EventArgs>(h => Clipboard.ClipboardChanged += h, h => Clipboard.ClipboardChanged -= h).Select(n => (object)null);
+                    clipboardObservable = Observable.Merge(returnObservable, watchObservable);
+                }
+
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
 
@@ -68,7 +75,7 @@ namespace Amoeba.Interface
                 this.CopyCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
                 this.CopyCommand.Subscribe(() => this.Copy()).AddTo(_disposable);
 
-                this.PasteCommand = new ReactiveCommand().AddTo(_disposable);
+                this.PasteCommand = clipboardObservable.Select(n => Clipboard.ContainsSeeds()).ToReactiveCommand().AddTo(_disposable);
                 this.PasteCommand.Subscribe(() => this.Paste()).AddTo(_disposable);
 
                 this.ResetCommand = this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
@@ -96,7 +103,7 @@ namespace Amoeba.Interface
 
         private void WatchThread(CancellationToken token)
         {
-            for (;;)
+            for (; ; )
             {
                 var downloadItemInfos = new Dictionary<(Metadata, string), DownloadItemInfo>(new CustomEqualityComparer());
 

@@ -59,7 +59,7 @@ namespace Amoeba.Interface
                 {
                     this.Contains.Value = n.IsContains;
                     this.Input.Value = n.Value;
-                }).AddTo(_disposable); 
+                }).AddTo(_disposable);
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
@@ -78,7 +78,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SearchInfoEditWindow), nameof(StateSearchConditionsControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(StateSearchConditionsControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);

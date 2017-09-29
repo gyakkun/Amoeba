@@ -4,18 +4,24 @@ using System.Windows;
 namespace Amoeba.Interface
 {
     /// <summary>
-    /// UploadPreviewWindow.xaml の相互作用ロジック
+    /// UploadDirectoryInfoEditWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class UploadPreviewWindow : Window
+    partial class UploadDirectoryInfoEditWindow : Window
     {
-        public UploadPreviewWindow(UploadPreviewWindowViewModel viewModel)
+        public UploadDirectoryInfoEditWindow(UploadDirectoryInfoEditWindowViewModel viewModel)
         {
             this.DataContext = viewModel;
             viewModel.CloseEvent += (sender, e) => this.Close();
 
             InitializeComponent();
+        }
 
-            this.MouseLeftButtonDown += (sender, e) => this.DragMove();
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+
+            this.MaxHeight = this.RenderSize.Height;
+            this.MinHeight = this.RenderSize.Height;
         }
 
         protected override void OnClosed(EventArgs e)

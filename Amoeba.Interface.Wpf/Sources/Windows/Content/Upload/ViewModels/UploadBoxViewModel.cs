@@ -1,35 +1,34 @@
-using System.Linq;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
+using Amoeba.Messages;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 
 namespace Amoeba.Interface
 {
-    class SubscribeStoreViewModel : TreeViewModelBase
+    class UploadBoxViewModel : TreeViewModelBase
     {
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public ReactiveProperty<bool> IsUpdated { get; private set; }
-        public ReadOnlyReactiveCollection<SubscribeBoxViewModel> Boxes { get; private set; }
+        public ReadOnlyReactiveCollection<Seed> Seeds { get; private set; }
+        public ReadOnlyReactiveCollection<UploadBoxViewModel> BoxViewModels { get; private set; }
 
-        public SubscribeStoreInfo Model { get; private set; }
+        public UploadBoxInfo Model { get; private set; }
 
-        public SubscribeStoreViewModel(TreeViewModelBase parent, SubscribeStoreInfo model)
+        public UploadBoxViewModel(TreeViewModelBase parent, UploadBoxInfo model)
             : base(parent)
         {
             this.Model = model;
 
-            this.Name = model.ObserveProperty(n => n.AuthorSignature).Select(n => n.ToString()).ToReactiveProperty().AddTo(_disposable);
+            this.Name = model.ToReactivePropertyAsSynchronized(n => n.Name).AddTo(_disposable);
             this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
-            this.IsUpdated = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);
-            this.Boxes = model.BoxInfos.ToReadOnlyReactiveCollection(n => new SubscribeBoxViewModel(this, n)).AddTo(_disposable);
+            this.Seeds = model.Seeds.ToReadOnlyReactiveCollection(n => n).AddTo(_disposable);
+            this.BoxViewModels = model.BoxInfos.ToReadOnlyReactiveCollection(n => new UploadBoxViewModel(this, n)).AddTo(_disposable);
         }
 
-        public override string DragFormat { get { return "Amoeba_Subscribe"; } }
+        public override string DragFormat { get { return null; } }
 
         public override bool TryAdd(object value)
         {

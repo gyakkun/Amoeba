@@ -47,7 +47,7 @@
         <Property Type="string" Name="FontFamily" IsEditable="true" />
         <Property Type="double" Name="FontSize" IsEditable="true" />
     </Class>
-    
+
     <Class Name="ListSortInfo">
         <Property Type="string" Name="PropertyName" IsEditable="true" />
         <Property Type="ListSortDirection" Name="Direction" IsEditable="true" />
@@ -156,51 +156,29 @@
         <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsEditable="true" />
     </Class>
 
-    <Class Name="SubscribeCategoryInfo">
+    <Class Name="StoreCategoryInfo">
         <Property Type="string" Name="Name" IsEditable="true" />
         <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-        <Property Type="ObservableCollection(SubscribeStoreInfo)" Name="StoreInfos" />
-        <Property Type="ObservableCollection(SubscribeCategoryInfo)" Name="CategoryInfos" />
+        <Property Type="ObservableCollection(StoreSignatureInfo)" Name="SignatureInfos" />
+        <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" />
     </Class>
 
-    <Class Name="SubscribeStoreInfo">
+    <Class Name="StoreSignatureInfo">
         <Property Type="Signature" Name="AuthorSignature" IsEditable="true" />
-        <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+        <Property Type="DateTime" Name="UpdateTime" IsEditable="true" />
         <Property Type="bool" Name="IsExpanded" IsEditable="true" />
         <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-        <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
+        <Property Type="ObservableCollection(StoreBoxInfo)" Name="BoxInfos" />
     </Class>
 
-    <Class Name="SubscribeBoxInfo">
+    <Class Name="StoreBoxInfo">
         <Property Type="string" Name="Name" IsEditable="true" />
         <Property Type="bool" Name="IsExpanded" IsEditable="true" />
         <Property Type="ObservableCollection(Seed)" Name="Seeds" />
-        <Property Type="ObservableCollection(SubscribeBoxInfo)" Name="BoxInfos" />
+        <Property Type="ObservableCollection(StoreBoxInfo)" Name="BoxInfos" />
     </Class>
 
-    <Class Name="SubscribeListViewItemInfo">
-        <Property Type="BitmapSource" Name="Icon" IsEditable="true"/>
-        <Property Type="string" Name="Name" IsEditable="true"/>
-        <Property Type="long" Name="Length" IsEditable="true"/>
-        <Property Type="DateTime" Name="CreationTime" IsEditable="true"/>
-        <Property Type="SearchState" Name="State" IsEditable="true"/>
-        <Property Type="object" Name="Model" IsEditable="true"/>
-    </Class>
-
-    <Class Name="PublishStoreInfo">
-        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-        <Property Type="bool" Name="IsUpdated" IsEditable="true" />
-        <Property Type="ObservableCollection(PublishBoxInfo)" Name="BoxInfos" />
-    </Class>
-
-    <Class Name="PublishBoxInfo">
-        <Property Type="string" Name="Name" IsEditable="true" />
-        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
-        <Property Type="ObservableCollection(Seed)" Name="Seeds" />
-        <Property Type="ObservableCollection(PublishBoxInfo)" Name="BoxInfos" />
-    </Class>
-
-    <Class Name="PublishListViewItemInfo">
+    <Class Name="StoreListViewItemInfo">
         <Property Type="BitmapSource" Name="Icon" IsEditable="true"/>
         <Property Type="string" Name="Name" IsEditable="true"/>
         <Property Type="long" Name="Length" IsEditable="true"/>
@@ -253,13 +231,44 @@
         <Property Type="double" Name="Value" IsEditable="true" />
     </Class>
 
-    <Class Name="UploadListViewItemInfo">
-        <Property Type="BitmapSource" Name="Icon" IsEditable="true" />
+    <Class Name="UploadStoreInfo">
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="bool" Name="IsUpdated" IsEditable="true" />
+        <Property Type="ObservableCollection(UploadDirectoryInfo)" Name="DirectoryInfos" />
+        <Property Type="ObservableCollection(UploadCategoryInfo)" Name="CategoryInfos" />
+    </Class>
+
+    <Class Name="UploadCategoryInfo">
         <Property Type="string" Name="Name" IsEditable="true" />
-        <Property Type="long" Name="Length" IsEditable="true" />
-        <Property Type="DateTime" Name="CreationTime" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="ObservableCollection(UploadDirectoryInfo)" Name="DirectoryInfos" />
+        <Property Type="ObservableCollection(UploadCategoryInfo)" Name="CategoryInfos" />
+    </Class>
+
+    <Class Name="UploadDirectoryInfo">
+        <Property Type="string" Name="Name" IsEditable="true" />
         <Property Type="string" Name="Path" IsEditable="true" />
-        <Property Type="Seed" Name="Seed" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="ObservableCollection(Seed)" Name="Seeds" />
+        <Property Type="ObservableCollection(UploadBoxInfo)" Name="BoxInfos" />
+    </Class>
+
+    <Class Name="UploadBoxInfo">
+        <Property Type="string" Name="Name" IsEditable="true" />
+        <Property Type="bool" Name="IsExpanded" IsEditable="true" />
+        <Property Type="ObservableCollection(Seed)" Name="Seeds" />
+        <Property Type="ObservableCollection(UploadBoxInfo)" Name="BoxInfos" />
+    </Class>
+
+    <Class Name="UploadListViewItemInfo">
+        <Property Type="int" Name="Group" IsEditable="true"/>
+        <Property Type="BitmapSource" Name="Icon" IsEditable="true"/>
+        <Property Type="string" Name="Name" IsEditable="true"/>
+        <Property Type="long" Name="Length" IsEditable="true"/>
+        <Property Type="DateTime" Name="CreationTime" IsEditable="true"/>
+        <Property Type="SearchState" Name="State" IsEditable="true"/>
+        <Property Type="string" Name="Path" IsEditable="true"/>
+        <Property Type="object" Name="Model" IsEditable="true"/>
     </Class>
 
     <Class Name="UploadPreviewListViewItemInfo">
@@ -267,6 +276,11 @@
         <Property Type="string" Name="Name" IsEditable="true" />
         <Property Type="long" Name="Length" IsEditable="true" />
         <Property Type="string" Name="Path" IsEditable="true" />
+    </Class>
+
+    <Class Name="UploadSyncRateInfo">
+        <Property Type="string" Name="Text" IsEditable="true" />
+        <Property Type="double" Name="Value" IsEditable="true" />
     </Class>
 
 </Config>
