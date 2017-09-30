@@ -487,6 +487,10 @@
       <Project>{170fcf7c-1245-4059-b2be-7bb863cf6d70}</Project>
       <Name>Amoeba.Service</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Amoeba.Update\Amoeba.Update.csproj">
+      <Project>{7847434c-5101-4937-8c4e-b51d8415abd6}</Project>
+      <Name>Amoeba.Update</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj">
       <Project>{dbfd22ce-159b-4db0-8052-111686395656}</Project>
       <Name>Omnius.Base</Name>

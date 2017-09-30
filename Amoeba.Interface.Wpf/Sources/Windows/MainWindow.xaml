@@ -13,6 +13,7 @@
                          StateChanged="RestorableWindow_StateChanged"
                          Style="{StaticResource CustomWindow}"
                          WindowSettings="{Binding Path=WindowSettings.Value, Mode=TwoWay}"
+                         ResizeMode="CanResize"
                          mc:Ignorable="d">
     <md:DialogHost HorizontalContentAlignment="Stretch"
                    VerticalContentAlignment="Stretch"
