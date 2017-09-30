@@ -2,25 +2,27 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using Omnius.Base;
 
 namespace Amoeba.Interface
 {
     // https://stackoverflow.com/questions/621577/clipboard-event-c-sharp
-    public partial class ClipboardMonitor
+    public partial class ClipboardMonitor : ManagerBase
     {
-        public event EventHandler ClipboardChanged;
+        private HwndSource _hwndSource;
 
         public ClipboardMonitor(Window windowSource)
         {
-            var source = PresentationSource.FromVisual(windowSource) as HwndSource;
-            if (source == null)
+            _hwndSource = PresentationSource.FromVisual(windowSource) as HwndSource;
+
+            if (_hwndSource == null)
             {
                 throw new ArgumentException(
                     "Window source MUST be initialized first, such as in the Window's OnSourceInitialized handler."
                     , nameof(windowSource));
             }
 
-            source.AddHook(this.WndProc);
+            _hwndSource.AddHook(this.WndProc);
 
             // get window handle for interop
             var windowHandle = new WindowInteropHelper(windowSource).Handle;
@@ -41,6 +43,8 @@ namespace Amoeba.Interface
             public static extern bool AddClipboardFormatListener(IntPtr hwnd);
         }
 
+        public event EventHandler ClipboardChanged;
+
         private void OnClipboardChanged()
         {
             ClipboardChanged?.Invoke(this, EventArgs.Empty);
@@ -57,6 +61,12 @@ namespace Amoeba.Interface
             }
 
             return _wndProcSuccess;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _hwndSource.RemoveHook(this.WndProc);
+            _hwndSource.Dispose();
         }
     }
 }

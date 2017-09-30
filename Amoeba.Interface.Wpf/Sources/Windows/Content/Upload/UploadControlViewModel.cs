@@ -519,7 +519,7 @@ namespace Amoeba.Interface
                     foreach (string path in hashMap)
                     {
                         if (token.IsCancellationRequested) return;
-                        if (targetUploadItemsInfo != _uploadItemsInfo) goto End;
+                        if (targetUploadItemsInfo != _uploadItemsInfo) return;
 
                         _serviceManager.RemoveContent(path);
                     }
@@ -534,7 +534,7 @@ namespace Amoeba.Interface
                     foreach (var (path, i) in hashMap.Select((n, i) => (n, i + 1)))
                     {
                         if (token.IsCancellationRequested) return;
-                        if (targetUploadItemsInfo != _uploadItemsInfo) goto End;
+                        if (targetUploadItemsInfo != _uploadItemsInfo) return;
 
                         try
                         {
@@ -555,6 +555,10 @@ namespace Amoeba.Interface
                         try
                         {
                             _serviceManager.AddContent(path, token).Wait();
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return;
                         }
                         catch (Exception e)
                         {
@@ -636,16 +640,23 @@ namespace Amoeba.Interface
 
                 try
                 {
-                    var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
-                    if (digitalSignature == null) return;
+                    DigitalSignature digitalSignature = null;
+                    Store store = null;
 
-                    var store = StoreBuilder.Create(this.TabViewModel.Value.Model);
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
+                        store = StoreBuilder.Create(this.TabViewModel.Value.Model);
+                    }, DispatcherPriority.Background, token);
 
                     _serviceManager.SetStore(store, digitalSignature, token).Wait();
 
-                    this.TabViewModel.Value.Model.IsUpdated = false;
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        this.TabViewModel.Value.Model.IsUpdated = false;
+                    }, DispatcherPriority.Background, token);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     return;
                 }
@@ -657,8 +668,6 @@ namespace Amoeba.Interface
                         _uploadItemsInfo = null;
                     }
                 }
-
-                End:;
             }
 
             (IEnumerable<UploadBoxInfo>, IEnumerable<Seed>) CreateBoxInfosAndSeeds(string basePath, Dictionary<string, CacheContentReport> reportMap)
@@ -1295,6 +1304,9 @@ namespace Amoeba.Interface
 
                 _watchTaskManager.Stop();
                 _watchTaskManager.Dispose();
+
+                _uploadWatchTaskManager.Stop();
+                _uploadWatchTaskManager.Dispose();
 
                 this.Save();
 

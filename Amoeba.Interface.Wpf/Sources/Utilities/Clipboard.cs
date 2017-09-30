@@ -18,11 +18,20 @@ namespace Amoeba.Interface
             App.Current.Activated += (sender, e) =>
             {
                 _monitor = new ClipboardMonitor(App.Current.MainWindow);
-                _monitor.ClipboardChanged += (sender2, e2) =>
-                {
-                    ClipboardChanged?.Invoke(sender2, e2);
-                };
+                _monitor.ClipboardChanged += Listener;
             };
+
+            App.Current.Exit += (sender, e) =>
+            {
+                _monitor.ClipboardChanged -= Listener;
+                _monitor.Dispose();
+                _monitor = null;
+            };
+
+            void Listener(object sender, EventArgs e)
+            {
+                ClipboardChanged?.Invoke(sender, e);
+            }
         }
 
         public static event EventHandler ClipboardChanged;
