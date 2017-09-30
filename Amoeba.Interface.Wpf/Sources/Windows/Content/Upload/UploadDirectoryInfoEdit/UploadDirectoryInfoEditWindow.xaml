@@ -7,12 +7,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+        Title="{Binding UploadDirectoryInfoEditWindow_Title, Source={StaticResource Languages}}"
         Width="{Binding Path=DynamicOptions.WindowWidth, Mode=TwoWay, FallbackValue=600}"
         x:ClassModifier="internal"
         SizeToContent="Height"
         Style="{StaticResource CustomWindow}"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
+
     <Grid>
         <Label Height="32"
                Margin="16,16,0,0"

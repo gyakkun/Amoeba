@@ -322,4 +322,12 @@
     <Property Name="UploadDirectoryInfoEditWindow_Ok" Value="Ok" />
     <Property Name="UploadDirectoryInfoEditWindow_Cancel" Value="Cancel" />
 
+    <Property Name="UploadNewItemsPreviewWindow_Title" Value="Upload new items preview" />
+    <Property Name="UploadNewItemsPreviewWindow_Name" Value="Name" />
+    <Property Name="UploadNewItemsPreviewWindow_Length" Value="Length" />
+    <Property Name="UploadNewItemsPreviewWindow_Path" Value="Path" />
+    <Property Name="UploadNewItemsPreviewWindow_Copy" Value="Copy" />
+    <Property Name="UploadNewItemsPreviewWindow_Ok" Value="Ok" />
+    <Property Name="UploadNewItemsPreviewWindow_Cancel" Value="Cancel" />
+
 </Config>

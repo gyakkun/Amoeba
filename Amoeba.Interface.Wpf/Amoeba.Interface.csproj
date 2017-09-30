@@ -140,6 +140,10 @@
       <DependentUpon>UploadControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Windows\Content\Upload\UploadControlViewModel.cs" />
+    <Compile Include="Sources\Windows\Content\Upload\UploadNewItemsPreview\UploadNewItemsPreviewWindow.xaml.cs">
+      <DependentUpon>UploadNewItemsPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Sources\Windows\Content\Upload\UploadNewItemsPreview\UploadNewItemsPreviewWindowViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Upload\ViewModels\UploadDirectoryViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Upload\ViewModels\UploadCategoryViewModel.cs" />
     <Compile Include="Sources\Windows\Content\Upload\ViewModels\UploadBoxViewModel.cs" />
@@ -272,6 +276,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Sources\Windows\Content\Upload\UploadDirectoryInfoEdit\UploadDirectoryInfoEditWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Sources\Windows\Content\Upload\UploadNewItemsPreview\UploadNewItemsPreviewWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

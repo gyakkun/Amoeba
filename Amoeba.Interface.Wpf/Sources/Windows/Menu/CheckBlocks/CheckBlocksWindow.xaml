@@ -14,6 +14,7 @@
         Style="{StaticResource CustomWindow}"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
+
     <Grid>
         <StackPanel Orientation="Vertical">
             <DockPanel Margin="16">
@@ -63,6 +64,7 @@
                     VerticalAlignment="Bottom"
                     Command="{Binding Path=CloseCommand}"
                     Content="{Binding Path=CheckBlocksWindow_Close, Source={StaticResource Languages}}"
+                    IsCancel="True"
                     IsDefault="True" />
         </StackPanel>
     </Grid>

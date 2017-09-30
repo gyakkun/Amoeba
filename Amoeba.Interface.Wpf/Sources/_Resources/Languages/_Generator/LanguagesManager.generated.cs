@@ -295,5 +295,12 @@ namespace Amoeba.Interface
         public string UploadDirectoryInfoEditWindow_Path { get { return this.Translate("UploadDirectoryInfoEditWindow_Path"); } }
         public string UploadDirectoryInfoEditWindow_Ok { get { return this.Translate("UploadDirectoryInfoEditWindow_Ok"); } }
         public string UploadDirectoryInfoEditWindow_Cancel { get { return this.Translate("UploadDirectoryInfoEditWindow_Cancel"); } }
+        public string UploadNewItemsPreviewWindow_Title { get { return this.Translate("UploadNewItemsPreviewWindow_Title"); } }
+        public string UploadNewItemsPreviewWindow_Name { get { return this.Translate("UploadNewItemsPreviewWindow_Name"); } }
+        public string UploadNewItemsPreviewWindow_Length { get { return this.Translate("UploadNewItemsPreviewWindow_Length"); } }
+        public string UploadNewItemsPreviewWindow_Path { get { return this.Translate("UploadNewItemsPreviewWindow_Path"); } }
+        public string UploadNewItemsPreviewWindow_Copy { get { return this.Translate("UploadNewItemsPreviewWindow_Copy"); } }
+        public string UploadNewItemsPreviewWindow_Ok { get { return this.Translate("UploadNewItemsPreviewWindow_Ok"); } }
+        public string UploadNewItemsPreviewWindow_Cancel { get { return this.Translate("UploadNewItemsPreviewWindow_Cancel"); } }
     }
 }

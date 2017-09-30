@@ -134,6 +134,8 @@
                                                  Value="{Binding Path=Rate.Value, Mode=OneWay}" />
                                     <TextBlock HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
+                                               FontWeight="DemiBold"
+                                               Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
                                                Text="{Binding Path=Rate.Text, Mode=OneWay}" />
                                 </Grid>
                             </DataTemplate>
