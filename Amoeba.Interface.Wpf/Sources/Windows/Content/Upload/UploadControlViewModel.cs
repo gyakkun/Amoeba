@@ -54,7 +54,6 @@ namespace Amoeba.Interface
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
-        public ReactiveCommand SyncCommand { get; private set; }
         public ReactiveCommand UploadCommand { get; private set; }
         public ReactiveCommand CancelCommand { get; private set; }
 
@@ -162,10 +161,7 @@ namespace Amoeba.Interface
                     .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsUploadCategoryInfo() || Clipboard.ContainsUploadDirectoryInfo()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
-                this.SyncCommand = new ReactiveCommand().AddTo(_disposable);
-                this.SyncCommand.Subscribe(() => this.Sync()).AddTo(_disposable);
-
-                this.UploadCommand = this.IsSyncing.Select(n => !n).ToReactiveCommand();
+                this.UploadCommand = new ReactiveCommand().AddTo(_disposable);
                 this.UploadCommand.Subscribe(() => this.Upload()).AddTo(_disposable);
 
                 this.CancelCommand = this.IsSyncing.Select(n => n).ToReactiveCommand();
@@ -638,6 +634,22 @@ namespace Amoeba.Interface
 
                 if (token.IsCancellationRequested) return;
 
+                try
+                {
+                    var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
+                    if (digitalSignature == null) return;
+
+                    var store = StoreBuilder.Create(this.TabViewModel.Value.Model);
+
+                    _serviceManager.SetStore(store, digitalSignature, token).Wait();
+
+                    this.TabViewModel.Value.Model.IsUpdated = false;
+                }
+                catch (TaskCanceledException)
+                {
+                    return;
+                }
+
                 lock (_lockObject)
                 {
                     if (targetUploadItemsInfo == _uploadItemsInfo)
@@ -675,85 +687,6 @@ namespace Amoeba.Interface
                 }
 
                 return (boxInfos, seeds);
-            }
-        }
-
-        private UploadDirectoryInfo CreatePublishDirectoryInfo()
-        {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
-            {
-                dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
-                dialog.ShowNewFolderButton = true;
-
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    return new UploadDirectoryInfo()
-                    {
-                        Name = System.IO.Path.GetFileName(dialog.SelectedPath).Trim(),
-                        Path = dialog.SelectedPath
-                    };
-                }
-            }
-
-            return null;
-        }
-
-        private async void Sync()
-        {
-            var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
-            if (digitalSignature == null) return;
-
-            var directoryPaths = new HashSet<string>();
-            {
-                directoryPaths.UnionWith(this.TabViewModel.Value.Model.DirectoryInfos.Select(n => n.Path));
-
-                var categoryInfos = new List<UploadCategoryInfo>();
-                categoryInfos.AddRange(this.TabViewModel.Value.Model.CategoryInfos);
-
-                for (int i = 0; i < categoryInfos.Count; i++)
-                {
-                    categoryInfos.AddRange(categoryInfos[i].CategoryInfos);
-                    directoryPaths.UnionWith(categoryInfos[i].DirectoryInfos.Select(n => n.Path));
-                }
-            }
-
-            ImmutableDictionary<string, ImmutableHashSet<string>> map = null;
-
-            await Task.Run(() =>
-            {
-                var tempMap = new Dictionary<string, ImmutableHashSet<string>>();
-
-                foreach (string directoryPath in directoryPaths)
-                {
-                    tempMap.Add(directoryPath, ImmutableHashSet.CreateRange(Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)));
-                }
-
-                map = ImmutableDictionary.CreateRange(tempMap);
-            });
-
-            lock (_lockObject)
-            {
-                _uploadItemsInfo = new UploadItemsInfo(digitalSignature, map);
-            }
-        }
-
-        private async void Upload()
-        {
-            var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
-            if (digitalSignature == null) return;
-
-            var store = StoreBuilder.Create(this.TabViewModel.Value.Model);
-
-            await _serviceManager.SetStore(store, digitalSignature, CancellationToken.None);
-
-            this.TabViewModel.Value.Model.IsUpdated = false;
-        }
-
-        private void Cancel()
-        {
-            lock (_lockObject)
-            {
-                _uploadItemsInfo = null;
             }
         }
 
@@ -815,6 +748,85 @@ namespace Amoeba.Interface
                 }
 
                 return new Box(rootBoxInfo.Name, rootBoxInfo.Seeds, tempBoxes);
+            }
+        }
+
+        private UploadDirectoryInfo CreatePublishDirectoryInfo()
+        {
+            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
+                dialog.ShowNewFolderButton = true;
+
+                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    return new UploadDirectoryInfo()
+                    {
+                        Name = System.IO.Path.GetFileName(dialog.SelectedPath).Trim(),
+                        Path = dialog.SelectedPath
+                    };
+                }
+            }
+
+            return null;
+        }
+
+        private async void Upload()
+        {
+            var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
+            if (digitalSignature == null) return;
+
+            var directoryPaths = new HashSet<string>();
+            {
+                directoryPaths.UnionWith(this.TabViewModel.Value.Model.DirectoryInfos.Select(n => n.Path));
+
+                var categoryInfos = new List<UploadCategoryInfo>();
+                categoryInfos.AddRange(this.TabViewModel.Value.Model.CategoryInfos);
+
+                for (int i = 0; i < categoryInfos.Count; i++)
+                {
+                    categoryInfos.AddRange(categoryInfos[i].CategoryInfos);
+                    directoryPaths.UnionWith(categoryInfos[i].DirectoryInfos.Select(n => n.Path));
+                }
+            }
+
+            ImmutableDictionary<string, ImmutableHashSet<string>> map = null;
+
+            await Task.Run(() =>
+            {
+                var tempMap = new Dictionary<string, ImmutableHashSet<string>>();
+
+                foreach (string directoryPath in directoryPaths)
+                {
+                    tempMap.Add(directoryPath, ImmutableHashSet.CreateRange(Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)));
+                }
+
+                map = ImmutableDictionary.CreateRange(tempMap);
+            });
+
+            {
+                var hashSet = new HashSet<string>();
+                hashSet.UnionWith(map.SelectMany(n => n.Value));
+                hashSet.ExceptWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
+
+                var viewModel = new UploadNewItemsPreviewWindowViewModel(hashSet);
+                viewModel.Callback += (name) =>
+                {
+                    lock (_lockObject)
+                    {
+                        _uploadItemsInfo = new UploadItemsInfo(digitalSignature, map);
+                    }
+                };
+
+                _dialogService.Show(viewModel);
+            }
+        }
+
+        private void Cancel()
+        {
+            lock (_lockObject)
+            {
+                _uploadItemsInfo = null;
             }
         }
 

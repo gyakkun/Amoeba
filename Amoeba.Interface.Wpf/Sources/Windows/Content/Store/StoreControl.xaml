@@ -47,7 +47,7 @@
                     ToolTip="{Binding Path=StoreControl_Up, Source={StaticResource Languages}}">
                 <md:PackIcon Width="32"
                              Height="32"
-                             Kind="ArrowUpBold" />
+                             Kind="ArrowUp" />
             </Button>
             <Button Width="48"
                     Height="48"

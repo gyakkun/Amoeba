@@ -48,7 +48,7 @@
                     ToolTip="{Binding Path=StoreControl_Up, Source={StaticResource Languages}}">
                 <md:PackIcon Width="32"
                              Height="32"
-                             Kind="ArrowUpBold" />
+                             Kind="ArrowUp" />
             </Button>
             <Button Width="48"
                     Height="48"
@@ -60,19 +60,7 @@
                     ToolTip="{Binding Path=UploadControl_Upload, Source={StaticResource Languages}}">
                 <md:PackIcon Width="32"
                              Height="32"
-                             Kind="BriefcaseUpload" />
-            </Button>
-            <Button Width="48"
-                    Height="48"
-                    Margin="0,8,16,8"
-                    HorizontalAlignment="Right"
-                    Command="{Binding Path=SyncCommand}"
-                    DockPanel.Dock="Right"
-                    Style="{StaticResource MaterialDesignFloatingActionButton}"
-                    ToolTip="{Binding Path=UploadControl_Sync, Source={StaticResource Languages}}">
-                <md:PackIcon Width="32"
-                             Height="32"
-                             Kind="Sync" />
+                             Kind="CloudUpload" />
             </Button>
         </DockPanel>
 
@@ -367,8 +355,9 @@
 
         <md:Snackbar Grid.Row="1"
                      Grid.ColumnSpan="3"
+                     Margin="16,0"
                      HorizontalAlignment="Stretch"
-                     IsActive="{Binding Path=IsSyncing.Value, Mode=OneWay, FallbackValue=true}">
+                     IsActive="{Binding Path=IsSyncing.Value, Mode=OneWay, FallbackValue=false}">
             <md:SnackbarMessage Height="16"
                                 HorizontalContentAlignment="Stretch"
                                 ActionCommand="{Binding CancelCommand}"
