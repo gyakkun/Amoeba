@@ -135,8 +135,7 @@ namespace Amoeba.Interface
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is StoreCategoryViewModel)
-                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsStoreCategoryInfo() || Clipboard.ContainsStoreSignatureInfo()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);
-                this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
+                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsStoreCategoryInfo() || Clipboard.ContainsStoreSignatureInfo() || Clipboard.ContainsSignatures()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);                this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
@@ -169,7 +168,7 @@ namespace Amoeba.Interface
 
                 this.PasteCommand = this.TabSelectedItem.Select(n => n is StoreCategoryViewModel)
                     .CombineLatest(this.SelectedItems.ObserveProperty(n => n.Count).Select(n => n == 0 || n == 1 && SelectedMatch(typeof(StoreCategoryInfo))), (r1, r2) => (r1 && r2))
-                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsStoreCategoryInfo() || Clipboard.ContainsStoreSignatureInfo()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);
+                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsStoreCategoryInfo() || Clipboard.ContainsStoreSignatureInfo() || Clipboard.ContainsSignatures()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);
                 this.PasteCommand.Subscribe(() => this.Paste()).AddTo(_disposable);
 
                 this.DownloadCommand = this.SelectedItems.ObserveProperty(n => n.Count)
@@ -803,6 +802,12 @@ namespace Amoeba.Interface
             {
                 categoryInfo.CategoryInfos.AddRange(Clipboard.GetStoreCategoryInfos());
                 categoryInfo.SignatureInfos.AddRange(Clipboard.GetStoreSignatureInfos());
+
+                foreach (var signature in Clipboard.GetSignatures())
+                {
+                    if (categoryInfo.SignatureInfos.Any(n => n.AuthorSignature == signature)) continue;
+                    categoryInfo.SignatureInfos.Add(new StoreSignatureInfo() { AuthorSignature = signature });
+                }
             }
 
             this.Refresh();
