@@ -54,13 +54,13 @@
                     Height="48"
                     Margin="0,8,16,8"
                     HorizontalAlignment="Right"
-                    Command="{Binding Path=UploadCommand}"
+                    Command="{Binding Path=SycCommand}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
-                    ToolTip="{Binding Path=UploadControl_Upload, Source={StaticResource Languages}}">
+                    ToolTip="{Binding Path=UploadControl_Sync, Source={StaticResource Languages}}">
                 <md:PackIcon Width="32"
                              Height="32"
-                             Kind="CloudUpload" />
+                             Kind="CloudSync" />
             </Button>
         </DockPanel>
 

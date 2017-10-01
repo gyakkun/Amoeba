@@ -54,7 +54,7 @@ namespace Amoeba.Interface
         public ReactiveCommand TabCopyCommand { get; private set; }
         public ReactiveCommand TabPasteCommand { get; private set; }
 
-        public ReactiveCommand UploadCommand { get; private set; }
+        public ReactiveCommand SyncCommand { get; private set; }
         public ReactiveCommand CancelCommand { get; private set; }
 
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
@@ -161,8 +161,8 @@ namespace Amoeba.Interface
                     .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsUploadCategoryInfo() || Clipboard.ContainsUploadDirectoryInfo()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
-                this.UploadCommand = new ReactiveCommand().AddTo(_disposable);
-                this.UploadCommand.Subscribe(() => this.Upload()).AddTo(_disposable);
+                this.SyncCommand = new ReactiveCommand().AddTo(_disposable);
+                this.SyncCommand.Subscribe(() => this.Sync()).AddTo(_disposable);
 
                 this.CancelCommand = this.IsSyncing.Select(n => n).ToReactiveCommand();
                 this.CancelCommand.Subscribe(() => this.Cancel()).AddTo(_disposable);
@@ -527,11 +527,17 @@ namespace Amoeba.Interface
 
                 // Add
                 {
-                    var hashMap = new HashSet<string>();
-                    hashMap.UnionWith(targetUploadItemsInfo.Map.SelectMany(n => n.Value));
-                    hashMap.ExceptWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
+                    var sortedList = new List<string>();
+                    {
+                        var hashMap = new HashSet<string>();
+                        hashMap.UnionWith(targetUploadItemsInfo.Map.SelectMany(n => n.Value));
+                        hashMap.ExceptWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
 
-                    foreach (var (path, i) in hashMap.Select((n, i) => (n, i + 1)))
+                        sortedList.AddRange(hashMap);
+                        sortedList.Sort((x, y) => x.CompareTo(y));
+                    }
+
+                    foreach (var (path, i) in sortedList.Select((n, i) => (n, i + 1)))
                     {
                         if (token.IsCancellationRequested) return;
                         if (targetUploadItemsInfo != _uploadItemsInfo) return;
@@ -542,8 +548,8 @@ namespace Amoeba.Interface
                             {
                                 this.IsSyncing.Value = true;
 
-                                double value = Math.Round(((double)i / hashMap.Count) * 100, 2);
-                                this.SyncRateInfo.Text = $"{value}% {i}/{hashMap.Count}";
+                                double value = Math.Round(((double)i / sortedList.Count) * 100, 2);
+                                this.SyncRateInfo.Text = $"{value}% {i}/{sortedList.Count}";
                                 this.SyncRateInfo.Value = value;
                             }, DispatcherPriority.Background, token);
                         }
@@ -780,7 +786,7 @@ namespace Amoeba.Interface
             return null;
         }
 
-        private async void Upload()
+        private async void Sync()
         {
             var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
             if (digitalSignature == null) return;

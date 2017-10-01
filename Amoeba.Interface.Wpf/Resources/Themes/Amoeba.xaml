@@ -33,7 +33,6 @@
     </Style>
 
     <Style x:Key="CustomWindow" TargetType="{x:Type Window}">
-        <Setter Property="ResizeMode" Value="CanMinimize" />
         <Setter Property="Background" Value="{DynamicResource MaterialDesignWindowBackground}" />
         <Setter Property="FontFamily" Value="{DynamicResource MaterialDesignFont}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
