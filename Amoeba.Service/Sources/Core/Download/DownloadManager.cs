@@ -342,10 +342,12 @@ namespace Amoeba.Service
                     else
                     {
                         var hashes = new HashCollection();
+                        var totalHashes = new HashCollection();
 
                         if (item.Depth == 0)
                         {
                             hashes.Add(item.Metadata.Hash);
+                            totalHashes.Add(item.Metadata.Hash);
                         }
                         else
                         {
@@ -357,6 +359,8 @@ namespace Amoeba.Service
 
                                     hashes.AddRange(_cacheManager.ParityDecoding(group, token).Result);
                                 }
+
+                                totalHashes.AddRange(item.Index.Groups.SelectMany(n => n.Hashes));
                             }
                             catch (OperationCanceledException)
                             {
@@ -388,7 +392,7 @@ namespace Amoeba.Service
 
                             lock (_lockObject)
                             {
-                                _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, hashes));
+                                _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, totalHashes));
 
                                 this.CheckState(index);
                                 this.UncheckState(item.Index);
@@ -446,7 +450,7 @@ namespace Amoeba.Service
 
                             lock (_lockObject)
                             {
-                                _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, hashes));
+                                _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, totalHashes));
 
                                 item.ResultHashes.AddRange(hashes);
 
