@@ -4,11 +4,11 @@ using System.Windows;
 namespace Amoeba.Interface
 {
     /// <summary>
-    /// UploadNewItemsPreviewWindow.xaml の相互作用ロジック
+    /// UploadItemsPreviewWindow.xaml の相互作用ロジック
     /// </summary>
-    partial class UploadNewItemsPreviewWindow : Window
+    partial class UploadItemsPreviewWindow : Window
     {
-        public UploadNewItemsPreviewWindow(UploadNewItemsPreviewWindowViewModel viewModel)
+        public UploadItemsPreviewWindow(UploadItemsPreviewWindowViewModel viewModel)
         {
             this.DataContext = viewModel;
             viewModel.CloseEvent += (sender, e) => this.Close();

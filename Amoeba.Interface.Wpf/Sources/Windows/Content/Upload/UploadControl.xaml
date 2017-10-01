@@ -54,13 +54,25 @@
                     Height="48"
                     Margin="0,8,16,8"
                     HorizontalAlignment="Right"
+                    Command="{Binding Path=UploadCommand}"
+                    DockPanel.Dock="Right"
+                    Style="{StaticResource MaterialDesignFloatingActionButton}"
+                    ToolTip="{Binding Path=UploadControl_Sync, Source={StaticResource Languages}}">
+                <md:PackIcon Width="32"
+                             Height="32"
+                             Kind="CloudUpload" />
+            </Button>
+            <Button Width="48"
+                    Height="48"
+                    Margin="0,8,16,8"
+                    HorizontalAlignment="Right"
                     Command="{Binding Path=SyncCommand}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="{Binding Path=UploadControl_Sync, Source={StaticResource Languages}}">
                 <md:PackIcon Width="32"
                              Height="32"
-                             Kind="CloudSync" />
+                             Kind="Sync" />
             </Button>
         </DockPanel>
 
@@ -363,7 +375,7 @@
                                 ActionCommand="{Binding CancelCommand}"
                                 ActionContent="{Binding Path=UploadControl_Cancel, Source={StaticResource Languages}}">
                 <DockPanel>
-                    <TextBlock Margin="0,0,16,0" Text="{Binding Path=UploadControl_Importing, Source={StaticResource Languages}}" />
+                    <TextBlock Margin="0,0,16,0" Text="{Binding Path=UploadControl_Syncing, Source={StaticResource Languages}}" />
                     <Grid HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
                           Visibility="{Binding Path=IsSyncing.Value, Converter={StaticResource BooleanToVisibilityConverter}}">

@@ -60,9 +60,9 @@ namespace Amoeba.Interface
             window.ShowDialog();
         }
 
-        public void Show(UploadNewItemsPreviewWindowViewModel viewModel)
+        public void Show(UploadItemsPreviewWindowViewModel viewModel)
         {
-            var window = new UploadNewItemsPreviewWindow(viewModel);
+            var window = new UploadItemsPreviewWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }

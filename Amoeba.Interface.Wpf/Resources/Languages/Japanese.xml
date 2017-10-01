@@ -313,7 +313,7 @@
     <Property Name="UploadControl_Up" Value="上へ" />
     <Property Name="UploadControl_Upload" Value="アップロード" />
     <Property Name="UploadControl_Sync" Value="同期" />
-    <Property Name="UploadControl_Importing" Value="インポート中" />
+    <Property Name="UploadControl_Syncing" Value="同期中" />
     <Property Name="UploadControl_Cancel" Value="キャンセル" />
 
     <Property Name="UploadDirectoryInfoEditWindow_Title" Value="アップロードフォルダ編集" />
@@ -322,12 +322,14 @@
     <Property Name="UploadDirectoryInfoEditWindow_Ok" Value="OK" />
     <Property Name="UploadDirectoryInfoEditWindow_Cancel" Value="キャンセル" />
 
-    <Property Name="UploadNewItemsPreviewWindow_Title" Value="新しくアップロードされるアイテムのプレビュー" />
-    <Property Name="UploadNewItemsPreviewWindow_Name" Value="名前" />
-    <Property Name="UploadNewItemsPreviewWindow_Length" Value="サイズ" />
-    <Property Name="UploadNewItemsPreviewWindow_Path" Value="パス" />
-    <Property Name="UploadNewItemsPreviewWindow_Copy" Value="コピー" />
-    <Property Name="UploadNewItemsPreviewWindow_Ok" Value="OK" />
-    <Property Name="UploadNewItemsPreviewWindow_Cancel" Value="キャンセル" />
+    <Property Name="UploadItemsPreviewWindow_Title" Value="アップロードされるアイテムのプレビュー" />
+    <Property Name="UploadItemsPreviewWindow_Add" Value="追加" />
+    <Property Name="UploadItemsPreviewWindow_Remove" Value="削除" />
+    <Property Name="UploadItemsPreviewWindow_Name" Value="名前" />
+    <Property Name="UploadItemsPreviewWindow_Length" Value="サイズ" />
+    <Property Name="UploadItemsPreviewWindow_Path" Value="パス" />
+    <Property Name="UploadItemsPreviewWindow_Copy" Value="コピー" />
+    <Property Name="UploadItemsPreviewWindow_Ok" Value="OK" />
+    <Property Name="UploadItemsPreviewWindow_Cancel" Value="キャンセル" />
 
 </Config>

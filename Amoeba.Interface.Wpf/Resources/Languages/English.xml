@@ -313,7 +313,7 @@
     <Property Name="UploadControl_Up" Value="Up" />
     <Property Name="UploadControl_Upload" Value="Upload" />
     <Property Name="UploadControl_Sync" Value="Sync" />
-    <Property Name="UploadControl_Importing" Value="Importing" />
+    <Property Name="UploadControl_Syncing" Value="Syncing" />
     <Property Name="UploadControl_Cancel" Value="CANCEL" />
 
     <Property Name="UploadDirectoryInfoEditWindow_Title" Value="Upload directory edit" />
@@ -322,12 +322,14 @@
     <Property Name="UploadDirectoryInfoEditWindow_Ok" Value="Ok" />
     <Property Name="UploadDirectoryInfoEditWindow_Cancel" Value="Cancel" />
 
-    <Property Name="UploadNewItemsPreviewWindow_Title" Value="Upload new items preview" />
-    <Property Name="UploadNewItemsPreviewWindow_Name" Value="Name" />
-    <Property Name="UploadNewItemsPreviewWindow_Length" Value="Length" />
-    <Property Name="UploadNewItemsPreviewWindow_Path" Value="Path" />
-    <Property Name="UploadNewItemsPreviewWindow_Copy" Value="Copy" />
-    <Property Name="UploadNewItemsPreviewWindow_Ok" Value="Ok" />
-    <Property Name="UploadNewItemsPreviewWindow_Cancel" Value="Cancel" />
+    <Property Name="UploadItemsPreviewWindow_Title" Value="Upload items preview" />
+    <Property Name="UploadItemsPreviewWindow_Add" Value="Add" />
+    <Property Name="UploadItemsPreviewWindow_Remove" Value="Remove" />
+    <Property Name="UploadItemsPreviewWindow_Name" Value="Name" />
+    <Property Name="UploadItemsPreviewWindow_Length" Value="Length" />
+    <Property Name="UploadItemsPreviewWindow_Path" Value="Path" />
+    <Property Name="UploadItemsPreviewWindow_Copy" Value="Copy" />
+    <Property Name="UploadItemsPreviewWindow_Ok" Value="Ok" />
+    <Property Name="UploadItemsPreviewWindow_Cancel" Value="Cancel" />
 
 </Config>
