@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Wpf;
@@ -48,12 +49,12 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public UploadItemsPreviewWindowViewModel(IEnumerable<string> addPaths, IEnumerable<string> removePaths)
+        public UploadItemsPreviewWindowViewModel(IEnumerable<(string, long)> addInfos, IEnumerable<(string, long)> removeInfos)
         {
-            this.Init(addPaths, removePaths);
+            this.Init(addInfos, removeInfos);
         }
 
-        private void Init(IEnumerable<string> addPaths, IEnumerable<string> removePaths)
+        private void Init(IEnumerable<(string, long)> addInfos, IEnumerable<(string, long)> removeInfos)
         {
             {
                 this.AddItemsSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
@@ -79,23 +80,23 @@ namespace Amoeba.Interface
             }
 
             {
-                foreach (string path in addPaths)
+                foreach (var (path, length) in addInfos)
                 {
                     var viewModel = new UploadPreviewListViewItemInfo();
                     viewModel.Icon = IconUtils.GetImage(path);
                     viewModel.Name = Path.GetFileName(path);
-                    viewModel.Length = new FileInfo(path).Length;
+                    viewModel.Length = length;
                     viewModel.Path = path;
 
                     _addContents.Add(viewModel);
                 }
 
-                foreach (string path in removePaths)
+                foreach (var (path, length) in removeInfos)
                 {
                     var viewModel = new UploadPreviewListViewItemInfo();
                     viewModel.Icon = IconUtils.GetImage(path);
                     viewModel.Name = Path.GetFileName(path);
-                    viewModel.Length = new FileInfo(path).Length;
+                    viewModel.Length = length;
                     viewModel.Path = path;
 
                     _removeContents.Add(viewModel);

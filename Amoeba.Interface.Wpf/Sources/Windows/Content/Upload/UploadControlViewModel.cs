@@ -750,15 +750,33 @@ namespace Amoeba.Interface
             });
 
             {
-                var addItems = new HashSet<string>();
-                addItems.UnionWith(map.SelectMany(n => n.Value));
-                addItems.ExceptWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
+                var addItems = new Dictionary<string, long>();
+                {
+                    foreach (string path in map.SelectMany(n => n.Value))
+                    {
+                        addItems.Add(path, new FileInfo(path).Length);
+                    }
 
-                var removeItems = new HashSet<string>();
-                removeItems.UnionWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
-                removeItems.ExceptWith(map.SelectMany(n => n.Value));
+                    foreach (string path in _serviceManager.GetCacheContentReports().Select(n => n.Path))
+                    {
+                        addItems.Remove(path);
+                    }
+                }
 
-                var viewModel = new UploadItemsPreviewWindowViewModel(addItems, removeItems);
+                var removeItems = new Dictionary<string, long>();
+                {
+                    foreach (var (path, length) in _serviceManager.GetCacheContentReports().Select(n => (n.Path, n.Length)))
+                    {
+                        removeItems.Add(path, length);
+                    }
+
+                    foreach (string path in map.SelectMany(n => n.Value))
+                    {
+                        removeItems.Remove(path);
+                    }
+                }
+
+                var viewModel = new UploadItemsPreviewWindowViewModel(addItems.Select(n => (n.Key, n.Value)), removeItems.Select(n => (n.Key, n.Value)));
                 viewModel.Callback += (name) =>
                 {
                     lock (_lockObject)
