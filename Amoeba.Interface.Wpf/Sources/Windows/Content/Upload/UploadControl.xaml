@@ -54,7 +54,7 @@
                     Height="48"
                     Margin="0,8,16,8"
                     HorizontalAlignment="Right"
-                    Command="{Binding Path=SycCommand}"
+                    Command="{Binding Path=SyncCommand}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="{Binding Path=UploadControl_Sync, Source={StaticResource Languages}}">
