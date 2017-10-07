@@ -56,7 +56,6 @@ namespace Amoeba.Interface
 
         public ReactiveCommand SyncCommand { get; private set; }
         public ReactiveCommand CancelCommand { get; private set; }
-        public ReactiveCommand UploadCommand { get; private set; }
 
         public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
         private ObservableCollection<UploadListViewItemInfo> _contents = new ObservableCollection<UploadListViewItemInfo>();
@@ -164,9 +163,6 @@ namespace Amoeba.Interface
 
                 this.SyncCommand = this.IsSyncing.Select(n => !n).ToReactiveCommand().AddTo(_disposable);
                 this.SyncCommand.Subscribe(() => this.Sync()).AddTo(_disposable);
-
-                this.UploadCommand = this.IsSyncing.Select(n => !n).ToReactiveCommand().AddTo(_disposable);
-                this.UploadCommand.Subscribe(() => this.Upload()).AddTo(_disposable);
 
                 this.CancelCommand = this.IsSyncing.Select(n => n).ToReactiveCommand();
                 this.CancelCommand.Subscribe(() => this.Cancel()).AddTo(_disposable);
@@ -658,6 +654,29 @@ namespace Amoeba.Interface
 
                 if (token.IsCancellationRequested) return;
 
+                try
+                {
+                    DigitalSignature digitalSignature = null;
+                    Store store = null;
+
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
+                        store = StoreBuilder.Create(this.TabViewModel.Value.Model);
+                    }, DispatcherPriority.Background, token);
+
+                    _serviceManager.SetStore(store, digitalSignature, token).Wait();
+
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        this.TabViewModel.Value.Model.IsUpdated = false;
+                    }, DispatcherPriority.Background, token);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+
                 lock (_lockObject)
                 {
                     if (targetUploadItemsInfo == _uploadItemsInfo)
@@ -693,6 +712,67 @@ namespace Amoeba.Interface
                 }
 
                 return (boxInfos, seeds);
+            }
+        }
+
+        private static class StoreBuilder
+        {
+            public static Store Create(UploadStoreInfo uploadStoreInfo)
+            {
+                var tempBoxes = new List<Box>();
+
+                foreach (var categoryInfo in uploadStoreInfo.CategoryInfos)
+                {
+                    tempBoxes.Add(CreateBox(categoryInfo));
+                }
+
+                foreach (var directoryInfo in uploadStoreInfo.DirectoryInfos)
+                {
+                    tempBoxes.Add(CreateBox(directoryInfo));
+                }
+
+                return new Store(tempBoxes);
+            }
+
+            private static Box CreateBox(UploadCategoryInfo rootCategoryInfo)
+            {
+                var tempBoxes = new List<Box>();
+
+                foreach (var categoryInfo in rootCategoryInfo.CategoryInfos)
+                {
+                    tempBoxes.Add(CreateBox(categoryInfo));
+                }
+
+                foreach (var directoryInfo in rootCategoryInfo.DirectoryInfos)
+                {
+                    tempBoxes.Add(CreateBox(directoryInfo));
+                }
+
+                return new Box(rootCategoryInfo.Name, Array.Empty<Seed>(), tempBoxes);
+            }
+
+            private static Box CreateBox(UploadDirectoryInfo rootDirectoryInfo)
+            {
+                var tempBoxes = new List<Box>();
+
+                foreach (var boxInfo in rootDirectoryInfo.BoxInfos)
+                {
+                    tempBoxes.Add(CreateBox(boxInfo));
+                }
+
+                return new Box(rootDirectoryInfo.Name, rootDirectoryInfo.Seeds, tempBoxes);
+            }
+
+            private static Box CreateBox(UploadBoxInfo rootBoxInfo)
+            {
+                var tempBoxes = new List<Box>();
+
+                foreach (var boxInfo in rootBoxInfo.BoxInfos)
+                {
+                    tempBoxes.Add(CreateBox(boxInfo));
+                }
+
+                return new Box(rootBoxInfo.Name, rootBoxInfo.Seeds, tempBoxes);
             }
         }
 
@@ -786,77 +866,6 @@ namespace Amoeba.Interface
                 };
 
                 _dialogService.Show(viewModel);
-            }
-        }
-
-        private async void Upload()
-        {
-            var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
-            var store = StoreBuilder.Create(this.TabViewModel.Value.Model);
-
-            await _serviceManager.SetStore(store, digitalSignature, CancellationToken.None);
-
-            this.TabViewModel.Value.Model.IsUpdated = false;
-        }
-
-        private static class StoreBuilder
-        {
-            public static Store Create(UploadStoreInfo uploadStoreInfo)
-            {
-                var tempBoxes = new List<Box>();
-
-                foreach (var categoryInfo in uploadStoreInfo.CategoryInfos)
-                {
-                    tempBoxes.Add(CreateBox(categoryInfo));
-                }
-
-                foreach (var directoryInfo in uploadStoreInfo.DirectoryInfos)
-                {
-                    tempBoxes.Add(CreateBox(directoryInfo));
-                }
-
-                return new Store(tempBoxes);
-            }
-
-            private static Box CreateBox(UploadCategoryInfo rootCategoryInfo)
-            {
-                var tempBoxes = new List<Box>();
-
-                foreach (var categoryInfo in rootCategoryInfo.CategoryInfos)
-                {
-                    tempBoxes.Add(CreateBox(categoryInfo));
-                }
-
-                foreach (var directoryInfo in rootCategoryInfo.DirectoryInfos)
-                {
-                    tempBoxes.Add(CreateBox(directoryInfo));
-                }
-
-                return new Box(rootCategoryInfo.Name, Array.Empty<Seed>(), tempBoxes);
-            }
-
-            private static Box CreateBox(UploadDirectoryInfo rootDirectoryInfo)
-            {
-                var tempBoxes = new List<Box>();
-
-                foreach (var boxInfo in rootDirectoryInfo.BoxInfos)
-                {
-                    tempBoxes.Add(CreateBox(boxInfo));
-                }
-
-                return new Box(rootDirectoryInfo.Name, rootDirectoryInfo.Seeds, tempBoxes);
-            }
-
-            private static Box CreateBox(UploadBoxInfo rootBoxInfo)
-            {
-                var tempBoxes = new List<Box>();
-
-                foreach (var boxInfo in rootBoxInfo.BoxInfos)
-                {
-                    tempBoxes.Add(CreateBox(boxInfo));
-                }
-
-                return new Box(rootBoxInfo.Name, rootBoxInfo.Seeds, tempBoxes);
             }
         }
 

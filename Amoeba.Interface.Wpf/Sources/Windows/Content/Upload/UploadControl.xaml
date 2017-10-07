@@ -54,25 +54,13 @@
                     Height="48"
                     Margin="0,8,16,8"
                     HorizontalAlignment="Right"
-                    Command="{Binding Path=UploadCommand}"
-                    DockPanel.Dock="Right"
-                    Style="{StaticResource MaterialDesignFloatingActionButton}"
-                    ToolTip="{Binding Path=UploadControl_Sync, Source={StaticResource Languages}}">
-                <md:PackIcon Width="32"
-                             Height="32"
-                             Kind="CloudUpload" />
-            </Button>
-            <Button Width="48"
-                    Height="48"
-                    Margin="0,8,16,8"
-                    HorizontalAlignment="Right"
                     Command="{Binding Path=SyncCommand}"
                     DockPanel.Dock="Right"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="{Binding Path=UploadControl_Sync, Source={StaticResource Languages}}">
                 <md:PackIcon Width="32"
                              Height="32"
-                             Kind="Sync" />
+                             Kind="CloudSync" />
             </Button>
         </DockPanel>
 
