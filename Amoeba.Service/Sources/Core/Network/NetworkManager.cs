@@ -387,7 +387,7 @@ namespace Amoeba.Service
         {
             lock (_lockObject)
             {
-                var connection = new Connection(1024 * 1024 * 4, new TimeSpan(0, 1, 0), _bufferManager);
+                var connection = new Connection(1024 * 1024 * 4, _bufferManager);
                 connection.Connect(cap);
 
                 var sessionInfo = new SessionInfo();

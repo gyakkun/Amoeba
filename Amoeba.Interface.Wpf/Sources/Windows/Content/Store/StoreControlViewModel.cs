@@ -134,7 +134,8 @@ namespace Amoeba.Interface
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is StoreCategoryViewModel)
-                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsStoreCategoryInfo() || Clipboard.ContainsStoreSignatureInfo() || Clipboard.ContainsSignatures()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);                this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
+                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsStoreCategoryInfo() || Clipboard.ContainsStoreSignatureInfo() || Clipboard.ContainsSignatures()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);
+                this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
                 this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
