@@ -14,6 +14,7 @@ using System.Windows;
 using Ionic.Zip;
 using Omnius.Base;
 using Omnius.Security;
+using Omnius.Wpf;
 
 namespace Amoeba.Interface
 {
@@ -28,6 +29,8 @@ namespace Amoeba.Interface
 
         public App()
         {
+            Process.GetCurrentProcess().SetMemoryPriority(4);
+
             NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionState.Continuous);
 
             CryptoConfig.AddAlgorithm(typeof(SHA256Cng),
