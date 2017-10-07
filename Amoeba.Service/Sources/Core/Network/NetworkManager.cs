@@ -961,7 +961,12 @@ namespace Amoeba.Service
             {
                 sessionInfo.SendInfo.LocationResultStopwatch.Restart();
 
-                var packet = new LocationsPacket(_cloudLocations.Randomize().Take(LocationsPacket.MaxLocationCount));
+                var tempLocations = new List<Location>();
+                tempLocations.Add(this.MyLocation);
+                tempLocations.AddRange(_cloudLocations);
+                _random.Shuffle(tempLocations);
+
+                var packet = new LocationsPacket(tempLocations.Take(LocationsPacket.MaxLocationCount));
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.SetUInt64(typeStream, (uint)SerializeId.Locations);
