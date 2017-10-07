@@ -7,7 +7,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Amoeba.Messages;
@@ -247,7 +246,7 @@ namespace Amoeba.Interface
                         }
                     }, DispatcherPriority.Background, token);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     return;
                 }
@@ -297,7 +296,7 @@ namespace Amoeba.Interface
                             chatThreadViewModel.Count.Value = newCount;
                         }, DispatcherPriority.Background, token);
                     }
-                    catch (TaskCanceledException)
+                    catch (OperationCanceledException)
                     {
                         return;
                     }

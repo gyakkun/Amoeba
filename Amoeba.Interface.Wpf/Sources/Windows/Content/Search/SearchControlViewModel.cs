@@ -478,7 +478,7 @@ namespace Amoeba.Interface
                         searchViewModels.AddRange(viewModel.Children);
                     }, DispatcherPriority.Background, token);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     return;
                 }

@@ -8,7 +8,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
@@ -406,7 +405,7 @@ namespace Amoeba.Interface
                         }
                     }, DispatcherPriority.Background, token);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     return;
                 }
@@ -455,7 +454,7 @@ namespace Amoeba.Interface
                             }
                         }, DispatcherPriority.Background, token);
                     }
-                    catch (TaskCanceledException)
+                    catch (OperationCanceledException)
                     {
                         return;
                     }

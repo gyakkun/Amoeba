@@ -506,7 +506,7 @@ namespace Amoeba.Interface
                             this.IsSyncing.Value = false;
                         }, DispatcherPriority.Background, token);
                     }
-                    catch (TaskCanceledException)
+                    catch (OperationCanceledException)
                     {
                         return;
                     }
@@ -521,7 +521,7 @@ namespace Amoeba.Interface
                         this.IsSyncing.Value = true;
                     }, DispatcherPriority.Background, token);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     return;
                 }
@@ -567,7 +567,7 @@ namespace Amoeba.Interface
                                 this.SyncRateInfo.Value = value;
                             }, DispatcherPriority.Background, token);
                         }
-                        catch (TaskCanceledException)
+                        catch (OperationCanceledException)
                         {
                             return;
                         }
@@ -649,7 +649,7 @@ namespace Amoeba.Interface
 
                             }, DispatcherPriority.Background, token);
                         }
-                        catch (TaskCanceledException)
+                        catch (OperationCanceledException)
                         {
                             return;
                         }
