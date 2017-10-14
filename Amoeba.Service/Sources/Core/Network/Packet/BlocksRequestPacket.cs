@@ -16,8 +16,6 @@ namespace Amoeba.Service
 
         private HashCollection _hashes;
 
-        public const int MaxBlockRequestCount = 8192;
-
         public BlocksRequestPacket(IEnumerable<Hash> hashes)
         {
             if (hashes != null) this.ProtectedHashes.AddRange(hashes);
@@ -113,7 +111,7 @@ namespace Amoeba.Service
             get
             {
                 if (_hashes == null)
-                    _hashes = new HashCollection(MaxBlockRequestCount);
+                    _hashes = new HashCollection();
 
                 return _hashes;
             }

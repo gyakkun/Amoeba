@@ -49,7 +49,7 @@ namespace Amoeba.Service
         private List<TaskManager> _sendTaskManagers = new List<TaskManager>();
         private List<TaskManager> _receiveTaskManagers = new List<TaskManager>();
 
-        private VolatileHashSet<Hash> _pushBlocksRequestSet = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
+        private VolatileHashDictionary<Hash, DiffusionPriority> _pushBlocksRequestMap = new VolatileHashDictionary<Hash, DiffusionPriority>(new TimeSpan(0, 30, 0));
 
         private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
         private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
@@ -461,7 +461,7 @@ namespace Amoeba.Service
 
                         // 古いPushリクエスト情報を削除する。
                         {
-                            _pushBlocksRequestSet.Update();
+                            _pushBlocksRequestMap.Update();
 
                             _pushBroadcastMetadatasRequestSet.Update();
                             _pushUnicastMetadatasRequestSet.Update();
@@ -563,8 +563,14 @@ namespace Amoeba.Service
                             // Request
                             {
                                 {
-                                    var list = _cacheManager.ExceptFrom(_pushBlocksRequestSet.ToArray()).ToArray();
-                                    _random.Shuffle(list);
+                                    Hash[] list;
+                                    {
+                                        var sortedList = _pushBlocksRequestMap.ToList();
+                                        _random.Shuffle(sortedList);
+                                        sortedList.Sort((x, y) => x.Value.CompareTo(y.Value));
+
+                                        list = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToArray();
+                                    }
 
                                     pushBlockRequestSet.UnionWith(list.Take(_maxBlockRequestCount));
                                 }
@@ -588,7 +594,7 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockLinkSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, cloudNodes, 2))
+                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, cloudNodes, 1))
                                     {
                                         if (node.Value.SendInfo.PushBlockLinkSet.Contains(hash)) continue;
 
@@ -966,7 +972,7 @@ namespace Amoeba.Service
                 tempLocations.AddRange(_cloudLocations);
                 _random.Shuffle(tempLocations);
 
-                var packet = new LocationsPacket(tempLocations.Take(LocationsPacket.MaxLocationCount));
+                var packet = new LocationsPacket(tempLocations);
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.SetUInt64(typeStream, (uint)SerializeId.Locations);
@@ -1494,11 +1500,11 @@ namespace Amoeba.Service
             }
         }
 
-        public void Download(Hash hash)
+        public void Download(Hash hash, DiffusionPriority diffusionPriority)
         {
             lock (_lockObject)
             {
-                _pushBlocksRequestSet.Add(hash);
+                _pushBlocksRequestMap.Add(hash, diffusionPriority);
             }
         }
 

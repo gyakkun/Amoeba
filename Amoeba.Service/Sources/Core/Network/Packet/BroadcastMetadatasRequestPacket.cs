@@ -16,8 +16,6 @@ namespace Amoeba.Service
 
         private SignatureCollection _signatures;
 
-        public const int MaxMetadataRequestCount = 1024;
-
         public BroadcastMetadatasRequestPacket(IEnumerable<Signature> signatures)
         {
             if (signatures != null) this.ProtectedSignatures.AddRange(signatures);
@@ -85,7 +83,7 @@ namespace Amoeba.Service
             get
             {
                 if (_signatures == null)
-                    _signatures = new SignatureCollection(MaxMetadataRequestCount);
+                    _signatures = new SignatureCollection();
 
                 return _signatures;
             }

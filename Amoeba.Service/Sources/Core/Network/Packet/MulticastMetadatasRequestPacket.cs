@@ -16,8 +16,6 @@ namespace Amoeba.Service
 
         private TagCollection _tags;
 
-        public const int MaxMetadataRequestCount = 1024;
-
         public MulticastMetadatasRequestPacket(IEnumerable<Tag> tags)
         {
             if (tags != null) this.ProtectedTags.AddRange(tags);
@@ -85,7 +83,7 @@ namespace Amoeba.Service
             get
             {
                 if (_tags == null)
-                    _tags = new TagCollection(MaxMetadataRequestCount);
+                    _tags = new TagCollection();
 
                 return _tags;
             }

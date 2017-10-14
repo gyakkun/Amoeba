@@ -16,8 +16,6 @@ namespace Amoeba.Service
 
         private volatile BroadcastMetadataCollection _broadcastMetadatas;
 
-        public const int MaxMetadataCount = 1024;
-
         public BroadcastMetadatasResultPacket(IEnumerable<BroadcastMetadata> broadcastMetadatas)
         {
             if (broadcastMetadatas != null) this.ProtectedBroadcastMetadatas.AddRange(broadcastMetadatas);
@@ -85,7 +83,7 @@ namespace Amoeba.Service
             get
             {
                 if (_broadcastMetadatas == null)
-                    _broadcastMetadatas = new BroadcastMetadataCollection(MaxMetadataCount);
+                    _broadcastMetadatas = new BroadcastMetadataCollection();
 
                 return _broadcastMetadatas;
             }

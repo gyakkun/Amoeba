@@ -248,7 +248,7 @@ namespace Amoeba.Service
                             {
                                 item.State = DownloadState.Downloading;
 
-                                _networkManager.Download(item.Metadata.Hash);
+                                _networkManager.Download(item.Metadata.Hash, DiffusionPriority.High);
                             }
                             else
                             {
@@ -267,7 +267,7 @@ namespace Amoeba.Service
 
                                     foreach (var hash in _existManager.GetHashes(group, false))
                                     {
-                                        _networkManager.Download(hash);
+                                        _networkManager.Download(hash, DiffusionPriority.Normal);
                                     }
                                 }
                             }

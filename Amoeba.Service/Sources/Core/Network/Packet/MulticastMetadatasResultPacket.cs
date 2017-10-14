@@ -15,8 +15,6 @@ namespace Amoeba.Service
 
         private volatile MulticastMetadataCollection _multicastMetadatas;
 
-        public const int MaxMetadataCount = 1024;
-
         public MulticastMetadatasResultPacket(IEnumerable<MulticastMetadata> multicastMetadatas)
         {
             if (multicastMetadatas != null) this.ProtectedMulticastMetadatas.AddRange(multicastMetadatas);
@@ -84,7 +82,7 @@ namespace Amoeba.Service
             get
             {
                 if (_multicastMetadatas == null)
-                    _multicastMetadatas = new MulticastMetadataCollection(MaxMetadataCount);
+                    _multicastMetadatas = new MulticastMetadataCollection();
 
                 return _multicastMetadatas;
             }

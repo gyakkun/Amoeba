@@ -16,8 +16,6 @@ namespace Amoeba.Service
 
         private LocationCollection _locations;
 
-        public static readonly int MaxLocationCount = 256;
-
         public LocationsPacket(IEnumerable<Location> locations)
         {
             if (locations != null) this.ProtectedLocations.AddRange(locations);
@@ -85,7 +83,7 @@ namespace Amoeba.Service
             get
             {
                 if (_locations == null)
-                    _locations = new LocationCollection(MaxLocationCount);
+                    _locations = new LocationCollection();
 
                 return _locations;
             }

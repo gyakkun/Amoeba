@@ -15,8 +15,6 @@ namespace Amoeba.Service
 
         private volatile UnicastMetadataCollection _unicastMetadatas;
 
-        public const int MaxMetadataCount = 1024;
-
         public UnicastMetadatasResultPacket(IEnumerable<UnicastMetadata> unicastMetadatas)
         {
             if (unicastMetadatas != null) this.ProtectedUnicastMetadatas.AddRange(unicastMetadatas);
@@ -84,7 +82,7 @@ namespace Amoeba.Service
             get
             {
                 if (_unicastMetadatas == null)
-                    _unicastMetadatas = new UnicastMetadataCollection(MaxMetadataCount);
+                    _unicastMetadatas = new UnicastMetadataCollection();
 
                 return _unicastMetadatas;
             }
