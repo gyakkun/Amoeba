@@ -58,15 +58,35 @@
             </ToggleButton>
             <Button Width="48"
                     Height="48"
-                    Margin="0,8,16,8"
+                    Margin="16,8,16,8"
                     HorizontalAlignment="Right"
                     Command="{Binding Path=NewMessageCommand}"
+                    DockPanel.Dock="Right"
                     Style="{StaticResource MaterialDesignFloatingActionButton}"
                     ToolTip="{Binding Path=ChatControl_NewMessage, Source={StaticResource Languages}}">
                 <md:PackIcon Width="32"
                              Height="32"
                              Kind="Pencil" />
             </Button>
+            <StackPanel HorizontalAlignment="Right"
+                        DockPanel.Dock="Right"
+                        Orientation="Horizontal">
+                <Label HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       Content="{Binding Path=ChatControl_Limit, Source={StaticResource Languages}}" Margin="0,0,16,0" />
+                <ComboBox MinWidth="72"
+                          Margin="0,0,0,0"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding MiningLimits}"
+                          SelectedValue="{Binding SelectedMiningLimit.Value}">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+            </StackPanel>
         </DockPanel>
 
         <TreeView Grid.RowSpan="2"

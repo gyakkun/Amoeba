@@ -207,6 +207,7 @@
     <Property Name="ChatControl_Response" Value="レスポンス" />
     <Property Name="ChatControl_Trust" Value="トラスト" />
     <Property Name="ChatControl_New" Value="新着" />
+    <Property Name="ChatControl_Limit" Value="制限:" />
     <Property Name="ChatControl_NewMessage" Value="メッセージの新規作成" />
 
     <Property Name="ChatMessageEditWindow_Title" Value="チャットメッセージの編集" />

@@ -207,6 +207,7 @@
     <Property Name="ChatControl_Response" Value="Response" />
     <Property Name="ChatControl_Trust" Value="Trust" />
     <Property Name="ChatControl_New" Value="New" />
+    <Property Name="ChatControl_Limit" Value="Limit:" />
     <Property Name="ChatControl_NewMessage" Value="New message" />
 
     <Property Name="ChatMessageEditWindow_Title" Value="Chat message edit" />

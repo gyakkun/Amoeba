@@ -6,7 +6,7 @@
 
     <SolidColorBrush x:Key="MaterialDesignWindowBackground"
                      po:Freeze="True"
-                     Color="#FF1E1E1E" />
+                     Color="#FF282828" />
 
     <Style x:Key="MaterialDesignAvalonTextEditor" TargetType="{x:Type avalon:TextEditor}">
         <Setter Property="Background" Value="Transparent" />

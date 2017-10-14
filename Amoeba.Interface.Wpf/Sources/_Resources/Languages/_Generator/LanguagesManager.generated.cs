@@ -190,6 +190,7 @@ namespace Amoeba.Interface
         public string ChatControl_Response { get { return this.Translate("ChatControl_Response"); } }
         public string ChatControl_Trust { get { return this.Translate("ChatControl_Trust"); } }
         public string ChatControl_New { get { return this.Translate("ChatControl_New"); } }
+        public string ChatControl_Limit { get { return this.Translate("ChatControl_Limit"); } }
         public string ChatControl_NewMessage { get { return this.Translate("ChatControl_NewMessage"); } }
         public string ChatMessageEditWindow_Title { get { return this.Translate("ChatMessageEditWindow_Title"); } }
         public string ChatMessageEditWindow_Ok { get { return this.Translate("ChatMessageEditWindow_Ok"); } }

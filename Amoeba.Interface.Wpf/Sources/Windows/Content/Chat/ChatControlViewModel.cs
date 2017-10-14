@@ -51,6 +51,9 @@ namespace Amoeba.Interface
         public ReactiveCommand NewFilterCommand { get; private set; }
         public ReactiveProperty<bool> IsNewFilterEnable { get; private set; }
 
+        public ObservableCollection<int> MiningLimits { get; private set; }
+        public ReactiveProperty<int> SelectedMiningLimit { get; private set; }
+
         public ReactiveProperty<AvalonEditChatMessagesInfo> Info { get; private set; }
         public ReactiveProperty<string> SelectedText { get; private set; }
 
@@ -129,7 +132,7 @@ namespace Amoeba.Interface
                 this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
 
                 this.TabPasteCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel)
-                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsChatCategoryInfo() || Clipboard.ContainsChatThreadInfo()), (r1, r2) => r1 && r2).ToReactiveCommand().AddTo(_disposable);
+                    .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsTags() || Clipboard.ContainsChatCategoryInfo() || Clipboard.ContainsChatThreadInfo()), (r1, r2) => r1 && r2).ToReactiveCommand().AddTo(_disposable);
                 this.TabPasteCommand.Subscribe(() => this.TabPaste()).AddTo(_disposable);
 
                 this.TabTagListCommand = this.TabSelectedItem.Select(n => n is ChatCategoryViewModel).ToReactiveCommand().AddTo(_disposable);
@@ -144,6 +147,10 @@ namespace Amoeba.Interface
                 this.NewFilterCommand.Subscribe(() => this.NewFilter()).AddTo(_disposable);
 
                 this.IsNewFilterEnable = new ReactiveProperty<bool>().AddTo(_disposable);
+
+                this.MiningLimits = new ObservableCollection<int>(Enumerable.Range(0, 256 + 1));
+                this.SelectedMiningLimit = new ReactiveProperty<int>().AddTo(_disposable);
+                this.SelectedMiningLimit.Subscribe((_) => this.Refresh()).AddTo(_disposable);
 
                 this.NewMessageCommand = this.TabSelectedItem.Select(n => n is ChatThreadViewModel).ToReactiveCommand().AddTo(_disposable);
                 this.NewMessageCommand.Subscribe(() => this.NewMessage()).AddTo(_disposable);
@@ -162,8 +169,6 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
-
                 {
                     var model = _settings.Load("ChatCategoryInfo", () =>
                     {
@@ -176,6 +181,10 @@ namespace Amoeba.Interface
 
                     this.TabViewModel.Value = new ChatCategoryViewModel(null, model);
                 }
+
+                this.SelectedMiningLimit.Value = _settings.Load("MiningLimit", () => 0);
+
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -208,8 +217,14 @@ namespace Amoeba.Interface
                 {
                     foreach (var info in chatThreadViewModel.Model.Messages.ToArray())
                     {
-                        if (chatThreadViewModel.Model.IsTrustMessageOnly && !trustSignatures.Contains(info.Message.AuthorSignature)) continue;
                         if (chatThreadViewModel.Model.IsNewMessageOnly && !info.State.HasFlag(ChatMessageState.New)) continue;
+                        if (chatThreadViewModel.Model.IsTrustMessageOnly && !trustSignatures.Contains(info.Message.AuthorSignature)) continue;
+
+                        if (!trustSignatures.Contains(info.Message.AuthorSignature))
+                        {
+                            if (info.Message.Cost.CashAlgorithm != CashAlgorithm.Version1) continue;
+                            if (info.Message.Cost.Value < this.SelectedMiningLimit.Value) continue;
+                        }
 
                         messages.Add(new ChatMessageInfo() { Message = info.Message, State = info.State });
 
@@ -278,6 +293,12 @@ namespace Amoeba.Interface
                         foreach (var info in messageInfos.ToArray())
                         {
                             if (chatThreadViewModel.Model.IsTrustMessageOnly && !trustSignatures.Contains(info.Message.AuthorSignature)) continue;
+
+                            if (!trustSignatures.Contains(info.Message.AuthorSignature))
+                            {
+                                if (info.Message.Cost.CashAlgorithm != CashAlgorithm.Version1) continue;
+                                if (info.Message.Cost.Value < this.SelectedMiningLimit.Value) continue;
+                            }
 
                             chatThreadViewModel.Model.Messages.Add(info);
                             if (chatThreadViewModel.Model.Messages.Count >= 1024) break;
@@ -506,8 +527,9 @@ namespace Amoeba.Interface
             App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save("MiningLimit", this.SelectedMiningLimit.Value);
                 _settings.Save("ChatCategoryInfo", this.TabViewModel.Value.Model);
+                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

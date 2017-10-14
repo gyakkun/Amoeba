@@ -47,7 +47,26 @@
                         VerticalContentAlignment="Stretch"
                         Visibility="{Binding ElementName=ConnectionListBoxItem, Path=IsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
-                <ListView HorizontalContentAlignment="Stretch"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                    <Button Width="48"
+                            Height="48"
+                            Margin="16,8,16,8"
+                            HorizontalAlignment="Right"
+                            Command="{Binding Path=ConnectionPasteCommand}"
+                            DockPanel.Dock="Right"
+                            Style="{StaticResource MaterialDesignFloatingActionButton}"
+                            ToolTip="{Binding Path=ChatControl_Paste, Source={StaticResource Languages}}">
+                        <md:PackIcon Width="32"
+                                     Height="32"
+                                     Kind="ContentPaste" />
+                    </Button>
+                </DockPanel>
+
+                <ListView Grid.Row="2" HorizontalContentAlignment="Stretch"
                           VerticalContentAlignment="Stretch"
                           omnius:GridViewSortHelper.Command="{Binding Path=ConnectionSortCommand}"
                           omnius:ListBoxHelper.SelectedItems="{Binding Path=ConnectionSelectedItems}"
@@ -127,24 +146,6 @@
                         </GridView>
                     </ListView.View>
                 </ListView>
-                <md:PopupBox Width="48"
-                             Height="48"
-                             Margin="0,0,20,20"
-                             HorizontalAlignment="Right"
-                             VerticalAlignment="Bottom"
-                             PlacementMode="TopAndAlignCentres"
-                             PopupMode="Click"
-                             Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
-                             ToolTipService.Placement="Left">
-                    <StackPanel>
-                        <Button Command="{Binding Path=ConnectionCopyCommand}" ToolTip="{Binding Path=CloudControl_Copy, Source={StaticResource Languages}}">
-                            <md:PackIcon Kind="ContentCopy" />
-                        </Button>
-                        <Button Command="{Binding Path=ConnectionPasteCommand}" ToolTip="{Binding Path=CloudControl_Paste, Source={StaticResource Languages}}">
-                            <md:PackIcon Kind="ContentPaste" />
-                        </Button>
-                    </StackPanel>
-                </md:PopupBox>
             </Grid>
         </ContentControl>
 
