@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Configuration;
-using Omnius.Net.Proxy;
-using Omnius.Net.Upnp;
-using Omnius.Utilities;
-using Amoeba.Messages;
 using Omnius.Net;
+using Omnius.Net.Proxy;
 
 namespace Amoeba.Service
 {
@@ -400,49 +398,6 @@ namespace Amoeba.Service
 
                 return;
             }
-        }
-
-        private string GetIpv4Uri(ushort port)
-        {
-            {
-                var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetwork);
-
-                if (ipAddress != null)
-                {
-                    return string.Format("tcp:{0}:{1}", ipAddress.ToString(), port);
-                }
-            }
-
-            try
-            {
-                using (var client = new UpnpClient())
-                {
-                    client.Connect(new TimeSpan(0, 0, 10));
-
-                    var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
-                    if (ipAddress == null || !CheckGlobalIpAddress(ipAddress)) throw new Exception();
-
-                    return string.Format("tcp:{0}:{1}", ipAddress.ToString(), port);
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-
-            return null;
-        }
-
-        private string GetIpv6Uri(ushort port)
-        {
-            var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetworkV6);
-
-            if (ipAddress != null)
-            {
-                return string.Format("tcp:[{0}]:{1}", ipAddress.ToString(), port);
-            }
-
-            return null;
         }
 
         public override ManagerState State

@@ -411,17 +411,17 @@ namespace Amoeba.Interface
                 this.UntrustSignaturesView.LiveSortingProperties.Add(propertyName);
 
                 this.UntrustSignaturesView.CustomSort = new CustomSortComparer(direction, (x, y) =>
-               {
-                   if (x is Signature tx && y is Signature ty)
-                   {
-                       int c = tx.Name.CompareTo(ty.Name);
-                       if (c != 0) return c;
-                       c = Unsafe.Compare(tx.Id, ty.Id);
-                       if (c != 0) return c;
-                   }
+                {
+                    if (x is Signature tx && y is Signature ty)
+                    {
+                        int c = tx.Name.CompareTo(ty.Name);
+                        if (c != 0) return c;
+                        c = Unsafe.Compare(tx.Id, ty.Id);
+                        if (c != 0) return c;
+                    }
 
-                   return 0;
-               });
+                    return 0;
+                });
             }
             else
             {

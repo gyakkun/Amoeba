@@ -9,7 +9,6 @@ using Omnius.Configuration;
 using Omnius.Net;
 using Omnius.Net.Proxy;
 using Omnius.Net.Upnp;
-using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
@@ -592,7 +591,7 @@ namespace Amoeba.Service
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 30, 0));
+                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0));
                 }
             }
         }

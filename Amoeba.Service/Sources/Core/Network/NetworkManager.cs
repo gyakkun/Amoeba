@@ -544,11 +544,14 @@ namespace Amoeba.Service
                         {
                             // Link
                             {
+                                var myPushBlockLinkSet = new HashSet<Hash>();
+                                var cloudPushBlockLinkSet = new HashSet<Hash>();
+
                                 {
                                     var list = _cacheManager.ToArray();
                                     _random.Shuffle(list);
 
-                                    pushBlockLinkSet.UnionWith(list.Take(_maxBlockLinkCount));
+                                    myPushBlockLinkSet.UnionWith(list.Take(_maxBlockLinkCount));
                                 }
 
                                 foreach (var info in _routeTable.ToArray().Select(n => n.Value))
@@ -556,12 +559,18 @@ namespace Amoeba.Service
                                     var list = info.ReceiveInfo.PullBlockLinkSet.ToArray(new TimeSpan(0, 10, 0));
                                     _random.Shuffle(list);
 
-                                    pushBlockLinkSet.UnionWith(list.Take(_maxBlockLinkCount));
+                                    cloudPushBlockLinkSet.UnionWith(list.Take((int)(_maxBlockLinkCount * info.PriorityManager.GetPriority())));
                                 }
+
+                                pushBlockLinkSet.UnionWith(myPushBlockLinkSet);
+                                pushBlockLinkSet.UnionWith(cloudPushBlockLinkSet.Randomize().Take(_maxBlockLinkCount * 8));
                             }
 
                             // Request
                             {
+                                var myPushBlockRequestSet = new HashSet<Hash>();
+                                var cloudPushBlockRequestSet = new HashSet<Hash>();
+
                                 {
                                     Hash[] list;
                                     {
@@ -572,7 +581,7 @@ namespace Amoeba.Service
                                         list = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToArray();
                                     }
 
-                                    pushBlockRequestSet.UnionWith(list.Take(_maxBlockRequestCount));
+                                    myPushBlockRequestSet.UnionWith(list.Take(_maxBlockRequestCount));
                                 }
 
                                 foreach (var info in _routeTable.ToArray().Select(n => n.Value))
@@ -580,8 +589,11 @@ namespace Amoeba.Service
                                     var list = _cacheManager.ExceptFrom(info.ReceiveInfo.PullBlockRequestSet.ToArray(new TimeSpan(0, 10, 0))).ToArray();
                                     _random.Shuffle(list);
 
-                                    pushBlockRequestSet.UnionWith(list.Take((int)(_maxBlockRequestCount * info.PriorityManager.GetPriority())));
+                                    cloudPushBlockRequestSet.UnionWith(list.Take((int)(_maxBlockRequestCount * info.PriorityManager.GetPriority())));
                                 }
+
+                                pushBlockRequestSet.UnionWith(myPushBlockRequestSet);
+                                pushBlockRequestSet.UnionWith(cloudPushBlockRequestSet.Randomize().Take(_maxBlockRequestCount * 8));
                             }
                         }
 
@@ -861,8 +873,10 @@ namespace Amoeba.Service
                                 remain -= count;
                                 if (remain == 0) break;
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
+                                Log.Debug(e);
+
                                 this.RemoveConnection(connection);
                             }
                         }
@@ -907,8 +921,10 @@ namespace Amoeba.Service
                                 remain -= count;
                                 if (remain == 0) break;
                             }
-                            catch (Exception)
+                            catch (Exception e)
                             {
+                                Log.Debug(e);
+
                                 this.RemoveConnection(connection);
                             }
                         }

@@ -769,20 +769,14 @@ namespace Amoeba.Interface
 
         private void Copy()
         {
-            if (this.TabSelectedItem.Value is StoreSignatureViewModel || this.TabSelectedItem.Value is UploadCategoryViewModel)
+            if (this.TabSelectedItem.Value is StoreSignatureViewModel || this.TabSelectedItem.Value is StoreCategoryViewModel)
             {
                 var categoryInfos = this.SelectedItems.OfType<StoreListViewItemInfo>().Select(n => n.Model).OfType<StoreCategoryInfo>().ToArray();
                 var signatureInfos = this.SelectedItems.OfType<StoreListViewItemInfo>().Select(n => n.Model).OfType<StoreSignatureInfo>().ToArray();
 
                 Clipboard.SetStoreCategoryInfosAndStoreSignatureInfos(categoryInfos, signatureInfos);
             }
-            else if (this.TabSelectedItem.Value is UploadDirectoryViewModel)
-            {
-                var seeds = this.SelectedItems.OfType<StoreListViewItemInfo>().Select(n => n.Model).OfType<Seed>().ToArray();
-
-                Clipboard.SetSeeds(seeds);
-            }
-            else if (this.TabSelectedItem.Value is UploadBoxViewModel)
+            else if (this.TabSelectedItem.Value is StoreBoxViewModel)
             {
                 var seeds = this.SelectedItems.OfType<StoreListViewItemInfo>().Select(n => n.Model).OfType<Seed>().ToArray();
 

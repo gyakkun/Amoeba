@@ -338,6 +338,10 @@ namespace Amoeba.Interface
         {
             Log.LogEvent += (object sender, LogEventArgs e) =>
             {
+#if !DEBUG
+                if (e.MessageLevel == LogMessageLevel.Debug) return;
+#endif
+
                 try
                 {
                     App.Current.Dispatcher.InvokeAsync(() =>
