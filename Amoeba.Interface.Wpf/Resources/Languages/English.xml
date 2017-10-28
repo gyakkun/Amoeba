@@ -4,6 +4,7 @@
 
     <Property Name="Languages_English" Value="English" />
     <Property Name="Languages_Japanese" Value="Japanese" />
+    <Property Name="Languages_Chinese" Value="Chinese" />
 
     <Property Name="ValidationRule_ErrorMessage" Value="Error." />
 

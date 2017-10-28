@@ -61,6 +61,11 @@
                     </MenuItem>
                     <MenuItem Header="{Binding Path=MainWindow_Languages, Source={StaticResource Languages}}">
                         <MenuItem Command="{Binding Path=LanguageCommand}"
+                                  CommandParameter="Chinese"
+                                  Header="{Binding Path=Languages_Chinese, Source={StaticResource Languages}}"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding Path=CurrentLanguage, Source={StaticResource Languages}, Converter={StaticResource ConditionalValueConverter}, ConverterParameter=Chinese, Mode=OneWay}" />
+                        <MenuItem Command="{Binding Path=LanguageCommand}"
                                   CommandParameter="English"
                                   Header="{Binding Path=Languages_English, Source={StaticResource Languages}}"
                                   IsCheckable="True"

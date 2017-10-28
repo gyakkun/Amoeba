@@ -70,7 +70,7 @@ namespace Amoeba.Interface
                 }
             }
 
-            if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Any(n => n == "Japanese"))            {                this.SetCurrentLanguage("Japanese");            }            else if (_dic.Keys.Any(n => n == "English"))            {                this.SetCurrentLanguage("English");            }        }
+            if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Any(n => n == "Japanese"))            {                this.SetCurrentLanguage("Japanese");            }            else if (CultureInfo.CurrentUICulture.Name == "zh-CN" && _dic.Keys.Any(n => n == "Chinese"))            {                this.SetCurrentLanguage("Chinese");            }            else if (_dic.Keys.Any(n => n == "English"))            {                this.SetCurrentLanguage("English");            }        }
 
         public IEnumerable<string> Languages
         {

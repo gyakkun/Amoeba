@@ -11,6 +11,7 @@ namespace Amoeba.Interface
         public string Global_DateTime_StringFormat { get { return this.Translate("Global_DateTime_StringFormat"); } }
         public string Languages_English { get { return this.Translate("Languages_English"); } }
         public string Languages_Japanese { get { return this.Translate("Languages_Japanese"); } }
+        public string Languages_Chinese { get { return this.Translate("Languages_Chinese"); } }
         public string ValidationRule_ErrorMessage { get { return this.Translate("ValidationRule_ErrorMessage"); } }
         public string SessionType_Connect { get { return this.Translate("SessionType_Connect"); } }
         public string SessionType_Accept { get { return this.Translate("SessionType_Accept"); } }
