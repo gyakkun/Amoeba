@@ -148,10 +148,11 @@ namespace Amoeba.Interface
                 }
 
                 {
-                    foreach (string line in StringUtils.Normalize(target.Message.Value.Comment ?? "")
+                    foreach (string line in (target.Message.Value.Comment ?? "")
                         .Trim('\r', '\n')
                         .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
-                        .Take(128))
+                        .Take(128)
+                        .Select(n => StringUtils.Normalize(n)))
                     {
                         foreach (var match in _uriRegexes.Select(n => n.Matches(line)).SelectMany(n => n.OfType<Match>()))
                         {
