@@ -79,6 +79,9 @@
     <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="磁盘空间不足" />
 
     <Property Name="RelationWindow_Title" Value="关联" />
+    <Property Name="RelationWindow_Ranking" Value="排行" />
+    <Property Name="RelationWindow_Signature" Value="签名" />
+    <Property Name="RelationWindow_Search" Value="搜索" />
     <Property Name="RelationWindow_Profile" Value="自述" />
     <Property Name="RelationWindow_Trust" Value="信任" />
     <Property Name="RelationWindow_TrustSignature" Value="信任的签名" />
@@ -89,6 +92,7 @@
     <Property Name="RelationWindow_Name" Value="名称" />
     <Property Name="RelationWindow_Id" Value="ID" />
     <Property Name="RelationWindow_Comment" Value="评论" />
+    <Property Name="RelationWindow_Dependencies" Value="依赖关系" />
     <Property Name="RelationWindow_Copy" Value="复制" />
     <Property Name="RelationWindow_Close" Value="关闭" />
 
