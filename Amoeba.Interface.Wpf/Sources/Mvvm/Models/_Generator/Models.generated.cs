@@ -505,6 +505,25 @@ namespace Amoeba.Interface
 
         public RelationSignatureInfo() { }
 
+        private int _ranking;
+
+        [DataMember(Name = nameof(Ranking))]
+        public int Ranking
+        {
+            get
+            {
+                return _ranking;
+            }
+            set
+            {
+                if (_ranking != value)
+                {
+                    _ranking = value;
+                    this.OnPropertyChanged(nameof(Ranking));
+                }
+            }
+        }
+
         private Signature _signature;
 
         [DataMember(Name = nameof(Signature))]

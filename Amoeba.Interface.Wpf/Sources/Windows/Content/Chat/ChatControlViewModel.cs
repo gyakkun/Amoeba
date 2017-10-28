@@ -329,7 +329,7 @@ namespace Amoeba.Interface
 
         private void TabNewCategory()
         {
-            var viewModel = new NameEditWindowViewModel("");
+            var viewModel = new NameEditWindowViewModel("", 256);
             viewModel.Callback += (name) =>
             {
                 var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;
@@ -343,7 +343,7 @@ namespace Amoeba.Interface
 
         private void TabEdit()
         {
-            var viewModel = new NameEditWindowViewModel(this.TabSelectedItem.Value.Name.Value);
+            var viewModel = new NameEditWindowViewModel(this.TabSelectedItem.Value.Name.Value, 256);
             viewModel.Callback += (name) =>
             {
                 var chatCategoryViewModel = this.TabSelectedItem.Value as ChatCategoryViewModel;

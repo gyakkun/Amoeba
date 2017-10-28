@@ -879,7 +879,7 @@ namespace Amoeba.Interface
 
         private void TabNewCategory()
         {
-            var viewModel = new NameEditWindowViewModel("");
+            var viewModel = new NameEditWindowViewModel("", 256);
             viewModel.Callback += (name) =>
             {
                 if (this.TabSelectedItem.Value is UploadStoreViewModel storeViewModel)
@@ -926,7 +926,7 @@ namespace Amoeba.Interface
         {
             if (this.TabSelectedItem.Value is UploadCategoryViewModel categoryViewModel)
             {
-                var viewModel = new NameEditWindowViewModel(categoryViewModel.Name.Value);
+                var viewModel = new NameEditWindowViewModel(categoryViewModel.Name.Value, 256);
                 viewModel.Callback += (name) =>
                 {
                     categoryViewModel.Model.Name = name;
@@ -936,7 +936,7 @@ namespace Amoeba.Interface
             }
             else if (this.TabSelectedItem.Value is UploadDirectoryViewModel directoryViewModel)
             {
-                var viewModel = new NameEditWindowViewModel(directoryViewModel.Name.Value);
+                var viewModel = new NameEditWindowViewModel(directoryViewModel.Name.Value, 256);
                 viewModel.Callback += (name) =>
                 {
                     directoryViewModel.Model.Name = name;
@@ -1110,7 +1110,7 @@ namespace Amoeba.Interface
                 return;
             }
 
-            var viewModel = new NameEditWindowViewModel("");
+            var viewModel = new NameEditWindowViewModel("", 256);
             viewModel.Callback += (name) =>
             {
                 categoryInfo.CategoryInfos.Add(new UploadCategoryInfo() { Name = name });
@@ -1153,7 +1153,7 @@ namespace Amoeba.Interface
 
             if (selectedModel is UploadCategoryInfo categoryInfo)
             {
-                var viewModel = new NameEditWindowViewModel(categoryInfo.Name);
+                var viewModel = new NameEditWindowViewModel(categoryInfo.Name, 256);
                 viewModel.Callback += (name) =>
                 {
                     categoryInfo.Name = name;
@@ -1163,7 +1163,7 @@ namespace Amoeba.Interface
             }
             else if (selectedModel is UploadDirectoryInfo directoryInfo)
             {
-                var viewModel = new NameEditWindowViewModel(directoryInfo.Name);
+                var viewModel = new NameEditWindowViewModel(directoryInfo.Name, 256);
                 viewModel.Callback += (name) =>
                 {
                     directoryInfo.Name = name;

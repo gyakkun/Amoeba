@@ -14,6 +14,7 @@ using Omnius.Io;
 using Omnius.Net;
 using Omnius.Security;
 using Omnius.Serialization;
+using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
@@ -136,8 +137,6 @@ namespace Amoeba.Service
                         _metadataManager.Count,
                         _receivedByteCount,
                         _sentByteCount,
-                        0,
-                        0,
                         _info.PushLocationCount,
                         _info.PushBlockLinkCount,
                         _info.PushBlockRequestCount,
@@ -534,7 +533,7 @@ namespace Amoeba.Service
 
                     // ダウンロード
                     if (_routeTable.Count >= 3
-                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 30)
+                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 20)
                     {
                         pushBlockDownloadStopwatch.Restart();
 
@@ -563,7 +562,7 @@ namespace Amoeba.Service
                                 }
 
                                 pushBlockLinkSet.UnionWith(myPushBlockLinkSet);
-                                pushBlockLinkSet.UnionWith(cloudPushBlockLinkSet.Randomize().Take(_maxBlockLinkCount * 8));
+                                pushBlockLinkSet.UnionWith(cloudPushBlockLinkSet.Randomize());
                             }
 
                             // Request
@@ -593,7 +592,7 @@ namespace Amoeba.Service
                                 }
 
                                 pushBlockRequestSet.UnionWith(myPushBlockRequestSet);
-                                pushBlockRequestSet.UnionWith(cloudPushBlockRequestSet.Randomize().Take(_maxBlockRequestCount * 8));
+                                pushBlockRequestSet.UnionWith(cloudPushBlockRequestSet.Randomize());
                             }
                         }
 
@@ -606,10 +605,8 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockLinkSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, cloudNodes, 1))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes))
                                     {
-                                        if (node.Value.SendInfo.PushBlockLinkSet.Contains(hash)) continue;
-
                                         tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
                                     }
                                 }
@@ -632,17 +629,13 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(hash.Value, _routeTable.BaseId, cloudNodes, 2))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes))
                                     {
-                                        if (node.Value.SendInfo.PushBlockRequestSet.Contains(hash)) continue;
-
                                         tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
                                     }
 
                                     foreach (var node in cloudNodes.Where(n => n.Value.ReceiveInfo.PullBlockLinkSet.Contains(hash)))
                                     {
-                                        if (node.Value.SendInfo.PushBlockRequestSet.Contains(hash)) continue;
-
                                         tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
                                     }
                                 }
@@ -661,7 +654,7 @@ namespace Amoeba.Service
 
                     // アップロード
                     if (_routeTable.Count >= 3
-                        && pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 30)
+                        && pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 20)
                     {
                         pushMetadataUploadStopwatch.Restart();
 
@@ -695,7 +688,7 @@ namespace Amoeba.Service
 
                     // ダウンロード
                     if (_routeTable.Count >= 3
-                        && pushMetadataDownloadStopwatch.Elapsed.TotalSeconds >= 30)
+                        && pushMetadataDownloadStopwatch.Elapsed.TotalSeconds >= 20)
                     {
                         pushMetadataDownloadStopwatch.Restart();
 
@@ -768,7 +761,7 @@ namespace Amoeba.Service
 
                                 foreach (var signature in pushBroadcastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _routeTable.BaseId, cloudNodes, 3))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -792,7 +785,7 @@ namespace Amoeba.Service
 
                                 foreach (var signature in pushUnicastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(signature.Id, _routeTable.BaseId, cloudNodes, 3))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -816,7 +809,7 @@ namespace Amoeba.Service
 
                                 foreach (var tag in pushMulticastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in RouteTable<SessionInfo>.Search(tag.Id, _routeTable.BaseId, cloudNodes, 3))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, tag.Id, cloudNodes))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Tag>()).Add(tag);
                                     }
@@ -840,6 +833,16 @@ namespace Amoeba.Service
             catch (Exception e)
             {
                 Log.Error(e);
+            }
+
+            IEnumerable<Node<T>> GetTargetNodes<T>(byte[] baseId, byte[] targetId, IEnumerable<Node<T>> cloudNodes)
+            {
+                var tempList = new List<Node<T>>();
+                tempList.AddRange(RouteTable<T>.Search(baseId, targetId, cloudNodes, 3));
+                tempList.AddRange(cloudNodes.Randomize().Take(2));
+                _random.Shuffle(tempList);
+
+                return tempList.Take(3);
             }
         }
 
@@ -1662,7 +1665,7 @@ namespace Amoeba.Service
             }
         }
 
-        #region ISettings
+#region ISettings
 
         public void Load()
         {
@@ -1724,7 +1727,7 @@ namespace Amoeba.Service
             }
         }
 
-        #endregion
+#endregion
 
         protected override void Dispose(bool disposing)
         {

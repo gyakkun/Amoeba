@@ -290,7 +290,7 @@ namespace Amoeba.Interface
 
         private void Relation()
         {
-            _dialogService.Show(new RelationWindowViewModel(_messageManager.GetRelationSignatureInfos()));
+            _dialogService.Show(new RelationWindowViewModel(_messageManager));
         }
 
         private void Options()

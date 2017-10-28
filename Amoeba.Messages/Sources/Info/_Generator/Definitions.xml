@@ -42,9 +42,6 @@
         <ItemProperty Type="long" Name="TotalReceivedByteCount" />
         <ItemProperty Type="long" Name="TotalSentByteCount" />
 
-        <ItemProperty Type="int" Name="ReceivedByteCountPerSecond" />
-        <ItemProperty Type="int" Name="SentByteCountPerSecond" />
-
         <ItemProperty Type="long" Name="PushLocationCount" />
         <ItemProperty Type="long" Name="PushBlockLinkCount" />
         <ItemProperty Type="long" Name="PushBlockRequestCount" />

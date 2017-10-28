@@ -106,7 +106,7 @@ namespace Amoeba.Service
             return result;
         }
 
-        public static IEnumerable<Node<T>> Search(byte[] targetId, byte[] baseId, IEnumerable<Node<T>> nodeList, int count)
+        public static IEnumerable<Node<T>> Search(byte[] baseId, byte[] targetId, IEnumerable<Node<T>> nodeList, int count)
         {
             if (targetId == null) throw new ArgumentNullException(nameof(targetId));
             if (nodeList == null) throw new ArgumentNullException(nameof(nodeList));
@@ -216,7 +216,7 @@ namespace Amoeba.Service
                 if (targetId == null) throw new ArgumentNullException(nameof(targetId));
                 if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
 
-                return RouteTable<T>.Search(targetId, _baseId, this.ToArray(), count);
+                return RouteTable<T>.Search(_baseId, targetId, this.ToArray(), count);
             }
         }
 

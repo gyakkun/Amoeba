@@ -78,6 +78,9 @@
     <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
 
     <Property Name="RelationWindow_Title" Value="リレーション" />
+    <Property Name="RelationWindow_Ranking" Value="ランキング" />
+    <Property Name="RelationWindow_Signature" Value="サイン" />
+    <Property Name="RelationWindow_Search" Value="検索" />
     <Property Name="RelationWindow_Profile" Value="プロファイル" />
     <Property Name="RelationWindow_Trust" Value="トラスト" />
     <Property Name="RelationWindow_TrustSignature" Value="トラストサイン" />
@@ -88,6 +91,7 @@
     <Property Name="RelationWindow_Name" Value="名前" />
     <Property Name="RelationWindow_Id" Value="ID" />
     <Property Name="RelationWindow_Comment" Value="コメント" />
+    <Property Name="RelationWindow_Dependencies" Value="依存関係" />
     <Property Name="RelationWindow_Copy" Value="コピー" />
     <Property Name="RelationWindow_Close" Value="閉じる" />
 

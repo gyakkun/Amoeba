@@ -71,9 +71,10 @@
             <StackPanel HorizontalAlignment="Right"
                         DockPanel.Dock="Right"
                         Orientation="Horizontal">
-                <Label HorizontalContentAlignment="Center"
+                <Label Margin="0,0,16,0"
+                       HorizontalContentAlignment="Center"
                        VerticalContentAlignment="Center"
-                       Content="{Binding Path=ChatControl_Limit, Source={StaticResource Languages}}" Margin="0,0,16,0" />
+                       Content="{Binding Path=ChatControl_Limit, Source={StaticResource Languages}}" />
                 <ComboBox MinWidth="72"
                           Margin="0,0,0,0"
                           HorizontalAlignment="Left"

@@ -19,19 +19,22 @@ namespace Amoeba.Interface
 {
     class RelationWindowViewModel : ManagerBase
     {
+        private Builder _builder;
+
         private Settings _settings;
 
-        private List<RelationSignatureInfo> _relationSignatureInfos = new List<RelationSignatureInfo>();
+        public QuickFindControlViewModel QuickFindControlViewModel { get; set; }
 
         public event EventHandler<EventArgs> CloseEvent;
         public event Action Callback;
 
-        public ReactiveCollection<RelationSignatureViewModel> TabViewModels { get; } = new ReactiveCollection<RelationSignatureViewModel>();
-        public ReactiveProperty<TreeViewModelBase> TabSelectedItem { get; private set; }
+        public ListCollectionView ContentsView => (ListCollectionView)CollectionViewSource.GetDefaultView(_contents);
+        private ObservableCollection<ProfileViewModel> _contents = new ObservableCollection<ProfileViewModel>();
+        public ReactiveProperty<ProfileViewModel> SelectedItem { get; private set; }
+        private ListSortInfo _sortInfo;
+        public ReactiveCommand<string> SortCommand { get; private set; }
 
-        public ReactiveCommand TabClickCommand { get; private set; }
-
-        public ReactiveCommand TabCopyCommand { get; private set; }
+        public ReactiveCommand CopyCommand { get; private set; }
 
         public ListCollectionView TrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(_trustSignatures);
         private ObservableCollection<Signature> _trustSignatures = new ObservableCollection<Signature>();
@@ -59,6 +62,12 @@ namespace Amoeba.Interface
 
         public ReactiveProperty<string> Comment { get; private set; }
 
+        public ReadOnlyReactiveCollection<RelationSignatureViewModel> DependencyViewModels { get; private set; }
+        private ObservableCollection<RelationSignatureInfo> _dependencyModels = new ObservableCollection<RelationSignatureInfo>();
+        public ReactiveProperty<TreeViewModelBase> SelectedDependencyItem { get; private set; }
+
+        public ReactiveCommand DependencyCopyCommand { get; private set; }
+
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         public ReactiveCommand CloseCommand { get; private set; }
@@ -66,9 +75,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public RelationWindowViewModel(IEnumerable<RelationSignatureInfo> infos)
+        public RelationWindowViewModel(MessageManager messageManager)
         {
-            _relationSignatureInfos.AddRange(infos);
+            _builder = new Builder(messageManager);
 
             this.Init();
         }
@@ -76,16 +85,22 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
-                this.TabViewModels.AddRange(_relationSignatureInfos.Select(n => new RelationSignatureViewModel(null, n)));
+                this.QuickFindControlViewModel = new QuickFindControlViewModel().AddTo(_disposable);
+                this.QuickFindControlViewModel.Text.Subscribe((words) => this.Search(words)).AddTo(_disposable);
 
-                this.TabSelectedItem = new ReactiveProperty<TreeViewModelBase>().AddTo(_disposable);
-                this.TabSelectedItem.Subscribe((viewModel) => this.TabSelectChanged(viewModel)).AddTo(_disposable);
+                foreach (var rootSignature in SettingsManager.Instance.SubscribeSignatures)
+                {
+                    _contents.AddRange(_builder.GetProfileViewModels(rootSignature));
+                }
 
-                this.TabClickCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TabClickCommand.Where(n => n == this.TabSelectedItem.Value).Subscribe((_) => this.Refresh()).AddTo(_disposable);
+                this.SelectedItem = new ReactiveProperty<ProfileViewModel>().AddTo(_disposable);
+                this.SelectedItem.Subscribe((viewModel) => this.SelectChanged(viewModel));
 
-                this.TabCopyCommand = new ReactiveCommand().AddTo(_disposable);
-                this.TabCopyCommand.Subscribe(() => this.TabCopy()).AddTo(_disposable);
+                this.SortCommand = new ReactiveCommand<string>().AddTo(_disposable);
+                this.SortCommand.Subscribe((propertyName) => this.Sort(propertyName)).AddTo(_disposable);
+
+                this.CopyCommand = this.SelectedItem.ObserveProperty(n => n.Value).Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
+                this.CopyCommand.Subscribe(() => this.Copy()).AddTo(_disposable);
 
                 this.TrustSignaturesSortCommand = new ReactiveCommand<string>().AddTo(_disposable);
                 this.TrustSignaturesSortCommand.Subscribe((propertyName) => this.TrustSignaturesSort(propertyName)).AddTo(_disposable);
@@ -107,6 +122,12 @@ namespace Amoeba.Interface
 
                 this.Comment = new ReactiveProperty<string>().AddTo(_disposable);
 
+                this.DependencyViewModels = _dependencyModels.ToReadOnlyReactiveCollection(n => new RelationSignatureViewModel(null, n)).AddTo(_disposable);
+                this.SelectedDependencyItem = new ReactiveProperty<TreeViewModelBase>().AddTo(_disposable);
+
+                this.DependencyCopyCommand = this.SelectedDependencyItem.ObserveProperty(n => n.Value).Select(n => n != null).ToReactiveCommand().AddTo(_disposable);
+                this.DependencyCopyCommand.Subscribe(() => this.DependencyCopy()).AddTo(_disposable);
+
                 this.CloseCommand = new ReactiveCommand().AddTo(_disposable);
                 this.CloseCommand.Subscribe(() => this.Close()).AddTo(_disposable);
             }
@@ -118,6 +139,7 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
+                _sortInfo = _settings.Load("SortInfo ", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Ranking" });
                 _trustSignaturesSortInfo = _settings.Load("TrustSignaturesSortInfo ", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
                 _untrustSignaturesSortInfo = _settings.Load("UntrustSignaturesSortInfo ", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
                 _tagsSortInfo = _settings.Load("TagsSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
@@ -129,49 +151,137 @@ namespace Amoeba.Interface
             }
 
             {
+                this.Sort(null);
                 this.TrustSignaturesSort(null);
                 this.UntrustSignaturesSort(null);
                 this.TagsSort(null);
             }
         }
 
-        private void Refresh()
+        private void Search(string words)
         {
-            this.TabSelectChanged(this.TabSelectedItem.Value);
-        }
-
-        private void TabSelectChanged(TreeViewModelBase viewModel)
-        {
-            if (viewModel is RelationSignatureViewModel relationSignatureViewModel)
+            if (string.IsNullOrWhiteSpace(words))
             {
-                var profile = relationSignatureViewModel.Model.Profile;
+                this.ContentsView.Filter = null;
+                this.ContentsView.Refresh();
 
-                if (profile == null)
+                return;
+            }
+
+            var wordList = words.Split(' ', 'Å@');
+
+            this.ContentsView.Filter = new Predicate<object>((viewModel) =>
+            {
+                if (viewModel is ProfileViewModel profileViewModel)
                 {
-                    _trustSignatures.Clear();
-                    _untrustSignatures.Clear();
-                    _tags.Clear();
-                    this.Comment.Value = "";
-
-                    return;
+                    foreach (string word in wordList)
+                    {
+                        if (profileViewModel.Signature.ToString().Contains(word, StringComparison.CurrentCultureIgnoreCase)) return true;
+                    }
                 }
 
-                _trustSignatures.Clear();
-                _trustSignatures.AddRange(profile.Value.TrustSignatures);
-                _untrustSignatures.Clear();
-                _untrustSignatures.AddRange(profile.Value.DeleteSignatures);
-                _tags.Clear();
-                _tags.AddRange(profile.Value.Tags);
-                this.Comment.Value = profile.Value.Comment;
+                return false;
+            });
+
+            this.ContentsView.Refresh();
+            this.Refresh();
+        }
+
+        private void Refresh()
+        {
+            this.SelectChanged(this.SelectedItem.Value);
+        }
+
+        private void SelectChanged(ProfileViewModel viewModel)
+        {
+            if (viewModel == null) return;
+
+            _trustSignatures.Clear();
+            _trustSignatures.AddRange(viewModel.Model.Value.TrustSignatures);
+            _untrustSignatures.Clear();
+            _untrustSignatures.AddRange(viewModel.Model.Value.DeleteSignatures);
+            _tags.Clear();
+            _tags.AddRange(viewModel.Model.Value.Tags);
+            this.Comment.Value = viewModel.Model.Value.Comment;
+
+            {
+                _dependencyModels.Clear();
+
+                foreach (var rootSignature in SettingsManager.Instance.SubscribeSignatures)
+                {
+                    _dependencyModels.Add(_builder.GetRelationSignatureInfo(rootSignature, viewModel.Model.AuthorSignature));
+                }
             }
         }
 
-        private void TabCopy()
+        private void Sort(string propertyName)
         {
-            if (this.TabSelectedItem.Value is RelationSignatureViewModel relationSignatureViewModel)
+            if (propertyName == null)
             {
-                Clipboard.SetSignatures(new Signature[] { relationSignatureViewModel.Model.Signature });
+                if (!string.IsNullOrEmpty(_sortInfo.PropertyName))
+                {
+                    this.Sort(_sortInfo.PropertyName, _sortInfo.Direction);
+                }
             }
+            else
+            {
+                var direction = ListSortDirection.Ascending;
+
+                if (_sortInfo.PropertyName == propertyName)
+                {
+                    if (_sortInfo.Direction == ListSortDirection.Ascending)
+                    {
+                        direction = ListSortDirection.Descending;
+                    }
+                    else
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(propertyName))
+                {
+                    this.Sort(propertyName, direction);
+                }
+
+                _sortInfo.Direction = direction;
+                _sortInfo.PropertyName = propertyName;
+            }
+        }
+
+        private void Sort(string propertyName, ListSortDirection direction)
+        {
+            this.ContentsView.IsLiveSorting = true;
+            this.ContentsView.LiveSortingProperties.Clear();
+            this.ContentsView.SortDescriptions.Clear();
+
+            if (propertyName == "Signature")
+            {
+                this.ContentsView.LiveSortingProperties.Add(propertyName);
+
+                this.ContentsView.CustomSort = new CustomSortComparer(direction, (x, y) =>
+                {
+                    if (x is ProfileViewModel tx && y is ProfileViewModel ty)
+                    {
+                        int c = tx.Signature.Name.CompareTo(ty.Signature.Name);
+                        if (c != 0) return c;
+                        c = Unsafe.Compare(tx.Signature.Id, ty.Signature.Id);
+                        if (c != 0) return c;
+                    }
+
+                    return 0;
+                });
+            }
+            else
+            {
+                this.ContentsView.LiveSortingProperties.Add(propertyName);
+                this.ContentsView.SortDescriptions.Add(new SortDescription(propertyName, direction));
+            }
+        }
+
+        private void Copy()
+        {
+            Clipboard.SetSignatures(new Signature[] { this.SelectedItem.Value.Signature });
         }
 
         private void TrustSignaturesSort(string propertyName)
@@ -373,6 +483,14 @@ namespace Amoeba.Interface
             Clipboard.SetTags(this.SelectedTagItems.OfType<Tag>().ToArray());
         }
 
+        private void DependencyCopy()
+        {
+            if (this.SelectedDependencyItem.Value is RelationSignatureViewModel relationSignatureViewModel)
+            {
+                Clipboard.SetSignatures(new Signature[] { relationSignatureViewModel.Model.Signature });
+            }
+        }
+
         private void OnCloseEvent()
         {
             this.CloseEvent?.Invoke(this, EventArgs.Empty);
@@ -390,11 +508,121 @@ namespace Amoeba.Interface
             App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
+                _settings.Save("SortInfo", _sortInfo);
                 _settings.Save("TrustSignaturesSortInfo", _trustSignaturesSortInfo);
                 _settings.Save("UntrustSignaturesSortInfo", _untrustSignaturesSortInfo);
                 _settings.Save("TagsSortInfo", _tagsSortInfo);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
+        }
+
+        class Builder
+        {
+            private MessageManager _messageManager;
+
+            public Builder(MessageManager messageManager)
+            {
+                _messageManager = messageManager;
+            }
+
+            public IEnumerable<ProfileViewModel> GetProfileViewModels(Signature rootSignature)
+            {
+                var hashSet = new HashSet<Signature>();
+                var viewModels = new List<ProfileViewModel>();
+
+                {
+                    hashSet.Add(rootSignature);
+
+                    var rootProfile = _messageManager.GetProfile(rootSignature);
+                    if (rootProfile == null) return Enumerable.Empty<ProfileViewModel>();
+
+                    var viewModel = new ProfileViewModel();
+                    viewModel.Ranking = 1;
+                    viewModel.Signature = rootSignature;
+                    viewModel.Model = rootProfile;
+
+                    viewModels.Add(viewModel);
+                }
+
+                for (int i = 0; i < viewModels.Count; i++)
+                {
+                    var parentViewModel = viewModels[i];
+
+                    foreach (var targetSignature in parentViewModel.Model.Value.TrustSignatures)
+                    {
+                        if (hashSet.Contains(targetSignature)) continue;
+                        hashSet.Add(targetSignature);
+
+                        var targetProfile = _messageManager.GetProfile(targetSignature);
+                        if (targetProfile == null) continue;
+
+                        var viewModel = new ProfileViewModel();
+                        viewModel.Ranking = parentViewModel.Ranking + 1;
+                        viewModel.Signature = targetSignature;
+                        viewModel.Model = targetProfile;
+
+                        viewModels.Add(viewModel);
+                    }
+                }
+
+                return viewModels;
+            }
+
+            private RelationSignatureInfo SearchRelationSignatureInfo(Signature rootSignature, Signature searchSignature, int ranking, IDictionary<Signature, ProfileViewModel> map)
+            {
+                ProfileViewModel rootViewModel;
+                if (!map.TryGetValue(rootSignature, out rootViewModel)) return null;
+                if (rootViewModel.Ranking <= ranking) return null;
+
+                if (rootViewModel.Signature == searchSignature)
+                {
+                    var info = new RelationSignatureInfo();
+                    info.Signature = rootViewModel.Signature;
+                    info.Profile = rootViewModel.Model;
+
+                    return info;
+                }
+                else
+                {
+                    var tempList = new List<RelationSignatureInfo>();
+
+                    foreach (var trustSignature in rootViewModel.Model.Value.TrustSignatures)
+                    {
+                        var result = this.SearchRelationSignatureInfo(trustSignature, searchSignature, ranking + 1, map);
+                        if (result == null) continue;
+
+                        tempList.Add(result);
+                    }
+
+                    if (tempList.Count == 0) return null;
+
+                    var info = new RelationSignatureInfo();
+                    info.Signature = rootViewModel.Signature;
+                    info.Profile = rootViewModel.Model;
+                    info.Children.AddRange(tempList);
+
+                    return info;
+                }
+            }
+
+            public RelationSignatureInfo GetRelationSignatureInfo(Signature rootSignature, Signature searchSignature)
+            {
+                var map = new Dictionary<Signature, ProfileViewModel>();
+
+                foreach (var viewModel in this.GetProfileViewModels(rootSignature))
+                {
+                    map[viewModel.Signature] = viewModel;
+                }
+
+                return SearchRelationSignatureInfo(rootSignature, searchSignature, 0, map);
+            }
+        }
+
+        public class ProfileViewModel
+        {
+            public int Ranking { get; set; }
+            public Signature Signature { get; set; }
+            public BroadcastMessage<Profile> Model { get; set; }
         }
 
         protected override void Dispose(bool disposing)

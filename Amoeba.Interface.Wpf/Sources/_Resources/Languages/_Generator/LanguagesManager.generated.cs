@@ -71,6 +71,9 @@ namespace Amoeba.Interface
         public string MainWindow_Close_Message { get { return this.Translate("MainWindow_Close_Message"); } }
         public string MainWindow_DiskSpaceNotFound_Message { get { return this.Translate("MainWindow_DiskSpaceNotFound_Message"); } }
         public string RelationWindow_Title { get { return this.Translate("RelationWindow_Title"); } }
+        public string RelationWindow_Ranking { get { return this.Translate("RelationWindow_Ranking"); } }
+        public string RelationWindow_Signature { get { return this.Translate("RelationWindow_Signature"); } }
+        public string RelationWindow_Search { get { return this.Translate("RelationWindow_Search"); } }
         public string RelationWindow_Profile { get { return this.Translate("RelationWindow_Profile"); } }
         public string RelationWindow_Trust { get { return this.Translate("RelationWindow_Trust"); } }
         public string RelationWindow_TrustSignature { get { return this.Translate("RelationWindow_TrustSignature"); } }
@@ -81,6 +84,7 @@ namespace Amoeba.Interface
         public string RelationWindow_Name { get { return this.Translate("RelationWindow_Name"); } }
         public string RelationWindow_Id { get { return this.Translate("RelationWindow_Id"); } }
         public string RelationWindow_Comment { get { return this.Translate("RelationWindow_Comment"); } }
+        public string RelationWindow_Dependencies { get { return this.Translate("RelationWindow_Dependencies"); } }
         public string RelationWindow_Copy { get { return this.Translate("RelationWindow_Copy"); } }
         public string RelationWindow_Close { get { return this.Translate("RelationWindow_Close"); } }
         public string OptionsWindow_Title { get { return this.Translate("OptionsWindow_Title"); } }

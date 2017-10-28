@@ -52,9 +52,8 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBox Height="32"
-                     Margin="16,0,16,0"
+                     Margin="16,16,16,0"
                      VerticalAlignment="Top"
-                     md:HintAssist.Hint="{Binding Path=SearchControl_SearchHint, Source={StaticResource Languages}}"
                      Text="{Binding Path=SearchInput.Value, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Enter" Command="{Binding Path=SearchCommand}" />
@@ -218,23 +217,17 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Command="{Binding Path=RemoveCacheItemCommand}"
-                                  Header="{Binding Path=SearchControl_RemoveCacheItem, Source={StaticResource Languages}}"
-                                  InputGestureText="Ctrl+R">
+                        <MenuItem Command="{Binding Path=RemoveCacheItemCommand}" Header="{Binding Path=SearchControl_RemoveCacheItem, Source={StaticResource Languages}}">
                             <MenuItem.Icon>
                                 <md:PackIcon Kind="Delete" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding Path=RemoveDownloadingItemCommand}"
-                                  Header="{Binding Path=SearchControl_RemoveDownloadingItem, Source={StaticResource Languages}}"
-                                  InputGestureText="Ctrl+R">
+                        <MenuItem Command="{Binding Path=RemoveDownloadingItemCommand}" Header="{Binding Path=SearchControl_RemoveDownloadingItem, Source={StaticResource Languages}}">
                             <MenuItem.Icon>
                                 <md:PackIcon Kind="Delete" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding Path=RemoveDownloadedItemCommand}"
-                                  Header="{Binding Path=SearchControl_RemoveDownloadedItem, Source={StaticResource Languages}}"
-                                  InputGestureText="Ctrl+R">
+                        <MenuItem Command="{Binding Path=RemoveDownloadedItemCommand}" Header="{Binding Path=SearchControl_RemoveDownloadedItem, Source={StaticResource Languages}}">
                             <MenuItem.Icon>
                                 <md:PackIcon Kind="Delete" />
                             </MenuItem.Icon>

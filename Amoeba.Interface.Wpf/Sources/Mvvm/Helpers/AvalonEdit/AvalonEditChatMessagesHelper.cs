@@ -10,9 +10,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Amoeba.Messages;
-using Amoeba.Service;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Rendering;
+using Omnius.Base;
 using Omnius.Security;
 
 namespace Amoeba.Interface
@@ -148,7 +148,7 @@ namespace Amoeba.Interface
                 }
 
                 {
-                    foreach (string line in (target.Message.Value.Comment ?? "")
+                    foreach (string line in StringUtils.Normalize(target.Message.Value.Comment ?? "")
                         .Trim('\r', '\n')
                         .Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
                         .Take(128))

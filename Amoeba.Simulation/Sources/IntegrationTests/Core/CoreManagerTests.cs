@@ -162,7 +162,7 @@ namespace Amoeba.Simulation
                     if (average >= wrapperList.Count - 2) break;
                 }
 
-                this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
+                //this.MetadataUploadAndDownload(wrapperList.Select(n => n.Value));
                 this.MessageUploadAndDownload(wrapperList.Select(n => n.Value));
             }
             finally
@@ -293,7 +293,7 @@ namespace Amoeba.Simulation
             var hashList = new LockedHashSet<Hash>();
             var metadataList = new LockedList<Metadata>();
 
-            Parallel.For(0, 3, new ParallelOptions() { MaxDegreeOfParallelism = 3 }, i =>
+            Parallel.For(0, 30, new ParallelOptions() { MaxDegreeOfParallelism = 3 }, i =>
             {
                 var random = RandomProvider.GetThreadRandom();
 
@@ -301,7 +301,7 @@ namespace Amoeba.Simulation
                 {
                     using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                     {
-                        for (long remain = (long)1024 * 1024 * 128; remain > 0; remain = Math.Max(0, remain - safeBuffer.Value.Length))
+                        for (long remain = (long)1024 * 1024 * 32; remain > 0; remain = Math.Max(0, remain - safeBuffer.Value.Length))
                         {
                             int length = (int)Math.Min(remain, safeBuffer.Value.Length);
 

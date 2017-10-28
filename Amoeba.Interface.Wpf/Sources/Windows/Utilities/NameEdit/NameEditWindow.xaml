@@ -29,6 +29,7 @@
                  VerticalAlignment="Top"
                  HorizontalContentAlignment="Stretch"
                  VerticalContentAlignment="Center"
+                 MaxLength="{Binding Path=MaxLength.Value, Mode=OneWay}"
                  Text="{Binding Path=Name.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Button Width="120"

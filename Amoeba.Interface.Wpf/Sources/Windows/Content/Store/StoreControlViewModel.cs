@@ -515,7 +515,7 @@ namespace Amoeba.Interface
         {
             if (this.TabSelectedItem.Value is StoreCategoryViewModel categoryViewModel)
             {
-                var viewModel = new NameEditWindowViewModel("");
+                var viewModel = new NameEditWindowViewModel("", 256);
                 viewModel.Callback += (name) =>
                 {
                     categoryViewModel.Model.CategoryInfos.Add(new StoreCategoryInfo() { Name = name });
@@ -531,7 +531,7 @@ namespace Amoeba.Interface
         {
             if (this.TabSelectedItem.Value is StoreCategoryViewModel categoryViewModel)
             {
-                var viewModel = new NameEditWindowViewModel(categoryViewModel.Name.Value);
+                var viewModel = new NameEditWindowViewModel(categoryViewModel.Name.Value, 256);
                 viewModel.Callback += (name) =>
                 {
                     categoryViewModel.Model.Name = name;
@@ -687,7 +687,7 @@ namespace Amoeba.Interface
                 return;
             }
 
-            var viewModel = new NameEditWindowViewModel("");
+            var viewModel = new NameEditWindowViewModel("", 256);
             viewModel.Callback += (name) =>
             {
                 categoryInfo.CategoryInfos.Add(new StoreCategoryInfo() { Name = name });
@@ -705,7 +705,7 @@ namespace Amoeba.Interface
 
             if (selectedModel is StoreCategoryInfo categoryInfo)
             {
-                var viewModel = new NameEditWindowViewModel(categoryInfo.Name);
+                var viewModel = new NameEditWindowViewModel(categoryInfo.Name, 256);
                 viewModel.Callback += (name) =>
                 {
                     categoryInfo.Name = name;

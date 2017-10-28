@@ -78,6 +78,9 @@
     <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Not enough disk space." />
 
     <Property Name="RelationWindow_Title" Value="Relation" />
+    <Property Name="RelationWindow_Ranking" Value="Ranking" />
+    <Property Name="RelationWindow_Signature" Value="Signature" />
+    <Property Name="RelationWindow_Search" Value="Search" />
     <Property Name="RelationWindow_Profile" Value="Profile" />
     <Property Name="RelationWindow_Trust" Value="Trust" />
     <Property Name="RelationWindow_TrustSignature" Value="Trust signature" />
@@ -88,6 +91,7 @@
     <Property Name="RelationWindow_Name" Value="Name" />
     <Property Name="RelationWindow_Id" Value="ID" />
     <Property Name="RelationWindow_Comment" Value="Comment" />
+    <Property Name="RelationWindow_Dependencies" Value="Dependencies" />
     <Property Name="RelationWindow_Copy" Value="Copy" />
     <Property Name="RelationWindow_Close" Value="Close" />
 

@@ -20,6 +20,7 @@ namespace Amoeba.Interface
         public event Action<string> Callback;
 
         public ReactiveProperty<string> Name { get; private set; }
+        public ReactiveProperty<int> MaxLength { get; private set; }
 
         public ReactiveCommand OkCommand { get; private set; }
         public ReactiveCommand CancelCommand { get; private set; }
@@ -29,19 +30,21 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public NameEditWindowViewModel(string name)
+        public NameEditWindowViewModel(string name, int maxLength)
         {
             _name = name;
 
             this.Init();
 
             this.Name.Value = _name;
+            this.MaxLength.Value = maxLength;
         }
 
         private void Init()
         {
             {
                 this.Name = new ReactiveProperty<string>().AddTo(_disposable);
+                this.MaxLength = new ReactiveProperty<int>().AddTo(_disposable);
 
                 this.OkCommand = this.Name.Select(n => !string.IsNullOrWhiteSpace(n)).ToReactiveCommand().AddTo(_disposable);
                 this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);

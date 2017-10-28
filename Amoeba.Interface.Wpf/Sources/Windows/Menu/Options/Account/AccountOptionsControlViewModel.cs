@@ -7,14 +7,14 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Windows.Data;
+using Amoeba.Messages;
+using Amoeba.Service;
 using Omnius.Base;
 using Omnius.Configuration;
-using Amoeba.Service;
 using Omnius.Security;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Amoeba.Messages;
 
 namespace Amoeba.Interface
 {
@@ -214,7 +214,7 @@ namespace Amoeba.Interface
 
         private void SignatureNew()
         {
-            var viewModel = new NameEditWindowViewModel("Anonymous");
+            var viewModel = new NameEditWindowViewModel("Anonymous", Signature.MaxNameLength);
             viewModel.Callback += (name) =>
             {
                 var digitalSignature = new DigitalSignature(name, DigitalSignatureAlgorithm.EcDsaP521_Sha256_v3);
@@ -509,7 +509,7 @@ namespace Amoeba.Interface
 
         private void TagNew()
         {
-            var viewModel = new NameEditWindowViewModel("");
+            var viewModel = new NameEditWindowViewModel("", Tag.MaxNameLength);
             viewModel.Callback += (name) =>
             {
                 this.AccountOptions.Tags.Add(new Tag(name, _random.GetBytes(32)));

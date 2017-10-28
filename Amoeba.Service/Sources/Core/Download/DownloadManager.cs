@@ -416,8 +416,20 @@ namespace Amoeba.Service
 
                                     string targetPath;
 
-                                    if (Path.IsPathRooted(item.Path)) targetPath = item.Path;
-                                    else targetPath = Path.Combine(_basePath, item.Path);
+                                    if (Path.IsPathRooted(item.Path))
+                                    {
+                                        targetPath = item.Path;
+                                    }
+                                    else
+                                    {
+                                        targetPath = Path.GetFullPath(Path.Combine(_basePath, item.Path));
+
+                                        // ディレクトリトラバーサル対策
+                                        if (!targetPath.StartsWith(Path.GetFullPath(_basePath)))
+                                        {
+                                            targetPath = Path.GetFullPath(Path.Combine(_basePath, Path.GetFileName(item.Path)));
+                                        }
+                                    }
 
                                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
 

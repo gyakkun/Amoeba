@@ -218,8 +218,6 @@ namespace Amoeba.Messages
         private int _messageCount;
         private long _totalReceivedByteCount;
         private long _totalSentByteCount;
-        private int _receivedByteCountPerSecond;
-        private int _sentByteCountPerSecond;
         private long _pushLocationCount;
         private long _pushBlockLinkCount;
         private long _pushBlockRequestCount;
@@ -233,7 +231,7 @@ namespace Amoeba.Messages
         private long _pullMessageRequestCount;
         private long _pullMessageResultCount;
 
-        public NetworkReport(Location myLocation, long connectCount, long acceptCount, int cloudNodeCount, int messageCount, long totalReceivedByteCount, long totalSentByteCount, int receivedByteCountPerSecond, int sentByteCountPerSecond, long pushLocationCount, long pushBlockLinkCount, long pushBlockRequestCount, long pushBlockResultCount, long pushMessageRequestCount, long pushMessageResultCount, long pullLocationCount, long pullBlockLinkCount, long pullBlockRequestCount, long pullBlockResultCount, long pullMessageRequestCount, long pullMessageResultCount)
+        public NetworkReport(Location myLocation, long connectCount, long acceptCount, int cloudNodeCount, int messageCount, long totalReceivedByteCount, long totalSentByteCount, long pushLocationCount, long pushBlockLinkCount, long pushBlockRequestCount, long pushBlockResultCount, long pushMessageRequestCount, long pushMessageResultCount, long pullLocationCount, long pullBlockLinkCount, long pullBlockRequestCount, long pullBlockResultCount, long pullMessageRequestCount, long pullMessageResultCount)
         { 
             this.MyLocation = myLocation;
             this.ConnectCount = connectCount;
@@ -242,8 +240,6 @@ namespace Amoeba.Messages
             this.MessageCount = messageCount;
             this.TotalReceivedByteCount = totalReceivedByteCount;
             this.TotalSentByteCount = totalSentByteCount;
-            this.ReceivedByteCountPerSecond = receivedByteCountPerSecond;
-            this.SentByteCountPerSecond = sentByteCountPerSecond;
             this.PushLocationCount = pushLocationCount;
             this.PushBlockLinkCount = pushBlockLinkCount;
             this.PushBlockRequestCount = pushBlockRequestCount;
@@ -346,32 +342,6 @@ namespace Amoeba.Messages
             private set
             {
                 _totalSentByteCount = value;
-            }
-        }
-
-        [DataMember(Name = nameof(ReceivedByteCountPerSecond))]
-        public int ReceivedByteCountPerSecond 
-        { 
-            get
-            {
-                return _receivedByteCountPerSecond;
-            }
-            private set
-            {
-                _receivedByteCountPerSecond = value;
-            }
-        }
-
-        [DataMember(Name = nameof(SentByteCountPerSecond))]
-        public int SentByteCountPerSecond 
-        { 
-            get
-            {
-                return _sentByteCountPerSecond;
-            }
-            private set
-            {
-                _sentByteCountPerSecond = value;
             }
         }
 
