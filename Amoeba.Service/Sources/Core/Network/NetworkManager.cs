@@ -50,11 +50,11 @@ namespace Amoeba.Service
         private List<TaskManager> _sendTaskManagers = new List<TaskManager>();
         private List<TaskManager> _receiveTaskManagers = new List<TaskManager>();
 
-        private VolatileHashDictionary<Hash, DiffusionPriority> _pushBlocksRequestMap = new VolatileHashDictionary<Hash, DiffusionPriority>(new TimeSpan(0, 30, 0));
+        private VolatileHashDictionary<Hash, DiffusionPriority> _pushBlocksRequestMap = new VolatileHashDictionary<Hash, DiffusionPriority>(new TimeSpan(0, 3, 0));
 
-        private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
-        private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
-        private VolatileHashSet<Tag> _pushMulticastMetadatasRequestSet = new VolatileHashSet<Tag>(new TimeSpan(0, 30, 0));
+        private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 3, 0));
+        private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 3, 0));
+        private VolatileHashSet<Tag> _pushMulticastMetadatasRequestSet = new VolatileHashSet<Tag>(new TimeSpan(0, 3, 0));
 
         private SafeInteger _receivedByteCount = new SafeInteger();
         private SafeInteger _sentByteCount = new SafeInteger();
@@ -533,7 +533,7 @@ namespace Amoeba.Service
 
                     // ダウンロード
                     if (_routeTable.Count >= 3
-                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 20)
+                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushBlockDownloadStopwatch.Restart();
 
@@ -571,13 +571,13 @@ namespace Amoeba.Service
                                 var cloudPushBlockRequestSet = new HashSet<Hash>();
 
                                 {
-                                    Hash[] list;
+                                    List<Hash> list;
                                     {
                                         var sortedList = _pushBlocksRequestMap.ToList();
                                         _random.Shuffle(sortedList);
                                         sortedList.Sort((x, y) => x.Value.CompareTo(y.Value));
 
-                                        list = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToArray();
+                                        list = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToList();
                                     }
 
                                     myPushBlockRequestSet.UnionWith(list.Take(_maxBlockRequestCount));
@@ -654,7 +654,7 @@ namespace Amoeba.Service
 
                     // アップロード
                     if (_routeTable.Count >= 3
-                        && pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 20)
+                        && pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushMetadataUploadStopwatch.Restart();
 
@@ -688,7 +688,7 @@ namespace Amoeba.Service
 
                     // ダウンロード
                     if (_routeTable.Count >= 3
-                        && pushMetadataDownloadStopwatch.Elapsed.TotalSeconds >= 20)
+                        && pushMetadataDownloadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushMetadataDownloadStopwatch.Restart();
 
@@ -838,11 +838,11 @@ namespace Amoeba.Service
             IEnumerable<Node<T>> GetTargetNodes<T>(byte[] baseId, byte[] targetId, IEnumerable<Node<T>> cloudNodes)
             {
                 var tempList = new List<Node<T>>();
-                tempList.AddRange(RouteTable<T>.Search(baseId, targetId, cloudNodes, 3));
-                tempList.AddRange(cloudNodes.Randomize().Take(2));
+                tempList.AddRange(RouteTable<T>.Search(baseId, targetId, cloudNodes, 6));
+                tempList.AddRange(cloudNodes.Randomize().Take(1));
                 _random.Shuffle(tempList);
 
-                return tempList.Take(3);
+                return tempList.Take(2);
             }
         }
 
@@ -991,7 +991,7 @@ namespace Amoeba.Service
                 tempLocations.AddRange(_cloudLocations);
                 _random.Shuffle(tempLocations);
 
-                var packet = new LocationsPacket(tempLocations);
+                var packet = new LocationsPacket(tempLocations.Take(_maxLocationCount));
 
                 Stream typeStream = new BufferStream(_bufferManager);
                 VintUtils.SetUInt64(typeStream, (uint)SerializeId.Locations);
@@ -1499,12 +1499,12 @@ namespace Amoeba.Service
 
             public VolatileHashSet<Location> PullLocationSet { get; private set; } = new VolatileHashSet<Location>(new TimeSpan(0, 10, 0));
 
-            public VolatileHashSet<Hash> PullBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
-            public VolatileHashSet<Hash> PullBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
+            public VolatileHashSet<Hash> PullBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 20, 0));
+            public VolatileHashSet<Hash> PullBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 20, 0));
 
-            public VolatileHashSet<Signature> PullBroadcastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
-            public VolatileHashSet<Signature> PullUnicastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 30, 0));
-            public VolatileHashSet<Tag> PullMulticastMetadataRequestSet { get; private set; } = new VolatileHashSet<Tag>(new TimeSpan(0, 30, 0));
+            public VolatileHashSet<Signature> PullBroadcastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 20, 0));
+            public VolatileHashSet<Signature> PullUnicastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 20, 0));
+            public VolatileHashSet<Tag> PullMulticastMetadataRequestSet { get; private set; } = new VolatileHashSet<Tag>(new TimeSpan(0, 20, 0));
 
             public void Update()
             {

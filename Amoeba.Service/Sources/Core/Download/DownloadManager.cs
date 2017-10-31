@@ -11,7 +11,6 @@ using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Io;
-using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
@@ -392,7 +391,10 @@ namespace Amoeba.Service
 
                             lock (_lockObject)
                             {
-                                _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, totalHashes));
+                                if (item.Path != null)
+                                {
+                                    _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, totalHashes));
+                                }
 
                                 this.CheckState(index);
                                 this.UncheckState(item.Index);
@@ -462,7 +464,10 @@ namespace Amoeba.Service
 
                             lock (_lockObject)
                             {
-                                _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, totalHashes));
+                                if (item.Path != null)
+                                {
+                                    _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, totalHashes));
+                                }
 
                                 item.ResultHashes.AddRange(hashes);
 
@@ -1044,7 +1049,6 @@ namespace Amoeba.Service
             private CacheManager _cacheManager;
             private LockedList<ProtectCacheInfo> _infos;
 
-            private WatchTimer _checkTimer;
             private WatchTimer _watchTimer;
 
             private volatile bool _disposed;
@@ -1054,21 +1058,8 @@ namespace Amoeba.Service
                 _cacheManager = cacheManager;
                 _infos = new LockedList<ProtectCacheInfo>();
 
-                _checkTimer = new WatchTimer(() => this.CheckThread());
-                _checkTimer.Start(new TimeSpan(0, 30, 0));
                 _watchTimer = new WatchTimer(() => this.WatchThread());
                 _watchTimer.Start(new TimeSpan(0, 1, 0));
-            }
-
-            private void CheckThread()
-            {
-                foreach (var info in _infos.ToArray())
-                {
-                    if (info.Hashes.Any(n => !_cacheManager.Contains(n)))
-                    {
-                        _infos.Remove(info);
-                    }
-                }
             }
 
             private void WatchThread()
@@ -1140,21 +1131,6 @@ namespace Amoeba.Service
 
                 if (disposing)
                 {
-                    if (_checkTimer != null)
-                    {
-                        try
-                        {
-                            _checkTimer.Stop();
-                            _checkTimer.Dispose();
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-
-                        _checkTimer = null;
-                    }
-
                     if (_watchTimer != null)
                     {
                         try
