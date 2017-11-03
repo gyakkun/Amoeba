@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using Nett;
 using Omnius.Base;
-using Omnius.Toml;
 
 namespace Amoeba.Interface
 {
@@ -22,7 +22,7 @@ namespace Amoeba.Interface
             try
             {
                 Variables = new EnvironmentVariables();
-                Version = new Version(5, 0, 49);
+                Version = new Version(5, 0, 50);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();

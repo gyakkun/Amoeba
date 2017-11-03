@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -17,7 +16,6 @@ using Omnius.Correction;
 using Omnius.Io;
 using Omnius.Messaging;
 using Omnius.Security;
-using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
@@ -46,8 +44,9 @@ namespace Amoeba.Service
 
         private CacheInfoManager _cacheInfoManager;
 
-        private EventQueue<Hash> _blockAddEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
-        private EventQueue<Hash> _blockRemoveEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
+        private EventQueue<Hash> _addedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
+        private EventQueue<Hash> _removedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
+        private EventQueue<Hash> _importedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
 
         private WatchTimer _watchTimer;
 
@@ -91,6 +90,7 @@ namespace Amoeba.Service
         {
             this.CheckInformation();
             this.CheckMessages();
+            this.CheckContents();
         }
 
         private volatile Info _info = new Info();
@@ -180,27 +180,39 @@ namespace Amoeba.Service
             }
         }
 
-        public event Action<IEnumerable<Hash>> BlockAddEvents
+        public event Action<IEnumerable<Hash>> AddedBlockEvents
         {
             add
             {
-                _blockAddEventQueue.Events += value;
+                _addedBlockEventQueue.Events += value;
             }
             remove
             {
-                _blockAddEventQueue.Events -= value;
+                _addedBlockEventQueue.Events -= value;
             }
         }
 
-        public event Action<IEnumerable<Hash>> BlockRemoveEvents
+        public event Action<IEnumerable<Hash>> RemovedBlockEvents
         {
             add
             {
-                _blockRemoveEventQueue.Events += value;
+                _removedBlockEventQueue.Events += value;
             }
             remove
             {
-                _blockRemoveEventQueue.Events -= value;
+                _removedBlockEventQueue.Events -= value;
+            }
+        }
+
+        public event Action<IEnumerable<Hash>> ImportedBlockEvents
+        {
+            add
+            {
+                _importedBlockEventQueue.Events += value;
+            }
+            remove
+            {
+                _importedBlockEventQueue.Events -= value;
             }
         }
 
@@ -353,7 +365,7 @@ namespace Amoeba.Service
                     }
 
                     // Event
-                    _blockRemoveEventQueue.Enqueue(hash);
+                    _removedBlockEventQueue.Enqueue(hash);
                 }
             }
         }
@@ -574,6 +586,7 @@ namespace Amoeba.Service
                         else
                         {
                             _bufferManager.ReturnBuffer(result.Value.Array);
+                            result = null;
 
                             this.RemoveContent(shareInfo.Path);
                         }
@@ -670,7 +683,7 @@ namespace Amoeba.Service
                     _clusterIndex[hash] = clusterInfo;
 
                     // Event
-                    _blockAddEventQueue.Enqueue(hash);
+                    _addedBlockEventQueue.Enqueue(hash);
                 }
             }
         }
@@ -954,6 +967,8 @@ namespace Amoeba.Service
                         if (!_cacheInfoManager.ContainsMessage(metadata))
                         {
                             _cacheInfoManager.Add(new CacheInfo(DateTime.UtcNow, lifeSpan, metadata, lockedHashes, null));
+
+                            _importedBlockEventQueue.Enqueue(lockedHashes);
                         }
                     }
 
@@ -975,7 +990,7 @@ namespace Amoeba.Service
             }, token);
         }
 
-        public Task<Metadata> Import(string path, CancellationToken token)
+        public Task<Metadata> Import(string path, DateTime creationTime, CancellationToken token)
         {
             if (path == null) throw new ArgumentNullException(nameof(path));
 
@@ -999,7 +1014,6 @@ namespace Amoeba.Service
                     const CorrectionAlgorithm correctionAlgorithm = CorrectionAlgorithm.ReedSolomon8;
 
                     int depth = 0;
-                    var creationTime = DateTime.UtcNow;
 
                     var groupList = new List<Group>();
 
@@ -1208,7 +1222,9 @@ namespace Amoeba.Service
                     {
                         if (!_cacheInfoManager.ContainsContent(path))
                         {
-                            _cacheInfoManager.Add(new CacheInfo(DateTime.UtcNow, Timeout.InfiniteTimeSpan, metadata, lockedHashes, shareInfo));
+                            _cacheInfoManager.Add(new CacheInfo(creationTime, Timeout.InfiniteTimeSpan, metadata, lockedHashes, shareInfo));
+
+                            _importedBlockEventQueue.Enqueue(lockedHashes);
                         }
                     }
 
@@ -1347,6 +1363,19 @@ namespace Amoeba.Service
 
         #region Content
 
+        private void CheckContents()
+        {
+            lock (_lockObject)
+            {
+                foreach (var cacheInfo in _cacheInfoManager.GetContentCacheInfos())
+                {
+                    if (cacheInfo.LockedHashes.All(n => this.Contains(n))) continue;
+
+                    this.RemoveContent(cacheInfo.ShareInfo.Path);
+                }
+            }
+        }
+
         public void RemoveContent(string path)
         {
             lock (_lockObject)
@@ -1357,7 +1386,18 @@ namespace Amoeba.Service
                 _cacheInfoManager.RemoveContent(path);
 
                 // Event
-                _blockRemoveEventQueue.Enqueue(cacheInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
+                _removedBlockEventQueue.Enqueue(cacheInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
+            }
+        }
+
+        public IEnumerable<Hash> GetContentHashes(string path)
+        {
+            lock (_lockObject)
+            {
+                var cacheInfo = _cacheInfoManager.GetContentCacheInfo(path);
+                if (cacheInfo == null) Enumerable.Empty<Hash>();
+
+                return cacheInfo.LockedHashes.ToArray();
             }
         }
 
@@ -1885,8 +1925,8 @@ namespace Amoeba.Service
 
             if (disposing)
             {
-                _blockAddEventQueue.Dispose();
-                _blockRemoveEventQueue.Dispose();
+                _addedBlockEventQueue.Dispose();
+                _removedBlockEventQueue.Dispose();
 
                 if (_fileStream != null)
                 {

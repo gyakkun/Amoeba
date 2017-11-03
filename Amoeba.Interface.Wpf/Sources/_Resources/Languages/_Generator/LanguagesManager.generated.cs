@@ -284,6 +284,7 @@ namespace Amoeba.Interface
         public string UploadControl_Cut { get { return this.Translate("UploadControl_Cut"); } }
         public string UploadControl_Copy { get { return this.Translate("UploadControl_Copy"); } }
         public string UploadControl_Paste { get { return this.Translate("UploadControl_Paste"); } }
+        public string UploadControl_Reupload { get { return this.Translate("UploadControl_Reupload"); } }
         public string UploadControl_Advanced { get { return this.Translate("UploadControl_Advanced"); } }
         public string UploadControl_CopyName { get { return this.Translate("UploadControl_CopyName"); } }
         public string UploadControl_Name { get { return this.Translate("UploadControl_Name"); } }

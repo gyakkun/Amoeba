@@ -216,6 +216,8 @@ namespace Amoeba.Messages
         private long _acceptCount;
         private int _cloudNodeCount;
         private int _messageCount;
+        private int _uploadBlockCount;
+        private int _diffusionBlockCount;
         private long _totalReceivedByteCount;
         private long _totalSentByteCount;
         private long _pushLocationCount;
@@ -231,13 +233,15 @@ namespace Amoeba.Messages
         private long _pullMessageRequestCount;
         private long _pullMessageResultCount;
 
-        public NetworkReport(Location myLocation, long connectCount, long acceptCount, int cloudNodeCount, int messageCount, long totalReceivedByteCount, long totalSentByteCount, long pushLocationCount, long pushBlockLinkCount, long pushBlockRequestCount, long pushBlockResultCount, long pushMessageRequestCount, long pushMessageResultCount, long pullLocationCount, long pullBlockLinkCount, long pullBlockRequestCount, long pullBlockResultCount, long pullMessageRequestCount, long pullMessageResultCount)
+        public NetworkReport(Location myLocation, long connectCount, long acceptCount, int cloudNodeCount, int messageCount, int uploadBlockCount, int diffusionBlockCount, long totalReceivedByteCount, long totalSentByteCount, long pushLocationCount, long pushBlockLinkCount, long pushBlockRequestCount, long pushBlockResultCount, long pushMessageRequestCount, long pushMessageResultCount, long pullLocationCount, long pullBlockLinkCount, long pullBlockRequestCount, long pullBlockResultCount, long pullMessageRequestCount, long pullMessageResultCount)
         { 
             this.MyLocation = myLocation;
             this.ConnectCount = connectCount;
             this.AcceptCount = acceptCount;
             this.CloudNodeCount = cloudNodeCount;
             this.MessageCount = messageCount;
+            this.UploadBlockCount = uploadBlockCount;
+            this.DiffusionBlockCount = diffusionBlockCount;
             this.TotalReceivedByteCount = totalReceivedByteCount;
             this.TotalSentByteCount = totalSentByteCount;
             this.PushLocationCount = pushLocationCount;
@@ -316,6 +320,32 @@ namespace Amoeba.Messages
             private set
             {
                 _messageCount = value;
+            }
+        }
+
+        [DataMember(Name = nameof(UploadBlockCount))]
+        public int UploadBlockCount 
+        { 
+            get
+            {
+                return _uploadBlockCount;
+            }
+            private set
+            {
+                _uploadBlockCount = value;
+            }
+        }
+
+        [DataMember(Name = nameof(DiffusionBlockCount))]
+        public int DiffusionBlockCount 
+        { 
+            get
+            {
+                return _diffusionBlockCount;
+            }
+            private set
+            {
+                _diffusionBlockCount = value;
             }
         }
 

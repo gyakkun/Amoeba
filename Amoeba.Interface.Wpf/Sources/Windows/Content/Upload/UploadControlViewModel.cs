@@ -74,6 +74,7 @@ namespace Amoeba.Interface
         public ReactiveCommand CutCommand { get; private set; }
         public ReactiveCommand CopyCommand { get; private set; }
         public ReactiveCommand PasteCommand { get; private set; }
+        public ReactiveCommand ReuploadCommand { get; private set; }
         public ReactiveCommand AdvancedCommand { get; private set; }
         public ReactiveCommand<string> AdvancedCopyCommand { get; private set; }
 
@@ -205,6 +206,10 @@ namespace Amoeba.Interface
                     .CombineLatest(clipboardObservable.Select(n => Clipboard.ContainsUploadCategoryInfo() || Clipboard.ContainsUploadDirectoryInfo()), (r1, r2) => (r1 && r2)).ToReactiveCommand().AddTo(_disposable);
                 this.PasteCommand.Subscribe(() => this.Paste()).AddTo(_disposable);
 
+                this.ReuploadCommand = this.SelectedItems.ObserveProperty(n => n.Count)
+                    .Select(n => n != 0 && SelectedMatch(typeof(UploadCategoryInfo), typeof(UploadDirectoryInfo), typeof(Seed))).ToReactiveCommand().AddTo(_disposable);
+                this.ReuploadCommand.Subscribe(() => this.Reupload()).AddTo(_disposable);
+
                 this.AdvancedCommand = this.SelectedItems.ObserveProperty(n => n.Count)
                     .Select(n => n != 0).ToReactiveCommand().AddTo(_disposable);
 
@@ -236,7 +241,7 @@ namespace Amoeba.Interface
                     this.TabViewModel.Value = new UploadStoreViewModel(null, model);
                 }
 
-                _uploadItemsInfo = _settings.Load<UploadItemsInfo>("UploadItemsInfo", () => null);
+                _uploadItemsInfo = _settings.Load<UploadItemsInfo>("UploadItemsInfo2", () => null);
 
                 _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
@@ -526,7 +531,7 @@ namespace Amoeba.Interface
                 {
                     var hashMap = new HashSet<string>();
                     hashMap.UnionWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
-                    hashMap.ExceptWith(targetUploadItemsInfo.Map.SelectMany(n => n.Value));
+                    hashMap.ExceptWith(targetUploadItemsInfo.PathMap.SelectMany(n => n.Value));
 
                     foreach (string path in hashMap)
                     {
@@ -542,7 +547,7 @@ namespace Amoeba.Interface
                     var sortedList = new List<string>();
                     {
                         var hashMap = new HashSet<string>();
-                        hashMap.UnionWith(targetUploadItemsInfo.Map.SelectMany(n => n.Value));
+                        hashMap.UnionWith(targetUploadItemsInfo.PathMap.SelectMany(n => n.Value));
                         hashMap.ExceptWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
 
                         sortedList.AddRange(hashMap);
@@ -570,7 +575,7 @@ namespace Amoeba.Interface
 
                         try
                         {
-                            _serviceManager.AddContent(path, token).Wait();
+                            _serviceManager.AddContent(path, targetUploadItemsInfo.CreationTime, token).Wait();
                         }
                         catch (OperationCanceledException)
                         {
@@ -861,7 +866,7 @@ namespace Amoeba.Interface
                 {
                     lock (_lockObject)
                     {
-                        _uploadItemsInfo = new UploadItemsInfo(digitalSignature, map);
+                        _uploadItemsInfo = new UploadItemsInfo(DateTime.UtcNow, digitalSignature, map);
                     }
                 };
 
@@ -1293,6 +1298,79 @@ namespace Amoeba.Interface
             this.Refresh();
         }
 
+        private void Reupload()
+        {
+            var pathList = new HashSet<string>();
+
+            {
+                var seeds = new List<Seed>();
+                seeds.AddRange(this.SelectedItems.OfType<UploadListViewItemInfo>().Select(n => n.Model).OfType<Seed>());
+
+                {
+                    var boxInfos = new List<UploadBoxInfo>();
+                    boxInfos.AddRange(this.SelectedItems.OfType<UploadListViewItemInfo>().Select(n => n.Model).OfType<UploadBoxInfo>());
+
+                    {
+                        var directoryInfos = new List<UploadDirectoryInfo>();
+                        directoryInfos.AddRange(this.SelectedItems.OfType<UploadListViewItemInfo>().Select(n => n.Model).OfType<UploadDirectoryInfo>());
+
+                        {
+                            var categoryInfos = new List<UploadCategoryInfo>();
+                            categoryInfos.AddRange(this.SelectedItems.OfType<UploadListViewItemInfo>().Select(n => n.Model).OfType<UploadCategoryInfo>());
+
+                            for (int i = 0; i < categoryInfos.Count; i++)
+                            {
+                                categoryInfos.AddRange(categoryInfos[i].CategoryInfos);
+                                directoryInfos.AddRange(categoryInfos[i].DirectoryInfos);
+                            }
+                        }
+
+                        for (int i = 0; i < directoryInfos.Count; i++)
+                        {
+                            boxInfos.AddRange(directoryInfos[i].BoxInfos);
+                        }
+                    }
+
+                    for (int i = 0; i < boxInfos.Count; i++)
+                    {
+                        boxInfos.AddRange(boxInfos[i].BoxInfos);
+                        seeds.AddRange(boxInfos[i].Seeds);
+                    }
+                }
+
+                var tempMap = new Dictionary<Metadata, string>();
+                {
+                    foreach (var report in _serviceManager.GetCacheContentReports())
+                    {
+                        tempMap[report.Metadata] = report.Path;
+                    }
+                }
+
+                foreach (var seed in seeds)
+                {
+                    if (tempMap.TryGetValue(seed.Metadata, out var path))
+                    {
+                        pathList.Add(path);
+                    }
+                }
+            }
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    foreach (string path in pathList)
+                    {
+                        _serviceManager.Diffusion(path);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            });
+        }
+
         private void AdvancedCopy(string type)
         {
             var selectItems = this.SelectedItems.OfType<UploadListViewItemInfo>().ToArray();
@@ -1309,7 +1387,7 @@ namespace Amoeba.Interface
             {
                 _settings.Save("Version", 0);
                 _settings.Save("UploadStoreInfo", this.TabViewModel.Value.Model);
-                _settings.Save("UploadItemsInfo", _uploadItemsInfo);
+                _settings.Save("UploadItemsInfo2", _uploadItemsInfo);
                 _settings.Save("SortInfo", _sortInfo);
                 _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
@@ -1318,17 +1396,41 @@ namespace Amoeba.Interface
         [DataContract(Name = nameof(UploadItemsInfo))]
         private class UploadItemsInfo
         {
-            public UploadItemsInfo(DigitalSignature digitalSignature, ImmutableDictionary<string, ImmutableHashSet<string>> map)
+            public UploadItemsInfo(DateTime creationTime, DigitalSignature digitalSignature, ImmutableDictionary<string, ImmutableHashSet<string>> map)
             {
+                this.CreationTime = creationTime;
                 this.DigitalSignature = digitalSignature;
-                this.Map = map;
+                this.PathMap = map;
             }
+
+            [DataMember(Name = nameof(CreationTime))]
+            public DateTime CreationTime { get; private set; }
 
             [DataMember(Name = nameof(DigitalSignature))]
             public DigitalSignature DigitalSignature { get; private set; }
 
-            [DataMember(Name = nameof(Map))]
-            public ImmutableDictionary<string, ImmutableHashSet<string>> Map { get; private set; }
+            [DataMember(Name = nameof(PathMap))]
+            public ImmutableDictionary<string, ImmutableHashSet<string>> PathMap { get; private set; }
+        }
+
+        [DataContract(Name = nameof(ResetItemsInfo))]
+        private class ResetItemsInfo
+        {
+            public ResetItemsInfo(DateTime creationTime, DigitalSignature digitalSignature, ImmutableDictionary<string, ImmutableHashSet<string>> map)
+            {
+                this.CreationTime = creationTime;
+                this.DigitalSignature = digitalSignature;
+                this.PathMap = map;
+            }
+
+            [DataMember(Name = nameof(CreationTime))]
+            public DateTime CreationTime { get; private set; }
+
+            [DataMember(Name = nameof(DigitalSignature))]
+            public DigitalSignature DigitalSignature { get; private set; }
+
+            [DataMember(Name = nameof(PathMap))]
+            public ImmutableDictionary<string, ImmutableHashSet<string>> PathMap { get; private set; }
         }
 
         protected override void Dispose(bool disposing)

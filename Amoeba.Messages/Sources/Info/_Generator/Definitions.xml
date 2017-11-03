@@ -38,6 +38,9 @@
 
         <ItemProperty Type="int" Name="CloudNodeCount" />
         <ItemProperty Type="int" Name="MessageCount" />
+        
+        <ItemProperty Type="int" Name="UploadBlockCount" />
+        <ItemProperty Type="int" Name="DiffusionBlockCount" />
 
         <ItemProperty Type="long" Name="TotalReceivedByteCount" />
         <ItemProperty Type="long" Name="TotalSentByteCount" />

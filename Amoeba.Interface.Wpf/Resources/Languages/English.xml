@@ -309,6 +309,7 @@
     <Property Name="UploadControl_Cut" Value="Cut" />
     <Property Name="UploadControl_Copy" Value="Copy" />
     <Property Name="UploadControl_Paste" Value="Paste" />
+    <Property Name="UploadControl_Reupload" Value="Reupload" />
     <Property Name="UploadControl_Advanced" Value="Advanced" />
     <Property Name="UploadControl_CopyName" Value="Copy name" />
     <Property Name="UploadControl_Name" Value="Name" />

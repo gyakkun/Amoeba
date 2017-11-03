@@ -71,8 +71,8 @@ namespace Amoeba.Service
             _watchTimer = new WatchTimer(this.WatchThread);
             _watchTimer.Start(new TimeSpan(0, 1, 0));
 
-            _cacheManager.BlockAddEvents += (hashes) => this.Update_DownloadBlockStates(true, hashes);
-            _cacheManager.BlockRemoveEvents += (hashes) => this.Update_DownloadBlockStates(false, hashes);
+            _cacheManager.AddedBlockEvents += (hashes) => this.Update_DownloadBlockStates(true, hashes);
+            _cacheManager.RemovedBlockEvents += (hashes) => this.Update_DownloadBlockStates(false, hashes);
         }
 
         public IEnumerable<DownloadContentReport> GetDownloadContentReports()

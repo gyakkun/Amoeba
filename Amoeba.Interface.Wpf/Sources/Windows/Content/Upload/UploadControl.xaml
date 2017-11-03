@@ -277,6 +277,14 @@
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
+                    <MenuItem Command="{Binding Path=ReuploadCommand}"
+                              Header="{Binding Path=UploadControl_Reupload, Source={StaticResource Languages}}"
+                              InputGestureText="Ctrl+R">
+                        <MenuItem.Icon>
+                            <md:PackIcon Kind="Upload" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator />
                     <MenuItem Command="{Binding Path=AdvancedCommand}"
                               Header="{Binding Path=UploadControl_Advanced, Source={StaticResource Languages}}"
                               InputGestureText="Ctrl+A">

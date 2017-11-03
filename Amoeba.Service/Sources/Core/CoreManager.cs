@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Amoeba.Messages;
@@ -245,13 +244,13 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<Metadata> Import(string path, CancellationToken token)
+        public Task<Metadata> Import(string path, DateTime creationTime, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _cacheManager.Import(path, token);
+                return _cacheManager.Import(path, creationTime, token);
             }
         }
 
@@ -262,6 +261,16 @@ namespace Amoeba.Service
             lock (_lockObject)
             {
                 _cacheManager.RemoveContent(path);
+            }
+        }
+
+        public void Diffusion(string path)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                _networkManager.Diffusion(path);
             }
         }
 

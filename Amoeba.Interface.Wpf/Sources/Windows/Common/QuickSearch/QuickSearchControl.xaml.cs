@@ -3,11 +3,11 @@
 namespace Amoeba.Interface
 {
     /// <summary>
-    /// QuickFindControl.xaml の相互作用ロジック
+    /// QuickSearchControl.xaml の相互作用ロジック
     /// </summary>
-    public partial class QuickFindControl : UserControl
+    public partial class QuickSearchControl : UserControl
     {
-        public QuickFindControl()
+        public QuickSearchControl()
         {
             InitializeComponent();
         }

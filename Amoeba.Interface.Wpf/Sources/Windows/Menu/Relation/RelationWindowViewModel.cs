@@ -23,7 +23,7 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public QuickFindControlViewModel QuickFindControlViewModel { get; set; }
+        public QuickSearchControlViewModel QuickSearchControlViewModel { get; set; }
 
         public event EventHandler<EventArgs> CloseEvent;
         public event Action Callback;
@@ -85,8 +85,8 @@ namespace Amoeba.Interface
         private void Init()
         {
             {
-                this.QuickFindControlViewModel = new QuickFindControlViewModel().AddTo(_disposable);
-                this.QuickFindControlViewModel.Text.Subscribe((words) => this.Search(words)).AddTo(_disposable);
+                this.QuickSearchControlViewModel = new QuickSearchControlViewModel().AddTo(_disposable);
+                this.QuickSearchControlViewModel.Text.Subscribe((words) => this.Search(words)).AddTo(_disposable);
 
                 foreach (var rootSignature in SettingsManager.Instance.SubscribeSignatures)
                 {

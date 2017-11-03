@@ -4,7 +4,7 @@ using Reactive.Bindings;
 
 namespace Amoeba.Interface
 {
-    class QuickFindControlViewModel : ManagerBase
+    class QuickSearchControlViewModel : ManagerBase
     {
         public ReactiveProperty<bool> IsSearchingMode { get; private set; }
         public ReactiveProperty<string> Text { get; private set; }
@@ -14,7 +14,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _disposed;
 
-        public QuickFindControlViewModel()
+        public QuickSearchControlViewModel()
         {
             this.Init();
         }

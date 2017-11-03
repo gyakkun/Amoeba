@@ -16,7 +16,7 @@
         mc:Ignorable="d">
 
     <Window.InputBindings>
-        <KeyBinding Command="{Binding Path=QuickFindControlViewModel.StartSearchCommand}" Gesture="CTRL+F" />
+        <KeyBinding Command="{Binding Path=QuickSearchControlViewModel.StartSearchCommand}" Gesture="CTRL+F" />
     </Window.InputBindings>
 
     <Grid>
@@ -34,7 +34,7 @@
                         Height="48"
                         Margin="0,16,16,8"
                         HorizontalAlignment="Left"
-                        Command="{Binding Path=QuickFindControlViewModel.StartSearchCommand}"
+                        Command="{Binding Path=QuickSearchControlViewModel.StartSearchCommand}"
                         Style="{StaticResource MaterialDesignFloatingActionButton}"
                         ToolTip="{Binding Path=RelationWindow_Search, Source={StaticResource Languages}}">
                     <md:PackIcon Width="32"
@@ -334,9 +334,9 @@
 
             <Grid Margin="8,0,8,0" Grid.Row="2"
                   Height="32"
-                  Visibility="{Binding Path=QuickFindControlViewModel.IsSearchingMode.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  Visibility="{Binding Path=QuickSearchControlViewModel.IsSearchingMode.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentControl>
-                    <local:QuickFindControl DataContext="{Binding QuickFindControlViewModel}" />
+                    <local:QuickSearchControl DataContext="{Binding QuickSearchControlViewModel}" />
                 </ContentControl>
             </Grid>
         </Grid>

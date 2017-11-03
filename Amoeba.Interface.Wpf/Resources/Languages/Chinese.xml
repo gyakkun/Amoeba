@@ -4,7 +4,7 @@
 
     <Property Name="Languages_English" Value="英语 (English)" />
     <Property Name="Languages_Japanese" Value="日语 (Japanese)" />
-	<Property Name="Languages_Chinese" Value="中文 (Chinese)" />
+    <Property Name="Languages_Chinese" Value="中文 (Chinese)" />
 
     <Property Name="ValidationRule_ErrorMessage" Value="错误" />
 
@@ -309,6 +309,7 @@
     <Property Name="UploadControl_Cut" Value="剪切" />
     <Property Name="UploadControl_Copy" Value="复制" />
     <Property Name="UploadControl_Paste" Value="粘贴" />
+    <Property Name="UploadControl_Reupload" Value="重新上传" />
     <Property Name="UploadControl_Advanced" Value="高级设置" />
     <Property Name="UploadControl_CopyName" Value="复制名称" />
     <Property Name="UploadControl_Name" Value="名称" />

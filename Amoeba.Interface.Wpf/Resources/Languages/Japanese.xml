@@ -309,6 +309,7 @@
     <Property Name="UploadControl_Cut" Value="切り取り" />
     <Property Name="UploadControl_Copy" Value="コピー" />
     <Property Name="UploadControl_Paste" Value="貼り付け" />
+    <Property Name="UploadControl_Reupload" Value="再アップロード" />
     <Property Name="UploadControl_Advanced" Value="高度な設定" />
     <Property Name="UploadControl_CopyName" Value="名前のコピー" />
     <Property Name="UploadControl_Name" Value="名前" />

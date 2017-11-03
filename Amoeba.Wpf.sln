@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
@@ -43,8 +43,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Messages", "Amoeba.Messages\Amoeba.Messages.csproj", "{A06681C1-7F26-4078-BDD4-CBD7B1710D33}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{170FCF7C-1245-4059-B2BE-7BB863CF6D70}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Toml", "Omnius\Omnius.Toml\Omnius.Toml.csproj", "{AB3BB70B-4129-47BB-8E43-B2DEF4FFDC22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Interface", "Amoeba.Interface.Wpf\Amoeba.Interface.csproj", "{19E45677-BD12-4F48-8C19-87E60B7CBA36}"
 EndProject
@@ -125,10 +123,6 @@ Global
 		{170FCF7C-1245-4059-B2BE-7BB863CF6D70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{170FCF7C-1245-4059-B2BE-7BB863CF6D70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{170FCF7C-1245-4059-B2BE-7BB863CF6D70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB3BB70B-4129-47BB-8E43-B2DEF4FFDC22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB3BB70B-4129-47BB-8E43-B2DEF4FFDC22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB3BB70B-4129-47BB-8E43-B2DEF4FFDC22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB3BB70B-4129-47BB-8E43-B2DEF4FFDC22}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -156,7 +150,6 @@ Global
 		{47EB59D3-5A52-4F50-92EF-5878643929B8} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
 		{55B34959-925A-46F9-A2DC-809E58479277} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
 		{4636E8E7-CEA8-48F4-BBD8-DDDC2E20C5FA} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
-		{AB3BB70B-4129-47BB-8E43-B2DEF4FFDC22} = {E6A49293-3102-455F-98F4-B572ADFFE2EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6DC027E1-AD9D-4BB2-B06A-499E74D23186}

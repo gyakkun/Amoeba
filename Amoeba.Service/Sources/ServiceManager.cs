@@ -150,13 +150,13 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<Metadata> AddContent(string path, CancellationToken token)
+        public Task<Metadata> AddContent(string path, DateTime creationTime, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _coreManager.Import(path, token);
+                return _coreManager.Import(path, creationTime, token);
             }
         }
 
@@ -167,6 +167,16 @@ namespace Amoeba.Service
             lock (_lockObject)
             {
                 _coreManager.RemoveContent(path);
+            }
+        }
+
+        public void Diffusion(string path)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                _coreManager.Diffusion(path);
             }
         }
 
