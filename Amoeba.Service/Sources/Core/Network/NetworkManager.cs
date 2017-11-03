@@ -535,7 +535,7 @@ namespace Amoeba.Service
                         var diffusionMap = new Dictionary<Node<SessionInfo>, List<Hash>>();
                         var uploadMap = new Dictionary<Node<SessionInfo>, List<Hash>>();
 
-                        foreach (var hash in _diffusionBlockHashes.ToArray())
+                        foreach (var hash in CollectionUtils.Unite(_diffusionBlockHashes.ToArray(), _uploadBlockHashes.ToArray()).Randomize())
                         {
                             foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 1, 0, 1))
                             {
