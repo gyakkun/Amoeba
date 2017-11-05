@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Base", "Omnius\Omnius.Base\Omnius.Base.csproj", "{F164E4A3-3FA5-46AD-9CAE-759612E85C7F}"
 EndProject
@@ -39,9 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Tests", "Amoeba.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Rpc", "Amoeba.Rpc\Amoeba.Rpc.csproj", "{75A86D69-336B-4E0A-BDD2-3959AB6C8E20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Daemon", "Amoeba.Daemon\Amoeba.Daemon.csproj", "{2D6F4B13-DAC7-49DB-B400-055F766719EB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Omnius.Toml", "Omnius\Omnius.Toml\Omnius.Toml.csproj", "{3F5D72B2-7017-4B9D-A745-6C3E07E572E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Daemon", "Amoeba.Daemon\Amoeba.Daemon.csproj", "{2D6F4B13-DAC7-49DB-B400-055F766719EB}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -120,10 +118,6 @@ Global
 		{2D6F4B13-DAC7-49DB-B400-055F766719EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D6F4B13-DAC7-49DB-B400-055F766719EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D6F4B13-DAC7-49DB-B400-055F766719EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F5D72B2-7017-4B9D-A745-6C3E07E572E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F5D72B2-7017-4B9D-A745-6C3E07E572E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F5D72B2-7017-4B9D-A745-6C3E07E572E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F5D72B2-7017-4B9D-A745-6C3E07E572E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -142,7 +136,6 @@ Global
 		{BD01F0F1-A817-48A3-924D-4DD02B7A487D} = {400D9AB5-E157-4C52-AB2A-BC2C12E10C80}
 		{3692ADEC-7685-4871-9D53-BE4B25DB3E9F} = {400D9AB5-E157-4C52-AB2A-BC2C12E10C80}
 		{EA43E2B5-9B8A-4003-8B5E-E8093E3E7708} = {400D9AB5-E157-4C52-AB2A-BC2C12E10C80}
-		{3F5D72B2-7017-4B9D-A745-6C3E07E572E3} = {400D9AB5-E157-4C52-AB2A-BC2C12E10C80}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBB2F2E8-C090-44B1-AF8C-35F223656C19}

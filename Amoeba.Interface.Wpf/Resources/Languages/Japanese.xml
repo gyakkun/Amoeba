@@ -76,7 +76,7 @@
     <Property Name="MainWindow_Upload" Value="アップロード" />
     <Property Name="MainWindow_Download" Value="ダウンロード" />
     <Property Name="MainWindow_Close_Message" Value="終了しますか？" />
-    <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="ディスクに空き領域がありません。" />
+    <Property Name="MainWindow_SpaceNotFound_Message" Value="ディスクかキャッシュに空き領域がありません。" />
 
     <Property Name="RelationWindow_Title" Value="リレーション" />
     <Property Name="RelationWindow_Ranking" Value="ランキング" />

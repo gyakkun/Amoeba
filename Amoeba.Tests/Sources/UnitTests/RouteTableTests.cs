@@ -6,10 +6,10 @@ using Omnius.Base;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Amoeba.UnitTests
+namespace Amoeba.Tests
 {
     [Trait("Category", "Amoeba.Service")]
-    public class RouteTableTests : TestSetupBase
+    public class RouteTableTests : TestsBase
     {
         private readonly Random _random = new Random();
 

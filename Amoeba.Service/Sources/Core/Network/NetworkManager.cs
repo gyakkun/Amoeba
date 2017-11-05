@@ -505,6 +505,19 @@ namespace Amoeba.Service
                                 _diffusionBlockHashes.ExceptWith(targetHashes);
                             }
                         }
+
+                        // キャッシュに存在しないブロックのアップロード情報を削除する。
+                        {
+                            {
+                                var targetHashes = _cacheManager.ExceptFrom(_diffusionBlockHashes).ToArray();
+                                _diffusionBlockHashes.ExceptWith(targetHashes);
+                            }
+
+                            {
+                                var targetHashes = _cacheManager.ExceptFrom(_uploadBlockHashes).ToArray();
+                                _uploadBlockHashes.ExceptWith(targetHashes);
+                            }
+                        }
                     }
 
                     if (reduceStopwatch.Elapsed.TotalMinutes >= 10)

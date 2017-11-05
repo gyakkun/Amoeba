@@ -8,10 +8,10 @@ using Omnius.Base;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Amoeba.UnitTests
+namespace Amoeba.Tests
 {
     [Trait("Category", "Amoeba.Rpc")]
-    public class RpcTests : TestSetupBase
+    public class RpcTests : TestsBase
     {
         private readonly Random _random = new Random();
 
@@ -28,15 +28,15 @@ namespace Amoeba.UnitTests
             serviceManager.Load();
             serviceManager.Start();
 
-            var server = new AmoebaServerManager();
-            var client = new AmoebaClientManager();
+            var server = new AmoebaDaemonManager();
+            var client = new AmoebaInterfaceManager();
 
             var endpoint = new IPEndPoint(IPAddress.Loopback, 4040);
 
             var task = server.Watch(serviceManager, endpoint);
             client.Connect(endpoint);
 
-            var s = client.GetState();
+            var s = client.State;
             client.Exit();
 
             task.Wait();

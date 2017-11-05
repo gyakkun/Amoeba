@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Windows;
+using Nett;
 using Omnius.Base;
-using Omnius.Toml;
 
 namespace Amoeba.Daemon
 {

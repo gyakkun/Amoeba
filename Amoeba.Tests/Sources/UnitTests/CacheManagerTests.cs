@@ -9,10 +9,10 @@ using Omnius.Security;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Amoeba.UnitTests
+namespace Amoeba.Tests
 {
     [Trait("Category", "Amoeba.Service")]
-    public class CacheManagerTests : TestSetupBase, IDisposable
+    public class CacheManagerTests : TestsBase, IDisposable
     {
         private BufferManager _bufferManager = BufferManager.Instance;
         private CacheManager _cacheManager;

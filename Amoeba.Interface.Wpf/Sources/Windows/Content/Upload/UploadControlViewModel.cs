@@ -531,7 +531,7 @@ namespace Amoeba.Interface
                 {
                     var hashMap = new HashSet<string>();
                     hashMap.UnionWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
-                    hashMap.ExceptWith(targetUploadItemsInfo.PathMap.SelectMany(n => n.Value));
+                    hashMap.ExceptWith(targetUploadItemsInfo.Map.SelectMany(n => n.Value));
 
                     foreach (string path in hashMap)
                     {
@@ -547,7 +547,7 @@ namespace Amoeba.Interface
                     var sortedList = new List<string>();
                     {
                         var hashMap = new HashSet<string>();
-                        hashMap.UnionWith(targetUploadItemsInfo.PathMap.SelectMany(n => n.Value));
+                        hashMap.UnionWith(targetUploadItemsInfo.Map.SelectMany(n => n.Value));
                         hashMap.ExceptWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
 
                         sortedList.AddRange(hashMap);
@@ -820,18 +820,14 @@ namespace Amoeba.Interface
                 }
             }
 
-            ImmutableDictionary<string, ImmutableHashSet<string>> map = null;
+            var map = new Dictionary<string, string[]>();
 
             await Task.Run(() =>
             {
-                var tempMap = new Dictionary<string, ImmutableHashSet<string>>();
-
                 foreach (string directoryPath in directoryPaths)
                 {
-                    tempMap.Add(directoryPath, ImmutableHashSet.CreateRange(Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories)));
+                    map.Add(directoryPath, Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories));
                 }
-
-                map = ImmutableDictionary.CreateRange(tempMap);
             });
 
             {
@@ -1396,11 +1392,18 @@ namespace Amoeba.Interface
         [DataContract(Name = nameof(UploadItemsInfo))]
         private class UploadItemsInfo
         {
-            public UploadItemsInfo(DateTime creationTime, DigitalSignature digitalSignature, ImmutableDictionary<string, ImmutableHashSet<string>> map)
+            public UploadItemsInfo(DateTime creationTime, DigitalSignature digitalSignature, IReadOnlyDictionary<string, string[]> map)
             {
                 this.CreationTime = creationTime;
                 this.DigitalSignature = digitalSignature;
-                this.PathMap = map;
+
+                if (map != null)
+                {
+                    foreach (var (key, value) in map)
+                    {
+                        this.ProtectedMap.Add(key, value);
+                    }
+                }
             }
 
             [DataMember(Name = nameof(CreationTime))]
@@ -1409,28 +1412,32 @@ namespace Amoeba.Interface
             [DataMember(Name = nameof(DigitalSignature))]
             public DigitalSignature DigitalSignature { get; private set; }
 
-            [DataMember(Name = nameof(PathMap))]
-            public ImmutableDictionary<string, ImmutableHashSet<string>> PathMap { get; private set; }
-        }
+            private volatile ReadOnlyDictionary<string, string[]> _readOnlyMap;
 
-        [DataContract(Name = nameof(ResetItemsInfo))]
-        private class ResetItemsInfo
-        {
-            public ResetItemsInfo(DateTime creationTime, DigitalSignature digitalSignature, ImmutableDictionary<string, ImmutableHashSet<string>> map)
+            public IReadOnlyDictionary<string, string[]> Map
             {
-                this.CreationTime = creationTime;
-                this.DigitalSignature = digitalSignature;
-                this.PathMap = map;
+                get
+                {
+                    if (_readOnlyMap == null)
+                        _readOnlyMap = new ReadOnlyDictionary<string, string[]>(this.ProtectedMap);
+
+                    return _readOnlyMap;
+                }
             }
 
-            [DataMember(Name = nameof(CreationTime))]
-            public DateTime CreationTime { get; private set; }
+            private Dictionary<string, string[]> _map;
 
-            [DataMember(Name = nameof(DigitalSignature))]
-            public DigitalSignature DigitalSignature { get; private set; }
+            [DataMember(Name = nameof(Map))]
+            private Dictionary<string, string[]> ProtectedMap
+            {
+                get
+                {
+                    if (_map == null)
+                        _map = new Dictionary<string, string[]>();
 
-            [DataMember(Name = nameof(PathMap))]
-            public ImmutableDictionary<string, ImmutableHashSet<string>> PathMap { get; private set; }
+                    return _map;
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)

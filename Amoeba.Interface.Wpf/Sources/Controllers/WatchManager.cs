@@ -4,12 +4,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using Amoeba.Messages;
 using Amoeba.Service;
 using Omnius.Base;
-using Omnius.Utilities;
 using Omnius.Wpf;
-using System.Threading;
 
 namespace Amoeba.Interface
 {
@@ -144,7 +143,7 @@ namespace Amoeba.Interface
 
                             App.Current.Dispatcher.InvokeAsync(() =>
                             {
-                                var viewModel = new NoticeWindowViewModel(LanguagesManager.Instance.MainWindow_DiskSpaceNotFound_Message);
+                                var viewModel = new NoticeWindowViewModel(LanguagesManager.Instance.MainWindow_SpaceNotFound_Message);
                                 viewModel.Callback += () => watchFlag = true;
 
                                 _dialogService.Show(viewModel);

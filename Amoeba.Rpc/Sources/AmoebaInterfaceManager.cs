@@ -413,7 +413,7 @@ namespace Amoeba.Rpc
             }
         }
 
-        public Task<Metadata> AddContent(string path, CancellationToken token)
+        public Task<Metadata> AddContent(string path, DateTime creationTime, CancellationToken token)
         {
             this.Check();
 
@@ -421,7 +421,7 @@ namespace Amoeba.Rpc
             {
                 return Task.Run(() =>
                 {
-                    return this.Function<Metadata, string>(AmoebaRequestType.AddContent, path, token);
+                    return this.Function<Metadata, (string, DateTime)>(AmoebaRequestType.AddContent, (path, creationTime), token);
                 });
             }
         }
@@ -433,6 +433,16 @@ namespace Amoeba.Rpc
             lock (_lockObject)
             {
                 this.Action(AmoebaRequestType.RemoveContent, path, CancellationToken.None);
+            }
+        }
+
+        public void Diffusion(string path)
+        {
+            this.Check();
+
+            lock (_lockObject)
+            {
+                this.Action(AmoebaRequestType.Diffusion, path, CancellationToken.None);
             }
         }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Amoeba.Interface
+﻿namespace Amoeba.Interface
 {
     partial class LanguagesManager
     {
@@ -70,7 +64,7 @@ namespace Amoeba.Interface
         public string MainWindow_Upload { get { return this.Translate("MainWindow_Upload"); } }
         public string MainWindow_Download { get { return this.Translate("MainWindow_Download"); } }
         public string MainWindow_Close_Message { get { return this.Translate("MainWindow_Close_Message"); } }
-        public string MainWindow_DiskSpaceNotFound_Message { get { return this.Translate("MainWindow_DiskSpaceNotFound_Message"); } }
+        public string MainWindow_SpaceNotFound_Message { get { return this.Translate("MainWindow_SpaceNotFound_Message"); } }
         public string RelationWindow_Title { get { return this.Translate("RelationWindow_Title"); } }
         public string RelationWindow_Ranking { get { return this.Translate("RelationWindow_Ranking"); } }
         public string RelationWindow_Signature { get { return this.Translate("RelationWindow_Signature"); } }

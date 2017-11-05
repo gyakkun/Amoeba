@@ -90,7 +90,7 @@ namespace Amoeba.Service
             }
         }
 
-        private static bool CheckGlobalIpAddress(IPAddress ipAddress)
+        private static bool IsGlobalIpAddress(IPAddress ipAddress)
         {
             if (ipAddress.AddressFamily == AddressFamily.InterNetwork)
             {
@@ -152,7 +152,7 @@ namespace Amoeba.Service
 
             try
             {
-                list.UnionWith(Dns.GetHostAddressesAsync(Dns.GetHostName()).Result.Where(n => CheckGlobalIpAddress(n)));
+                list.UnionWith(Dns.GetHostAddressesAsync(Dns.GetHostName()).Result.Where(n => IsGlobalIpAddress(n)));
             }
             catch (Exception)
             {
@@ -233,7 +233,7 @@ namespace Amoeba.Service
                     if (!IPAddress.TryParse(address, out ipAddress)) return null;
 
 #if !DEBUG
-                    if (!CheckGlobalIpAddress(ipAddress)) return null;
+                    if (!IsGlobalIpAddress(ipAddress)) return null;
 #endif
 
                     if (!config.Type.HasFlag(TcpConnectionType.Ipv4)
@@ -385,53 +385,76 @@ namespace Amoeba.Service
 
                 if (config.Type.HasFlag(TcpConnectionType.Ipv4) && config.Ipv4Port != 0)
                 {
-                    ipv4Uri = this.GetIpv4Uri(config.Ipv4Port);
+                    UpnpClient upnpClient = null;
 
-                    if (_ipv4TcpListener == null || _watchIpv4Port != config.Ipv4Port)
+                    try
                     {
-                        try
                         {
-                            if (_ipv4TcpListener != null)
-                            {
-                                _ipv4TcpListener.Server.Dispose();
-                                _ipv4TcpListener.Stop();
+                            var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetwork);
 
-                                _ipv4TcpListener = null;
+                            if (ipAddress != null)
+                            {
+                                ipv4Uri = string.Format("tcp:{0}:{1}", ipAddress.ToString(), config.Ipv4Port);
                             }
-
-                            _ipv4TcpListener = new TcpListener(IPAddress.Any, config.Ipv4Port);
-                            _ipv4TcpListener.Start(3);
-                        }
-                        catch (Exception e)
-                        {
-                            Log.Error(e);
                         }
 
-                        // Open port
-                        try
+                        if (ipv4Uri == null)
                         {
-                            using (var client = new UpnpClient())
+                            upnpClient = new UpnpClient();
+                            upnpClient.Connect(new TimeSpan(0, 0, 30));
+
+                            if (upnpClient.IsConnected)
                             {
-                                client.Connect(new TimeSpan(0, 0, 10));
+                                var ipAddress = IPAddress.Parse(upnpClient.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
 
-                                if (_watchIpv4Port != -1)
+                                if (ipAddress != null && IsGlobalIpAddress(ipAddress))
                                 {
-                                    client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                                    ipv4Uri = string.Format("tcp:{0}:{1}", ipAddress.ToString(), config.Ipv4Port);
+                                }
+                            }
+                        }
+
+                        if (_ipv4TcpListener == null || _watchIpv4Port != config.Ipv4Port)
+                        {
+                            try
+                            {
+                                if (_ipv4TcpListener != null)
+                                {
+                                    _ipv4TcpListener.Server.Dispose();
+                                    _ipv4TcpListener.Stop();
+
+                                    _ipv4TcpListener = null;
                                 }
 
-                                var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
-                                if (ipAddress == null || !CheckGlobalIpAddress(ipAddress)) throw new Exception();
-
-                                client.ClosePort(UpnpProtocolType.Tcp, config.Ipv4Port, new TimeSpan(0, 0, 10));
-                                client.OpenPort(UpnpProtocolType.Tcp, config.Ipv4Port, config.Ipv4Port, "Amoeba", new TimeSpan(0, 0, 10));
+                                _ipv4TcpListener = new TcpListener(IPAddress.Any, config.Ipv4Port);
+                                _ipv4TcpListener.Start(3);
                             }
+                            catch (Exception e)
+                            {
+                                Log.Error(e);
+                            }
+
+                            // Open port
+                            if (upnpClient != null && upnpClient.IsConnected)
+                            {
+                                if (_watchIpv4Port != -1)
+                                {
+                                    upnpClient.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                                }
+
+                                upnpClient.OpenPort(UpnpProtocolType.Tcp, config.Ipv4Port, config.Ipv4Port, "Amoeba", new TimeSpan(0, 0, 10));
+                            }
+
+                            _watchIpv4Port = config.Ipv4Port;
                         }
-                        catch (Exception)
+                    }
+                    finally
+                    {
+                        if (upnpClient != null)
                         {
-
+                            upnpClient.Dispose();
+                            upnpClient = null;
                         }
-
-                        _watchIpv4Port = config.Ipv4Port;
                     }
                 }
                 else
@@ -471,7 +494,14 @@ namespace Amoeba.Service
 
                 if (config.Type.HasFlag(TcpConnectionType.Ipv6) && config.Ipv6Port != 0)
                 {
-                    ipv6Uri = this.GetIpv6Uri(config.Ipv6Port);
+                    {
+                        var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetworkV6);
+
+                        if (ipAddress != null)
+                        {
+                            ipv6Uri = string.Format("tcp:[{0}]:{1}", ipAddress.ToString(), config.Ipv6Port);
+                        }
+                    }
 
                     if (_ipv6TcpListener == null || _watchIpv6Port != config.Ipv6Port)
                     {
@@ -529,49 +559,6 @@ namespace Amoeba.Service
             }
         }
 
-        private string GetIpv4Uri(ushort port)
-        {
-            {
-                var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetwork);
-
-                if (ipAddress != null)
-                {
-                    return string.Format("tcp:{0}:{1}", ipAddress.ToString(), port);
-                }
-            }
-
-            try
-            {
-                using (var client = new UpnpClient())
-                {
-                    client.Connect(new TimeSpan(0, 0, 10));
-
-                    var ipAddress = IPAddress.Parse(client.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
-                    if (ipAddress == null || !CheckGlobalIpAddress(ipAddress)) throw new Exception();
-
-                    return string.Format("tcp:{0}:{1}", ipAddress.ToString(), port);
-                }
-            }
-            catch (Exception)
-            {
-
-            }
-
-            return null;
-        }
-
-        private string GetIpv6Uri(ushort port)
-        {
-            var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetworkV6);
-
-            if (ipAddress != null)
-            {
-                return string.Format("tcp:[{0}]:{1}", ipAddress.ToString(), port);
-            }
-
-            return null;
-        }
-
         public override ManagerState State
         {
             get
@@ -591,7 +578,7 @@ namespace Amoeba.Service
                     if (this.State == ManagerState.Start) return;
                     _state = ManagerState.Start;
 
-                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0));
+                    _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(1, 0, 0, 0));
                 }
             }
         }

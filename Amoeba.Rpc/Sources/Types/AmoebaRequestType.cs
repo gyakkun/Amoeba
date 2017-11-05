@@ -16,6 +16,7 @@
         CheckBlocks,
         AddContent,
         RemoveContent,
+        Diffusion,
         AddDownload,
         RemoveDownload,
         ResetDownload,

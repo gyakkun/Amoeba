@@ -76,7 +76,7 @@
     <Property Name="MainWindow_Upload" Value="上传" />
     <Property Name="MainWindow_Download" Value="下载" />
     <Property Name="MainWindow_Close_Message" Value="退出?" />
-    <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="磁盘空间不足" />
+    <Property Name="MainWindow_SpaceNotFound_Message" Value="磁盘空间或缓存空间不足" />
 
     <Property Name="RelationWindow_Title" Value="关联" />
     <Property Name="RelationWindow_Ranking" Value="排行" />

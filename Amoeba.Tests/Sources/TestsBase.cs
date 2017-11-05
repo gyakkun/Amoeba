@@ -1,15 +1,14 @@
 using System.IO;
 using System.Reflection;
-using Xunit;
 using Xunit.Abstractions;
 
-namespace Amoeba.UnitTests
+namespace Amoeba.Tests
 {
-    public abstract class TestSetupBase
+    public abstract class TestsBase
     {
         private readonly ITestOutputHelper _output;
 
-        public TestSetupBase(ITestOutputHelper output)
+        public TestsBase(ITestOutputHelper output)
         {
             _output = output;
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));

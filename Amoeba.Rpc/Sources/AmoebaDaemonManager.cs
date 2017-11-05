@@ -180,8 +180,8 @@ namespace Amoeba.Rpc
                                     }
                                 case AmoebaRequestType.AddContent:
                                     {
-                                        string path = JsonUtils.Load<string>(requestStream);
-                                        var result = serviceManager.AddContent(path, token).Result;
+                                        var arguments = JsonUtils.Load<(string, DateTime)>(requestStream);
+                                        var result = serviceManager.AddContent(arguments.Item1, arguments.Item2, token).Result;
                                         SendResponse(AmoebaResponseType.Result, id, result);
                                         break;
                                     }
@@ -189,6 +189,13 @@ namespace Amoeba.Rpc
                                     {
                                         string path = JsonUtils.Load<string>(requestStream);
                                         serviceManager.RemoveContent(path);
+                                        SendResponse(AmoebaResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaRequestType.Diffusion:
+                                    {
+                                        string path = JsonUtils.Load<string>(requestStream);
+                                        serviceManager.Diffusion(path);
                                         SendResponse(AmoebaResponseType.Result, id, (object)null);
                                         break;
                                     }

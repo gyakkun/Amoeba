@@ -76,7 +76,7 @@
     <Property Name="MainWindow_Upload" Value="Upload" />
     <Property Name="MainWindow_Download" Value="Download" />
     <Property Name="MainWindow_Close_Message" Value="Do you want to quit?" />
-    <Property Name="MainWindow_DiskSpaceNotFound_Message" Value="Not enough disk space." />
+    <Property Name="MainWindow_SpaceNotFound_Message" Value="Not enough disk space or cache space." />
 
     <Property Name="RelationWindow_Title" Value="Relation" />
     <Property Name="RelationWindow_Ranking" Value="Ranking" />
