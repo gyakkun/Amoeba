@@ -1,0 +1,286 @@
+<Config>
+
+    <Import Namespace="System" />
+    <Import Namespace="System.Collections.Generic" />
+    <Import Namespace="System.Collections.ObjectModel" />
+    <Import Namespace="System.ComponentModel" />
+    <Import Namespace="System.Runtime.Serialization" />
+    <Import Namespace="System.Windows" />
+    <Import Namespace="System.Windows.Media.Imaging" />
+    <Import Namespace="Omnius.Base" />
+    <Import Namespace="Omnius.Collections" />
+    <Import Namespace="Omnius.Security" />
+    <Import Namespace="Amoeba.Messages" />
+
+    <Class Name="AccountInfo">
+        <Property Type="DigitalSignature" Name="DigitalSignature" IsReadonly="true" />
+        <Property Type="string" Name="Comment" IsReadonly="true" />
+        <Property Type="Exchange" Name="Exchange" IsReadonly="true" />
+        <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
+        <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
+        <Property Type="ObservableCollection(Tag)" Name="Tags" />
+    </Class>
+
+    <Class Name="UpdateInfo">
+        <Property Type="bool" Name="IsEnabled" IsReadonly="true" />
+        <Property Type="Signature" Name="Signature" IsReadonly="true" />
+    </Class>
+
+    <Class Name="ViewInfo">
+        <Property Type="ViewColorsInfo" Name="Colors" />
+        <Property Type="ViewFontsInfo" Name="Fonts" />
+    </Class>
+
+    <Class Name="ViewColorsInfo">
+        <Property Type="string" Name="Tree_Hit" IsReadonly="true" />
+        <Property Type="string" Name="Link_New" IsReadonly="true" />
+        <Property Type="string" Name="Link_Visited" IsReadonly="true" />
+        <Property Type="string" Name="Message_Trust" IsReadonly="true" />
+        <Property Type="string" Name="Message_Untrust" IsReadonly="true" />
+    </Class>
+
+    <Class Name="ViewFontsInfo">
+        <Property Type="FontInfo" Name="Chat_Message" IsReadonly="true" />
+    </Class>
+
+    <Class Name="FontInfo">
+        <Property Type="string" Name="FontFamily" IsReadonly="true" />
+        <Property Type="double" Name="FontSize" IsReadonly="true" />
+    </Class>
+
+    <Class Name="ListSortInfo">
+        <Property Type="string" Name="PropertyName" IsReadonly="true" />
+        <Property Type="ListSortDirection" Name="Direction" IsReadonly="true" />
+    </Class>
+
+    <Class Name="RelationSignatureInfo">
+        <Property Type="Signature" Name="Signature" IsReadonly="true" />
+        <Property Type="BroadcastMessage(Profile)" Name="Profile" IsReadonly="true" />
+        <Property Type="ObservableCollection(RelationSignatureInfo)" Name="Children" />
+    </Class>
+
+    <Class Name="OptionsInfo">
+        <Property Type="AccountOptionsInfo" Name="Account" />
+        <Property Type="ConnectionOptionsInfo" Name="Connection" />
+        <Property Type="DataOptionsInfo" Name="Data" />
+        <Property Type="ViewOptionsInfo" Name="View" />
+        <Property Type="UpdateOptionsInfo" Name="Update" />
+    </Class>
+
+    <Class Name="AccountOptionsInfo">
+        <Property Type="DigitalSignature" Name="DigitalSignature" IsReadonly="true" />
+        <Property Type="string" Name="Comment" IsReadonly="true" />
+        <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
+        <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
+        <Property Type="ObservableCollection(Tag)" Name="Tags" />
+    </Class>
+
+    <Class Name="ConnectionOptionsInfo">
+        <Property Type="TcpOptionsInfo" Name="Tcp" />
+        <Property Type="I2pOptionsInfo" Name="I2p" />
+        <Property Type="CustomOptionsInfo" Name="Custom" />
+        <Property Type="BandwidthOptionsInfo" Name="Bandwidth" />
+    </Class>
+
+    <Class Name="TcpOptionsInfo">
+        <Property Type="bool" Name="Ipv4IsEnabled" IsReadonly="true" />
+        <Property Type="ushort" Name="Ipv4Port" IsReadonly="true" />
+        <Property Type="bool" Name="Ipv6IsEnabled" IsReadonly="true" />
+        <Property Type="ushort" Name="Ipv6Port" IsReadonly="true" />
+        <Property Type="string" Name="ProxyUri" IsReadonly="true" />
+    </Class>
+
+    <Class Name="I2pOptionsInfo">
+        <Property Type="bool" Name="IsEnabled" IsReadonly="true" />
+        <Property Type="string" Name="SamBridgeUri" IsReadonly="true" />
+    </Class>
+
+    <Class Name="CustomOptionsInfo">
+        <Property Type="ObservableCollection(string)" Name="LocationUris" />
+        <Property Type="ObservableCollection(ConnectionFilter)" Name="ConnectionFilters" />
+        <Property Type="ObservableCollection(string)" Name="ListenUris" />
+    </Class>
+
+    <Class Name="BandwidthOptionsInfo">
+        <Property Type="int" Name="ConnectionCountLimit" IsReadonly="true" />
+        <Property Type="int" Name="BandwidthLimit" IsReadonly="true" />
+    </Class>
+
+    <Class Name="DataOptionsInfo">
+        <Property Type="CacheOptionsInfo" Name="Cache" />
+        <Property Type="DownloadOptionsInfo" Name="Download" />
+    </Class>
+
+    <Class Name="CacheOptionsInfo">
+        <Property Type="long" Name="Size" IsReadonly="true" />
+    </Class>
+
+    <Class Name="DownloadOptionsInfo">
+        <Property Type="string" Name="DirectoryPath" IsReadonly="true" />
+    </Class>
+
+    <Class Name="ViewOptionsInfo">
+        <Property Type="SubscribeOptionsInfo" Name="Subscribe" />
+    </Class>
+
+    <Class Name="SubscribeOptionsInfo">
+        <Property Type="ObservableCollection(Signature)" Name="SubscribeSignatures" />
+    </Class>
+
+    <Class Name="UpdateOptionsInfo">
+        <Property Type="bool" Name="IsEnabled" IsReadonly="true" />
+        <Property Type="Signature" Name="Signature" IsReadonly="true" />
+    </Class>
+
+    <Class Name="CloudStateInfo">
+        <Property Type="string" Name="Location" IsReadonly="true" />
+    </Class>
+
+    <Class Name="ChatCategoryInfo">
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="ObservableCollection(ChatThreadInfo)" Name="ThreadInfos" />
+        <Property Type="ObservableCollection(ChatCategoryInfo)" Name="CategoryInfos" />
+    </Class>
+
+    <Class Name="ChatThreadInfo">
+        <Property Type="bool" Name="IsUpdated" IsReadonly="true" />
+        <Property Type="Tag" Name="Tag" IsReadonly="true" />
+        <Property Type="bool" Name="IsTrustMessageOnly" IsReadonly="true" />
+        <Property Type="bool" Name="IsNewMessageOnly" IsReadonly="true" />
+        <Property Type="LockedList(ChatMessageInfo)" Name="Messages" />
+    </Class>
+
+    <Class Name="ChatMessageInfo">
+        <Property Type="ChatMessageState" Name="State" IsReadonly="true" />
+        <Property Type="MulticastMessage(ChatMessage)" Name="Message" IsReadonly="true" />
+    </Class>
+
+    <Class Name="StoreCategoryInfo">
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="ObservableCollection(StoreSignatureInfo)" Name="SignatureInfos" />
+        <Property Type="ObservableCollection(StoreCategoryInfo)" Name="CategoryInfos" />
+    </Class>
+
+    <Class Name="StoreSignatureInfo">
+        <Property Type="Signature" Name="AuthorSignature" IsReadonly="true" />
+        <Property Type="DateTime" Name="UpdateTime" IsReadonly="true" />
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="bool" Name="IsUpdated" IsReadonly="true" />
+        <Property Type="ObservableCollection(StoreBoxInfo)" Name="BoxInfos" />
+    </Class>
+
+    <Class Name="StoreBoxInfo">
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="ObservableCollection(Seed)" Name="Seeds" />
+        <Property Type="ObservableCollection(StoreBoxInfo)" Name="BoxInfos" />
+    </Class>
+
+    <Class Name="StoreListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsReadonly="true"/>
+        <Property Type="string" Name="Name" IsReadonly="true"/>
+        <Property Type="long" Name="Length" IsReadonly="true"/>
+        <Property Type="DateTime" Name="CreationTime" IsReadonly="true"/>
+        <Property Type="SearchState" Name="State" IsReadonly="true"/>
+        <Property Type="object" Name="Model" IsReadonly="true"/>
+    </Class>
+
+    <Class Name="SearchInfo">
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="bool" Name="IsUpdated" IsReadonly="true" />
+        <Property Type="SearchConditionsInfo" Name="Conditions" />
+        <Property Type="ObservableCollection(SearchInfo)" Name="Children" />
+    </Class>
+
+    <Class Name="SearchConditionsInfo">
+        <Property Type="ObservableCollection(SearchCondition(string))" Name="SearchNames" />
+        <Property Type="ObservableCollection(SearchCondition(SearchRegex))" Name="SearchRegexes" />
+        <Property Type="ObservableCollection(SearchCondition(Signature))" Name="SearchSignatures" />
+        <Property Type="ObservableCollection(SearchCondition(SearchRange(DateTime)))" Name="SearchCreationTimeRanges" />
+        <Property Type="ObservableCollection(SearchCondition(SearchRange(long)))" Name="SearchLengthRanges" />
+        <Property Type="ObservableCollection(SearchCondition(SearchState))" Name="SearchStates" />
+    </Class>
+
+    <Class Name="SearchListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsReadonly="true" />
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="Signature" Name="Signature" IsReadonly="true" />
+        <Property Type="long" Name="Length" IsReadonly="true" />
+        <Property Type="DateTime" Name="CreationTime" IsReadonly="true" />
+        <Property Type="SearchState" Name="State" IsReadonly="true" />
+        <Property Type="Seed" Name="Model" IsReadonly="true" />
+    </Class>
+
+    <Class Name="DownloadListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsReadonly="true" />
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="long" Name="Length" IsReadonly="true" />
+        <Property Type="DateTime" Name="CreationTime" IsReadonly="true" />
+        <Property Type="DownloadListViewItemRateInfo" Name="Rate" />
+        <Property Type="DownloadState" Name="State" IsReadonly="true" />
+        <Property Type="string" Name="Path" IsReadonly="true" />
+        <Property Type="DownloadItemInfo" Name="Model" IsReadonly="true" />
+    </Class>
+
+    <Class Name="DownloadListViewItemRateInfo">
+        <Property Type="string" Name="Text" IsReadonly="true" />
+        <Property Type="int" Name="Depth" IsReadonly="true" />
+        <Property Type="double" Name="Value" IsReadonly="true" />
+    </Class>
+
+    <Class Name="UploadStoreInfo">
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="bool" Name="IsUpdated" IsReadonly="true" />
+        <Property Type="ObservableCollection(UploadDirectoryInfo)" Name="DirectoryInfos" />
+        <Property Type="ObservableCollection(UploadCategoryInfo)" Name="CategoryInfos" />
+    </Class>
+
+    <Class Name="UploadCategoryInfo">
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="ObservableCollection(UploadDirectoryInfo)" Name="DirectoryInfos" />
+        <Property Type="ObservableCollection(UploadCategoryInfo)" Name="CategoryInfos" />
+    </Class>
+
+    <Class Name="UploadDirectoryInfo">
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="string" Name="Path" IsReadonly="true" />
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="ObservableCollection(Seed)" Name="Seeds" />
+        <Property Type="ObservableCollection(UploadBoxInfo)" Name="BoxInfos" />
+    </Class>
+
+    <Class Name="UploadBoxInfo">
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="bool" Name="IsExpanded" IsReadonly="true" />
+        <Property Type="ObservableCollection(Seed)" Name="Seeds" />
+        <Property Type="ObservableCollection(UploadBoxInfo)" Name="BoxInfos" />
+    </Class>
+
+    <Class Name="UploadListViewItemInfo">
+        <Property Type="int" Name="Group" IsReadonly="true"/>
+        <Property Type="BitmapSource" Name="Icon" IsReadonly="true"/>
+        <Property Type="string" Name="Name" IsReadonly="true"/>
+        <Property Type="long" Name="Length" IsReadonly="true"/>
+        <Property Type="DateTime" Name="CreationTime" IsReadonly="true"/>
+        <Property Type="SearchState" Name="State" IsReadonly="true"/>
+        <Property Type="string" Name="Path" IsReadonly="true"/>
+        <Property Type="object" Name="Model" IsReadonly="true"/>
+    </Class>
+
+    <Class Name="UploadPreviewListViewItemInfo">
+        <Property Type="BitmapSource" Name="Icon" IsReadonly="true" />
+        <Property Type="string" Name="Name" IsReadonly="true" />
+        <Property Type="long" Name="Length" IsReadonly="true" />
+        <Property Type="string" Name="Path" IsReadonly="true" />
+    </Class>
+
+    <Class Name="UploadSyncRateInfo">
+        <Property Type="string" Name="Text" IsReadonly="true" />
+        <Property Type="double" Name="Value" IsReadonly="true" />
+    </Class>
+
+</Config>

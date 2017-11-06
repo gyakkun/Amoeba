@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Sources\Info\_Generator\Models.generated.cs">
+    <Compile Update="Sources\_Generator\Models.generated.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Models.tt</DependentUpon>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Sources\Info\_Generator\Models.tt">
+    <None Update="Sources\_Generator\Models.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Models.generated.cs</LastGenOutput>
     </None>

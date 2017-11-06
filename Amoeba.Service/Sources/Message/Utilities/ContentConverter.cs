@@ -30,7 +30,6 @@ namespace Amoeba.Service
         }
 
         private static BufferManager _bufferManager = BufferManager.Instance;
-        private static RandomNumberGenerator _random = RandomNumberGenerator.Create();
 
         private static Stream AddVersion(Stream stream, int version)
         {
@@ -209,7 +208,13 @@ namespace Amoeba.Service
                     VintUtils.SetUInt64(outStream, (uint)ConvertCryptoAlgorithm.Aes256);
 
                     var cryptoKey = new byte[32];
-                    _random.GetBytes(cryptoKey);
+                    var iv = new byte[32];
+
+                    using (var random = RandomNumberGenerator.Create())
+                    {
+                        random.GetBytes(cryptoKey);
+                        random.GetBytes(iv);
+                    }
 
                     {
                         var encryptedBuffer = Exchange.Encrypt(publicKey, cryptoKey);
@@ -217,8 +222,6 @@ namespace Amoeba.Service
                         outStream.Write(encryptedBuffer, 0, encryptedBuffer.Length);
                     }
 
-                    var iv = new byte[32];
-                    _random.GetBytes(iv);
                     outStream.Write(iv, 0, iv.Length);
 
                     using (var aes = Aes.Create())
@@ -397,27 +400,23 @@ namespace Amoeba.Service
 
                 Stream paddingStream;
                 {
-                    Random random;
+                    using (var random = RandomNumberGenerator.Create())
                     {
-                        var seedBuffer = new byte[4];
-                        _random.GetBytes(seedBuffer);
-                        random = new Random(NetworkConverter.ToInt32(seedBuffer));
-                    }
+                        int paddingLength = size - (int)(lengthStream.Length + stream.Length);
 
-                    int paddingLength = size - (int)(lengthStream.Length + stream.Length);
+                        paddingStream = new BufferStream(_bufferManager);
 
-                    paddingStream = new BufferStream(_bufferManager);
-
-                    using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
-                    {
-                        while (paddingLength > 0)
+                        using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                         {
-                            int writeSize = Math.Min(paddingLength, safeBuffer.Value.Length);
+                            while (paddingLength > 0)
+                            {
+                                int writeSize = Math.Min(paddingLength, safeBuffer.Value.Length);
 
-                            random.NextBytes(safeBuffer.Value);
-                            paddingStream.Write(safeBuffer.Value, 0, writeSize);
+                                random.GetBytes(safeBuffer.Value);
+                                paddingStream.Write(safeBuffer.Value, 0, writeSize);
 
-                            paddingLength -= writeSize;
+                                paddingLength -= writeSize;
+                            }
                         }
                     }
                 }

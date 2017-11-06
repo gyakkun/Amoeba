@@ -3,7 +3,7 @@ using Omnius.Collections;
 
 namespace Amoeba.Service
 {
-    public sealed class MulticastMetadataCollection : FilteredList<MulticastMetadata>
+    sealed class MulticastMetadataCollection : FilteredList<MulticastMetadata>
     {
         public MulticastMetadataCollection() : base() { }
         public MulticastMetadataCollection(int capacity) : base(capacity) { }

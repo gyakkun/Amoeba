@@ -12,7 +12,7 @@ using Omnius.Serialization;
 namespace Amoeba.Service
 {
     [DataContract(Name = nameof(MulticastMetadata))]
-    public sealed class MulticastMetadata : CashItemBase<MulticastMetadata>, IMulticastMetadata
+    sealed class MulticastMetadata : CashItemBase<MulticastMetadata>, IMulticastMetadata
     {
         private enum SerializeId
         {

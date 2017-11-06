@@ -1,0 +1,49 @@
+<Application x:Class="Amoeba.Interface.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Amoeba.Interface"
+             xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+             Exit="Application_Exit"
+             Startup="Application_Startup">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Dark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepOrange.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.DeepOrange.xaml" />
+
+                <ResourceDictionary Source="/Resources/Themes/Amoeba.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <ObjectDataProvider x:Key="Languages" ObjectInstance="{x:Static local:LanguagesManager.Instance}" />
+            <ObjectDataProvider x:Key="Settings" ObjectInstance="{x:Static local:SettingsManager.Instance}" />
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <omnius:SortedCollectionConverter x:Key="SortedCollectionConverter" />
+            <omnius:BytesToHexStringConverter x:Key="BytesToHexStringConverter" />
+            <omnius:BytesToBase64StringConverter x:Key="BytesToBase64StringConverter" />
+            <omnius:IntToSizeStringConverter x:Key="IntToSizeStringConverter" />
+            <omnius:LongToSizeStringConverter x:Key="LongToSizeStringConverter" />
+            <omnius:DecimalToSizeStringConverter x:Key="DecimalToSizeStringConverter" />
+            <omnius:DoubleToGridLengthConverter x:Key="DoubleToGridLengthConverter" />
+            <omnius:ConditionalValueConverter x:Key="ConditionalValueConverter" />
+            <omnius:ConditionalVisibilityConverter x:Key="ConditionalVisibilityConverter" />
+            <omnius:UshortToStringConverter x:Key="UshortToStringConverter" />
+            <omnius:CompositeCollectionConverter x:Key="CompositeCollectionConverter" />
+            <omnius:EnumerateConverter x:Key="EnumerateConverter" />
+            <omnius:BoolToStringConverter x:Key="BoolToStringConverter" />
+            <omnius:TreeViewItemClickBehavior x:Key="TreeViewItemClickBehavior" />
+            <local:ObjectToInfoStringConverter x:Key="ObjectToInfoStringConverter" />
+            <local:SessionTypeToStringConverter x:Key="SessionTypeToStringConverter" />
+            <local:SearchStateToStringConverter x:Key="SearchStateToStringConverter" />
+            <local:SearchStateFlagToStringConverter x:Key="SearchStateFlagToStringConverter" />
+            <local:DownloadStateToStringConverter x:Key="DownloadStateToStringConverter" />
+            <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
+            <local:SignatureToStringConverter x:Key="SignatureToStringConverter" />
+            <local:ManagerStateToStringConverter x:Key="ManagerStateToStringConverter" />
+            <local:ConnectionTypeToStringConverter x:Key="ConnectionTypeToStringConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

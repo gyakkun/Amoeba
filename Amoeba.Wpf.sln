@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Messages", "Amoeba.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{170FCF7C-1245-4059-B2BE-7BB863CF6D70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Interface", "Amoeba.Interface.Wpf\Amoeba.Interface.csproj", "{19E45677-BD12-4F48-8C19-87E60B7CBA36}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Interface", "Amoeba.Interface\Wpf\Amoeba.Interface.csproj", "{19E45677-BD12-4F48-8C19-87E60B7CBA36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Update", "Amoeba.Update\Amoeba.Update.csproj", "{7847434C-5101-4937-8C4E-B51D8415ABD6}"
 EndProject

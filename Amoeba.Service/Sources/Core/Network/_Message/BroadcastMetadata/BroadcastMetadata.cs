@@ -9,7 +9,7 @@ using Omnius.Serialization;
 namespace Amoeba.Service
 {
     [DataContract(Name = nameof(BroadcastMetadata))]
-    public sealed class BroadcastMetadata : CertificateItemBase<BroadcastMetadata>, IBroadcastMetadata
+    sealed class BroadcastMetadata : CertificateItemBase<BroadcastMetadata>, IBroadcastMetadata
     {
         private enum SerializeId
         {
