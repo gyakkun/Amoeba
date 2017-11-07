@@ -56,6 +56,8 @@
     <Property Name="NameEditWindow_Ok" Value="OK" />
     <Property Name="NameEditWindow_Cancel" Value="キャンセル" />
 
+    <Property Name="QuickSearchControl_Search" Value="検索" />
+
     <Property Name="MainWindow_Service" Value="サービス" />
     <Property Name="MainWindow_Relation" Value="リレーション" />
     <Property Name="MainWindow_Options" Value="オプション" />

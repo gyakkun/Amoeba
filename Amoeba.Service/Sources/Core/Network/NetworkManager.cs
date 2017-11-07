@@ -509,12 +509,12 @@ namespace Amoeba.Service
                         // キャッシュに存在しないブロックのアップロード情報を削除する。
                         {
                             {
-                                var targetHashes = _cacheManager.ExceptFrom(_diffusionBlockHashes).ToArray();
+                                var targetHashes = _cacheManager.ExceptFrom(_diffusionBlockHashes.ToArray()).ToArray();
                                 _diffusionBlockHashes.ExceptWith(targetHashes);
                             }
 
                             {
-                                var targetHashes = _cacheManager.ExceptFrom(_uploadBlockHashes).ToArray();
+                                var targetHashes = _cacheManager.ExceptFrom(_uploadBlockHashes.ToArray()).ToArray();
                                 _uploadBlockHashes.ExceptWith(targetHashes);
                             }
                         }
@@ -629,7 +629,7 @@ namespace Amoeba.Service
                                 {
                                     List<Hash> list;
                                     {
-                                        var sortedList = _pushBlocksRequestMap.ToList();
+                                        var sortedList = _pushBlocksRequestMap.ToArray().ToList();
                                         _random.Shuffle(sortedList);
                                         sortedList.Sort((x, y) => x.Value.CompareTo(y.Value));
 
@@ -1184,7 +1184,7 @@ namespace Amoeba.Service
 
                     var broadcastMetadatas = new List<BroadcastMetadata>();
 
-                    var signatures = sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.ToList();
+                    var signatures = sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.ToArray().ToList();
                     _random.Shuffle(signatures);
 
                     foreach (var signature in signatures)
@@ -1239,7 +1239,7 @@ namespace Amoeba.Service
 
                     var unicastMetadatas = new List<UnicastMetadata>();
 
-                    var signatures = sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.ToList();
+                    var signatures = sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.ToArray().ToList();
                     _random.Shuffle(signatures);
 
                     foreach (var signature in signatures)
@@ -1294,7 +1294,7 @@ namespace Amoeba.Service
 
                     var multicastMetadatas = new List<MulticastMetadata>();
 
-                    var tags = sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.ToList();
+                    var tags = sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.ToArray().ToList();
                     _random.Shuffle(tags);
 
                     foreach (var tag in tags)

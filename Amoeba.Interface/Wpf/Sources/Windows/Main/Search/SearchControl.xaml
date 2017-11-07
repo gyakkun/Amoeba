@@ -52,7 +52,6 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBox Height="32"
-                     Margin="16,16,16,0"
                      VerticalAlignment="Top"
                      Text="{Binding Path=SearchInput.Value, UpdateSourceTrigger=PropertyChanged}">
                 <TextBox.InputBindings>

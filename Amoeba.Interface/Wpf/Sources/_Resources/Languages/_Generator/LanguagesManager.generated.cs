@@ -1,4 +1,10 @@
-﻿namespace Amoeba.Interface
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Amoeba.Interface
 {
     partial class LanguagesManager
     {
@@ -44,6 +50,7 @@
         public string NameEditWindow_Name { get { return this.Translate("NameEditWindow_Name"); } }
         public string NameEditWindow_Ok { get { return this.Translate("NameEditWindow_Ok"); } }
         public string NameEditWindow_Cancel { get { return this.Translate("NameEditWindow_Cancel"); } }
+        public string QuickSearchControl_Search { get { return this.Translate("QuickSearchControl_Search"); } }
         public string MainWindow_Service { get { return this.Translate("MainWindow_Service"); } }
         public string MainWindow_Relation { get { return this.Translate("MainWindow_Relation"); } }
         public string MainWindow_Options { get { return this.Translate("MainWindow_Options"); } }

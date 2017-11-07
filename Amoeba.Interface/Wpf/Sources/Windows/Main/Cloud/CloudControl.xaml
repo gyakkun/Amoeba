@@ -66,7 +66,8 @@
                     </Button>
                 </DockPanel>
 
-                <ListView Grid.Row="2" HorizontalContentAlignment="Stretch"
+                <ListView Grid.Row="2"
+                          HorizontalContentAlignment="Stretch"
                           VerticalContentAlignment="Stretch"
                           omnius:GridViewSortHelper.Command="{Binding Path=ConnectionSortCommand}"
                           omnius:ListBoxHelper.SelectedItems="{Binding Path=ConnectionSelectedItems}"

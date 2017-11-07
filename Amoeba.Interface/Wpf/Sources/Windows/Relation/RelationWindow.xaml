@@ -332,8 +332,9 @@
                 </Grid>
             </Grid>
 
-            <Grid Margin="8,0,8,0" Grid.Row="2"
+            <Grid Grid.Row="2"
                   Height="32"
+                  Margin="16,0,16,0"
                   Visibility="{Binding Path=QuickSearchControlViewModel.IsSearchingMode.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentControl>
                     <local:QuickSearchControl DataContext="{Binding QuickSearchControlViewModel}" />
