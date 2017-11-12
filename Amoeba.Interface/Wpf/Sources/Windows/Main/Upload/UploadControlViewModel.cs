@@ -553,7 +553,7 @@ namespace Amoeba.Interface
                         sortedList.Sort((x, y) => x.CompareTo(y));
                     }
 
-                    foreach (var (path, i) in sortedList.Select((n, i) => (n, i + 1)))
+                    foreach (var (path, i) in sortedList.Select((n, i) => (n, i)))
                     {
                         if (token.IsCancellationRequested) return;
                         if (targetUploadItemsInfo != _uploadItemsInfo) return;

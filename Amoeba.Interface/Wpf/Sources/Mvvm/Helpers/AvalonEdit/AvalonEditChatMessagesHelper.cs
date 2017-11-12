@@ -14,6 +14,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Rendering;
 using Omnius.Base;
 using Omnius.Security;
+using Omnius.Utilities;
 
 namespace Amoeba.Interface
 {

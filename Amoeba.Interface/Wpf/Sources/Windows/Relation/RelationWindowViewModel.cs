@@ -168,16 +168,13 @@ namespace Amoeba.Interface
                 return;
             }
 
-            var wordList = words.Split(' ', 'Å@');
+            var wordList = words.Split(new string[] { " ", "Å@" }, StringSplitOptions.RemoveEmptyEntries);
 
             this.ContentsView.Filter = new Predicate<object>((viewModel) =>
             {
                 if (viewModel is ProfileViewModel profileViewModel)
                 {
-                    foreach (string word in wordList)
-                    {
-                        if (profileViewModel.Signature.ToString().Contains(word, StringComparison.CurrentCultureIgnoreCase)) return true;
-                    }
+                    if (wordList.All(n => profileViewModel.Signature.ToString().Contains(n, StringComparison.CurrentCultureIgnoreCase))) return true;
                 }
 
                 return false;

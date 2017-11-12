@@ -89,8 +89,8 @@ namespace Amoeba.Messages
                 }
 
                 var headerStream = new BufferStream(_bufferManager);
-                VintUtils.SetUInt64(headerStream, (uint)version);
-                VintUtils.SetUInt64(headerStream, list[0].Key);
+                Varint.SetUInt64(headerStream, (uint)version);
+                Varint.SetUInt64(headerStream, list[0].Key);
 
                 var dataStream = new UniteStream(headerStream, list[0].Value);
 
@@ -133,8 +133,8 @@ namespace Amoeba.Messages
 
                 stream.Seek(0, SeekOrigin.Begin);
 
-                if (version != (int)VintUtils.GetUInt64(stream)) throw new ArgumentException("version");
-                int type = (int)VintUtils.GetUInt64(stream);
+                if (version != (int)Varint.GetUInt64(stream)) throw new ArgumentException("version");
+                int type = (int)Varint.GetUInt64(stream);
 
                 using (var dataStream = new RangeStream(stream, stream.Position, stream.Length - stream.Position - 4, true))
                 {

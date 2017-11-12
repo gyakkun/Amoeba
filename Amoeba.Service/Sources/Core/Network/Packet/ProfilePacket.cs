@@ -14,7 +14,7 @@ namespace Amoeba.Service
         }
 
         private byte[] _id;
-        private Messages.Location _location;
+        private Location _location;
 
         public ProfilePacket(byte[] id, Location location)
         {

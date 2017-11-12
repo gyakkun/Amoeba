@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Omnius.Base;
 using Omnius.Serialization;
+using Omnius.Utilities;
 
 namespace Amoeba.Messages
 {
