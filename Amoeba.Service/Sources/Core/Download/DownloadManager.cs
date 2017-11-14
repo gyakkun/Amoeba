@@ -94,12 +94,12 @@ namespace Amoeba.Service
                         if (info.State == DownloadState.Downloading || info.State == DownloadState.Decoding || info.State == DownloadState.ParityDecoding)
                         {
                             if (info.Depth == 0) downloadBlockCount = _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0;
-                            else downloadBlockCount = info.Index.Groups.Sum(n => Math.Min(n.Hashes.Count() / 2, _existManager.GetCount(n)));
+                            else downloadBlockCount = info.Index.Groups.Sum(n => Math.Min(n.Hashes.Count() / 2, _existManager.GetCount(n, true)));
                         }
                         else if (info.State == DownloadState.Completed)
                         {
                             if (info.Depth == 0) downloadBlockCount = _cacheManager.Contains(info.Metadata.Hash) ? 1 : 0;
-                            else downloadBlockCount = info.Index.Groups.Sum(n => _existManager.GetCount(n));
+                            else downloadBlockCount = info.Index.Groups.Sum(n => _existManager.GetCount(n, true));
                         }
                         else
                         {
@@ -173,7 +173,8 @@ namespace Amoeba.Service
                         if (_cacheManager.Contains(hash)) hashes.Add(hash);
                     }
 
-                    _existManager.Add(group, hashes);
+                    _existManager.Add(group);
+                    _existManager.Set(hashes, true);
                 }
             }
         }
@@ -210,10 +211,7 @@ namespace Amoeba.Service
             {
                 lock (_lockObject)
                 {
-                    foreach (var hash in hashes)
-                    {
-                        _existManager.Set(hash, state);
-                    }
+                    _existManager.Set(hashes, state);
                 }
             }
             catch (Exception)
@@ -257,13 +255,13 @@ namespace Amoeba.Service
                         }
                         else
                         {
-                            if (!item.Index.Groups.All(n => _existManager.GetCount(n) >= n.Hashes.Count() / 2))
+                            if (!item.Index.Groups.All(n => _existManager.GetCount(n, true) >= n.Hashes.Count() / 2))
                             {
                                 item.State = DownloadState.Downloading;
 
                                 foreach (var group in item.Index.Groups.Randomize())
                                 {
-                                    if (_existManager.GetCount(group) >= group.Hashes.Count() / 2) continue;
+                                    if (_existManager.GetCount(group, true) >= group.Hashes.Count() / 2) continue;
 
                                     foreach (var hash in _existManager.GetHashes(group, false))
                                     {
@@ -335,7 +333,7 @@ namespace Amoeba.Service
                 try
                 {
                     if ((item.Depth == 0 && !_cacheManager.Contains(item.Metadata.Hash))
-                        || (item.Depth > 0 && !item.Index.Groups.All(n => _existManager.GetCount(n) >= n.Hashes.Count() / 2)))
+                        || (item.Depth > 0 && !item.Index.Groups.All(n => _existManager.GetCount(n, true) >= n.Hashes.Count() / 2)))
                     {
                         item.State = DownloadState.Downloading;
                     }

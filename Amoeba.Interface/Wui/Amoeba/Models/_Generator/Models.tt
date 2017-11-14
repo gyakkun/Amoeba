@@ -1,0 +1,149 @@
+<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output encoding="UTF-8" extension=".generated.cs" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#
+var classInfos = new List<ClassInfo>();
+var namespaces = new List<string>();
+
+using (var stream = new FileStream(this.Host.ResolvePath("Definitions.xml"), FileMode.Open))
+using (var reader = new XmlTextReader(stream))
+{
+    while (reader.Read())
+    {
+        if (reader.NodeType == XmlNodeType.Element)
+        {
+            if (reader.LocalName == "Class")
+            {
+                var className = GetNormalizedTypeName(reader.GetAttribute("Name"));
+                var propertyInfos = new List<PropertyInfo>();
+
+                using (var reader2 = reader.ReadSubtree())
+                {
+                    while (reader2.Read())
+                    {
+                        if (reader2.NodeType == XmlNodeType.Element)
+                        {
+                            if (reader2.LocalName == "Property")
+                            {
+                                var type = GetNormalizedTypeName(reader2.GetAttribute("Type"));
+                                var name = reader2.GetAttribute("Name");
+                                var isEditable = bool.Parse(reader2.GetAttribute("IsEditable") ?? "false");
+
+                                propertyInfos.Add(new PropertyInfo(type, name, isEditable));
+                            }
+                        }
+                    }
+                }
+
+                classInfos.Add(new ClassInfo(className, propertyInfos));
+            }
+            else if (reader.LocalName == "Import")
+            {
+                namespaces.Add(reader.GetAttribute("Namespace"));
+            }
+        }
+    }
+}
+#>
+<# foreach(var value in namespaces) { #>
+using <#= value #>;
+<# } #>
+
+namespace Amoeba.Interface
+{
+<# foreach(var c in classInfos) { #>
+    [DataContract(Name = nameof(<#= c.Name #>))]
+    public class <#= c.Name #> : ICloneable<<#= c.Name #>>
+    {
+        public <#= c.Name #>() { }
+<# foreach(var p in c.PropertyInfos) { #>
+<# var generatedFieldName = GetFieldName(p.Name); #>
+<# if(p.IsEditable) { #>
+
+        private <#= p.Type #> <#= generatedFieldName #>;
+
+        [DataMember(Name = nameof(<#= p.Name #>))]
+        public <#= p.Type #> <#= p.Name #>
+        {
+            get
+            {
+                return <#= generatedFieldName #>;
+            }
+            set
+            {
+                <#= generatedFieldName #> = value;
+            }
+        }
+<# } else { #>
+
+        private <#= p.Type #> <#= generatedFieldName #>;
+
+        [DataMember(Name = nameof(<#= p.Name #>))]
+        public <#= p.Type #> <#= p.Name #>
+        {
+            get
+            {
+                if (<#= generatedFieldName #> == null)
+                    <#= generatedFieldName #> = new <#= p.Type #>();
+
+                return <#= generatedFieldName #>;
+            }
+        }
+<# } #>
+<# } #>
+
+        public <#= c.Name #> Clone()
+        {
+            return JsonUtils.Clone(this);
+        }
+    }
+
+<# } #>
+}
+<#+
+private static string GetNormalizedTypeName(string name)
+{
+    var sb = new StringBuilder(name);
+    sb.Replace("(", "<");
+    sb.Replace(")", ">");
+    return sb.ToString();
+}
+private static string GetFieldName(string name)
+{
+    char[] chars = name.ToCharArray();
+    chars[0] = Char.ToLower(chars[0]);
+    return "_" + new string(chars);
+}
+private class ClassInfo
+{
+    public ClassInfo(string name, IEnumerable<PropertyInfo> propertyInfos)
+    {
+        this.Name = name;
+        this.PropertyInfos = propertyInfos.ToArray();
+    }
+
+    public string Name { get; private set; }
+    public IEnumerable<PropertyInfo> PropertyInfos { get; private set; }
+}
+private class PropertyInfo
+{
+    public PropertyInfo(string type, string name, bool isEditable)
+    {
+        this.Type = type;
+        this.Name = name;
+        this.IsEditable = isEditable;
+    }
+
+    public string Type { get; private set; }
+    public string Name { get; private set; }
+    public bool IsEditable { get; private set; }
+}
+#>

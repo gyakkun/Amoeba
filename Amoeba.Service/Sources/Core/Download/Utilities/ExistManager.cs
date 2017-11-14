@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Utilities;
@@ -18,20 +19,11 @@ namespace Amoeba.Service
 
         }
 
-        public void Add(Group group, IEnumerable<Hash> hashes)
+        public void Add(Group group)
         {
             lock (_lockObject)
             {
-                var groupManager = new GroupManager(group);
-
-                _table[group] = groupManager;
-
-                if (hashes == null) return;
-
-                foreach (var key in hashes)
-                {
-                    groupManager.Set(key, true);
-                }
+                _table[group] = new GroupManager(group);
             }
         }
 
@@ -43,13 +35,16 @@ namespace Amoeba.Service
             }
         }
 
-        public void Set(Hash hash, bool state)
+        public void Set(IEnumerable<Hash> hashes, bool state)
         {
             lock (_lockObject)
             {
                 foreach (var groupManager in _table.Values)
                 {
-                    groupManager.Set(hash, state);
+                    foreach (var hash in hashes)
+                    {
+                        groupManager.Set(hash, state);
+                    }
                 }
             }
         }
@@ -58,21 +53,43 @@ namespace Amoeba.Service
         {
             lock (_lockObject)
             {
-                GroupManager groupManager;
-                if (!_table.TryGetValue(group, out groupManager)) throw new Exception();
-
-                return groupManager.GetHashes(state);
+                if (_table.TryGetValue(group, out var groupManager))
+                {
+                    return groupManager.GetHashes(state);
+                }
+                else
+                {
+                    if (state)
+                    {
+                        return Enumerable.Empty<Hash>();
+                    }
+                    else
+                    {
+                        return group.Hashes;
+                    }
+                }
             }
         }
 
-        public int GetCount(Group group)
+        public int GetCount(Group group, bool state)
         {
             lock (_lockObject)
             {
-                GroupManager groupManager;
-                if (!_table.TryGetValue(group, out groupManager)) throw new Exception();
-
-                return groupManager.GetCount(true);
+                if (_table.TryGetValue(group, out var groupManager))
+                {
+                    return groupManager.GetCount(state);
+                }
+                else
+                {
+                    if (state)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return group.Hashes.Count();
+                    }
+                }
             }
         }
 

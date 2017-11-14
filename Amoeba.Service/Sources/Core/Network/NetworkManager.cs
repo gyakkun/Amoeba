@@ -67,10 +67,10 @@ namespace Amoeba.Service
         private volatile bool _disposed;
 
         private const int _maxLocationCount = 256;
-        private const int _maxBlockLinkCount = 8192;
-        private const int _maxBlockRequestCount = 8192;
-        private const int _maxMetadataRequestCount = 2048;
-        private const int _maxMetadataResultCount = 2048;
+        private const int _maxBlockLinkCount = 2048;
+        private const int _maxBlockRequestCount = 2048;
+        private const int _maxMetadataRequestCount = 1024;
+        private const int _maxMetadataResultCount = 1024;
 
         private readonly int _threadCount = Math.Max(2, Math.Min(System.Environment.ProcessorCount, 32) / 2);
 
@@ -391,7 +391,7 @@ namespace Amoeba.Service
         {
             lock (_lockObject)
             {
-                var connection = new Connection(1024 * 1024 * 4, _bufferManager);
+                var connection = new Connection(1024 * 1024 * 2, _bufferManager);
                 connection.Connect(cap);
 
                 var sessionInfo = new SessionInfo();
@@ -681,7 +681,7 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 1))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 3))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
                                     }
@@ -715,7 +715,7 @@ namespace Amoeba.Service
                         // BroadcastMetadata
                         foreach (var signature in _metadataManager.GetBroadcastSignatures())
                         {
-                            foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 1, 0, 1))
+                            foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 3, 1, 1))
                             {
                                 node.Value.ReceiveInfo.PullBroadcastMetadataRequestSet.Add(signature);
                             }
@@ -724,7 +724,7 @@ namespace Amoeba.Service
                         // UnicastMetadata
                         foreach (var signature in _metadataManager.GetUnicastSignatures())
                         {
-                            foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 1, 0, 1))
+                            foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 3, 1, 1))
                             {
                                 node.Value.ReceiveInfo.PullUnicastMetadataRequestSet.Add(signature);
                             }
@@ -733,7 +733,7 @@ namespace Amoeba.Service
                         // MulticastMetadata
                         foreach (var tag in _metadataManager.GetMulticastTags())
                         {
-                            foreach (var node in GetTargetNodes(_routeTable.BaseId, tag.Id, cloudNodes, 1, 0, 1))
+                            foreach (var node in GetTargetNodes(_routeTable.BaseId, tag.Id, cloudNodes, 3, 1, 1))
                             {
                                 node.Value.ReceiveInfo.PullMulticastMetadataRequestSet.Add(tag);
                             }
@@ -815,7 +815,7 @@ namespace Amoeba.Service
 
                                 foreach (var signature in pushBroadcastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 1, 0, 1))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 3, 1, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -839,7 +839,7 @@ namespace Amoeba.Service
 
                                 foreach (var signature in pushUnicastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 1, 0, 1))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 3, 1, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -863,7 +863,7 @@ namespace Amoeba.Service
 
                                 foreach (var tag in pushMulticastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, tag.Id, cloudNodes, 1, 0, 1))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, tag.Id, cloudNodes, 3, 1, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Tag>()).Add(tag);
                                     }
@@ -924,7 +924,7 @@ namespace Amoeba.Service
                         {
                             try
                             {
-                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 4));
+                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 1));
                                 _sentByteCount.Add(count);
 
                                 remain -= count;
@@ -972,7 +972,7 @@ namespace Amoeba.Service
                         {
                             try
                             {
-                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 4));
+                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 1));
                                 _receivedByteCount.Add(count);
 
                                 remain -= count;
@@ -1368,9 +1368,10 @@ namespace Amoeba.Service
                     {
                         if (id == (int)SerializeId.Locations)
                         {
-                            if (sessionInfo.ReceiveInfo.PullLocationSet.Count > _maxLocationCount * sessionInfo.ReceiveInfo.PullLocationSet.SurvivalTime.TotalMinutes * 2) return;
-
                             var packet = LocationsPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.ReceiveInfo.PullLocationSet.Count + packet.Locations.Count()
+                                > _maxLocationCount * sessionInfo.ReceiveInfo.PullLocationSet.SurvivalTime.TotalMinutes * 2) return;
 
                             _info.PullLocationCount.Add(packet.Locations.Count());
 
@@ -1378,9 +1379,10 @@ namespace Amoeba.Service
                         }
                         else if (id == (int)SerializeId.BlocksLink)
                         {
-                            if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
-
                             var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count + packet.Hashes.Count()
+                                > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
 
                             _info.PullBlockLinkCount.Add(packet.Hashes.Count());
 
@@ -1388,9 +1390,10 @@ namespace Amoeba.Service
                         }
                         else if (id == (int)SerializeId.BlocksRequest)
                         {
-                            if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
                             var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count + packet.Hashes.Count()
+                                > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                             _info.PullBlockRequestCount.Add(packet.Hashes.Count());
 
@@ -1427,9 +1430,10 @@ namespace Amoeba.Service
                         }
                         else if (id == (int)SerializeId.BroadcastMetadatasRequest)
                         {
-                            if (sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
                             var packet = BroadcastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.Count + packet.Signatures.Count()
+                                > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                             _info.PullMessageRequestCount.Add(packet.Signatures.Count());
 
@@ -1438,6 +1442,8 @@ namespace Amoeba.Service
                         else if (id == (int)SerializeId.BroadcastMetadatasResult)
                         {
                             var packet = BroadcastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                            if (packet.BroadcastMetadatas.Count() > _maxMetadataResultCount) return;
 
                             _info.PullMessageResultCount.Add(packet.BroadcastMetadatas.Count());
 
@@ -1448,9 +1454,10 @@ namespace Amoeba.Service
                         }
                         else if (id == (int)SerializeId.UnicastMetadatasRequest)
                         {
-                            if (sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
                             var packet = UnicastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.Count + packet.Signatures.Count()
+                                > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                             _info.PullMessageRequestCount.Add(packet.Signatures.Count());
 
@@ -1459,6 +1466,8 @@ namespace Amoeba.Service
                         else if (id == (int)SerializeId.UnicastMetadatasResult)
                         {
                             var packet = UnicastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                            if (packet.UnicastMetadatas.Count() > _maxMetadataResultCount) return;
 
                             _info.PullMessageResultCount.Add(packet.UnicastMetadatas.Count());
 
@@ -1469,9 +1478,10 @@ namespace Amoeba.Service
                         }
                         else if (id == (int)SerializeId.MulticastMetadatasRequest)
                         {
-                            if (sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.Count > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
                             var packet = MulticastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.Count + packet.Tags.Count()
+                                > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
                             _info.PullMessageRequestCount.Add(packet.Tags.Count());
 
@@ -1480,6 +1490,8 @@ namespace Amoeba.Service
                         else if (id == (int)SerializeId.MulticastMetadatasResult)
                         {
                             var packet = MulticastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                            if (packet.MulticastMetadatas.Count() > _maxMetadataResultCount) return;
 
                             _info.PullMessageResultCount.Add(packet.MulticastMetadatas.Count());
 
