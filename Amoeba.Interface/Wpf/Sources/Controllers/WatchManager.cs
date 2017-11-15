@@ -165,8 +165,7 @@ namespace Amoeba.Interface
 
             _backupTimer = new WatchTimer(() =>
             {
-                if ((!Process.GetCurrentProcess().IsActivated() && sw.Elapsed.TotalMinutes > 30)
-                    || sw.Elapsed.TotalHours > 3)
+                if (sw.Elapsed.TotalMinutes > 20)
                 {
                     sw.Restart();
 
