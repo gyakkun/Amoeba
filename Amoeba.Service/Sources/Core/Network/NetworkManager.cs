@@ -67,10 +67,10 @@ namespace Amoeba.Service
         private volatile bool _disposed;
 
         private const int _maxLocationCount = 256;
-        private const int _maxBlockLinkCount = 2048;
-        private const int _maxBlockRequestCount = 2048;
-        private const int _maxMetadataRequestCount = 1024;
-        private const int _maxMetadataResultCount = 1024;
+        private const int _maxBlockLinkCount = 8192;
+        private const int _maxBlockRequestCount = 8192;
+        private const int _maxMetadataRequestCount = 2048;
+        private const int _maxMetadataResultCount = 2048;
 
         private readonly int _threadCount = Math.Max(2, Math.Min(System.Environment.ProcessorCount, 32) / 2);
 
@@ -495,6 +495,23 @@ namespace Amoeba.Service
                                 }
                             }
                         }
+                    }
+
+                    if (reduceStopwatch.Elapsed.TotalMinutes >= 10)
+                    {
+                        reduceStopwatch.Restart();
+
+                        // 優先度の低い通信を切断する。
+                        {
+                            var list = _routeTable.ToArray().Select(n => n.Value).ToList();
+                            _random.Shuffle(list);
+                            list.Sort((x, y) => x.PriorityManager.GetPriority().CompareTo(y.PriorityManager.GetPriority()));
+
+                            foreach (var sessionInfo in list.Take(1))
+                            {
+                                this.RemoveConnection(sessionInfo.Connection);
+                            }
+                        }
 
                         // 拡散アップロードするブロック数が多すぎる場合、maxCount以下まで削除する。
                         {
@@ -517,23 +534,6 @@ namespace Amoeba.Service
                             {
                                 var targetHashes = _cacheManager.ExceptFrom(_uploadBlockHashes.ToArray()).ToArray();
                                 _uploadBlockHashes.ExceptWith(targetHashes);
-                            }
-                        }
-                    }
-
-                    if (reduceStopwatch.Elapsed.TotalMinutes >= 10)
-                    {
-                        reduceStopwatch.Restart();
-
-                        // 優先度の低い通信を切断する。
-                        {
-                            var list = _routeTable.ToArray().Select(n => n.Value).ToList();
-                            _random.Shuffle(list);
-                            list.Sort((x, y) => x.PriorityManager.GetPriority().CompareTo(y.PriorityManager.GetPriority()));
-
-                            foreach (var sessionInfo in list.Take(1))
-                            {
-                                this.RemoveConnection(sessionInfo.Connection);
                             }
                         }
                     }
@@ -1330,182 +1330,190 @@ namespace Amoeba.Service
 
         private void Receive(SessionInfo sessionInfo, Stream stream)
         {
-            sessionInfo.ReceiveInfo.Stopwatch.Restart();
-
-            if (!sessionInfo.ReceiveInfo.IsInitialized)
+            try
             {
-                var targetVersion = (ProtocolVersion)Varint.GetUInt64(stream);
-                sessionInfo.Version = (ProtocolVersion)Math.Min((uint)targetVersion, (uint)ProtocolVersion.Version1);
+                sessionInfo.ReceiveInfo.Stopwatch.Restart();
 
-                using (var dataStream = new RangeStream(stream))
+                if (!sessionInfo.ReceiveInfo.IsInitialized)
                 {
-                    var profile = ProfilePacket.Import(dataStream, _bufferManager);
-                    if (profile.Id == null || profile.Location == null) throw new ArgumentException("Broken Profile");
-
-                    lock (_lockObject)
-                    {
-                        if (Unsafe.Equals(profile.Id, _routeTable.BaseId)) throw new ArgumentException("Conflict");
-
-                        if (_connections.ContainsKey(sessionInfo.Connection))
-                        {
-                            sessionInfo.Id = profile.Id;
-                            sessionInfo.Location = profile.Location;
-
-                            if (!_routeTable.Add(profile.Id, sessionInfo)) throw new ArgumentException("RouteTable Overflow");
-                        }
-                    }
-                }
-
-                sessionInfo.ReceiveInfo.IsInitialized = true;
-            }
-            else
-            {
-                try
-                {
-                    int id = (int)Varint.GetUInt64(stream);
+                    var targetVersion = (ProtocolVersion)Varint.GetUInt64(stream);
+                    sessionInfo.Version = (ProtocolVersion)Math.Min((uint)targetVersion, (uint)ProtocolVersion.Version1);
 
                     using (var dataStream = new RangeStream(stream))
                     {
-                        if (id == (int)SerializeId.Locations)
+                        var profile = ProfilePacket.Import(dataStream, _bufferManager);
+                        if (profile.Id == null || profile.Location == null) throw new ArgumentException("Broken Profile");
+
+                        lock (_lockObject)
                         {
-                            var packet = LocationsPacket.Import(dataStream, _bufferManager);
+                            if (Unsafe.Equals(profile.Id, _routeTable.BaseId)) throw new ArgumentException("Conflict");
 
-                            if (sessionInfo.ReceiveInfo.PullLocationSet.Count + packet.Locations.Count()
-                                > _maxLocationCount * sessionInfo.ReceiveInfo.PullLocationSet.SurvivalTime.TotalMinutes * 2) return;
-
-                            _info.PullLocationCount.Add(packet.Locations.Count());
-
-                            sessionInfo.ReceiveInfo.PullLocationSet.AddRange(packet.Locations);
-                        }
-                        else if (id == (int)SerializeId.BlocksLink)
-                        {
-                            var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
-
-                            if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count + packet.Hashes.Count()
-                                > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
-
-                            _info.PullBlockLinkCount.Add(packet.Hashes.Count());
-
-                            sessionInfo.ReceiveInfo.PullBlockLinkSet.AddRange(packet.Hashes);
-                        }
-                        else if (id == (int)SerializeId.BlocksRequest)
-                        {
-                            var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
-
-                            if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count + packet.Hashes.Count()
-                                > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
-                            _info.PullBlockRequestCount.Add(packet.Hashes.Count());
-
-                            sessionInfo.ReceiveInfo.PullBlockRequestSet.AddRange(packet.Hashes.Where(n => !sessionInfo.SendInfo.PushBlockResultSet.Contains(n)));
-                        }
-                        else if (id == (int)SerializeId.BlockResult)
-                        {
-                            var packet = BlockResultPacket.Import(dataStream, _bufferManager);
-
-                            _info.PullBlockResultCount.Increment();
-
-                            try
+                            if (_connections.ContainsKey(sessionInfo.Connection))
                             {
-                                _cacheManager[packet.Hash] = packet.Value;
+                                sessionInfo.Id = profile.Id;
+                                sessionInfo.Location = profile.Location;
 
-                                sessionInfo.SendInfo.PushBlockResultSet.Add(packet.Hash);
-
-                                if (sessionInfo.SendInfo.PushBlockRequestSet.Contains(packet.Hash))
-                                {
-                                    sessionInfo.PriorityManager.Increment();
-                                }
-                                else
-                                {
-                                    _diffusionBlockHashes.Add(packet.Hash);
-                                }
-                            }
-                            finally
-                            {
-                                if (packet.Value.Array != null)
-                                {
-                                    _bufferManager.ReturnBuffer(packet.Value.Array);
-                                }
-                            }
-                        }
-                        else if (id == (int)SerializeId.BroadcastMetadatasRequest)
-                        {
-                            var packet = BroadcastMetadatasRequestPacket.Import(dataStream, _bufferManager);
-
-                            if (sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.Count + packet.Signatures.Count()
-                                > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
-                            _info.PullMessageRequestCount.Add(packet.Signatures.Count());
-
-                            sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.AddRange(packet.Signatures);
-                        }
-                        else if (id == (int)SerializeId.BroadcastMetadatasResult)
-                        {
-                            var packet = BroadcastMetadatasResultPacket.Import(dataStream, _bufferManager);
-
-                            if (packet.BroadcastMetadatas.Count() > _maxMetadataResultCount) return;
-
-                            _info.PullMessageResultCount.Add(packet.BroadcastMetadatas.Count());
-
-                            foreach (var metadata in packet.BroadcastMetadatas)
-                            {
-                                _metadataManager.SetMetadata(metadata);
-                            }
-                        }
-                        else if (id == (int)SerializeId.UnicastMetadatasRequest)
-                        {
-                            var packet = UnicastMetadatasRequestPacket.Import(dataStream, _bufferManager);
-
-                            if (sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.Count + packet.Signatures.Count()
-                                > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
-                            _info.PullMessageRequestCount.Add(packet.Signatures.Count());
-
-                            sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.AddRange(packet.Signatures);
-                        }
-                        else if (id == (int)SerializeId.UnicastMetadatasResult)
-                        {
-                            var packet = UnicastMetadatasResultPacket.Import(dataStream, _bufferManager);
-
-                            if (packet.UnicastMetadatas.Count() > _maxMetadataResultCount) return;
-
-                            _info.PullMessageResultCount.Add(packet.UnicastMetadatas.Count());
-
-                            foreach (var metadata in packet.UnicastMetadatas)
-                            {
-                                _metadataManager.SetMetadata(metadata);
-                            }
-                        }
-                        else if (id == (int)SerializeId.MulticastMetadatasRequest)
-                        {
-                            var packet = MulticastMetadatasRequestPacket.Import(dataStream, _bufferManager);
-
-                            if (sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.Count + packet.Tags.Count()
-                                > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
-                            _info.PullMessageRequestCount.Add(packet.Tags.Count());
-
-                            sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.AddRange(packet.Tags);
-                        }
-                        else if (id == (int)SerializeId.MulticastMetadatasResult)
-                        {
-                            var packet = MulticastMetadatasResultPacket.Import(dataStream, _bufferManager);
-
-                            if (packet.MulticastMetadatas.Count() > _maxMetadataResultCount) return;
-
-                            _info.PullMessageResultCount.Add(packet.MulticastMetadatas.Count());
-
-                            foreach (var metadata in packet.MulticastMetadatas)
-                            {
-                                _metadataManager.SetMetadata(metadata);
+                                if (!_routeTable.Add(profile.Id, sessionInfo)) throw new ArgumentException("RouteTable Overflow");
                             }
                         }
                     }
-                }
-                catch (Exception)
-                {
 
+                    sessionInfo.ReceiveInfo.IsInitialized = true;
                 }
+                else
+                {
+                    try
+                    {
+                        int id = (int)Varint.GetUInt64(stream);
+
+                        using (var dataStream = new RangeStream(stream))
+                        {
+                            if (id == (int)SerializeId.Locations)
+                            {
+                                var packet = LocationsPacket.Import(dataStream, _bufferManager);
+
+                                if (sessionInfo.ReceiveInfo.PullLocationSet.Count + packet.Locations.Count()
+                                    > _maxLocationCount * sessionInfo.ReceiveInfo.PullLocationSet.SurvivalTime.TotalMinutes * 2) return;
+
+                                _info.PullLocationCount.Add(packet.Locations.Count());
+
+                                sessionInfo.ReceiveInfo.PullLocationSet.AddRange(packet.Locations);
+                            }
+                            else if (id == (int)SerializeId.BlocksLink)
+                            {
+                                var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
+
+                                if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count + packet.Hashes.Count()
+                                    > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
+
+                                _info.PullBlockLinkCount.Add(packet.Hashes.Count());
+
+                                sessionInfo.ReceiveInfo.PullBlockLinkSet.AddRange(packet.Hashes);
+                            }
+                            else if (id == (int)SerializeId.BlocksRequest)
+                            {
+                                var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
+
+                                if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count + packet.Hashes.Count()
+                                    > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
+
+                                _info.PullBlockRequestCount.Add(packet.Hashes.Count());
+
+                                sessionInfo.ReceiveInfo.PullBlockRequestSet.AddRange(packet.Hashes);
+                            }
+                            else if (id == (int)SerializeId.BlockResult)
+                            {
+                                var packet = BlockResultPacket.Import(dataStream, _bufferManager);
+
+                                _info.PullBlockResultCount.Increment();
+
+                                try
+                                {
+                                    _cacheManager[packet.Hash] = packet.Value;
+
+                                    sessionInfo.SendInfo.PushBlockResultSet.Add(packet.Hash);
+
+                                    if (sessionInfo.SendInfo.PushBlockRequestSet.Contains(packet.Hash))
+                                    {
+                                        sessionInfo.PriorityManager.Increment();
+                                    }
+                                    else
+                                    {
+                                        _diffusionBlockHashes.Add(packet.Hash);
+                                    }
+                                }
+                                finally
+                                {
+                                    if (packet.Value.Array != null)
+                                    {
+                                        _bufferManager.ReturnBuffer(packet.Value.Array);
+                                    }
+                                }
+                            }
+                            else if (id == (int)SerializeId.BroadcastMetadatasRequest)
+                            {
+                                var packet = BroadcastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                                if (sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.Count + packet.Signatures.Count()
+                                    > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+
+                                _info.PullMessageRequestCount.Add(packet.Signatures.Count());
+
+                                sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.AddRange(packet.Signatures);
+                            }
+                            else if (id == (int)SerializeId.BroadcastMetadatasResult)
+                            {
+                                var packet = BroadcastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                                if (packet.BroadcastMetadatas.Count() > _maxMetadataResultCount) return;
+
+                                _info.PullMessageResultCount.Add(packet.BroadcastMetadatas.Count());
+
+                                foreach (var metadata in packet.BroadcastMetadatas)
+                                {
+                                    _metadataManager.SetMetadata(metadata);
+                                }
+                            }
+                            else if (id == (int)SerializeId.UnicastMetadatasRequest)
+                            {
+                                var packet = UnicastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                                if (sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.Count + packet.Signatures.Count()
+                                    > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+
+                                _info.PullMessageRequestCount.Add(packet.Signatures.Count());
+
+                                sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.AddRange(packet.Signatures);
+                            }
+                            else if (id == (int)SerializeId.UnicastMetadatasResult)
+                            {
+                                var packet = UnicastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                                if (packet.UnicastMetadatas.Count() > _maxMetadataResultCount) return;
+
+                                _info.PullMessageResultCount.Add(packet.UnicastMetadatas.Count());
+
+                                foreach (var metadata in packet.UnicastMetadatas)
+                                {
+                                    _metadataManager.SetMetadata(metadata);
+                                }
+                            }
+                            else if (id == (int)SerializeId.MulticastMetadatasRequest)
+                            {
+                                var packet = MulticastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                                if (sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.Count + packet.Tags.Count()
+                                    > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+
+                                _info.PullMessageRequestCount.Add(packet.Tags.Count());
+
+                                sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.AddRange(packet.Tags);
+                            }
+                            else if (id == (int)SerializeId.MulticastMetadatasResult)
+                            {
+                                var packet = MulticastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                                if (packet.MulticastMetadatas.Count() > _maxMetadataResultCount) return;
+
+                                _info.PullMessageResultCount.Add(packet.MulticastMetadatas.Count());
+
+                                foreach (var metadata in packet.MulticastMetadatas)
+                                {
+                                    _metadataManager.SetMetadata(metadata);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+            }
+            finally
+            {
+                stream.Dispose();
+                stream = null;
             }
         }
 

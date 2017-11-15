@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
@@ -49,6 +49,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Update", "Amoeba.Update\Amoeba.Update.csproj", "{7847434C-5101-4937-8C4E-B51D8415ABD6}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0a55926d-70ce-41ba-a838-99937a3b219d}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{19e45677-bd12-4f48-8c19-87e60b7cba36}*SharedItemsImports = 4
