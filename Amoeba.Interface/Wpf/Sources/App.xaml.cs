@@ -29,7 +29,7 @@ namespace Amoeba.Interface
 
         public App()
         {
-            Process.GetCurrentProcess().SetMemoryPriority(4);
+            Process.GetCurrentProcess().SetMemoryPriority(5);
 
             NativeMethods.SetThreadExecutionState(NativeMethods.ExecutionState.Continuous);
 

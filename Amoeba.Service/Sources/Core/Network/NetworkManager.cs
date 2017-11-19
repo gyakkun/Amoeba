@@ -67,8 +67,8 @@ namespace Amoeba.Service
         private volatile bool _disposed;
 
         private const int _maxLocationCount = 256;
-        private const int _maxBlockLinkCount = 2048;
-        private const int _maxBlockRequestCount = 2048;
+        private const int _maxBlockLinkCount = 8192;
+        private const int _maxBlockRequestCount = 8192;
         private const int _maxMetadataRequestCount = 1024;
         private const int _maxMetadataResultCount = 1024;
 
@@ -610,42 +610,54 @@ namespace Amoeba.Service
                             // Link
                             {
                                 {
-                                    var list = _cacheManager.ToArray();
-                                    _random.Shuffle(list);
+                                    var tempList = _cacheManager.ToArray();
+                                    _random.Shuffle(tempList);
 
-                                    pushBlockLinkSet.UnionWith(list.Take(_maxBlockLinkCount));
+                                    pushBlockLinkSet.UnionWith(tempList.Take(_maxBlockLinkCount));
                                 }
 
-                                foreach (var node in cloudNodes)
                                 {
-                                    var list = node.Value.ReceiveInfo.PullBlockLinkSet.ToArray(new TimeSpan(0, 10, 0));
-                                    _random.Shuffle(list);
+                                    var tempSet = new HashSet<Hash>();
 
-                                    pushBlockLinkSet.UnionWith(list.Take((int)(_maxBlockLinkCount * node.Value.PriorityManager.GetPriority())));
+                                    foreach (var node in cloudNodes)
+                                    {
+                                        var list = node.Value.ReceiveInfo.PullBlockLinkSet.ToArray(new TimeSpan(0, 10, 0));
+                                        _random.Shuffle(list);
+
+                                        tempSet.UnionWith(list.Take((int)(_maxBlockLinkCount * node.Value.PriorityManager.GetPriority())));
+                                    }
+
+                                    pushBlockLinkSet.UnionWith(tempSet.Take(_maxBlockLinkCount * 8));
                                 }
                             }
 
                             // Request
                             {
                                 {
-                                    List<Hash> list;
+                                    List<Hash> tempList;
                                     {
                                         var sortedList = _pushBlocksRequestMap.ToArray().ToList();
                                         _random.Shuffle(sortedList);
                                         sortedList.Sort((x, y) => x.Value.CompareTo(y.Value));
 
-                                        list = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToList();
+                                        tempList = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToList();
                                     }
 
-                                    pushBlockRequestSet.UnionWith(list.Take(_maxBlockRequestCount));
+                                    pushBlockRequestSet.UnionWith(tempList.Take(_maxBlockRequestCount));
                                 }
 
-                                foreach (var node in cloudNodes)
                                 {
-                                    var list = _cacheManager.ExceptFrom(node.Value.ReceiveInfo.PullBlockRequestSet.ToArray(new TimeSpan(0, 10, 0))).ToArray();
-                                    _random.Shuffle(list);
+                                    var tempSet = new HashSet<Hash>();
 
-                                    pushBlockRequestSet.UnionWith(list.Take((int)(_maxBlockRequestCount * node.Value.PriorityManager.GetPriority())));
+                                    foreach (var node in cloudNodes)
+                                    {
+                                        var list = _cacheManager.ExceptFrom(node.Value.ReceiveInfo.PullBlockRequestSet.ToArray(new TimeSpan(0, 10, 0))).ToArray();
+                                        _random.Shuffle(list);
+
+                                        tempSet.UnionWith(list.Take((int)(_maxBlockRequestCount * node.Value.PriorityManager.GetPriority())));
+                                    }
+
+                                    pushBlockRequestSet.UnionWith(tempSet.Take(_maxBlockRequestCount * 8));
                                 }
                             }
                         }
