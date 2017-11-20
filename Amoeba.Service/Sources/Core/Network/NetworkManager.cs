@@ -67,8 +67,8 @@ namespace Amoeba.Service
         private volatile bool _disposed;
 
         private const int _maxLocationCount = 256;
-        private const int _maxBlockLinkCount = 8192;
-        private const int _maxBlockRequestCount = 8192;
+        private const int _maxBlockLinkCount = 2048;
+        private const int _maxBlockRequestCount = 2048;
         private const int _maxMetadataRequestCount = 1024;
         private const int _maxMetadataResultCount = 1024;
 
@@ -95,7 +95,7 @@ namespace Amoeba.Service
 
             _computeTaskManager = new TaskManager(this.ComputeThread);
 
-            foreach (int i in Enumerable.Range(0, _threadCount * 2))
+            foreach (int i in Enumerable.Range(0, 3))
             {
                 _sendTaskManagers.Add(new TaskManager((token) => this.SendThread(i, token)));
                 _receiveTaskManagers.Add(new TaskManager((token) => this.ReceiveThread(i, token)));
@@ -627,20 +627,20 @@ namespace Amoeba.Service
                                         tempSet.UnionWith(list.Take((int)(_maxBlockLinkCount * node.Value.PriorityManager.GetPriority())));
                                     }
 
-                                    pushBlockLinkSet.UnionWith(tempSet.Take(_maxBlockLinkCount * 8));
+                                    pushBlockLinkSet.UnionWith(tempSet.Take(_maxBlockLinkCount * 16));
                                 }
                             }
 
                             // Request
                             {
                                 {
-                                    List<Hash> tempList;
+                                    Hash[] tempList;
                                     {
                                         var sortedList = _pushBlocksRequestMap.ToArray().ToList();
                                         _random.Shuffle(sortedList);
                                         sortedList.Sort((x, y) => x.Value.CompareTo(y.Value));
 
-                                        tempList = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToList();
+                                        tempList = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToArray();
                                     }
 
                                     pushBlockRequestSet.UnionWith(tempList.Take(_maxBlockRequestCount));
@@ -657,7 +657,7 @@ namespace Amoeba.Service
                                         tempSet.UnionWith(list.Take((int)(_maxBlockRequestCount * node.Value.PriorityManager.GetPriority())));
                                     }
 
-                                    pushBlockRequestSet.UnionWith(tempSet.Take(_maxBlockRequestCount * 8));
+                                    pushBlockRequestSet.UnionWith(tempSet.Take(_maxBlockRequestCount * 16));
                                 }
                             }
                         }
@@ -689,18 +689,18 @@ namespace Amoeba.Service
 
                             // Request
                             {
-                                var tempMap = new Dictionary<Node<SessionInfo>, HashSet<Hash>>();
+                                var tempMap = new Dictionary<Node<SessionInfo>, List<Hash>>();
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
                                     foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 3))
                                     {
-                                        tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
+                                        tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
                                     }
 
                                     foreach (var node in cloudNodes.Where(n => n.Value.ReceiveInfo.PullBlockLinkSet.Contains(hash)))
                                     {
-                                        tempMap.GetOrAdd(node, (_) => new HashSet<Hash>()).Add(hash);
+                                        tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
                                     }
                                 }
 
@@ -709,7 +709,7 @@ namespace Amoeba.Service
                                     lock (node.Value.SendInfo.PushBlockRequestQueue.LockObject)
                                     {
                                         node.Value.SendInfo.PushBlockRequestQueue.Clear();
-                                        node.Value.SendInfo.PushBlockRequestQueue.AddRange(targets.Take(_maxBlockRequestCount).Randomize());
+                                        node.Value.SendInfo.PushBlockRequestQueue.AddRange(targets.Take(_maxBlockRequestCount));
                                     }
                                 }
                             }

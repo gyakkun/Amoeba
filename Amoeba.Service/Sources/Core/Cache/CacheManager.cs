@@ -64,11 +64,11 @@ namespace Amoeba.Service
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 const FileOptions FileFlagNoBuffering = (FileOptions)0x20000000;
-                _fileStream = new BufferedStream(new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize, FileFlagNoBuffering));
+                _fileStream = new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize, FileFlagNoBuffering);
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                _fileStream = new BufferedStream(new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize));
+                _fileStream = new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize);
             }
 
             _bitmapManager = new BitmapManager(bufferManager);
