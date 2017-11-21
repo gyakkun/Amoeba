@@ -72,7 +72,7 @@ namespace Amoeba.Service
         private const int _maxMetadataRequestCount = 1024;
         private const int _maxMetadataResultCount = 1024;
 
-        private readonly int _threadCount = Math.Max(2, Math.Min(System.Environment.ProcessorCount, 32) / 2);
+        private readonly int _threadCount = 4;
 
         public NetworkManager(string configPath, CacheManager cacheManager, BufferManager bufferManager)
         {
@@ -95,7 +95,7 @@ namespace Amoeba.Service
 
             _computeTaskManager = new TaskManager(this.ComputeThread);
 
-            foreach (int i in Enumerable.Range(0, 3))
+            foreach (int i in Enumerable.Range(0, _threadCount))
             {
                 _sendTaskManagers.Add(new TaskManager((token) => this.SendThread(i, token)));
                 _receiveTaskManagers.Add(new TaskManager((token) => this.ReceiveThread(i, token)));
@@ -936,7 +936,7 @@ namespace Amoeba.Service
                         {
                             try
                             {
-                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 1));
+                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 2));
                                 _sentByteCount.Add(count);
 
                                 remain -= count;
@@ -984,7 +984,7 @@ namespace Amoeba.Service
                         {
                             try
                             {
-                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 1));
+                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 2));
                                 _receivedByteCount.Add(count);
 
                                 remain -= count;
