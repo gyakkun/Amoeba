@@ -39,7 +39,7 @@ namespace Amoeba.Service
                     {
                         for (int i = (int)reader.GetUInt32() - 1; i >= 0; i--)
                         {
-                            this.ProtectedHashes.Add(Hash.Import(reader.GetStream(), bufferManager));
+                            this.ProtectedHashes.Add(HashConveter.FromStream(reader.GetStream()));
                         }
                     }
                 }
@@ -58,7 +58,7 @@ namespace Amoeba.Service
 
                     foreach (var item in this.ProtectedHashes)
                     {
-                        writer.Write(item.Export(bufferManager));
+                        writer.Write(HashConveter.ToStream(item));
                     }
                 }
 

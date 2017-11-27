@@ -1116,7 +1116,7 @@ namespace Amoeba.Service
 
                 if (_random.Next(0, 100) < (sessionInfo.PriorityManager.GetPriority() * 100))
                 {
-                    Hash hash = null;
+                    Hash hash;
 
                     lock (sessionInfo.SendInfo.PushBlockResultQueue.LockObject)
                     {
@@ -1124,11 +1124,13 @@ namespace Amoeba.Service
                         {
                             hash = sessionInfo.SendInfo.PushBlockResultQueue.Dequeue();
                         }
+                        else
+                        {
+                            goto End;
+                        }
                     }
 
                     Stream dataStream = null;
-
-                    if (hash != null)
                     {
                         var buffer = new ArraySegment<byte>();
 
@@ -1167,6 +1169,8 @@ namespace Amoeba.Service
                         return new UniteStream(typeStream, dataStream);
                     }
                 }
+
+                End:;
             }
 
             if (ProtocolVersion.Version1 <= sessionInfo.Version)

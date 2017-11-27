@@ -11,9 +11,7 @@ namespace Amoeba.Service
 
         protected override bool Filter(UnicastMetadata item)
         {
-            if (item == null) return true;
-
-            return false;
+            return (item != null);
         }
     }
 }

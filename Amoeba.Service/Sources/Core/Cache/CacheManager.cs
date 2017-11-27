@@ -853,7 +853,7 @@ namespace Amoeba.Service
                     {
                         if (stream.Length <= blockLength)
                         {
-                            Hash hash = null;
+                            Hash hash;
 
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(blockLength))
                             {
@@ -1023,7 +1023,7 @@ namespace Amoeba.Service
                     {
                         if (stream.Length <= blockLength)
                         {
-                            Hash hash = null;
+                            Hash hash;
 
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(blockLength))
                             {
@@ -1124,7 +1124,7 @@ namespace Amoeba.Service
                         {
                             if (stream.Length <= blockLength)
                             {
-                                Hash hash = null;
+                                Hash hash;
 
                                 using (var safeBuffer = _bufferManager.CreateSafeBuffer(blockLength))
                                 {
@@ -1310,11 +1310,15 @@ namespace Amoeba.Service
 
                         for (int i = 0; i < parityBuffers.Length; i++)
                         {
-                            Hash hash = null;
+                            Hash hash;
 
                             if (hashAlgorithm == HashAlgorithm.Sha256)
                             {
                                 hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(parityBuffers[i]));
+                            }
+                            else
+                            {
+                                throw new NotSupportedException();
                             }
 
                             this.Lock(hash);

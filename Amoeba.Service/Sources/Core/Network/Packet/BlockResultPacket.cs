@@ -38,7 +38,7 @@ namespace Amoeba.Service
 
                     if (id == (int)SerializeId.Hash)
                     {
-                        this.Hash = Hash.Import(reader.GetStream(), bufferManager);
+                        this.Hash = HashConveter.FromStream(reader.GetStream());
                     }
                     else if (id == (int)SerializeId.Value)
                     {
@@ -81,7 +81,7 @@ namespace Amoeba.Service
                 if (this.Hash != null)
                 {
                     writer.Write((uint)SerializeId.Hash);
-                    writer.Write(this.Hash.Export(bufferManager));
+                    writer.Write(HashConveter.ToStream(this.Hash));
                 }
                 // Value
                 if (this.Value.Array != null)

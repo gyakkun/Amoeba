@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using Omnius.Base;
+using Omnius.Security;
 using Omnius.Utilities;
 
 namespace Amoeba.Service
@@ -32,7 +33,7 @@ namespace Amoeba.Service
 
         public override int GetHashCode()
         {
-            return (this.Id != null) ? ItemUtils.GetHashCode(this.Id) : 0;
+            return (this.Id != null) ? Fnv1.ComputeHash32(this.Id) : 0;
         }
 
         public override bool Equals(object obj)

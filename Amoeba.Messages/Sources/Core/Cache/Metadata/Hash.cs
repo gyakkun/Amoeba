@@ -1,58 +1,45 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using Omnius.Base;
+using Omnius.Security;
 using Omnius.Serialization;
 using Omnius.Utilities;
 
 namespace Amoeba.Messages
 {
     [DataContract(Name = nameof(Hash))]
-    public sealed class Hash : ItemBase<Hash>, IHash
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct Hash : IHash, IEquatable<Hash>
     {
         private HashAlgorithm _algorithm;
         private byte[] _value;
-
-        private int _hashCode;
 
         public static readonly int MaxValueLength = 32;
 
         public Hash(HashAlgorithm algorithm, byte[] value)
         {
+            _algorithm = 0;
+            _value = null;
+
             this.Algorithm = algorithm;
             this.Value = value;
-
-            this.Initialize();
         }
 
-        protected override void Initialize()
+        public static bool operator ==(Hash x, Hash y)
         {
-            _hashCode = (this.Value != null) ? ItemUtils.GetHashCode(this.Value) : 0;
+            return x.Equals(y);
         }
 
-        protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
+        public static bool operator !=(Hash x, Hash y)
         {
-            using (var reader = new ItemStreamReader(stream, bufferManager))
-            {
-                this.Algorithm = (HashAlgorithm)reader.GetUInt32();
-                this.Value = reader.GetBytes();
-            }
-        }
-
-        protected override Stream Export(BufferManager bufferManager, int depth)
-        {
-            using (var writer = new ItemStreamWriter(bufferManager))
-            {
-                writer.Write((uint)this.Algorithm);
-                writer.Write(this.Value);
-
-                return writer.GetStream();
-            }
+            return !x.Equals(y);
         }
 
         public override int GetHashCode()
         {
-            return _hashCode;
+            return ((int)this.Algorithm) ^ Fnv1.ComputeHash32(this.Value);
         }
 
         public override bool Equals(object obj)
@@ -62,7 +49,7 @@ namespace Amoeba.Messages
             return this.Equals((Hash)obj);
         }
 
-        public override bool Equals(Hash other)
+        public bool Equals(Hash other)
         {
             if ((object)other == null) return false;
             if (object.ReferenceEquals(this, other)) return true;

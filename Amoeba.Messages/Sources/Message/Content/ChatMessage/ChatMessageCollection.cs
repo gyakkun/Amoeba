@@ -11,9 +11,7 @@ namespace Amoeba.Messages
 
         protected override bool Filter(ChatMessage item)
         {
-            if (item == null) return true;
-
-            return false;
+            return (item != null);
         }
     }
 }
