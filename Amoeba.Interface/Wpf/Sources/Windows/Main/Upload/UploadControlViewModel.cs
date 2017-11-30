@@ -1356,7 +1356,7 @@ namespace Amoeba.Interface
                 {
                     foreach (string path in pathList)
                     {
-                        _serviceManager.Diffusion(path);
+                        _serviceManager.DiffuseContent(path);
                     }
                 }
                 catch (Exception)

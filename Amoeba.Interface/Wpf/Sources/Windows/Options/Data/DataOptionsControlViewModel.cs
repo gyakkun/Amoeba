@@ -1,5 +1,7 @@
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reactive.Disposables;
 using Amoeba.Messages;
 using Amoeba.Service;
@@ -27,6 +29,8 @@ namespace Amoeba.Interface
 
         public ReactiveCommand DownloadDirectoryPathEditDialogCommand { get; private set; }
 
+        public ObservableCollection<int> RateList { get; private set; }
+
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
@@ -47,6 +51,8 @@ namespace Amoeba.Interface
 
                 this.DownloadDirectoryPathEditDialogCommand = new ReactiveCommand().AddTo(_disposable);
                 this.DownloadDirectoryPathEditDialogCommand.Subscribe(() => this.DownloadDirectoryPathEditDialog()).AddTo(_disposable);
+
+                this.RateList = new ObservableCollection<int>(Enumerable.Range(0, 50 + 1));
             }
 
             {
@@ -68,8 +74,15 @@ namespace Amoeba.Interface
 
         private void GetOptions()
         {
-            this.DataOptions.Cache.Size = _serviceManager.Size;
-            this.DataOptions.Download.DirectoryPath = _serviceManager.Config.Core.Download.BasePath;
+            {
+                this.DataOptions.Cache.Size = _serviceManager.Size;
+            }
+
+            {
+                var config = _serviceManager.Config.Core.Download;
+                this.DataOptions.Download.DirectoryPath = config.BasePath;
+                this.DataOptions.Download.ProtectedPercentage = config.ProtectedPercentage;
+            }
         }
 
         public void SetOptions()
@@ -100,7 +113,7 @@ namespace Amoeba.Interface
             lock (_serviceManager.LockObject)
             {
                 var oldConfig = _serviceManager.Config;
-                _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(this.DataOptions.Download.DirectoryPath)), oldConfig.Connection, oldConfig.Message));
+                _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(this.DataOptions.Download.DirectoryPath, this.DataOptions.Download.ProtectedPercentage)), oldConfig.Connection, oldConfig.Message));
             }
         }
 

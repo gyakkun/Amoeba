@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Serialization;
-using System.Windows;
 using System.Windows.Media.Imaging;
+using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Security;
-using Amoeba.Messages;
 
 namespace Amoeba.Interface
 {
@@ -1167,6 +1165,7 @@ namespace Amoeba.Interface
         }
 
         private string _directoryPath;
+        private int _protectedRate;
 
         public DownloadOptionsInfo() { }
 
@@ -1183,6 +1182,23 @@ namespace Amoeba.Interface
                 {
                     _directoryPath = value;
                     this.OnPropertyChanged(nameof(DirectoryPath));
+                }
+            }
+        }
+
+        [DataMember(Name = nameof(ProtectedPercentage))]
+        public int ProtectedPercentage
+        {
+            get
+            {
+                return _protectedRate;
+            }
+            set
+            {
+                if (_protectedRate != value)
+                {
+                    _protectedRate = value;
+                    this.OnPropertyChanged(nameof(ProtectedPercentage));
                 }
             }
         }

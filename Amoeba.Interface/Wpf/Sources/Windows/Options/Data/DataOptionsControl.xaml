@@ -71,6 +71,36 @@
                                      HorizontalContentAlignment="Stretch"
                                      VerticalContentAlignment="Center"
                                      Text="{Binding Path=DataOptions.Download.DirectoryPath}" />
+                            <Label Height="32"
+                                   Margin="0,48,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   HorizontalContentAlignment="Stretch"
+                                   VerticalContentAlignment="Center"
+                                   Content="{Binding Path=DataOptionsControl_ProtectedCachePercentage, Source={StaticResource Languages}}" />
+                            <ComboBox Width="72"
+                                      Height="32"
+                                      Margin="240,48,0,0"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Top"
+                                      HorizontalContentAlignment="Stretch"
+                                      VerticalContentAlignment="Center"
+                                      ItemsSource="{Binding Path=RateList}"
+                                      SelectedValue="{Binding Path=DataOptions.Download.ProtectedPercentage}">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+
+                            <Label Height="32"
+                                   Margin="328,48,0,0"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   HorizontalContentAlignment="Center"
+                                   VerticalContentAlignment="Center"
+                                   Content="％" />
                             <Button Width="32"
                                     Height="32"
                                     HorizontalAlignment="Right"

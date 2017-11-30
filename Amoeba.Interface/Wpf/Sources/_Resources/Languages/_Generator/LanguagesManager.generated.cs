@@ -155,6 +155,7 @@ namespace Amoeba.Interface
         public string DataOptionsControl_CacheSize { get { return this.Translate("DataOptionsControl_CacheSize"); } }
         public string DataOptionsControl_DownloadSettings { get { return this.Translate("DataOptionsControl_DownloadSettings"); } }
         public string DataOptionsControl_DownloadDirectoryPath { get { return this.Translate("DataOptionsControl_DownloadDirectoryPath"); } }
+        public string DataOptionsControl_ProtectedCachePercentage { get { return this.Translate("DataOptionsControl_ProtectedCachePercentage"); } }
         public string DataOptionsControl_CacheResize_Message { get { return this.Translate("DataOptionsControl_CacheResize_Message"); } }
         public string DataOptionsControl_Import { get { return this.Translate("DataOptionsControl_Import"); } }
         public string ViewOptionsControl_SubscribeSettings { get { return this.Translate("ViewOptionsControl_SubscribeSettings"); } }

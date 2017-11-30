@@ -627,7 +627,7 @@ namespace Amoeba.Service
                                         tempSet.UnionWith(list.Take((int)(_maxBlockLinkCount * node.Value.PriorityManager.GetPriority())));
                                     }
 
-                                    pushBlockLinkSet.UnionWith(tempSet.Take(_maxBlockLinkCount * 16));
+                                    pushBlockLinkSet.UnionWith(tempSet.Take(_maxBlockLinkCount * 8));
                                 }
                             }
 
@@ -657,7 +657,7 @@ namespace Amoeba.Service
                                         tempSet.UnionWith(list.Take((int)(_maxBlockRequestCount * node.Value.PriorityManager.GetPriority())));
                                     }
 
-                                    pushBlockRequestSet.UnionWith(tempSet.Take(_maxBlockRequestCount * 16));
+                                    pushBlockRequestSet.UnionWith(tempSet.Take(_maxBlockRequestCount * 8));
                                 }
                             }
                         }
@@ -944,7 +944,7 @@ namespace Amoeba.Service
                             }
                             catch (Exception e)
                             {
-                                Log.Debug(e);
+                                Debug.WriteLine(e);
 
                                 this.RemoveConnection(connection);
                             }
@@ -992,7 +992,7 @@ namespace Amoeba.Service
                             }
                             catch (Exception e)
                             {
-                                Log.Debug(e);
+                                Debug.WriteLine(e);
 
                                 this.RemoveConnection(connection);
                             }
@@ -1042,6 +1042,8 @@ namespace Amoeba.Service
 
                 var dataStream = (new ProfilePacket(_routeTable.BaseId, _myLocation)).Export(_bufferManager);
 
+                Debug.WriteLine("NetworkManager: Send Init");
+
                 return new UniteStream(versionStream, dataStream);
             }
 
@@ -1064,6 +1066,8 @@ namespace Amoeba.Service
 
                 _info.PushLocationCount.Add(packet.Locations.Count());
 
+                Debug.WriteLine("NetworkManager: Send LocationResult");
+
                 return new UniteStream(typeStream, packet.Export(_bufferManager));
             }
 
@@ -1085,6 +1089,8 @@ namespace Amoeba.Service
 
                 sessionInfo.SendInfo.PushBlockLinkSet.AddRange(packet.Hashes);
 
+                Debug.WriteLine("NetworkManager: Send BlockLink");
+
                 return new UniteStream(typeStream, packet.Export(_bufferManager));
             }
 
@@ -1105,6 +1111,8 @@ namespace Amoeba.Service
                 _info.PushBlockRequestCount.Add(packet.Hashes.Count());
 
                 sessionInfo.SendInfo.PushBlockRequestSet.AddRange(packet.Hashes);
+
+                Debug.WriteLine("NetworkManager: Send BlockRequest");
 
                 return new UniteStream(typeStream, packet.Export(_bufferManager));
             }
@@ -1166,6 +1174,8 @@ namespace Amoeba.Service
                         _diffusionBlockHashes.Remove(hash);
                         _uploadBlockHashes.Remove(hash);
 
+                        Debug.WriteLine("NetworkManager: Send BlockResult");
+
                         return new UniteStream(typeStream, dataStream);
                     }
                 }
@@ -1190,6 +1200,8 @@ namespace Amoeba.Service
                     Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasRequest);
 
                     _info.PushMessageRequestCount.Add(packet.Signatures.Count());
+
+                    Debug.WriteLine("NetworkManager: Send BroadcastMetadataRequest");
 
                     return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
@@ -1226,6 +1238,8 @@ namespace Amoeba.Service
 
                         _info.PushMessageResultCount.Add(packet.BroadcastMetadatas.Count());
 
+                        Debug.WriteLine("NetworkManager: Send MetadataResult");
+
                         return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
                 }
@@ -1245,6 +1259,8 @@ namespace Amoeba.Service
                     Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasRequest);
 
                     _info.PushMessageRequestCount.Add(packet.Signatures.Count());
+
+                    Debug.WriteLine("NetworkManager: Send UnicastMetadataRequest");
 
                     return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
@@ -1281,6 +1297,8 @@ namespace Amoeba.Service
 
                         _info.PushMessageResultCount.Add(packet.UnicastMetadatas.Count());
 
+                        Debug.WriteLine("NetworkManager: Send UnicastMetadataResult");
+
                         return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
                 }
@@ -1300,6 +1318,8 @@ namespace Amoeba.Service
                     Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasRequest);
 
                     _info.PushMessageRequestCount.Add(packet.Tags.Count());
+
+                    Debug.WriteLine("NetworkManager: Send MulticastMetadataRequest");
 
                     return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
@@ -1335,6 +1355,8 @@ namespace Amoeba.Service
                         Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasResult);
 
                         _info.PushMessageResultCount.Add(packet.MulticastMetadatas.Count());
+
+                        Debug.WriteLine("NetworkManager: Send MulticastMetadataResult");
 
                         return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
@@ -1374,6 +1396,8 @@ namespace Amoeba.Service
                         }
                     }
 
+                    Debug.WriteLine("NetworkManager: Receive Init");
+
                     sessionInfo.ReceiveInfo.IsInitialized = true;
                 }
                 else
@@ -1394,6 +1418,8 @@ namespace Amoeba.Service
                                 _info.PullLocationCount.Add(packet.Locations.Count());
 
                                 sessionInfo.ReceiveInfo.PullLocationSet.AddRange(packet.Locations);
+
+                                Debug.WriteLine("NetworkManager: Receive Locations");
                             }
                             else if (id == (int)SerializeId.BlocksLink)
                             {
@@ -1405,6 +1431,8 @@ namespace Amoeba.Service
                                 _info.PullBlockLinkCount.Add(packet.Hashes.Count());
 
                                 sessionInfo.ReceiveInfo.PullBlockLinkSet.AddRange(packet.Hashes);
+
+                                Debug.WriteLine("NetworkManager: Receive BlocksLink");
                             }
                             else if (id == (int)SerializeId.BlocksRequest)
                             {
@@ -1416,6 +1444,8 @@ namespace Amoeba.Service
                                 _info.PullBlockRequestCount.Add(packet.Hashes.Count());
 
                                 sessionInfo.ReceiveInfo.PullBlockRequestSet.AddRange(packet.Hashes);
+
+                                Debug.WriteLine("NetworkManager: Receive BlocksRequest");
                             }
                             else if (id == (int)SerializeId.BlockResult)
                             {
@@ -1445,6 +1475,8 @@ namespace Amoeba.Service
                                         _bufferManager.ReturnBuffer(packet.Value.Array);
                                     }
                                 }
+
+                                Debug.WriteLine("NetworkManager: Receive BlockResult");
                             }
                             else if (id == (int)SerializeId.BroadcastMetadatasRequest)
                             {
@@ -1456,6 +1488,8 @@ namespace Amoeba.Service
                                 _info.PullMessageRequestCount.Add(packet.Signatures.Count());
 
                                 sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.AddRange(packet.Signatures);
+
+                                Debug.WriteLine("NetworkManager: Receive BroadcastMetadatasRequest");
                             }
                             else if (id == (int)SerializeId.BroadcastMetadatasResult)
                             {
@@ -1469,6 +1503,8 @@ namespace Amoeba.Service
                                 {
                                     _metadataManager.SetMetadata(metadata);
                                 }
+
+                                Debug.WriteLine("NetworkManager: Receive BroadcastMetadatasResult");
                             }
                             else if (id == (int)SerializeId.UnicastMetadatasRequest)
                             {
@@ -1480,6 +1516,8 @@ namespace Amoeba.Service
                                 _info.PullMessageRequestCount.Add(packet.Signatures.Count());
 
                                 sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.AddRange(packet.Signatures);
+
+                                Debug.WriteLine("NetworkManager: Receive UnicastMetadatasRequest");
                             }
                             else if (id == (int)SerializeId.UnicastMetadatasResult)
                             {
@@ -1493,6 +1531,8 @@ namespace Amoeba.Service
                                 {
                                     _metadataManager.SetMetadata(metadata);
                                 }
+
+                                Debug.WriteLine("NetworkManager: Receive UnicastMetadatasResult");
                             }
                             else if (id == (int)SerializeId.MulticastMetadatasRequest)
                             {
@@ -1504,6 +1544,8 @@ namespace Amoeba.Service
                                 _info.PullMessageRequestCount.Add(packet.Tags.Count());
 
                                 sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.AddRange(packet.Tags);
+
+                                Debug.WriteLine("NetworkManager: Receive MulticastMetadatasRequest");
                             }
                             else if (id == (int)SerializeId.MulticastMetadatasResult)
                             {
@@ -1517,6 +1559,8 @@ namespace Amoeba.Service
                                 {
                                     _metadataManager.SetMetadata(metadata);
                                 }
+
+                                Debug.WriteLine("NetworkManager: Receive MulticastMetadatasResult");
                             }
                         }
                     }
@@ -1678,7 +1722,7 @@ namespace Amoeba.Service
             }
         }
 
-        public void Diffusion(string path)
+        public void Diffuse(string path)
         {
             lock (_lockObject)
             {

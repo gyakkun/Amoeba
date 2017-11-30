@@ -35,7 +35,7 @@ using (var reader = new XmlTextReader(stream))
                             {
                                 var type = GetNormalizedTypeName(reader2.GetAttribute("Type"));
                                 var name = reader2.GetAttribute("Name");
-                                var isReadonly = bool.Parse(reader2.GetAttribute("IsReadonly") ?? "false");
+                                var isReadonly = bool.Parse(reader2.GetAttribute("IsEditable") ?? "false");
 
                                 propertyInfos.Add(new PropertyInfo(type, name, isReadonly));
                             }
@@ -78,7 +78,7 @@ namespace Amoeba.Interface
 
 <# foreach(var p in c.PropertyInfos) { #>
 <# var generatedFieldName = GetFieldName(p.Name); #>
-<# if(p.IsReadonly) { #>
+<# if(p.IsEditable) { #>
         [DataMember(Name = nameof(<#= p.Name #>))]
         public <#= p.Type #> <#= p.Name #>
         {
@@ -150,11 +150,11 @@ private class PropertyInfo
     {
         this.Type = type;
         this.Name = name;
-        this.IsReadonly = isReadonly;
+        this.IsEditable = isReadonly;
     }
 
     public string Type { get; private set; }
     public string Name { get; private set; }
-    public bool IsReadonly { get; private set; }
+    public bool IsEditable { get; private set; }
 }
 #>

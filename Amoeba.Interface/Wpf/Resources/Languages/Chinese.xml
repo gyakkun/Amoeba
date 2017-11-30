@@ -167,6 +167,7 @@
     <Property Name="DataOptionsControl_CacheSize" Value="缓存大小" />
     <Property Name="DataOptionsControl_DownloadSettings" Value="下载设置" />
     <Property Name="DataOptionsControl_DownloadDirectoryPath" Value="目录设置" />
+    <Property Name="DataOptionsControl_ProtectedCachePercentage" Value="受保护的缓存百分比" />
     <Property Name="DataOptionsControl_CacheResize_Message" Value="改变缓存大小有可能导致删除重要块, 确定更改?" />
     <Property Name="DataOptionsControl_Import" Value="导入" />
 

@@ -33,7 +33,7 @@ namespace Amoeba.Service
         private VolatileDownloadItemInfoManager _volatileDownloadItemInfoManager;
         private DownloadItemInfoManager _downloadItemInfoManager;
 
-        private ProtectCacheInfoManager _protectCacheInfoManager;
+        private ProtectedCacheInfoManager _protectCacheInfoManager;
 
         private WatchTimer _watchTimer;
 
@@ -67,7 +67,7 @@ namespace Amoeba.Service
             _downloadItemInfoManager.AddEvents += (info) => this.Event_AddInfo(info);
             _downloadItemInfoManager.RemoveEvents += (info) => this.Event_RemoveInfo(info);
 
-            _protectCacheInfoManager = new ProtectCacheInfoManager(_cacheManager);
+            _protectCacheInfoManager = new ProtectedCacheInfoManager(_cacheManager);
 
             _watchTimer = new WatchTimer(this.WatchThread);
             _watchTimer.Start(new TimeSpan(0, 1, 0));
@@ -123,7 +123,7 @@ namespace Amoeba.Service
             {
                 lock (_lockObject)
                 {
-                    return new DownloadConfig(_basePath);
+                    return new DownloadConfig(_basePath, _protectCacheInfoManager.ProtectedPercentage);
                 }
             }
         }
@@ -133,6 +133,7 @@ namespace Amoeba.Service
             lock (_lockObject)
             {
                 _basePath = config.BasePath;
+                _protectCacheInfoManager.ProtectedPercentage = config.ProtectedPercentage;
             }
         }
 
@@ -392,7 +393,7 @@ namespace Amoeba.Service
                             {
                                 if (item.Path != null)
                                 {
-                                    _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, totalHashes));
+                                    _protectCacheInfoManager.Add(new ProtectedCacheInfo(DateTime.UtcNow, totalHashes));
                                 }
 
                                 this.CheckState(index);
@@ -465,7 +466,7 @@ namespace Amoeba.Service
                             {
                                 if (item.Path != null)
                                 {
-                                    _protectCacheInfoManager.Add(new ProtectCacheInfo(DateTime.UtcNow, totalHashes));
+                                    _protectCacheInfoManager.Add(new ProtectedCacheInfo(DateTime.UtcNow, totalHashes));
                                 }
 
                                 item.ResultHashes.AddRange(hashes);
@@ -703,8 +704,9 @@ namespace Amoeba.Service
 
                 {
                     string basePath = _settings.Load<string>("BasePath", () => null);
+                    int protectedRate = _settings.Load<int>("ProtectedPercentage", () => 30);
 
-                    this.SetConfig(new DownloadConfig(basePath));
+                    this.SetConfig(new DownloadConfig(basePath, protectedRate));
                 }
 
                 foreach (var info in _settings.Load<DownloadItemInfo[]>("DownloadItemInfos", () => Array.Empty<DownloadItemInfo>()))
@@ -712,7 +714,7 @@ namespace Amoeba.Service
                     _downloadItemInfoManager.Add(info);
                 }
 
-                foreach (var info in _settings.Load<ProtectCacheInfo[]>("ProtectCacheInfos", () => Array.Empty<ProtectCacheInfo>()))
+                foreach (var info in _settings.Load<ProtectedCacheInfo[]>("ProtectedCacheInfos", () => Array.Empty<ProtectedCacheInfo>()))
                 {
                     _protectCacheInfoManager.Add(info);
                 }
@@ -729,10 +731,11 @@ namespace Amoeba.Service
                     var config = this.Config;
 
                     _settings.Save("BasePath", config.BasePath);
+                    _settings.Save("ProtectedPercentage", config.ProtectedPercentage);
                 }
 
                 _settings.Save("DownloadItemInfos", _downloadItemInfoManager.ToArray());
-                _settings.Save("ProtectCacheInfos", _protectCacheInfoManager.ToArray());
+                _settings.Save("ProtectedCacheInfos", _protectCacheInfoManager.ToArray());
             }
         }
 
@@ -1043,23 +1046,30 @@ namespace Amoeba.Service
             }
         }
 
-        private class ProtectCacheInfoManager : ManagerBase, IEnumerable<ProtectCacheInfo>
+        private class ProtectedCacheInfoManager : ManagerBase, IEnumerable<ProtectedCacheInfo>
         {
             private CacheManager _cacheManager;
-            private LockedList<ProtectCacheInfo> _infos;
+            private LockedList<ProtectedCacheInfo> _infos;
 
             private WatchTimer _watchTimer;
 
             private volatile bool _disposed;
 
-            public ProtectCacheInfoManager(CacheManager cacheManager)
+            public ProtectedCacheInfoManager(CacheManager cacheManager)
             {
                 _cacheManager = cacheManager;
-                _infos = new LockedList<ProtectCacheInfo>();
+                _infos = new LockedList<ProtectedCacheInfo>();
 
                 _watchTimer = new WatchTimer(() => this.WatchThread());
+
+#if DEBUG
                 _watchTimer.Start(new TimeSpan(0, 1, 0));
+#else
+                _watchTimer.Start(new TimeSpan(0, 10, 0));
+#endif
             }
+
+            public int ProtectedPercentage { get; set; }
 
             private void WatchThread()
             {
@@ -1072,7 +1082,7 @@ namespace Amoeba.Service
                         lockSize += _cacheManager.GetLength(hash);
                     }
 
-                    if (_cacheManager.Size / 3 > lockSize) break;
+                    if (_cacheManager.Size * ((double)this.ProtectedPercentage / 100) > lockSize) break;
 
                     var sortedList = _infos.ToArray().ToList();
                     sortedList.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));
@@ -1089,7 +1099,7 @@ namespace Amoeba.Service
                 }
             }
 
-            public void Add(ProtectCacheInfo info)
+            public void Add(ProtectedCacheInfo info)
             {
                 foreach (var hash in info.Hashes)
                 {
@@ -1099,14 +1109,14 @@ namespace Amoeba.Service
                 _infos.Add(info);
             }
 
-            public ProtectCacheInfo[] ToArray()
+            public ProtectedCacheInfo[] ToArray()
             {
                 return _infos.ToArray();
             }
 
             #region IEnumerable<ProtectedCacheInfo>
 
-            public IEnumerator<ProtectCacheInfo> GetEnumerator()
+            public IEnumerator<ProtectedCacheInfo> GetEnumerator()
             {
                 foreach (var info in _infos.ToArray())
                 {
@@ -1150,13 +1160,13 @@ namespace Amoeba.Service
             #endregion
         }
 
-        [DataContract(Name = nameof(ProtectCacheInfo))]
-        private class ProtectCacheInfo
+        [DataContract(Name = nameof(ProtectedCacheInfo))]
+        private class ProtectedCacheInfo
         {
             private DateTime _creationTime;
             private HashCollection _hashes;
 
-            public ProtectCacheInfo(DateTime creationTime, IEnumerable<Hash> hashes)
+            public ProtectedCacheInfo(DateTime creationTime, IEnumerable<Hash> hashes)
             {
                 this.CreationTime = creationTime;
                 if (hashes != null) this.ProtectedHashs.AddRange(hashes);

@@ -264,13 +264,13 @@ namespace Amoeba.Service
             }
         }
 
-        public void Diffusion(string path)
+        public void DiffuseContent(string path)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                _networkManager.Diffusion(path);
+                _networkManager.Diffuse(path);
             }
         }
 

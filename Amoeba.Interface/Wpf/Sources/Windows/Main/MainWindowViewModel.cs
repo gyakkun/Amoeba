@@ -99,7 +99,7 @@ namespace Amoeba.Interface
                     lock (_serviceManager.LockObject)
                     {
                         var oldConfig = _serviceManager.Config;
-                        _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(AmoebaEnvironment.Paths.DownloadsPath)), oldConfig.Connection, oldConfig.Message));
+                        _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(AmoebaEnvironment.Paths.DownloadsPath, oldConfig.Core.Download.ProtectedPercentage)), oldConfig.Connection, oldConfig.Message));
                     }
                 }
             }

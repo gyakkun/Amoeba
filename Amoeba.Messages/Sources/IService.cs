@@ -20,7 +20,7 @@ namespace Amoeba.Messages
         Task CheckBlocks(IProgress<CheckBlocksProgressReport> progress, CancellationToken token);
         Task<Metadata> AddContent(string path, DateTime creationTime, CancellationToken token);
         void RemoveContent(string path);
-        void Diffusion(string path);
+        void DiffuseContent(string path);
         void AddDownload(Metadata metadata, string path, long maxLength);
         void RemoveDownload(Metadata metadata, string path);
         void ResetDownload(Metadata metadata, string path);

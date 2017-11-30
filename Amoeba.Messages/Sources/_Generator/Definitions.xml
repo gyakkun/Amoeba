@@ -118,6 +118,7 @@
 
     <Class Name="DownloadConfig">
         <ItemProperty Type="string" Name="BasePath" />
+        <ItemProperty Type="int" Name="ProtectedPercentage" />
     </Class>
 
     <Class Name="ConnectionConfig">

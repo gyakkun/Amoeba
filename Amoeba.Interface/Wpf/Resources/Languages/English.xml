@@ -167,6 +167,7 @@
     <Property Name="DataOptionsControl_CacheSize" Value="Cache size" />
     <Property Name="DataOptionsControl_DownloadSettings" Value="Download settings" />
     <Property Name="DataOptionsControl_DownloadDirectoryPath" Value="Directory path" />
+    <Property Name="DataOptionsControl_ProtectedCachePercentage" Value="Percentage of protected cache" />
     <Property Name="DataOptionsControl_CacheResize_Message" Value="Resizing of cache will delete important block. Would that be all right?" />
     <Property Name="DataOptionsControl_Import" Value="Import" />
 

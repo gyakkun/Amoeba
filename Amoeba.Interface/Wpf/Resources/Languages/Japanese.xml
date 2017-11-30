@@ -167,6 +167,7 @@
     <Property Name="DataOptionsControl_CacheSize" Value="キャッシュサイズ" />
     <Property Name="DataOptionsControl_DownloadSettings" Value="ダウンロード設定" />
     <Property Name="DataOptionsControl_DownloadDirectoryPath" Value="ディレクトリ設定" />
+    <Property Name="DataOptionsControl_ProtectedCachePercentage" Value="保護されるキャッシュの割合" />
     <Property Name="DataOptionsControl_CacheResize_Message" Value="キャッシュサイズの変更は重要なブロックを削除する可能性があります。それでもよろしいですか？" />
     <Property Name="DataOptionsControl_Import" Value="インポート" />
 
