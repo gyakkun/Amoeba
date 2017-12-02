@@ -39,7 +39,7 @@ namespace Amoeba.Service
 
         public double GetPriority()
         {
-            const int min = 32;
+            const int min = 8;
             const int max = 100;
 
             lock (_lockObject)

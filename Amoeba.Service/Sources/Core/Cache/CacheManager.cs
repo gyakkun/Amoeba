@@ -50,6 +50,7 @@ namespace Amoeba.Service
         private EventQueue<Hash> _importedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
 
         private WatchTimer _watchTimer;
+        private WatchTimer _updateTimer;
 
         private readonly object _lockObject = new object();
         private volatile bool _disposed;
@@ -79,6 +80,7 @@ namespace Amoeba.Service
             _cacheInfoManager = new CacheInfoManager();
 
             _watchTimer = new WatchTimer(this.WatchTimer);
+            _updateTimer = new WatchTimer(this.UpdateTimer);
         }
 
         private static long Roundup(long value, long unit)
@@ -89,9 +91,13 @@ namespace Amoeba.Service
 
         private void WatchTimer()
         {
-            this.CheckInformation();
             this.CheckMessages();
             this.CheckContents();
+        }
+
+        private void UpdateTimer()
+        {
+            this.CheckInformation();
         }
 
         private volatile Info _info = new Info();
@@ -1419,12 +1425,13 @@ namespace Amoeba.Service
                 _size = _settings.Load("Size", () => (long)1024 * 1024 * 1024 * 32);
                 _clusterIndex = _settings.Load("ClusterIndex", () => new Dictionary<Hash, ClusterInfo>());
 
-                foreach (var cacheInfo in _settings.Load<CacheInfo[]>("CacheInfos", () => new CacheInfo[0]))
+                foreach (var cacheInfo in _settings.Load<IEnumerable<CacheInfo>>("CacheInfos", () => Array.Empty<CacheInfo>()))
                 {
                     _cacheInfoManager.Add(cacheInfo);
                 }
 
                 _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 10, 0));
+                _updateTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 1, 0));
             }
         }
 
@@ -1959,6 +1966,20 @@ namespace Amoeba.Service
                     }
 
                     _watchTimer = null;
+                }
+
+                if (_updateTimer != null)
+                {
+                    try
+                    {
+                        _updateTimer.Dispose();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    _updateTimer = null;
                 }
             }
         }

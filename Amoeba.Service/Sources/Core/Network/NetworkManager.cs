@@ -52,11 +52,11 @@ namespace Amoeba.Service
         private List<TaskManager> _sendTaskManagers = new List<TaskManager>();
         private List<TaskManager> _receiveTaskManagers = new List<TaskManager>();
 
-        private VolatileHashDictionary<Hash, DiffusionPriority> _pushBlocksRequestMap = new VolatileHashDictionary<Hash, DiffusionPriority>(new TimeSpan(0, 3, 0));
+        private VolatileHashDictionary<Hash, DiffusionPriority> _pushBlocksRequestMap = new VolatileHashDictionary<Hash, DiffusionPriority>(new TimeSpan(0, 10, 0));
 
-        private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 3, 0));
-        private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 3, 0));
-        private VolatileHashSet<Tag> _pushMulticastMetadatasRequestSet = new VolatileHashSet<Tag>(new TimeSpan(0, 3, 0));
+        private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 10, 0));
+        private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 10, 0));
+        private VolatileHashSet<Tag> _pushMulticastMetadatasRequestSet = new VolatileHashSet<Tag>(new TimeSpan(0, 10, 0));
 
         private SafeInteger _receivedByteCount = new SafeInteger();
         private SafeInteger _sentByteCount = new SafeInteger();
@@ -551,7 +551,7 @@ namespace Amoeba.Service
 
                         foreach (var hash in CollectionUtils.Unite(_diffusionBlockHashes.ToArray(), _uploadBlockHashes.ToArray()).Randomize())
                         {
-                            foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 1, 0, 1))
+                            foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 2))
                             {
                                 var tempList = diffusionMap.GetOrAdd(node, (_) => new List<Hash>());
                                 if (tempList.Count > 128) continue;
@@ -669,7 +669,7 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockLinkSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 1))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
                                     }
@@ -693,7 +693,7 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 3))
+                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 2))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
                                     }

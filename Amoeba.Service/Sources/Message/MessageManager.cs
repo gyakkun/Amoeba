@@ -284,7 +284,7 @@ namespace Amoeba.Service
             if (profile == null) throw new ArgumentNullException(nameof(profile));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(profile), TimeSpan.FromDays(180), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(profile), TimeSpan.FromDays(360), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new BroadcastMetadata("Profile", DateTime.UtcNow, task.Result, digitalSignature));
@@ -296,7 +296,7 @@ namespace Amoeba.Service
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(store), TimeSpan.FromDays(180), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(store), TimeSpan.FromDays(360), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new BroadcastMetadata("Store", DateTime.UtcNow, task.Result, digitalSignature));
@@ -309,7 +309,7 @@ namespace Amoeba.Service
             if (mailMessage == null) throw new ArgumentNullException(nameof(mailMessage));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToCryptoStream(mailMessage, 1024 * 256, exchangePublicKey), TimeSpan.FromDays(180), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToCryptoStream(mailMessage, 1024 * 256, exchangePublicKey), TimeSpan.FromDays(360), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new UnicastMetadata("MailMessage", targetSignature, DateTime.UtcNow, task.Result, digitalSignature));
@@ -322,7 +322,7 @@ namespace Amoeba.Service
             if (chatMessage == null) throw new ArgumentNullException(nameof(chatMessage));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(chatMessage), TimeSpan.FromDays(30), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(chatMessage), TimeSpan.FromDays(360), token)
                 .ContinueWith(task =>
                 {
                     MulticastMetadata multicastMetadata;

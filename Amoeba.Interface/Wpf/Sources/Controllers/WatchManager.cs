@@ -118,8 +118,7 @@ namespace Amoeba.Interface
                         }
                     }
 
-                    if (_serviceManager.Report.Core.Cache.FreeSpace < NetworkConverter.FromSizeString("32GB")
-                        && _serviceManager.Report.Core.Cache.FreeSpace < (_serviceManager.Size / 3))
+                    if (_serviceManager.Report.Core.Cache.FreeSpace < NetworkConverter.FromSizeString("10GB"))
                     {
                         flag |= true;
                     }
@@ -156,7 +155,7 @@ namespace Amoeba.Interface
                     Log.Error(e);
                 }
             });
-            _checkDiskSpaceTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 0, 30));
+            _checkDiskSpaceTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 3, 0));
         }
 
         private void Setting_Backup()
@@ -165,7 +164,7 @@ namespace Amoeba.Interface
 
             _backupTimer = new WatchTimer(() =>
             {
-                if (sw.Elapsed.TotalMinutes > 20)
+                if (sw.Elapsed.TotalMinutes > 30)
                 {
                     sw.Restart();
 
